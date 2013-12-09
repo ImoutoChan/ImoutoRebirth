@@ -1,0 +1,73 @@
+﻿<Window x:Class="ImageViewer.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:local="clr-namespace:ImageViewer"
+        xmlns:gif="http://wpfanimatedgif.codeplex.com"
+        Title="MainWindow" 
+        Height="350" 
+        Width="525" 
+        Background="#FFDFDFE8" 
+        WindowStyle="SingleBorderWindow"
+        WindowStartupLocation="CenterScreen" 
+        WindowState="Maximized"
+        gif:ImageBehavior.AnimateInDesignMode="True"
+        PreviewMouseWheel="Window_MouseWheel" 
+        SizeChanged="Window_SizeChanged"
+        Loaded="Window_Loaded" 
+        >
+    <Grid x:Name="Client" >
+        <local:ExtScrollViewer x:Name="ScrollViewerObject" 
+                               HorizontalScrollBarVisibility="Auto" 
+                               VerticalScrollBarVisibility="Auto">
+            <Grid PreviewMouseDown="Window_MouseDown">
+                <Image x:Name="ViewPort"  
+                       VerticalAlignment="Center" 
+                       HorizontalAlignment="Center" 
+                       Source="h:\Files\Temp\Download\dod\[Renai Mangaka] BIRIBIRI Syndrome (Toaru Majutsu no Index) [English] [ydwtt]\001.jpg"/>
+            </Grid>
+        </local:ExtScrollViewer>
+        <DockPanel LastChildFill="False">
+            <StackPanel Orientation="Horizontal" 
+                        DockPanel.Dock="Bottom" 
+                        HorizontalAlignment="Center"
+                        Style="{StaticResource ActionBar}" >
+                <Label Content="A" 
+                       FontSize="60" 
+                       />
+            </StackPanel>
+            <StackPanel x:Name="ResizePanel"
+                        DockPanel.Dock="Top"
+                        HorizontalAlignment="Right"
+                        Orientation="Horizontal" 
+                        TextElement.FontSize="40"
+                        Style="{StaticResource ActionBar}"
+                        >
+                <Label x:Name="LResizeFitVP" 
+                       Content="FVP"
+                       ToolTip="Fit to screen"
+                       MouseLeftButtonDown="Label_MouseLeftButtonDown"
+                       Style="{StaticResource LabelTransButton}"/>
+                <Label x:Name="LResizeDownVP"
+                       Content="DVP"
+                       ToolTip="Downscale only to screen"
+                       MouseLeftButtonDown="Label_MouseLeftButtonDown"
+                       Style="{StaticResource LabelTransButton}"/>
+                <Label x:Name="LResizeFitW"
+                       Content="FW"
+                       ToolTip="Fit to screen width"
+                       MouseLeftButtonDown="Label_MouseLeftButtonDown"
+                       Style="{StaticResource LabelTransButton}"/>
+                <Label x:Name="LResizeDownW"
+                       Content="DW"
+                       ToolTip="Downscale only to screen width"
+                       MouseLeftButtonDown="Label_MouseLeftButtonDown"
+                       Style="{StaticResource LabelTransButton}"/>
+                <Label x:Name="LResizeNoResize"
+                       Content="NR"
+                       ToolTip="No resize"
+                       MouseLeftButtonDown="Label_MouseLeftButtonDown"
+                       Style="{StaticResource LabelTransButton}"/>
+            </StackPanel>
+        </DockPanel>
+    </Grid>
+</Window>

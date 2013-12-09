@@ -1,0 +1,82 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+    <Color x:Key="MainBackground">#FFDFDFE8</Color>
+    <Color x:Key="TransActionFocused">#FFA3A3C0</Color>
+    <Color x:Key="TransActionSelected">#FF9F9FE4</Color>
+    <SolidColorBrush x:Key="MainBackgroundBrush"  Color="{StaticResource MainBackground}"/>
+    <SolidColorBrush x:Key="TransActionSelectedBrush"  Color="{StaticResource TransActionSelected}"/>
+
+    <Style TargetType="Label" x:Key="LabelTransButton">
+        <Style.Triggers>
+            <EventTrigger RoutedEvent="MouseEnter">
+                <BeginStoryboard>
+                    <Storyboard>
+                        <ColorAnimation 
+                                    Storyboard.TargetProperty="(Background).(SolidColorBrush.Color)" 
+                                    To="{StaticResource TransActionFocused}" Duration="0:0:0.3" />
+                    </Storyboard>
+                </BeginStoryboard>
+            </EventTrigger>
+            <EventTrigger RoutedEvent="MouseLeave">
+                <BeginStoryboard>
+                    <Storyboard>
+                        <ColorAnimation 
+                                    Storyboard.TargetProperty="(Background).(SolidColorBrush.Color)" 
+                                    To="{StaticResource MainBackground}" Duration="0:0:0.3" />
+                    </Storyboard>
+                </BeginStoryboard>
+            </EventTrigger>
+        </Style.Triggers>
+    </Style>
+
+
+    <Style TargetType="Label" x:Key="LabelTransButtonSelected">
+        <Setter Property="Background" Value="{StaticResource TransActionSelectedBrush}" />
+        <Style.Triggers>
+            <EventTrigger RoutedEvent="MouseEnter">
+                <BeginStoryboard>
+                    <Storyboard>
+                        <ColorAnimation 
+                                    Storyboard.TargetProperty="(Border.Background).(SolidColorBrush.Color)" 
+                                    To="{StaticResource TransActionFocused}" Duration="0:0:0.3" />
+                    </Storyboard>
+                </BeginStoryboard>
+            </EventTrigger>
+            <EventTrigger RoutedEvent="MouseLeave">
+                <BeginStoryboard>
+                    <Storyboard>
+                        <ColorAnimation 
+                                    Storyboard.TargetProperty="(Border.Background).(SolidColorBrush.Color)" 
+                                    To="{StaticResource TransActionSelected}" Duration="0:0:0.3" />
+                    </Storyboard>
+                </BeginStoryboard>
+            </EventTrigger>
+        </Style.Triggers>
+    </Style>
+
+    <Style TargetType="StackPanel" x:Key="ActionBar">
+        <Setter Property="Background" Value="{StaticResource MainBackgroundBrush}" />
+        <Setter Property="Opacity" Value="0" />
+        <Style.Triggers>
+            <EventTrigger RoutedEvent="MouseEnter">
+                <BeginStoryboard>
+                    <Storyboard>
+                        <DoubleAnimation
+                                    Storyboard.TargetProperty="Opacity"
+                                    To="0.6" Duration="0:0:0.3" />
+                    </Storyboard>
+                </BeginStoryboard>
+            </EventTrigger>
+            <EventTrigger RoutedEvent="MouseLeave">
+                <BeginStoryboard>
+                    <Storyboard>
+                        <DoubleAnimation
+                                    Storyboard.TargetProperty="Opacity"
+                                    To="0.0" Duration="0:0:0.3" />
+                    </Storyboard>
+                </BeginStoryboard>
+            </EventTrigger>
+        </Style.Triggers>
+    </Style>
+</ResourceDictionary>
