@@ -147,6 +147,7 @@ namespace ImageViewer.Model
         {
             _zoom = 1;
         }
+
         #endregion //Public methods
 
         #region Methods
