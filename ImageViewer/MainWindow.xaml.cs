@@ -355,10 +355,12 @@ namespace ImageViewer
                 }
                 ViewPort.EndInit();
 
-                this.Title = String.Format("File: {0} | {1} из {2}", CurrentImage.Name, _imageList.CurrentImageIndex, _imageList.Count);
+                this.Title = String.Format("{1} / {2} | File: {0}", CurrentImage.Name, _imageList.CurrentImageIndex + 1, _imageList.Count);
             }
             catch {
-                throw;
+                //throw;
+                //_imageList.OnLoadError();
+                //UpdateImageView();
             }
         }
 

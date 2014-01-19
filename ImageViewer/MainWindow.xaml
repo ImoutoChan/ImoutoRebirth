@@ -6,8 +6,7 @@
         xmlns:Controls="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
         Title="MainWindow" 
         Height="350" 
-        Width="525" 
-        Background="#FFDFDFE8" 
+        Width="525"         
         WindowStyle="SingleBorderWindow"
         WindowStartupLocation="CenterScreen" 
         WindowState="Maximized"
@@ -19,7 +18,13 @@
         Drop="Window_Drop"
         AllowDrop="True"
         MouseMove="Window_MouseMove"
+        BorderThickness="2"
         >
+    <Controls:MetroWindow.WindowCommands>
+        <Controls:WindowCommands>
+            <Button Content="settings"/>
+        </Controls:WindowCommands>
+    </Controls:MetroWindow.WindowCommands>
     <Grid x:Name="Client" >
         <local:ExtScrollViewer x:Name="ScrollViewerObject" 
                                HorizontalScrollBarVisibility="Auto" 
@@ -30,7 +35,6 @@
                 <Image x:Name="ViewPort"  
                        VerticalAlignment="Center" 
                        HorizontalAlignment="Center" 
-                       Source="h:\Files\Temp\Download\dod\[Renai Mangaka] BIRIBIRI Syndrome (Toaru Majutsu no Index) [English] [ydwtt]\001.jpg"
                        />
             </Grid>
         </local:ExtScrollViewer>
