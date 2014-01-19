@@ -6,8 +6,12 @@
 
 ++CORRECT ZOOM
 
---COUNTER (in foleder, for example: XX/NN)
+++COUNTER (in foleder, for example: XX/NN)
 
 --METHODS FOR LOAD FILE/FILES FROM FOLDER/FOLDERS (where would we put it etc)
 
 --FULLSCREEN
+
+--LOADING IMAGE IN BACKGROUND
+
+--CROSSZOOM ON ALL FILES / ZOOM ON PRESSED.
