@@ -55,6 +55,22 @@ namespace ImageViewer.Model
             }
         }
 
+        public int Count
+        {
+            get
+            {
+                return _imageList.Count;
+            }
+        }
+
+        public int CurrentImageIndex
+        {
+            get
+            {
+                return _imageList.IndexOf(_currnetImage);
+            }
+        }
+
         #endregion //Properties
 
         #region Public methods

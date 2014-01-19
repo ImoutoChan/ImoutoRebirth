@@ -1,4 +1,5 @@
 ﻿using ImageViewer.Model;
+using System;
 using System.Globalization;
 using System.IO;
 using System.Linq;
@@ -20,6 +21,8 @@ namespace ImageViewer
 
         private LocalImageList _imageList;
         private ResizeType _currentResizeType = ResizeType.Default;
+        private Point _leftDownPosition = new Point(0,0);
+        private Point _rightDownPosition = new Point(0,0);
 
         #endregion //Fields
 
@@ -58,16 +61,43 @@ namespace ImageViewer
             MarkSelectedItems();
         }
 
-        private void Window_MouseDown(object sender, MouseButtonEventArgs e)
+        private void Grid_PreviewMouseDown(object sender, MouseButtonEventArgs e)
         {
-            if (e.LeftButton == MouseButtonState.Pressed)
+            Point currentMousePosition = e.GetPosition(null);
+
+            if (e.ChangedButton == MouseButton.Left)
             {
-                _imageList.Next();
+                _leftDownPosition = currentMousePosition;
             }
-            else if (e.RightButton == MouseButtonState.Pressed)
+            else if (e.ChangedButton == MouseButton.Right)
             {
-                _imageList.Previous();
+                _rightDownPosition = currentMousePosition;
             }
+        }
+
+        private void Grid_PreviewMouseUp(object sender, MouseButtonEventArgs e)
+        {
+            Point currentMousePosition = e.GetPosition(null);
+            Vector diffL = currentMousePosition - _leftDownPosition;
+            Vector diffR = currentMousePosition - _rightDownPosition;
+
+            if (e.ChangedButton == MouseButton.Left)
+            {
+                if (Math.Abs(diffL.X) < SystemParameters.MinimumHorizontalDragDistance
+                    && Math.Abs(diffL.Y) < SystemParameters.MinimumVerticalDragDistance)
+                {
+                    _imageList.Next();
+                }
+            }
+            else if (e.ChangedButton == MouseButton.Right)
+            {
+                 if (Math.Abs(diffR.X) < SystemParameters.MinimumHorizontalDragDistance 
+                    && Math.Abs(diffR.Y) < SystemParameters.MinimumVerticalDragDistance)
+                {
+                    _imageList.Previous();
+                }
+            }
+
             UpdateImageView();
         }
         
@@ -176,7 +206,7 @@ namespace ImageViewer
             UpdateImageView();
         }
 
-        void ScrollViewerObject_ScrollChanged(object sender, ScrollChangedEventArgs e)
+        private void ScrollViewerObject_ScrollChanged(object sender, ScrollChangedEventArgs e)
         {
             UpdateWindowPanels();
         }
@@ -207,6 +237,66 @@ namespace ImageViewer
                 MessageBox.Show(sb.ToString());
             }
             #endif
+
+            if (e.Key == Key.L)
+            {
+                CurrentImage.RotateLeft();
+                UpdateImageView();
+            }
+            if (e.Key == Key.R)
+            {
+                CurrentImage.RotateRight();
+                UpdateImageView();
+            }
+        }
+
+        private void Window_Drop(object sender, DragEventArgs e)
+        {
+            if (e.Data.GetDataPresent(DataFormats.FileDrop))
+            {
+                string[] droppedFiles = (string[])e.Data.GetData(DataFormats.FileDrop);
+                var imageFiles =
+                    from file in droppedFiles
+                    where IsImage(file)
+                    select file;
+
+                if (imageFiles.Count() == 1)
+                {
+                    //Load all images from folder
+                    FileInfo fi = new FileInfo(imageFiles.First());
+                    DirectoryInfo di = fi.Directory;
+
+                    var files =
+                        from file in Directory.GetFiles(di.FullName, "*.*")
+                        where IsImage(file)
+                        select file;
+
+                    _imageList = new LocalImageList(files.ToArray(), imageFiles.First());
+                }
+                else if (imageFiles.Count() > 0)
+                {
+                    //Load only dropped images
+                    _imageList = new LocalImageList(imageFiles.ToArray());
+                }
+            }
+            UpdateImageView();
+        }
+
+        private void Window_MouseMove(object sender, MouseEventArgs e)
+        {
+            Point currentMousePosition = e.GetPosition(null);
+            Vector diffL = currentMousePosition - _leftDownPosition;
+
+            if (e.LeftButton == MouseButtonState.Pressed)
+            {
+                if (Math.Abs(diffL.X) < SystemParameters.MinimumHorizontalDragDistance
+                    && Math.Abs(diffL.Y) < SystemParameters.MinimumVerticalDragDistance)
+                {
+                    string[] paths = new string[] { CurrentImage.Path };
+
+                    DragDrop.DoDragDrop(this, new DataObject(DataFormats.FileDrop, paths), DragDropEffects.Copy | DragDropEffects.Link); 
+                }
+            }
         }
 
         #endregion //Event handlers
@@ -229,10 +319,17 @@ namespace ImageViewer
 
                 _imageList = new LocalImageList(files.ToArray(), fname);
             }
+            #if DEBUG
             else
             {
-                _imageList = new LocalImageList(Directory.GetFiles(@"c:\Users\oniii-chan\Downloads\DLS\art\", "*.*"));
+                var files =
+                    from file in Directory.GetFiles((new DirectoryInfo(@"c:\Users\oniii-chan\Downloads\DLS\art\loli\")).FullName, "*.*")
+                    where IsImage(file)
+                    select file;
+
+                _imageList = new LocalImageList(files.ToArray());
             }
+            #endif
         }
 
         private void UpdateImageView()
@@ -258,7 +355,7 @@ namespace ImageViewer
                 }
                 ViewPort.EndInit();
 
-                this.Title = CurrentImage.Name;
+                this.Title = String.Format("File: {0} | {1} из {2}", CurrentImage.Name, _imageList.CurrentImageIndex, _imageList.Count);
             }
             catch {
                 throw;
