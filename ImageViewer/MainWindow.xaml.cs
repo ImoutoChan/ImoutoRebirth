@@ -355,7 +355,7 @@ namespace ImageViewer
                 }
                 ViewPort.EndInit();
 
-                this.Title = CurrentImage.Name;
+                this.Title = String.Format("File: {0} | {1} из {2}", CurrentImage.Name, _imageList.CurrentImageIndex, _imageList.Count);
             }
             catch {
                 throw;

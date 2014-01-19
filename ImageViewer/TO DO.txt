@@ -9,3 +9,5 @@
 --COUNTER (in foleder, for example: XX/NN)
 
 --METHODS FOR LOAD FILE/FILES FROM FOLDER/FOLDERS (where would we put it etc)
+
+--FULLSCREEN
