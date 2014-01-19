@@ -15,11 +15,14 @@
         SizeChanged="Window_SizeChanged"
         Loaded="Window_Loaded"        
         KeyDown="Window_KeyDown"
+        Drop="Window_Drop"
+        AllowDrop="True"
         >
     <Grid x:Name="Client" >
         <local:ExtScrollViewer x:Name="ScrollViewerObject" 
                                HorizontalScrollBarVisibility="Auto" 
-                               VerticalScrollBarVisibility="Auto">
+                               VerticalScrollBarVisibility="Auto"
+                               >
             <Grid PreviewMouseDown="Window_MouseDown">
                 <Image x:Name="ViewPort"  
                        VerticalAlignment="Center" 

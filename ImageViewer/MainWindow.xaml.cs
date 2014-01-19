@@ -176,7 +176,7 @@ namespace ImageViewer
             UpdateImageView();
         }
 
-        void ScrollViewerObject_ScrollChanged(object sender, ScrollChangedEventArgs e)
+        private void ScrollViewerObject_ScrollChanged(object sender, ScrollChangedEventArgs e)
         {
             UpdateWindowPanels();
         }
@@ -207,6 +207,49 @@ namespace ImageViewer
                 MessageBox.Show(sb.ToString());
             }
             #endif
+
+            if (e.Key == Key.L)
+            {
+                CurrentImage.RotateLeft();
+                UpdateImageView();
+            }
+            if (e.Key == Key.R)
+            {
+                CurrentImage.RotateRight();
+                UpdateImageView();
+            }
+        }
+
+        private void Window_Drop(object sender, DragEventArgs e)
+        {
+            if (e.Data.GetDataPresent(DataFormats.FileDrop))
+            {
+                string[] droppedFiles = (string[])e.Data.GetData(DataFormats.FileDrop);
+                var imageFiles =
+                    from file in droppedFiles
+                    where IsImage(file)
+                    select file;
+
+                if (imageFiles.Count() == 1)
+                {
+                    //Load all images from folder
+                    FileInfo fi = new FileInfo(imageFiles.First());
+                    DirectoryInfo di = fi.Directory;
+
+                    var files =
+                        from file in Directory.GetFiles(di.FullName, "*.*")
+                        where IsImage(file)
+                        select file;
+
+                    _imageList = new LocalImageList(files.ToArray(), imageFiles.First());
+                }
+                else if (imageFiles.Count() > 0)
+                {
+                    //Load only dropped images
+                    _imageList = new LocalImageList(imageFiles.ToArray());
+                }
+            }
+            UpdateImageView();
         }
 
         #endregion //Event handlers

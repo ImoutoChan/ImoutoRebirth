@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 using System.Windows;
+using System.Windows.Media;
 using System.Windows.Media.Imaging;
 
 namespace ImageViewer.Model
@@ -11,13 +12,13 @@ namespace ImageViewer.Model
 
         #region Fields
 
-        protected BitmapImage _image;
+        protected BitmapSource _image;
 
         protected string _filePath;
         protected double _zoom = 1;
         
         protected Size _resizedSize;
-
+        
         #endregion //Fields
 
         #region Constructors
@@ -35,7 +36,7 @@ namespace ImageViewer.Model
 
         #region Properties
 
-        public BitmapImage Image
+        public BitmapSource Image
         {
             get
             {
@@ -51,6 +52,10 @@ namespace ImageViewer.Model
                     }
                 }
                 return _image;
+            }
+            private set
+            {
+                _image = value;
             }
         }
 
@@ -148,9 +153,34 @@ namespace ImageViewer.Model
             _zoom = 1;
         }
 
+        public void RotateLeft()
+        {
+            Rotate(-90);
+        }
+
+        public void RotateRight()
+        {
+            Rotate(90);
+        }
+
         #endregion //Public methods
 
         #region Methods
+
+        private void Rotate(int angle)
+        {
+            TransformedBitmap trasformedBitmap = new TransformedBitmap();
+
+            trasformedBitmap.BeginInit();
+            trasformedBitmap.Source = Image;
+
+            RotateTransform transform = new RotateTransform(angle);
+            trasformedBitmap.Transform = transform;
+
+            trasformedBitmap.EndInit();
+
+            Image = trasformedBitmap;
+        }
 
         private static Size ResizeImage(Size original, Size viewPort, ResizeType type)
         {
