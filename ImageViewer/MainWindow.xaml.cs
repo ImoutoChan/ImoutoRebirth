@@ -1,4 +1,5 @@
 ﻿using ImageViewer.Model;
+using System;
 using System.Globalization;
 using System.IO;
 using System.Linq;
@@ -20,6 +21,8 @@ namespace ImageViewer
 
         private LocalImageList _imageList;
         private ResizeType _currentResizeType = ResizeType.Default;
+        private Point _leftDownPosition = new Point(0,0);
+        private Point _rightDownPosition = new Point(0,0);
 
         #endregion //Fields
 
@@ -58,16 +61,43 @@ namespace ImageViewer
             MarkSelectedItems();
         }
 
-        private void Window_MouseDown(object sender, MouseButtonEventArgs e)
+        private void Grid_PreviewMouseDown(object sender, MouseButtonEventArgs e)
         {
-            if (e.LeftButton == MouseButtonState.Pressed)
+            Point currentMousePosition = e.GetPosition(null);
+
+            if (e.ChangedButton == MouseButton.Left)
             {
-                _imageList.Next();
+                _leftDownPosition = currentMousePosition;
             }
-            else if (e.RightButton == MouseButtonState.Pressed)
+            else if (e.ChangedButton == MouseButton.Right)
             {
-                _imageList.Previous();
+                _rightDownPosition = currentMousePosition;
             }
+        }
+
+        private void Grid_PreviewMouseUp(object sender, MouseButtonEventArgs e)
+        {
+            Point currentMousePosition = e.GetPosition(null);
+            Vector diffL = currentMousePosition - _leftDownPosition;
+            Vector diffR = currentMousePosition - _rightDownPosition;
+
+            if (e.ChangedButton == MouseButton.Left)
+            {
+                if (Math.Abs(diffL.X) < SystemParameters.MinimumHorizontalDragDistance
+                    && Math.Abs(diffL.Y) < SystemParameters.MinimumVerticalDragDistance)
+                {
+                    _imageList.Next();
+                }
+            }
+            else if (e.ChangedButton == MouseButton.Right)
+            {
+                 if (Math.Abs(diffR.X) < SystemParameters.MinimumHorizontalDragDistance 
+                    && Math.Abs(diffR.Y) < SystemParameters.MinimumVerticalDragDistance)
+                {
+                    _imageList.Previous();
+                }
+            }
+
             UpdateImageView();
         }
         
@@ -250,6 +280,23 @@ namespace ImageViewer
                 }
             }
             UpdateImageView();
+        }
+
+        private void Window_MouseMove(object sender, MouseEventArgs e)
+        {
+            Point currentMousePosition = e.GetPosition(null);
+            Vector diffL = currentMousePosition - _leftDownPosition;
+
+            if (e.LeftButton == MouseButtonState.Pressed)
+            {
+                if (Math.Abs(diffL.X) < SystemParameters.MinimumHorizontalDragDistance
+                    && Math.Abs(diffL.Y) < SystemParameters.MinimumVerticalDragDistance)
+                {
+                    string[] paths = new string[] { CurrentImage.Path };
+
+                    DragDrop.DoDragDrop(this, new DataObject(DataFormats.FileDrop, paths), DragDropEffects.Copy | DragDropEffects.Link); 
+                }
+            }
         }
 
         #endregion //Event handlers

@@ -17,17 +17,20 @@
         KeyDown="Window_KeyDown"
         Drop="Window_Drop"
         AllowDrop="True"
+        MouseMove="Window_MouseMove"
         >
     <Grid x:Name="Client" >
         <local:ExtScrollViewer x:Name="ScrollViewerObject" 
                                HorizontalScrollBarVisibility="Auto" 
                                VerticalScrollBarVisibility="Auto"
                                >
-            <Grid PreviewMouseDown="Window_MouseDown">
+            <Grid PreviewMouseDown="Grid_PreviewMouseDown"
+                  PreviewMouseUp="Grid_PreviewMouseUp">
                 <Image x:Name="ViewPort"  
                        VerticalAlignment="Center" 
                        HorizontalAlignment="Center" 
-                       Source="h:\Files\Temp\Download\dod\[Renai Mangaka] BIRIBIRI Syndrome (Toaru Majutsu no Index) [English] [ydwtt]\001.jpg"/>
+                       Source="h:\Files\Temp\Download\dod\[Renai Mangaka] BIRIBIRI Syndrome (Toaru Majutsu no Index) [English] [ydwtt]\001.jpg"
+                       />
             </Grid>
         </local:ExtScrollViewer>
         <DockPanel LastChildFill="False">
