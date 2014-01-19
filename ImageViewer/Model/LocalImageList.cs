@@ -8,8 +8,8 @@ namespace ImageViewer.Model
     {
         #region Fields
 
-        List<LocalImage> _imageList;
-        LocalImage _currnetImage;
+        private List<LocalImage> _imageList;
+        private LocalImage _currnetImage;
 
         #endregion //Fields
 
@@ -32,6 +32,7 @@ namespace ImageViewer.Model
             if (_imageList.Count == 0)
             {
                 _imageList = null;
+                //throw new Exception
             }
             else
             {

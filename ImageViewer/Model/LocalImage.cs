@@ -117,6 +117,7 @@ namespace ImageViewer.Model
 
         public void FreeMemory()
         {
+            
             _image = null;
         }
         
@@ -128,8 +129,8 @@ namespace ImageViewer.Model
             }
 
             _resizedSize = ResizeImage(new Size(Image.PixelWidth, Image.PixelHeight),
-                                      new Size(viewPort.Width, viewPort.Height),
-                                      resizedType);
+                                       new Size(viewPort.Width, viewPort.Height),
+                                       resizedType);
         }
 
         public void ZoomIn()
@@ -146,7 +147,6 @@ namespace ImageViewer.Model
         {
             _zoom = 1;
         }
-
         #endregion //Public methods
 
         #region Methods

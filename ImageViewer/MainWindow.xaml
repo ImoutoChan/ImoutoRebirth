@@ -13,7 +13,8 @@
         gif:ImageBehavior.AnimateInDesignMode="True"
         PreviewMouseWheel="Window_MouseWheel" 
         SizeChanged="Window_SizeChanged"
-        Loaded="Window_Loaded" 
+        Loaded="Window_Loaded"        
+        KeyDown="Window_KeyDown"
         >
     <Grid x:Name="Client" >
         <local:ExtScrollViewer x:Name="ScrollViewerObject" 

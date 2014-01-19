@@ -2,6 +2,7 @@
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Text;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -26,7 +27,8 @@ namespace ImageViewer
 
         public MainWindow()
         {
-            InitializeComponent();            
+            InitializeComponent();
+            
             RenderOptions.SetBitmapScalingMode(ViewPort, BitmapScalingMode.Fant);
 
             ScrollViewerObject.ScrollChanged += ScrollViewerObject_ScrollChanged;
@@ -91,12 +93,21 @@ namespace ImageViewer
                     CurrentImage.ZoomIn();
                 }
 
-                ScrollViewerObject.ScrollToHorizontalOffset(ScrollViewerObject.ScrollableWidth * 0.5);
-                ScrollViewerObject.ScrollToVerticalOffset(ScrollViewerObject.ScrollableHeight * 0.5);
+                double hZoomTo = e.GetPosition(ScrollViewerObject).Y / ScrollViewerObject.ActualHeight; //0.5;
+                double wZoomTo = e.GetPosition(ScrollViewerObject).X / ScrollViewerObject.ActualWidth;  //0.5;
+                // Current view offset, range [0;1]
+                double hCVO = (ScrollViewerObject.VerticalOffset + ScrollViewerObject.ViewportHeight * hZoomTo) / ScrollViewerObject.ExtentHeight;
+                double wCVO = (ScrollViewerObject.HorizontalOffset + ScrollViewerObject.ViewportWidth * wZoomTo) / ScrollViewerObject.ExtentWidth;
 
+                double hNewOffset = CurrentImage.ResizedSize.Height * hCVO - ScrollViewerObject.ViewportHeight * hZoomTo;
+                double wNewOffset = CurrentImage.ResizedSize.Width * wCVO - ScrollViewerObject.ViewportWidth * wZoomTo;
+
+                ScrollViewerObject.ScrollToVerticalOffset(hNewOffset);
+                ScrollViewerObject.ScrollToHorizontalOffset(wNewOffset);
+                
                 UpdateImageView();
             }
-            //vertical scroll shift
+            //vertical scroll shift — shift buttons are up
             else if (ScrollViewerObject.ComputedVerticalScrollBarVisibility == System.Windows.Visibility.Visible
                         && !(Keyboard.IsKeyDown(Key.LeftShift) || Keyboard.IsKeyDown(Key.RightShift)))
             {
@@ -125,7 +136,7 @@ namespace ImageViewer
 
         protected override void OnPreviewKeyDown(KeyEventArgs e)
         {
-            //Disable speciale handling for ALT
+            //Disable speciale handling for ALT (menu button, change focus)
             if (Keyboard.Modifiers == ModifierKeys.Alt)
             {
                 e.Handled = true;
@@ -168,6 +179,34 @@ namespace ImageViewer
         void ScrollViewerObject_ScrollChanged(object sender, ScrollChangedEventArgs e)
         {
             UpdateWindowPanels();
+        }
+
+        private void Window_KeyDown(object sender, KeyEventArgs e)
+        {
+            #if DEBUG
+            if (e.Key == Key.T)
+            {
+                StringBuilder sb = new StringBuilder();
+                sb.AppendFormat("Image current height x width: {0} x {1}.", CurrentImage.ResizedSize.Height, CurrentImage.ResizedSize.Width);
+                sb.AppendFormat("\nScrollObject current scrolable height x width: {0} x {1}.", ScrollViewerObject.ScrollableHeight, ScrollViewerObject.ScrollableWidth);
+                sb.AppendFormat("\nScrollObject current viewport height x width: {0} x {1}.", ScrollViewerObject.ViewportHeight, ScrollViewerObject.ViewportWidth);
+                sb.AppendFormat("\nScrollObject current offset vertical x horisontal: {0} x {1}.", ScrollViewerObject.VerticalOffset, ScrollViewerObject.HorizontalOffset);
+                sb.AppendFormat("\nScrollObject current extent height x width: {0} x {1}.", ScrollViewerObject.ExtentHeight, ScrollViewerObject.ExtentWidth);
+                sb.AppendFormat("\nScrollObject current actual height x width: {0} x {1}.", ScrollViewerObject.ActualHeight, ScrollViewerObject.ActualWidth);
+                sb.AppendFormat("\nScrollObject current height x width: {0} x {1}.", ScrollViewerObject.Height, ScrollViewerObject.Width);
+
+                double hZoomTo = 0.5;
+                // Current view offset, range [0;1]
+                double hCVO = (ScrollViewerObject.VerticalOffset + ScrollViewerObject.ViewportHeight * hZoomTo) / ScrollViewerObject.ExtentHeight;
+                double hNewOffset = ScrollViewerObject.ExtentHeight * hCVO - ScrollViewerObject.ViewportHeight / 2;
+                //Correction to range [0; ScrollViewerObject.ScrollableHeight]
+                //hNewOffset = (hNewOffset < 0) ? 0 : (hNewOffset > ScrollViewerObject.ScrollableHeight) ? ScrollViewerObject.ScrollableHeight : hNewOffset;
+
+                sb.AppendFormat("\n\nCurrent hCVO, hNewOffset: {0}, {1}.", hCVO, hNewOffset);
+
+                MessageBox.Show(sb.ToString());
+            }
+            #endif
         }
 
         #endregion //Event handlers
