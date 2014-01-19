@@ -229,10 +229,17 @@ namespace ImageViewer
 
                 _imageList = new LocalImageList(files.ToArray(), fname);
             }
+            #if DEBUG
             else
             {
-                _imageList = new LocalImageList(Directory.GetFiles(@"c:\Users\oniii-chan\Downloads\DLS\art\", "*.*"));
+                var files =
+                    from file in Directory.GetFiles((new DirectoryInfo(@"c:\Users\oniii-chan\Downloads\DLS\art\loli\")).FullName, "*.*")
+                    where IsImage(file)
+                    select file;
+
+                _imageList = new LocalImageList(files.ToArray());
             }
+            #endif
         }
 
         private void UpdateImageView()
