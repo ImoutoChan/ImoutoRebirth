@@ -4,11 +4,11 @@ using System.Diagnostics;
 
 namespace ImageViewer.ViewModel
 {
-    class ViewModelBase : INotifyPropertyChanged
+    class VMBase : INotifyPropertyChanged
     {
         #region Constructors
 
-        protected ViewModelBase() { }
+        protected VMBase() { }
 
         #endregion //Constructors
 

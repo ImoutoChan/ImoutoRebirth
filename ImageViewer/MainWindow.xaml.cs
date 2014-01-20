@@ -36,7 +36,7 @@ namespace ImageViewer
 
             ScrollViewerObject.ScrollChanged += ScrollViewerObject_ScrollChanged;
 
-            ImageListInit();
+            //ImageListInit();
         }
 
         #endregion //Constructors
@@ -47,7 +47,7 @@ namespace ImageViewer
         {
             get
             {
-                return _imageList.CurrentImage;
+                return null;
             }
         }
 
@@ -145,18 +145,18 @@ namespace ImageViewer
                 ScrollViewerObject.ScrollToVerticalOffset(offset + ScrollViewerObject.VerticalOffset);
             }
             //next image
-            else
-            {
-                if (e.Delta < 0)
-                {
-                    _imageList.Next();
-                }
-                else
-                {                        
-                    _imageList.Previous();
-                }
-                UpdateImageView();
-            }
+            //else
+            //{
+            //    if (e.Delta < 0)
+            //    {
+            //        _imageList.Next();
+            //    }
+            //    else
+            //    {                        
+            //        _imageList.Previous();
+            //    }
+            //    UpdateImageView();
+            //}
         }
 
         private void Window_SizeChanged(object sender, SizeChangedEventArgs e)
@@ -336,26 +336,26 @@ namespace ImageViewer
         {
             try
             {
-                CurrentImage.Resize(new Size(Client.ActualWidth, Client.ActualHeight), _currentResizeType);
+                //CurrentImage.Resize(new Size(Client.ActualWidth, Client.ActualHeight), _currentResizeType);
 
-                ViewPort.BeginInit();
+                //ViewPort.BeginInit();
 
-                ViewPort.Height = CurrentImage.ResizedSize.Height;
-                ViewPort.Width = CurrentImage.ResizedSize.Width;
+                //ViewPort.Height = CurrentImage.ResizedSize.Height;
+                //ViewPort.Width = CurrentImage.ResizedSize.Width;
 
-                if (CurrentImage.ImageFormat == ImageFormat.GIF)
-                {
-                    ViewPort.Source = null;
-                    ImageBehavior.SetAnimatedSource(ViewPort, CurrentImage.Image);
-                }
-                else
-                {
-                    ImageBehavior.SetAnimatedSource(ViewPort, null);
-                    ViewPort.Source = CurrentImage.Image;
-                }
-                ViewPort.EndInit();
+                //if (CurrentImage.ImageFormat == ImageFormat.GIF)
+                //{
+                //    ViewPort.Source = null;
+                //    ImageBehavior.SetAnimatedSource(ViewPort, CurrentImage.Image);
+                //}
+                //else
+                //{
+                //    ImageBehavior.SetAnimatedSource(ViewPort, null);
+                //    ViewPort.Source = CurrentImage.Image;
+                //}
+                //ViewPort.EndInit();
 
-                this.Title = String.Format("{1} / {2} | File: {0}", CurrentImage.Name, _imageList.CurrentImageIndex + 1, _imageList.Count);
+                //this.Title = String.Format("{1} / {2} | File: {0}", CurrentImage.Name, _imageList.CurrentImageIndex + 1, _imageList.Count);
             }
             catch {
                 //throw;

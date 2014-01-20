@@ -1,4 +1,5 @@
-﻿using System.Windows;
+﻿using ImageViewer.ViewModel;
+using System.Windows;
 
 namespace ImageViewer
 {
@@ -9,10 +10,15 @@ namespace ImageViewer
     {
         protected override void OnStartup(StartupEventArgs e)
         {
+            //Get the arguments
             if (e.Args != null && e.Args.Length > 0)
             {
                 this.Properties["ArbitraryArgName"] = e.Args[0];
             }
+
+            //Start the main window
+            MainWindowVM mainWindowVM = new MainWindowVM();
+
             base.OnStartup(e);
         }
     }

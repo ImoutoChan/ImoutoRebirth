@@ -4,12 +4,14 @@
         xmlns:local="clr-namespace:ImageViewer"
         xmlns:gif="http://wpfanimatedgif.codeplex.com"
         xmlns:Controls="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
-        Title="MainWindow" 
+        xmlns:localControls="clr-namespace:ImageViewer.UserControls"
+        Title="{Binding Path=Title}" 
         Height="350" 
         Width="525"         
         WindowStyle="SingleBorderWindow"
         WindowStartupLocation="CenterScreen" 
-        WindowState="Maximized"
+        WindowState="Maximized"                      
+        BorderThickness="2"
         gif:ImageBehavior.AnimateInDesignMode="True"
         PreviewMouseWheel="Window_MouseWheel" 
         SizeChanged="Window_SizeChanged"
@@ -18,8 +20,13 @@
         Drop="Window_Drop"
         AllowDrop="True"
         MouseMove="Window_MouseMove"
-        BorderThickness="2"
         >
+    <Controls:MetroWindow.InputBindings>
+        <MouseBinding Command="{Binding NextImageCommand}" 
+                      Gesture="{x:Static localControls:MouseWheelGesture.Down}" />
+        <MouseBinding Command="{Binding PrevImageCommand}"
+                      Gesture="{x:Static localControls:MouseWheelGesture.Up}" />
+    </Controls:MetroWindow.InputBindings>
     <Controls:MetroWindow.WindowCommands>
         <Controls:WindowCommands>
             <Button Content="settings"/>
@@ -32,9 +39,12 @@
                                >
             <Grid PreviewMouseDown="Grid_PreviewMouseDown"
                   PreviewMouseUp="Grid_PreviewMouseUp">
-                <Image x:Name="ViewPort"  
-                       VerticalAlignment="Center" 
-                       HorizontalAlignment="Center" 
+                <Image x:Name="ViewPort"
+                       VerticalAlignment="Center"
+                       HorizontalAlignment="Center"
+                       Height="{Binding Path=ViewportHeight}"
+                       Width="{Binding Path=ViewportWidth}"
+                       Source="{Binding Path=Image}"
                        />
             </Grid>
         </local:ExtScrollViewer>
