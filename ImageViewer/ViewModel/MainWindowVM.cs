@@ -18,6 +18,7 @@ namespace ImageViewer.ViewModel
         private MainWindow _mainWindowView;
         private LocalImageList _imageList;
         private ResizeType _currentResizeType = ResizeType.Default;
+        private Visibility _verticalScrollVisibility;
 
         #endregion //Fields
         
@@ -25,6 +26,8 @@ namespace ImageViewer.ViewModel
 
         public MainWindowVM()
         {
+            IsSimpleWheelNavigationEnable = true;
+
             _mainWindowView = new MainWindow();
             _mainWindowView.DataContext = this;
             _mainWindowView.SizeChanged += _mainWindowView_SizeChanged;
@@ -52,7 +55,7 @@ namespace ImageViewer.ViewModel
         {
             get
             {
-                return String.Format("{1} / {2} | File: {0}", _imageList.CurrentImage.Name, _imageList.CurrentImageIndex + 1, _imageList.Count);
+                return String.Format("{1} / {2} | File: {0}", CurrentLocalImage.Name, _imageList.CurrentImageIndex + 1, _imageList.Count);
             }
         }
 
@@ -60,7 +63,7 @@ namespace ImageViewer.ViewModel
         {
             get
             {
-                if (_imageList.CurrentImage.ImageFormat == ImageFormat.GIF)
+                if (CurrentLocalImage.ImageFormat == ImageFormat.GIF)
                 {
                     return null;
                 }
@@ -86,6 +89,8 @@ namespace ImageViewer.ViewModel
                 return CurrentLocalImage.ResizedSize.Width;
             }
         }
+
+        public bool IsSimpleWheelNavigationEnable { get; set; }
 
         #endregion //Properties
 
@@ -153,13 +158,45 @@ namespace ImageViewer.ViewModel
 
         #region Commands
 
+        public ICommand SimpleNextImageCommand { get; private set; }
+        public ICommand SimplePrevImageCommand { get; private set; }
         public ICommand NextImageCommand { get; private set; }
         public ICommand PrevImageCommand { get; private set; }
+        public ICommand ZoomInCommand { get; private set; }
+        public ICommand ZoomOutCommand { get; private set; }
+
+        /// <summary>
+        /// Rotation the image. In CommandParameter as string send: 
+        /// "right" to rotate image on 90 deg right; 
+        /// "left to rotate image on -90 deg left.
+        /// </summary>
+        public ICommand RotateCommand { get; private set; }
 
         private void InitializeCommands()
         {
+            SimpleNextImageCommand = new RelayCommand(param => 
+                {
+                    if (IsSimpleWheelNavigationEnable)
+                    {
+                        NextImage();
+                    }
+                });
+
+            SimplePrevImageCommand = new RelayCommand(param =>
+                {
+                    if (IsSimpleWheelNavigationEnable)
+                    {
+                        PrevImage();
+                    }
+                });
+
             NextImageCommand = new RelayCommand(param => NextImage());
             PrevImageCommand = new RelayCommand(param => PrevImage());
+
+            ZoomInCommand = new RelayCommand(param => ZoomIn());
+            ZoomOutCommand = new RelayCommand(param => ZoomOut());
+
+            RotateCommand = new RelayCommand(param => Rotate(param));
         }
 
         #endregion //Commands
@@ -175,6 +212,34 @@ namespace ImageViewer.ViewModel
         private void PrevImage()
         {
             _imageList.Previous();
+            UpdateView();
+        }
+
+        private void ZoomIn()
+        {
+            CurrentLocalImage.ZoomIn();
+            UpdateView();
+        }
+
+        private void ZoomOut()
+        {
+            CurrentLocalImage.ZoomOut();
+            UpdateView();
+        }
+
+        private void Rotate(object param)
+        {
+            switch (param as string)
+            {
+                case "left":
+                    CurrentLocalImage.RotateLeft();
+                    break;
+                case "right":
+                    CurrentLocalImage.RotateRight();
+                    break;
+                default:
+                    break;
+            }
             UpdateView();
         }
 

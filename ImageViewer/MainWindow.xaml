@@ -22,10 +22,24 @@
         MouseMove="Window_MouseMove"
         >
     <Controls:MetroWindow.InputBindings>
-        <MouseBinding Command="{Binding NextImageCommand}" 
+        <MouseBinding Command="{Binding SimpleNextImageCommand}" 
                       Gesture="{x:Static localControls:MouseWheelGesture.Down}" />
-        <MouseBinding Command="{Binding PrevImageCommand}"
+        <MouseBinding Command="{Binding SimplePrevImageCommand}"
                       Gesture="{x:Static localControls:MouseWheelGesture.Up}" />
+        <MouseBinding Command="{Binding NextImageCommand}" 
+                      Gesture="{x:Static localControls:MouseWheelGesture.ShiftDown}" />
+        <MouseBinding Command="{Binding PrevImageCommand}"
+                      Gesture="{x:Static localControls:MouseWheelGesture.ShiftUp}" />
+        <MouseBinding Command="{Binding ZoomOutCommand}" 
+                      Gesture="{x:Static localControls:MouseWheelGesture.CtrlDown}" />
+        <MouseBinding Command="{Binding ZoomInCommand}"
+                      Gesture="{x:Static localControls:MouseWheelGesture.CtrlUp}" />
+        <KeyBinding Command="{Binding RotateCommand}" 
+                    CommandParameter="left"
+                    Key="L" />
+        <KeyBinding Command="{Binding RotateCommand}" 
+                    CommandParameter="right"
+                    Key="R" />
     </Controls:MetroWindow.InputBindings>
     <Controls:MetroWindow.WindowCommands>
         <Controls:WindowCommands>

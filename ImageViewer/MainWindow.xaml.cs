@@ -1,4 +1,5 @@
 ﻿using ImageViewer.Model;
+using ImageViewer.ViewModel;
 using System;
 using System.Globalization;
 using System.IO;
@@ -19,7 +20,6 @@ namespace ImageViewer
     {
         #region Fields
 
-        private LocalImageList _imageList;
         private ResizeType _currentResizeType = ResizeType.Default;
         private Point _leftDownPosition = new Point(0,0);
         private Point _rightDownPosition = new Point(0,0);
@@ -86,7 +86,7 @@ namespace ImageViewer
                 if (Math.Abs(diffL.X) < SystemParameters.MinimumHorizontalDragDistance
                     && Math.Abs(diffL.Y) < SystemParameters.MinimumVerticalDragDistance)
                 {
-                    _imageList.Next();
+                    //_imageList.Next();
                 }
             }
             else if (e.ChangedButton == MouseButton.Right)
@@ -94,7 +94,7 @@ namespace ImageViewer
                  if (Math.Abs(diffR.X) < SystemParameters.MinimumHorizontalDragDistance 
                     && Math.Abs(diffR.Y) < SystemParameters.MinimumVerticalDragDistance)
                 {
-                    _imageList.Previous();
+                    //_imageList.Previous();
                 }
             }
 
@@ -114,28 +114,28 @@ namespace ImageViewer
             //zoom — ctrl+wheel
             else if (Keyboard.IsKeyDown(Key.LeftCtrl) || Keyboard.IsKeyDown(Key.RightCtrl))
             {
-                if (e.Delta < 0)
-                {
-                    CurrentImage.ZoomOut();
-                }
-                else
-                {                        
-                    CurrentImage.ZoomIn();
-                }
+                //if (e.Delta < 0)
+                //{
+                //    CurrentImage.ZoomOut();
+                //}
+                //else
+                //{                        
+                //    CurrentImage.ZoomIn();
+                //}
 
-                double hZoomTo = e.GetPosition(ScrollViewerObject).Y / ScrollViewerObject.ActualHeight; //0.5;
-                double wZoomTo = e.GetPosition(ScrollViewerObject).X / ScrollViewerObject.ActualWidth;  //0.5;
-                // Current view offset, range [0;1]
-                double hCVO = (ScrollViewerObject.VerticalOffset + ScrollViewerObject.ViewportHeight * hZoomTo) / ScrollViewerObject.ExtentHeight;
-                double wCVO = (ScrollViewerObject.HorizontalOffset + ScrollViewerObject.ViewportWidth * wZoomTo) / ScrollViewerObject.ExtentWidth;
+                //double hZoomTo = e.GetPosition(ScrollViewerObject).Y / ScrollViewerObject.ActualHeight; //0.5;
+                //double wZoomTo = e.GetPosition(ScrollViewerObject).X / ScrollViewerObject.ActualWidth;  //0.5;
+                //// Current view offset, range [0;1]
+                //double hCVO = (ScrollViewerObject.VerticalOffset + ScrollViewerObject.ViewportHeight * hZoomTo) / ScrollViewerObject.ExtentHeight;
+                //double wCVO = (ScrollViewerObject.HorizontalOffset + ScrollViewerObject.ViewportWidth * wZoomTo) / ScrollViewerObject.ExtentWidth;
 
-                double hNewOffset = CurrentImage.ResizedSize.Height * hCVO - ScrollViewerObject.ViewportHeight * hZoomTo;
-                double wNewOffset = CurrentImage.ResizedSize.Width * wCVO - ScrollViewerObject.ViewportWidth * wZoomTo;
+                //double hNewOffset = CurrentImage.ResizedSize.Height * hCVO - ScrollViewerObject.ViewportHeight * hZoomTo;
+                //double wNewOffset = CurrentImage.ResizedSize.Width * wCVO - ScrollViewerObject.ViewportWidth * wZoomTo;
 
-                ScrollViewerObject.ScrollToVerticalOffset(hNewOffset);
-                ScrollViewerObject.ScrollToHorizontalOffset(wNewOffset);
+                //ScrollViewerObject.ScrollToVerticalOffset(hNewOffset);
+                //ScrollViewerObject.ScrollToHorizontalOffset(wNewOffset);
                 
-                UpdateImageView();
+                //UpdateImageView();
             }
             //vertical scroll shift — shift buttons are up
             else if (ScrollViewerObject.ComputedVerticalScrollBarVisibility == System.Windows.Visibility.Visible
@@ -208,6 +208,7 @@ namespace ImageViewer
 
         private void ScrollViewerObject_ScrollChanged(object sender, ScrollChangedEventArgs e)
         {
+            (this.DataContext as MainWindowVM).IsSimpleWheelNavigationEnable = (this.ScrollViewerObject.ComputedVerticalScrollBarVisibility != System.Windows.Visibility.Visible);
             UpdateWindowPanels();
         }
 
@@ -238,16 +239,16 @@ namespace ImageViewer
             }
             #endif
 
-            if (e.Key == Key.L)
-            {
-                CurrentImage.RotateLeft();
-                UpdateImageView();
-            }
-            if (e.Key == Key.R)
-            {
-                CurrentImage.RotateRight();
-                UpdateImageView();
-            }
+            //if (e.Key == Key.L)
+            //{
+            //    CurrentImage.RotateLeft();
+            //    UpdateImageView();
+            //}
+            //if (e.Key == Key.R)
+            //{
+            //    CurrentImage.RotateRight();
+            //    UpdateImageView();
+            //}
         }
 
         private void Window_Drop(object sender, DragEventArgs e)
@@ -271,12 +272,12 @@ namespace ImageViewer
                         where IsImage(file)
                         select file;
 
-                    _imageList = new LocalImageList(files.ToArray(), imageFiles.First());
+                    //_imageList = new LocalImageList(files.ToArray(), imageFiles.First());
                 }
                 else if (imageFiles.Count() > 0)
                 {
                     //Load only dropped images
-                    _imageList = new LocalImageList(imageFiles.ToArray());
+                   // _imageList = new LocalImageList(imageFiles.ToArray());
                 }
             }
             UpdateImageView();
@@ -303,34 +304,34 @@ namespace ImageViewer
 
         #region Methods
 
-        private void ImageListInit()
-        {
-            if (Application.Current.Properties["ArbitraryArgName"] != null)
-            {
-                string fname = Application.Current.Properties["ArbitraryArgName"].ToString();
-                //MessageBox.Show(fname);
-                FileInfo fi = new FileInfo(fname);
-                DirectoryInfo di = fi.Directory;
+        //private void ImageListInit()
+        //{
+        //    if (Application.Current.Properties["ArbitraryArgName"] != null)
+        //    {
+        //        string fname = Application.Current.Properties["ArbitraryArgName"].ToString();
+        //        //MessageBox.Show(fname);
+        //        FileInfo fi = new FileInfo(fname);
+        //        DirectoryInfo di = fi.Directory;
 
-                var files =
-                    from file in Directory.GetFiles(di.FullName, "*.*")
-                    where IsImage(file)
-                    select file;
+        //        var files =
+        //            from file in Directory.GetFiles(di.FullName, "*.*")
+        //            where IsImage(file)
+        //            select file;
 
-                _imageList = new LocalImageList(files.ToArray(), fname);
-            }
-            #if DEBUG
-            else
-            {
-                var files =
-                    from file in Directory.GetFiles((new DirectoryInfo(@"c:\Users\oniii-chan\Downloads\DLS\art\loli\")).FullName, "*.*")
-                    where IsImage(file)
-                    select file;
+        //        _imageList = new LocalImageList(files.ToArray(), fname);
+        //    }
+        //    #if DEBUG
+        //    else
+        //    {
+        //        var files =
+        //            from file in Directory.GetFiles((new DirectoryInfo(@"c:\Users\oniii-chan\Downloads\DLS\art\loli\")).FullName, "*.*")
+        //            where IsImage(file)
+        //            select file;
 
-                _imageList = new LocalImageList(files.ToArray());
-            }
-            #endif
-        }
+        //        _imageList = new LocalImageList(files.ToArray());
+        //    }
+        //    #endif
+        //}
 
         private void UpdateImageView()
         {
@@ -357,7 +358,8 @@ namespace ImageViewer
 
                 //this.Title = String.Format("{1} / {2} | File: {0}", CurrentImage.Name, _imageList.CurrentImageIndex + 1, _imageList.Count);
             }
-            catch {
+            catch
+            {
                 //throw;
                 //_imageList.OnLoadError();
                 //UpdateImageView();

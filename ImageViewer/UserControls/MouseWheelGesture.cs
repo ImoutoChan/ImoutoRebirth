@@ -38,6 +38,38 @@ namespace ImageViewer.UserControls
             }
         }
 
+        public static MouseWheelGesture AltUp
+        {
+            get
+            {
+                return new MouseWheelGesture(ModifierKeys.Alt) { Direction = WheelDirection.Up };
+            }
+        }
+
+        public static MouseWheelGesture AltDown
+        {
+            get
+            {
+                return new MouseWheelGesture(ModifierKeys.Alt) { Direction = WheelDirection.Down };
+            }
+        }
+
+        public static MouseWheelGesture ShiftUp
+        {
+            get
+            {
+                return new MouseWheelGesture(ModifierKeys.Shift) { Direction = WheelDirection.Up };
+            }
+        }
+
+        public static MouseWheelGesture ShiftDown
+        {
+            get
+            {
+                return new MouseWheelGesture(ModifierKeys.Shift) { Direction = WheelDirection.Down };
+            }
+        }
+
         public MouseWheelGesture()
             : base(MouseAction.WheelClick)
         {
