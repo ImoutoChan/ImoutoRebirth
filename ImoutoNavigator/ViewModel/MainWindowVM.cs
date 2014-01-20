@@ -1,7 +1,6 @@
-﻿using System.Threading.Tasks;
-using ImoutoNavigator.Commands;
+﻿using ImoutoNavigator.Commands;
+using ImoutoNavigator.Database;
 using ImoutoNavigator.Model;
-using ImoutoNavigator.Utils;
 using System;
 using System.Collections.ObjectModel;
 using System.IO;
@@ -13,8 +12,6 @@ namespace ImoutoNavigator.ViewModel
 {
     class MainWindowVM : VMBase
     {
-        private static ThreadQueue _previewUpdateThreadQueue = new ThreadQueue();
-
         #region Fields
 
         private int _previewSide = 256;
@@ -90,12 +87,12 @@ namespace ImoutoNavigator.ViewModel
         private void GetImageList()
         {
             _imageList = new ObservableCollection<ImageEntryVM>(
-                Directory.GetFiles(@"c:\Users\oniii-chan\Downloads\DLS\art\")
+                Directory.GetFiles(@"c:\Users\oniii-chan\Downloads\DLS\")
                     .Where(ImageEntry.IsImage)
                     .Select(x =>
                     {
                         var im = new ImageEntryVM(x, PreviewSize);
-                        im.ImageEntryChanged += im_ImageChanged;
+                        //im.ImageEntryChanged += im_ImageChanged;
                         return im;
                     })
                     .ToList()
@@ -110,13 +107,9 @@ namespace ImoutoNavigator.ViewModel
 
         private void UpdatePreviews()
         {
-
-            //Parallel.ForEach(_imageList, imageEntry => imageEntry.UpdatePreview(PreviewSize));
-            //_previewUpdateThreadQueue.ClearQueue();
             foreach (var imageEntry in _imageList)
             {
                 imageEntry.UpdatePreview(PreviewSize);
-                //_previewUpdateThreadQueue.Add(() => imageEntry.UpdatePreview(PreviewSize));
             }
 
             LoadPreviews();
@@ -130,6 +123,8 @@ namespace ImoutoNavigator.ViewModel
             {
                 imageEntry.Load();
             }
+
+            var test = new TagsDBWork();
         }
 
         #endregion //Methods
@@ -139,10 +134,6 @@ namespace ImoutoNavigator.ViewModel
         private void _view_Loaded(object sender, RoutedEventArgs e)
         {
             Reload();
-        }
-
-        private void im_ImageChanged(object sender, EventArgs e)
-        {
         }
 
         #endregion //Event handlers
