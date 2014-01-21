@@ -3,13 +3,16 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
         xmlns:local="clr-namespace:ImageViewer"
+        xmlns:localControls="clr-namespace:ImageViewer.UserControls"
+        xmlns:behavior="clr-namespace:ImageViewer.Behavior"                      
+        xmlns:Converters="clr-namespace:ImageViewer.Converters"
+        xmlns:localModel="clr-namespace:ImageViewer.Model"
         xmlns:gif="http://wpfanimatedgif.codeplex.com"
         xmlns:Controls="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
-        xmlns:localControls="clr-namespace:ImageViewer.UserControls"
-        xmlns:behavior="clr-namespace:ImageViewer.Behavior"
         xmlns:Behaviours="clr-namespace:MahApps.Metro.Behaviours;assembly=MahApps.Metro"
-        xmlns:Converters="clr-namespace:ImageViewer.Converters"
+        xmlns:System="clr-namespace:System;assembly=mscorlib"
         Title="{Binding Path=Title}" 
+        GlowBrush="RosyBrown"
         Height="350" 
         Width="525"
         BorderThickness="2"
@@ -18,8 +21,6 @@
         WindowState="Maximized"
         gif:ImageBehavior.AnimateInDesignMode="True"
         PreviewMouseWheel="Window_MouseWheel"
-        Loaded="Window_Loaded"        
-        KeyDown="Window_KeyDown"
         >
     <Controls:MetroWindow.InputBindings>
         <MouseBinding Command="{Binding SimpleNextImageCommand}" 
@@ -43,7 +44,7 @@
     </Controls:MetroWindow.InputBindings>
     <Controls:MetroWindow.WindowCommands>
         <Controls:WindowCommands>
-            <Button Content="settings"/>
+            <Button Content="SETTINGS" Click="Button_Click"/>
         </Controls:WindowCommands>
     </Controls:MetroWindow.WindowCommands>
     <i:Interaction.Behaviors>
@@ -53,11 +54,41 @@
     <Controls:MetroWindow.Resources>
         <Converters:VisibilityConverter x:Key="visibilityConverter"/>
         <Converters:VisibilityConverter x:Key="visibilityInvertConverter" IsInvert="True"/>
+        <ObjectDataProvider x:Key="ResizeTypesList" MethodName="GetValues"
+                            ObjectType="{x:Type System:Enum}">
+            <ObjectDataProvider.MethodParameters>
+                <x:Type TypeName="localModel:ResizeType"/>
+            </ObjectDataProvider.MethodParameters>
+        </ObjectDataProvider>
     </Controls:MetroWindow.Resources>
+    <Controls:MetroWindow.Flyouts>
+        <Controls:FlyoutsControl>
+            <Controls:Flyout x:Name="SettingFlyout" Width="250" 
+                             Header="Settings" Position="Right"
+                             DataContext="{Binding Path=Settings}">
+                <Grid Margin="20">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="*" />
+                        <RowDefinition Height="Auto" />
+                    </Grid.RowDefinitions>
+                    <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto">
+                        <StackPanel Orientation="Vertical">
+                            <TextBlock Text="Resize type" Margin="0,0,0,5"/>
+                            <ComboBox ItemsSource="{Binding Path=ResizeTypes}"
+                                      SelectedItem="{Binding Path=SelectedResizeType}"
+                                      />
+                        </StackPanel>
+                    </ScrollViewer>
+                </Grid>
+            </Controls:Flyout>
+        </Controls:FlyoutsControl>
+    </Controls:MetroWindow.Flyouts>
     <Grid x:Name="Client" >
         <local:ExtScrollViewer x:Name="ScrollViewerObject" 
                                HorizontalScrollBarVisibility="Auto" 
                                VerticalScrollBarVisibility="Auto"
+                               ScrollChanged="ScrollViewerObject_ScrollChanged"
                                >
             <Grid>
                 <Image x:Name="AnimutedViewPort"
@@ -88,48 +119,5 @@
                 </Image>
             </Grid>
         </local:ExtScrollViewer>
-        <DockPanel LastChildFill="False">
-            <StackPanel Orientation="Horizontal" 
-                        DockPanel.Dock="Bottom" 
-                        HorizontalAlignment="Center"
-                        Style="{StaticResource ActionBar}" >
-                <Label Content="A" 
-                       FontSize="60" 
-                       />
-            </StackPanel>
-            <StackPanel x:Name="ResizePanel"
-                        DockPanel.Dock="Top"
-                        HorizontalAlignment="Right"
-                        Orientation="Horizontal" 
-                        TextElement.FontSize="40"
-                        Style="{StaticResource ActionBar}"
-                        >
-                <Label x:Name="LResizeFitVP" 
-                       Content="FVP"
-                       ToolTip="Fit to screen"
-                       MouseLeftButtonDown="Label_MouseLeftButtonDown"
-                       Style="{StaticResource LabelTransButton}"/>
-                <Label x:Name="LResizeDownVP"
-                       Content="DVP"
-                       ToolTip="Downscale only to screen"
-                       MouseLeftButtonDown="Label_MouseLeftButtonDown"
-                       Style="{StaticResource LabelTransButton}"/>
-                <Label x:Name="LResizeFitW"
-                       Content="FW"
-                       ToolTip="Fit to screen width"
-                       MouseLeftButtonDown="Label_MouseLeftButtonDown"
-                       Style="{StaticResource LabelTransButton}"/>
-                <Label x:Name="LResizeDownW"
-                       Content="DW"
-                       ToolTip="Downscale only to screen width"
-                       MouseLeftButtonDown="Label_MouseLeftButtonDown"
-                       Style="{StaticResource LabelTransButton}"/>
-                <Label x:Name="LResizeNoResize"
-                       Content="NR"
-                       ToolTip="No resize"
-                       MouseLeftButtonDown="Label_MouseLeftButtonDown"
-                       Style="{StaticResource LabelTransButton}"/>
-            </StackPanel>
-        </DockPanel>
     </Grid>
 </Controls:MetroWindow>

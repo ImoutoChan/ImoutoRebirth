@@ -73,6 +73,7 @@
     <Compile Include="UserControls\MouseWheelGesture.cs" />
     <Compile Include="UserControls\UserImage.cs" />
     <Compile Include="ViewModel\MainWindowVM.cs" />
+    <Compile Include="ViewModel\SettingsVM.cs" />
     <Compile Include="ViewModel\VMBase.cs" />
     <Page Include="AppResourceDictionary.xaml">
       <SubType>Designer</SubType>

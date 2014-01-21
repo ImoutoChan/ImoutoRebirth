@@ -19,8 +19,8 @@ namespace ImageViewer.ViewModel
 
         private MainWindow _mainWindowView;
         private LocalImageList _imageList;
-        private ResizeType _currentResizeType = ResizeType.FitToViewPort;
-        private Visibility _verticalScrollVisibility;
+        private SettingsVM _settings;
+
 
         #endregion //Fields
         
@@ -28,7 +28,7 @@ namespace ImageViewer.ViewModel
 
         public MainWindowVM()
         {
-            IsSimpleWheelNavigationEnable = true;
+            IsSimpleWheelNavigationEnable = true;            
 
             _mainWindowView = new MainWindow();
             _mainWindowView.DataContext = this;
@@ -36,6 +36,7 @@ namespace ImageViewer.ViewModel
 
             InitializeImageList();
             InitializeCommands();
+            InitializeSettings();
 
             _mainWindowView.Show();
         }
@@ -48,7 +49,7 @@ namespace ImageViewer.ViewModel
         {
             get
             {
-                _imageList.CurrentImage.Resize(_mainWindowView.Client.RenderSize, _currentResizeType);
+                _imageList.CurrentImage.Resize(_mainWindowView.Client.RenderSize, Settings.SelectedResizeType.Type);
                 return _imageList.CurrentImage;
             }
         }
@@ -117,9 +118,36 @@ namespace ImageViewer.ViewModel
 
         public bool IsSimpleWheelNavigationEnable { get; set; }
 
+        //public ResizeType CurrentResizeType
+        //{
+        //    get
+        //    {
+        //        return _currentResizeType;
+        //    }
+        //    set
+        //    {
+        //        _currentResizeType = value;
+        //        UpdateView();
+        //    }
+        //}
+
+        public SettingsVM Settings
+        {
+            get
+            {
+                return _settings;
+            }
+        }
+
         #endregion //Properties
 
         #region Methods
+
+        private void InitializeSettings()
+        {
+            _settings = new SettingsVM();
+            _settings.SelectedResizeTypeChanged += _settings_SelectedResizeTypeChanged;
+        }
 
         private void InitializeImageList()
         {
@@ -277,6 +305,11 @@ namespace ImageViewer.ViewModel
         private void _mainWindowView_SizeChanged(object sender, SizeChangedEventArgs e)
         {
             UpdateView(); ///???
+        }
+
+        void _settings_SelectedResizeTypeChanged(object sender, EventArgs e)
+        {
+            UpdateView();
         }
 
         #endregion //Event handlers

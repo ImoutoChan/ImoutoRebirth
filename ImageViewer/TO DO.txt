@@ -19,3 +19,4 @@
 ____________________________________________________________________________________
 port:
 --animuted (new image element?), animated switch?
+--statusbar
