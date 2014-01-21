@@ -64,8 +64,14 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Behavior\FrameworkElementDragBehavior.cs" />
+    <Compile Include="Behavior\FrameworkElementDropBehavior.cs" />
+    <Compile Include="Behavior\IDragable.cs" />
+    <Compile Include="Behavior\IDropable.cs" />
     <Compile Include="Commands\RelayCommand.cs" />
+    <Compile Include="Convertors\VisibilityConverter.cs" />
     <Compile Include="UserControls\MouseWheelGesture.cs" />
+    <Compile Include="UserControls\UserImage.cs" />
     <Compile Include="ViewModel\MainWindowVM.cs" />
     <Compile Include="ViewModel\VMBase.cs" />
     <Page Include="AppResourceDictionary.xaml">

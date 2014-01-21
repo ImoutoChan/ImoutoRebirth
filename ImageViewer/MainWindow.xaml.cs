@@ -21,8 +21,6 @@ namespace ImageViewer
         #region Fields
 
         private ResizeType _currentResizeType = ResizeType.Default;
-        private Point _leftDownPosition = new Point(0,0);
-        private Point _rightDownPosition = new Point(0,0);
 
         #endregion //Fields
 
@@ -43,13 +41,13 @@ namespace ImageViewer
 
         #region Properties
 
-        private LocalImage CurrentImage
-        {
-            get
-            {
-                return null;
-            }
-        }
+        //private LocalImage CurrentImage
+        //{
+        //    get
+        //    {
+        //        return null;
+        //    }
+        //}
 
         #endregion //Properties
 
@@ -57,111 +55,24 @@ namespace ImageViewer
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
-            UpdateImageView();
+            //UpdateImageView();
             MarkSelectedItems();
-        }
-
-        private void Grid_PreviewMouseDown(object sender, MouseButtonEventArgs e)
-        {
-            Point currentMousePosition = e.GetPosition(null);
-
-            if (e.ChangedButton == MouseButton.Left)
-            {
-                _leftDownPosition = currentMousePosition;
-            }
-            else if (e.ChangedButton == MouseButton.Right)
-            {
-                _rightDownPosition = currentMousePosition;
-            }
-        }
-
-        private void Grid_PreviewMouseUp(object sender, MouseButtonEventArgs e)
-        {
-            Point currentMousePosition = e.GetPosition(null);
-            Vector diffL = currentMousePosition - _leftDownPosition;
-            Vector diffR = currentMousePosition - _rightDownPosition;
-
-            if (e.ChangedButton == MouseButton.Left)
-            {
-                if (Math.Abs(diffL.X) < SystemParameters.MinimumHorizontalDragDistance
-                    && Math.Abs(diffL.Y) < SystemParameters.MinimumVerticalDragDistance)
-                {
-                    //_imageList.Next();
-                }
-            }
-            else if (e.ChangedButton == MouseButton.Right)
-            {
-                 if (Math.Abs(diffR.X) < SystemParameters.MinimumHorizontalDragDistance 
-                    && Math.Abs(diffR.Y) < SystemParameters.MinimumVerticalDragDistance)
-                {
-                    //_imageList.Previous();
-                }
-            }
-
-            UpdateImageView();
         }
         
         private void Window_MouseWheel(object sender, MouseWheelEventArgs e)
         {
-
-            //horizontal scroll shift — alt+wheel
             if (ScrollViewerObject.ComputedHorizontalScrollBarVisibility == System.Windows.Visibility.Visible
                 && (Keyboard.IsKeyDown(Key.LeftAlt) || Keyboard.IsKeyDown(Key.RightAlt)))
             {
                 double offset = (e.Delta < 0) ? 20 : -20;
                 ScrollViewerObject.ScrollToHorizontalOffset(offset + ScrollViewerObject.HorizontalOffset);
             }
-            //zoom — ctrl+wheel
-            else if (Keyboard.IsKeyDown(Key.LeftCtrl) || Keyboard.IsKeyDown(Key.RightCtrl))
-            {
-                //if (e.Delta < 0)
-                //{
-                //    CurrentImage.ZoomOut();
-                //}
-                //else
-                //{                        
-                //    CurrentImage.ZoomIn();
-                //}
-
-                //double hZoomTo = e.GetPosition(ScrollViewerObject).Y / ScrollViewerObject.ActualHeight; //0.5;
-                //double wZoomTo = e.GetPosition(ScrollViewerObject).X / ScrollViewerObject.ActualWidth;  //0.5;
-                //// Current view offset, range [0;1]
-                //double hCVO = (ScrollViewerObject.VerticalOffset + ScrollViewerObject.ViewportHeight * hZoomTo) / ScrollViewerObject.ExtentHeight;
-                //double wCVO = (ScrollViewerObject.HorizontalOffset + ScrollViewerObject.ViewportWidth * wZoomTo) / ScrollViewerObject.ExtentWidth;
-
-                //double hNewOffset = CurrentImage.ResizedSize.Height * hCVO - ScrollViewerObject.ViewportHeight * hZoomTo;
-                //double wNewOffset = CurrentImage.ResizedSize.Width * wCVO - ScrollViewerObject.ViewportWidth * wZoomTo;
-
-                //ScrollViewerObject.ScrollToVerticalOffset(hNewOffset);
-                //ScrollViewerObject.ScrollToHorizontalOffset(wNewOffset);
-                
-                //UpdateImageView();
-            }
-            //vertical scroll shift — shift buttons are up
             else if (ScrollViewerObject.ComputedVerticalScrollBarVisibility == System.Windows.Visibility.Visible
                         && !(Keyboard.IsKeyDown(Key.LeftShift) || Keyboard.IsKeyDown(Key.RightShift)))
             {
                 double offset = (e.Delta < 0) ? 20 : -20;
                 ScrollViewerObject.ScrollToVerticalOffset(offset + ScrollViewerObject.VerticalOffset);
             }
-            //next image
-            //else
-            //{
-            //    if (e.Delta < 0)
-            //    {
-            //        _imageList.Next();
-            //    }
-            //    else
-            //    {                        
-            //        _imageList.Previous();
-            //    }
-            //    UpdateImageView();
-            //}
-        }
-
-        private void Window_SizeChanged(object sender, SizeChangedEventArgs e)
-        {
-            UpdateImageView();
         }
 
         protected override void OnPreviewKeyDown(KeyEventArgs e)
@@ -203,7 +114,7 @@ namespace ImageViewer
             }
 
             MarkSelectedItems();
-            UpdateImageView();
+            //UpdateImageView();
         }
 
         private void ScrollViewerObject_ScrollChanged(object sender, ScrollChangedEventArgs e)
@@ -215,89 +126,46 @@ namespace ImageViewer
         private void Window_KeyDown(object sender, KeyEventArgs e)
         {
             #if DEBUG
-            if (e.Key == Key.T)
-            {
-                StringBuilder sb = new StringBuilder();
-                sb.AppendFormat("Image current height x width: {0} x {1}.", CurrentImage.ResizedSize.Height, CurrentImage.ResizedSize.Width);
-                sb.AppendFormat("\nScrollObject current scrolable height x width: {0} x {1}.", ScrollViewerObject.ScrollableHeight, ScrollViewerObject.ScrollableWidth);
-                sb.AppendFormat("\nScrollObject current viewport height x width: {0} x {1}.", ScrollViewerObject.ViewportHeight, ScrollViewerObject.ViewportWidth);
-                sb.AppendFormat("\nScrollObject current offset vertical x horisontal: {0} x {1}.", ScrollViewerObject.VerticalOffset, ScrollViewerObject.HorizontalOffset);
-                sb.AppendFormat("\nScrollObject current extent height x width: {0} x {1}.", ScrollViewerObject.ExtentHeight, ScrollViewerObject.ExtentWidth);
-                sb.AppendFormat("\nScrollObject current actual height x width: {0} x {1}.", ScrollViewerObject.ActualHeight, ScrollViewerObject.ActualWidth);
-                sb.AppendFormat("\nScrollObject current height x width: {0} x {1}.", ScrollViewerObject.Height, ScrollViewerObject.Width);
+            //if (e.Key == Key.T)
+            //{
+            //    StringBuilder sb = new StringBuilder();
+            //    sb.AppendFormat("Image current height x width: {0} x {1}.", CurrentImage.ResizedSize.Height, CurrentImage.ResizedSize.Width);
+            //    sb.AppendFormat("\nScrollObject current scrolable height x width: {0} x {1}.", ScrollViewerObject.ScrollableHeight, ScrollViewerObject.ScrollableWidth);
+            //    sb.AppendFormat("\nScrollObject current viewport height x width: {0} x {1}.", ScrollViewerObject.ViewportHeight, ScrollViewerObject.ViewportWidth);
+            //    sb.AppendFormat("\nScrollObject current offset vertical x horisontal: {0} x {1}.", ScrollViewerObject.VerticalOffset, ScrollViewerObject.HorizontalOffset);
+            //    sb.AppendFormat("\nScrollObject current extent height x width: {0} x {1}.", ScrollViewerObject.ExtentHeight, ScrollViewerObject.ExtentWidth);
+            //    sb.AppendFormat("\nScrollObject current actual height x width: {0} x {1}.", ScrollViewerObject.ActualHeight, ScrollViewerObject.ActualWidth);
+            //    sb.AppendFormat("\nScrollObject current height x width: {0} x {1}.", ScrollViewerObject.Height, ScrollViewerObject.Width);
 
-                double hZoomTo = 0.5;
-                // Current view offset, range [0;1]
-                double hCVO = (ScrollViewerObject.VerticalOffset + ScrollViewerObject.ViewportHeight * hZoomTo) / ScrollViewerObject.ExtentHeight;
-                double hNewOffset = ScrollViewerObject.ExtentHeight * hCVO - ScrollViewerObject.ViewportHeight / 2;
-                //Correction to range [0; ScrollViewerObject.ScrollableHeight]
-                //hNewOffset = (hNewOffset < 0) ? 0 : (hNewOffset > ScrollViewerObject.ScrollableHeight) ? ScrollViewerObject.ScrollableHeight : hNewOffset;
+            //    double hZoomTo = 0.5;
+            //    // Current view offset, range [0;1]
+            //    double hCVO = (ScrollViewerObject.VerticalOffset + ScrollViewerObject.ViewportHeight * hZoomTo) / ScrollViewerObject.ExtentHeight;
+            //    double hNewOffset = ScrollViewerObject.ExtentHeight * hCVO - ScrollViewerObject.ViewportHeight / 2;
+            //    //Correction to range [0; ScrollViewerObject.ScrollableHeight]
+            //    //hNewOffset = (hNewOffset < 0) ? 0 : (hNewOffset > ScrollViewerObject.ScrollableHeight) ? ScrollViewerObject.ScrollableHeight : hNewOffset;
 
-                sb.AppendFormat("\n\nCurrent hCVO, hNewOffset: {0}, {1}.", hCVO, hNewOffset);
+            //    sb.AppendFormat("\n\nCurrent hCVO, hNewOffset: {0}, {1}.", hCVO, hNewOffset);
 
-                MessageBox.Show(sb.ToString());
-            }
+            //    MessageBox.Show(sb.ToString());
+            //}
             #endif
-
-            //if (e.Key == Key.L)
-            //{
-            //    CurrentImage.RotateLeft();
-            //    UpdateImageView();
-            //}
-            //if (e.Key == Key.R)
-            //{
-            //    CurrentImage.RotateRight();
-            //    UpdateImageView();
-            //}
-        }
-
-        private void Window_Drop(object sender, DragEventArgs e)
-        {
-            if (e.Data.GetDataPresent(DataFormats.FileDrop))
-            {
-                string[] droppedFiles = (string[])e.Data.GetData(DataFormats.FileDrop);
-                var imageFiles =
-                    from file in droppedFiles
-                    where IsImage(file)
-                    select file;
-
-                if (imageFiles.Count() == 1)
-                {
-                    //Load all images from folder
-                    FileInfo fi = new FileInfo(imageFiles.First());
-                    DirectoryInfo di = fi.Directory;
-
-                    var files =
-                        from file in Directory.GetFiles(di.FullName, "*.*")
-                        where IsImage(file)
-                        select file;
-
-                    //_imageList = new LocalImageList(files.ToArray(), imageFiles.First());
-                }
-                else if (imageFiles.Count() > 0)
-                {
-                    //Load only dropped images
-                   // _imageList = new LocalImageList(imageFiles.ToArray());
-                }
-            }
-            UpdateImageView();
         }
 
         private void Window_MouseMove(object sender, MouseEventArgs e)
         {
-            Point currentMousePosition = e.GetPosition(null);
-            Vector diffL = currentMousePosition - _leftDownPosition;
+            //Point currentMousePosition = e.GetPosition(null);
+            //Vector diffL = currentMousePosition - _leftDownPosition;
 
-            if (e.LeftButton == MouseButtonState.Pressed)
-            {
-                if (Math.Abs(diffL.X) < SystemParameters.MinimumHorizontalDragDistance
-                    && Math.Abs(diffL.Y) < SystemParameters.MinimumVerticalDragDistance)
-                {
-                    string[] paths = new string[] { CurrentImage.Path };
+            //if (e.LeftButton == MouseButtonState.Pressed)
+            //{
+            //    if (Math.Abs(diffL.X) < SystemParameters.MinimumHorizontalDragDistance
+            //        && Math.Abs(diffL.Y) < SystemParameters.MinimumVerticalDragDistance)
+            //    {
+            //        string[] paths = new string[] { CurrentImage.Path };
 
-                    DragDrop.DoDragDrop(this, new DataObject(DataFormats.FileDrop, paths), DragDropEffects.Copy | DragDropEffects.Link); 
-                }
-            }
+            //        DragDrop.DoDragDrop(this, new DataObject(DataFormats.FileDrop, paths), DragDropEffects.Copy | DragDropEffects.Link); 
+            //    }
+            //}
         }
 
         #endregion //Event handlers
@@ -333,38 +201,38 @@ namespace ImageViewer
         //    #endif
         //}
 
-        private void UpdateImageView()
-        {
-            try
-            {
-                //CurrentImage.Resize(new Size(Client.ActualWidth, Client.ActualHeight), _currentResizeType);
+        //private void UpdateImageView()
+        //{
+        //    try
+        //    {
+        //        //CurrentImage.Resize(new Size(Client.ActualWidth, Client.ActualHeight), _currentResizeType);
 
-                //ViewPort.BeginInit();
+        //        //ViewPort.BeginInit();
 
-                //ViewPort.Height = CurrentImage.ResizedSize.Height;
-                //ViewPort.Width = CurrentImage.ResizedSize.Width;
+        //        //ViewPort.Height = CurrentImage.ResizedSize.Height;
+        //        //ViewPort.Width = CurrentImage.ResizedSize.Width;
 
-                //if (CurrentImage.ImageFormat == ImageFormat.GIF)
-                //{
-                //    ViewPort.Source = null;
-                //    ImageBehavior.SetAnimatedSource(ViewPort, CurrentImage.Image);
-                //}
-                //else
-                //{
-                //    ImageBehavior.SetAnimatedSource(ViewPort, null);
-                //    ViewPort.Source = CurrentImage.Image;
-                //}
-                //ViewPort.EndInit();
+        //        //if (CurrentImage.ImageFormat == ImageFormat.GIF)
+        //        //{
+        //        //    ViewPort.Source = null;
+        //        //    ImageBehavior.SetAnimatedSource(ViewPort, CurrentImage.Image);
+        //        //}
+        //        //else
+        //        //{
+        //        //    ImageBehavior.SetAnimatedSource(ViewPort, null);
+        //        //    ViewPort.Source = CurrentImage.Image;
+        //        //}
+        //        //ViewPort.EndInit();
 
-                //this.Title = String.Format("{1} / {2} | File: {0}", CurrentImage.Name, _imageList.CurrentImageIndex + 1, _imageList.Count);
-            }
-            catch
-            {
-                //throw;
-                //_imageList.OnLoadError();
-                //UpdateImageView();
-            }
-        }
+        //        //this.Title = String.Format("{1} / {2} | File: {0}", CurrentImage.Name, _imageList.CurrentImageIndex + 1, _imageList.Count);
+        //    }
+        //    catch
+        //    {
+        //        //throw;
+        //        //_imageList.OnLoadError();
+        //        //UpdateImageView();
+        //    }
+        //}
 
         private void UpdateWindowPanels()
         {

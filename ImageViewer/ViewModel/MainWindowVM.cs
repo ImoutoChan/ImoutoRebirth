@@ -8,16 +8,18 @@ using System.Windows.Media.Imaging;
 using System;
 using ImageViewer.Commands;
 using System.Windows.Input;
+using ImageViewer.Behavior;
+using System.Collections.Generic;
 
 namespace ImageViewer.ViewModel
 {
-    class MainWindowVM : VMBase
+    class MainWindowVM : VMBase, IDragable, IDropable
     {
         #region Fields
 
         private MainWindow _mainWindowView;
         private LocalImageList _imageList;
-        private ResizeType _currentResizeType = ResizeType.Default;
+        private ResizeType _currentResizeType = ResizeType.FitToViewPort;
         private Visibility _verticalScrollVisibility;
 
         #endregion //Fields
@@ -71,6 +73,29 @@ namespace ImageViewer.ViewModel
                 {
                     return CurrentLocalImage.Image;
                 }
+            }
+        }
+
+        public BitmapSource AnimutedImage
+        {
+            get
+            {
+                if (CurrentLocalImage.ImageFormat == ImageFormat.GIF)
+                {
+                    return CurrentLocalImage.Image;
+                }
+                else
+                {
+                    return null;
+                }
+            }
+        }
+
+        public bool IsAnimuted
+        {
+            get
+            {
+                return (CurrentLocalImage.ImageFormat == ImageFormat.GIF);
             }
         }
 
@@ -151,7 +176,9 @@ namespace ImageViewer.ViewModel
             OnPropertyChanged("Title");
             OnPropertyChanged("ViewportHeight");
             OnPropertyChanged("ViewportWidth");
+            OnPropertyChanged("AnimutedImage");
             OnPropertyChanged("Image");
+            OnPropertyChanged("IsAnimuted");
         }
 
         #endregion //Methods
@@ -249,9 +276,81 @@ namespace ImageViewer.ViewModel
 
         private void _mainWindowView_SizeChanged(object sender, SizeChangedEventArgs e)
         {
-            UpdateView();
+            UpdateView(); ///???
         }
 
         #endregion //Event handlers
+
+        #region IDragable members
+
+        public string DataType
+        { 
+            get 
+            {
+                return DataFormats.FileDrop; 
+            } 
+        }
+
+        public object Data 
+        {
+            get
+            {
+                return new DataObject(DataFormats.FileDrop, new string[] { CurrentLocalImage.Path });
+            }
+        }
+
+        public DragDropEffects AllowDragDropEffects
+        {
+            get
+            {
+                return DragDropEffects.Copy;
+            }
+        }
+
+        #endregion //IDragable members
+
+        #region IDropable members
+
+        public List<string> AllowDataTypes
+        {
+            get
+            {
+                List<string> list = new List<string>();
+                list.Add(DataFormats.FileDrop);
+
+                return list;
+            }
+        }
+
+        public void Drop(object data)
+        {
+            string[] droppedFiles = (string[])data;
+            var imageFiles =
+                from file in droppedFiles
+                where IsImage(file)
+                select file;
+
+            if (imageFiles.Count() == 1)
+            {
+                //Load all images from folder
+                FileInfo fi = new FileInfo(imageFiles.First());
+                DirectoryInfo di = fi.Directory;
+
+                var files =
+                    from file in Directory.GetFiles(di.FullName, "*.*")
+                    where IsImage(file)
+                    select file;
+
+                _imageList = new LocalImageList(files.ToArray(), imageFiles.First());
+            }
+            else if (imageFiles.Count() > 0)
+            {
+                //Load only dropped images
+                _imageList = new LocalImageList(imageFiles.ToArray());
+            }
+            UpdateView();
+        }
+
+        #endregion //IDropable members
     }
 }

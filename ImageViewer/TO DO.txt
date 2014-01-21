@@ -15,3 +15,7 @@
 --LOADING IMAGE IN BACKGROUND
 
 --CROSSZOOM ON ALL FILES / ZOOM ON PRESSED.
+
+____________________________________________________________________________________
+port:
+--animuted (new image element?), animated switch?
