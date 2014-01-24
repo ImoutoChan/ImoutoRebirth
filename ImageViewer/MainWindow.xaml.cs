@@ -43,14 +43,14 @@ namespace ImageViewer
             if (ScrollViewerObject.ComputedHorizontalScrollBarVisibility == System.Windows.Visibility.Visible
                 && (Keyboard.IsKeyDown(Key.LeftAlt) || Keyboard.IsKeyDown(Key.RightAlt)))
             {
-                double offset = (e.Delta < 0) ? 20 : -20;
-                ScrollViewerObject.ScrollToHorizontalOffset(offset + ScrollViewerObject.HorizontalOffset);
+                //double offset = (e.Delta < 0) ? 20 : -20;
+                //ScrollViewerObject.ScrollToHorizontalOffset(offset + ScrollViewerObject.HorizontalOffset);
             }
             else if (ScrollViewerObject.ComputedVerticalScrollBarVisibility == System.Windows.Visibility.Visible
                         && !(Keyboard.IsKeyDown(Key.LeftShift) || Keyboard.IsKeyDown(Key.RightShift)))
             {
-                double offset = (e.Delta < 0) ? 20 : -20;
-                ScrollViewerObject.ScrollToVerticalOffset(offset + ScrollViewerObject.VerticalOffset);
+                //double offset = (e.Delta < 0) ? 20 : -20;
+                //ScrollViewerObject.ScrollToVerticalOffset(offset + ScrollViewerObject.VerticalOffset);
             }
         }
 
@@ -120,10 +120,26 @@ namespace ImageViewer
         private void ExtScrollViewer_SizeChanged(object sender, SizeChangedEventArgs e)
         {
             
-            //Detect zoom
-            e.
+            //Detect zoom ??? 2 steps before next image?
+            if (e.PreviousSize.Height / e.PreviousSize.Width - e.NewSize.Height / e.NewSize.Width < 0.0001)
+            {
+                double hZoomTo = Mouse.GetPosition(this).Y / this.ActualHeight; //0.5;
+                double wZoomTo = Mouse.GetPosition(this).X / this.ActualWidth;  //0.5;
+                // Current view offset, range [0;1]
+                double hCVO = (this.VerticalOffset + this.ViewportHeight * hZoomTo) / this.ExtentHeight;
+                double wCVO = (this.HorizontalOffset + this.ViewportWidth * wZoomTo) / this.ExtentWidth;
 
-//            throw new NotImplementedException();
+                double hNewOffset = e.NewSize.Height * hCVO - this.ViewportHeight * hZoomTo;
+                double wNewOffset = e.NewSize.Width * wCVO - this.ViewportWidth * wZoomTo;
+
+                this.ScrollToVerticalOffset(hNewOffset);
+                this.ScrollToHorizontalOffset(wNewOffset);
+            }
+            else
+            {
+                this.ScrollToHome();
+                //this._ScroolToCenter() ?
+            }
         }
 
         protected override void OnMouseWheel(MouseWheelEventArgs e)
@@ -132,7 +148,6 @@ namespace ImageViewer
                 && (Keyboard.IsKeyDown(Key.LeftAlt) || Keyboard.IsKeyDown(Key.RightAlt)))
             {
                 double offset = (e.Delta < 0) ? 20 : -20;
-
                 this.ScrollToHorizontalOffset(offset + this.HorizontalOffset);
             }
             else

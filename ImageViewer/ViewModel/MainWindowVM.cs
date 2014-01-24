@@ -106,6 +106,10 @@ namespace ImageViewer.ViewModel
             {
                 return CurrentLocalImage.ResizedSize.Height;
             }
+            //private set
+            //{
+            //    CurrentLocalImage.ResizedSize.Height = value;
+            //}
         }
 
         public double ViewportWidth
@@ -260,6 +264,7 @@ namespace ImageViewer.ViewModel
 
         private void NextImage()
         {
+            
             _imageList.Next();
             UpdateView();
         }

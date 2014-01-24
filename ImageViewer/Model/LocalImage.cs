@@ -141,26 +141,31 @@ namespace ImageViewer.Model
         public void ZoomIn()
         {
             _zoom *= 1.1;
+            OnImageChanged();
         }
 
         public void ZoomOut()
         {
             _zoom *= 0.9;
+            OnImageChanged();
         }
 
         public void ResetZoom()
         {
-            _zoom = 1;
+            _zoom = 1; 
+            OnImageChanged();
         }
 
         public void RotateLeft()
         {
             Rotate(-90);
+            OnImageChanged();
         }
 
         public void RotateRight()
         {
             Rotate(90);
+            OnImageChanged();
         }
 
         #endregion //Public methods
@@ -317,6 +322,19 @@ namespace ImageViewer.Model
         } 
 
         #endregion //Methods
+
+        #region Events
+
+        public event EventHandler ImageChanged;
+        private void OnImageChanged()
+        {
+            if (ImageChanged != null)
+            {
+                ImageChanged(this, new EventArgs());
+            }
+        }
+
+        #endregion //Events
     }
 
     enum ResizeType

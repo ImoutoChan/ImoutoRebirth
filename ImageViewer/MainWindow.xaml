@@ -35,6 +35,10 @@
                       Gesture="{x:Static localControls:MouseWheelGesture.CtrlDown}" />
         <MouseBinding Command="{Binding ZoomInCommand}"
                       Gesture="{x:Static localControls:MouseWheelGesture.CtrlUp}" />
+        <MouseBinding Command="{Binding NextImageCommand}" 
+                      MouseAction="LeftClick" />
+        <MouseBinding Command="{Binding PrevImageCommand}" 
+                      MouseAction="RightClick" />
         <KeyBinding Command="{Binding RotateCommand}" 
                     CommandParameter="left"
                     Key="L" />
@@ -89,6 +93,7 @@
                                HorizontalScrollBarVisibility="Auto" 
                                VerticalScrollBarVisibility="Auto"
                                ScrollChanged="ScrollViewerObject_ScrollChanged"
+                               Focusable="False"
                                >
             <Grid>
                 <Image x:Name="AnimutedViewPort"
