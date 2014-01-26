@@ -19,12 +19,6 @@ namespace ImageViewer
     /// </summary>
     public partial class MainWindow 
     {
-        #region Fields
-
-        private ResizeType _currentResizeType = ResizeType.Default;
-
-        #endregion //Fields
-
         #region Constructors
 
         public MainWindow()
@@ -37,26 +31,10 @@ namespace ImageViewer
         #endregion //Constructors
 
         #region Event handlers
-        
-        private void Window_MouseWheel(object sender, MouseWheelEventArgs e)
-        {
-            if (ScrollViewerObject.ComputedHorizontalScrollBarVisibility == System.Windows.Visibility.Visible
-                && (Keyboard.IsKeyDown(Key.LeftAlt) || Keyboard.IsKeyDown(Key.RightAlt)))
-            {
-                //double offset = (e.Delta < 0) ? 20 : -20;
-                //ScrollViewerObject.ScrollToHorizontalOffset(offset + ScrollViewerObject.HorizontalOffset);
-            }
-            else if (ScrollViewerObject.ComputedVerticalScrollBarVisibility == System.Windows.Visibility.Visible
-                        && !(Keyboard.IsKeyDown(Key.LeftShift) || Keyboard.IsKeyDown(Key.RightShift)))
-            {
-                //double offset = (e.Delta < 0) ? 20 : -20;
-                //ScrollViewerObject.ScrollToVerticalOffset(offset + ScrollViewerObject.VerticalOffset);
-            }
-        }
 
+        //Disable speciale handling for ALT (menu button, change focus)
         protected override void OnPreviewKeyDown(KeyEventArgs e)
         {
-            //Disable speciale handling for ALT (menu button, change focus)
             if (Keyboard.Modifiers == ModifierKeys.Alt)
             {
                 e.Handled = true;
@@ -73,26 +51,7 @@ namespace ImageViewer
             (this.DataContext as MainWindowVM).IsSimpleWheelNavigationEnable = (this.ScrollViewerObject.ComputedVerticalScrollBarVisibility != System.Windows.Visibility.Visible);
         }
 
-        #endregion //Event handlers
-
-        #region Methods
-        
-        private static bool IsImage(string file)
-        {
-            CultureInfo ci = new CultureInfo("en-US");
-            string formats = @".jpg|.png|.jpeg|.bmp|.gif|.tiff";
-            bool result = false;
-            foreach (var item in formats.Split('|'))
-            {
-                result = result || file.EndsWith(item, true, ci);
-                if (result) break;
-            }
-
-            return result;
-        }
-
-        #endregion //Methods
-
+        //Open setting flyout
         private void Button_Click(object sender, RoutedEventArgs e)
         {
             foreach (Flyout item in this.Flyouts.Items)
@@ -103,6 +62,27 @@ namespace ImageViewer
                 }
             }
         }
+
+        //Close all flyouts
+        private void Client_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
+        {
+            foreach (Flyout item in this.Flyouts.Items)
+            {
+                if (item.IsOpen)
+                {
+                    e.Handled = true;
+                }
+                item.IsOpen = false;
+            }
+        }
+
+        //Disable click commands, when mouse over flyout
+        private void SettingFlyout_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
+        {
+            e.Handled = true;
+        }
+
+        #endregion //Event handlers
     }
 
     public class ExtScrollViewer : ScrollViewer

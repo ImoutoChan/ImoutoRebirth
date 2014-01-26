@@ -10,6 +10,9 @@ using ImageViewer.Commands;
 using System.Windows.Input;
 using ImageViewer.Behavior;
 using System.Collections.Generic;
+using System.Threading;
+using System.Threading.Tasks;
+using System.ComponentModel;
 
 namespace ImageViewer.ViewModel
 {
@@ -20,6 +23,8 @@ namespace ImageViewer.ViewModel
         private MainWindow _mainWindowView;
         private LocalImageList _imageList;
         private SettingsVM _settings;
+        private BackgroundWorker _initBackgroundWorker;
+        private BackgroundWorker _navigateBackgroundWorker;
 
 
         #endregion //Fields
@@ -33,12 +38,38 @@ namespace ImageViewer.ViewModel
             _mainWindowView = new MainWindow();
             _mainWindowView.DataContext = this;
             _mainWindowView.SizeChanged += _mainWindowView_SizeChanged;
-
-            InitializeImageList();
             InitializeCommands();
             InitializeSettings();
-
             _mainWindowView.Show();
+
+            _initBackgroundWorker = new BackgroundWorker();
+            _initBackgroundWorker.RunWorkerCompleted += _backgroundWorker_RunWorkerCompleted;
+            _initBackgroundWorker.DoWork += _backgroundWorker_DoWork;
+            _initBackgroundWorker.RunWorkerAsync();
+
+
+        }
+
+        void _backgroundWorker_DoWork(object sender, DoWorkEventArgs e)
+        {
+            IsLoading = true;
+            OnPropertyChanged("IsLoading");
+
+            if ((e.Argument as string[]) != null)
+            {
+                InitializeImageList(e.Argument as string[]);
+            }
+            else
+            {
+                InitializeImageList();
+            }
+        }
+
+        private void _backgroundWorker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
+        {
+            IsLoading = false;
+            OnPropertyChanged("IsLoading");
+            UpdateView();
         }
 
         #endregion //Constructors
@@ -58,7 +89,21 @@ namespace ImageViewer.ViewModel
         {
             get
             {
-                return String.Format("{1} / {2} | File: {0}", CurrentLocalImage.Name, _imageList.CurrentImageIndex + 1, _imageList.Count);
+                if (IsLoading)
+                {
+                    return "Loading...";
+                }
+                else
+                {
+                    return String.Format("Dir {3} / {4} : {5} | File {1} / {2} : {0}",
+                        CurrentLocalImage.Name,
+                        _imageList.CurrentImageIndex + 1,
+                        _imageList.ImagesCount,
+                        _imageList.CurrentDirectoryIndex + 1,
+                        _imageList.DirectoriesCount,
+                        _imageList.CurrentDirectory.Name);
+                }
+                
             }
         }
 
@@ -99,6 +144,8 @@ namespace ImageViewer.ViewModel
                 return (CurrentLocalImage.ImageFormat == ImageFormat.GIF);
             }
         }
+
+        public bool IsLoading { get; private set; }
 
         public double ViewportHeight
         {
@@ -153,64 +200,54 @@ namespace ImageViewer.ViewModel
             _settings.SelectedResizeTypeChanged += _settings_SelectedResizeTypeChanged;
         }
 
-        private void InitializeImageList()
+        private void InitializeImageList(string[] images = null)
         {
-            if (Application.Current.Properties["ArbitraryArgName"] != null)
+            if (images != null)
+            {
+                _imageList = new LocalImageList(images);
+            }
+            else if (Application.Current.Properties["ArbitraryArgName"] != null)
             {
                 string fname = Application.Current.Properties["ArbitraryArgName"].ToString();
-                //MessageBox.Show(fname);
-                FileInfo fi = new FileInfo(fname);
-                DirectoryInfo di = fi.Directory;
+                Application.Current.Properties["ArbitraryArgName"] = null;
 
-                var files =
-                    from file in Directory.GetFiles(di.FullName, "*.*")
-                    where IsImage(file)
-                    select file;
-
-                _imageList = new LocalImageList(files.ToArray(), fname);
+                _imageList = new LocalImageList(fname);
             }
             #if DEBUG
             else
             {
-                var files =
-                    from file in Directory.GetFiles((new DirectoryInfo(@"c:\Users\oniii-chan\Downloads\DLS\art\loli\")).FullName, "*.*")
-                    where IsImage(file)
-                    select file;
-
-                _imageList = new LocalImageList(files.ToArray());
+                _imageList = new LocalImageList(@"c:\Users\oniii-chan\Downloads\DLS\art\loli\715e2f290f6c236fdd6426d83ab9a9e0.jpg");
             }
             #else
             else
             {
-                _imageList = null; 
-                //TODO new LocalImageList(); - empty imageList
+                _imageList = new LocalImageList();
             }            
             #endif
         }
 
-        private bool IsImage(string file)
-        {
-            CultureInfo ci = new CultureInfo("en-US");
-            string formats = @".jpg|.png|.jpeg|.bmp|.gif|.tiff";
-            bool result = false;
-
-            foreach (var item in formats.Split('|'))
-            {
-                result = result || file.EndsWith(item, true, ci);
-                if (result) break;
-            }
-
-            return result;
-        }
-
         private void UpdateView()
         {
-            OnPropertyChanged("Title");
-            OnPropertyChanged("ViewportHeight");
-            OnPropertyChanged("ViewportWidth");
-            OnPropertyChanged("AnimutedImage");
-            OnPropertyChanged("Image");
-            OnPropertyChanged("IsAnimuted");
+            try
+            {
+                OnPropertyChanged("Title");
+                OnPropertyChanged("ViewportHeight");
+                OnPropertyChanged("ViewportWidth");
+                OnPropertyChanged("AnimutedImage");
+                OnPropertyChanged("Image");
+                OnPropertyChanged("IsAnimuted");
+            }
+            catch (OutOfMemoryException e)
+            {
+                GC.Collect();
+                GC.WaitForPendingFinalizers();
+
+                UpdateView();
+            }
+            catch
+            {
+                NextImage();
+            }
         }
 
         #endregion //Methods
@@ -263,8 +300,7 @@ namespace ImageViewer.ViewModel
         #region Command handlers
 
         private void NextImage()
-        {
-            
+        {            
             _imageList.Next();
             UpdateView();
         }
@@ -363,30 +399,8 @@ namespace ImageViewer.ViewModel
         public void Drop(object data)
         {
             string[] droppedFiles = (string[])data;
-            var imageFiles =
-                from file in droppedFiles
-                where IsImage(file)
-                select file;
 
-            if (imageFiles.Count() == 1)
-            {
-                //Load all images from folder
-                FileInfo fi = new FileInfo(imageFiles.First());
-                DirectoryInfo di = fi.Directory;
-
-                var files =
-                    from file in Directory.GetFiles(di.FullName, "*.*")
-                    where IsImage(file)
-                    select file;
-
-                _imageList = new LocalImageList(files.ToArray(), imageFiles.First());
-            }
-            else if (imageFiles.Count() > 0)
-            {
-                //Load only dropped images
-                _imageList = new LocalImageList(imageFiles.ToArray());
-            }
-            UpdateView();
+            _initBackgroundWorker.RunWorkerAsync(droppedFiles);
         }
 
         #endregion //IDropable members

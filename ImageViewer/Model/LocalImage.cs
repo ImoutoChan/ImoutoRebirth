@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.IO;
 using System.Windows;
 using System.Windows.Media;
@@ -44,7 +45,14 @@ namespace ImageViewer.Model
                 {
                     try
                     {
-                        _image = new BitmapImage(new Uri(_filePath));
+                        BitmapImage bi = new BitmapImage();
+
+                        bi.BeginInit();
+                        bi.CacheOption = BitmapCacheOption.OnDemand;
+                        bi.UriSource = new Uri(_filePath);
+                        bi.EndInit();
+
+                        _image = bi;
                     }
                     catch
                     {
@@ -122,8 +130,15 @@ namespace ImageViewer.Model
 
         public void FreeMemory()
         {
-            
             _image = null;
+
+            Stopwatch s = new Stopwatch();
+            s.Start();
+            GC.Collect();
+            GC.WaitForPendingFinalizers();
+            s.Stop();
+
+            DebugClass.Add(s.ElapsedMilliseconds);
         }
         
         public void Resize(Size viewPort, ResizeType resizedType = ResizeType.Default)
@@ -335,6 +350,15 @@ namespace ImageViewer.Model
         }
 
         #endregion //Events
+
+        #region Static members
+
+        public static LocalImage GetEmptyImage()
+        {
+            return new LocalImage(@"pack://application:,,,/Resources/img/nothing.png");
+        }
+
+        #endregion //Static members
     }
 
     enum ResizeType

@@ -20,7 +20,7 @@
         WindowStartupLocation="CenterScreen" 
         WindowState="Maximized"
         gif:ImageBehavior.AnimateInDesignMode="True"
-        PreviewMouseWheel="Window_MouseWheel"
+        
         >
     <Controls:MetroWindow.InputBindings>
         <MouseBinding Command="{Binding SimpleNextImageCommand}" 
@@ -35,10 +35,6 @@
                       Gesture="{x:Static localControls:MouseWheelGesture.CtrlDown}" />
         <MouseBinding Command="{Binding ZoomInCommand}"
                       Gesture="{x:Static localControls:MouseWheelGesture.CtrlUp}" />
-        <MouseBinding Command="{Binding NextImageCommand}" 
-                      MouseAction="LeftClick" />
-        <MouseBinding Command="{Binding PrevImageCommand}" 
-                      MouseAction="RightClick" />
         <KeyBinding Command="{Binding RotateCommand}" 
                     CommandParameter="left"
                     Key="L" />
@@ -46,6 +42,14 @@
                     CommandParameter="right"
                     Key="R" />
     </Controls:MetroWindow.InputBindings>
+    <i:Interaction.Triggers>
+        <i:EventTrigger EventName="MouseLeftButtonUp">
+            <i:InvokeCommandAction Command="{Binding NextImageCommand}" />
+        </i:EventTrigger>
+        <i:EventTrigger EventName="MouseRightButtonUp">
+            <i:InvokeCommandAction Command="{Binding PrevImageCommand}" />
+        </i:EventTrigger>       
+    </i:Interaction.Triggers>
     <Controls:MetroWindow.WindowCommands>
         <Controls:WindowCommands>
             <Button Content="SETTINGS" Click="Button_Click"/>
@@ -69,7 +73,9 @@
         <Controls:FlyoutsControl>
             <Controls:Flyout x:Name="SettingFlyout" Width="250" 
                              Header="Settings" Position="Right"
-                             DataContext="{Binding Path=Settings}">
+                             DataContext="{Binding Path=Settings}"
+                             MouseLeftButtonUp="SettingFlyout_MouseLeftButtonUp"
+                             >
                 <Grid Margin="20">
                     <Grid.RowDefinitions>
                         <RowDefinition Height="Auto" />
@@ -88,7 +94,7 @@
             </Controls:Flyout>
         </Controls:FlyoutsControl>
     </Controls:MetroWindow.Flyouts>
-    <Grid x:Name="Client" >
+    <Grid x:Name="Client" MouseLeftButtonUp="Client_MouseLeftButtonUp">
         <local:ExtScrollViewer x:Name="ScrollViewerObject" 
                                HorizontalScrollBarVisibility="Auto" 
                                VerticalScrollBarVisibility="Auto"
@@ -114,7 +120,7 @@
                        HorizontalAlignment="Center"
                        Height="{Binding Path=ViewportHeight}"
                        Width="{Binding Path=ViewportWidth}"
-                       Source="{Binding Path=Image}"
+                       Source="{Binding Path=Image}"                     
                        Visibility="{Binding Path=IsAnimuted, 
                                             Converter={StaticResource visibilityInvertConverter}}"
                        >
@@ -122,6 +128,13 @@
                         <behavior:FrameworkElementDragBehavior />
                     </i:Interaction.Behaviors>
                 </Image>
+                <Controls:MetroProgressBar IsIndeterminate="true"
+                                           Foreground="{DynamicResource AccentColorBrush}"
+                                           Margin="0, 10, 0, 0"
+                                           Visibility="{Binding Path=IsLoading,
+                                                        Converter={StaticResource visibilityConverter}}"
+                                           />
+                <Controls:ProgressRing IsActive="{Binding Path=IsLoading}" />
             </Grid>
         </local:ExtScrollViewer>
     </Grid>

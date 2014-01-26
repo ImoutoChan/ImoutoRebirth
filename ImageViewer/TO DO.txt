@@ -20,3 +20,8 @@ ________________________________________________________________________________
 port:
 --animuted (new image element?), animated switch?
 --statusbar
+
+
+folder/subfolders/prefolders
+sort by
+correct recurs folder search  - http://www.blackwasp.co.uk/FolderRecursion.aspx
