@@ -1,20 +1,14 @@
-﻿using ImageViewer.Model;
-using System.IO;
-using System.Windows;
-using System.Windows.Media;
-using System.Linq;
-using System.Globalization;
-using System.Windows.Media.Imaging;
+﻿using ImoutoViewer.Behavior;
+using ImoutoViewer.Commands;
+using ImoutoViewer.Model;
 using System;
-using ImageViewer.Commands;
-using System.Windows.Input;
-using ImageViewer.Behavior;
 using System.Collections.Generic;
-using System.Threading;
-using System.Threading.Tasks;
 using System.ComponentModel;
+using System.Windows;
+using System.Windows.Input;
+using System.Windows.Media.Imaging;
 
-namespace ImageViewer.ViewModel
+namespace ImoutoViewer.ViewModel
 {
     class MainWindowVM : VMBase, IDragable, IDropable
     {
@@ -25,8 +19,7 @@ namespace ImageViewer.ViewModel
         private SettingsVM _settings;
         private BackgroundWorker _initBackgroundWorker;
         private BackgroundWorker _navigateBackgroundWorker;
-
-
+        
         #endregion //Fields
         
         #region Constructors
@@ -80,8 +73,23 @@ namespace ImageViewer.ViewModel
         {
             get
             {
-                _imageList.CurrentImage.Resize(_mainWindowView.Client.RenderSize, Settings.SelectedResizeType.Type);
-                return _imageList.CurrentImage;
+                if (IsError)
+                {
+                    return null;
+                }
+                else
+                {
+                    BitmapSource bs = _imageList.CurrentImage.Image;
+                    if (!IsError)
+                    {
+                        _imageList.CurrentImage.Resize(_mainWindowView.Client.RenderSize, Settings.SelectedResizeType.Type);
+                        return _imageList.CurrentImage;
+                    }
+                    else
+                    {
+                        return null;
+                    }                
+                }
             }
         }
 
@@ -89,7 +97,11 @@ namespace ImageViewer.ViewModel
         {
             get
             {
-                if (IsLoading)
+                if (IsError)
+                {
+                    return "Image loading error";
+                } 
+                else if (IsLoading)
                 {
                     return "Loading...";
                 }
@@ -111,7 +123,8 @@ namespace ImageViewer.ViewModel
         {
             get
             {
-                if (CurrentLocalImage.ImageFormat == ImageFormat.GIF)
+
+                if (CurrentLocalImage == null || CurrentLocalImage.ImageFormat == ImageFormat.GIF)
                 {
                     return null;
                 }
@@ -126,7 +139,7 @@ namespace ImageViewer.ViewModel
         {
             get
             {
-                if (CurrentLocalImage.ImageFormat == ImageFormat.GIF)
+                if (CurrentLocalImage != null && CurrentLocalImage.ImageFormat == ImageFormat.GIF )
                 {
                     return CurrentLocalImage.Image;
                 }
@@ -141,6 +154,8 @@ namespace ImageViewer.ViewModel
         {
             get
             {
+                if (CurrentLocalImage == null) return false;
+
                 return (CurrentLocalImage.ImageFormat == ImageFormat.GIF);
             }
         }
@@ -151,42 +166,45 @@ namespace ImageViewer.ViewModel
         {
             get
             {
+                if (CurrentLocalImage == null) return 0;
+
                 return CurrentLocalImage.ResizedSize.Height;
             }
-            //private set
-            //{
-            //    CurrentLocalImage.ResizedSize.Height = value;
-            //}
         }
 
         public double ViewportWidth
         {
             get
             {
+                if (CurrentLocalImage == null) return 0;
+
                 return CurrentLocalImage.ResizedSize.Width;
             }
         }
 
         public bool IsSimpleWheelNavigationEnable { get; set; }
 
-        //public ResizeType CurrentResizeType
-        //{
-        //    get
-        //    {
-        //        return _currentResizeType;
-        //    }
-        //    set
-        //    {
-        //        _currentResizeType = value;
-        //        UpdateView();
-        //    }
-        //}
-
         public SettingsVM Settings
         {
             get
             {
                 return _settings;
+            }
+        }
+
+        public bool IsError
+        {
+            get
+            {
+                return _imageList.CurrentImage.IsError;
+            }
+        }
+
+        public string ErrorMessage
+        {
+            get
+            {
+                return _imageList.CurrentImage.ErrorMessage;
             }
         }
 
@@ -198,25 +216,26 @@ namespace ImageViewer.ViewModel
         {
             _settings = new SettingsVM();
             _settings.SelectedResizeTypeChanged += _settings_SelectedResizeTypeChanged;
+            _settings.SelectedDirectorySearchTypeChanged += _settings_SelectedDirectorySearchTypeChanged;
         }
 
         private void InitializeImageList(string[] images = null)
         {
             if (images != null)
             {
-                _imageList = new LocalImageList(images);
+                _imageList = new LocalImageList(images, Settings.DirectorySearchFlags);
             }
             else if (Application.Current.Properties["ArbitraryArgName"] != null)
             {
                 string fname = Application.Current.Properties["ArbitraryArgName"].ToString();
                 Application.Current.Properties["ArbitraryArgName"] = null;
 
-                _imageList = new LocalImageList(fname);
+                _imageList = new LocalImageList(fname, Settings.DirectorySearchFlags);
             }
             #if DEBUG
             else
             {
-                _imageList = new LocalImageList(@"c:\Users\oniii-chan\Downloads\DLS\art\loli\715e2f290f6c236fdd6426d83ab9a9e0.jpg");
+                _imageList = new LocalImageList(@"c:\Users\oniii-chan\Downloads\DLS\art\loli\715e2f290f6c236fdd6426d83ab9a9e0.jpg", Settings.DirectorySearchFlags);
             }
             #else
             else
@@ -236,6 +255,8 @@ namespace ImageViewer.ViewModel
                 OnPropertyChanged("AnimutedImage");
                 OnPropertyChanged("Image");
                 OnPropertyChanged("IsAnimuted");
+                OnPropertyChanged("IsError");
+                OnPropertyChanged("ErrorMessage");
             }
             catch (OutOfMemoryException e)
             {
@@ -351,6 +372,11 @@ namespace ImageViewer.ViewModel
         void _settings_SelectedResizeTypeChanged(object sender, EventArgs e)
         {
             UpdateView();
+        }
+
+        void _settings_SelectedDirectorySearchTypeChanged(object sender, EventArgs e)
+        {
+            _initBackgroundWorker.RunWorkerAsync(new string[] { CurrentLocalImage.Path });
         }
 
         #endregion //Event handlers

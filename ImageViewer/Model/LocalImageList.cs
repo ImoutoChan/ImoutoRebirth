@@ -4,12 +4,13 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Linq;
-using System.Diagnostics;
 
-namespace ImageViewer.Model
+namespace ImoutoViewer.Model
 {
     class LocalImageList : IEnumerable
     {
+        private const FilesGettingMethod DefaultFilesGettingMethod = FilesGettingMethod.Folder | FilesGettingMethod.AllDepthSubfolders; 
+
         #region Fields
 
         private List<LocalImage> _imageList;
@@ -24,11 +25,11 @@ namespace ImageViewer.Model
 
         #region Constructors
 
-        public LocalImageList() : this(new string[0]) { }
+        public LocalImageList(FilesGettingMethod filesGettingMethod = DefaultFilesGettingMethod) : this(new string[0], filesGettingMethod) { }
 
-        public LocalImageList(string imagePath) : this(new string[] { imagePath }) { }
+        public LocalImageList(string imagePath, FilesGettingMethod filesGettingMethod = DefaultFilesGettingMethod) : this(new string[] { imagePath }, filesGettingMethod) { }
 
-        public LocalImageList(string[] imagePaths, FilesGettingMethod filesGettingMethod = FilesGettingMethod.Folder | FilesGettingMethod.AllDepthSubfolders )
+        public LocalImageList(string[] imagePaths, FilesGettingMethod filesGettingMethod = DefaultFilesGettingMethod)
         {
             _imageList = new List<LocalImage>();
             _directoriesList = new List<DirectoryInfo>();
@@ -82,7 +83,6 @@ namespace ImageViewer.Model
                 _imageList.Add(LocalImage.GetEmptyImage());
                 _currnetImage = _imageList.First();
             }
-
         }
 
         #endregion //Constructors

@@ -1,11 +1,9 @@
 ﻿using System;
-using System.Diagnostics;
-using System.IO;
 using System.Windows;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 
-namespace ImageViewer.Model
+namespace ImoutoViewer.Model
 {
     class LocalImage
     {        
@@ -31,6 +29,7 @@ namespace ImageViewer.Model
         public LocalImage(string imagePath)
         {
             _filePath = imagePath;
+            IsError = false;
         }
 
         #endregion //Constructors
@@ -41,23 +40,9 @@ namespace ImageViewer.Model
         {
             get
             {
-                if (_image == null)
+                if (_image == null && !IsError)
                 {
-                    try
-                    {
-                        BitmapImage bi = new BitmapImage();
-
-                        bi.BeginInit();
-                        bi.CacheOption = BitmapCacheOption.OnDemand;
-                        bi.UriSource = new Uri(_filePath);
-                        bi.EndInit();
-
-                        _image = bi;
-                    }
-                    catch
-                    {
-                        throw new Exception("Unavailable image path");
-                    }
+                    Load();
                 }
                 return _image;
             }
@@ -66,6 +51,10 @@ namespace ImageViewer.Model
                 _image = value;
             }
         }
+
+        public bool IsError { get; private set; }
+
+        public string ErrorMessage { get; private set; }
 
         public Size ResizedSize
         {
@@ -128,17 +117,41 @@ namespace ImageViewer.Model
 
         #region Public methods
 
+        private void Load()
+        {
+            try
+            {
+                BitmapImage bi = new BitmapImage();
+
+                bi.BeginInit();
+                bi.CacheOption = BitmapCacheOption.OnDemand;
+                bi.UriSource = new Uri(_filePath);
+                bi.EndInit();
+
+                _image = bi;
+            }
+            catch (Exception e)
+            {
+                IsError = true;
+                ErrorMessage = e.Message;
+            }
+        }
+
         public void FreeMemory()
         {
             _image = null;
-
+#if DEBUG
             Stopwatch s = new Stopwatch();
             s.Start();
+#endif
             GC.Collect();
             GC.WaitForPendingFinalizers();
-            s.Stop();
 
+#if DEBUG
+            s.Stop();
             DebugClass.Add(s.ElapsedMilliseconds);
+#endif
+
         }
         
         public void Resize(Size viewPort, ResizeType resizedType = ResizeType.Default)

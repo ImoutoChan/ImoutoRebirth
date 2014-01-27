@@ -2,7 +2,7 @@
 using System.Diagnostics;
 using System.Windows.Input;
 
-namespace ImageViewer.Commands
+namespace ImoutoViewer.Commands
 {
     class RelayCommand : ICommand
     {

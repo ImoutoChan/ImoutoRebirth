@@ -2,7 +2,7 @@
 using System.ComponentModel;
 using System.Diagnostics;
 
-namespace ImageViewer.ViewModel
+namespace ImoutoViewer.ViewModel
 {
     class VMBase : INotifyPropertyChanged
     {

@@ -2,7 +2,7 @@
 using System.Windows.Input;
 using System.Windows.Interactivity;
 
-namespace ImageViewer.Behavior
+namespace ImoutoViewer.Behavior
 {
     public class FrameworkElementDragBehavior : Behavior<FrameworkElement>
     {

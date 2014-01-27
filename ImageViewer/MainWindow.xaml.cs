@@ -1,18 +1,11 @@
-﻿using ImageViewer.Model;
-using ImageViewer.ViewModel;
+﻿using ImoutoViewer.ViewModel;
 using MahApps.Metro.Controls;
-using System;
-using System.Globalization;
-using System.IO;
-using System.Linq;
-using System.Text;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
-using WpfAnimatedGif;
 
-namespace ImageViewer
+namespace ImoutoViewer
 {
     /// <summary>
     /// Interaction logic for MainWindow.xaml

@@ -1,12 +1,12 @@
-﻿<Controls:MetroWindow x:Class="ImageViewer.MainWindow"
+﻿<Controls:MetroWindow x:Class="ImoutoViewer.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
-        xmlns:local="clr-namespace:ImageViewer"
-        xmlns:localControls="clr-namespace:ImageViewer.UserControls"
-        xmlns:behavior="clr-namespace:ImageViewer.Behavior"                      
-        xmlns:Converters="clr-namespace:ImageViewer.Converters"
-        xmlns:localModel="clr-namespace:ImageViewer.Model"
+        xmlns:local="clr-namespace:ImoutoViewer"
+        xmlns:localControls="clr-namespace:ImoutoViewer.UserControls"
+        xmlns:behavior="clr-namespace:ImoutoViewer.Behavior"                      
+        xmlns:Converters="clr-namespace:ImoutoViewer.Converters"
+        xmlns:localModel="clr-namespace:ImoutoViewer.Model"
         xmlns:gif="http://wpfanimatedgif.codeplex.com"
         xmlns:Controls="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
         xmlns:Behaviours="clr-namespace:MahApps.Metro.Behaviours;assembly=MahApps.Metro"
@@ -19,8 +19,7 @@
         WindowStyle="SingleBorderWindow"
         WindowStartupLocation="CenterScreen" 
         WindowState="Maximized"
-        gif:ImageBehavior.AnimateInDesignMode="True"
-        
+        gif:ImageBehavior.AnimateInDesignMode="True"        
         >
     <Controls:MetroWindow.InputBindings>
         <MouseBinding Command="{Binding SimpleNextImageCommand}" 
@@ -52,7 +51,8 @@
     </i:Interaction.Triggers>
     <Controls:MetroWindow.WindowCommands>
         <Controls:WindowCommands>
-            <Button Content="SETTINGS" Click="Button_Click"/>
+            <Button Content="SETTINGS" 
+                    Click="Button_Click"/>
         </Controls:WindowCommands>
     </Controls:MetroWindow.WindowCommands>
     <i:Interaction.Behaviors>
@@ -61,18 +61,15 @@
     </i:Interaction.Behaviors>
     <Controls:MetroWindow.Resources>
         <Converters:VisibilityConverter x:Key="visibilityConverter"/>
-        <Converters:VisibilityConverter x:Key="visibilityInvertConverter" IsInvert="True"/>
-        <ObjectDataProvider x:Key="ResizeTypesList" MethodName="GetValues"
-                            ObjectType="{x:Type System:Enum}">
-            <ObjectDataProvider.MethodParameters>
-                <x:Type TypeName="localModel:ResizeType"/>
-            </ObjectDataProvider.MethodParameters>
-        </ObjectDataProvider>
+        <Converters:VisibilityConverter x:Key="visibilityInvertConverter" 
+                                        IsInvert="True"/>
     </Controls:MetroWindow.Resources>
     <Controls:MetroWindow.Flyouts>
         <Controls:FlyoutsControl>
-            <Controls:Flyout x:Name="SettingFlyout" Width="250" 
-                             Header="Settings" Position="Right"
+            <Controls:Flyout x:Name="SettingFlyout" 
+                             Width="250" 
+                             Header="Settings" 
+                             Position="Right"
                              DataContext="{Binding Path=Settings}"
                              MouseLeftButtonUp="SettingFlyout_MouseLeftButtonUp"
                              >
@@ -82,19 +79,39 @@
                         <RowDefinition Height="*" />
                         <RowDefinition Height="Auto" />
                     </Grid.RowDefinitions>
-                    <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto">
+                    <ScrollViewer Grid.Row="1" 
+                                  VerticalScrollBarVisibility="Auto">
                         <StackPanel Orientation="Vertical">
-                            <TextBlock Text="Resize type" Margin="0,0,0,5"/>
+                            <TextBlock Text="Resize type" 
+                                       Margin="0,0,0,5"/>
                             <ComboBox ItemsSource="{Binding Path=ResizeTypes}"
                                       SelectedItem="{Binding Path=SelectedResizeType}"
                                       />
+                            <TextBlock Text="Loading folders" 
+                                       Margin="0,15,0,5"/>
+                            <ItemsControl ItemsSource="{Binding Path=DirectorySearchTypes}">
+                                <ItemsControl.ItemsPanel>
+                                    <ItemsPanelTemplate>
+                                        <StackPanel Orientation="Horizontal"/>
+                                    </ItemsPanelTemplate>
+                                </ItemsControl.ItemsPanel>
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate>
+                                        <ToggleButton Margin="0,0,11,5"
+                                                      Content="{Binding Name}" 
+                                                      IsChecked="{Binding IsSelected}"/>
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                            </ItemsControl>
+
                         </StackPanel>
                     </ScrollViewer>
                 </Grid>
             </Controls:Flyout>
         </Controls:FlyoutsControl>
     </Controls:MetroWindow.Flyouts>
-    <Grid x:Name="Client" MouseLeftButtonUp="Client_MouseLeftButtonUp">
+    <Grid x:Name="Client" 
+          MouseLeftButtonUp="Client_MouseLeftButtonUp">
         <local:ExtScrollViewer x:Name="ScrollViewerObject" 
                                HorizontalScrollBarVisibility="Auto" 
                                VerticalScrollBarVisibility="Auto"
@@ -128,13 +145,15 @@
                         <behavior:FrameworkElementDragBehavior />
                     </i:Interaction.Behaviors>
                 </Image>
-                <Controls:MetroProgressBar IsIndeterminate="true"
-                                           Foreground="{DynamicResource AccentColorBrush}"
-                                           Margin="0, 10, 0, 0"
-                                           Visibility="{Binding Path=IsLoading,
-                                                        Converter={StaticResource visibilityConverter}}"
-                                           />
                 <Controls:ProgressRing IsActive="{Binding Path=IsLoading}" />
+                <Label HorizontalAlignment="Stretch"                       
+                       VerticalAlignment="Stretch"
+                       HorizontalContentAlignment="Center"
+                       VerticalContentAlignment="Center"
+                       Content="{Binding Path=ErrorMessage}"
+                       Visibility="{Binding Path=IsError, 
+                                    Converter={StaticResource visibilityConverter}}"
+                       />
             </Grid>
         </local:ExtScrollViewer>
     </Grid>

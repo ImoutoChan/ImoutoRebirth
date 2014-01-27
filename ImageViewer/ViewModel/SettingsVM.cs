@@ -1,11 +1,10 @@
-﻿using ImageViewer.Model;
+﻿using ImoutoViewer.Model;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace ImageViewer.ViewModel
+namespace ImoutoViewer.ViewModel
 {
     class SettingsVM : VMBase
     {
@@ -25,6 +24,17 @@ namespace ImageViewer.ViewModel
                 where s.Type == ResizeType.DownscaleToViewPort
                 select s;
             SelectedResizeType = selected.First();
+
+            DirectorySearchTypes = DirectorySearchTypeDescriptor.GetList();
+            foreach (var item in DirectorySearchTypes)
+            {
+                item.SelectedChanged += item_SelectedChanged;
+            }
+        }
+
+        void item_SelectedChanged(object sender, EventArgs e)
+        {
+            OnSelectedDirectorySearchTypeChanged();
         }
 
         #endregion //Constructors
@@ -45,6 +55,23 @@ namespace ImageViewer.ViewModel
             }
         }
 
+        public ObservableCollection<DirectorySearchTypeDescriptor> DirectorySearchTypes { get; private set; }
+        public FilesGettingMethod DirectorySearchFlags
+        {
+            get
+            {
+                FilesGettingMethod fg = FilesGettingMethod.None;
+                foreach (var item in DirectorySearchTypes)
+                {
+                    if (item.IsSelected)
+                    {
+                        fg |= item.Type;
+                    }
+                }
+                return fg;
+            }
+        }
+
         #endregion //Properties
 
         #region Events
@@ -55,6 +82,15 @@ namespace ImageViewer.ViewModel
             if (SelectedResizeTypeChanged != null)
             {
                 SelectedResizeTypeChanged(this, null);
+            }
+        }
+
+        public event EventHandler SelectedDirectorySearchTypeChanged;
+        private void OnSelectedDirectorySearchTypeChanged()
+        {
+            if (SelectedDirectorySearchTypeChanged != null)
+            {
+                SelectedDirectorySearchTypeChanged(this, null);
             }
         }
 
@@ -94,6 +130,71 @@ namespace ImageViewer.ViewModel
         }
 
         #endregion //Static methods
+    }
 
+    class DirectorySearchTypeDescriptor
+    {
+        #region Fields
+
+        private bool _isSelected;
+
+        #endregion // Fields
+
+        #region Properties
+
+        public string Name { get; set; }
+        public FilesGettingMethod Type { get; set; }
+        public bool IsSelected
+        {
+            get
+            {
+                return _isSelected;
+            }
+            set
+            {
+                _isSelected = value;
+                OnSelectedChanged();
+            }
+        }
+
+        #endregion //Properties
+
+        #region Methods
+
+        public override string ToString()
+        {
+            return Name;
+        }
+
+        #endregion //Methods
+
+        #region Static methods
+
+        public static ObservableCollection<DirectorySearchTypeDescriptor> GetList()
+        {
+            return new ObservableCollection<DirectorySearchTypeDescriptor>()
+            {
+                new DirectorySearchTypeDescriptor() { Name = "All Pre", Type = FilesGettingMethod.AllDepthPrefolder },
+                new DirectorySearchTypeDescriptor() { Name = "Pre", Type = FilesGettingMethod.Prefolders },            
+                new DirectorySearchTypeDescriptor() { Name = "Cur", Type = FilesGettingMethod.Folder, IsSelected = true },            
+                new DirectorySearchTypeDescriptor() { Name = "Sub", Type = FilesGettingMethod.Subfolders, IsSelected = true},            
+                new DirectorySearchTypeDescriptor() { Name = "All Sub", Type = FilesGettingMethod.AllDepthSubfolders },
+            };
+        }
+
+        #endregion //Static methods
+
+        #region Events
+
+        public event EventHandler SelectedChanged;
+        private void OnSelectedChanged()
+        {
+            if (SelectedChanged != null)
+            {
+                SelectedChanged(this, new EventArgs());
+            }
+        }
+
+        #endregion //Events
     }
 }

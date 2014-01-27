@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace ImageViewer.Behavior
+namespace ImoutoViewer.Behavior
 {
     interface IDropable
     {

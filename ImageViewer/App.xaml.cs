@@ -1,7 +1,7 @@
-﻿using ImageViewer.ViewModel;
+﻿using ImoutoViewer.ViewModel;
 using System.Windows;
 
-namespace ImageViewer
+namespace ImoutoViewer
 {
     /// <summary>
     /// Interaction logic for App.xaml
