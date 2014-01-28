@@ -180,25 +180,48 @@ namespace ImoutoViewer.ViewModel
             Settings = new SettingsVM();
             Settings.SelectedResizeTypeChanged += _settings_SelectedResizeTypeChanged;
             Settings.SelectedDirectorySearchTypeChanged += _settings_SelectedDirectorySearchTypeChanged;
+            Settings.SelectedFilesSortingChanged += Settings_SelectedFilesSortingChanged;
+            Settings.SelectedFoldersSortingChanged += Settings_SelectedFoldersSortingChanged;
+
+            LocalImageList.FilesGettingMethods = Settings.DirectorySearchFlags;
+            LocalImageList.FilesSortMethod = Settings.SelectedFilesSorting.Method;
+            LocalImageList.IsFilesSortMethodDescending = Settings.IsSelectedFilesSortingDescending;
+            LocalImageList.FoldersSortMethod = Settings.SelectedFoldersSorting.Method;
+            LocalImageList.IsFoldersSortMethodDescending = Settings.IsSelectedFoldersSortingDescending;
+        }
+
+        private void Settings_SelectedFoldersSortingChanged(object sender, EventArgs e)
+        {
+            LocalImageList.FoldersSortMethod = Settings.SelectedFoldersSorting.Method;
+            LocalImageList.IsFoldersSortMethodDescending = Settings.IsSelectedFoldersSortingDescending;
+            _initBackgroundWorker.RunWorkerAsync(new[] { CurrentLocalImage.Path });
+        }
+
+        private void Settings_SelectedFilesSortingChanged(object sender, EventArgs e)
+        {
+            LocalImageList.FilesSortMethod = Settings.SelectedFilesSorting.Method;
+            LocalImageList.IsFilesSortMethodDescending = Settings.IsSelectedFilesSortingDescending;
+            _imageList.ResortFiles();
+            UpdateView();
         }
 
         private void InitializeImageList(IEnumerable<string> images = null)
         {
             if (images != null)
             {
-                _imageList = new LocalImageList(images, Settings.DirectorySearchFlags);
+                _imageList = new LocalImageList(images);
             }
             else if (Application.Current.Properties["ArbitraryArgName"] != null)
             {
                 string fname = Application.Current.Properties["ArbitraryArgName"].ToString();
                 Application.Current.Properties["ArbitraryArgName"] = null;
 
-                _imageList = new LocalImageList(fname, Settings.DirectorySearchFlags);
+                _imageList = new LocalImageList(fname);
             }
             #if DEBUG
             else
             {
-                _imageList = new LocalImageList(@"c:\Users\oniii-chan\Downloads\DLS\art\loli\715e2f290f6c236fdd6426d83ab9a9e0.jpg", Settings.DirectorySearchFlags);
+                _imageList = new LocalImageList(@"c:\Users\oniii-chan\Downloads\DLS\art\loli\715e2f290f6c236fdd6426d83ab9a9e0.jpg");
             }
             #else
             else
@@ -244,6 +267,8 @@ namespace ImoutoViewer.ViewModel
         public ICommand PrevImageCommand { get; private set; }
         public ICommand ZoomInCommand { get; private set; }
         public ICommand ZoomOutCommand { get; private set; }
+        public ICommand NextFolderCommand { get; private set; }
+        public ICommand PrevFolderCommand { get; private set; }
 
         /// <summary>
         /// Rotation the image. In CommandParameter as string send: 
@@ -277,6 +302,9 @@ namespace ImoutoViewer.ViewModel
             ZoomOutCommand = new RelayCommand(param => ZoomOut());
 
             RotateCommand = new RelayCommand(Rotate);
+
+            NextFolderCommand = new RelayCommand(param => NextFolder());
+            PrevFolderCommand = new RelayCommand(param => PrevFolder());
         }
 
         #endregion //Commands
@@ -323,6 +351,18 @@ namespace ImoutoViewer.ViewModel
             UpdateView();
         }
 
+        private void NextFolder()
+        {
+            _imageList.NextFolder();
+            UpdateView();
+        }
+
+        private void PrevFolder()
+        {
+            _imageList.PrevFolder();
+            UpdateView();
+        }
+
         #endregion //Command handlers
 
         #region Event handlers
@@ -332,13 +372,14 @@ namespace ImoutoViewer.ViewModel
             UpdateView();
         }
 
-        void _settings_SelectedResizeTypeChanged(object sender, EventArgs e)
+        private void _settings_SelectedResizeTypeChanged(object sender, EventArgs e)
         {
             UpdateView();
         }
 
-        void _settings_SelectedDirectorySearchTypeChanged(object sender, EventArgs e)
+        private void _settings_SelectedDirectorySearchTypeChanged(object sender, EventArgs e)
         {
+            LocalImageList.FilesGettingMethods = Settings.DirectorySearchFlags;
             _initBackgroundWorker.RunWorkerAsync(new[] { CurrentLocalImage.Path });
         }
 

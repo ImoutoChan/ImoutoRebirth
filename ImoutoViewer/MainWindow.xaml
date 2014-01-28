@@ -17,7 +17,8 @@
         WindowStyle="SingleBorderWindow"
         WindowStartupLocation="CenterScreen" 
         WindowState="Maximized"
-        gif:ImageBehavior.AnimateInDesignMode="True"        
+        gif:ImageBehavior.AnimateInDesignMode="True"
+        KeyUp="MainWindow_OnKeyUp"
         >
     <Controls:MetroWindow.InputBindings>
         <MouseBinding Command="{Binding SimpleNextImageCommand}" 
@@ -38,6 +39,10 @@
         <KeyBinding Command="{Binding RotateCommand}" 
                     CommandParameter="right"
                     Key="R" />
+        <KeyBinding Command="{Binding NextFolderCommand}"
+                    Key="Down"/>
+        <KeyBinding Command="{Binding PrevFolderCommand}"
+                    Key="Up"/>
     </Controls:MetroWindow.InputBindings>
     <i:Interaction.Triggers>
         <i:EventTrigger EventName="MouseLeftButtonUp">
@@ -80,12 +85,12 @@
                     <ScrollViewer Grid.Row="1" 
                                   VerticalScrollBarVisibility="Auto">
                         <StackPanel Orientation="Vertical">
-                            <TextBlock Text="Resize type" 
+                            <TextBlock Text="Resize" 
                                        Margin="0,0,0,5"/>
                             <ComboBox ItemsSource="{Binding Path=ResizeTypes}"
                                       SelectedItem="{Binding Path=SelectedResizeType}"
                                       />
-                            <TextBlock Text="Loading folders" 
+                            <TextBlock Text="Folders loading" 
                                        Margin="0,15,0,5"/>
                             <ItemsControl ItemsSource="{Binding Path=DirectorySearchTypes}">
                                 <ItemsControl.ItemsPanel>
@@ -97,10 +102,25 @@
                                     <DataTemplate>
                                         <ToggleButton Margin="0,0,11,5"
                                                       Content="{Binding Name}" 
-                                                      IsChecked="{Binding IsSelected}"/>
+                                                      IsChecked="{Binding IsSelected}"
+                                                      Style="{DynamicResource CustomMetroToggleButton}"/>
                                     </DataTemplate>
                                 </ItemsControl.ItemTemplate>
                             </ItemsControl>
+                            <TextBlock Text="Files sorting" 
+                                       Margin="0,15,0,5"/>
+                            <ComboBox ItemsSource="{Binding Path=SortingMethods}"
+                                      SelectedItem="{Binding Path=SelectedFilesSorting}"
+                                      />
+                            <CheckBox IsChecked="{Binding Path=IsSelectedFilesSortingDescending}"
+                                      Content="Descending"/>
+                            <TextBlock Text="Folders sorting" 
+                                       Margin="0,15,0,5"/>
+                            <ComboBox ItemsSource="{Binding Path=SortingMethods}"
+                                      SelectedItem="{Binding Path=SelectedFoldersSorting}"
+                                      />
+                            <CheckBox IsChecked="{Binding Path=IsSelectedFoldersSortingDescending}"
+                                      Content="Descending"/>
 
                         </StackPanel>
                     </ScrollViewer>
@@ -109,8 +129,9 @@
         </Controls:FlyoutsControl>
     </Controls:MetroWindow.Flyouts>
     <Grid x:Name="Client" 
-          MouseLeftButtonUp="Client_MouseLeftButtonUp">
-        <local:ExtScrollViewer x:Name="ScrollViewerObject" 
+          MouseLeftButtonUp="Client_MouseLeftButtonUp"
+          Focusable="True">
+        <localControls:ExtScrollViewer x:Name="ScrollViewerObject" 
                                HorizontalScrollBarVisibility="Auto" 
                                VerticalScrollBarVisibility="Auto"
                                ScrollChanged="ScrollViewerObject_ScrollChanged"
@@ -153,6 +174,6 @@
                                     Converter={StaticResource visibilityConverter}}"
                        />
             </Grid>
-        </local:ExtScrollViewer>
+        </localControls:ExtScrollViewer>
     </Grid>
 </Controls:MetroWindow>

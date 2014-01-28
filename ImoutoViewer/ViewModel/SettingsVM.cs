@@ -11,6 +11,10 @@ namespace ImoutoViewer.ViewModel
         #region Fields
 
         private ResizeTypeDescriptor _selectedResizeType;
+        private SortingDescriptor _selectedFilesSorting;
+        private SortingDescriptor _selectedFoldersSorting;
+        private bool _isSelectedFoldersSortingDescending;
+        private bool _isSelectedFilesSortingDescending;
 
         #endregion //Fileds
         
@@ -19,23 +23,23 @@ namespace ImoutoViewer.ViewModel
         public SettingsVM()
         {
             ResizeTypes = ResizeTypeDescriptor.GetList();
-            var selected =
-                from s in ResizeTypes
-                where s.Type == ResizeType.DownscaleToViewPort
-                select s;
-            SelectedResizeType = selected.First();
+            SelectedResizeType = ResizeTypes.First(x => x.Type == ResizeType.DownscaleToViewPort);
 
             DirectorySearchTypes = DirectorySearchTypeDescriptor.GetList();
             foreach (var item in DirectorySearchTypes)
             {
                 item.SelectedChanged += item_SelectedChanged;
             }
+
+            SortingMethods = SortingDescriptor.GetList();
+
+            SelectedFoldersSorting = SortingMethods.First(x => x.Method == SortMethod.ByName);
+            SelectedFilesSorting = SortingMethods.First(x => x.Method == SortMethod.ByName);
+
+            IsSelectedFilesSortingDescending = false;
+            IsSelectedFoldersSortingDescending = false;
         }
 
-        void item_SelectedChanged(object sender, EventArgs e)
-        {
-            OnSelectedDirectorySearchTypeChanged();
-        }
 
         #endregion //Constructors
 
@@ -64,7 +68,58 @@ namespace ImoutoViewer.ViewModel
             }
         }
 
+        public List<SortingDescriptor> SortingMethods { get; set; }
+
+        public SortingDescriptor SelectedFoldersSorting
+        {
+            get { return _selectedFoldersSorting; }
+            set
+            {
+                _selectedFoldersSorting = value;
+                OnSelectedFoldersSortingChanged();
+            }
+        }
+
+        public bool IsSelectedFoldersSortingDescending
+        {
+            get { return _isSelectedFoldersSortingDescending; }
+            set
+            {
+                _isSelectedFoldersSortingDescending = value;
+                OnSelectedFoldersSortingChanged();
+            }
+        }
+
+        public SortingDescriptor SelectedFilesSorting
+        {
+            get { return _selectedFilesSorting; }
+            set
+            {
+                _selectedFilesSorting = value;
+                OnSelectedFilesSortingChanged();
+            }
+        }
+
+        public bool IsSelectedFilesSortingDescending
+        {
+            get { return _isSelectedFilesSortingDescending; }
+            set
+            {
+                _isSelectedFilesSortingDescending = value;
+                OnSelectedFilesSortingChanged();
+            }
+        }
+
         #endregion //Properties
+
+        #region Event handlers
+
+        private void item_SelectedChanged(object sender, EventArgs e)
+        {
+            OnSelectedDirectorySearchTypeChanged();
+        }
+
+        #endregion // Event handlers
 
         #region Events
 
@@ -83,6 +138,24 @@ namespace ImoutoViewer.ViewModel
             if (SelectedDirectorySearchTypeChanged != null)
             {
                 SelectedDirectorySearchTypeChanged(this, null);
+            }
+        }
+
+        public event EventHandler SelectedFilesSortingChanged;
+        private void OnSelectedFilesSortingChanged()
+        {
+            if (SelectedFilesSortingChanged != null)
+            {
+                SelectedFilesSortingChanged(this, null);
+            }
+        }
+
+        public event EventHandler SelectedFoldersSortingChanged;
+        private void OnSelectedFoldersSortingChanged()
+        {
+            if (SelectedFoldersSortingChanged != null)
+            {
+                SelectedFoldersSortingChanged(this, null);
             }
         }
 
@@ -189,4 +262,38 @@ namespace ImoutoViewer.ViewModel
 
         #endregion //Events
     }
+
+    class SortingDescriptor
+    {
+        #region Properties
+
+        public string Name { get; set; }
+        public SortMethod Method { get; set; }
+
+        #endregion //Properties
+
+        #region Methods
+
+        public override string ToString()
+        {
+            return Name;
+        }
+
+        #endregion //Methods
+
+        #region Static methods
+
+        public static List<SortingDescriptor> GetList()
+        {
+            return new List<SortingDescriptor>
+            {
+                new SortingDescriptor { Name = "Name", Method = SortMethod.ByName },
+                new SortingDescriptor { Name = "Date created", Method = SortMethod.ByCreateDate  },            
+                new SortingDescriptor { Name = "Date modified", Method = SortMethod.ByUpdateDate }
+            };
+        }
+
+        #endregion //Static methods
+    }
+
 }

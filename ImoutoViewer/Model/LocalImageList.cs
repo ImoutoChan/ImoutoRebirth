@@ -10,14 +10,47 @@ namespace ImoutoViewer.Model
 {
     class LocalImageList : IEnumerable
     {
-        private const FilesGettingMethod DefaultFilesGettingMethod = FilesGettingMethod.Folder | FilesGettingMethod.AllDepthSubfolders; 
+        #region Static fields
+
+        private static SortMethod _filesSortMethod = SortMethod.ByName;
+
+        private static SortMethod _foldersSortMethod = SortMethod.ByCreateDate;
+
+        private static FilesGettingMethod _filesGettingMethod = FilesGettingMethod.Folder |
+                                                                FilesGettingMethod.AllDepthSubfolders;
+
+        #endregion //Static fields
+
+        #region Static Properties
+
+        public static SortMethod FilesSortMethod
+        {
+            get { return _filesSortMethod; }
+            set { _filesSortMethod = value; }
+        }
+
+        public static bool IsFilesSortMethodDescending { get; set; }
+
+        public static SortMethod FoldersSortMethod
+        {
+            get { return _foldersSortMethod; }
+            set { _foldersSortMethod = value; }
+        }
+
+        public static bool IsFoldersSortMethodDescending { get; set; }
+
+        public static FilesGettingMethod FilesGettingMethods
+        {
+            get { return _filesGettingMethod; }
+            set { _filesGettingMethod = value; }
+        }
+
+        #endregion //Static Properties
 
         #region Fields
 
         private List<LocalImage> _imageList;
         private LocalImage _currnetImage;
-
-        private FilesGettingMethod _currentLoadedFlags;
 
         private List<DirectoryInfo> _directoriesList;
         private DirectoryInfo _currentDirectory;
@@ -26,50 +59,50 @@ namespace ImoutoViewer.Model
 
         #region Constructors
 
-        public LocalImageList(FilesGettingMethod filesGettingMethod = DefaultFilesGettingMethod) : this(new string[0], filesGettingMethod) { }
+        public LocalImageList() : this(new string[0]) { }
 
-        public LocalImageList(string imagePath, FilesGettingMethod filesGettingMethod = DefaultFilesGettingMethod) : this(new[] { imagePath }, filesGettingMethod) { }
+        public LocalImageList(string imagePath) : this(new[] { imagePath }) { }
 
-        public LocalImageList(IEnumerable<string> imagePaths, FilesGettingMethod filesGettingMethod = DefaultFilesGettingMethod)
+        public LocalImageList(IEnumerable<string> imagePaths)
         {
             _imageList = new List<LocalImage>();
             _directoriesList = new List<DirectoryInfo>();
 
             var images =
-                 from i in imagePaths
-                 where IsImage(i)
-                 select i;
+                from image in imagePaths
+                where IsImage(image)
+                select image;
 
-            var enumImages = images as IList<string> ?? images.ToList();
-            if (enumImages.Count() > 1)
+            var foundImages = images as IList<string> ?? images.ToList();
+
+            int imagesCount = foundImages.Count();
+            if (imagesCount > 1)
             {
-                foreach (var item in enumImages)
-                {
-                    _imageList.Add(new LocalImage(item));
-                }
+                LoadImages(foundImages);
             }
-            else if (enumImages.Count() == 1)
+            else if (imagesCount == 1)
             {
-                var image = new FileInfo(enumImages.First());
+                // Load directories
+                var image = new FileInfo(foundImages.First());
+                LoadDirectories(image.Directory, FilesGettingMethods);
 
-                LoadDirectories(image.Directory, filesGettingMethod);
-
+                // Set current directory
                 bool flag = false;
-
                 foreach (var item in _directoriesList.Where(item => item.FullName == image.DirectoryName))
                 {
                     _currentDirectory = item;
                     flag = true;
                     break;
                 }
-
                 if (!flag)
                 {
                     _currentDirectory = _directoriesList.First();
                 }
 
+                // Load images
                 LoadImages(_currentDirectory);
 
+                // Detect current image
                 var file =
                     from i in _imageList
                     where i.Path == image.FullName
@@ -144,16 +177,11 @@ namespace ImoutoViewer.Model
 
         #region Public methods
 
-        public void Add(LocalImage item)
-        {
-            _imageList.Add(item);
-        }
-
-        public LocalImage Next()
+        public void Next()
         {
             if (IsEmpty)
             {
-                return CurrentImage;
+                return;
             }
 
 //#if DEBUG
@@ -174,15 +202,13 @@ namespace ImoutoViewer.Model
             }
 
             _currnetImage = _imageList[currentIndex];
-
-            return _currnetImage;
         }
 
-        public LocalImage Previous()
+        public void Previous()
         {
             if (IsEmpty)
             {
-                return CurrentImage;
+                return;
             }
             _currnetImage.FreeMemory();
             _currnetImage.ResetZoom();
@@ -197,12 +223,39 @@ namespace ImoutoViewer.Model
             }
 
             _currnetImage = _imageList[currentIndex];
-            return _currnetImage;
+        }
+
+        public void NextFolder()
+        {
+            NextDirectory();
+            _currnetImage = _imageList.First();
+        }
+
+        public void PrevFolder()
+        {
+            PrevDirectory();
+            _currnetImage = _imageList.Last();
+        }
+
+        internal void ResortFiles()
+        {
+            _imageList = new List<LocalImage>(_imageList.OrderByWithDirection(x => GetFilesOrderProperty(x.Path), IsFilesSortMethodDescending));
         }
 
         #endregion //Public methods
 
         #region Methods
+
+        private void LoadImages(IEnumerable<string> imagePaths)
+        {
+
+            var images =
+                imagePaths.Where(IsImage)
+                    .OrderByWithDirection(GetFilesOrderProperty, IsFilesSortMethodDescending)
+                    .Select(x => new LocalImage(x));
+
+            _imageList.AddRange(images);
+        }
 
         private void LoadImages(DirectoryInfo sourceFolder)
         {
@@ -211,10 +264,10 @@ namespace ImoutoViewer.Model
                 throw new Exception("Directory not found.");
             }
 
-            var files =
-                from file in Directory.GetFiles(sourceFolder.FullName, "*.*")
-                where IsImage(file)
-                select new LocalImage(file);
+            var files = Directory.GetFiles(sourceFolder.FullName, "*.*")
+                    .Where(IsImage)
+                    .OrderByWithDirection(GetFilesOrderProperty, IsFilesSortMethodDescending)
+                    .Select(x => new LocalImage(x));
 
             var localImages = files as IList<LocalImage> ?? files.ToList();
 
@@ -235,38 +288,31 @@ namespace ImoutoViewer.Model
             }
 
 
-            if (IsFlagged(flags, FilesGettingMethod.Folder) && !IsFlagged(_currentLoadedFlags, FilesGettingMethod.Folder))
+            if (IsFlagged(flags, FilesGettingMethod.Folder))
             {
                 AddDirectory(sourceFolder);
             }
 
-            if (IsFlagged(flags, FilesGettingMethod.AllDepthSubfolders) 
-                && !IsFlagged(_currentLoadedFlags, FilesGettingMethod.AllDepthSubfolders))
+            if (IsFlagged(flags, FilesGettingMethod.AllDepthSubfolders))
             {
                 AddDirectoryRange(GetDirectories(sourceFolder, true));
             }
-            else if (IsFlagged(flags, FilesGettingMethod.Subfolders) 
-                && !IsFlagged(_currentLoadedFlags, FilesGettingMethod.Subfolders | FilesGettingMethod.AllDepthSubfolders))
+            else if (IsFlagged(flags, FilesGettingMethod.Subfolders))
             {
                 AddDirectoryRange(GetDirectories(sourceFolder));
             }
 
 
-            if (IsFlagged(flags, FilesGettingMethod.AllDepthPrefolder) 
-                && !IsFlagged(_currentLoadedFlags, FilesGettingMethod.AllDepthPrefolder))
+            if (IsFlagged(flags, FilesGettingMethod.AllDepthPrefolder))
             {
                 DirectoryInfo workfolder = sourceFolder;
                 while (workfolder.Parent != null)
                 {
                     AddDirectory(workfolder.Parent);
 
-                    foreach (var item in GetDirectories(workfolder.Parent))
+                    foreach (var item in GetDirectories(workfolder.Parent)
+                        .Where(item => item.FullName != workfolder.FullName))
                     {
-                        if (item.FullName == workfolder.FullName)
-                        {
-                            continue;
-                        }
-
                         if (IsFlagged(flags, FilesGettingMethod.Folder))
                         {
                             AddDirectory(item);
@@ -284,37 +330,28 @@ namespace ImoutoViewer.Model
                     workfolder = workfolder.Parent;
                 }
             }
-            else if (IsFlagged(flags, FilesGettingMethod.Prefolders) 
-                && !IsFlagged(_currentLoadedFlags, FilesGettingMethod.Prefolders | FilesGettingMethod.AllDepthPrefolder))
+            else if (IsFlagged(flags, FilesGettingMethod.Prefolders) && sourceFolder.Parent != null)
             {
-                if (sourceFolder.Parent != null)
+                AddDirectory(sourceFolder.Parent);
+
+                foreach (var item in GetDirectories(sourceFolder.Parent)
+                    .Where(item => item.FullName != sourceFolder.FullName))
                 {
-                    AddDirectory(sourceFolder.Parent);
-
-                    foreach (var item in GetDirectories(sourceFolder.Parent))
+                    if (IsFlagged(flags, FilesGettingMethod.Folder))
                     {
-                        if (item.FullName == sourceFolder.FullName)
-                        {
-                            continue;
-                        }
+                        AddDirectory(item);
+                    }
 
-                        if (IsFlagged(flags, FilesGettingMethod.Folder))
-                        {
-                            AddDirectory(item);
-                        }
-
-                        if (IsFlagged(flags, FilesGettingMethod.AllDepthSubfolders))
-                        {
-                            AddDirectoryRange(GetDirectories(item, true));
-                        }                        
-                        else if (IsFlagged(flags, FilesGettingMethod.Subfolders))
-                        {
-                            AddDirectoryRange(GetDirectories(item));
-                        }
+                    if (IsFlagged(flags, FilesGettingMethod.AllDepthSubfolders))
+                    {
+                        AddDirectoryRange(GetDirectories(item, true));
+                    }
+                    else if (IsFlagged(flags, FilesGettingMethod.Subfolders))
+                    {
+                        AddDirectoryRange(GetDirectories(item));
                     }
                 }
             }
-            _currentLoadedFlags = flags;
         }
 
         private void AddDirectory(DirectoryInfo sourceFolder)
@@ -402,16 +439,20 @@ namespace ImoutoViewer.Model
 
             try
             {
-                if ((File.GetAttributes(source.FullName) & FileAttributes.ReparsePoint) != FileAttributes.ReparsePoint)
+                #region Check on softlink !!Very slow
+                if ((File.GetAttributes(source.FullName) & FileAttributes.ReparsePoint) == FileAttributes.ReparsePoint)
                 {
-                    foreach (DirectoryInfo folder in source.GetDirectories())
-                    {
-                        result.Add(folder);
+                    return result;
+                }
+                #endregion
 
-                        if (isRecursive)
-                        {
-                            result.AddRange(GetDirectories(folder, true));
-                        }
+                foreach (DirectoryInfo folder in source.GetDirectories().OrderByWithDirection(GetDirectoryOrderProperty, IsFoldersSortMethodDescending))
+                {
+                    result.Add(folder);
+
+                    if (isRecursive)
+                    {
+                        result.AddRange(GetDirectories(folder, true));
                     }
                 }
             }
@@ -431,6 +472,40 @@ namespace ImoutoViewer.Model
         private static bool IsFlagged(FilesGettingMethod flags, FilesGettingMethod value)
         {
             return (flags & value) == value;
+        }
+
+        private static object GetFilesOrderProperty(string imagePath)
+        {
+            switch (FilesSortMethod)
+            {
+                default:
+                case SortMethod.ByName:
+                    return imagePath.Split('\\').Last();
+                    break;
+                case SortMethod.ByCreateDate:
+                    return (new FileInfo(imagePath)).CreationTimeUtc;
+                    break;
+                case SortMethod.ByUpdateDate:
+                    return (new FileInfo(imagePath)).LastWriteTimeUtc;
+                    break;
+            }
+        }
+
+        private static object GetDirectoryOrderProperty(DirectoryInfo dirPath)
+        {
+            switch (FoldersSortMethod)
+            {
+                default:
+                case SortMethod.ByName:
+                    return dirPath.Name;
+                    break;
+                case SortMethod.ByCreateDate:
+                    return dirPath.CreationTimeUtc;
+                    break;
+                case SortMethod.ByUpdateDate:
+                    return dirPath.LastWriteTimeUtc;
+                    break;
+            }
         }
 
         #endregion // Static members

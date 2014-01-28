@@ -28,6 +28,7 @@
     <IsWebBootstrapper>false</IsWebBootstrapper>
     <UseApplicationTrust>false</UseApplicationTrust>
     <BootstrapperEnabled>true</BootstrapperEnabled>
+    <BaseIntermediateOutputPath>..\obj\</BaseIntermediateOutputPath>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -92,9 +93,12 @@
     <Compile Include="Behavior\IDropable.cs" />
     <Compile Include="Commands\RelayCommand.cs" />
     <Compile Include="Converters\VisibilityConverter.cs" />
+    <Compile Include="Model\Extentions.cs" />
     <Compile Include="Model\FilesGettingMethod.cs" />
     <Compile Include="Model\ImageFormat.cs" />
     <Compile Include="Model\ResizeType.cs" />
+    <Compile Include="Model\SortMethod.cs" />
+    <Compile Include="UserControls\ExtScrollViewer.cs" />
     <Compile Include="UserControls\MouseWheelGesture.cs" />
     <Compile Include="ViewModel\MainWindowVM.cs" />
     <Compile Include="ViewModel\SettingsVM.cs" />
