@@ -60,15 +60,7 @@ namespace ImoutoViewer.ViewModel
         {
             get
             {
-                FilesGettingMethod fg = FilesGettingMethod.None;
-                foreach (var item in DirectorySearchTypes)
-                {
-                    if (item.IsSelected)
-                    {
-                        fg |= item.Type;
-                    }
-                }
-                return fg;
+                return DirectorySearchTypes.Where(item => item.IsSelected).Aggregate(FilesGettingMethod.None, (current, item) => current | item.Type);
             }
         }
 
@@ -119,13 +111,13 @@ namespace ImoutoViewer.ViewModel
 
         public static List<ResizeTypeDescriptor> GetList()
         {
-            return new List<ResizeTypeDescriptor>()
+            return new List<ResizeTypeDescriptor>
             {
-                new ResizeTypeDescriptor() { Name = "Fit to screen (downscale only)", Type = ResizeType.DownscaleToViewPort },
-                new ResizeTypeDescriptor() { Name = "Fit to screen (down & up scale)", Type = ResizeType.FitToViewPort },            
-                new ResizeTypeDescriptor() { Name = "Fit to screen width (downscale only)", Type = ResizeType.DownscaleToViewPortWidth },            
-                new ResizeTypeDescriptor() { Name = "Fit to screen width (down & up scale)", Type = ResizeType.FitToViewPortWidth },            
-                new ResizeTypeDescriptor() { Name = "Original size (no resize)", Type = ResizeType.NoResize },
+                new ResizeTypeDescriptor { Name = "Fit to screen (downscale only)", Type = ResizeType.DownscaleToViewPort },
+                new ResizeTypeDescriptor { Name = "Fit to screen (down & up scale)", Type = ResizeType.FitToViewPort },            
+                new ResizeTypeDescriptor { Name = "Fit to screen width (downscale only)", Type = ResizeType.DownscaleToViewPortWidth },            
+                new ResizeTypeDescriptor { Name = "Fit to screen width (down & up scale)", Type = ResizeType.FitToViewPortWidth },            
+                new ResizeTypeDescriptor { Name = "Original size (no resize)", Type = ResizeType.NoResize },
             };
         }
 
@@ -172,13 +164,13 @@ namespace ImoutoViewer.ViewModel
 
         public static ObservableCollection<DirectorySearchTypeDescriptor> GetList()
         {
-            return new ObservableCollection<DirectorySearchTypeDescriptor>()
+            return new ObservableCollection<DirectorySearchTypeDescriptor>
             {
-                new DirectorySearchTypeDescriptor() { Name = "All Pre", Type = FilesGettingMethod.AllDepthPrefolder },
-                new DirectorySearchTypeDescriptor() { Name = "Pre", Type = FilesGettingMethod.Prefolders },            
-                new DirectorySearchTypeDescriptor() { Name = "Cur", Type = FilesGettingMethod.Folder, IsSelected = true },            
-                new DirectorySearchTypeDescriptor() { Name = "Sub", Type = FilesGettingMethod.Subfolders, IsSelected = true},            
-                new DirectorySearchTypeDescriptor() { Name = "All Sub", Type = FilesGettingMethod.AllDepthSubfolders },
+                new DirectorySearchTypeDescriptor { Name = "All Pre", Type = FilesGettingMethod.AllDepthPrefolder },
+                new DirectorySearchTypeDescriptor { Name = "Pre", Type = FilesGettingMethod.Prefolders },            
+                new DirectorySearchTypeDescriptor { Name = "Cur", Type = FilesGettingMethod.Folder, IsSelected = true },            
+                new DirectorySearchTypeDescriptor { Name = "Sub", Type = FilesGettingMethod.Subfolders, IsSelected = true},            
+                new DirectorySearchTypeDescriptor { Name = "All Sub", Type = FilesGettingMethod.AllDepthSubfolders },
             };
         }
 

@@ -20,15 +20,16 @@ namespace ImoutoViewer.ViewModel
         {
             // Verify that the property name matches a real,  
             // public, instance property on this object.
-            if (TypeDescriptor.GetProperties(this)[propertyName] == null)
-            {
-                string msg = "Invalid property name: " + propertyName;
+            if (TypeDescriptor.GetProperties(this)[propertyName] != null) return;
 
-                if (this.ThrowOnInvalidPropertyName)
-                    throw new Exception(msg);
-                else
-                    Debug.Fail(msg);
+            string msg = "Invalid property name: " + propertyName;
+
+            if (ThrowOnInvalidPropertyName)
+            {
+                throw new Exception(msg);
             }
+
+            Debug.Fail(msg);
         }
 
         protected virtual bool ThrowOnInvalidPropertyName { get; private set; }
@@ -41,7 +42,7 @@ namespace ImoutoViewer.ViewModel
 
         protected virtual void OnPropertyChanged(string propertyName)
         {
-            this.VerifyPropertyName(propertyName);
+            VerifyPropertyName(propertyName);
 
             if (PropertyChanged != null)
             {

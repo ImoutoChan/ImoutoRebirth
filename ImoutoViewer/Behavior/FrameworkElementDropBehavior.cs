@@ -1,5 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using System.Linq;
 using System.Windows;
 using System.Windows.Interactivity;
 
@@ -8,19 +8,16 @@ namespace ImoutoViewer.Behavior
     public class FrameworkElementDropBehavior : Behavior<FrameworkElement>
     {
         private List<string> _allowDataTypes; //the type of the data that can be dropped into this control
-        private Type _dataType;
 
-        private List<string> AllowDataTypes
+        private IEnumerable<string> AllowDataTypes
         {
             get
             {
-                if (_allowDataTypes == null)
+                if (_allowDataTypes == null && (AssociatedObject.DataContext as IDropable) != null)
                 {
-                    if (this.AssociatedObject.DataContext as IDropable != null)
-                    {
-                        _allowDataTypes = (this.AssociatedObject.DataContext as IDropable).AllowDataTypes;
-                    }
+                    _allowDataTypes = (AssociatedObject.DataContext as IDropable).AllowDataTypes;
                 }
+
                 return _allowDataTypes;
             }
         }
@@ -29,41 +26,37 @@ namespace ImoutoViewer.Behavior
         {
             base.OnAttached();
 
-            this.AssociatedObject.AllowDrop = true;
-            this.AssociatedObject.DragEnter += new DragEventHandler(AssociatedObject_DragEnter);
-            this.AssociatedObject.Drop += new DragEventHandler(AssociatedObject_Drop);
+            AssociatedObject.AllowDrop = true;
+            AssociatedObject.DragEnter += AssociatedObject_DragEnter;
+            AssociatedObject.Drop += AssociatedObject_Drop;
         }
 
         void AssociatedObject_Drop(object sender, DragEventArgs e)
         {
-            foreach (var item in AllowDataTypes)
+            foreach (var item in AllowDataTypes.Where(item => e.Data.GetDataPresent(item)))
 	        {
-                if (e.Data.GetDataPresent(item))
-                {
-                    //drop the data
-                    IDropable target = this.AssociatedObject.DataContext as IDropable;
-                    target.Drop(e.Data.GetData(item));
+	            //Drop the data
+	            IDropable target = AssociatedObject.DataContext as IDropable;
 
-                    break;
-                }
+	            if (target != null)
+	            {
+	                target.Drop(e.Data.GetData(item));
+	            }
+	            break;
 	        }
 
             e.Handled = true;
-            return;
         }
 
         void AssociatedObject_DragEnter(object sender, DragEventArgs e)
         {
             e.Effects = DragDropEffects.None;
             //if the DataContext implements IDropable, record the data type that can be dropped
-            foreach (var item in AllowDataTypes)
-	        {
-                if (e.Data.GetDataPresent(item))
-                {
-                    e.Effects = DragDropEffects.Copy;
-                    break;
-                }
-	        }
+            foreach (var item in AllowDataTypes.Where(item => e.Data.GetDataPresent(item)))
+            {
+                e.Effects = DragDropEffects.Copy;
+                break;
+            }
 
             e.Handled = true;
         }

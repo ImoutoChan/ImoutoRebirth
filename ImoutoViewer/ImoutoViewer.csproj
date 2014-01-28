@@ -91,7 +91,8 @@
     <Compile Include="Behavior\IDragable.cs" />
     <Compile Include="Behavior\IDropable.cs" />
     <Compile Include="Commands\RelayCommand.cs" />
-    <Compile Include="Convertors\VisibilityConverter.cs" />
+    <Compile Include="Converters\VisibilityConverter.cs" />
+    <Compile Include="Model\FilesGettingMethod.cs" />
     <Compile Include="Model\ImageFormat.cs" />
     <Compile Include="Model\ResizeType.cs" />
     <Compile Include="UserControls\MouseWheelGesture.cs" />

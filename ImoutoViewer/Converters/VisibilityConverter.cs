@@ -21,33 +21,22 @@ namespace ImoutoViewer.Converters
             var isCheck = (Boolean)value;
 
             if (IsInvert)
+            {
                 isCheck = !isCheck;
+            }
 
-            if (isCheck)
-                return Visibility.Visible;
-            else
-                return Visibility.Collapsed;
+            return isCheck ? Visibility.Visible : Visibility.Collapsed;
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
         {
-            if (!(value is Visibility)) throw new ArgumentException("The input variable has wrong type.");
-
-            bool result = false;
-            switch ((Visibility)value)
+            if (!(value is Visibility))
             {
-                case Visibility.Collapsed:
-                    result = false;
-                    break;
-                case Visibility.Visible:
-                    result = true;
-                    break;
+                throw new ArgumentException("The input variable has wrong type.");
             }
 
-            if (IsInvert)
-                result = !result;
-
-            return result;
+            bool result = (Visibility) value == Visibility.Visible;
+            return (IsInvert) ? !result : result;
         }
     }
 }

@@ -28,9 +28,9 @@ namespace ImoutoViewer.Model
 
         public LocalImageList(FilesGettingMethod filesGettingMethod = DefaultFilesGettingMethod) : this(new string[0], filesGettingMethod) { }
 
-        public LocalImageList(string imagePath, FilesGettingMethod filesGettingMethod = DefaultFilesGettingMethod) : this(new string[] { imagePath }, filesGettingMethod) { }
+        public LocalImageList(string imagePath, FilesGettingMethod filesGettingMethod = DefaultFilesGettingMethod) : this(new[] { imagePath }, filesGettingMethod) { }
 
-        public LocalImageList(string[] imagePaths, FilesGettingMethod filesGettingMethod = DefaultFilesGettingMethod)
+        public LocalImageList(IEnumerable<string> imagePaths, FilesGettingMethod filesGettingMethod = DefaultFilesGettingMethod)
         {
             _imageList = new List<LocalImage>();
             _directoriesList = new List<DirectoryInfo>();
@@ -40,28 +40,27 @@ namespace ImoutoViewer.Model
                  where IsImage(i)
                  select i;
 
-            if (images.Count() > 1)
+            var enumImages = images as IList<string> ?? images.ToList();
+            if (enumImages.Count() > 1)
             {
-                foreach (var item in images)
+                foreach (var item in enumImages)
                 {
                     _imageList.Add(new LocalImage(item));
                 }
             }
-            else if (images.Count() == 1)
+            else if (enumImages.Count() == 1)
             {
-                FileInfo image = new FileInfo(images.First());
+                var image = new FileInfo(enumImages.First());
 
                 LoadDirectories(image.Directory, filesGettingMethod);
 
                 bool flag = false;
-                foreach(var item in _directoriesList)
+
+                foreach (var item in _directoriesList.Where(item => item.FullName == image.DirectoryName))
                 {
-                    if (item.FullName == image.DirectoryName)
-                    {
-                        _currentDirectory = item;
-                        flag = true;
-                        break;
-                    }
+                    _currentDirectory = item;
+                    flag = true;
+                    break;
                 }
 
                 if (!flag)
@@ -76,7 +75,8 @@ namespace ImoutoViewer.Model
                     where i.Path == image.FullName
                     select i;
 
-                _currnetImage = (file.Count() > 0) ? file.First() : _imageList.First();
+                var localImages = file as IList<LocalImage> ?? file.ToList();
+                _currnetImage = (localImages.Any()) ? localImages.First() : _imageList.First();
             }
             else
             {
@@ -188,7 +188,6 @@ namespace ImoutoViewer.Model
             _currnetImage.ResetZoom();
 
             int currentIndex = _imageList.IndexOf(_currnetImage);
-            int maxIndex = _imageList.Count;
             currentIndex--;
 
             if (currentIndex < 0)
@@ -217,13 +216,15 @@ namespace ImoutoViewer.Model
                 where IsImage(file)
                 select new LocalImage(file);
 
-            if (files.Count() == 0)
+            var localImages = files as IList<LocalImage> ?? files.ToList();
+
+            if (!localImages.Any())
             {
                 throw new Exception("There are no image files in directory.");
             }
 
             _imageList = new List<LocalImage>();
-            _imageList.AddRange(files);
+            _imageList.AddRange(localImages);
         }
 
         private void LoadDirectories(DirectoryInfo sourceFolder, FilesGettingMethod flags)
@@ -329,7 +330,7 @@ namespace ImoutoViewer.Model
                     where IsImage(file)
                     select file;
 
-                if (files.Count() > 0)
+                if (files.Any())
                 {
                     _directoriesList.Add(sourceFolder);
                 }
@@ -337,56 +338,12 @@ namespace ImoutoViewer.Model
             catch { }
         }
 
-        private void AddDirectoryRange(List<DirectoryInfo> sourceFolders)
+        private void AddDirectoryRange(IEnumerable<DirectoryInfo> sourceFolders)
         {
             foreach (var item in sourceFolders)
             {
                 AddDirectory(item);
             }
-        }
-
-        private List<DirectoryInfo> GetDirectories(DirectoryInfo source, bool isRecursive = false)
-        {
-            List<DirectoryInfo> result = new List<DirectoryInfo>();
-
-            try
-            {
-                if ((File.GetAttributes(source.FullName) & FileAttributes.ReparsePoint) != FileAttributes.ReparsePoint)
-                {
-                    foreach (DirectoryInfo folder in source.GetDirectories())
-                    {
-                        result.Add(folder);
-
-                        if (isRecursive)
-                        {
-                            result.AddRange(GetDirectories(folder, isRecursive));
-                        }
-                    }
-                }
-            }
-            catch (UnauthorizedAccessException) { }
-
-            return result;
-        }
-
-        private bool IsImage(string file)
-        {
-            CultureInfo ci = new CultureInfo("en-US");
-            string formats = @".jpg|.png|.jpeg|.bmp|.gif|.tiff";
-            bool result = false;
-
-            foreach (var item in formats.Split('|'))
-            {
-                result = result || file.EndsWith(item, true, ci);
-                if (result) break;
-            }
-
-            return result;
-        }
-
-        private bool IsFlagged(FilesGettingMethod flags, FilesGettingMethod value)
-        {
-            return (flags & value) == value;
         }
 
         private void NextDirectory()
@@ -437,60 +394,83 @@ namespace ImoutoViewer.Model
 
         #endregion //Methods
 
-        #region Event handlers
-        #endregion //Event handlers
+        #region Static methods
 
-        #region Events
-        #endregion //Events
+        private static IEnumerable<DirectoryInfo> GetDirectories(DirectoryInfo source, bool isRecursive = false)
+        {
+            var result = new List<DirectoryInfo>();
+
+            try
+            {
+                if ((File.GetAttributes(source.FullName) & FileAttributes.ReparsePoint) != FileAttributes.ReparsePoint)
+                {
+                    foreach (DirectoryInfo folder in source.GetDirectories())
+                    {
+                        result.Add(folder);
+
+                        if (isRecursive)
+                        {
+                            result.AddRange(GetDirectories(folder, true));
+                        }
+                    }
+                }
+            }
+            catch (UnauthorizedAccessException) { }
+
+            return result;
+        }
+
+        private static bool IsImage(string file)
+        {
+            var ci = new CultureInfo("en-US");
+            const string formats = @".jpg|.png|.jpeg|.bmp|.gif|.tiff";
+
+            return formats.Split('|').Any(item => file.EndsWith(item, true, ci));
+        }
+
+        private static bool IsFlagged(FilesGettingMethod flags, FilesGettingMethod value)
+        {
+            return (flags & value) == value;
+        }
+
+        #endregion // Static members
 
         #region IEnumerable members
 
         public IEnumerator GetEnumerator()
         {
-            return (IEnumerator) _imageList.GetEnumerator();
+            return ((IEnumerable) _imageList).GetEnumerator();
         }
 
-        #endregion //IEnumerable members
-    }
-
-    [Flags]
-    public enum FilesGettingMethod
-    {
-        None = 0,
-        Folder = 1,
-        Subfolders = 2,
-        AllDepthSubfolders = 4,
-        Prefolders = 16,
-        AllDepthPrefolder = 32,
-        All = Folder | AllDepthSubfolders | AllDepthPrefolder
+        #endregion // IEnumerable members
     }
 
 #if DEBUG
     public class DebugClass
     {
-        public static Stopwatch stopWatch = new Stopwatch();
-        public static long currentTime = 0;
+        public static Stopwatch StopWatch = new Stopwatch();
+        public static long CurrentTime = 0;
 
         public static void Add(long size)
         {
-            if (stopWatch.IsRunning)
+            if (StopWatch.IsRunning)
             {
-                stopWatch.Stop();
-                currentTime += stopWatch.ElapsedMilliseconds;
+                StopWatch.Stop();
+                CurrentTime += StopWatch.ElapsedMilliseconds;
             }
 
-            memoryStat.Add(currentTime, size);
-            stopWatch.Start();
+            MemoryStat.Add(CurrentTime, size);
+            StopWatch.Start();
 
         }
 
-        public static Dictionary<long, long> memoryStat = new Dictionary<long, long>();
+        public static Dictionary<long, long> MemoryStat = new Dictionary<long, long>();
 
         public static void Save()
         {
-            using(StreamWriter sw = new StreamWriter(@"log.txt"))
+            using(var sw = new StreamWriter(@"log.txt"))
             {
-                foreach (var item in memoryStat)
+                foreach (var item in MemoryStat)
 	            {
                     sw.WriteLine("{0}\t{1}", item.Key, item.Value);
 	            }

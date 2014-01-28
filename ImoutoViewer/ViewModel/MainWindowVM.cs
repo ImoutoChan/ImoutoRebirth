@@ -14,12 +14,10 @@ namespace ImoutoViewer.ViewModel
     {
         #region Fields
 
-        private MainWindow _mainWindowView;
+        private readonly MainWindow _mainWindowView;
         private LocalImageList _imageList;
-        private SettingsVM _settings;
-        private BackgroundWorker _initBackgroundWorker;
-        private BackgroundWorker _navigateBackgroundWorker;
-        
+        private readonly BackgroundWorker _initBackgroundWorker;
+
         #endregion //Fields
         
         #region Constructors
@@ -28,19 +26,18 @@ namespace ImoutoViewer.ViewModel
         {
             IsSimpleWheelNavigationEnable = true;            
 
-            _mainWindowView = new MainWindow();
-            _mainWindowView.DataContext = this;
+            _mainWindowView = new MainWindow {DataContext = this};
             _mainWindowView.SizeChanged += _mainWindowView_SizeChanged;
+
             InitializeCommands();
             InitializeSettings();
+
             _mainWindowView.Show();
 
             _initBackgroundWorker = new BackgroundWorker();
             _initBackgroundWorker.RunWorkerCompleted += _backgroundWorker_RunWorkerCompleted;
             _initBackgroundWorker.DoWork += _backgroundWorker_DoWork;
             _initBackgroundWorker.RunWorkerAsync();
-
-
         }
 
         void _backgroundWorker_DoWork(object sender, DoWorkEventArgs e)
@@ -73,23 +70,14 @@ namespace ImoutoViewer.ViewModel
         {
             get
             {
+                var bs = _imageList.CurrentImage.Image;
                 if (IsError)
                 {
                     return null;
                 }
-                else
-                {
-                    BitmapSource bs = _imageList.CurrentImage.Image;
-                    if (!IsError)
-                    {
-                        _imageList.CurrentImage.Resize(_mainWindowView.Client.RenderSize, Settings.SelectedResizeType.Type);
-                        return _imageList.CurrentImage;
-                    }
-                    else
-                    {
-                        return null;
-                    }                
-                }
+
+                _imageList.CurrentImage.Resize(_mainWindowView.Client.RenderSize, Settings.SelectedResizeType.Type);
+                return _imageList.CurrentImage;
             }
         }
 
@@ -100,53 +88,40 @@ namespace ImoutoViewer.ViewModel
                 if (IsError)
                 {
                     return "Image loading error";
-                } 
-                else if (IsLoading)
+                }
+
+                if (IsLoading)
                 {
                     return "Loading...";
                 }
-                else
-                {
-                    return String.Format("Dir {3} / {4} : {5} | File {1} / {2} : {0}",
-                        CurrentLocalImage.Name,
-                        _imageList.CurrentImageIndex + 1,
-                        _imageList.ImagesCount,
-                        _imageList.CurrentDirectoryIndex + 1,
-                        _imageList.DirectoriesCount,
-                        _imageList.CurrentDirectory.Name);
-                }
-                
+
+                return String.Format("Dir {3} / {4} : {5} | File {1} / {2} : {0}",
+                    CurrentLocalImage.Name,
+                    _imageList.CurrentImageIndex + 1,
+                    _imageList.ImagesCount,
+                    _imageList.CurrentDirectoryIndex + 1,
+                    _imageList.DirectoriesCount,
+                    _imageList.CurrentDirectory.Name);
             }
         }
 
         public BitmapSource Image
         {
-            get
+            get 
             {
-
-                if (CurrentLocalImage == null || CurrentLocalImage.ImageFormat == ImageFormat.GIF)
-                {
-                    return null;
-                }
-                else
-                {
-                    return CurrentLocalImage.Image;
-                }
+                return CurrentLocalImage == null || CurrentLocalImage.ImageFormat == ImageFormat.GIF
+                    ? null
+                    : CurrentLocalImage.Image;
             }
         }
 
         public BitmapSource AnimutedImage
         {
-            get
+            get 
             {
-                if (CurrentLocalImage != null && CurrentLocalImage.ImageFormat == ImageFormat.GIF )
-                {
-                    return CurrentLocalImage.Image;
-                }
-                else
-                {
-                    return null;
-                }
+                return CurrentLocalImage != null && CurrentLocalImage.ImageFormat == ImageFormat.GIF
+                    ? CurrentLocalImage.Image
+                    : null;
             }
         }
 
@@ -154,9 +129,7 @@ namespace ImoutoViewer.ViewModel
         {
             get
             {
-                if (CurrentLocalImage == null) return false;
-
-                return (CurrentLocalImage.ImageFormat == ImageFormat.GIF);
+                return CurrentLocalImage != null && CurrentLocalImage.ImageFormat == ImageFormat.GIF;
             }
         }
 
@@ -166,9 +139,7 @@ namespace ImoutoViewer.ViewModel
         {
             get
             {
-                if (CurrentLocalImage == null) return 0;
-
-                return CurrentLocalImage.ResizedSize.Height;
+                return CurrentLocalImage == null ? 0 : CurrentLocalImage.ResizedSize.Height;
             }
         }
 
@@ -176,21 +147,13 @@ namespace ImoutoViewer.ViewModel
         {
             get
             {
-                if (CurrentLocalImage == null) return 0;
-
-                return CurrentLocalImage.ResizedSize.Width;
+                return CurrentLocalImage == null ? 0 : CurrentLocalImage.ResizedSize.Width;
             }
         }
 
         public bool IsSimpleWheelNavigationEnable { get; set; }
 
-        public SettingsVM Settings
-        {
-            get
-            {
-                return _settings;
-            }
-        }
+        public SettingsVM Settings { get; private set; }
 
         public bool IsError
         {
@@ -214,12 +177,12 @@ namespace ImoutoViewer.ViewModel
 
         private void InitializeSettings()
         {
-            _settings = new SettingsVM();
-            _settings.SelectedResizeTypeChanged += _settings_SelectedResizeTypeChanged;
-            _settings.SelectedDirectorySearchTypeChanged += _settings_SelectedDirectorySearchTypeChanged;
+            Settings = new SettingsVM();
+            Settings.SelectedResizeTypeChanged += _settings_SelectedResizeTypeChanged;
+            Settings.SelectedDirectorySearchTypeChanged += _settings_SelectedDirectorySearchTypeChanged;
         }
 
-        private void InitializeImageList(string[] images = null)
+        private void InitializeImageList(IEnumerable<string> images = null)
         {
             if (images != null)
             {
@@ -258,7 +221,7 @@ namespace ImoutoViewer.ViewModel
                 OnPropertyChanged("IsError");
                 OnPropertyChanged("ErrorMessage");
             }
-            catch (OutOfMemoryException e)
+            catch (OutOfMemoryException)
             {
                 GC.Collect();
                 GC.WaitForPendingFinalizers();
@@ -313,7 +276,7 @@ namespace ImoutoViewer.ViewModel
             ZoomInCommand = new RelayCommand(param => ZoomIn());
             ZoomOutCommand = new RelayCommand(param => ZoomOut());
 
-            RotateCommand = new RelayCommand(param => Rotate(param));
+            RotateCommand = new RelayCommand(Rotate);
         }
 
         #endregion //Commands
@@ -366,7 +329,7 @@ namespace ImoutoViewer.ViewModel
 
         private void _mainWindowView_SizeChanged(object sender, SizeChangedEventArgs e)
         {
-            UpdateView(); ///???
+            UpdateView();
         }
 
         void _settings_SelectedResizeTypeChanged(object sender, EventArgs e)
@@ -376,7 +339,7 @@ namespace ImoutoViewer.ViewModel
 
         void _settings_SelectedDirectorySearchTypeChanged(object sender, EventArgs e)
         {
-            _initBackgroundWorker.RunWorkerAsync(new string[] { CurrentLocalImage.Path });
+            _initBackgroundWorker.RunWorkerAsync(new[] { CurrentLocalImage.Path });
         }
 
         #endregion //Event handlers
@@ -395,7 +358,7 @@ namespace ImoutoViewer.ViewModel
         {
             get
             {
-                return new DataObject(DataFormats.FileDrop, new string[] { CurrentLocalImage.Path });
+                return new DataObject(DataFormats.FileDrop, new[] { CurrentLocalImage.Path });
             }
         }
 
@@ -415,7 +378,7 @@ namespace ImoutoViewer.ViewModel
         {
             get
             {
-                List<string> list = new List<string>();
+                var list = new List<string>();
                 list.Add(DataFormats.FileDrop);
 
                 return list;
@@ -424,7 +387,7 @@ namespace ImoutoViewer.ViewModel
 
         public void Drop(object data)
         {
-            string[] droppedFiles = (string[])data;
+            var droppedFiles = (string[])data;
 
             _initBackgroundWorker.RunWorkerAsync(droppedFiles);
         }
