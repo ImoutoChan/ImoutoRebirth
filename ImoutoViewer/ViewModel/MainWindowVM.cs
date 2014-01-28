@@ -378,8 +378,7 @@ namespace ImoutoViewer.ViewModel
         {
             get
             {
-                var list = new List<string>();
-                list.Add(DataFormats.FileDrop);
+                var list = new List<string> { DataFormats.FileDrop };
 
                 return list;
             }

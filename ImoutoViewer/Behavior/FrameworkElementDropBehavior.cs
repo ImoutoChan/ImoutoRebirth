@@ -51,11 +51,11 @@ namespace ImoutoViewer.Behavior
         void AssociatedObject_DragEnter(object sender, DragEventArgs e)
         {
             e.Effects = DragDropEffects.None;
+
             //if the DataContext implements IDropable, record the data type that can be dropped
-            foreach (var item in AllowDataTypes.Where(item => e.Data.GetDataPresent(item)))
+            if (AllowDataTypes.Any(item => e.Data.GetDataPresent(item)))
             {
                 e.Effects = DragDropEffects.Copy;
-                break;
             }
 
             e.Handled = true;

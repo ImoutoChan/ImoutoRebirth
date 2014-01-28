@@ -6,18 +6,20 @@ namespace ImoutoViewer
     /// <summary>
     /// Interaction logic for App.xaml
     /// </summary>
-    public partial class App : Application
+    public partial class App
     {
+        private MainWindowVM _mainWindowVM;
+
         protected override void OnStartup(StartupEventArgs e)
         {
             //Get the arguments
-            if (e.Args != null && e.Args.Length > 0)
+            if (e.Args.Length > 0)
             {
-                this.Properties["ArbitraryArgName"] = e.Args[0];
+                Properties["ArbitraryArgName"] = e.Args[0];
             }
 
             //Start the main window
-            MainWindowVM mainWindowVM = new MainWindowVM();
+            _mainWindowVM = new MainWindowVM();
 
             base.OnStartup(e);
         }

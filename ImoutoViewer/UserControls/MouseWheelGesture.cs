@@ -86,7 +86,7 @@ namespace ImoutoViewer.UserControls
                 || !(inputEventArgs is MouseWheelEventArgs)) 
                 return false;
 
-            MouseWheelEventArgs args = (MouseWheelEventArgs)inputEventArgs;
+            var args = (MouseWheelEventArgs)inputEventArgs;
 
             switch (Direction)
             {
