@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Windows;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
@@ -11,12 +12,11 @@ namespace ImoutoViewer.Model
 
         #region Fields
 
-        protected BitmapSource _image;
+        private readonly string _filePath;
 
-        protected string _filePath;
-        protected double _zoom = 1;
-        
-        protected Size _resizedSize;
+        private BitmapSource _image;
+        private double _zoom;
+        private Size _resizedSize;
         
         #endregion //Fields
 
@@ -28,6 +28,7 @@ namespace ImoutoViewer.Model
         /// <param name="imagePath">Path to image.</param>
         public LocalImage(string imagePath)
         {
+            _zoom = 1;
             _filePath = imagePath;
             IsError = false;
         }
@@ -60,10 +61,6 @@ namespace ImoutoViewer.Model
         {
             get
             {
-                if (_resizedSize == null)
-                {
-                    _resizedSize = new Size(Image.PixelWidth, Image.PixelHeight);
-                }
                 return new Size(_resizedSize.Width * _zoom, _resizedSize.Height * _zoom);
             }
         }
@@ -76,22 +73,22 @@ namespace ImoutoViewer.Model
                 {
                     case "jpg":
                     case "jpeg":
-                        return Model.ImageFormat.JPG;
+                        return ImageFormat.JPG;
                         break;
                     case "gif":
-                        return Model.ImageFormat.GIF;
+                        return ImageFormat.GIF;
                         break;
                     case "bmp":
-                        return Model.ImageFormat.BMP;
+                        return ImageFormat.BMP;
                         break;
                     case "tiff":
-                        return Model.ImageFormat.TIFF;
+                        return ImageFormat.TIFF;
                         break;
                     case "png":
-                        return Model.ImageFormat.PNG;
+                        return ImageFormat.PNG;
                         break;
                     default:
-                        return Model.ImageFormat.JPG;
+                        return ImageFormat.JPG;
                         break;
                 }
             }
@@ -121,7 +118,7 @@ namespace ImoutoViewer.Model
         {
             try
             {
-                BitmapImage bi = new BitmapImage();
+                var bi = new BitmapImage();
 
                 bi.BeginInit();
                 bi.CacheOption = BitmapCacheOption.OnDemand;
@@ -141,7 +138,7 @@ namespace ImoutoViewer.Model
         {
             _image = null;
 #if DEBUG
-            Stopwatch s = new Stopwatch();
+            var s = new Stopwatch();
             s.Start();
 #endif
             GC.Collect();
@@ -202,13 +199,13 @@ namespace ImoutoViewer.Model
 
         private void Rotate(int angle)
         {
-            TransformedBitmap trasformedBitmap = new TransformedBitmap();
+            var trasformedBitmap = new TransformedBitmap();
 
             trasformedBitmap.BeginInit();
             trasformedBitmap.Source = Image;
 
-            RotateTransform transform = new RotateTransform(angle);
-            trasformedBitmap.Transform = transform;
+            var rotateTransform = new RotateTransform(angle);
+            trasformedBitmap.Transform = rotateTransform;
 
             trasformedBitmap.EndInit();
 
@@ -217,7 +214,7 @@ namespace ImoutoViewer.Model
 
         private static Size ResizeImage(Size original, Size viewPort, ResizeType type)
         {
-            Size result = new Size();
+            Size result;
 
             switch (type)
             {
@@ -233,7 +230,6 @@ namespace ImoutoViewer.Model
                 case ResizeType.FitToViewPortWidth:
                     result = FitToViewPortWidth(original, viewPort);
                     break;
-                case ResizeType.NoResize:
                 default:
                     result = original;
                     break;
@@ -250,31 +246,28 @@ namespace ImoutoViewer.Model
         /// <returns>Calculated size.</returns>
         private static Size DownscaleToViewPort(Size original, Size viewPort)
         {
-            Size result = new Size();
+            var result = new Size();
 
             if (original.Height <= viewPort.Height && original.Width <= viewPort.Width)
             {
                 return original;
             }
+
+            double hRatio = original.Height / viewPort.Height; // original.Height = hratio * viewPort.Height
+            double wRatio = original.Width / viewPort.Width; // original.Width = wratio * viewPort.Width
+
+            if (wRatio > hRatio)
+            {
+                result.Width = viewPort.Width;
+                result.Height = original.Height / wRatio;
+            }
             else
-            {                
-                double hRatio = original.Height / viewPort.Height; // original.Height = hratio * viewPort.Height
-                double wRatio = original.Width / viewPort.Width; // original.Width = wratio * viewPort.Width
-
-                if (wRatio > hRatio)
-                {
-                    result.Width = viewPort.Width;
-                    result.Height = original.Height / wRatio;
-                }
-                else
-                {
-                    result.Height = viewPort.Height;
-                    result.Width = original.Width / hRatio;
-                }
-
-                return result;
+            {
+                result.Height = viewPort.Height;
+                result.Width = original.Width / hRatio;
             }
 
+            return result;
         }
 
         /// <summary>
@@ -285,7 +278,7 @@ namespace ImoutoViewer.Model
         /// <returns>Calculated size.</returns>
         private static Size FitToViewPort(Size original, Size viewPort)
         {
-            Size result = new Size();
+            var result = new Size();
 
             double hRatio = original.Height / viewPort.Height; // original.Height = hratio * viewPort.Height
             double wRatio = original.Width / viewPort.Width; // original.Width = wratio * viewPort.Width
@@ -307,7 +300,7 @@ namespace ImoutoViewer.Model
         private static Size FitToViewPortWidth(Size original, Size viewPort)
         {
 
-            Size result = new Size();
+            var result = new Size();
 
             double wRatio = original.Width / viewPort.Width; // original.Width = wratio * viewPort.Width
 
@@ -326,26 +319,24 @@ namespace ImoutoViewer.Model
 
         private static Size DownscaleToViewPortWidth(Size original, Size viewPort)
         {
-            Size result = new Size();
+            var result = new Size();
 
             if (original.Width <= viewPort.Width)
             {
                 return original;
             }
-            else
+
+            double wRatio = original.Width / viewPort.Width; // original.Width = wratio * viewPort.Width
+
+            //Recalculate if vertical scroll visible
+            if (original.Height / wRatio > viewPort.Height)
             {
-                double wRatio = original.Width / viewPort.Width; // original.Width = wratio * viewPort.Width
-
-                //Recalculate if vertical scroll visible
-                if (original.Height / wRatio > viewPort.Height)
-                {
-                    viewPort.Width -= SystemParameters.VerticalScrollBarWidth;
-                    wRatio = original.Width / viewPort.Width;
-                }
-
-                result.Width = viewPort.Width;
-                result.Height = original.Height / wRatio;
+                viewPort.Width -= SystemParameters.VerticalScrollBarWidth;
+                wRatio = original.Width / viewPort.Width;
             }
+
+            result.Width = viewPort.Width;
+            result.Height = original.Height / wRatio;
             return result;
         } 
 
@@ -372,24 +363,5 @@ namespace ImoutoViewer.Model
         }
 
         #endregion //Static members
-    }
-
-    enum ResizeType
-    {
-        FitToViewPort,
-        DownscaleToViewPort,
-        FitToViewPortWidth,
-        DownscaleToViewPortWidth,
-        NoResize,
-        Default
-    }
-
-    enum ImageFormat
-    {
-        JPG,
-        PNG,
-        BMP,
-        TIFF,
-        GIF
     }
 }

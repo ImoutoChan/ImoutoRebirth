@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2012
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ImoutoViewer", "ImageViewer\ImoutoViewer.csproj", "{94CB919F-F3C9-4470-AF91-A2878CC8DF4A}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ImoutoViewer", "ImoutoViewer\ImoutoViewer.csproj", "{94CB919F-F3C9-4470-AF91-A2878CC8DF4A}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -16,8 +16,5 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
-	EndGlobalSection
-	GlobalSection(Performance) = preSolution
-		HasPerformanceSessions = true
 	EndGlobalSection
 EndGlobal
