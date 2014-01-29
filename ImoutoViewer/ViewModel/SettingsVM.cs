@@ -1,6 +1,8 @@
 ﻿using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
+using System.Windows.Media.Media3D;
 using ImoutoViewer.Commands;
 using ImoutoViewer.Model;
 using System;
@@ -21,6 +23,7 @@ namespace ImoutoViewer.ViewModel
         private bool _isSelectedFoldersSortingDescending;
         private bool _isSelectedFilesSortingDescending;
         private AccentColorMenuData _selectedAccentColor;
+        private ComboBoxItem _selectedTheme;
 
         #endregion //Fileds
         
@@ -55,6 +58,8 @@ namespace ImoutoViewer.ViewModel
 
             var accent = ThemeManager.DetectTheme(Application.Current);
             SelectedAccentColor = AccentColors.First(x => x.Name == accent.Item2.Name);
+
+            SelectedTheme = new ComboBoxItem() { Name = "ThemeLight" };
         }
 
         #endregion //Constructors
@@ -138,6 +143,30 @@ namespace ImoutoViewer.ViewModel
             {
                 _selectedAccentColor = value;
                 _selectedAccentColor.ChangeAccent(this);
+            }
+        }
+
+        public ComboBoxItem SelectedTheme
+        {
+            get 
+            { 
+                return _selectedTheme; 
+            }
+            set
+            {
+                _selectedTheme = value;
+                var theme = ThemeManager.DetectTheme(Application.Current);
+
+                switch (value.Name)
+                {
+                    case "ThemeDark":
+                        ThemeManager.ChangeTheme(Application.Current, theme.Item2, Theme.Dark);
+                        break;
+                    default:
+                    case "ThemeLight":
+                        ThemeManager.ChangeTheme(Application.Current, theme.Item2, Theme.Light);
+                        break;
+                }
             }
         }
 
