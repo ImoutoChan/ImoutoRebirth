@@ -1,8 +1,13 @@
-﻿using ImoutoViewer.Model;
+﻿using System.Windows;
+using System.Windows.Input;
+using System.Windows.Media;
+using ImoutoViewer.Commands;
+using ImoutoViewer.Model;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using MahApps.Metro;
 
 namespace ImoutoViewer.ViewModel
 {
@@ -15,6 +20,7 @@ namespace ImoutoViewer.ViewModel
         private SortingDescriptor _selectedFoldersSorting;
         private bool _isSelectedFoldersSortingDescending;
         private bool _isSelectedFilesSortingDescending;
+        private AccentColorMenuData _selectedAccentColor;
 
         #endregion //Fileds
         
@@ -38,8 +44,18 @@ namespace ImoutoViewer.ViewModel
 
             IsSelectedFilesSortingDescending = false;
             IsSelectedFoldersSortingDescending = false;
-        }
 
+            AccentColors = ThemeManager.DefaultAccents
+                                .Select(a => new AccentColorMenuData
+                                {
+                                    Name = a.Name, 
+                                    ColorBrush = a.Resources["AccentColorBrush"] as Brush
+                                })
+                                .ToList();
+
+            var accent = ThemeManager.DetectTheme(Application.Current);
+            SelectedAccentColor = AccentColors.First(x => x.Name == accent.Item2.Name);
+        }
 
         #endregion //Constructors
 
@@ -107,6 +123,21 @@ namespace ImoutoViewer.ViewModel
             {
                 _isSelectedFilesSortingDescending = value;
                 OnSelectedFilesSortingChanged();
+            }
+        }
+
+        public List<AccentColorMenuData> AccentColors { get; set; }
+
+        public AccentColorMenuData SelectedAccentColor
+        {
+            get
+            {
+                return _selectedAccentColor;
+            }
+            set
+            {
+                _selectedAccentColor = value;
+                _selectedAccentColor.ChangeAccent(this);
             }
         }
 
@@ -294,6 +325,19 @@ namespace ImoutoViewer.ViewModel
         }
 
         #endregion //Static methods
+    }
+
+    class AccentColorMenuData
+    {
+        public string Name { get; set; }
+        public Brush ColorBrush { get; set; }
+
+        public void ChangeAccent(object sender)
+        {
+            var theme = ThemeManager.DetectTheme(Application.Current);
+            var accent = ThemeManager.DefaultAccents.First(x => x.Name == Name);
+            ThemeManager.ChangeTheme(Application.Current, accent, theme.Item1);
+        }
     }
 
 }
