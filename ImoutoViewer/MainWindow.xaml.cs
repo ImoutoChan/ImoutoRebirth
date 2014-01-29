@@ -15,6 +15,7 @@ namespace ImoutoViewer
         #region Fields
 
         private bool _isFullscreen;
+        private WindowState _lastState;
 
         #endregion // Fields
 
@@ -86,31 +87,49 @@ namespace ImoutoViewer
             e.Handled = true;
         }
 
-        #endregion //Event handlers
-
+        //Full screen
         private void MainWindow_OnKeyUp(object sender, KeyEventArgs e)
         {
-            if (e.Key != Key.F 
+            if (e.Key != Key.F11
                 && !(e.Key == Key.Enter && e.Key == Key.LeftAlt || e.Key == Key.RightAlt))
             {
                 return;
             }
-            
+
             if (_isFullscreen)
             {
+                WindowState = WindowState.Normal;
                 UseNoneWindowStyle = false;
                 Topmost = false;
                 ShowTitleBar = true;
+                WindowState = _lastState;
+
+                ShowMinButton = true;
+                ShowMaxRestoreButton = true;
+                ShowCloseButton = true;
+
                 _isFullscreen = false;
             }
             else
             {
+                _lastState = WindowState;
+
+                WindowState = WindowState.Normal;
                 UseNoneWindowStyle = true;
                 Topmost = true;
-                WindowState = WindowState.Maximized;
                 ShowTitleBar = false;
+
+                ShowMinButton = false;
+                ShowMaxRestoreButton = false;
+                ShowCloseButton = false;
+
+                WindowState = WindowState.Maximized;
+
                 _isFullscreen = true;
             }
         }
+
+        #endregion //Event handlers
+        
     }
 }

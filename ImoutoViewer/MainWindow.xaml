@@ -17,6 +17,7 @@
         WindowStyle="SingleBorderWindow"
         WindowStartupLocation="CenterScreen" 
         WindowState="Maximized"
+        ShowWindowCommandsOnTop="False"
         gif:ImageBehavior.AnimateInDesignMode="True"
         KeyUp="MainWindow_OnKeyUp"
         >
