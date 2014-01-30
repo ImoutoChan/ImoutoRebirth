@@ -1,6 +1,6 @@
 Imouto Viewer
 =============
-  The simple image viever with metro style window.
+  The simple image viewer with metro style window.
   
   Supported formats:
     JPG
@@ -8,26 +8,27 @@ Imouto Viewer
     BMP
     TIFF
     GIF
-  
-  Drag & drop available. Current image is dragable as file. Files with supported formats is dropable.
+
+	Drag & drop available. Current image is draggable as file. Files with supported formats is droppable.
+	
+	
+Hot keys
 =============  
-  Hot keys:
-  
     View:
-      F11 | ALT+ENTER — fullscreen/default mode
+      F11 | ALT+ENTER — full-screen/default mode
     
     Image:
       L               — rotate left
       R               — rotate right
       CTRL+WHEEL      — zoom in/out
-      F               — fix/unfix zoom (crossimage zoom)
+      F               — fix/unfix zoom (cross-image zoom)
     
     When scrollable:
       WHEEL           — vertical scroll
-      ALT+WHEEL       — horisontal scroll
+      ALT+WHEEL       — horizontal scroll
       SHIFT+WHEEL     — next/previous image
     
     Navigation:
       Left/right mouse buttons, 
-      wheel                       — next/previous image
-      Up/down arrows              — next/previous folder
+      WHEEL (with scroll disabled)	— next/previous image
+      Up/down arrows              	— next/previous folder
