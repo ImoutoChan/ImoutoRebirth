@@ -393,14 +393,7 @@ namespace ImoutoViewer.ViewModel
 
         private void FixZoom()
         {
-            if (!LocalImage.IsZoomFixed)
-            {
-                LocalImage.StaticZoom = CurrentLocalImage.Zoom;
-            }
-            else
-            {
-                LocalImage.StaticZoom = 1;
-            }
+            LocalImage.StaticZoom = !LocalImage.IsZoomFixed ? CurrentLocalImage.Zoom : 1;
             LocalImage.IsZoomFixed = !LocalImage.IsZoomFixed;
         }
 
