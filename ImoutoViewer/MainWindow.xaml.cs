@@ -58,13 +58,7 @@ namespace ImoutoViewer
         //Open setting flyout
         private void Button_Click(object sender, RoutedEventArgs e)
         {
-            foreach (Flyout item in Flyouts.Items)
-            {
-                if (item.Name == "SettingFlyout")
-                {
-                    item.IsOpen = true;
-                }
-            }
+            SettingFlyout.IsOpen = !SettingFlyout.IsOpen;
         }
 
         //Close all flyouts
@@ -81,8 +75,8 @@ namespace ImoutoViewer
             Client.Focus();
         }
 
-        //Disable click commands, when mouse over flyout
-        private void SettingFlyout_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
+        //Disable click commands
+        private void Disable_MouseButton(object sender, MouseButtonEventArgs e)
         {
             e.Handled = true;
         }

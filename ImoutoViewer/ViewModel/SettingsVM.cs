@@ -1,15 +1,11 @@
-﻿using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Media3D;
-using ImoutoViewer.Commands;
-using ImoutoViewer.Model;
+﻿using ImoutoViewer.Model;
+using MahApps.Metro;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
-using MahApps.Metro;
+using System.Windows;
+using System.Windows.Media;
 
 namespace ImoutoViewer.ViewModel
 {
@@ -23,7 +19,7 @@ namespace ImoutoViewer.ViewModel
         private bool _isSelectedFoldersSortingDescending;
         private bool _isSelectedFilesSortingDescending;
         private AccentColorMenuData _selectedAccentColor;
-        private ComboBoxItem _selectedTheme;
+        private int _selectedTheme;
 
         #endregion //Fileds
         
@@ -40,10 +36,11 @@ namespace ImoutoViewer.ViewModel
                 item.SelectedChanged += item_SelectedChanged;
             }
 
-            SortingMethods = SortingDescriptor.GetList();
+            FilesSortingMethods = SortingDescriptor.GetListForFiles();
+            FoldersSortingMethods = SortingDescriptor.GetListForFolders();
 
-            SelectedFoldersSorting = SortingMethods.First(x => x.Method == SortMethod.ByName);
-            SelectedFilesSorting = SortingMethods.First(x => x.Method == SortMethod.ByName);
+            SelectedFoldersSorting = FoldersSortingMethods.First(x => x.Method == SortMethod.ByName);
+            SelectedFilesSorting = FilesSortingMethods.First(x => x.Method == SortMethod.ByName);
 
             IsSelectedFilesSortingDescending = false;
             IsSelectedFoldersSortingDescending = false;
@@ -59,7 +56,7 @@ namespace ImoutoViewer.ViewModel
             var accent = ThemeManager.DetectTheme(Application.Current);
             SelectedAccentColor = AccentColors.First(x => x.Name == accent.Item2.Name);
 
-            SelectedTheme = new ComboBoxItem() { Name = "ThemeLight" };
+            SelectedIndexTheme = 0;
         }
 
         #endregion //Constructors
@@ -89,7 +86,9 @@ namespace ImoutoViewer.ViewModel
             }
         }
 
-        public List<SortingDescriptor> SortingMethods { get; set; }
+        public List<SortingDescriptor> FilesSortingMethods { get; set; }
+
+        public List<SortingDescriptor> FoldersSortingMethods { get; set; }
 
         public SortingDescriptor SelectedFoldersSorting
         {
@@ -131,7 +130,7 @@ namespace ImoutoViewer.ViewModel
             }
         }
 
-        public List<AccentColorMenuData> AccentColors { get; set; }
+        public List<AccentColorMenuData> AccentColors { get; private set; }
 
         public AccentColorMenuData SelectedAccentColor
         {
@@ -142,11 +141,14 @@ namespace ImoutoViewer.ViewModel
             set
             {
                 _selectedAccentColor = value;
-                _selectedAccentColor.ChangeAccent(this);
+                _selectedAccentColor.ChangeAccent();
             }
         }
 
-        public ComboBoxItem SelectedTheme
+        /// <summary>
+        /// Index of the selected theme. 0 - light, 1 - dark.
+        /// </summary>
+        public int SelectedIndexTheme
         {
             get 
             { 
@@ -156,14 +158,12 @@ namespace ImoutoViewer.ViewModel
             {
                 _selectedTheme = value;
                 var theme = ThemeManager.DetectTheme(Application.Current);
-
-                switch (value.Name)
+                switch (value)
                 {
-                    case "ThemeDark":
+                    case 1:
                         ThemeManager.ChangeTheme(Application.Current, theme.Item2, Theme.Dark);
                         break;
                     default:
-                    case "ThemeLight":
                         ThemeManager.ChangeTheme(Application.Current, theme.Item2, Theme.Light);
                         break;
                 }
@@ -226,8 +226,8 @@ namespace ImoutoViewer.ViewModel
     {
         #region Properties
 
-        public string Name { get; set; }
-        public ResizeType Type { get; set; }
+        public string Name { get; private set; }
+        public ResizeType Type { get; private set; }
 
         #endregion //Properties
 
@@ -267,8 +267,8 @@ namespace ImoutoViewer.ViewModel
 
         #region Properties
 
-        public string Name { get; set; }
-        public FilesGettingMethod Type { get; set; }
+        public string Name { get; private set; }
+        public FilesGettingMethod Type { get; private set; }
         public bool IsSelected
         {
             get
@@ -343,7 +343,18 @@ namespace ImoutoViewer.ViewModel
 
         #region Static methods
 
-        public static List<SortingDescriptor> GetList()
+        public static List<SortingDescriptor> GetListForFiles()
+        {
+            return new List<SortingDescriptor>
+            {
+                new SortingDescriptor { Name = "Name", Method = SortMethod.ByName },
+                new SortingDescriptor { Name = "Date created", Method = SortMethod.ByCreateDate  },            
+                new SortingDescriptor { Name = "Date modified", Method = SortMethod.ByUpdateDate },
+                new SortingDescriptor { Name = "Size", Method = SortMethod.BySize }
+            };
+        }
+
+        public static List<SortingDescriptor> GetListForFolders()
         {
             return new List<SortingDescriptor>
             {
@@ -361,7 +372,7 @@ namespace ImoutoViewer.ViewModel
         public string Name { get; set; }
         public Brush ColorBrush { get; set; }
 
-        public void ChangeAccent(object sender)
+        public void ChangeAccent()
         {
             var theme = ThemeManager.DetectTheme(Application.Current);
             var accent = ThemeManager.DefaultAccents.First(x => x.Name == Name);

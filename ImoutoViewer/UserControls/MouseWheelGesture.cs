@@ -4,7 +4,7 @@ namespace ImoutoViewer.UserControls
 {
     public class MouseWheelGesture : MouseGesture
     {
-        public WheelDirection Direction { get; set; }
+        private WheelDirection Direction { get; set; }
 
         public static MouseWheelGesture Up
         {
@@ -72,13 +72,11 @@ namespace ImoutoViewer.UserControls
 
         public MouseWheelGesture()
             : base(MouseAction.WheelClick)
-        {
-        }
+        { }
 
         public MouseWheelGesture(ModifierKeys modifiers)
             : base(MouseAction.WheelClick, modifiers)
-        {
-        }
+        { }
 
         public override bool Matches(object targetElement, InputEventArgs inputEventArgs)
         {
@@ -101,7 +99,7 @@ namespace ImoutoViewer.UserControls
             }
         }
 
-        public enum WheelDirection
+        private enum WheelDirection
         {
             None,
             Up,

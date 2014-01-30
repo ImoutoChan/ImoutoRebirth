@@ -16,6 +16,7 @@ namespace ImoutoViewer.Model
                               : source.OrderBy(keySelector);
         }
 
+/*
         public static IOrderedQueryable<TSource> OrderByWithDirection<TSource, TKey>
                         (this IQueryable<TSource> source,
                          Expression<Func<TSource, TKey>> keySelector,
@@ -24,6 +25,7 @@ namespace ImoutoViewer.Model
             return descending ? source.OrderByDescending(keySelector)
                               : source.OrderBy(keySelector);
         }
+*/
 
     }
 }

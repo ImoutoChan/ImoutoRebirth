@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.Linq;
@@ -25,23 +24,23 @@ namespace ImoutoViewer.Model
 
         public static SortMethod FilesSortMethod
         {
-            get { return _filesSortMethod; }
+            private get { return _filesSortMethod; }
             set { _filesSortMethod = value; }
         }
 
-        public static bool IsFilesSortMethodDescending { get; set; }
+        public static bool IsFilesSortMethodDescending { private get; set; }
 
         public static SortMethod FoldersSortMethod
         {
-            get { return _foldersSortMethod; }
+            private get { return _foldersSortMethod; }
             set { _foldersSortMethod = value; }
         }
 
-        public static bool IsFoldersSortMethodDescending { get; set; }
+        public static bool IsFoldersSortMethodDescending { private get; set; }
 
         public static FilesGettingMethod FilesGettingMethods
         {
-            get { return _filesGettingMethod; }
+            private get { return _filesGettingMethod; }
             set { _filesGettingMethod = value; }
         }
 
@@ -52,7 +51,7 @@ namespace ImoutoViewer.Model
         private List<LocalImage> _imageList;
         private LocalImage _currnetImage;
 
-        private List<DirectoryInfo> _directoriesList;
+        private readonly List<DirectoryInfo> _directoriesList;
         private DirectoryInfo _currentDirectory;
 
         #endregion //Fields
@@ -479,15 +478,13 @@ namespace ImoutoViewer.Model
             switch (FilesSortMethod)
             {
                 default:
-                case SortMethod.ByName:
                     return imagePath.Split('\\').Last();
-                    break;
                 case SortMethod.ByCreateDate:
                     return (new FileInfo(imagePath)).CreationTimeUtc;
-                    break;
                 case SortMethod.ByUpdateDate:
                     return (new FileInfo(imagePath)).LastWriteTimeUtc;
-                    break;
+                case SortMethod.BySize:
+                    return (new FileInfo(imagePath)).Length;
             }
         }
 
@@ -496,15 +493,11 @@ namespace ImoutoViewer.Model
             switch (FoldersSortMethod)
             {
                 default:
-                case SortMethod.ByName:
                     return dirPath.Name;
-                    break;
                 case SortMethod.ByCreateDate:
                     return dirPath.CreationTimeUtc;
-                    break;
                 case SortMethod.ByUpdateDate:
                     return dirPath.LastWriteTimeUtc;
-                    break;
             }
         }
 
@@ -519,39 +512,4 @@ namespace ImoutoViewer.Model
 
         #endregion // IEnumerable members
     }
-
-#if DEBUG
-    public class DebugClass
-    {
-        public static Stopwatch StopWatch = new Stopwatch();
-        public static long CurrentTime = 0;
-
-        public static void Add(long size)
-        {
-            if (StopWatch.IsRunning)
-            {
-                StopWatch.Stop();
-                CurrentTime += StopWatch.ElapsedMilliseconds;
-            }
-
-            MemoryStat.Add(CurrentTime, size);
-            StopWatch.Start();
-
-        }
-
-        public static Dictionary<long, long> MemoryStat = new Dictionary<long, long>();
-
-        public static void Save()
-        {
-            using(var sw = new StreamWriter(@"log.txt"))
-            {
-                foreach (var item in MemoryStat)
-	            {
-                    sw.WriteLine("{0}\t{1}", item.Key, item.Value);
-	            }
-            }
-        }
-    }
-#endif
-
 }

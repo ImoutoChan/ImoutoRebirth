@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Diagnostics;
 using System.Windows;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
@@ -7,28 +6,45 @@ using System.Windows.Media.Imaging;
 namespace ImoutoViewer.Model
 {
     class LocalImage
-    {        
-        public static ResizeType DefaultResizeType = ResizeType.DownscaleToViewPort;
+    {
+        private const ResizeType DefaultResizeType = ResizeType.DownscaleToViewPort;
+
+        public static bool IsZoomFixed { get; set; }
+        private static double _constZoom;
+        public static double StaticZoom
+        {
+            private get
+            {
+                return IsZoomFixed ? _constZoom : 1;
+            }
+            set
+            {
+                _constZoom = value;
+            }
+        }
 
         #region Fields
 
         private readonly string _filePath;
 
         private BitmapSource _image;
-        private double _zoom;
-        private Size _resizedSize;
-        
+
+        private double _autoResized;
+        private double _localZoom;
+
         #endregion //Fields
 
         #region Constructors
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="imagePath">Path to image.</param>
+        static LocalImage()
+        {
+            StaticZoom = 1;
+            IsZoomFixed = false;
+        }
+
         public LocalImage(string imagePath)
         {
-            _zoom = 1;
+            LocalZoom = 1;
             _filePath = imagePath;
             IsError = false;
         }
@@ -36,6 +52,18 @@ namespace ImoutoViewer.Model
         #endregion //Constructors
 
         #region Properties
+
+        private double LocalZoom
+        {
+            get
+            {
+                return IsZoomFixed ? 1 : _localZoom;
+            }
+            set
+            {
+                _localZoom = value;
+            }
+        }
 
         public BitmapSource Image
         {
@@ -61,7 +89,7 @@ namespace ImoutoViewer.Model
         {
             get
             {
-                return new Size(_resizedSize.Width * _zoom, _resizedSize.Height * _zoom);
+                return new Size(Image.PixelWidth * Zoom, Image.PixelHeight * Zoom);
             }
         }
 
@@ -74,22 +102,16 @@ namespace ImoutoViewer.Model
                     case "jpg":
                     case "jpeg":
                         return ImageFormat.JPG;
-                        break;
                     case "gif":
                         return ImageFormat.GIF;
-                        break;
                     case "bmp":
                         return ImageFormat.BMP;
-                        break;
                     case "tiff":
                         return ImageFormat.TIFF;
-                        break;
                     case "png":
                         return ImageFormat.PNG;
-                        break;
                     default:
                         return ImageFormat.JPG;
-                        break;
                 }
             }
         }
@@ -108,6 +130,11 @@ namespace ImoutoViewer.Model
             {
                 return _filePath;
             }
+        }
+
+        public double Zoom 
+        {
+            get { return LocalZoom * _autoResized * StaticZoom; }
         }
 
         #endregion //Properties
@@ -137,47 +164,63 @@ namespace ImoutoViewer.Model
         public void FreeMemory()
         {
             _image = null;
-#if DEBUG
-            var s = new Stopwatch();
-            s.Start();
-#endif
+
             GC.Collect();
             GC.WaitForPendingFinalizers();
-
-#if DEBUG
-            s.Stop();
-            DebugClass.Add(s.ElapsedMilliseconds);
-#endif
-
         }
-        
+
         public void Resize(Size viewPort, ResizeType resizedType = ResizeType.Default)
         {
-            if (resizedType == ResizeType.Default)
+            if (IsZoomFixed)
             {
-                resizedType = DefaultResizeType;
+                _autoResized = 1;
             }
+            else
+            {
+                if (resizedType == ResizeType.Default)
+                {
+                    resizedType = DefaultResizeType;
+                }
 
-            _resizedSize = ResizeImage(new Size(Image.PixelWidth, Image.PixelHeight),
-                                       new Size(viewPort.Width, viewPort.Height),
-                                       resizedType);
+                 var resizedSize = ResizeImage(new Size(Image.PixelWidth, Image.PixelHeight),
+                                           new Size(viewPort.Width, viewPort.Height),
+                                           resizedType);
+
+                 _autoResized = resizedSize.Width / Image.PixelWidth;
+            }
         }
 
         public void ZoomIn()
         {
-            _zoom *= 1.1;
+            if (IsZoomFixed)
+            {
+                StaticZoom *= 1.1;
+            }
+            else
+            {
+                LocalZoom *= 1.1;
+            }
+
             OnImageChanged();
         }
 
         public void ZoomOut()
         {
-            _zoom *= 0.9;
+            if (IsZoomFixed)
+            {
+                StaticZoom *= 0.9;
+            }
+            else
+            {
+                LocalZoom *= 0.9;
+            }
+
             OnImageChanged();
         }
 
         public void ResetZoom()
         {
-            _zoom = 1; 
+            LocalZoom = 1;
             OnImageChanged();
         }
 
@@ -210,6 +253,28 @@ namespace ImoutoViewer.Model
             trasformedBitmap.EndInit();
 
             Image = trasformedBitmap;
+        }
+
+        #endregion //Methods
+
+        #region Events
+
+        public event EventHandler ImageChanged;
+        private void OnImageChanged()
+        {
+            if (ImageChanged != null)
+            {
+                ImageChanged(this, new EventArgs());
+            }
+        }
+
+        #endregion //Events
+
+        #region Static methods
+
+        public static LocalImage GetEmptyImage()
+        {
+            return new LocalImage(@"pack://application:,,,/Resources/img/nothing.png");
         }
 
         private static Size ResizeImage(Size original, Size viewPort, ResizeType type)
@@ -338,30 +403,8 @@ namespace ImoutoViewer.Model
             result.Width = viewPort.Width;
             result.Height = original.Height / wRatio;
             return result;
-        } 
-
-        #endregion //Methods
-
-        #region Events
-
-        public event EventHandler ImageChanged;
-        private void OnImageChanged()
-        {
-            if (ImageChanged != null)
-            {
-                ImageChanged(this, new EventArgs());
-            }
         }
 
-        #endregion //Events
-
-        #region Static members
-
-        public static LocalImage GetEmptyImage()
-        {
-            return new LocalImage(@"pack://application:,,,/Resources/img/nothing.png");
-        }
-
-        #endregion //Static members
+        #endregion //Static methods
     }
 }

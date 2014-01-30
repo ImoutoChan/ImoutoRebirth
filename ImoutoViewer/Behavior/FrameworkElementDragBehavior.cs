@@ -31,7 +31,7 @@ namespace ImoutoViewer.Behavior
             if (_isMouseClicked)
             {
                 // Set the item's DataContext as the data to be transferred
-                IDragable dragObject = AssociatedObject.DataContext as IDragable;
+                var dragObject = AssociatedObject.DataContext as IDragable;
                 if (dragObject != null)
                 {
                     DragDrop.DoDragDrop(AssociatedObject, dragObject.Data, dragObject.AllowDragDropEffects);

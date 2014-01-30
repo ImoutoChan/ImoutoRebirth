@@ -10,5 +10,6 @@ namespace ImoutoViewer.Model
         ByName,
         ByCreateDate,
         ByUpdateDate,
+        BySize
     }
 }

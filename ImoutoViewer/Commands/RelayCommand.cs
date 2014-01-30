@@ -15,10 +15,7 @@ namespace ImoutoViewer.Commands
 
         #region Constructors
 
-        public RelayCommand(Action<object> execute)
-            : this(execute, null) { }
-
-        public RelayCommand(Action<object> execute, Predicate<object> canExecute)
+        public RelayCommand(Action<object> execute, Predicate<object> canExecute = null)
         {
             if (execute == null)
                 throw new ArgumentNullException("execute");

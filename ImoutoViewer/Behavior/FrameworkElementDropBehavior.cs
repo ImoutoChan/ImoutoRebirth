@@ -36,7 +36,7 @@ namespace ImoutoViewer.Behavior
             foreach (var item in AllowDataTypes.Where(item => e.Data.GetDataPresent(item)))
 	        {
 	            //Drop the data
-	            IDropable target = AssociatedObject.DataContext as IDropable;
+	            var target = AssociatedObject.DataContext as IDropable;
 
 	            if (target != null)
 	            {

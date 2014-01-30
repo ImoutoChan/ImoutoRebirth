@@ -12,7 +12,7 @@ namespace ImoutoViewer.Converters
             IsInvert = false;
         }
 
-        public bool IsInvert { get; set; }
+        public bool IsInvert { private get; set; }
 
         public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
         {

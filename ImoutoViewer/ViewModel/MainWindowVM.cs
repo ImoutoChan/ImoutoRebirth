@@ -40,27 +40,6 @@ namespace ImoutoViewer.ViewModel
             _initBackgroundWorker.RunWorkerAsync();
         }
 
-        void _backgroundWorker_DoWork(object sender, DoWorkEventArgs e)
-        {
-            IsLoading = true;
-            OnPropertyChanged("IsLoading");
-
-            if ((e.Argument as string[]) != null)
-            {
-                InitializeImageList(e.Argument as string[]);
-            }
-            else
-            {
-                InitializeImageList();
-            }
-        }
-
-        private void _backgroundWorker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
-        {
-            IsLoading = false;
-            OnPropertyChanged("IsLoading");
-            UpdateView();
-        }
 
         #endregion //Constructors
 
@@ -85,6 +64,23 @@ namespace ImoutoViewer.ViewModel
         {
             get
             {
+                string title = "";
+
+                if (CurrentLocalImage != null)
+                {
+                    title += CurrentLocalImage.Name + " - " ;
+                }
+
+                title += System.Reflection.Assembly.GetExecutingAssembly().GetName().Name;
+
+                return title;
+            }
+        }
+
+        public string Status
+        {
+            get
+            {
                 if (IsError)
                 {
                     return "Image loading error";
@@ -95,13 +91,47 @@ namespace ImoutoViewer.ViewModel
                     return "Loading...";
                 }
 
-                return String.Format("Dir {3} / {4} : {5} | File {1} / {2} : {0}",
-                    CurrentLocalImage.Name,
-                    _imageList.CurrentImageIndex + 1,
-                    _imageList.ImagesCount,
+                return "Ready";
+            }
+        }
+
+        public string DirStatus
+        {
+            get
+            {
+                int i = (int)Math.Log10(_imageList.DirectoriesCount) + 1;
+                return String.Format("{0," + i + "} / {1," + i + "}",
                     _imageList.CurrentDirectoryIndex + 1,
-                    _imageList.DirectoriesCount,
-                    _imageList.CurrentDirectory.Name);
+                    _imageList.DirectoriesCount);
+            }
+        }
+
+        public string DirStatusToolTip
+        {
+            get
+            {
+                return _imageList.CurrentDirectory.Name;
+            }
+        }
+
+        public string FileStatus
+        {
+            get
+            {
+                int i = (int)Math.Log10(_imageList.ImagesCount) + 1;
+                return String.Format("{0," + i + "} / {1," + i + "}",
+                            _imageList.CurrentImageIndex + 1,
+                            _imageList.ImagesCount);
+            }
+        }
+
+        public string Zoom
+        {
+            get
+            {
+                return CurrentLocalImage != null
+                    ? String.Format("{0:N0} %", CurrentLocalImage.Zoom * 100) 
+                    : "100 %";
             }
         }
 
@@ -151,7 +181,7 @@ namespace ImoutoViewer.ViewModel
             }
         }
 
-        public bool IsSimpleWheelNavigationEnable { get; set; }
+        public bool IsSimpleWheelNavigationEnable { private get; set; }
 
         public SettingsVM Settings { get; private set; }
 
@@ -190,20 +220,6 @@ namespace ImoutoViewer.ViewModel
             LocalImageList.IsFoldersSortMethodDescending = Settings.IsSelectedFoldersSortingDescending;
         }
 
-        private void Settings_SelectedFoldersSortingChanged(object sender, EventArgs e)
-        {
-            LocalImageList.FoldersSortMethod = Settings.SelectedFoldersSorting.Method;
-            LocalImageList.IsFoldersSortMethodDescending = Settings.IsSelectedFoldersSortingDescending;
-            _initBackgroundWorker.RunWorkerAsync(new[] { CurrentLocalImage.Path });
-        }
-
-        private void Settings_SelectedFilesSortingChanged(object sender, EventArgs e)
-        {
-            LocalImageList.FilesSortMethod = Settings.SelectedFilesSorting.Method;
-            LocalImageList.IsFilesSortMethodDescending = Settings.IsSelectedFilesSortingDescending;
-            _imageList.ResortFiles();
-            UpdateView();
-        }
 
         private void InitializeImageList(IEnumerable<string> images = null)
         {
@@ -243,6 +259,12 @@ namespace ImoutoViewer.ViewModel
                 OnPropertyChanged("IsAnimuted");
                 OnPropertyChanged("IsError");
                 OnPropertyChanged("ErrorMessage");
+                OnPropertyChanged("DirStatus");
+                OnPropertyChanged("FileStatus");
+                OnPropertyChanged("DirStatusToolTip");
+                OnPropertyChanged("Status");
+                OnPropertyChanged("IsLoading");
+                OnPropertyChanged("Zoom");
             }
             catch (OutOfMemoryException)
             {
@@ -254,6 +276,21 @@ namespace ImoutoViewer.ViewModel
             catch
             {
                 NextImage();
+            }
+        }
+
+        void _backgroundWorker_DoWork(object sender, DoWorkEventArgs e)
+        {
+            IsLoading = true;
+            UpdateView();
+
+            if ((e.Argument as string[]) != null)
+            {
+                InitializeImageList(e.Argument as string[]);
+            }
+            else
+            {
+                InitializeImageList();
             }
         }
 
@@ -269,6 +306,7 @@ namespace ImoutoViewer.ViewModel
         public ICommand ZoomOutCommand { get; private set; }
         public ICommand NextFolderCommand { get; private set; }
         public ICommand PrevFolderCommand { get; private set; }
+        public ICommand FixZoomCommand { get; private set; }
 
         /// <summary>
         /// Rotation the image. In CommandParameter as string send: 
@@ -305,6 +343,8 @@ namespace ImoutoViewer.ViewModel
 
             NextFolderCommand = new RelayCommand(param => NextFolder());
             PrevFolderCommand = new RelayCommand(param => PrevFolder());
+
+            FixZoomCommand = new RelayCommand(param => FixZoom());
         }
 
         #endregion //Commands
@@ -345,8 +385,6 @@ namespace ImoutoViewer.ViewModel
                 case "right":
                     CurrentLocalImage.RotateRight();
                     break;
-                default:
-                    break;
             }
             UpdateView();
         }
@@ -361,6 +399,19 @@ namespace ImoutoViewer.ViewModel
         {
             _imageList.PrevFolder();
             UpdateView();
+        }
+
+        private void FixZoom()
+        {
+            if (!LocalImage.IsZoomFixed)
+            {
+                LocalImage.StaticZoom = CurrentLocalImage.Zoom;
+            }
+            else
+            {
+                LocalImage.StaticZoom = 1;
+            }
+            LocalImage.IsZoomFixed = !LocalImage.IsZoomFixed;
         }
 
         #endregion //Command handlers
@@ -383,17 +434,30 @@ namespace ImoutoViewer.ViewModel
             _initBackgroundWorker.RunWorkerAsync(new[] { CurrentLocalImage.Path });
         }
 
+        private void Settings_SelectedFoldersSortingChanged(object sender, EventArgs e)
+        {
+            LocalImageList.FoldersSortMethod = Settings.SelectedFoldersSorting.Method;
+            LocalImageList.IsFoldersSortMethodDescending = Settings.IsSelectedFoldersSortingDescending;
+            _initBackgroundWorker.RunWorkerAsync(new[] { CurrentLocalImage.Path });
+        }
+
+        private void Settings_SelectedFilesSortingChanged(object sender, EventArgs e)
+        {
+            LocalImageList.FilesSortMethod = Settings.SelectedFilesSorting.Method;
+            LocalImageList.IsFilesSortMethodDescending = Settings.IsSelectedFilesSortingDescending;
+            _imageList.ResortFiles();
+            UpdateView();
+        }
+
+        private void _backgroundWorker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
+        {
+            IsLoading = false;
+            UpdateView();
+        }
+
         #endregion //Event handlers
 
         #region IDragable members
-
-        public string DataType
-        { 
-            get 
-            {
-                return DataFormats.FileDrop; 
-            } 
-        }
 
         public object Data 
         {
