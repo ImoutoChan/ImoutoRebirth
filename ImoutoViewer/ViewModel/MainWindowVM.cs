@@ -40,7 +40,6 @@ namespace ImoutoViewer.ViewModel
             _initBackgroundWorker.RunWorkerAsync();
         }
 
-
         #endregion //Constructors
 
         #region Properties
@@ -220,7 +219,6 @@ namespace ImoutoViewer.ViewModel
             LocalImageList.IsFoldersSortMethodDescending = Settings.IsSelectedFoldersSortingDescending;
         }
 
-
         private void InitializeImageList(IEnumerable<string> images = null)
         {
             if (images != null)
@@ -245,6 +243,8 @@ namespace ImoutoViewer.ViewModel
                 _imageList = new LocalImageList();
             }            
             #endif
+
+            _imageList.CurrentImageChanged += _imageList_CurrentImageChanged;
         }
 
         private void UpdateView()
@@ -265,6 +265,11 @@ namespace ImoutoViewer.ViewModel
                 OnPropertyChanged("Status");
                 OnPropertyChanged("IsLoading");
                 OnPropertyChanged("Zoom");
+
+                if (_mainWindowView.ScrollViewerObject.IsNeedScrollHome)
+                {
+                    _mainWindowView.ScrollViewerObject.ScrollToHome();
+                }
             }
             catch (OutOfMemoryException)
             {
@@ -276,21 +281,6 @@ namespace ImoutoViewer.ViewModel
             catch
             {
                 NextImage();
-            }
-        }
-
-        void _backgroundWorker_DoWork(object sender, DoWorkEventArgs e)
-        {
-            IsLoading = true;
-            UpdateView();
-
-            if ((e.Argument as string[]) != null)
-            {
-                InitializeImageList(e.Argument as string[]);
-            }
-            else
-            {
-                InitializeImageList();
             }
         }
 
@@ -453,6 +443,26 @@ namespace ImoutoViewer.ViewModel
         {
             IsLoading = false;
             UpdateView();
+        }
+
+        private void _backgroundWorker_DoWork(object sender, DoWorkEventArgs e)
+        {
+            IsLoading = true;
+            UpdateView();
+
+            if ((e.Argument as string[]) != null)
+            {
+                InitializeImageList(e.Argument as string[]);
+            }
+            else
+            {
+                InitializeImageList();
+            }
+        }
+
+        private void _imageList_CurrentImageChanged(object sender, EventArgs e)
+        {
+            _mainWindowView.ScrollViewerObject.IsNeedScrollHome = true;
         }
 
         #endregion //Event handlers

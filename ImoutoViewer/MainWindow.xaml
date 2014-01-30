@@ -241,11 +241,11 @@
         </Grid.RowDefinitions>
         <Grid x:Name="Client">
             <userControl:ExtScrollViewer x:Name="ScrollViewerObject" 
-    			                           HorizontalScrollBarVisibility="Auto" 
-    			                           VerticalScrollBarVisibility="Auto"
-    			                           ScrollChanged="ScrollViewerObject_ScrollChanged"
-    			                           Focusable="False"
-    			                           Grid.Row ="0">
+    			                         HorizontalScrollBarVisibility="Auto" 
+    			                         VerticalScrollBarVisibility="Auto"
+    			                         ScrollChanged="ScrollViewerObject_ScrollChanged"
+    			                         Focusable="False"
+    			                         Grid.Row ="0">
                 <Grid>
                     <Image VerticalAlignment="Center"
     					   HorizontalAlignment="Center"

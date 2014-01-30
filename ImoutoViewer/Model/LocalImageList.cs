@@ -9,6 +9,8 @@ namespace ImoutoViewer.Model
 {
     class LocalImageList : IEnumerable
     {
+        #region Static members
+
         #region Static fields
 
         private static SortMethod _filesSortMethod = SortMethod.ByName;
@@ -46,13 +48,88 @@ namespace ImoutoViewer.Model
 
         #endregion //Static Properties
 
+        #region Static methods
+
+        private static IEnumerable<DirectoryInfo> GetDirectories(DirectoryInfo source, bool isRecursive = false)
+        {
+            var result = new List<DirectoryInfo>();
+
+            try
+            {
+                #region Check on softlink !!Very slow
+                if ((File.GetAttributes(source.FullName) & FileAttributes.ReparsePoint) == FileAttributes.ReparsePoint)
+                {
+                    return result;
+                }
+                #endregion
+
+                foreach (DirectoryInfo folder in source.GetDirectories().OrderByWithDirection(GetDirectoryOrderProperty, IsFoldersSortMethodDescending))
+                {
+                    result.Add(folder);
+
+                    if (isRecursive)
+                    {
+                        result.AddRange(GetDirectories(folder, true));
+                    }
+                }
+            }
+            catch (UnauthorizedAccessException) { }
+
+            return result;
+        }
+
+        private static bool IsImage(string file)
+        {
+            var ci = new CultureInfo("en-US");
+            const string formats = @".jpg|.png|.jpeg|.bmp|.gif|.tiff";
+
+            return formats.Split('|').Any(item => file.EndsWith(item, true, ci));
+        }
+
+        private static bool IsFlagged(FilesGettingMethod flags, FilesGettingMethod value)
+        {
+            return (flags & value) == value;
+        }
+
+        private static object GetFilesOrderProperty(string imagePath)
+        {
+            switch (FilesSortMethod)
+            {
+                default:
+                    return imagePath.Split('\\').Last();
+                case SortMethod.ByCreateDate:
+                    return (new FileInfo(imagePath)).CreationTimeUtc;
+                case SortMethod.ByUpdateDate:
+                    return (new FileInfo(imagePath)).LastWriteTimeUtc;
+                case SortMethod.BySize:
+                    return (new FileInfo(imagePath)).Length;
+            }
+        }
+
+        private static object GetDirectoryOrderProperty(DirectoryInfo dirPath)
+        {
+            switch (FoldersSortMethod)
+            {
+                default:
+                    return dirPath.Name;
+                case SortMethod.ByCreateDate:
+                    return dirPath.CreationTimeUtc;
+                case SortMethod.ByUpdateDate:
+                    return dirPath.LastWriteTimeUtc;
+            }
+        }
+
+        #endregion // Static members
+
+        #endregion //Static members
+
         #region Fields
 
         private List<LocalImage> _imageList;
-        private LocalImage _currnetImage;
 
         private readonly List<DirectoryInfo> _directoriesList;
         private DirectoryInfo _currentDirectory;
+        private LocalImage _currentImage;
 
         #endregion //Fields
 
@@ -108,13 +185,13 @@ namespace ImoutoViewer.Model
                     select i;
 
                 var localImages = file as IList<LocalImage> ?? file.ToList();
-                _currnetImage = (localImages.Any()) ? localImages.First() : _imageList.First();
+                CurrentImage = (localImages.Any()) ? localImages.First() : _imageList.First();
             }
             else
             {
                 IsEmpty = true;
                 _imageList.Add(LocalImage.GetEmptyImage());
-                _currnetImage = _imageList.First();
+                CurrentImage = _imageList.First();
             }
         }
 
@@ -124,9 +201,11 @@ namespace ImoutoViewer.Model
 
         public LocalImage CurrentImage
         {
-            get
+            get { return _currentImage; }
+            private set
             {
-                return _currnetImage;
+                _currentImage = value;
+                OnCurrentImageChanged();
             }
         }
 
@@ -142,7 +221,7 @@ namespace ImoutoViewer.Model
         {
             get
             {
-                return _imageList.IndexOf(_currnetImage);
+                return _imageList.IndexOf(CurrentImage);
             }
         }
 
@@ -183,14 +262,10 @@ namespace ImoutoViewer.Model
                 return;
             }
 
-//#if DEBUG
-//            LocalImageList.Add(GC.GetTotalMemory(false));
-//#endif
+            CurrentImage.FreeMemory();
+            CurrentImage.ResetZoom();
 
-            _currnetImage.FreeMemory();
-            _currnetImage.ResetZoom();
-
-            int currentIndex = _imageList.IndexOf(_currnetImage);
+            int currentIndex = _imageList.IndexOf(CurrentImage);
             int maxIndex = _imageList.Count;
             currentIndex++;
 
@@ -200,7 +275,7 @@ namespace ImoutoViewer.Model
                 currentIndex = 0;
             }
 
-            _currnetImage = _imageList[currentIndex];
+            CurrentImage = _imageList[currentIndex];
         }
 
         public void Previous()
@@ -209,10 +284,10 @@ namespace ImoutoViewer.Model
             {
                 return;
             }
-            _currnetImage.FreeMemory();
-            _currnetImage.ResetZoom();
+            CurrentImage.FreeMemory();
+            CurrentImage.ResetZoom();
 
-            int currentIndex = _imageList.IndexOf(_currnetImage);
+            int currentIndex = _imageList.IndexOf(CurrentImage);
             currentIndex--;
 
             if (currentIndex < 0)
@@ -221,19 +296,19 @@ namespace ImoutoViewer.Model
                 currentIndex = _imageList.Count - 1;
             }
 
-            _currnetImage = _imageList[currentIndex];
+            CurrentImage = _imageList[currentIndex];
         }
 
         public void NextFolder()
         {
             NextDirectory();
-            _currnetImage = _imageList.First();
+            CurrentImage = _imageList.First();
         }
 
         public void PrevFolder()
         {
             PrevDirectory();
-            _currnetImage = _imageList.Last();
+            CurrentImage = _imageList.Last();
         }
 
         internal void ResortFiles()
@@ -430,78 +505,18 @@ namespace ImoutoViewer.Model
 
         #endregion //Methods
 
-        #region Static methods
+        #region Events
 
-        private static IEnumerable<DirectoryInfo> GetDirectories(DirectoryInfo source, bool isRecursive = false)
+        public event EventHandler CurrentImageChanged;
+        private void OnCurrentImageChanged()
         {
-            var result = new List<DirectoryInfo>();
-
-            try
+            if (CurrentImageChanged != null)
             {
-                #region Check on softlink !!Very slow
-                if ((File.GetAttributes(source.FullName) & FileAttributes.ReparsePoint) == FileAttributes.ReparsePoint)
-                {
-                    return result;
-                }
-                #endregion
-
-                foreach (DirectoryInfo folder in source.GetDirectories().OrderByWithDirection(GetDirectoryOrderProperty, IsFoldersSortMethodDescending))
-                {
-                    result.Add(folder);
-
-                    if (isRecursive)
-                    {
-                        result.AddRange(GetDirectories(folder, true));
-                    }
-                }
-            }
-            catch (UnauthorizedAccessException) { }
-
-            return result;
-        }
-
-        private static bool IsImage(string file)
-        {
-            var ci = new CultureInfo("en-US");
-            const string formats = @".jpg|.png|.jpeg|.bmp|.gif|.tiff";
-
-            return formats.Split('|').Any(item => file.EndsWith(item, true, ci));
-        }
-
-        private static bool IsFlagged(FilesGettingMethod flags, FilesGettingMethod value)
-        {
-            return (flags & value) == value;
-        }
-
-        private static object GetFilesOrderProperty(string imagePath)
-        {
-            switch (FilesSortMethod)
-            {
-                default:
-                    return imagePath.Split('\\').Last();
-                case SortMethod.ByCreateDate:
-                    return (new FileInfo(imagePath)).CreationTimeUtc;
-                case SortMethod.ByUpdateDate:
-                    return (new FileInfo(imagePath)).LastWriteTimeUtc;
-                case SortMethod.BySize:
-                    return (new FileInfo(imagePath)).Length;
+                CurrentImageChanged(this, new EventArgs());
             }
         }
 
-        private static object GetDirectoryOrderProperty(DirectoryInfo dirPath)
-        {
-            switch (FoldersSortMethod)
-            {
-                default:
-                    return dirPath.Name;
-                case SortMethod.ByCreateDate:
-                    return dirPath.CreationTimeUtc;
-                case SortMethod.ByUpdateDate:
-                    return dirPath.LastWriteTimeUtc;
-            }
-        }
-
-        #endregion // Static members
+        #endregion //Events
 
         #region IEnumerable members
 
