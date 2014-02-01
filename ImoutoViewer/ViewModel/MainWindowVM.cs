@@ -24,6 +24,7 @@ namespace ImoutoViewer.ViewModel
 
         public MainWindowVM()
         {
+            OpenWith = new OpenWithVM();
             IsSimpleWheelNavigationEnable = true;            
 
             _mainWindowView = new MainWindow {DataContext = this};
@@ -184,6 +185,8 @@ namespace ImoutoViewer.ViewModel
 
         public SettingsVM Settings { get; private set; }
 
+        public OpenWithVM OpenWith { get; private set; }
+
         public bool IsError
         {
             get
@@ -197,6 +200,16 @@ namespace ImoutoViewer.ViewModel
             get
             {
                 return _imageList.CurrentImage.ErrorMessage;
+            }
+        }
+
+        public string ImagePath
+        {
+            get
+            {
+                return CurrentLocalImage != null
+                    ? CurrentLocalImage.Path
+                    : "";
             }
         }
 
@@ -265,6 +278,7 @@ namespace ImoutoViewer.ViewModel
                 OnPropertyChanged("Status");
                 OnPropertyChanged("IsLoading");
                 OnPropertyChanged("Zoom");
+                OnPropertyChanged("ImagePath");
 
                 if (_mainWindowView.ScrollViewerObject.IsNeedScrollHome)
                 {

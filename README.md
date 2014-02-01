@@ -1,6 +1,6 @@
 Imouto Viewer
 =============
-  The simple image viewer with metro style window.
+  The simple minimalistic image viewer with metro style window.
   
   Supported formats:
     JPG

@@ -73,7 +73,10 @@
     
     <metroControl:MetroWindow.WindowCommands>
         <metroControl:WindowCommands>
-            <Button Content="SETTINGS" 
+            <Button Content="Edit with..." 
+                    Click="ButtonBase_OnClick"/>
+            
+            <Button Content="Settings" 
                     Click="Button_Click"/>
         </metroControl:WindowCommands>
     </metroControl:MetroWindow.WindowCommands>
@@ -97,7 +100,8 @@
                                  Header="Settings" 
                                  Position="Right"
                                  DataContext="{Binding Path=Settings}"
-                                 MouseLeftButtonUp="Disable_MouseButton" >
+                                 MouseLeftButtonUp="Disable_MouseButton" 
+                                 Theme="Inverse" >
                 <Grid Margin="20">
                     <Grid.RowDefinitions>
                         <RowDefinition Height="Auto" />
@@ -231,6 +235,43 @@
                     </ScrollViewer>
                 </Grid>
             </metroControl:Flyout>
+
+            <metroControl:Flyout x:Name="EditWithFlyout"
+                                 Height="80"
+                                 Header="Edit With" 
+                                 Position="Bottom"
+                                 DataContext="{Binding Path=OpenWith}"
+                                 MouseLeftButtonUp="Disable_MouseButton" 
+                                 Theme="Inverse" >
+                <StackPanel HorizontalAlignment="Center">
+                    <ItemsControl ItemsSource="{Binding Path=CurrentList}" >
+                        <ItemsControl.ItemsPanel>
+                            <ItemsPanelTemplate>
+                                <StackPanel Orientation="Horizontal"/>
+                            </ItemsPanelTemplate>
+                        </ItemsControl.ItemsPanel>
+
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <Button ToolTip="{Binding Name}" 
+                                        Command="{Binding ClickCommand}" 
+                                        CommandParameter="{Binding 
+                                            RelativeSource={RelativeSource 
+                                                FindAncestor,
+                                                AncestorType={x:Type metroControl:MetroWindow}}, 
+                                            Path=DataContext.ImagePath}"
+                                        Margin="10"
+                                        Style="{StaticResource {x:Static ToolBar.ButtonStyleKey}}"
+                                        Height="60">
+                                    <Image Source="{Binding IconPath}"/>
+                                </Button>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                    
+                    <TextBlock>SFGGFGF</TextBlock>
+                </StackPanel>
+             </metroControl:Flyout>
         </metroControl:FlyoutsControl>
     </metroControl:MetroWindow.Flyouts>
     <Grid Focusable="True" 
@@ -239,7 +280,8 @@
             <RowDefinition Height="*" />
             <RowDefinition Height="25" />
         </Grid.RowDefinitions>
-        <Grid x:Name="Client">
+        <Grid x:Name="Client"
+              MouseUp="Client_OnMouseUp">
             <userControl:ExtScrollViewer x:Name="ScrollViewerObject" 
     			                         HorizontalScrollBarVisibility="Auto" 
     			                         VerticalScrollBarVisibility="Auto"

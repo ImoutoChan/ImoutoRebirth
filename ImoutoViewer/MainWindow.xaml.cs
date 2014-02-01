@@ -58,7 +58,21 @@ namespace ImoutoViewer
         //Open setting flyout
         private void Button_Click(object sender, RoutedEventArgs e)
         {
+            foreach (Flyout item in Flyouts.Items)
+            {
+                item.IsOpen = false;
+            }
             SettingFlyout.IsOpen = !SettingFlyout.IsOpen;
+        }
+
+        //Open OpenWith flyout
+        private void ButtonBase_OnClick(object sender, RoutedEventArgs e)
+        {
+            foreach (Flyout item in Flyouts.Items)
+            {
+                item.IsOpen = false;
+            }
+            OpenWithFlyout.IsOpen = !SettingFlyout.IsOpen;
         }
 
         //Close all flyouts
@@ -84,42 +98,53 @@ namespace ImoutoViewer
         //Full screen
         private void MainWindow_OnKeyUp(object sender, KeyEventArgs e)
         {
-            if (e.Key != Key.F11
-                && !(e.Key == Key.Enter && e.Key == Key.LeftAlt || e.Key == Key.RightAlt))
+            if (e.Key == Key.F11 || (e.Key == Key.Enter && e.Key == Key.LeftAlt || e.Key == Key.RightAlt))
             {
-                return;
+                if (_isFullscreen)
+                {
+                    WindowState = WindowState.Normal;
+                    UseNoneWindowStyle = false;
+                    Topmost = false;
+                    ShowTitleBar = true;
+                    WindowState = _lastState;
+
+                    ShowMinButton = true;
+                    ShowMaxRestoreButton = true;
+                    ShowCloseButton = true;
+
+                    _isFullscreen = false;
+                }
+                else
+                {
+                    _lastState = WindowState;
+
+                    WindowState = WindowState.Normal;
+                    UseNoneWindowStyle = true;
+                    Topmost = true;
+                    ShowTitleBar = false;
+
+                    ShowMinButton = false;
+                    ShowMaxRestoreButton = false;
+                    ShowCloseButton = false;
+
+                    WindowState = WindowState.Maximized;
+
+                    _isFullscreen = true;
+                }
+            }
+            else if (e.Key == Key.S)
+            {
+                Button_Click(null, null);
             }
 
-            if (_isFullscreen)
+        }
+
+        //Open OpenWith flyout
+        private void Client_OnMouseUp(object sender, MouseButtonEventArgs e)
+        {
+            if (e.ChangedButton == MouseButton.Middle && e.ButtonState == MouseButtonState.Released)
             {
-                WindowState = WindowState.Normal;
-                UseNoneWindowStyle = false;
-                Topmost = false;
-                ShowTitleBar = true;
-                WindowState = _lastState;
-
-                ShowMinButton = true;
-                ShowMaxRestoreButton = true;
-                ShowCloseButton = true;
-
-                _isFullscreen = false;
-            }
-            else
-            {
-                _lastState = WindowState;
-
-                WindowState = WindowState.Normal;
-                UseNoneWindowStyle = true;
-                Topmost = true;
-                ShowTitleBar = false;
-
-                ShowMinButton = false;
-                ShowMaxRestoreButton = false;
-                ShowCloseButton = false;
-
-                WindowState = WindowState.Maximized;
-
-                _isFullscreen = true;
+                ButtonBase_OnClick(null, null);
             }
         }
 

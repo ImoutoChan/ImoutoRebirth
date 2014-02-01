@@ -61,12 +61,42 @@ namespace ImoutoViewer.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Icon similar to (Icon).
+        /// </summary>
+        internal static System.Drawing.Icon irfan_view {
+            get {
+                object obj = ResourceManager.GetObject("irfan_view", resourceCulture);
+                return ((System.Drawing.Icon)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Icon similar to (Icon).
+        /// </summary>
+        internal static System.Drawing.Icon ms_paint {
+            get {
+                object obj = ResourceManager.GetObject("ms_paint", resourceCulture);
+                return ((System.Drawing.Icon)(obj));
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
         internal static System.Drawing.Bitmap nothing {
             get {
                 object obj = ResourceManager.GetObject("nothing", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Icon similar to (Icon).
+        /// </summary>
+        internal static System.Drawing.Icon photoshop {
+            get {
+                object obj = ResourceManager.GetObject("photoshop", resourceCulture);
+                return ((System.Drawing.Icon)(obj));
             }
         }
     }

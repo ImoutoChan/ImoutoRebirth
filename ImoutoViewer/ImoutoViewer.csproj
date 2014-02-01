@@ -101,6 +101,7 @@
     <Compile Include="UserControls\ExtScrollViewer.cs" />
     <Compile Include="UserControls\MouseWheelGesture.cs" />
     <Compile Include="ViewModel\MainWindowVM.cs" />
+    <Compile Include="ViewModel\OpenWithVM.cs" />
     <Compile Include="ViewModel\SettingsVM.cs" />
     <Compile Include="ViewModel\VMBase.cs" />
     <Page Include="AppResourceDictionary.xaml">
@@ -145,6 +146,7 @@
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
       <SubType>Designer</SubType>
     </EmbeddedResource>
+    <None Include="ClassDiagram1.cd" />
     <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
@@ -184,6 +186,11 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Resources\49a7b0a953e5106e5942169f3cb0c237_ copy.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\img\edit\irfan_view.ico" />
+    <Resource Include="Resources\img\edit\ms_paint.ico" />
+    <Resource Include="Resources\img\edit\photoshop.ico" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
