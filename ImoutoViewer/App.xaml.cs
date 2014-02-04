@@ -1,4 +1,5 @@
-﻿using ImoutoViewer.ViewModel;
+﻿using System.Linq;
+using ImoutoViewer.ViewModel;
 using System.Windows;
 
 namespace ImoutoViewer
@@ -15,7 +16,8 @@ namespace ImoutoViewer
             //Get the arguments
             if (e.Args.Length > 0)
             {
-                Properties["ArbitraryArgName"] = e.Args[0];
+                string result = e.Args.Aggregate("", (current, arg) => current + (" " + arg));
+                Properties["ArbitraryArgName"] = result;
             }
 
             //Start the main window
