@@ -94,7 +94,7 @@
     <Compile Include="Commands\RelayCommand.cs" />
     <Compile Include="Converters\VisibilityConverter.cs" />
     <Compile Include="Model\Extentions.cs" />
-    <Compile Include="Model\FilesGettingMethod.cs" />
+    <Compile Include="Model\DirectorySearchFlags.cs" />
     <Compile Include="Model\ImageFormat.cs" />
     <Compile Include="Model\ResizeType.cs" />
     <Compile Include="Model\SortMethod.cs" />
@@ -146,7 +146,6 @@
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
       <SubType>Designer</SubType>
     </EmbeddedResource>
-    <None Include="ClassDiagram1.cd" />
     <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>

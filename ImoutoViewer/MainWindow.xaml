@@ -102,6 +102,11 @@
                                  DataContext="{Binding Path=Settings}"
                                  MouseLeftButtonUp="Disable_MouseButton" 
                                  Theme="Inverse" >
+                <i:Interaction.Triggers>
+                    <i:EventTrigger EventName="IsOpenChanged">
+                        <i:InvokeCommandAction Command="{Binding SaveCommand}"/>
+                    </i:EventTrigger>
+                </i:Interaction.Triggers>
                 <Grid Margin="20">
                     <Grid.RowDefinitions>
                         <RowDefinition Height="Auto" />

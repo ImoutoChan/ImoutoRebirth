@@ -455,7 +455,8 @@ namespace ImoutoViewer.ViewModel
         private void _backgroundWorker_DoWork(object sender, DoWorkEventArgs e)
         {
             IsLoading = true;
-            UpdateView();
+            OnPropertyChanged("Status");
+            OnPropertyChanged("IsLoading");
 
             if ((e.Argument as string[]) != null)
             {

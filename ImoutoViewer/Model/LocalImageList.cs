@@ -17,8 +17,8 @@ namespace ImoutoViewer.Model
 
         private static SortMethod _foldersSortMethod = SortMethod.ByCreateDate;
 
-        private static FilesGettingMethod _filesGettingMethod = FilesGettingMethod.Folder |
-                                                                FilesGettingMethod.AllDepthSubfolders;
+        private static DirectorySearchFlags _filesGettingMethod = DirectorySearchFlags.Folder |
+                                                                DirectorySearchFlags.AllDepthSubfolders;
 
         #endregion //Static fields
 
@@ -40,7 +40,7 @@ namespace ImoutoViewer.Model
 
         public static bool IsFoldersSortMethodDescending { private get; set; }
 
-        public static FilesGettingMethod FilesGettingMethods
+        public static DirectorySearchFlags FilesGettingMethods
         {
             private get { return _filesGettingMethod; }
             set { _filesGettingMethod = value; }
@@ -86,7 +86,7 @@ namespace ImoutoViewer.Model
             return formats.Split('|').Any(item => file.EndsWith(item, true, ci));
         }
 
-        private static bool IsFlagged(FilesGettingMethod flags, FilesGettingMethod value)
+        private static bool IsFlagged(DirectorySearchFlags flags, DirectorySearchFlags value)
         {
             return (flags & value) == value;
         }
@@ -354,7 +354,7 @@ namespace ImoutoViewer.Model
             _imageList.AddRange(localImages);
         }
 
-        private void LoadDirectories(DirectoryInfo sourceFolder, FilesGettingMethod flags)
+        private void LoadDirectories(DirectoryInfo sourceFolder, DirectorySearchFlags flags)
         {
             if (!sourceFolder.Exists)
             {
@@ -362,22 +362,22 @@ namespace ImoutoViewer.Model
             }
 
 
-            if (IsFlagged(flags, FilesGettingMethod.Folder))
+            if (IsFlagged(flags, DirectorySearchFlags.Folder))
             {
                 AddDirectory(sourceFolder);
             }
 
-            if (IsFlagged(flags, FilesGettingMethod.AllDepthSubfolders))
+            if (IsFlagged(flags, DirectorySearchFlags.AllDepthSubfolders))
             {
                 AddDirectoryRange(GetDirectories(sourceFolder, true));
             }
-            else if (IsFlagged(flags, FilesGettingMethod.Subfolders))
+            else if (IsFlagged(flags, DirectorySearchFlags.Subfolders))
             {
                 AddDirectoryRange(GetDirectories(sourceFolder));
             }
 
 
-            if (IsFlagged(flags, FilesGettingMethod.AllDepthPrefolder))
+            if (IsFlagged(flags, DirectorySearchFlags.AllDepthPrefolder))
             {
                 DirectoryInfo workfolder = sourceFolder;
                 while (workfolder.Parent != null)
@@ -387,16 +387,16 @@ namespace ImoutoViewer.Model
                     foreach (var item in GetDirectories(workfolder.Parent)
                         .Where(item => item.FullName != workfolder.FullName))
                     {
-                        if (IsFlagged(flags, FilesGettingMethod.Folder))
+                        if (IsFlagged(flags, DirectorySearchFlags.Folder))
                         {
                             AddDirectory(item);
                         }
 
-                        if (IsFlagged(flags, FilesGettingMethod.AllDepthSubfolders))
+                        if (IsFlagged(flags, DirectorySearchFlags.AllDepthSubfolders))
                         {
                             AddDirectoryRange(GetDirectories(item, true));
                         }
-                        else if (IsFlagged(flags, FilesGettingMethod.Subfolders))
+                        else if (IsFlagged(flags, DirectorySearchFlags.Subfolders))
                         {
                             AddDirectoryRange(GetDirectories(item));
                         }
@@ -404,23 +404,23 @@ namespace ImoutoViewer.Model
                     workfolder = workfolder.Parent;
                 }
             }
-            else if (IsFlagged(flags, FilesGettingMethod.Prefolders) && sourceFolder.Parent != null)
+            else if (IsFlagged(flags, DirectorySearchFlags.Prefolders) && sourceFolder.Parent != null)
             {
                 AddDirectory(sourceFolder.Parent);
 
                 foreach (var item in GetDirectories(sourceFolder.Parent)
                     .Where(item => item.FullName != sourceFolder.FullName))
                 {
-                    if (IsFlagged(flags, FilesGettingMethod.Folder))
+                    if (IsFlagged(flags, DirectorySearchFlags.Folder))
                     {
                         AddDirectory(item);
                     }
 
-                    if (IsFlagged(flags, FilesGettingMethod.AllDepthSubfolders))
+                    if (IsFlagged(flags, DirectorySearchFlags.AllDepthSubfolders))
                     {
                         AddDirectoryRange(GetDirectories(item, true));
                     }
-                    else if (IsFlagged(flags, FilesGettingMethod.Subfolders))
+                    else if (IsFlagged(flags, DirectorySearchFlags.Subfolders))
                     {
                         AddDirectoryRange(GetDirectories(item));
                     }

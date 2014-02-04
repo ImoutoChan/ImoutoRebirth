@@ -1,7 +1,30 @@
 ﻿<?xml version='1.0' encoding='utf-8'?>
-<SettingsFile xmlns="uri:settings" CurrentProfile="(Default)">
-  <Profiles>
-    <Profile Name="(Default)" />
-  </Profiles>
-  <Settings />
+<SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)" GeneratedClassNamespace="ImoutoViewer.Properties" GeneratedClassName="Settings">
+  <Profiles />
+  <Settings>
+    <Setting Name="ResizeType" Type="ImoutoViewer.Model.ResizeType" Scope="User">
+      <Value Profile="(Default)">DownscaleToViewPort</Value>
+    </Setting>
+    <Setting Name="DirectorySearchFlags" Type="ImoutoViewer.Model.DirectorySearchFlags" Scope="User">
+      <Value Profile="(Default)">Folder | Subfolders</Value>
+    </Setting>
+    <Setting Name="FilesSorting" Type="ImoutoViewer.Model.SortMethod" Scope="User">
+      <Value Profile="(Default)">ByName</Value>
+    </Setting>
+    <Setting Name="FoldersSorting" Type="ImoutoViewer.Model.SortMethod" Scope="User">
+      <Value Profile="(Default)">ByName</Value>
+    </Setting>
+    <Setting Name="FilesSortingDesc" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">False</Value>
+    </Setting>
+    <Setting Name="FoldersSortingDesc" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">False</Value>
+    </Setting>
+    <Setting Name="AccentColorName" Type="System.String" Scope="User">
+      <Value Profile="(Default)">Blue</Value>
+    </Setting>
+    <Setting Name="ThemeIndex" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">0</Value>
+    </Setting>
+  </Settings>
 </SettingsFile>

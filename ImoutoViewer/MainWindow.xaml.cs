@@ -72,7 +72,7 @@ namespace ImoutoViewer
             {
                 item.IsOpen = false;
             }
-            OpenWithFlyout.IsOpen = !SettingFlyout.IsOpen;
+            EditWithFlyout.IsOpen = !SettingFlyout.IsOpen;
         }
 
         //Close all flyouts

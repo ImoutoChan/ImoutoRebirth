@@ -1,4 +1,7 @@
-﻿using ImoutoViewer.Model;
+﻿using System.Windows.Input;
+using ImoutoViewer.Commands;
+using ImoutoViewer.Model;
+using ImoutoViewer.Properties;
 using MahApps.Metro;
 using System;
 using System.Collections.Generic;
@@ -28,7 +31,7 @@ namespace ImoutoViewer.ViewModel
         public SettingsVM()
         {
             ResizeTypes = ResizeTypeDescriptor.GetList();
-            SelectedResizeType = ResizeTypes.First(x => x.Type == ResizeType.DownscaleToViewPort);
+            SelectedResizeType = ResizeTypes.First(x => x.Type == Settings.Default.ResizeType);
 
             DirectorySearchTypes = DirectorySearchTypeDescriptor.GetList();
             foreach (var item in DirectorySearchTypes)
@@ -39,11 +42,11 @@ namespace ImoutoViewer.ViewModel
             FilesSortingMethods = SortingDescriptor.GetListForFiles();
             FoldersSortingMethods = SortingDescriptor.GetListForFolders();
 
-            SelectedFoldersSorting = FoldersSortingMethods.First(x => x.Method == SortMethod.ByName);
-            SelectedFilesSorting = FilesSortingMethods.First(x => x.Method == SortMethod.ByName);
+            SelectedFoldersSorting = FoldersSortingMethods.First(x => x.Method == Settings.Default.FoldersSorting);
+            SelectedFilesSorting = FilesSortingMethods.First(x => x.Method == Settings.Default.FilesSorting);
 
-            IsSelectedFilesSortingDescending = false;
-            IsSelectedFoldersSortingDescending = false;
+            IsSelectedFilesSortingDescending = Settings.Default.FilesSortingDesc;
+            IsSelectedFoldersSortingDescending = Settings.Default.FoldersSortingDesc;
 
             AccentColors = ThemeManager.DefaultAccents
                                 .Select(a => new AccentColorMenuData
@@ -52,11 +55,11 @@ namespace ImoutoViewer.ViewModel
                                     ColorBrush = a.Resources["AccentColorBrush"] as Brush
                                 })
                                 .ToList();
+            SelectedAccentColor = AccentColors.First(x => x.Name == Settings.Default.AccentColorName);
 
-            var accent = ThemeManager.DetectTheme(Application.Current);
-            SelectedAccentColor = AccentColors.First(x => x.Name == accent.Item2.Name);
+            SelectedIndexTheme = Settings.Default.ThemeIndex;
 
-            SelectedIndexTheme = 0;
+            SaveCommand = new RelayCommand(x=> Save());
         }
 
         #endregion //Constructors
@@ -73,16 +76,17 @@ namespace ImoutoViewer.ViewModel
             set
             {
                 _selectedResizeType = value;
+                Settings.Default.ResizeType = value.Type;
                 OnSelectedResizeTypeChanged();
             }
         }
 
         public ObservableCollection<DirectorySearchTypeDescriptor> DirectorySearchTypes { get; private set; }
-        public FilesGettingMethod DirectorySearchFlags
+        public DirectorySearchFlags DirectorySearchFlags
         {
             get
             {
-                return DirectorySearchTypes.Where(item => item.IsSelected).Aggregate(FilesGettingMethod.None, (current, item) => current | item.Type);
+                return DirectorySearchTypes.Where(item => item.IsSelected).Aggregate(DirectorySearchFlags.None, (current, item) => current | item.Type);
             }
         }
 
@@ -96,6 +100,7 @@ namespace ImoutoViewer.ViewModel
             set
             {
                 _selectedFoldersSorting = value;
+                Settings.Default.FoldersSorting = value.Method;
                 OnSelectedFoldersSortingChanged();
             }
         }
@@ -106,6 +111,7 @@ namespace ImoutoViewer.ViewModel
             set
             {
                 _isSelectedFoldersSortingDescending = value;
+                Settings.Default.FoldersSortingDesc = value;
                 OnSelectedFoldersSortingChanged();
             }
         }
@@ -116,6 +122,7 @@ namespace ImoutoViewer.ViewModel
             set
             {
                 _selectedFilesSorting = value;
+                Settings.Default.FilesSorting = value.Method;
                 OnSelectedFilesSortingChanged();
             }
         }
@@ -126,6 +133,7 @@ namespace ImoutoViewer.ViewModel
             set
             {
                 _isSelectedFilesSortingDescending = value;
+                Settings.Default.FilesSortingDesc = value;
                 OnSelectedFilesSortingChanged();
             }
         }
@@ -150,7 +158,7 @@ namespace ImoutoViewer.ViewModel
         /// </summary>
         public int SelectedIndexTheme
         {
-            get 
+            get
             { 
                 return _selectedTheme; 
             }
@@ -162,15 +170,28 @@ namespace ImoutoViewer.ViewModel
                 {
                     case 1:
                         ThemeManager.ChangeTheme(Application.Current, theme.Item2, Theme.Dark);
+                        Settings.Default.ThemeIndex = 1;
                         break;
                     default:
                         ThemeManager.ChangeTheme(Application.Current, theme.Item2, Theme.Light);
+                        Settings.Default.ThemeIndex = 0;
                         break;
                 }
             }
         }
 
         #endregion //Properties
+
+        #region Commands
+
+        public ICommand SaveCommand { get; set; }
+
+        private void Save()
+        {
+            Settings.Default.Save();
+        }
+
+        #endregion //Commands
 
         #region Event handlers
 
@@ -261,23 +282,30 @@ namespace ImoutoViewer.ViewModel
     {
         #region Fields
 
-        private bool _isSelected;
+        private bool? _isSelected;
 
         #endregion // Fields
 
         #region Properties
 
         public string Name { get; private set; }
-        public FilesGettingMethod Type { get; private set; }
+        public DirectorySearchFlags Type { get; private set; }
         public bool IsSelected
         {
             get
             {
-                return _isSelected;
+                if (_isSelected == null)
+                {
+                    _isSelected = ((Type & Settings.Default.DirectorySearchFlags) == Type);
+                }
+                return (bool)_isSelected;
             }
             set
             {
                 _isSelected = value;
+                Settings.Default.DirectorySearchFlags = (value)
+                    ? Settings.Default.DirectorySearchFlags | Type
+                    : Settings.Default.DirectorySearchFlags & ~Type;
                 OnSelectedChanged();
             }
         }
@@ -299,11 +327,11 @@ namespace ImoutoViewer.ViewModel
         {
             return new ObservableCollection<DirectorySearchTypeDescriptor>
             {
-                new DirectorySearchTypeDescriptor { Name = "All Pre", Type = FilesGettingMethod.AllDepthPrefolder },
-                new DirectorySearchTypeDescriptor { Name = "Pre", Type = FilesGettingMethod.Prefolders },            
-                new DirectorySearchTypeDescriptor { Name = "Cur", Type = FilesGettingMethod.Folder, IsSelected = true },            
-                new DirectorySearchTypeDescriptor { Name = "Sub", Type = FilesGettingMethod.Subfolders, IsSelected = true},            
-                new DirectorySearchTypeDescriptor { Name = "All Sub", Type = FilesGettingMethod.AllDepthSubfolders },
+                new DirectorySearchTypeDescriptor { Name = "All Pre", Type = DirectorySearchFlags.AllDepthPrefolder },
+                new DirectorySearchTypeDescriptor { Name = "Pre", Type = DirectorySearchFlags.Prefolders },            
+                new DirectorySearchTypeDescriptor { Name = "Cur", Type = DirectorySearchFlags.Folder },            
+                new DirectorySearchTypeDescriptor { Name = "Sub", Type = DirectorySearchFlags.Subfolders },            
+                new DirectorySearchTypeDescriptor { Name = "All Sub", Type = DirectorySearchFlags.AllDepthSubfolders },
             };
         }
 
@@ -377,6 +405,7 @@ namespace ImoutoViewer.ViewModel
             var theme = ThemeManager.DetectTheme(Application.Current);
             var accent = ThemeManager.DefaultAccents.First(x => x.Name == Name);
             ThemeManager.ChangeTheme(Application.Current, accent, theme.Item1);
+            Settings.Default.AccentColorName = Name;
         }
     }
 

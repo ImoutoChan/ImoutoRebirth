@@ -2,8 +2,9 @@ using System;
 
 namespace ImoutoViewer.Model
 {
+    [Serializable]
     [Flags]
-    public enum FilesGettingMethod
+    public enum DirectorySearchFlags
     {
         None = 0x0,
         Folder = 0x1,

@@ -5,6 +5,7 @@ using System.Text;
 
 namespace ImoutoViewer.Model
 {
+    [Serializable]
     public enum SortMethod
     {
         ByName,

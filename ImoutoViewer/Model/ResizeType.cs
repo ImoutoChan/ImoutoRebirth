@@ -1,5 +1,8 @@
-﻿namespace ImoutoViewer.Model
+﻿using System;
+
+namespace ImoutoViewer.Model
 {
+    [Serializable]
     public enum ResizeType
     {
         FitToViewPort,
