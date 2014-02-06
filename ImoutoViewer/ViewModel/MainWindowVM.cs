@@ -66,7 +66,7 @@ namespace ImoutoViewer.ViewModel
             {
                 string title = "";
 
-                if (CurrentLocalImage != null)
+                if (CurrentLocalImage != null && !_imageList.IsEmpty)
                 {
                     title += CurrentLocalImage.Name + " - " ;
                 }
