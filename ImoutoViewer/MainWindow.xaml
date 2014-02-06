@@ -93,6 +93,7 @@
         <converter:VisibilityConverter x:Key="VisibilityInvertConverter" 
                                         IsInvert="True" />
     </metroControl:MetroWindow.Resources>
+    
     <metroControl:MetroWindow.Flyouts>
         <metroControl:FlyoutsControl>
             <metroControl:Flyout x:Name="SettingFlyout"
@@ -107,6 +108,7 @@
                         <i:InvokeCommandAction Command="{Binding SaveCommand}"/>
                     </i:EventTrigger>
                 </i:Interaction.Triggers>
+                
                 <Grid Margin="20">
                     <Grid.RowDefinitions>
                         <RowDefinition Height="Auto" />
@@ -279,12 +281,14 @@
              </metroControl:Flyout>
         </metroControl:FlyoutsControl>
     </metroControl:MetroWindow.Flyouts>
+    
     <Grid Focusable="True" 
 		  MouseLeftButtonUp="Client_MouseLeftButtonUp">
         <Grid.RowDefinitions>
             <RowDefinition Height="*" />
             <RowDefinition Height="25" />
         </Grid.RowDefinitions>
+        
         <Grid x:Name="Client"
               MouseUp="Client_OnMouseUp">
             <userControl:ExtScrollViewer x:Name="ScrollViewerObject" 
@@ -328,6 +332,7 @@
                 </Grid>
             </userControl:ExtScrollViewer>
         </Grid>
+        
         <StatusBar Background="{DynamicResource AccentColorBrush}"
                    Grid.Row="1"
                    MouseUp="Disable_MouseButton">
