@@ -13,6 +13,7 @@ namespace ImoutoViewer.ViewModel
     class MainWindowVM : VMBase, IDragable, IDropable
     {
         #region Fields
+        private readonly Guid _appGuid = Guid.NewGuid();
 
         private readonly MainWindow _mainWindowView;
         private LocalImageList _imageList;
@@ -481,7 +482,9 @@ namespace ImoutoViewer.ViewModel
         {
             get
             {
-                return new DataObject(DataFormats.FileDrop, new[] { CurrentLocalImage.Path });
+                var data = new DataObject(DataFormats.FileDrop, new[] { CurrentLocalImage.Path });
+                data.SetData("DragSource", _appGuid);
+                return data;
             }
         }
 
@@ -507,9 +510,19 @@ namespace ImoutoViewer.ViewModel
             }
         }
 
-        public void Drop(object data)
+        public void Drop(object data, object sourceGuid)
         {
             var droppedFiles = (string[])data;
+            try
+            {
+                var typedSourceGuid = (Guid)sourceGuid;
+                if (typedSourceGuid == _appGuid)
+                {
+                    return;
+                }
+            }
+            catch
+            {}
 
             _initBackgroundWorker.RunWorkerAsync(droppedFiles);
         }

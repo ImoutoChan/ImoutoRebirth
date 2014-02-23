@@ -59,7 +59,7 @@ namespace ImoutoViewer.ViewModel
             
             try
             {
-                Process.Start(ExePath, arg as string);
+                Process.Start(ExePath, "\"" + arg + "\"");
             }
             catch { }
         }
