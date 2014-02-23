@@ -1,10 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Configuration;
-using System.Data;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using System.Linq;
 using System.Windows;
+using ImoutoNavigator.ViewModel;
 
 namespace ImoutoNavigator
 {
@@ -13,5 +9,14 @@ namespace ImoutoNavigator
     /// </summary>
     public partial class App : Application
     {
+        private MainWindowVM _mainWindowVM;
+
+        protected override void OnStartup(StartupEventArgs e)
+        {
+            //Start the main window
+            _mainWindowVM = new MainWindowVM();
+
+            base.OnStartup(e);
+        }
     }
 }

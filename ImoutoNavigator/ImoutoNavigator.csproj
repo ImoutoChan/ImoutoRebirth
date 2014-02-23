@@ -59,9 +59,9 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="Model\ImageFormat.cs" />
-    <Compile Include="Model\LocalImage.cs" />
-    <Compile Include="ViewModel\ImagesPresenterVM.cs" />
+    <Compile Include="Commands\RelayCommand.cs" />
+    <Compile Include="Model\ImageEntry.cs" />
+    <Compile Include="UserControls\MouseWheelGesture.cs" />
     <Compile Include="ViewModel\MainWindowVM.cs" />
     <Compile Include="ViewModel\VMBase.cs" />
     <Page Include="MainWindow.xaml">
@@ -112,6 +112,12 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Resources\Entypo-license.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\ImoutoViewer\ImoutoViewer.csproj">
+      <Project>{94cb919f-f3c9-4470-af91-a2878cc8df4a}</Project>
+      <Name>ImoutoViewer</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

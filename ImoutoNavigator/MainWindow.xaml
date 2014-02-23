@@ -7,6 +7,9 @@
                           xmlns:gif="http://wpfanimatedgif.codeplex.com"
                           xmlns:metroControl="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
                           xmlns:metroBehaviour="clr-namespace:MahApps.Metro.Behaviours;assembly=MahApps.Metro"
+                          xmlns:viewModel="clr-namespace:ImoutoNavigator.ViewModel"
+                          xmlns:userControl="clr-namespace:ImoutoNavigator.UserControls"
+                          d:DataContext="{d:DesignInstance viewModel:MainWindowVM, IsDesignTimeCreatable=False}"
                           mc:Ignorable="d"
                           WindowStartupLocation="CenterScreen"
                           BorderBrush="{DynamicResource AccentColorBrush}"                  
@@ -14,15 +17,25 @@
                           Height="350" 
                           Width="525"
                           ShowWindowCommandsOnTop="False"
-                          TitleCaps="False">
+                          TitleCaps="False"
+                          MouseWheel="MainWindow_OnPreviewMouseWheel">
+    <metroControl:MetroWindow.InputBindings>
+        <MouseBinding Command="{Binding Path=ZoomOutCommand}" 
+                      Gesture="{x:Static userControl:MouseWheelGesture.CtrlDown}" />
+
+        <MouseBinding Command="{Binding Path=ZoomInCommand}"
+                      Gesture="{x:Static userControl:MouseWheelGesture.CtrlUp}" />
+    </metroControl:MetroWindow.InputBindings>
+    
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*" />
-            <ColumnDefinition Width="200"/>
+            <ColumnDefinition Width="200" />
         </Grid.ColumnDefinitions>
 
         <ListBox Grid.Row="0"
-                 ScrollViewer.HorizontalScrollBarVisibility="Disabled">
+                 ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                 ItemsSource="{Binding Path=ImageList, UpdateSourceTrigger=PropertyChanged}" >
             <ListBox.ItemsPanel>
                 <ItemsPanelTemplate>
                     <WrapPanel Orientation="Horizontal" />
@@ -31,9 +44,12 @@
             
             <ListBox.ItemTemplate>
                 <DataTemplate>
-                    <Image Source="{Binding Path=TODO}"
-                           Width="{Binding Path=TODO}"
-                           Height="{Binding Path=TODO}"/>
+                    <Border Margin="10">
+                        <Image Source="{Binding Path=Image}"
+                               Width="{Binding Path=DataContext.PreviewSize.Width, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=ListBox}}"
+                               Height="{Binding Path=DataContext.PreviewSize.Height, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=ListBox}}"
+                               />
+                    </Border>
                 </DataTemplate>
             </ListBox.ItemTemplate>
         </ListBox>

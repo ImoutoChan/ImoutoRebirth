@@ -1,26 +1,29 @@
 ﻿using System;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Windows;
-using System.Windows.Media;
 using System.Windows.Media.Imaging;
+using ImoutoViewer.Model;
 
 namespace ImoutoNavigator.Model
 {
     class ImageEntry
     {
+        private const ResizeType DefaultResizeType = ResizeType.FitToViewPort;
+
         #region Fields
 
         private readonly string _path;
         private readonly FileInfo _imageFileInfo;
         private BitmapSource _image;
-        private Size _hardResize;
+        private Size _viewPort;
 
         #endregion //Fields
 
         #region Constructors
 
-        public ImageEntry(string path, Size hardResize = new Size())
+        public ImageEntry(string path, Size viewPort = new Size())
         {
             var imageFileInfo = new FileInfo(path);
             if (!imageFileInfo.Exists)
@@ -34,10 +37,9 @@ namespace ImoutoNavigator.Model
             
             _path = path;
             _imageFileInfo = imageFileInfo;
+            _viewPort = viewPort;
 
-            _hardResize = hardResize;
-
-            IsError = true;
+            IsError = false;
         }
 
         #endregion //Constructors
@@ -64,11 +66,11 @@ namespace ImoutoNavigator.Model
 
         public string ErrorMessage { get; private set; }
 
-        public Size ResizedSize
+        public Size ImageSize
         {
             get
             {
-                return new Size(Image.PixelWidth * Zoom, Image.PixelHeight * Zoom);
+                return new Size(Image.PixelWidth, Image.PixelHeight);
             }
         }
 
@@ -107,11 +109,6 @@ namespace ImoutoNavigator.Model
             { return _imageFileInfo.FullName; }
         }
 
-        //public double Zoom
-        //{
-        //    get { return LocalZoom * _autoResized * StaticZoom; }
-        //}
-
         #endregion //Properties
 
         #region Public methods
@@ -120,19 +117,36 @@ namespace ImoutoNavigator.Model
         {
             try
             {
+                var resizedSize = new Size();
+
+                if (!_viewPort.IsEmpty)
+                {
+                    if (_viewPort.Width != 0 && _viewPort.Height != 0)
+                    {
+                        var decoder =
+                            BitmapDecoder.Create(new Uri(_path),
+                                BitmapCreateOptions.None,
+                                BitmapCacheOption.None);
+                        var frame = decoder.Frames[0];
+
+                        resizedSize = ResizeImage(new Size(frame.PixelWidth, frame.PixelHeight),
+                            new Size(_viewPort.Width, _viewPort.Height),
+                            DefaultResizeType);
+
+                        decoder = null;
+                    }
+                }
+
                 var bi = new BitmapImage();
 
                 bi.BeginInit();
 
-                if (!_hardResize.IsEmpty)
+                if (!resizedSize.IsEmpty)
                 {
-                    if (_hardResize.Width != 0)
+                    if (resizedSize.Width != 0 && resizedSize.Height != 0)
                     {
-                        bi.DecodePixelWidth = Convert.ToInt32(_hardResize.Width);
-                    }
-                    if (_hardResize.Height != 0)
-                    {
-                        bi.DecodePixelHeight = Convert.ToInt32(_hardResize.Height);
+                        bi.DecodePixelWidth = Convert.ToInt32(resizedSize.Width);
+                        bi.DecodePixelHeight = Convert.ToInt32(resizedSize.Height);
                     }
                 }
 
@@ -157,47 +171,7 @@ namespace ImoutoNavigator.Model
             GC.WaitForPendingFinalizers();
         }
 
-        public void Resize(Size viewPort, ResizeType resizedType = ResizeType.Default)
-        {
-            if (IsZoomFixed)
-            {
-                _autoResized = 1;
-            }
-            else
-            {
-                if (resizedType == ResizeType.Default)
-                {
-                    resizedType = DefaultResizeType;
-                }
-
-                 var resizedSize = ResizeImage(new Size(Image.PixelWidth, Image.PixelHeight),
-                                           new Size(viewPort.Width, viewPort.Height),
-                                           resizedType);
-
-                 _autoResized = resizedSize.Width / Image.PixelWidth;
-            }
-        }
-
         #endregion //Public methods
-
-        #region Methods
-
-        private void Rotate(int angle)
-        {
-            var trasformedBitmap = new TransformedBitmap();
-
-            trasformedBitmap.BeginInit();
-            trasformedBitmap.Source = Image;
-
-            var rotateTransform = new RotateTransform(angle);
-            trasformedBitmap.Transform = rotateTransform;
-
-            trasformedBitmap.EndInit();
-
-            Image = trasformedBitmap;
-        }
-
-        #endregion //Methods
 
         #region Events
 
@@ -213,11 +187,6 @@ namespace ImoutoNavigator.Model
         #endregion //Events
 
         #region Static methods
-
-        public static LocalImage GetEmptyImage()
-        {
-            return new LocalImage(@"pack://application:,,,/Resources/img/nothing.png");
-        }
 
         private static Size ResizeImage(Size original, Size viewPort, ResizeType type)
         {
@@ -345,6 +314,14 @@ namespace ImoutoNavigator.Model
             result.Width = viewPort.Width;
             result.Height = original.Height / wRatio;
             return result;
+        }
+
+        public static bool IsImage(string file)
+        {
+            var ci = new CultureInfo("en-US");
+            const string formats = @".jpg|.png|.jpeg|.bmp|.gif|.tiff";
+
+            return formats.Split('|').Any(item => file.EndsWith(item, true, ci));
         }
 
         #endregion //Static methods
