@@ -1,7 +1,9 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Interactivity;
+using ImoutoViewer.UserControls;
 
 namespace ImoutoViewer.Behavior
 {
@@ -27,7 +29,7 @@ namespace ImoutoViewer.Behavior
             base.OnAttached();
 
             AssociatedObject.AllowDrop = true;
-            AssociatedObject.DragEnter += AssociatedObject_DragEnter;
+            //AssociatedObject.DragEnter += AssociatedObject_DragEnter;
             AssociatedObject.Drop += AssociatedObject_Drop;
         }
 
@@ -40,7 +42,7 @@ namespace ImoutoViewer.Behavior
 
 	            if (target != null)
 	            {
-	                target.Drop(e.Data.GetData(item));
+                    target.Drop(e.Data.GetData(item), e.Data.GetData("DragSource"));
 	            }
 	            break;
 	        }
@@ -48,17 +50,17 @@ namespace ImoutoViewer.Behavior
             e.Handled = true;
         }
 
-        void AssociatedObject_DragEnter(object sender, DragEventArgs e)
-        {
-            e.Effects = DragDropEffects.None;
+        //void AssociatedObject_DragEnter(object sender, DragEventArgs e)
+        //{
+        //    e.Effects = DragDropEffects.None;
 
-            //if the DataContext implements IDropable, record the data type that can be dropped
-            if (AllowDataTypes.Any(item => e.Data.GetDataPresent(item)))
-            {
-                e.Effects = DragDropEffects.Copy;
-            }
+        //    //if the DataContext implements IDropable, record the data type that can be dropped
+        //    if (AllowDataTypes.Any(item => e.Data.GetDataPresent(item)))
+        //    {
+        //        e.Effects = DragDropEffects.Copy;
+        //    }
 
-            e.Handled = true;
-        }
+        //    e.Handled = true;
+        //}
     }
 }

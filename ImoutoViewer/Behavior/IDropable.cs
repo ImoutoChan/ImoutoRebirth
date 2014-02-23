@@ -13,6 +13,6 @@ namespace ImoutoViewer.Behavior
         /// Drop data logic.
         /// </summary>
         /// <param name="data">The data to be dropped.</param>
-        void Drop(object data);
+        void Drop(object data, object sourceGuid);
     }
 }

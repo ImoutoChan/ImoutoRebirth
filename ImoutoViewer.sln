@@ -3,6 +3,8 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2012
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ImoutoViewer", "ImoutoViewer\ImoutoViewer.csproj", "{94CB919F-F3C9-4470-AF91-A2878CC8DF4A}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ImoutoNavigator", "ImoutoNavigator\ImoutoNavigator.csproj", "{6BE0B3DE-7FB8-4542-8D88-14A0FD0AC406}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -13,6 +15,10 @@ Global
 		{94CB919F-F3C9-4470-AF91-A2878CC8DF4A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{94CB919F-F3C9-4470-AF91-A2878CC8DF4A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{94CB919F-F3C9-4470-AF91-A2878CC8DF4A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6BE0B3DE-7FB8-4542-8D88-14A0FD0AC406}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6BE0B3DE-7FB8-4542-8D88-14A0FD0AC406}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6BE0B3DE-7FB8-4542-8D88-14A0FD0AC406}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6BE0B3DE-7FB8-4542-8D88-14A0FD0AC406}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
