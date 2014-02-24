@@ -16,7 +16,7 @@ namespace ImoutoViewer
             //Get the arguments
             if (e.Args.Length > 0)
             {
-                string result = e.Args.Aggregate("", (current, arg) => current + (" " + arg));
+                string result = e.Args.Aggregate("", (current, arg) => current + ("\n&$&\n" + arg));
                 Properties["ArbitraryArgName"] = result;
             }
 

@@ -241,7 +241,7 @@ namespace ImoutoViewer.ViewModel
             }
             else if (Application.Current.Properties["ArbitraryArgName"] != null)
             {
-                string[] fname = Application.Current.Properties["ArbitraryArgName"].ToString().Split(new []{' '}, StringSplitOptions.RemoveEmptyEntries);
+                string[] fname = Application.Current.Properties["ArbitraryArgName"].ToString().Split(new[] { "\n&$&\n" }, StringSplitOptions.RemoveEmptyEntries);
                 Application.Current.Properties["ArbitraryArgName"] = null;
 
                 _imageList = new LocalImageList(fname);
