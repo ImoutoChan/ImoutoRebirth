@@ -46,8 +46,12 @@
                 <DataTemplate>
                     <Border Margin="10">
                         <Image Source="{Binding Path=Image}"
-                               Width="{Binding Path=DataContext.PreviewSize.Width, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=ListBox}}"
-                               Height="{Binding Path=DataContext.PreviewSize.Height, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=ListBox}}"
+                               Width="{Binding Path=DataContext.PreviewSize.Width, 
+                                               RelativeSource={RelativeSource Mode=FindAncestor, 
+                                                                              AncestorType=ListBox}}"
+                               Height="{Binding Path=DataContext.PreviewSize.Height, 
+                                                RelativeSource={RelativeSource Mode=FindAncestor, 
+                                                                               AncestorType=ListBox}}"
                                />
                     </Border>
                 </DataTemplate>
