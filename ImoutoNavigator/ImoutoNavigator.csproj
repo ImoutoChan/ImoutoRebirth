@@ -60,8 +60,15 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="Commands\RelayCommand.cs" />
+    <Compile Include="Converters\VisibilityConverter.cs" />
     <Compile Include="Model\ImageEntry.cs" />
+    <Compile Include="Properties\Annotations.cs" />
+    <Compile Include="UserControls\ExtScrollViewer.cs" />
     <Compile Include="UserControls\MouseWheelGesture.cs" />
+    <Compile Include="Utils\ThreadPool\CustomThreadPool.cs" />
+    <Compile Include="Utils\ThreadPool\ThreadPoolQueueItem.cs" />
+    <Compile Include="Utils\ThreadPool\ThreadPoolItem.cs" />
+    <Compile Include="ViewModel\ImageEntryVM.cs" />
     <Compile Include="ViewModel\MainWindowVM.cs" />
     <Compile Include="ViewModel\VMBase.cs" />
     <Page Include="MainWindow.xaml">
@@ -119,6 +126,7 @@
       <Name>ImoutoViewer</Name>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

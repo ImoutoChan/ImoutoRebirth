@@ -9,6 +9,7 @@
                           xmlns:metroBehaviour="clr-namespace:MahApps.Metro.Behaviours;assembly=MahApps.Metro"
                           xmlns:viewModel="clr-namespace:ImoutoNavigator.ViewModel"
                           xmlns:userControl="clr-namespace:ImoutoNavigator.UserControls"
+                          xmlns:converter="clr-namespace:ImoutoNavigator.Converters"
                           d:DataContext="{d:DesignInstance viewModel:MainWindowVM, IsDesignTimeCreatable=False}"
                           mc:Ignorable="d"
                           WindowStartupLocation="CenterScreen"
@@ -19,14 +20,13 @@
                           ShowWindowCommandsOnTop="False"
                           TitleCaps="False"
                           MouseWheel="MainWindow_OnPreviewMouseWheel">
-    <metroControl:MetroWindow.InputBindings>
-        <MouseBinding Command="{Binding Path=ZoomOutCommand}" 
-                      Gesture="{x:Static userControl:MouseWheelGesture.CtrlDown}" />
+    <metroControl:MetroWindow.Resources>
+        <converter:VisibilityConverter x:Key="VisibilityConverter" />
 
-        <MouseBinding Command="{Binding Path=ZoomInCommand}"
-                      Gesture="{x:Static userControl:MouseWheelGesture.CtrlUp}" />
-    </metroControl:MetroWindow.InputBindings>
-    
+        <converter:VisibilityConverter x:Key="VisibilityInvertConverter" 
+                                        IsInvert="True" />
+    </metroControl:MetroWindow.Resources>
+
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*" />
@@ -36,6 +36,26 @@
         <ListBox Grid.Row="0"
                  ScrollViewer.HorizontalScrollBarVisibility="Disabled"
                  ItemsSource="{Binding Path=ImageList, UpdateSourceTrigger=PropertyChanged}" >
+            <ListBox.InputBindings>
+                <MouseBinding Command="{Binding Path=ZoomOutCommand}" 
+                      Gesture="{x:Static userControl:MouseWheelGesture.CtrlDown}" />
+
+                <MouseBinding Command="{Binding Path=ZoomInCommand}"
+                      Gesture="{x:Static userControl:MouseWheelGesture.CtrlUp}" />
+            </ListBox.InputBindings>
+            
+            <ListBox.Template>
+                <ControlTemplate TargetType="ListBox">
+                    <userControl:ExtScrollViewer x:Name="ScrollViewer"
+                                                 Padding="{TemplateBinding Padding}"
+                                                 Background="{TemplateBinding Background}"
+                                                 BorderBrush="Transparent"
+                                                 BorderThickness="0">
+                        <ItemsPresenter />
+                    </userControl:ExtScrollViewer>
+                </ControlTemplate>
+            </ListBox.Template>
+            
             <ListBox.ItemsPanel>
                 <ItemsPanelTemplate>
                     <WrapPanel Orientation="Horizontal" />
@@ -44,15 +64,21 @@
             
             <ListBox.ItemTemplate>
                 <DataTemplate>
-                    <Border Margin="10">
-                        <Image Source="{Binding Path=Image}"
-                               Width="{Binding Path=DataContext.PreviewSize.Width, 
+                    <Border Margin="6,10,10,10">
+                        <Border.Effect>
+                            <DropShadowEffect/>
+                        </Border.Effect>
+                        <Grid Width="{Binding Path=DataContext.PreviewSize.Width, 
+                                              RelativeSource={RelativeSource Mode=FindAncestor, 
+                                                                             AncestorType=ListBox}}"
+                              Height="{Binding Path=DataContext.PreviewSize.Height, 
                                                RelativeSource={RelativeSource Mode=FindAncestor, 
-                                                                              AncestorType=ListBox}}"
-                               Height="{Binding Path=DataContext.PreviewSize.Height, 
-                                                RelativeSource={RelativeSource Mode=FindAncestor, 
-                                                                               AncestorType=ListBox}}"
-                               />
+                                                                              AncestorType=ListBox}}">
+                            <Image Source="{Binding Path=Image}" 
+                                   Visibility="{Binding Path=IsLoading, Converter={StaticResource VisibilityInvertConverter}}"/>
+                            
+                            <metroControl:ProgressRing IsActive="{Binding IsLoading, Mode=OneWay}" />                            
+                        </Grid>
                     </Border>
                 </DataTemplate>
             </ListBox.ItemTemplate>

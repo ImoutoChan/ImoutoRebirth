@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
@@ -18,9 +20,10 @@ namespace ImoutoNavigator.ViewModel
     {
         #region Fields
 
-        private int _previewSide = 32;
+        private int _previewSide = 256;
         private MainWindow _view;
-        private ObservableCollection<ImageEntry> _imageList;
+        private ObservableCollection<ImageEntryVM> _imageList;
+        private Thread _updateThread;
 
         #endregion //Fields
 
@@ -28,6 +31,8 @@ namespace ImoutoNavigator.ViewModel
 
         public MainWindowVM()
         {
+            InitializeCommands();
+
             _view = new MainWindow { DataContext = this };
             _view.Loaded += _view_Loaded;
             _view.Show();
@@ -45,7 +50,7 @@ namespace ImoutoNavigator.ViewModel
             }
         }
 
-        public ObservableCollection<ImageEntry> ImageList
+        public ObservableCollection<ImageEntryVM> ImageList
         {
             get { return _imageList; }
         }
@@ -62,13 +67,13 @@ namespace ImoutoNavigator.ViewModel
             ZoomInCommand = new RelayCommand(x =>
                 {
                     _previewSide = Convert.ToInt32(Math.Floor(_previewSide * 1.1));
-                    Reload();
+                    UpdatePreviews();
                 } 
             );
             ZoomOutCommand = new RelayCommand(x =>
                 {
                     _previewSide = Convert.ToInt32(Math.Floor(_previewSide * 0.9));
-                    Reload();
+                    UpdatePreviews();
                 }
             );
         }
@@ -77,20 +82,49 @@ namespace ImoutoNavigator.ViewModel
 
         #region Methods
 
-        private void GetImageLIst()
+        private void GetImageList()
         {
-            _imageList = new ObservableCollection<ImageEntry>(
+            _imageList = new ObservableCollection<ImageEntryVM>(
                 Directory.GetFiles(@"c:\Users\oniii-chan\Downloads\DLS\art\loli\")
                     .Where(ImageEntry.IsImage)
-                    .Select(x => new ImageEntry(x, PreviewSize))
+                    .Select(x =>
+                    {
+                        var im = new ImageEntryVM(x, PreviewSize);
+                        im.ImageEntryChanged += im_ImageChanged;
+                        return im;
+                    })
                     .ToList()
                 );
         }
 
         private void Reload()
         {
-            GetImageLIst();
-            OnPropertyChanged("ImageList");
+            //if (_updateThread != null)
+            //{
+            //   _updateThread.Abort();
+            //   //_updateThread.Join();
+            //}
+            // _updateThread = new Thread(GetImageList);
+            // _updateThread.Start();
+
+             GetImageList();
+             OnPropertyChanged("ImageList");
+        }
+
+        private void UpdatePreviews()
+        {
+            ImageEntry.AbortAllLoading();
+
+            var startTime = DateTime.Now;
+            
+            foreach (var imageEntry in _imageList)
+            {
+                imageEntry.UpdatePreview(PreviewSize);
+            }
+
+            Debug.Print("!UPDATED FOR {0} ms", (DateTime.Now - startTime).TotalMilliseconds);
+
+            OnPropertyChanged("PreviewSize");
         }
 
         #endregion //Methods
@@ -100,6 +134,11 @@ namespace ImoutoNavigator.ViewModel
         private void _view_Loaded(object sender, RoutedEventArgs e)
         {
             Reload();
+        }
+
+        void im_ImageChanged(object sender, EventArgs e)
+        {
+            OnPropertyChanged("ImageList");
         }
 
         #endregion //Event handlers

@@ -1,15 +1,23 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Threading;
 using System.Windows;
 using System.Windows.Media.Imaging;
+using System.Xml.Serialization;
+using ImoutoNavigator.Utils.ThreadPool;
 using ImoutoViewer.Model;
+using Action = System.Action;
 
 namespace ImoutoNavigator.Model
 {
     class ImageEntry
     {
+        private static readonly CustomThreadPool _threadPool = new CustomThreadPool(1);
+        public static readonly Action AbortAllLoading = () => _threadPool.AbortAndDequeueAll();
+
         private const ResizeType DefaultResizeType = ResizeType.FitToViewPort;
 
         #region Fields
@@ -18,6 +26,8 @@ namespace ImoutoNavigator.Model
         private readonly FileInfo _imageFileInfo;
         private BitmapSource _image;
         private Size _viewPort;
+        private bool _isLoading;
+        private int _loadingThreadPoolItem = -1;
 
         #endregion //Fields
 
@@ -50,9 +60,9 @@ namespace ImoutoNavigator.Model
         {
             get
             {
-                if (_image == null)
+                if (_image == null && !_isLoading)
                 {
-                    Load();
+                    LoadAsyns();
                 }
                 return _image;
             }
@@ -109,9 +119,55 @@ namespace ImoutoNavigator.Model
             { return _imageFileInfo.FullName; }
         }
 
+        public bool IsLoading
+        {
+            get { return _isLoading; }
+        }
+
         #endregion //Properties
 
         #region Public methods
+
+        public void FreeMemory()
+        {
+            _image = null;
+
+            GC.Collect();
+            GC.WaitForPendingFinalizers();
+        }
+
+        public void UpdatePreview(Size viewPort = new Size())
+        {
+            _viewPort = viewPort;
+            IsError = false;
+            _image = null;
+            LoadAsyns();
+        }
+
+        #endregion //Public methods
+
+        #region Methods
+
+        private void LoadAsyns()
+        {
+            lock (this)
+            {
+                _isLoading = true;
+
+                _threadPool.TryAbortOrDequeue(_loadingThreadPoolItem);
+
+
+                DateTime startTime = DateTime.Now;
+
+                _loadingThreadPoolItem = _threadPool.Add(Load, OnImageChanged);
+
+                Debug.Print("!LoadAsyns!LoadInit AT {0}\t{1}", (DateTime.Now - startTime).TotalMilliseconds,DateTime.Now.Millisecond);
+
+                OnImageChanged();
+
+                Debug.Print("!LoadAsyns!Changed AT {0}\t{1}\n\n\n", (DateTime.Now - startTime).TotalMilliseconds, DateTime.Now.Millisecond);
+            }
+        }
 
         private void Load()
         {
@@ -153,29 +209,34 @@ namespace ImoutoNavigator.Model
                 bi.CacheOption = BitmapCacheOption.OnLoad;
                 bi.UriSource = new Uri(_path);
                 bi.EndInit();
+                bi.Freeze();
 
                 _image = bi;
+
+                lock (this)
+                {
+                    if (_isLoading)
+                    {
+                        _isLoading = false;
+                    }
+                }
+
+                OnImageChanged();
             }
             catch (Exception e)
             {
                 IsError = true;
                 ErrorMessage = e.Message;
+                OnImageChanged();
             }
         }
 
-        public void FreeMemory()
-        {
-            _image = null;
-
-            GC.Collect();
-            GC.WaitForPendingFinalizers();
-        }
-
-        #endregion //Public methods
+        #endregion //Methods
 
         #region Events
 
         public event EventHandler ImageChanged;
+
         private void OnImageChanged()
         {
             if (ImageChanged != null)
