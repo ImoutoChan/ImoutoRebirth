@@ -40,6 +40,11 @@ namespace ImoutoNavigator.ViewModel
             get { return _imageEntry.Image; }
         }
 
+        public Size ViewPortSize
+        {
+            get { return _imageEntry.ViewPort; }
+        }
+
         #endregion //Properties
 
         #region Commands
@@ -55,6 +60,12 @@ namespace ImoutoNavigator.ViewModel
         public void UpdatePreview(Size previewSize)
         {
             _imageEntry.UpdatePreview(previewSize);
+            OnPropertyChanged("ViewPortSize");
+        }
+
+        public void Load()
+        {
+            _imageEntry.DoLoadAsyns();
         }
 
         #endregion //Public methods

@@ -1,22 +1,16 @@
-﻿using System;
-using System.Diagnostics;
+﻿using ImoutoNavigator.Utils;
+using ImoutoViewer.Model;
+using System;
 using System.Globalization;
 using System.IO;
 using System.Linq;
-using System.Threading;
 using System.Windows;
 using System.Windows.Media.Imaging;
-using System.Xml.Serialization;
-using ImoutoNavigator.Utils.ThreadPool;
-using ImoutoViewer.Model;
-using Action = System.Action;
 
 namespace ImoutoNavigator.Model
 {
     class ImageEntry
     {
-        private static readonly CustomThreadPool _threadPool = new CustomThreadPool(1);
-        public static readonly Action AbortAllLoading = () => _threadPool.AbortAndDequeueAll();
 
         private const ResizeType DefaultResizeType = ResizeType.FitToViewPort;
 
@@ -26,8 +20,8 @@ namespace ImoutoNavigator.Model
         private readonly FileInfo _imageFileInfo;
         private BitmapSource _image;
         private Size _viewPort;
-        private bool _isLoading;
-        private int _loadingThreadPoolItem = -1;
+        private bool _isLoading; //TODO MAKE COMMON STATUS NOT FLAGS
+        private bool _isLoaded;
 
         #endregion //Fields
 
@@ -62,13 +56,9 @@ namespace ImoutoNavigator.Model
             {
                 if (_image == null && !_isLoading)
                 {
-                    LoadAsyns();
+                    //LoadAsyns();
                 }
                 return _image;
-            }
-            private set
-            {
-                _image = value;
             }
         }
 
@@ -81,6 +71,14 @@ namespace ImoutoNavigator.Model
             get
             {
                 return new Size(Image.PixelWidth, Image.PixelHeight);
+            }
+        }
+
+        public Size ViewPort
+        {
+            get
+            {
+                return _viewPort;
             }
         }
 
@@ -138,10 +136,25 @@ namespace ImoutoNavigator.Model
 
         public void UpdatePreview(Size viewPort = new Size())
         {
+            if (viewPort == _viewPort)
+            {
+                return;
+            }
+
             _viewPort = viewPort;
             IsError = false;
+            _isLoaded = false;
             _image = null;
-            LoadAsyns();
+
+            OnImageChanged();
+        }
+
+        public void DoLoadAsyns()
+        {
+            if (!_isLoaded)
+            {
+                LoadAsyns();
+            }
         }
 
         #endregion //Public methods
@@ -150,29 +163,22 @@ namespace ImoutoNavigator.Model
 
         private void LoadAsyns()
         {
-            lock (this)
-            {
-                _isLoading = true;
+            _isLoading = true;
 
-                _threadPool.TryAbortOrDequeue(_loadingThreadPoolItem);
+            ThreadQueue.Add(Load);
 
-
-                DateTime startTime = DateTime.Now;
-
-                _loadingThreadPoolItem = _threadPool.Add(Load, OnImageChanged);
-
-                Debug.Print("!LoadAsyns!LoadInit AT {0}\t{1}", (DateTime.Now - startTime).TotalMilliseconds,DateTime.Now.Millisecond);
-
-                OnImageChanged();
-
-                Debug.Print("!LoadAsyns!Changed AT {0}\t{1}\n\n\n", (DateTime.Now - startTime).TotalMilliseconds, DateTime.Now.Millisecond);
-            }
+            OnImageChanged();
         }
 
         private void Load()
         {
             try
             {
+                if (_isLoaded)
+                {
+                    return;
+                }
+
                 var resizedSize = new Size();
 
                 if (!_viewPort.IsEmpty)
@@ -213,12 +219,10 @@ namespace ImoutoNavigator.Model
 
                 _image = bi;
 
-                lock (this)
+                if (_isLoading)
                 {
-                    if (_isLoading)
-                    {
-                        _isLoading = false;
-                    }
+                    _isLoading = false;
+                    _isLoaded = true;
                 }
 
                 OnImageChanged();
@@ -227,7 +231,11 @@ namespace ImoutoNavigator.Model
             {
                 IsError = true;
                 ErrorMessage = e.Message;
+
                 OnImageChanged();
+            }
+            finally
+            {
             }
         }
 

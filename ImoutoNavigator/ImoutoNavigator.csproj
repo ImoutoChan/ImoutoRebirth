@@ -65,9 +65,7 @@
     <Compile Include="Properties\Annotations.cs" />
     <Compile Include="UserControls\ExtScrollViewer.cs" />
     <Compile Include="UserControls\MouseWheelGesture.cs" />
-    <Compile Include="Utils\ThreadPool\CustomThreadPool.cs" />
-    <Compile Include="Utils\ThreadPool\ThreadPoolQueueItem.cs" />
-    <Compile Include="Utils\ThreadPool\ThreadPoolItem.cs" />
+    <Compile Include="Utils\ThreadQueue.cs" />
     <Compile Include="ViewModel\ImageEntryVM.cs" />
     <Compile Include="ViewModel\MainWindowVM.cs" />
     <Compile Include="ViewModel\VMBase.cs" />

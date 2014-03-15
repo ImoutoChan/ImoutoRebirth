@@ -19,7 +19,7 @@
                           Width="525"
                           ShowWindowCommandsOnTop="False"
                           TitleCaps="False"
-                          MouseWheel="MainWindow_OnPreviewMouseWheel">
+                          Title="{Binding Title}">
     <metroControl:MetroWindow.Resources>
         <converter:VisibilityConverter x:Key="VisibilityConverter" />
 
@@ -33,9 +33,11 @@
             <ColumnDefinition Width="200" />
         </Grid.ColumnDefinitions>
 
-        <ListBox Grid.Row="0"
+        <ListBox x:Name="ListBoxElement"
+                 Grid.Row="0"
                  ScrollViewer.HorizontalScrollBarVisibility="Disabled"
-                 ItemsSource="{Binding Path=ImageList, UpdateSourceTrigger=PropertyChanged}" >
+                 ItemsSource="{Binding Path=ImageList, UpdateSourceTrigger=PropertyChanged}" 
+                 >
             <ListBox.InputBindings>
                 <MouseBinding Command="{Binding Path=ZoomOutCommand}" 
                       Gesture="{x:Static userControl:MouseWheelGesture.CtrlDown}" />
@@ -64,27 +66,32 @@
             
             <ListBox.ItemTemplate>
                 <DataTemplate>
-                    <Border Margin="6,10,10,10">
+                    <Border 
+                        Margin="6,10,10,10">
                         <Border.Effect>
                             <DropShadowEffect/>
                         </Border.Effect>
-                        <Grid Width="{Binding Path=DataContext.PreviewSize.Width, 
+                        <!--<Grid Width="{Binding Path=DataContext.PreviewSize.Width, 
                                               RelativeSource={RelativeSource Mode=FindAncestor, 
                                                                              AncestorType=ListBox}}"
                               Height="{Binding Path=DataContext.PreviewSize.Height, 
                                                RelativeSource={RelativeSource Mode=FindAncestor, 
-                                                                              AncestorType=ListBox}}">
-                            <Image Source="{Binding Path=Image}" 
+                                                                              AncestorType=ListBox}}">-->
+                        <Grid Width="{Binding Path=ViewPortSize.Width}"
+                              Height="{Binding Path=ViewPortSize.Height}">
+                                <Image Source="{Binding Path=Image}" 
                                    Visibility="{Binding Path=IsLoading, Converter={StaticResource VisibilityInvertConverter}}"/>
-                            
-                            <metroControl:ProgressRing IsActive="{Binding IsLoading, Mode=OneWay}" />                            
+                            <Rectangle 
+                                Fill="Khaki"
+                                Visibility="{Binding Path=IsLoading, Converter={StaticResource VisibilityConverter}}" />
+                            <!--<metroControl:ProgressRing IsActive="{Binding IsLoading, Mode=OneWay}" />-->                            
                         </Grid>
                     </Border>
                 </DataTemplate>
             </ListBox.ItemTemplate>
         </ListBox>
         
-        <Grid Grid.Column="1">
+        <!--<Grid Grid.Column="1">
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto" />
                 <RowDefinition Height="Auto"/>
@@ -118,6 +125,6 @@
                     </DataTemplate>
                 </ListBox.ItemTemplate>
             </ListBox>
-        </Grid>
+        </Grid>-->
     </Grid>
 </metroControl:MetroWindow>
