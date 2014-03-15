@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -11,7 +10,7 @@ namespace ImoutoNavigator.Utils
     {
         private static Task _task = Task.Run(new Action(ThreadMethod));
 
-        private static Queue<Action> _queue = new Queue<Action>();
+        private static readonly Queue<Action> _queue = new Queue<Action>();
         private static bool _isEmpty = true;
 
         public static void ClearQueue()

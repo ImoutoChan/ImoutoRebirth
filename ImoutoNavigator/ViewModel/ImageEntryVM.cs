@@ -9,7 +9,7 @@ namespace ImoutoNavigator.ViewModel
     {
         #region Fields
 
-        private ImageEntry _imageEntry;
+        private readonly ImageEntry _imageEntry;
 
         #endregion //Fields
 
