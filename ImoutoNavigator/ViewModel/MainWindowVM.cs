@@ -112,13 +112,13 @@ namespace ImoutoNavigator.ViewModel
         {
 
             //Parallel.ForEach(_imageList, imageEntry => imageEntry.UpdatePreview(PreviewSize));
-            _previewUpdateThreadQueue.ClearQueue();
+            //_previewUpdateThreadQueue.ClearQueue();
             foreach (var imageEntry in _imageList)
             {
-                _previewUpdateThreadQueue.Add(() => imageEntry.UpdatePreview(PreviewSize));
+                imageEntry.UpdatePreview(PreviewSize);
+                //_previewUpdateThreadQueue.Add(() => imageEntry.UpdatePreview(PreviewSize));
             }
 
-            ImageEntry.PreviewLoadingThreadQueue.ClearQueue();
             LoadPreviews();
         }
 

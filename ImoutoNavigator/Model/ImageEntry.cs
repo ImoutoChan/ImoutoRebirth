@@ -20,7 +20,7 @@ namespace ImoutoNavigator.Model
         private readonly FileInfo _imageFileInfo;
         private BitmapSource _image;
         private Size _viewPort;
-        private bool _isLoading; //TODO MAKE COMMON STATUS NOT FLAGS
+        private bool _isLoading; //TODO MAKE COMMON ENUM STATUS NOT FLAGS
         private bool _isLoaded;
 
         #endregion //Fields

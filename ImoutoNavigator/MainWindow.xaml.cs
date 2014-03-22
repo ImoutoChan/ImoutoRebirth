@@ -1,10 +1,10 @@
-﻿using System.Collections;
+﻿using ImoutoNavigator.ViewModel;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
-using ImoutoNavigator.ViewModel;
 
 namespace ImoutoNavigator
 {
@@ -22,8 +22,11 @@ namespace ImoutoNavigator
                 ScrollViewerElement.ScrollChanged += (o, eventArgs) =>
                 {
                     var viewModel = DataContext as MainWindowVM;
+                   
                     if (viewModel.LoadPreviewsCommand.CanExecute(null))
+                    {
                         viewModel.LoadPreviewsCommand.Execute(null);
+                    }
                 };
             };
         }
@@ -32,23 +35,21 @@ namespace ImoutoNavigator
         {
             get
             {
-                if (ScrollViewerElement != null)
-                {
-
-                    var result = new List<ImageEntryVM>();
-
-                    result.AddRange(
-                        from ImageEntryVM item in ListBoxElement.Items
-                        let listBoxItem = (FrameworkElement) ListBoxElement.ItemContainerGenerator.ContainerFromItem(item) 
-                        where IsFullyOrPartiallyVisible(listBoxItem, ScrollViewerElement) 
-                        select item);
-
-                    return result;
-                }
-                else
+                if (ScrollViewerElement == null)
                 {
                     return null;
                 }
+                
+                var result = new List<ImageEntryVM>();
+
+                result.AddRange(
+                                from ImageEntryVM item in ListBoxElement.Items
+                                let listBoxItem =
+                                    (FrameworkElement) ListBoxElement.ItemContainerGenerator.ContainerFromItem(item)
+                                where IsFullyOrPartiallyVisible(listBoxItem, ScrollViewerElement)
+                                select item);
+
+                return result;
             }
         }
 
@@ -57,22 +58,25 @@ namespace ImoutoNavigator
             get { return FindFirstVisualChildOfType<ScrollViewer>(ListBoxElement); }
         }
 
-        private T FindFirstVisualChildOfType<T>(DependencyObject parent)
+        private static T FindFirstVisualChildOfType<T>(DependencyObject parent)
             where T : class
         {
-            if (parent == null) return null;
+            if (parent == null)
+            {
+                return null;
+            }
 
             for (int i = 0; i < VisualTreeHelper.GetChildrenCount(parent); i++)
             {
-                DependencyObject child = VisualTreeHelper.GetChild(parent, i);
-                T childT = child as T;
-                if (childT != null)
+                var child = VisualTreeHelper.GetChild(parent, i);
+
+                if (child is T)
                 {
-                    return childT;
+                    return child as T;
                 }
                 else
                 {
-                    T grandChild = FindFirstVisualChildOfType<T>(child);
+                    var grandChild = FindFirstVisualChildOfType<T>(child);
                     if (grandChild != null)
                     {
                         return grandChild;
@@ -82,8 +86,14 @@ namespace ImoutoNavigator
             return null;
         }
 
-        private bool IsFullyOrPartiallyVisible(FrameworkElement child, FrameworkElement scrollViewer)
+        private static bool IsFullyOrPartiallyVisible(UIElement child, UIElement scrollViewer)
         {
+            if (child == null ||
+                scrollViewer == null)
+            {
+                return false;
+            }
+
             var childTransform = child.TransformToAncestor(scrollViewer);
             var childRectangle = childTransform.TransformBounds(new Rect(new Point(0, 0), child.RenderSize));
             var ownerRectangle = new Rect(new Point(0, 0), scrollViewer.RenderSize);
