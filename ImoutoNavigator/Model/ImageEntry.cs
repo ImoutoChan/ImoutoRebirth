@@ -11,7 +11,7 @@ namespace ImoutoNavigator.Model
 {
     class ImageEntry
     {
-
+        public static readonly ThreadQueue PreviewLoadingThreadQueue = new ThreadQueue();
         private const ResizeType DefaultResizeType = ResizeType.FitToViewPort;
 
         #region Fields
@@ -165,7 +165,7 @@ namespace ImoutoNavigator.Model
         {
             _isLoading = true;
 
-            ThreadQueue.Add(Load);
+            PreviewLoadingThreadQueue.Add(Load);
 
             OnImageChanged();
         }

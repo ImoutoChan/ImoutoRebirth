@@ -1,4 +1,5 @@
-﻿using ImoutoNavigator.Commands;
+﻿using System.Threading.Tasks;
+using ImoutoNavigator.Commands;
 using ImoutoNavigator.Model;
 using ImoutoNavigator.Utils;
 using System;
@@ -12,6 +13,8 @@ namespace ImoutoNavigator.ViewModel
 {
     class MainWindowVM : VMBase
     {
+        private static ThreadQueue _previewUpdateThreadQueue = new ThreadQueue();
+
         #region Fields
 
         private int _previewSide = 256;
@@ -107,19 +110,21 @@ namespace ImoutoNavigator.ViewModel
 
         private void UpdatePreviews()
         {
+
+            //Parallel.ForEach(_imageList, imageEntry => imageEntry.UpdatePreview(PreviewSize));
+            _previewUpdateThreadQueue.ClearQueue();
             foreach (var imageEntry in _imageList)
             {
-                imageEntry.UpdatePreview(PreviewSize);
+                _previewUpdateThreadQueue.Add(() => imageEntry.UpdatePreview(PreviewSize));
             }
 
-            ThreadQueue.ClearQueue();
-
+            ImageEntry.PreviewLoadingThreadQueue.ClearQueue();
             LoadPreviews();
         }
 
         private void LoadPreviews()
         {
-            ThreadQueue.ClearQueue();
+            ImageEntry.PreviewLoadingThreadQueue.ClearQueue();
 
             foreach (ImageEntryVM imageEntry in _view.VisibleItems)
             {

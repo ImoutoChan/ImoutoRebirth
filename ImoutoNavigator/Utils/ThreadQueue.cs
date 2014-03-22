@@ -6,55 +6,74 @@ using System.Threading.Tasks;
 
 namespace ImoutoNavigator.Utils
 {
-    static class ThreadQueue
+    public class ThreadQueue
     {
-        private static Task _task = Task.Run(new Action(ThreadMethod));
+        private Task _task;
 
-        private static readonly Queue<Action> _queue = new Queue<Action>();
-        private static bool _isEmpty = true;
+        private readonly Queue<Action> _queue;
+        //private bool _isEmpty;
 
-        public static void ClearQueue()
+        public ThreadQueue()
+        {
+            //_isEmpty = true;
+            _queue = new Queue<Action>();
+            _task = Task.Run(new Action(ThreadMethod));
+        }
+
+
+        public void ClearQueue()
         {
             lock (_queue)
             {
                 _queue.Clear();
-                _isEmpty = true;
+                //_isEmpty = true;
             }
         }
 
-        public static void Add(Action action)
+        public void Add(Action action)
         {
             lock (_queue)
             {
                 _queue.Enqueue(action);
-                _isEmpty = false;
+                //_isEmpty = false;
             }
         }
 
-        private static Action GetFromQueue()
+        private Action GetFromQueue()
         {
             lock (_queue)
             {
                 var result = _queue.Dequeue();
                 if (!_queue.Any())
                 {
-                    _isEmpty = true;
+                    //_isEmpty = true;
                 }
                 return result;            
             }
         }
 
-        private static void ThreadMethod()
+        private void ThreadMethod()
         {
             while (true)
             {
-                if (_isEmpty)
+                Action action = null;
+
+                lock (_queue)
                 {
-                    Thread.Sleep(100);
+                    if (_queue.Any())
+                    {
+                        action = GetFromQueue();
+                    }
+                }
+
+
+                if (action != null)
+                {
+                    action.Invoke();
                 }
                 else
                 {
-                    GetFromQueue().Invoke();
+                    Thread.Sleep(100);
                 }
             }
         }
