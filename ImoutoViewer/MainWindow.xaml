@@ -11,6 +11,7 @@
                           xmlns:gif="http://wpfanimatedgif.codeplex.com"
                           xmlns:metroControl="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
                           xmlns:metroBehaviour="clr-namespace:MahApps.Metro.Behaviours;assembly=MahApps.Metro"
+                          xmlns:imoutoViewer="clr-namespace:ImoutoViewer"
                           mc:Ignorable="d"
                           d:DataContext="{d:DesignInstance viewModel:MainWindowVM, IsDesignTimeCreatable=False}"
                           Title="{Binding Path=Title}"
@@ -73,11 +74,15 @@
     
     <metroControl:MetroWindow.WindowCommands>
         <metroControl:WindowCommands>
+            <Button Content="Slideshow"
+                    Click="SlideShowButton_OnClick"
+                    />
+            
             <Button Content="Edit with..." 
                     Click="ButtonBase_OnClick"/>
             
             <Button Content="Settings" 
-                    Click="Button_Click"/>
+                    Click="Button_Click" />
         </metroControl:WindowCommands>
     </metroControl:MetroWindow.WindowCommands>
     
@@ -91,7 +96,14 @@
         <converter:VisibilityConverter x:Key="VisibilityConverter" />
         
         <converter:VisibilityConverter x:Key="VisibilityInvertConverter" 
-                                        IsInvert="True" />
+                                       IsInvert="True" />
+        
+        <converter:VisibilityConverter x:Key="CollapsedVisibilityConverter"
+                                       CollapsedOnFalse="True"/>
+        
+        <converter:VisibilityConverter x:Key="CollapsedVisibilityInvertConverter"
+                                       CollapsedOnFalse="True"
+                                       IsInvert="True"/>
     </metroControl:MetroWindow.Resources>
     
     <metroControl:MetroWindow.Flyouts>
@@ -115,6 +127,7 @@
                         <RowDefinition Height="*" />
                         <RowDefinition Height="Auto" />
                     </Grid.RowDefinitions>
+                    
                     <ScrollViewer Grid.Row="1" 
                                   VerticalScrollBarVisibility="Auto">
                         <StackPanel Orientation="Vertical">
@@ -238,6 +251,18 @@
                                     </ComboBox>
                                 </StackPanel>
                             </DockPanel>
+
+                            <StackPanel Orientation="Horizontal"
+                                        Margin="0,25,0,5">
+                                <TextBlock Text="Slideshow delay: " />
+                                <TextBlock Text="{Binding Value, ElementName=Slider}" />
+                            </StackPanel>
+                            
+                            <Slider Minimum="0" 
+                                    Maximum="100"
+                                    x:Name="Slider"
+                                    Value="{Binding SlideshowDelay}"
+                                    />
                         </StackPanel>
                     </ScrollViewer>
                 </Grid>
@@ -286,7 +311,7 @@
 		  MouseLeftButtonUp="Client_MouseLeftButtonUp">
         <Grid.RowDefinitions>
             <RowDefinition Height="*" />
-            <RowDefinition Height="25" />
+            <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
         
         <Grid x:Name="Client"
@@ -335,7 +360,12 @@
         
         <StatusBar Background="{DynamicResource AccentColorBrush}"
                    Grid.Row="1"
-                   MouseUp="Disable_MouseButton">
+                   MouseUp="Disable_MouseButton"
+                   Visibility="{Binding RelativeSource={RelativeSource FindAncestor,
+                                                                       AncestorType={x:Type imoutoViewer:MainWindow}},
+                                                                       Path=Topmost,
+                                                                       Converter={StaticResource CollapsedVisibilityInvertConverter}}"
+                   Height="25">
             <StatusBar.Resources>
                 <SolidColorBrush x:Key="StatusBarForeground" Color="White"/>
             </StatusBar.Resources>

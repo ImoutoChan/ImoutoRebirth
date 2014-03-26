@@ -66,6 +66,19 @@ namespace ImoutoViewer.ViewModel
 
         #region Properties
 
+        public int SlideshowDelay
+        {
+            get
+            {
+                return Settings.Default.SlideshowDelay;
+            }
+            set
+            {
+                Settings.Default.SlideshowDelay = value;
+                OnPropertyChanged("SlideshowDelay");
+            }
+        }
+
         public List<ResizeTypeDescriptor> ResizeTypes { get; private set; }
         public ResizeTypeDescriptor SelectedResizeType 
         {

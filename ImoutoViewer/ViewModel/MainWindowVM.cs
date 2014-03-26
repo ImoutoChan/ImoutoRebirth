@@ -1,4 +1,6 @@
-﻿using ImoutoViewer.Behavior;
+﻿using System.Threading;
+using System.Windows.Threading;
+using ImoutoViewer.Behavior;
 using ImoutoViewer.Commands;
 using ImoutoViewer.Model;
 using System;
@@ -18,6 +20,8 @@ namespace ImoutoViewer.ViewModel
         private readonly MainWindow _mainWindowView;
         private LocalImageList _imageList;
         private readonly BackgroundWorker _initBackgroundWorker;
+        private bool _isSlideshowActive;
+        private DispatcherTimer _timer;
 
         #endregion //Fields
         
@@ -45,6 +49,30 @@ namespace ImoutoViewer.ViewModel
         #endregion //Constructors
 
         #region Properties
+
+        public bool IsSlideshowActive
+        {
+            get
+            {
+                return _isSlideshowActive;
+            }
+            set
+            {
+                if (_isSlideshowActive)
+                {
+                    _timer.Stop();
+                }
+                if (value)
+                {
+                    _timer = new DispatcherTimer() { Interval = new TimeSpan(0, 0, Settings.SlideshowDelay) };
+                    _timer.Tick += (sender, args) => NextImage();
+                    _timer.Start();
+                }
+
+                _isSlideshowActive = value;
+                OnPropertyChanged("IsSlideshowActive");
+            }
+        }
 
         private LocalImage CurrentLocalImage
         {
@@ -312,6 +340,7 @@ namespace ImoutoViewer.ViewModel
         public ICommand NextFolderCommand { get; private set; }
         public ICommand PrevFolderCommand { get; private set; }
         public ICommand FixZoomCommand { get; private set; }
+        public ICommand ToggleSlideshowCommand { get; private set; }
 
         /// <summary>
         /// Rotation the image. In CommandParameter as string send: 
@@ -350,11 +379,24 @@ namespace ImoutoViewer.ViewModel
             PrevFolderCommand = new RelayCommand(param => PrevFolder());
 
             FixZoomCommand = new RelayCommand(param => FixZoom());
+            ToggleSlideshowCommand = new RelayCommand(param => ToggleSlideshow(param));
         }
 
         #endregion //Commands
 
         #region Command handlers
+
+        private void ToggleSlideshow(object param)
+        {
+            if (param is string)
+            {
+                if (param as string == "ForcedDisable")
+                {
+                    IsSlideshowActive = false;
+                }
+            }
+            IsSlideshowActive = !IsSlideshowActive;
+        }
 
         private void NextImage()
         {            
