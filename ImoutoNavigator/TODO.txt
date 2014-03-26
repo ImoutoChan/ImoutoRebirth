@@ -2,4 +2,5 @@
 +multiselecting
 +virtualization
 
+opening
 drag&drop
