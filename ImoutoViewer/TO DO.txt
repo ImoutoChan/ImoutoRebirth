@@ -1,0 +1,76 @@
+﻿++DRAG AND DROP ZONE
+++ROTATE IMAGE
+++CORRECT ZOOM
+++COUNTER (in foleder, for example: XX/NN)
+++METHODS FOR LOAD FILE/FILES FROM FOLDER/FOLDERS (where would we put it etc)
+
+port:
+++animuted (new image element?), animated switch?
+++folder/subfolders/prefolders
+++correct recurs folder search  - http://www.blackwasp.co.uk/FolderRecursion.aspx
+___________________________________________________________________________________________________
+0.0.1.0 ver RELEASE
+
+
+++sort by
+++FULLSCREEN
+___________________________________________________________________________________________________
+0.0.1.1 ver
+
+
+++themes
+++colors
+++window border
+++statusbar
+++++zoom
+++fix zoom by hotkey
+++Sorting by size
+++Changed zoom engine
+++app name in title
+___________________________________________________________________________________________________
+0.0.2.0 ver
+
+
+??scrool to top, when image changed
+++edition with external
+++flyout to theme
+++setting save
+++drop directory, file, files
+++command line - directory, file, files
+___________________________________________________________________________________________________
+0.0.3.0 ver
+
+
+++update mahapp
+++fix title (empty filelist)
+___________________________________________________________________________________________________
+0.0.3.1 ver
+
+
+++fix drag&drop on itself
+++fix arg path with paint edit
+___________________________________________________________________________________________________
+0.0.3.2 ver
+
+++fix start argument parsing with spaces
+___________________________________________________________________________________________________
+0.0.3.3 ver
+
+___________________________________________________________________________________________________
+___________________________________________________________________________________________________
+0.0.4 ver:
+--slideshow
+--resize before drag
+ ___________________________________________________________________________________________________
+
+ 
+___________________________________________________________________________________________________
+___________________________________________________________________________________________________
+unknown:
+--improve memory usage, especially for gif
+--glow around window
+--PREPARE AND RESIZE FOR POST IN 2CH
+--LOADING IMAGE IN BACKGROUND
+
+
+NEED BUG FIXES:
