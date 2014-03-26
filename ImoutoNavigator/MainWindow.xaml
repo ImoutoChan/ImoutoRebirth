@@ -7,6 +7,7 @@
                           xmlns:viewModel="clr-namespace:ImoutoNavigator.ViewModel"
                           xmlns:userControl="clr-namespace:ImoutoNavigator.UserControls"
                           xmlns:converter="clr-namespace:ImoutoNavigator.Converters"
+                          xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
                           d:DataContext="{d:DesignInstance viewModel:MainWindowVM, IsDesignTimeCreatable=False}"
                           mc:Ignorable="d"
                           WindowStartupLocation="CenterScreen"
@@ -38,7 +39,7 @@
                  >
             <ListBox.InputBindings>
                 <MouseBinding Command="{Binding Path=ZoomOutCommand}" 
-                              Gesture="{x:Static userControl:MouseWheelGesture.CtrlDown}" />
+                              Gesture="" />
 
                 <MouseBinding Command="{Binding Path=ZoomInCommand}"
                               Gesture="{x:Static userControl:MouseWheelGesture.CtrlUp}" />
@@ -109,6 +110,11 @@
                                         Padding="{TemplateBinding Padding}"
                                         SnapsToDevicePixels="True"
                                         Margin="2">
+                                    <Border.InputBindings>
+                                        <MouseBinding Command="{Binding OpenCommand}"
+                                          Gesture="LeftDoubleClick"/>
+                                    </Border.InputBindings>
+
                                     <ContentPresenter HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
                                                       VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
                                                       Content="{TemplateBinding Content}"

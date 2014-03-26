@@ -1,5 +1,8 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Windows;
+using System.Windows.Input;
+using ImoutoNavigator.Commands;
 using ImoutoNavigator.Model;
 using System.Windows.Media.Imaging;
 
@@ -10,6 +13,7 @@ namespace ImoutoNavigator.ViewModel
         #region Fields
 
         private readonly ImageEntry _imageEntry;
+        private ICommand _openFileCommand;
 
         #endregion //Fields
 
@@ -48,6 +52,19 @@ namespace ImoutoNavigator.ViewModel
         #endregion //Properties
 
         #region Commands
+
+        public ICommand OpenCommand
+        {
+            get
+            {
+                return _openFileCommand ?? (_openFileCommand = new RelayCommand(Open));
+            }
+        }
+
+        private void Open(object obj)
+        {
+            System.Diagnostics.Process.Start(_imageEntry.FullName);
+        }
 
         #endregion //Commands
 
