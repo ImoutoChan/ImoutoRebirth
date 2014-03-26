@@ -111,7 +111,7 @@ namespace ImoutoViewer
                     ShowMinButton = true;
                     ShowMaxRestoreButton = true;
                     ShowCloseButton = true;
-
+                    
                     _isFullscreen = false;
                 }
                 else

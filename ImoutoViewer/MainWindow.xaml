@@ -11,6 +11,7 @@
                           xmlns:gif="http://wpfanimatedgif.codeplex.com"
                           xmlns:metroControl="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
                           xmlns:metroBehaviour="clr-namespace:MahApps.Metro.Behaviours;assembly=MahApps.Metro"
+                          xmlns:imoutoViewer="clr-namespace:ImoutoViewer"
                           mc:Ignorable="d"
                           d:DataContext="{d:DesignInstance viewModel:MainWindowVM, IsDesignTimeCreatable=False}"
                           Title="{Binding Path=Title}"
@@ -335,7 +336,11 @@
         
         <StatusBar Background="{DynamicResource AccentColorBrush}"
                    Grid.Row="1"
-                   MouseUp="Disable_MouseButton">
+                   MouseUp="Disable_MouseButton"
+                   Visibility="{Binding RelativeSource={RelativeSource FindAncestor,
+                                                                       AncestorType={x:Type imoutoViewer:MainWindow}}, 
+                                                                       Path=Topmost,
+                                                                       Converter={StaticResource VisibilityInvertConverter}}">
             <StatusBar.Resources>
                 <SolidColorBrush x:Key="StatusBarForeground" Color="White"/>
             </StatusBar.Resources>
