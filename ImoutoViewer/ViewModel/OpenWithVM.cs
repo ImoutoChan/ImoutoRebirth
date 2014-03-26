@@ -17,7 +17,7 @@ namespace ImoutoViewer.ViewModel
 
         public OpenWithVM()
         {
-            CurrentList = EditProgram.List;
+            CurrentList = EditProgram.List.Where(x=>x.IsAvailable).ToList();
         }
 
         #endregion //Constructors
@@ -38,6 +38,8 @@ namespace ImoutoViewer.ViewModel
         #endregion //Constructors
 
         #region Properties
+
+        public bool IsAvailable { get; set; }
 
         public string Name { get; set; }
 
@@ -101,6 +103,7 @@ namespace ImoutoViewer.ViewModel
                             .ToString()
                             .Split(new char[] {'\"'}, StringSplitOptions.RemoveEmptyEntries)
                             .First();
+                    entry.IsAvailable = true;
                 }
             }
             List = list;
