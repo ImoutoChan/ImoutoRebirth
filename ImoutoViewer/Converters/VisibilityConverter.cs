@@ -10,9 +10,11 @@ namespace ImoutoViewer.Converters
         public VisibilityConverter()
         {
             IsInvert = false;
+            CollapsedOnFalse = false;
         }
 
         public bool IsInvert { private get; set; }
+        public bool CollapsedOnFalse { private get; set; }
 
         public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
         {
@@ -25,7 +27,11 @@ namespace ImoutoViewer.Converters
                 isCheck = !isCheck;
             }
 
-            return isCheck ? Visibility.Visible : Visibility.Collapsed;
+            return isCheck
+                       ? Visibility.Visible
+                       : CollapsedOnFalse
+                             ? Visibility.Collapsed
+                             : Visibility.Hidden;
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
@@ -36,7 +42,9 @@ namespace ImoutoViewer.Converters
             }
 
             bool result = (Visibility) value == Visibility.Visible;
-            return (IsInvert) ? !result : result;
+            return (IsInvert)
+                       ? !result
+                       : result;
         }
     }
 }

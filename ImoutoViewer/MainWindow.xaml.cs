@@ -98,45 +98,21 @@ namespace ImoutoViewer
         //Full screen
         private void MainWindow_OnKeyUp(object sender, KeyEventArgs e)
         {
-            if (e.Key == Key.F11 || (e.Key == Key.Enter && e.Key == Key.LeftAlt || e.Key == Key.RightAlt))
+            if (e.Key == Key.F11 
+                || (e.Key == Key.Enter 
+                && e.Key == Key.LeftAlt || e.Key == Key.RightAlt))
             {
-                if (_isFullscreen)
-                {
-                    WindowState = WindowState.Normal;
-                    UseNoneWindowStyle = false;
-                    Topmost = false;
-                    ShowTitleBar = true;
-                    WindowState = _lastState;
-
-                    ShowMinButton = true;
-                    ShowMaxRestoreButton = true;
-                    ShowCloseButton = true;
-                    
-                    _isFullscreen = false;
-                }
-                else
-                {
-                    _lastState = WindowState;
-
-                    WindowState = WindowState.Normal;
-                    UseNoneWindowStyle = true;
-                    Topmost = true;
-                    ShowTitleBar = false;
-
-                    ShowMinButton = false;
-                    ShowMaxRestoreButton = false;
-                    ShowCloseButton = false;
-
-                    WindowState = WindowState.Maximized;
-
-                    _isFullscreen = true;
-                }
+                ToggleFullscreen();
             }
             else if (e.Key == Key.S)
             {
                 Button_Click(null, null);
             }
-
+            else if (e.Key == Key.Escape)
+            {
+                (DataContext as MainWindowVM).IsSlideshowActive = false;
+                DeactivateFullscreen();
+            }
         }
 
         //Open OpenWith flyout
@@ -148,6 +124,60 @@ namespace ImoutoViewer
             }
         }
 
+        //Toggle Slideshow
+        private void SlideShowButton_OnClick(object sender, RoutedEventArgs e)
+        {
+            ActivateFullscreen();
+
+            (DataContext as MainWindowVM).ToggleSlideshowCommand.Execute(null);
+
+        }
+
         #endregion //Event handlers
+
+        private void DeactivateFullscreen()
+        {
+            WindowState = WindowState.Normal;
+            UseNoneWindowStyle = false;
+            Topmost = false;
+            ShowTitleBar = true;
+            WindowState = _lastState;
+
+            ShowMinButton = true;
+            ShowMaxRestoreButton = true;
+            ShowCloseButton = true;
+
+            _isFullscreen = false;
+        }
+
+        private void ActivateFullscreen()
+        {
+            _lastState = WindowState;
+
+            WindowState = WindowState.Normal;
+            UseNoneWindowStyle = true;
+            Topmost = true;
+            ShowTitleBar = false;
+
+            ShowMinButton = false;
+            ShowMaxRestoreButton = false;
+            ShowCloseButton = false;
+
+            WindowState = WindowState.Maximized;
+
+            _isFullscreen = true;
+        }
+
+        private void ToggleFullscreen()
+        {
+            if (_isFullscreen)
+            {
+                DeactivateFullscreen();
+            }
+            else
+            {
+                ActivateFullscreen();
+            }
+        }
     }
 }
