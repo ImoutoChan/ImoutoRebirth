@@ -59,14 +59,12 @@ ________________________________________________________________________________
 ___________________________________________________________________________________________________
 ___________________________________________________________________________________________________
 0.0.4 ver:
---slideshow
---resize before drag
+++slideshow
+++slideshow delay setting
+++disable fullscreen on Escape
+++hide statusbar while fullscreen
 
- ___________________________________________________________________________________________________
-
- 
- --remove status bar from fullscreen
- --show somewhere fixstatus
+--show somewhere fixstatus, slideshow status, resizetype.
 
 ___________________________________________________________________________________________________
 ___________________________________________________________________________________________________
@@ -75,6 +73,6 @@ unknown:
 --glow around window
 --PREPARE AND RESIZE FOR POST IN 2CH
 --LOADING IMAGE IN BACKGROUND
-
+--resize before drag
 
 NEED BUG FIXES:
