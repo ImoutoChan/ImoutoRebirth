@@ -1,0 +1,5 @@
++asyns preview load
++multiselecting
++virtualization
+
+drag&drop
