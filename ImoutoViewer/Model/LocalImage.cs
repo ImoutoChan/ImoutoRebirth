@@ -145,14 +145,30 @@ namespace ImoutoViewer.Model
         {
             try
             {
-                var bi = new BitmapImage();
+                try
+                {
+                    var bi = new BitmapImage();
 
-                bi.BeginInit();
-                bi.CacheOption = BitmapCacheOption.OnDemand;
-                bi.UriSource = new Uri(_filePath);
-                bi.EndInit();
+                    bi.BeginInit();
+                    bi.CacheOption = BitmapCacheOption.OnDemand;
+                    bi.UriSource = new Uri(_filePath);
+                    bi.EndInit();
 
-                _image = bi;
+                    _image = bi;
+                }
+                catch (ArgumentException e)
+                {
+                    //Process fail in color reading exception.
+                    var bi = new BitmapImage();
+
+                    bi.BeginInit();
+                    bi.CacheOption = BitmapCacheOption.OnDemand;
+                    bi.CreateOptions |= BitmapCreateOptions.IgnoreColorProfile;
+                    bi.UriSource = new Uri(_filePath);
+                    bi.EndInit();
+
+                    _image = bi;
+                }
             }
             catch (Exception e)
             {
