@@ -373,8 +373,10 @@
                 <ItemsPanelTemplate>
                     <Grid>
                         <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="150" />
-                            <ColumnDefinition Width="500" />
+                            <ColumnDefinition Width="75" />
+                            <ColumnDefinition Width="160" />
+                            <ColumnDefinition Width="100" />
+                            <ColumnDefinition Width="Auto" />
                             <ColumnDefinition Width="*" />
                             <ColumnDefinition Width="100" />
                             <ColumnDefinition Width="100" />
@@ -389,18 +391,33 @@
 					       Text="{Binding Status}" />
             </StatusBarItem>
 
-
             <StatusBarItem Grid.Column="1">
                 <StackPanel Orientation="Horizontal" >
                     <TextBlock Text="Zoom " 
                                Foreground="{StaticResource StatusBarForeground}"/>
+                    
+                    <TextBlock Text="(fixed) " 
+                               Foreground="{StaticResource StatusBarForeground}"
+                               Visibility="{Binding IsZoomFixed, 
+                                                    Converter={StaticResource VisibilityConverter}}"/>
 
                     <TextBlock Text="{Binding Path=Zoom}"
                                Foreground="{StaticResource StatusBarForeground}"/>
                 </StackPanel>
             </StatusBarItem>
 
-            <StatusBarItem Grid.Column="3" >
+            <StatusBarItem Grid.Column="2"
+                           Visibility="{Binding IsSlideshowActive, Converter={StaticResource VisibilityConverter}}">
+                <StackPanel Orientation="Horizontal" >
+                    <TextBlock Text="Slideshow " 
+                               Foreground="{StaticResource StatusBarForeground}"/>
+
+                    <TextBlock Text="{Binding Path=Settings.SlideshowDelay, StringFormat='({0})'}"
+                               Foreground="{StaticResource StatusBarForeground}"/>
+                </StackPanel>
+            </StatusBarItem>
+
+            <StatusBarItem Grid.Column="5" >
                 <StackPanel Orientation="Horizontal" >
                     <TextBlock Text="File " 
                                Foreground="{StaticResource StatusBarForeground}"/>
@@ -410,7 +427,7 @@
                 </StackPanel>
             </StatusBarItem>
 
-            <StatusBarItem Grid.Column="4" >
+            <StatusBarItem Grid.Column="6" >
                 <StackPanel Orientation="Horizontal" 
                             ToolTip="{Binding DirStatusToolTip}">
                     <TextBlock Text="Dir " 

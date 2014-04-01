@@ -37,7 +37,7 @@ namespace ImoutoViewer.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("Folder | Subfolders")]
+        [global::System.Configuration.DefaultSettingValueAttribute("Folder")]
         public global::ImoutoViewer.Model.DirectorySearchFlags DirectorySearchFlags {
             get {
                 return ((global::ImoutoViewer.Model.DirectorySearchFlags)(this["DirectorySearchFlags"]));

@@ -242,6 +242,11 @@ namespace ImoutoViewer.ViewModel
             }
         }
 
+        public bool IsZoomFixed
+        {
+            get { return LocalImage.IsZoomFixed; }
+        }
+
         #endregion //Properties
 
         #region Methods
@@ -452,6 +457,8 @@ namespace ImoutoViewer.ViewModel
         {
             LocalImage.StaticZoom = !LocalImage.IsZoomFixed ? CurrentLocalImage.Zoom : 1;
             LocalImage.IsZoomFixed = !LocalImage.IsZoomFixed;
+
+            OnPropertyChanged("IsZoomFixed");
         }
 
         #endregion //Command handlers

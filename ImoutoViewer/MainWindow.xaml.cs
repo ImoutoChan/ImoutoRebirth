@@ -127,10 +127,7 @@ namespace ImoutoViewer
         //Toggle Slideshow
         private void SlideShowButton_OnClick(object sender, RoutedEventArgs e)
         {
-            ActivateFullscreen();
-
             (DataContext as MainWindowVM).ToggleSlideshowCommand.Execute(null);
-
         }
 
         #endregion //Event handlers
