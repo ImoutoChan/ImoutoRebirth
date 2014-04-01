@@ -7,16 +7,16 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace ImoutoNavigator.Database
+namespace ImoutoNavigator.Database.Model
 {
     using System;
     using System.Data.Entity;
     using System.Data.Entity.Infrastructure;
     
-    public partial class TagsDBEntities : DbContext
+    public partial class ImagesDBConnection : DbContext
     {
-        public TagsDBEntities()
-            : base("name=TagsDBEntities")
+        public ImagesDBConnection()
+            : base("name=ImagesDBConnection")
         {
         }
     
@@ -25,10 +25,10 @@ namespace ImoutoNavigator.Database
             throw new UnintentionalCodeFirstException();
         }
     
-        public virtual DbSet<file> files { get; set; }
-        public virtual DbSet<tag> tags { get; set; }
-        public virtual DbSet<tag_type> tag_type { get; set; }
-        public virtual DbSet<tagset> tagsets { get; set; }
-        public virtual DbSet<tagset_tag_connection> tagset_tag_connection { get; set; }
+        public virtual DbSet<Image> Images { get; set; }
+        public virtual DbSet<Tag> Tags { get; set; }
+        public virtual DbSet<TagSet> TagSets { get; set; }
+        public virtual DbSet<TagSetType> TagSetTypes { get; set; }
+        public virtual DbSet<TagType> TagTypes { get; set; }
     }
 }

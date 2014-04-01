@@ -7,23 +7,23 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace ImoutoNavigator.Database
+namespace ImoutoNavigator.Database.Model
 {
     using System;
     using System.Collections.Generic;
     
-    public partial class tag
+    public partial class Tag
     {
-        public tag()
+        public Tag()
         {
-            this.tagset_tag_connection = new HashSet<tagset_tag_connection>();
+            this.TagSets = new HashSet<TagSet>();
         }
     
-        public int id { get; set; }
-        public string name { get; set; }
-        public int id_type { get; set; }
+        public int Id { get; set; }
+        public string Name { get; set; }
+        public int Type { get; set; }
     
-        public virtual tag_type tag_type { get; set; }
-        public virtual ICollection<tagset_tag_connection> tagset_tag_connection { get; set; }
+        public virtual TagType TagType { get; set; }
+        public virtual ICollection<TagSet> TagSets { get; set; }
     }
 }

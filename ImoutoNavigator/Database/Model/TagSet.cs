@@ -7,18 +7,25 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace ImoutoNavigator.Database
+namespace ImoutoNavigator.Database.Model
 {
     using System;
     using System.Collections.Generic;
     
-    public partial class tagset_tag_connection
+    public partial class TagSet
     {
-        public int id { get; set; }
-        public int id_tagset { get; set; }
-        public int id_tag { get; set; }
+        public TagSet()
+        {
+            this.Tags = new HashSet<Tag>();
+        }
     
-        public virtual tag tag { get; set; }
-        public virtual tagset tagset { get; set; }
+        public int Id { get; set; }
+        public System.DateTime AddedDate { get; set; }
+        public int FKImage { get; set; }
+        public int FKType { get; set; }
+    
+        public virtual Image Image { get; set; }
+        public virtual TagSetType TagSetType { get; set; }
+        public virtual ICollection<Tag> Tags { get; set; }
     }
 }

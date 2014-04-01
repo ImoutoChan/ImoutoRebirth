@@ -13,6 +13,7 @@
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{60dc8134-eba5-43b8-bcc9-bb4bc16c2548};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
     <WarningLevel>4</WarningLevel>
+    <IsWebBootstrapper>false</IsWebBootstrapper>
     <PublishUrl>publish\</PublishUrl>
     <Install>true</Install>
     <InstallFrom>Disk</InstallFrom>
@@ -25,7 +26,6 @@
     <MapFileExtensions>true</MapFileExtensions>
     <ApplicationRevision>0</ApplicationRevision>
     <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
-    <IsWebBootstrapper>false</IsWebBootstrapper>
     <UseApplicationTrust>false</UseApplicationTrust>
     <BootstrapperEnabled>true</BootstrapperEnabled>
   </PropertyGroup>
@@ -85,36 +85,36 @@
     </ApplicationDefinition>
     <Compile Include="Commands\RelayCommand.cs" />
     <Compile Include="Converters\VisibilityConverter.cs" />
-    <Compile Include="Database\file.cs">
-      <DependentUpon>tagsEntity.tt</DependentUpon>
+    <Compile Include="Database\Model\Image.cs">
+      <DependentUpon>ImagesDBEntity.tt</DependentUpon>
     </Compile>
-    <Compile Include="Database\tag.cs">
-      <DependentUpon>tagsEntity.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Database\TagsDBWork.cs" />
-    <Compile Include="Database\tagsEntity.Context.cs">
+    <Compile Include="Database\Model\ImagesDBEntity.Context.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
-      <DependentUpon>tagsEntity.Context.tt</DependentUpon>
+      <DependentUpon>ImagesDBEntity.Context.tt</DependentUpon>
     </Compile>
-    <Compile Include="Database\tagsEntity.cs">
+    <Compile Include="Database\Model\ImagesDBEntity.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
-      <DependentUpon>tagsEntity.tt</DependentUpon>
+      <DependentUpon>ImagesDBEntity.tt</DependentUpon>
     </Compile>
-    <Compile Include="Database\tagsEntity.Designer.cs">
+    <Compile Include="Database\Model\ImagesDBEntity.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
-      <DependentUpon>tagsEntity.edmx</DependentUpon>
+      <DependentUpon>ImagesDBEntity.edmx</DependentUpon>
     </Compile>
-    <Compile Include="Database\tagset.cs">
-      <DependentUpon>tagsEntity.tt</DependentUpon>
+    <Compile Include="Database\Model\ModelExtended.cs" />
+    <Compile Include="Database\Model\Tag.cs">
+      <DependentUpon>ImagesDBEntity.tt</DependentUpon>
     </Compile>
-    <Compile Include="Database\tagset_tag_connection.cs">
-      <DependentUpon>tagsEntity.tt</DependentUpon>
+    <Compile Include="Database\Model\TagSet.cs">
+      <DependentUpon>ImagesDBEntity.tt</DependentUpon>
     </Compile>
-    <Compile Include="Database\tag_type.cs">
-      <DependentUpon>tagsEntity.tt</DependentUpon>
+    <Compile Include="Database\Model\TagSetType.cs">
+      <DependentUpon>ImagesDBEntity.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Database\Model\TagType.cs">
+      <DependentUpon>ImagesDBEntity.tt</DependentUpon>
     </Compile>
     <Compile Include="Model\ImageEntry.cs" />
     <Compile Include="Properties\Annotations.cs" />
@@ -161,22 +161,22 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
-    <EntityDeploy Include="Database\tagsEntity.edmx">
+    <EntityDeploy Include="Database\Model\ImagesDBEntity.edmx">
       <Generator>EntityModelCodeGenerator</Generator>
-      <LastGenOutput>tagsEntity.Designer.cs</LastGenOutput>
+      <LastGenOutput>ImagesDBEntity.Designer.cs</LastGenOutput>
     </EntityDeploy>
-    <None Include="Database\tagsEntity.Context.tt">
+    <None Include="Database\Model\ImagesDBEntity.Context.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
-      <DependentUpon>tagsEntity.edmx</DependentUpon>
-      <LastGenOutput>tagsEntity.Context.cs</LastGenOutput>
+      <DependentUpon>ImagesDBEntity.edmx</DependentUpon>
+      <LastGenOutput>ImagesDBEntity.Context.cs</LastGenOutput>
     </None>
-    <None Include="Database\tagsEntity.edmx.diagram">
-      <DependentUpon>tagsEntity.edmx</DependentUpon>
+    <None Include="Database\Model\ImagesDBEntity.edmx.diagram">
+      <DependentUpon>ImagesDBEntity.edmx</DependentUpon>
     </None>
-    <None Include="Database\tagsEntity.tt">
+    <None Include="Database\Model\ImagesDBEntity.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
-      <DependentUpon>tagsEntity.edmx</DependentUpon>
-      <LastGenOutput>tagsEntity.cs</LastGenOutput>
+      <DependentUpon>ImagesDBEntity.edmx</DependentUpon>
+      <LastGenOutput>ImagesDBEntity.cs</LastGenOutput>
     </None>
     <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
@@ -202,6 +202,13 @@
     <Resource Include="TODO.txt" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Database\ImagesDB.mdf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Database\ImagesDB_log.ldf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <DependentUpon>ImagesDB.mdf</DependentUpon>
+    </Content>
     <Content Include="TagsDB.mdf">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>

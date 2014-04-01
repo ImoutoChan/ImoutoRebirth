@@ -7,22 +7,21 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace ImoutoNavigator.Database
+namespace ImoutoNavigator.Database.Model
 {
     using System;
     using System.Collections.Generic;
     
-    public partial class file
+    public partial class TagSetType
     {
-        public file()
+        public TagSetType()
         {
-            this.tagsets = new HashSet<tagset>();
+            this.TagSets = new HashSet<TagSet>();
         }
     
-        public int id { get; set; }
-        public string fullname { get; set; }
-        public string md5 { get; set; }
+        public int Id { get; set; }
+        public string Name { get; set; }
     
-        public virtual ICollection<tagset> tagsets { get; set; }
+        public virtual ICollection<TagSet> TagSets { get; set; }
     }
 }
