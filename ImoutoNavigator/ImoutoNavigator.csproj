@@ -116,6 +116,9 @@
     <Compile Include="Database\Model\TagType.cs">
       <DependentUpon>ImagesDBEntity.tt</DependentUpon>
     </Compile>
+    <Compile Include="Database\TagsDBWork.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="Model\ImageEntry.cs" />
     <Compile Include="Properties\Annotations.cs" />
     <Compile Include="UserControls\ExtScrollViewer.cs" />
