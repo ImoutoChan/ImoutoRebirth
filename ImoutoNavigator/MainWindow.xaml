@@ -39,7 +39,7 @@
                  >
             <ListBox.InputBindings>
                 <MouseBinding Command="{Binding Path=ZoomOutCommand}" 
-                              Gesture="" />
+                              Gesture="{x:Static userControl:MouseWheelGesture.CtrlDown}" />
 
                 <MouseBinding Command="{Binding Path=ZoomInCommand}"
                               Gesture="{x:Static userControl:MouseWheelGesture.CtrlUp}" />

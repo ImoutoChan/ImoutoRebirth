@@ -87,7 +87,7 @@ namespace ImoutoNavigator.ViewModel
         private void GetImageList()
         {
             _imageList = new ObservableCollection<ImageEntryVM>(
-                Directory.GetFiles(@"c:\Users\oniii-chan\Downloads\DLS\")
+                Directory.GetFiles(@"C:\Users\Владимир\Downloads\Обои\Обои\Замки")
                     .Where(ImageEntry.IsImage)
                     .Select(x =>
                     {
