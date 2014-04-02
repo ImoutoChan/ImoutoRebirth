@@ -1,5 +1,8 @@
-﻿using ImoutoNavigator.Commands;
+﻿using System.Collections.Generic;
+using System.Windows.Documents;
+using ImoutoNavigator.Commands;
 using ImoutoNavigator.Database;
+using ImoutoNavigator.Database.Model;
 using ImoutoNavigator.Model;
 using System;
 using System.Collections.ObjectModel;
@@ -97,6 +100,45 @@ namespace ImoutoNavigator.ViewModel
                     })
                     .ToList()
                 );
+
+            TagsDBWork.AddOrCorrectPathForImagesIfNotExist(
+                Directory.GetFiles(@"C:\Users\Владимир\Downloads\Обои\Обои\Замки")
+                    .Where(ImageEntry.IsImage));
+
+            using (var db = new ImagesDBConnection())
+            {
+                //db.TagTypes.Add(new TagType() {Name = "copyright"});
+                //db.SaveChanges();
+
+                List<Tag> list = new List<Tag>
+                {
+                    new Tag("test1", db.TagTypes.First().Id),
+                    new Tag("test2", db.TagTypes.First().Id),
+                    new Tag("test1", db.TagTypes.First().Id),
+                };
+
+                TagsDBWork.AddNewTagsToImages(list, db.Images);
+            }
+
+            TagsDBWork.AddOrCorrectPathForImagesIfNotExist(
+                Directory.GetFiles(@"C:\Users\Владимир\Downloads\Обои\Обои\Замки")
+                    .Where(ImageEntry.IsImage));
+
+            using (var db = new ImagesDBConnection())
+            {
+                //db.TagTypes.Add(new TagType() {Name = "copyright"});
+                //db.SaveChanges();
+
+                List<Tag> list = new List<Tag>
+                {
+                    new Tag("test1", db.TagTypes.First().Id),
+                    new Tag("test2", db.TagTypes.First().Id),
+                    new Tag("test1", db.TagTypes.First().Id),
+                };
+
+                TagsDBWork.AddNewTagsToImages(list, db.Images);
+            }
+
         }
 
         private void Reload()
