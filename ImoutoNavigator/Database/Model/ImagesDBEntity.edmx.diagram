@@ -6,7 +6,7 @@
     <edmx:Diagrams>
       <Diagram DiagramId="8252bdf855474968ac51f99a3edfbb8c" Name="Diagram1">
         <EntityTypeShape EntityType="ImagesDBModel.Image" Width="1.5" PointX="2" PointY="1" IsExpanded="false" />
-        <EntityTypeShape EntityType="ImagesDBModel.Tag" Width="1.5" PointX="5.375" PointY="2.25" IsExpanded="false" />
+        <EntityTypeShape EntityType="ImagesDBModel.Tag" Width="1.5" PointX="5.375" PointY="2.25" IsExpanded="true" />
         <EntityTypeShape EntityType="ImagesDBModel.TagSet" Width="1.5" PointX="5.375" PointY="1" IsExpanded="false" />
         <EntityTypeShape EntityType="ImagesDBModel.TagSetType" Width="1.5" PointX="8.875" PointY="1" IsExpanded="false" />
         <EntityTypeShape EntityType="ImagesDBModel.TagType" Width="1.5" PointX="8.875" PointY="2.25" IsExpanded="false" />
