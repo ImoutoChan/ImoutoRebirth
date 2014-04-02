@@ -49,6 +49,27 @@ namespace ImoutoNavigator.Database.Model
 
     public partial class Tag
     {
+        #region Constructor
+
+        public Tag(string name, int tagType) : this()
+        {
+            using (var db = new ImagesDBConnection())
+            {
+                if (db.Tags.Any(x => x.Name == name && x.Type == tagType))
+                {
+                    return;
+                }
+
+                Name = name;
+                Type = tagType;
+
+                db.Tags.Add(this);
+                db.SaveChanges();
+            }
+        }
+
+        #endregion Constructor
+
         #region Properties
 
         public IEnumerable<TagSet> UserTagSets
@@ -62,5 +83,31 @@ namespace ImoutoNavigator.Database.Model
         }
 
         #endregion Properties 
+    }
+
+    public partial class TagSet
+    {
+        #region Constructor
+
+        public TagSet(string type, Image image) : this()
+        {
+            using (var db = new ImagesDBConnection())
+            {
+                var typeObj = db.TagSetTypes.First(x => x.Name == type);
+                if (type == null)
+                {
+                    throw new ArgumentException("Incorrect TagSetType.");
+                }
+                FKType = typeObj.Id;
+
+                this.AddedDate = DateTime.Now;
+                this.FKImage = image.Id;
+
+                db.TagSets.Add(this);
+                db.SaveChanges();
+            }
+        }
+
+        #endregion Constructor
     }
 }

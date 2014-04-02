@@ -1,10 +1,13 @@
 ﻿using System;
+using System.CodeDom;
 using System.Collections.Generic;
+using System.Data.Entity.Core.Metadata.Edm;
 using System.Data.Entity.Infrastructure;
 using System.IO;
 using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using ImoutoNavigator.Database.Model;
 using ImoutoNavigator.Utils;
@@ -88,6 +91,114 @@ namespace ImoutoNavigator.Database
                 .Concat(image.ActualTagSets)
                 .Select(x => x.Tags)
                 .Aggregate((res, x) => res.Union(x).ToList());
+        }
+
+        public static void AddOrCorrectPathForImagesIfNotExist(IEnumerable<Image> images)
+        {
+            using (var db = new ImagesDBConnection())
+            {
+                var enumerableImages = images as IList<Image> ?? images.ToList();
+                var newImages = enumerableImages;
+                var dbimages = db.Images;
+                foreach (var image in enumerableImages)
+                {
+                    foreach (var dbimage in dbimages.Where(dbimage => dbimage.Md5 == image.Md5
+                                                                       && dbimage.Size == image.Size))
+                    {
+                        dbimage.Path = image.Path;
+                        (newImages = newImages.ToList()).Remove(image);
+                        break;
+                    }
+                }
+
+                db.Images.AddRange(newImages);
+
+                db.SaveChanges();
+            }
+        }
+
+        public static void AddOrCorrectPathForImagesIfNotExist(IEnumerable<string> imagePaths)
+        {
+            var images = imagePaths.Select(x => new Image(x));
+            AddOrCorrectPathForImagesIfNotExist(images);
+        }
+
+        public static void AddTagsIfNotExist(IEnumerable<Tag> tags)
+        {
+            using (var db = new ImagesDBConnection())
+            {
+                var enumerableList = tags as IList<Tag> ?? tags.ToList();
+                var newTags = enumerableList;
+                foreach (var tag in enumerableList)
+                {
+                    foreach (Tag dbtag in db.Tags)
+                    {
+                        if (dbtag.Name == tag.Name && dbtag.TagType == tag.TagType)
+                        {
+                            (newTags = newTags.ToList()).Remove(tag);
+                            break;
+                        }
+                    }
+                }
+
+                db.Tags.AddRange(newTags);
+
+                db.SaveChanges();
+            }
+        }
+
+        public static void AddNewTagsToImages(IEnumerable<Tag> tags, IEnumerable<Image> images)
+        {
+            if (!tags.Any() || !images.Any())
+            {
+                throw new ArgumentException("Collection of tags or images is empty");
+            }
+
+            //AddTagsIfNotExist(tags);
+            AddOrCorrectPathForImagesIfNotExist(images);
+
+            foreach (var image in images)
+            {
+                var userTagSets = image.UserTagSets;
+
+                var userTagSet = userTagSets.Any()
+                    ? userTagSets.First()
+                    : new TagSet(TagSetTypesEnum.UserTypeName, image);
+
+
+                var newTags = userTagSet.Tags;
+                if (newTags.Count > 0)
+                {
+                    tags = tags.Union(newTags);
+                }
+                userTagSet.Tags = tags.ToList();
+            }
+
+            using (var db = new ImagesDBConnection())
+            {
+                db.SaveChanges();
+            }
+        }
+
+        public static void RemoveTagsFromImages(IEnumerable<Tag> tags, IEnumerable<Image> images)
+        {
+            if (!tags.Any() || !images.Any())
+            {
+                throw new ArgumentException("Collection of tags or images is empty");
+            }
+
+            foreach (var image in images.Where(x => x.UserTagSets.Any()))
+            {
+                foreach (var tag in tags)
+                {
+                    image.UserTagSets.First().Tags.Remove(tag);
+                }
+            }
+
+            using (var db = new ImagesDBConnection())
+            {
+                db.SaveChanges();
+            }
         }
     }
 }
