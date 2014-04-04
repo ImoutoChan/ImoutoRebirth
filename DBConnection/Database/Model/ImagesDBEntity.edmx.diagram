@@ -1,0 +1,20 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+ <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <!-- Diagram content (shape and connector positions) -->
+    <edmx:Diagrams>
+      <Diagram DiagramId="8252bdf855474968ac51f99a3edfbb8c" Name="Diagram1">
+        <EntityTypeShape EntityType="ImagesDBModel.Image" Width="1.5" PointX="2" PointY="1" IsExpanded="false" />
+        <EntityTypeShape EntityType="ImagesDBModel.Tag" Width="1.5" PointX="5.375" PointY="2.25" IsExpanded="true" />
+        <EntityTypeShape EntityType="ImagesDBModel.TagSet" Width="1.5" PointX="5.375" PointY="1" IsExpanded="false" />
+        <EntityTypeShape EntityType="ImagesDBModel.TagSetType" Width="1.5" PointX="8.875" PointY="1" IsExpanded="false" />
+        <EntityTypeShape EntityType="ImagesDBModel.TagType" Width="1.5" PointX="8.875" PointY="2.25" IsExpanded="false" />
+        <AssociationConnector Association="ImagesDBModel.FK_TagSet_ToImage" ManuallyRouted="false" />
+        <AssociationConnector Association="ImagesDBModel.FK_Tag_ToTagType" ManuallyRouted="false" />
+        <AssociationConnector Association="ImagesDBModel.FK_TagSet_ToTagSetType" ManuallyRouted="false" />
+        <AssociationConnector Association="ImagesDBModel.TagsInTagSet" ManuallyRouted="false" />
+      </Diagram>
+    </edmx:Diagrams>
+  </edmx:Designer>
+</edmx:Edmx>

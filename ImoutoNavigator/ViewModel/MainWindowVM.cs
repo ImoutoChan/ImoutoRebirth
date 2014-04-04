@@ -100,45 +100,6 @@ namespace ImoutoNavigator.ViewModel
                     })
                     .ToList()
                 );
-
-            TagsDBWork.AddOrCorrectPathForImagesIfNotExist(
-                Directory.GetFiles(@"C:\Users\Владимир\Downloads\Обои\Обои\Замки")
-                    .Where(ImageEntry.IsImage));
-
-            using (var db = new ImagesDBConnection())
-            {
-                //db.TagTypes.Add(new TagType() {Name = "copyright"});
-                //db.SaveChanges();
-
-                List<Tag> list = new List<Tag>
-                {
-                    new Tag("test1", db.TagTypes.First().Id),
-                    new Tag("test2", db.TagTypes.First().Id),
-                    new Tag("test1", db.TagTypes.First().Id),
-                };
-
-                TagsDBWork.AddNewTagsToImages(list, db.Images);
-            }
-
-            TagsDBWork.AddOrCorrectPathForImagesIfNotExist(
-                Directory.GetFiles(@"C:\Users\Владимир\Downloads\Обои\Обои\Замки")
-                    .Where(ImageEntry.IsImage));
-
-            using (var db = new ImagesDBConnection())
-            {
-                //db.TagTypes.Add(new TagType() {Name = "copyright"});
-                //db.SaveChanges();
-
-                List<Tag> list = new List<Tag>
-                {
-                    new Tag("test1", db.TagTypes.First().Id),
-                    new Tag("test2", db.TagTypes.First().Id),
-                    new Tag("test1", db.TagTypes.First().Id),
-                };
-
-                TagsDBWork.AddNewTagsToImages(list, db.Images);
-            }
-
         }
 
         private void Reload()
