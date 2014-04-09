@@ -1,8 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.Windows.Documents;
+using ImagesDBLibrary.Database;
+using ImagesDBLibrary.Database.Model;
 using ImoutoNavigator.Commands;
-using ImoutoNavigator.Database;
-using ImoutoNavigator.Database.Model;
 using ImoutoNavigator.Model;
 using System;
 using System.Collections.ObjectModel;
@@ -13,13 +13,14 @@ using System.Windows.Input;
 
 namespace ImoutoNavigator.ViewModel
 {
-    class MainWindowVM : VMBase
+    internal class MainWindowVM : VMBase
     {
         #region Fields
 
         private int _previewSide = 256;
         private readonly MainWindow _view;
         private ObservableCollection<ImageEntryVM> _imageList;
+        private IEnumerable<Image> _dbImages;
 
         #endregion //Fields
 
@@ -27,9 +28,10 @@ namespace ImoutoNavigator.ViewModel
 
         public MainWindowVM()
         {
+            GetImageList();
             InitializeCommands();
 
-            _view = new MainWindow { DataContext = this };
+            _view = new MainWindow {DataContext = this};
             _view.Loaded += _view_Loaded;
 
             _view.Show();
@@ -49,13 +51,29 @@ namespace ImoutoNavigator.ViewModel
 
         public ObservableCollection<ImageEntryVM> ImageList
         {
-            get { return _imageList; }
+            get
+            {
+                return _imageList;
+            }
         }
 
         public string Title
         {
-            get { return String.Format("Imouto Navigator"); }
+            get
+            {
+                return String.Format("Imouto Navigator");
+            }
         }
+
+        public ObservableCollection<Tag> TopTags
+        {
+            get
+            {
+                var res = new ObservableCollection<Tag>(ImagesDB.GetTagsTopFromImages(_dbImages).Select(x => x.Key));
+                return res;
+            }
+        }
+
 
         #endregion //Properties
 
@@ -90,16 +108,28 @@ namespace ImoutoNavigator.ViewModel
         private void GetImageList()
         {
             _imageList = new ObservableCollection<ImageEntryVM>(
-                Directory.GetFiles(@"C:\Users\Владимир\Downloads\Обои\Обои\Замки")
+                Directory.GetFiles(@"C:\Users\oniii-chan\Downloads\DLS\")
                     .Where(ImageEntry.IsImage)
+                    .Take(10)
                     .Select(x =>
                     {
                         var im = new ImageEntryVM(x, PreviewSize);
-                        //im.ImageEntryChanged += im_ImageChanged;
                         return im;
                     })
                     .ToList()
                 );
+            
+            _dbImages = _imageList.Select(x => new Image(x.ImageEntry.FullName));
+
+            ImagesDB.AddTagsToImages(new List<Tag>
+                                     {
+                                         new Tag("DLS", TagTypes.Copyright),
+                                         new Tag("Downloads", TagTypes.Copyright),
+                                         new Tag("temp", TagTypes.Copyright),
+                                         new Tag("DLS", TagTypes.Copyright),
+                                     }, 
+                                     _dbImages);
+
         }
 
         private void Reload()
@@ -126,8 +156,6 @@ namespace ImoutoNavigator.ViewModel
             {
                 imageEntry.Load();
             }
-
-            var test = new TagsDBWork();
         }
 
         #endregion //Methods

@@ -85,40 +85,6 @@
     </ApplicationDefinition>
     <Compile Include="Commands\RelayCommand.cs" />
     <Compile Include="Converters\VisibilityConverter.cs" />
-    <Compile Include="Database\Model\Image.cs">
-      <DependentUpon>ImagesDBEntity.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Database\Model\ImagesDBEntity.Context.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>ImagesDBEntity.Context.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Database\Model\ImagesDBEntity.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>ImagesDBEntity.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Database\Model\ImagesDBEntity.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>ImagesDBEntity.edmx</DependentUpon>
-    </Compile>
-    <Compile Include="Database\Model\ModelExtended.cs" />
-    <Compile Include="Database\Model\Tag.cs">
-      <DependentUpon>ImagesDBEntity.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Database\Model\TagSet.cs">
-      <DependentUpon>ImagesDBEntity.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Database\Model\TagSetType.cs">
-      <DependentUpon>ImagesDBEntity.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Database\Model\TagType.cs">
-      <DependentUpon>ImagesDBEntity.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Database\TagsDBWork.cs">
-      <SubType>Code</SubType>
-    </Compile>
     <Compile Include="Model\ImageEntry.cs" />
     <Compile Include="Properties\Annotations.cs" />
     <Compile Include="UserControls\ExtScrollViewer.cs" />
@@ -164,23 +130,6 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
-    <EntityDeploy Include="Database\Model\ImagesDBEntity.edmx">
-      <Generator>EntityModelCodeGenerator</Generator>
-      <LastGenOutput>ImagesDBEntity.Designer.cs</LastGenOutput>
-    </EntityDeploy>
-    <None Include="Database\Model\ImagesDBEntity.Context.tt">
-      <Generator>TextTemplatingFileGenerator</Generator>
-      <DependentUpon>ImagesDBEntity.edmx</DependentUpon>
-      <LastGenOutput>ImagesDBEntity.Context.cs</LastGenOutput>
-    </None>
-    <None Include="Database\Model\ImagesDBEntity.edmx.diagram">
-      <DependentUpon>ImagesDBEntity.edmx</DependentUpon>
-    </None>
-    <None Include="Database\Model\ImagesDBEntity.tt">
-      <Generator>TextTemplatingFileGenerator</Generator>
-      <DependentUpon>ImagesDBEntity.edmx</DependentUpon>
-      <LastGenOutput>ImagesDBEntity.cs</LastGenOutput>
-    </None>
     <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
@@ -196,6 +145,10 @@
     <Resource Include="Resources\Entypo-license.txt" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\ImagesDBLibrary\ImagesDBLibrary.csproj">
+      <Project>{2588d735-a006-42ce-91d6-85ffc74b9868}</Project>
+      <Name>ImagesDBLibrary</Name>
+    </ProjectReference>
     <ProjectReference Include="..\ImoutoViewer\ImoutoViewer.csproj">
       <Project>{94cb919f-f3c9-4470-af91-a2878cc8df4a}</Project>
       <Name>ImoutoViewer</Name>
@@ -203,15 +156,6 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="TODO.txt" />
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="Database\ImagesDB.mdf">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Database\ImagesDB_log.ldf">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-      <DependentUpon>ImagesDB.mdf</DependentUpon>
-    </Content>
   </ItemGroup>
   <ItemGroup>
     <BootstrapperPackage Include=".NETFramework,Version=v4.5">

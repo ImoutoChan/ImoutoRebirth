@@ -7,21 +7,23 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace DBConnection.Database.Model
+namespace ImagesDBLibrary.Database.Model
 {
     using System;
     using System.Collections.Generic;
     
-    public partial class TagType
+    public partial class Image
     {
-        public TagType()
+        public Image()
         {
-            this.Tags = new HashSet<Tag>();
+            this.TagSets = new HashSet<TagSet>();
         }
     
         public int Id { get; set; }
-        public string Name { get; set; }
+        public string Md5 { get; set; }
+        public long Size { get; set; }
+        public string Path { get; set; }
     
-        public virtual ICollection<Tag> Tags { get; set; }
+        public virtual ICollection<TagSet> TagSets { get; set; }
     }
 }

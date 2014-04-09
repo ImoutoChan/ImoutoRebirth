@@ -34,6 +34,14 @@ namespace ImoutoNavigator.ViewModel
 
         #region Properties
 
+        public ImageEntry ImageEntry
+        {
+            get
+            {
+                return _imageEntry;
+            }
+        }
+
         public bool IsLoading
         {
             get { return _imageEntry.IsLoading; } 

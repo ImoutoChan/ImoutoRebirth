@@ -7,7 +7,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace ImoutoNavigator.Database.Model
+namespace ImagesDBLibrary.Database.Model
 {
     using System;
     using System.Data.Entity;
@@ -28,7 +28,6 @@ namespace ImoutoNavigator.Database.Model
         public virtual DbSet<Image> Images { get; set; }
         public virtual DbSet<Tag> Tags { get; set; }
         public virtual DbSet<TagSet> TagSets { get; set; }
-        public virtual DbSet<TagSetType> TagSetTypes { get; set; }
         public virtual DbSet<TagType> TagTypes { get; set; }
     }
 }

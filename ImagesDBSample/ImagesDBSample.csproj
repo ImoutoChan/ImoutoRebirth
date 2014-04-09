@@ -65,70 +65,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Database\Model\Image.cs">
-      <DependentUpon>ImagesDBEntity.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Database\Model\ImagesDBEntity.Context.cs">
-      <DependentUpon>ImagesDBEntity.Context.tt</DependentUpon>
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-    </Compile>
-    <Compile Include="Database\Model\ImagesDBEntity.cs">
-      <DependentUpon>ImagesDBEntity.tt</DependentUpon>
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-    </Compile>
-    <Compile Include="Database\Model\ImagesDBEntity.Designer.cs">
-      <DependentUpon>ImagesDBEntity.edmx</DependentUpon>
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-    </Compile>
-    <Compile Include="Database\Model\ModelExtended.cs" />
-    <Compile Include="Database\Model\Tag.cs">
-      <DependentUpon>ImagesDBEntity.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Database\Model\TagSet.cs">
-      <DependentUpon>ImagesDBEntity.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Database\Model\TagSetType.cs">
-      <DependentUpon>ImagesDBEntity.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Database\Model\TagType.cs">
-      <DependentUpon>ImagesDBEntity.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Database\TagsDBWork.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
-    <None Include="Database\Model\ImagesDBEntity.Context.tt">
-      <Generator>TextTemplatingFileGenerator</Generator>
-      <DependentUpon>ImagesDBEntity.edmx</DependentUpon>
-      <LastGenOutput>ImagesDBEntity.Context.cs</LastGenOutput>
-    </None>
-    <None Include="Database\Model\ImagesDBEntity.edmx.diagram">
-      <DependentUpon>ImagesDBEntity.edmx</DependentUpon>
-    </None>
-    <None Include="Database\Model\ImagesDBEntity.tt">
-      <Generator>TextTemplatingFileGenerator</Generator>
-      <DependentUpon>ImagesDBEntity.edmx</DependentUpon>
-      <LastGenOutput>ImagesDBEntity.cs</LastGenOutput>
-    </None>
-    <EntityDeploy Include="Database\Model\ImagesDBEntity.edmx">
-      <Generator>EntityModelCodeGenerator</Generator>
-      <LastGenOutput>ImagesDBEntity.Designer.cs</LastGenOutput>
-    </EntityDeploy>
     <None Include="packages.config" />
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="Database\ImagesDB.mdf">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Database\ImagesDB_log.ldf">
-      <DependentUpon>ImagesDB.mdf</DependentUpon>
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
   </ItemGroup>
   <ItemGroup>
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
@@ -151,7 +93,10 @@
     </BootstrapperPackage>
   </ItemGroup>
   <ItemGroup>
-    <WCFMetadata Include="Service References\" />
+    <ProjectReference Include="..\ImagesDBLibrary\ImagesDBLibrary.csproj">
+      <Project>{2588d735-a006-42ce-91d6-85ffc74b9868}</Project>
+      <Name>ImagesDBLibrary</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

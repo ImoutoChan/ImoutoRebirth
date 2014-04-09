@@ -243,11 +243,11 @@
                      Style="{DynamicResource SearchMetroTextBox}" />
             
             <ListBox Grid.Row="2"
-                     ItemsSource="{Binding Path=TODO}"
+                     ItemsSource="{Binding Path=TopTags}"
                      SelectedIndex="0">
                 <ListBox.ItemTemplate>
                     <DataTemplate>
-                        <CheckBox Content="{Binding Path=TODO}"
+                        <CheckBox Content="{Binding Path=Name}"
                                   Margin="5"/>
                     </DataTemplate>
                 </ListBox.ItemTemplate>
