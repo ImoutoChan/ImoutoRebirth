@@ -142,8 +142,3 @@ $RECYCLE.BIN/
 
 # Mac crap
 .DS_Store
-
-#################
-## CUSTOM
-#################
-*.ldf
