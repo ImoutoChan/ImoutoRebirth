@@ -28,6 +28,7 @@
     <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
     <BootstrapperEnabled>true</BootstrapperEnabled>
+    <ExpressionBlendVersion>12.0.41002.1</ExpressionBlendVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -58,6 +59,7 @@
     <Reference Include="MahApps.Metro">
       <HintPath>..\packages\MahApps.Metro.0.12.1.0\lib\net45\MahApps.Metro.dll</HintPath>
     </Reference>
+    <Reference Include="PresentationFramework.Aero" />
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Data" />
@@ -89,6 +91,9 @@
     <Compile Include="Properties\Annotations.cs" />
     <Compile Include="UserControls\ExtScrollViewer.cs" />
     <Compile Include="UserControls\MouseWheelGesture.cs" />
+    <Compile Include="UserControls\TagView.xaml.cs">
+      <DependentUpon>TagView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="UserControls\VirtualizingWrapPanel.cs" />
     <Compile Include="Utils\CommonUtils.cs" />
     <Compile Include="Utils\ThreadQueue.cs" />
@@ -108,6 +113,14 @@
       <SubType>Code</SubType>
     </Compile>
     <Page Include="Resources\Icons.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="styles.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="UserControls\TagView.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>

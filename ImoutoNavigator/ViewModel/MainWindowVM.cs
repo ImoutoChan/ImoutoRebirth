@@ -21,6 +21,8 @@ namespace ImoutoNavigator.ViewModel
         private readonly MainWindow _view;
         private ObservableCollection<ImageEntryVM> _imageList;
         private IEnumerable<Image> _dbImages;
+        private ObservableCollection<KeyValuePair<Tag, int>> _searchTags = new ObservableCollection<KeyValuePair<Tag, int>>();
+        private ObservableCollection<KeyValuePair<Tag, int>> _currentTags;
 
         #endregion //Fields
 
@@ -65,15 +67,23 @@ namespace ImoutoNavigator.ViewModel
             }
         }
 
-        public ObservableCollection<Tag> TopTags
+        public ObservableCollection<KeyValuePair<Tag, int>> CurrentTags
+        {
+            get { return _currentTags; }
+            set { _currentTags = value; }
+        }
+
+        public ObservableCollection<KeyValuePair<Tag, int>> SearchTags
         {
             get
             {
-                var res = new ObservableCollection<Tag>(ImagesDB.GetTagsTopFromImages(_dbImages).Select(x => x.Key));
-                return res;
+                return _searchTags;
+            }
+            set
+            {
+                _searchTags = value;
             }
         }
-
 
         #endregion //Properties
 
@@ -82,6 +92,10 @@ namespace ImoutoNavigator.ViewModel
         public ICommand ZoomInCommand { get; set; }
         public ICommand ZoomOutCommand { get; set; }
         public ICommand LoadPreviewsCommand { get; set; }
+
+        public ICommand AddTagToSearch { get; set; }
+
+        public ICommand RemoveTagFromSearch { get; set; }
 
         private void InitializeCommands()
         {
@@ -99,6 +113,8 @@ namespace ImoutoNavigator.ViewModel
             );
             LoadPreviewsCommand = new RelayCommand(x => LoadPreviews());
 
+            AddTagToSearch = new RelayCommand(SearchTag);
+            RemoveTagFromSearch = new RelayCommand(DeSearchTag);
         }
 
         #endregion //Commands
@@ -108,7 +124,7 @@ namespace ImoutoNavigator.ViewModel
         private void GetImageList()
         {
             _imageList = new ObservableCollection<ImageEntryVM>(
-                Directory.GetFiles(@"C:\Users\oniii-chan\Downloads\DLS\")
+                Directory.GetFiles(@"C:\Users\Владимир\Downloads\Обои\Обои\Замки")
                     .Where(ImageEntry.IsImage)
                     .Take(10)
                     .Select(x =>
@@ -129,6 +145,9 @@ namespace ImoutoNavigator.ViewModel
                                          new Tag("DLS", TagTypes.Copyright),
                                      }, 
                                      _dbImages);
+
+
+            CurrentTags = new ObservableCollection<KeyValuePair<Tag, int>>(ImagesDB.GetTagsTopFromImages(_dbImages));
 
         }
 
@@ -155,6 +174,39 @@ namespace ImoutoNavigator.ViewModel
             foreach (ImageEntryVM imageEntry in _view.VisibleItems)
             {
                 imageEntry.Load();
+            }
+        }
+
+        private void SearchTag(object param)
+        {
+            if (param == null)
+            {
+                return;
+            }
+            var tag = (KeyValuePair<Tag, int>) param;
+
+            if (SearchTags.All(x => x.Key != tag.Key))
+            {
+                SearchTags.Add(new KeyValuePair<Tag, int>(tag.Key, tag.Value));
+                OnPropertyChanged("SearchTags");
+
+                //CurrentTags.Remove(CurrentTags.First(x=>x.Key.Name == tag.Key.Name && x.Key.Type == tag.Key.Type));
+                //OnPropertyChanged("CurrentTags");
+            }
+        }
+
+        private void DeSearchTag(object param)
+        {
+            if (param == null)
+            {
+                return;
+            }
+            var tag = (KeyValuePair<Tag, int>)param;
+
+            if (CurrentTags.All(x => x.Key != tag.Key))
+            {
+                SearchTags.Remove(SearchTags.First(x => x.Key.Name == tag.Key.Name && x.Key.Type == tag.Key.Type));
+                OnPropertyChanged("SearchTags");
             }
         }
 
