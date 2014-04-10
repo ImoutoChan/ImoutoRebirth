@@ -1,9 +1,10 @@
 ﻿<ResourceDictionary
 	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" 
-	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:Themes="clr-namespace:Microsoft.Windows.Themes;assembly=PresentationFramework.Aero">
+	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:Themes="clr-namespace:Microsoft.Windows.Themes;assembly=PresentationFramework.Aero"
+    xmlns:imoutoNavigator="clr-namespace:ImoutoNavigator">
 	<!-- Resource dictionary entries should be defined here. -->
 	
-	<Style x:Key="ButtonStyle1" TargetType="{x:Type Button}">
+	<!--<Style x:Key="ButtonStyle1" TargetType="{x:Type Button}">
 		<Setter Property="FontSize" Value="15" />
 		<Setter Property="SnapsToDevicePixels" Value="True" />
 		<Setter Property="Background" Value="Transparent" />
@@ -34,5 +35,113 @@
 				</ControlTemplate>
 			</Setter.Value>
 		</Setter>
-	</Style>
+	</Style>-->
+
+    <ControlTemplate TargetType="Button" x:Key="TagElementControlTemplate">
+        <Label x:Name="label" 
+               HorizontalContentAlignment="Stretch"
+               Padding="10,5,5,5"
+               >
+            <Label.Content>
+                <ContentPresenter HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                  VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
+                                  RecognizesAccessKey="True" />
+            </Label.Content>
+        </Label>
+
+        <ControlTemplate.Triggers>
+            <Trigger Property="IsMouseOver" Value="True">
+                <Setter TargetName="label"  
+                        Property="Background"
+                        Value="{DynamicResource AccentColorBrush3}"/>
+            </Trigger>
+        </ControlTemplate.Triggers>
+    </ControlTemplate>
+
+    <DataTemplate x:Key="CurrentTagElementDataTemplate">
+        <Button HorizontalAlignment="Stretch"
+                HorizontalContentAlignment="Stretch"
+                FontWeight="Normal"
+                Template="{StaticResource TagElementControlTemplate}"
+                >
+
+            <Button.Content>
+                <TextBlock>
+                    <TextBlock.Text>
+                        <MultiBinding StringFormat="{}{0} ({1})">
+                            <Binding Path="Key.Name"/>
+                            <Binding Path="Value" />
+                        </MultiBinding>
+                    </TextBlock.Text>
+                </TextBlock>
+            </Button.Content>
+
+            <Button.InputBindings>
+                <MouseBinding  Gesture="LeftClick"
+                                               Command="{Binding Path=DataContext.AddTagToSearch, 
+                                                                 RelativeSource={RelativeSource AncestorType={x:Type imoutoNavigator:MainWindow}}}"
+                                               CommandParameter="{Binding}"/>
+            </Button.InputBindings>
+        </Button>
+    </DataTemplate>
+
+    <DataTemplate x:Key="SearchTagElementDataTemplateWithX">
+        <Button HorizontalAlignment="Stretch"
+                HorizontalContentAlignment="Stretch"
+                FontWeight="Normal"
+                Template="{StaticResource TagElementControlTemplate}"
+                >
+            <Button.Content>
+                <DockPanel>
+                    <Button DockPanel.Dock="Right"
+                            Style="{DynamicResource ChromelessButtonStyle}"
+                            Command="{Binding Path=DataContext.RemoveTagFromSearch, 
+                                                RelativeSource={RelativeSource AncestorType={x:Type imoutoNavigator:MainWindow}}}"
+                            CommandParameter="{Binding}"
+                            >   
+                        <Button.Content>
+                            <TextBlock Text="X" FontSize="12" Margin="0,0,5,0"/>
+                        </Button.Content>
+                    </Button>
+
+                    <TextBlock>
+                        <TextBlock.Text>
+                            <MultiBinding StringFormat="{}{0} ({1})">
+                                <Binding Path="Key.Name"/>
+                                <Binding Path="Value" />
+                            </MultiBinding>
+                        </TextBlock.Text>
+                        </TextBlock>
+                    </DockPanel>
+            </Button.Content>
+        </Button>
+    </DataTemplate>
+
+    <DataTemplate x:Key="SearchTagElementDataTemplate">
+        <Button HorizontalAlignment="Stretch"
+                HorizontalContentAlignment="Stretch"
+                FontWeight="Normal"
+                Template="{StaticResource TagElementControlTemplate}"
+                >
+            <Button.Content>
+
+                <TextBlock FontSize="12">
+                    <TextBlock.Text>
+                        <MultiBinding StringFormat="{}{0} ({1})">
+                            <Binding Path="Key.Name"/>
+                            <Binding Path="Value" />
+                        </MultiBinding>
+                    </TextBlock.Text>
+                </TextBlock>
+            </Button.Content>
+
+            <Button.InputBindings>
+                <MouseBinding  Gesture="LeftClick"
+                               Command="{Binding Path=DataContext.RemoveTagFromSearch, 
+                                                 RelativeSource={RelativeSource AncestorType={x:Type imoutoNavigator:MainWindow}}}"
+                               CommandParameter="{Binding}"/>
+            </Button.InputBindings>
+        </Button>
+    </DataTemplate>
+
 </ResourceDictionary>

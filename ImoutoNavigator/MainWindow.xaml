@@ -34,12 +34,12 @@
 
     <Grid>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="*" />
-            <ColumnDefinition Width="200" />
+            <ColumnDefinition Width="*" MinWidth="200" />
+            <ColumnDefinition Width="3*" />
         </Grid.ColumnDefinitions>
 
         <ListBox x:Name="ListBoxElement"
-                 Grid.Row="0"
+                 Grid.Column="1"
                  ScrollViewer.HorizontalScrollBarVisibility="Disabled"
                  ItemsSource="{Binding Path=ImageList, UpdateSourceTrigger=PropertyChanged}"
                  SelectionMode="Extended"
@@ -225,93 +225,54 @@
             </ListBox.ItemTemplate>
         </ListBox>
         
-        <Grid Grid.Column="1">
-            <Grid.RowDefinitions>
-                <RowDefinition Height="Auto" />
-                <RowDefinition Height="Auto"/>
-                <RowDefinition Height="*"/>
-            </Grid.RowDefinitions>
+        <GridSplitter Grid.Column="0" Width="3" ShowsPreview="True" Background="{DynamicResource AccentColorBrush}"/>
 
-            <ItemsControl x:Name="SearchListBox"
-                     Grid.Row="0"
-                     ItemsSource="{Binding Path=SearchTags, UpdateSourceTrigger=PropertyChanged}"
-                     MinHeight="50"
-                     >
-                <ItemsControl.ItemTemplate>
-                    <DataTemplate>
-                        <Label >
-                            <Label.Content>
-                                <TextBlock>
-                                    <TextBlock.Text>
-                                        <MultiBinding StringFormat="{}{0} ({1})">
-                                            <Binding Path="Key.Name"/>
-                                            <Binding Path="Value" />
-                                        </MultiBinding>
-                                    </TextBlock.Text>
-                                </TextBlock>
-                            </Label.Content>
+        <Border Grid.Column="0"
+                BorderThickness="0,0,0,0"
+                BorderBrush="{DynamicResource AccentColorBrush}"
+                >
+            <Grid  >
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="*" />
+                </Grid.RowDefinitions>
 
-                            <Label.InputBindings>
-                                <MouseBinding  Gesture="LeftClick"
-                                               Command="{Binding Path=DataContext.RemoveTagFromSearch, 
-                                                                 RelativeSource={RelativeSource AncestorType={x:Type imoutoNavigator:MainWindow}}}"
-                                               CommandParameter="{Binding}"/>
-                            </Label.InputBindings>
-                        </Label>
-                    </DataTemplate>
-                </ItemsControl.ItemTemplate>
-            </ItemsControl>
+            
+                <TextBox Grid.Row="0" 
+                         Margin="5"
+                         metroControl:TextboxHelper.Watermark="Search tag"
+                         metroControl:TextboxHelper.ButtonCommand="{Binding Path=TODO}"
+                         Style="{DynamicResource SearchMetroTextBox}"
+                         FontSize="14" />
 
-            <TextBox Grid.Row="1" 
-                     Margin="5"
-                     metroControl:TextboxHelper.Watermark="Search tag"
-                     metroControl:TextboxHelper.ButtonCommand="{Binding Path=TODO}"
-                     Style="{DynamicResource SearchMetroTextBox}" />
-
-            <ItemsControl x:Name="CurrentTags"
-                     Grid.Row="2"
-                     ItemsSource="{Binding Path=CurrentTags, UpdateSourceTrigger=PropertyChanged}"
-                     >
+                <Border Grid.Row="1"
+                        BorderThickness="1"
+                        BorderBrush="{DynamicResource AccentColorBrush}">
                 
-                <ItemsControl.ItemTemplate>
-                    <DataTemplate>
-                        <Label HorizontalAlignment="Stretch">
-                            <Label.Template>
-                                <ControlTemplate>
-                                    <Grid>
-                                        <ContentControl  />
-                                    </Grid>
-                                    
-                                    <ControlTemplate.Triggers>
-                                        <Trigger Property="IsMouseOver" Value="True">
-                                            <Setter Property="Background" Value="{DynamicResource AccentColorBrush3}" />
-                                            <Setter Property="Foreground" Value="{DynamicResource LabelTextBrush}" />
-                                        </Trigger>
-                                    </ControlTemplate.Triggers>
-                                </ControlTemplate>
-                            </Label.Template>
-                                
-                            <Label.Content>
-                                <TextBlock>
-                                    <TextBlock.Text>
-                                        <MultiBinding StringFormat="{}{0} ({1})">
-                                            <Binding Path="Key.Name"/>
-                                            <Binding Path="Value" />
-                                        </MultiBinding>
-                                    </TextBlock.Text>
-                                </TextBlock>
-                            </Label.Content>
+                </Border>
+            
+                <ItemsControl x:Name="SearchListBox"
+                              Grid.Row="2"
+                              ItemsSource="{Binding Path=SearchTags, UpdateSourceTrigger=PropertyChanged}"
+                              ItemTemplate="{StaticResource SearchTagElementDataTemplate}"
+                              />
 
-                            <Label.InputBindings>
-                                <MouseBinding  Gesture="LeftClick"
-                                               Command="{Binding Path=DataContext.AddTagToSearch, 
-                                                                 RelativeSource={RelativeSource AncestorType={x:Type imoutoNavigator:MainWindow}}}"
-                                               CommandParameter="{Binding}"/>
-                            </Label.InputBindings>
-                        </Label>
-                    </DataTemplate>
-                </ItemsControl.ItemTemplate>
-            </ItemsControl>
-        </Grid>
+                <Border Grid.Row="3"
+                        BorderThickness="1"
+                        BorderBrush="{DynamicResource AccentColorBrush}">
+
+                </Border>
+
+                <ItemsControl x:Name="CurrentTags"
+                              Grid.Row="4"
+                              ItemsSource="{Binding Path=CurrentTags, UpdateSourceTrigger=PropertyChanged}"
+                              ItemTemplate="{StaticResource CurrentTagElementDataTemplate}" 
+                              />
+            
+            </Grid>
+        </Border>
     </Grid>
 </metroControl:MetroWindow>
