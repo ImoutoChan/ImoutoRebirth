@@ -21,8 +21,10 @@ namespace ImoutoNavigator.ViewModel
         private readonly MainWindow _view;
         private ObservableCollection<ImageEntryVM> _imageList;
         private IEnumerable<Image> _dbImages;
-        private ObservableCollection<KeyValuePair<Tag, int>> _searchTags = new ObservableCollection<KeyValuePair<Tag, int>>();
+        private ObservableCollection<KeyValuePair<Tag, int>> _inSearchTags = new ObservableCollection<KeyValuePair<Tag, int>>();
         private ObservableCollection<KeyValuePair<Tag, int>> _currentTags;
+        private string _searchString;
+        private ObservableCollection<Tag> _searchTags = new ObservableCollection<Tag>();
 
         #endregion //Fields
 
@@ -73,15 +75,47 @@ namespace ImoutoNavigator.ViewModel
             set { _currentTags = value; }
         }
 
-        public ObservableCollection<KeyValuePair<Tag, int>> SearchTags
+        public ObservableCollection<KeyValuePair<Tag, int>> InSearchTags
         {
             get
             {
-                return _searchTags;
+                return _inSearchTags;
             }
             set
             {
-                _searchTags = value;
+                _inSearchTags = value;
+            }
+        }
+
+        public ObservableCollection<Tag> SearchTags
+        {
+            get { return _searchTags; }
+            set { _searchTags = value; }
+        }
+
+        public string SearchString
+        {
+            get
+            {
+                return _searchString;
+            }
+            set
+            {
+                //TODO Add find by first letters, add autocomplition
+                var newSearchString = value;
+                if (newSearchString == "")
+                {
+                    SearchTags.Clear();
+                }
+                else
+                {
+                    IEnumerable<Tag> tags = ImagesDB.GetTagsStartFrom(newSearchString, 10);
+                    SearchTags.Clear();
+                    SearchTags = new ObservableCollection<Tag>(tags);
+                    OnPropertyChanged("SearchTags");
+                }
+
+                _searchString = value;
             }
         }
 
@@ -185,9 +219,9 @@ namespace ImoutoNavigator.ViewModel
             }
             var tag = (KeyValuePair<Tag, int>) param;
 
-            if (SearchTags.All(x => x.Key != tag.Key))
+            if (InSearchTags.All(x => x.Key != tag.Key))
             {
-                SearchTags.Add(new KeyValuePair<Tag, int>(tag.Key, tag.Value));
+                InSearchTags.Add(new KeyValuePair<Tag, int>(tag.Key, tag.Value));
                 OnPropertyChanged("SearchTags");
 
                 //CurrentTags.Remove(CurrentTags.First(x=>x.Key.Name == tag.Key.Name && x.Key.Type == tag.Key.Type));
@@ -205,7 +239,7 @@ namespace ImoutoNavigator.ViewModel
 
             if (CurrentTags.All(x => x.Key != tag.Key))
             {
-                SearchTags.Remove(SearchTags.First(x => x.Key.Name == tag.Key.Name && x.Key.Type == tag.Key.Type));
+                InSearchTags.Remove(InSearchTags.First(x => x.Key.Name == tag.Key.Name && x.Key.Type == tag.Key.Type));
                 OnPropertyChanged("SearchTags");
             }
         }

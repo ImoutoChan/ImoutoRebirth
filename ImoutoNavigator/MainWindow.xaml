@@ -31,248 +31,280 @@
             <Button Content="Choose source..." />
         </metroControl:WindowCommands>
     </metroControl:MetroWindow.WindowCommands>
-
     <Grid>
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="*" MinWidth="200" />
-            <ColumnDefinition Width="3*" />
-        </Grid.ColumnDefinitions>
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" 
+                                  MinWidth="200" 
+                                  MaxWidth="300" />
+                <ColumnDefinition Width="3*" />
+            </Grid.ColumnDefinitions>
 
-        <ListBox x:Name="ListBoxElement"
-                 Grid.Column="1"
-                 ScrollViewer.HorizontalScrollBarVisibility="Disabled"
-                 ItemsSource="{Binding Path=ImageList, UpdateSourceTrigger=PropertyChanged}"
-                 SelectionMode="Extended"
-                 >
-            <ListBox.InputBindings>
-                <MouseBinding Command="{Binding Path=ZoomOutCommand}" 
-                              Gesture="{x:Static userControl:MouseWheelGesture.CtrlDown}" />
+            <ListBox x:Name="ListBoxElement"
+                     Grid.Column="1"
+                     ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                     ItemsSource="{Binding Path=ImageList, UpdateSourceTrigger=PropertyChanged}"
+                     SelectionMode="Extended"
+                     >
+                <ListBox.InputBindings>
+                    <MouseBinding Command="{Binding Path=ZoomOutCommand}" 
+                                  Gesture="{x:Static userControl:MouseWheelGesture.CtrlDown}" />
 
-                <MouseBinding Command="{Binding Path=ZoomInCommand}"
-                              Gesture="{x:Static userControl:MouseWheelGesture.CtrlUp}" />
-            </ListBox.InputBindings>
-            
-            <ListBox.Template>
-                <ControlTemplate TargetType="ListBox">
-                    <userControl:ExtScrollViewer x:Name="ScrollViewer"
-                                                 Padding="{TemplateBinding Padding}"
-                                                 Background="{TemplateBinding Background}"
-                                                 BorderBrush="Transparent"
-                                                 BorderThickness="0">
-                        <ItemsPresenter />
-                    </userControl:ExtScrollViewer>
-                </ControlTemplate>
-            </ListBox.Template>
-            
-            <ListBox.ItemContainerStyle>
-                <Style TargetType="{x:Type ListBoxItem}">
-                    <Setter Property="SnapsToDevicePixels"
-                            Value="True" />
-                    <Setter Property="Padding"
-                            Value="4,1" />
-                    <Setter Property="HorizontalContentAlignment"
-                            Value="{Binding HorizontalContentAlignment,
-                                            RelativeSource={RelativeSource FindAncestor,
-                                                                           AncestorLevel=1,
-                                                                           AncestorType={x:Type ItemsControl}}}" />
-                    <Setter Property="VerticalContentAlignment"
-                            Value="{Binding VerticalContentAlignment,
-                                            RelativeSource={RelativeSource FindAncestor,
-                                                                           AncestorLevel=1,
-                                                                           AncestorType={x:Type ItemsControl}}}" />
-                    <Setter Property="Background"
-                            Value="Transparent" />
-                    <Setter Property="BorderBrush"
-                            Value="Transparent" />
-                    <Setter Property="BorderThickness"
-                            Value="1" />
-                    <Setter Property="FontSize"
-                            Value="16" />
-                    <Setter Property="Foreground"
-                            Value="#999999" />
-                    <Setter Property="FocusVisualStyle">
-                        <Setter.Value>
-                            <Style>
-                                <Setter Property="Control.Template">
-                                    <Setter.Value>
-                                        <ControlTemplate>
-                                            <Rectangle Margin="2"
-                                                       SnapsToDevicePixels="True"
-                                                       Stroke="{DynamicResource {x:Static SystemColors.ControlTextBrushKey}}"
-                                                       StrokeDashArray="1 2"
-                                                       StrokeThickness="1" />
-                                        </ControlTemplate>
-                                    </Setter.Value>
-                                </Setter>
-                            </Style>
-                        </Setter.Value>
-                    </Setter>
-                    <Setter Property="Template">
-                        <Setter.Value>
-                            <ControlTemplate TargetType="{x:Type ListBoxItem}">
-                                <Border x:Name="Bd"
-                                        Background="{TemplateBinding Background}"
-                                        BorderBrush="{TemplateBinding BorderBrush}"
-                                        BorderThickness="{TemplateBinding BorderThickness}"
-                                        Padding="{TemplateBinding Padding}"
-                                        SnapsToDevicePixels="True"
-                                        Margin="2">
-                                    <Border.InputBindings>
-                                        <MouseBinding Command="{Binding OpenCommand}"
-                                          Gesture="LeftDoubleClick"/>
-                                    </Border.InputBindings>
+                    <MouseBinding Command="{Binding Path=ZoomInCommand}"
+                                  Gesture="{x:Static userControl:MouseWheelGesture.CtrlUp}" />
+                </ListBox.InputBindings>
 
-                                    <ContentPresenter HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
-                                                      VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
-                                                      Content="{TemplateBinding Content}"
-                                                      ContentStringFormat="{TemplateBinding ContentStringFormat}"
-                                                      ContentTemplate="{TemplateBinding ContentTemplate}"
-                                                      SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" />
-                                </Border>
-                                
-                                <ControlTemplate.Triggers>
-                                    <MultiTrigger>
-                                        <MultiTrigger.Conditions>
-                                            <Condition Property="IsMouseOver"
-                                                       Value="True" />
-                                        </MultiTrigger.Conditions>
-                                        
-                                        <Setter TargetName="Bd"
-                                                Property="Background"
-                                                Value="{DynamicResource AccentColorBrush4}" />
-                                        
-                                        <Setter TargetName="Bd"
-                                                Property="BorderBrush"
-                                                Value="{DynamicResource AccentColorBrush2}" />
-                                    </MultiTrigger>
-                                    
-                                    <MultiTrigger>
-                                        <MultiTrigger.Conditions>
-                                            <Condition Property="Selector.IsSelectionActive"
-                                                       Value="False" />
-                                            
-                                            <Condition Property="IsSelected"
-                                                       Value="True" />
-                                        </MultiTrigger.Conditions>
-                                        
-                                        <Setter TargetName="Bd"
-                                                Property="Background"
-                                                Value="{DynamicResource AccentColorBrush3}" />
-                                        
-                                        <Setter TargetName="Bd"
-                                                Property="BorderBrush"
-                                                Value="{DynamicResource AccentColorBrush}" />
-                                    </MultiTrigger>
-                                    
-                                    <MultiTrigger>
-                                        <MultiTrigger.Conditions>
-                                            <Condition Property="Selector.IsSelectionActive"
-                                                       Value="True" />
-                                            
-                                            <Condition Property="IsSelected"
-                                                       Value="True" />
-                                        </MultiTrigger.Conditions>
-                                        
-                                        <Setter TargetName="Bd"
-                                                Property="Background"
-                                                Value="{DynamicResource AccentColorBrush3}" />
-                                        
-                                        <Setter TargetName="Bd"
-                                                Property="BorderBrush"
-                                                Value="{DynamicResource AccentColorBrush}" />
-                                    </MultiTrigger>
-                                    
-                                    <Trigger Property="IsEnabled"
-                                             Value="False">
-                                        <Setter TargetName="Bd"
-                                                Property="TextElement.Foreground"
-                                                Value="{DynamicResource {x:Static SystemColors.GrayTextBrushKey}}" />
-                                    </Trigger>
-                                </ControlTemplate.Triggers>
-                            </ControlTemplate>
-                        </Setter.Value>
-                    </Setter>
-                </Style>
-            </ListBox.ItemContainerStyle>
-            
-            <ListBox.ItemsPanel>
-                <ItemsPanelTemplate>
-                    <userControl:VirtualizingWrapPanel Orientation="Horizontal" />
-                </ItemsPanelTemplate>
-            </ListBox.ItemsPanel>
-            
-            <ListBox.ItemTemplate>
-                <DataTemplate>
-                    <Border Margin="6,10,10,10">
-                        <Border.Effect>
-                            <DropShadowEffect/>
-                        </Border.Effect>
-                        
-                        <Grid Width="{Binding Path=ViewPortSize.Width}"
-                              Height="{Binding Path=ViewPortSize.Height}">
-                            <Image Source="{Binding Path=Image}" 
-                                   Visibility="{Binding Path=IsLoading, 
-                                                        Converter={StaticResource VisibilityInvertConverter}}"/>
+                <ListBox.Template>
+                    <ControlTemplate TargetType="ListBox">
+                        <userControl:ExtScrollViewer x:Name="ScrollViewer"
+                                                     Padding="{TemplateBinding Padding}"
+                                                     Background="{TemplateBinding Background}"
+                                                     BorderBrush="Transparent"
+                                                     BorderThickness="0">
+                            <ItemsPresenter />
+                        </userControl:ExtScrollViewer>
+                    </ControlTemplate>
+                </ListBox.Template>
 
-                            <Ellipse Width="10" 
-                                     Height="10"
-                                     Fill="{DynamicResource GrayBrush10}"
-                                     Visibility="{Binding Path=IsLoading, 
-                                                          Converter={StaticResource VisibilityConverter}}" />
-                        </Grid>
+                <ListBox.ItemContainerStyle>
+                    <Style TargetType="{x:Type ListBoxItem}">
+                        <Setter Property="SnapsToDevicePixels"
+                                Value="True" />
+                        <Setter Property="Padding"
+                                Value="4,1" />
+                        <Setter Property="HorizontalContentAlignment"
+                                Value="{Binding HorizontalContentAlignment,
+                                                RelativeSource={RelativeSource FindAncestor,
+                                                                               AncestorLevel=1,
+                                                                               AncestorType={x:Type ItemsControl}}}" />
+                        <Setter Property="VerticalContentAlignment"
+                                Value="{Binding VerticalContentAlignment,
+                                                RelativeSource={RelativeSource FindAncestor,
+                                                                               AncestorLevel=1,
+                                                                               AncestorType={x:Type ItemsControl}}}" />
+                        <Setter Property="Background"
+                                Value="Transparent" />
+                        <Setter Property="BorderBrush"
+                                Value="Transparent" />
+                        <Setter Property="BorderThickness"
+                                Value="1" />
+                        <Setter Property="FontSize"
+                                Value="16" />
+                        <Setter Property="Foreground"
+                                Value="#999999" />
+                        <Setter Property="FocusVisualStyle">
+                            <Setter.Value>
+                                <Style>
+                                    <Setter Property="Control.Template">
+                                        <Setter.Value>
+                                            <ControlTemplate>
+                                                <Rectangle Margin="2"
+                                                           SnapsToDevicePixels="True"
+                                                           Stroke="{DynamicResource {x:Static SystemColors.ControlTextBrushKey}}"
+                                                           StrokeDashArray="1 2"
+                                                           StrokeThickness="1" />
+                                            </ControlTemplate>
+                                        </Setter.Value>
+                                    </Setter>
+                                </Style>
+                            </Setter.Value>
+                        </Setter>
+                        <Setter Property="Template">
+                            <Setter.Value>
+                                <ControlTemplate TargetType="{x:Type ListBoxItem}">
+                                    <Border x:Name="Bd"
+                                            Background="{TemplateBinding Background}"
+                                            BorderBrush="{TemplateBinding BorderBrush}"
+                                            BorderThickness="{TemplateBinding BorderThickness}"
+                                            Padding="{TemplateBinding Padding}"
+                                            SnapsToDevicePixels="True"
+                                            Margin="2">
+                                        <Border.InputBindings>
+                                            <MouseBinding Command="{Binding OpenCommand}"
+                                              Gesture="LeftDoubleClick"/>
+                                        </Border.InputBindings>
+
+                                        <ContentPresenter HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                                          VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
+                                                          Content="{TemplateBinding Content}"
+                                                          ContentStringFormat="{TemplateBinding ContentStringFormat}"
+                                                          ContentTemplate="{TemplateBinding ContentTemplate}"
+                                                          SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" />
+                                    </Border>
+
+                                    <ControlTemplate.Triggers>
+                                        <MultiTrigger>
+                                            <MultiTrigger.Conditions>
+                                                <Condition Property="IsMouseOver"
+                                                           Value="True" />
+                                            </MultiTrigger.Conditions>
+
+                                            <Setter TargetName="Bd"
+                                                    Property="Background"
+                                                    Value="{DynamicResource AccentColorBrush4}" />
+
+                                            <Setter TargetName="Bd"
+                                                    Property="BorderBrush"
+                                                    Value="{DynamicResource AccentColorBrush2}" />
+                                        </MultiTrigger>
+
+                                        <MultiTrigger>
+                                            <MultiTrigger.Conditions>
+                                                <Condition Property="Selector.IsSelectionActive"
+                                                           Value="False" />
+
+                                                <Condition Property="IsSelected"
+                                                           Value="True" />
+                                            </MultiTrigger.Conditions>
+
+                                            <Setter TargetName="Bd"
+                                                    Property="Background"
+                                                    Value="{DynamicResource AccentColorBrush3}" />
+
+                                            <Setter TargetName="Bd"
+                                                    Property="BorderBrush"
+                                                    Value="{DynamicResource AccentColorBrush}" />
+                                        </MultiTrigger>
+
+                                        <MultiTrigger>
+                                            <MultiTrigger.Conditions>
+                                                <Condition Property="Selector.IsSelectionActive"
+                                                           Value="True" />
+
+                                                <Condition Property="IsSelected"
+                                                           Value="True" />
+                                            </MultiTrigger.Conditions>
+
+                                            <Setter TargetName="Bd"
+                                                    Property="Background"
+                                                    Value="{DynamicResource AccentColorBrush3}" />
+
+                                            <Setter TargetName="Bd"
+                                                    Property="BorderBrush"
+                                                    Value="{DynamicResource AccentColorBrush}" />
+                                        </MultiTrigger>
+
+                                        <Trigger Property="IsEnabled"
+                                                 Value="False">
+                                            <Setter TargetName="Bd"
+                                                    Property="TextElement.Foreground"
+                                                    Value="{DynamicResource {x:Static SystemColors.GrayTextBrushKey}}" />
+                                        </Trigger>
+                                    </ControlTemplate.Triggers>
+                                </ControlTemplate>
+                            </Setter.Value>
+                        </Setter>
+                    </Style>
+                </ListBox.ItemContainerStyle>
+
+                <ListBox.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <userControl:VirtualizingWrapPanel Orientation="Horizontal" />
+                    </ItemsPanelTemplate>
+                </ListBox.ItemsPanel>
+
+                <ListBox.ItemTemplate>
+                    <DataTemplate>
+                        <Border Margin="6,10,10,10">
+                            <Border.Effect>
+                                <DropShadowEffect/>
+                            </Border.Effect>
+
+                            <Grid Width="{Binding Path=ViewPortSize.Width}"
+                                  Height="{Binding Path=ViewPortSize.Height}">
+                                <Image Source="{Binding Path=Image}" 
+                                       Visibility="{Binding Path=IsLoading, 
+                                                            Converter={StaticResource VisibilityInvertConverter}}"/>
+
+                                <Ellipse Width="10" 
+                                         Height="10"
+                                         Fill="{DynamicResource GrayBrush10}"
+                                         Visibility="{Binding Path=IsLoading, 
+                                                              Converter={StaticResource VisibilityConverter}}" />
+                            </Grid>
+                        </Border>
+                    </DataTemplate>
+                </ListBox.ItemTemplate>
+            </ListBox>
+
+            <GridSplitter Grid.Column="0" 
+                          Width="3" 
+                          ShowsPreview="True" 
+                          Background="{DynamicResource AccentColorBrush}"/>
+
+            <Border Grid.Column="0"
+                    BorderThickness="0,0,0,0"
+                    BorderBrush="{DynamicResource AccentColorBrush}"
+                    >
+                <Grid  >
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="*" />
+                    </Grid.RowDefinitions>
+
+
+                    <TextBox Grid.Row="0" 
+                             Margin="5"
+                             metroControl:TextboxHelper.Watermark="Search tag"
+                             Style="{DynamicResource SearchMetroTextBox}"
+                             FontSize="14"
+                             Text="{Binding Path=SearchString, UpdateSourceTrigger=PropertyChanged}"/>
+
+                    <!--<ComboBox Grid.Row="0" 
+                              Margin="5"
+                              metroControl:TextboxHelper.Watermark="Search tag"
+                              FontSize="14"
+                              DisplayMemberPath="Name"
+                              IsEditable="True"
+                              ItemsSource="{Binding SearchTags}"
+                              MaxDropDownHeight="125"
+                              Text="{Binding Path=SearchString}" />-->
+
+                    <Border Grid.Row="1"
+                            BorderThickness="1"
+                            BorderBrush="{DynamicResource AccentColorBrush}">
+
                     </Border>
-                </DataTemplate>
-            </ListBox.ItemTemplate>
-        </ListBox>
-        
-        <GridSplitter Grid.Column="0" Width="3" ShowsPreview="True" Background="{DynamicResource AccentColorBrush}"/>
 
-        <Border Grid.Column="0"
-                BorderThickness="0,0,0,0"
-                BorderBrush="{DynamicResource AccentColorBrush}"
-                >
-            <Grid  >
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="Auto" />
-                    <RowDefinition Height="Auto" />
-                    <RowDefinition Height="Auto" />
-                    <RowDefinition Height="Auto" />
-                    <RowDefinition Height="*" />
-                </Grid.RowDefinitions>
+                    <ItemsControl x:Name="SearchListBox"
+                                  Grid.Row="2"
+                                  ItemsSource="{Binding Path=InSearchTags, UpdateSourceTrigger=PropertyChanged}"
+                                  ItemTemplate="{StaticResource SearchTagElementDataTemplate}"
+                                  />
 
-            
-                <TextBox Grid.Row="0" 
-                         Margin="5"
-                         metroControl:TextboxHelper.Watermark="Search tag"
-                         metroControl:TextboxHelper.ButtonCommand="{Binding Path=TODO}"
-                         Style="{DynamicResource SearchMetroTextBox}"
-                         FontSize="14" />
+                    <Border Grid.Row="3"
+                            BorderThickness="1"
+                            BorderBrush="{DynamicResource AccentColorBrush}">
 
-                <Border Grid.Row="1"
-                        BorderThickness="1"
-                        BorderBrush="{DynamicResource AccentColorBrush}">
-                
-                </Border>
-            
-                <ItemsControl x:Name="SearchListBox"
-                              Grid.Row="2"
-                              ItemsSource="{Binding Path=SearchTags, UpdateSourceTrigger=PropertyChanged}"
-                              ItemTemplate="{StaticResource SearchTagElementDataTemplate}"
-                              />
+                    </Border>
 
-                <Border Grid.Row="3"
-                        BorderThickness="1"
-                        BorderBrush="{DynamicResource AccentColorBrush}">
+                    <ItemsControl x:Name="CurrentTags"
+                                  Grid.Row="4"
+                                  ItemsSource="{Binding Path=CurrentTags, UpdateSourceTrigger=PropertyChanged}"
+                                  ItemTemplate="{StaticResource CurrentTagElementDataTemplate}" 
+                                  />
+                </Grid>
+            </Border>
 
-                </Border>
+            <Border Grid.Column="0"
+                    BorderThickness="1"
+                    BorderBrush="{DynamicResource GrayBrush7}"
+                    HorizontalAlignment="Left"
+                    VerticalAlignment="Top"
+                    Margin="5,30">
+                <ListBox ItemsSource="{Binding SearchTags}" 
+                            MaxHeight="120">
+                    <ListBox.ItemTemplate>
+                        <DataTemplate>
+                            <TextBlock Text="{Binding Name}" />
+                        </DataTemplate>
+                    </ListBox.ItemTemplate>
+                </ListBox>
+            </Border>
+        </Grid>
 
-                <ItemsControl x:Name="CurrentTags"
-                              Grid.Row="4"
-                              ItemsSource="{Binding Path=CurrentTags, UpdateSourceTrigger=PropertyChanged}"
-                              ItemTemplate="{StaticResource CurrentTagElementDataTemplate}" 
-                              />
-            
-            </Grid>
-        </Border>
     </Grid>
 </metroControl:MetroWindow>

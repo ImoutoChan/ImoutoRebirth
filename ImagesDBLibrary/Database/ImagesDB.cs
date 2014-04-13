@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data.Entity;
 using System.Linq;
 using System.Security.Cryptography.X509Certificates;
 using ImagesDBLibrary.Database.Model;
@@ -135,6 +136,38 @@ namespace ImagesDBLibrary.Database
                 }
 
                 db.SaveChanges();
+            }
+        }
+
+        public static IEnumerable<Tag> GetTagsStartFrom(string newSearchString, int i)
+        {
+            try
+            {
+
+
+                using (var db = new ImagesDBConnection())
+                {
+                    int length = newSearchString.Count();
+                    var okTags =
+                        db.Tags.Where(x => x.Name.Substring(0, length) == newSearchString)
+                            .Take(i)
+                            .ToList();
+
+                    if (okTags.Count() < i)
+                    {
+                        int moar = i - okTags.Count();
+                        okTags.AddRange(
+                            db.Tags.Where(x => x.Name.Contains(newSearchString)).Take(moar)
+                            );
+                    }
+
+                    return okTags.Distinct();
+                }
+            }
+            catch (Exception)
+            {
+
+                throw;
             }
         }
     }
