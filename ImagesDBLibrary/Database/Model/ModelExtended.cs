@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Security.Cryptography;
+using Utils;
 
 namespace ImagesDBLibrary.Database.Model
 {
@@ -40,7 +41,7 @@ namespace ImagesDBLibrary.Database.Model
 
             using (var db = new ImagesDBConnection())
             {
-                Md5 = GetMd5Checksum(fileInfo);
+                Md5 = Util.GetMd5Checksum(fileInfo);
                 Size = fileInfo.Length;
 
                 var dbimg = db.Images.FirstOrDefault(x => x.Path == Path);
@@ -75,22 +76,6 @@ namespace ImagesDBLibrary.Database.Model
         }
 
         #endregion Properties 
-
-        private static string GetMd5Checksum(FileInfo targetFile)
-        {
-            if (!targetFile.Exists)
-            {
-                throw new ArgumentException("File does not exist.");
-            }
-
-            using (var md5 = MD5.Create())
-            {
-                using (var stream = targetFile.OpenRead())
-                {
-                    return BitConverter.ToString(md5.ComputeHash(stream)).Replace("-", "").ToLower();
-                }
-            }
-        }
     }
 
     public partial class Tag
@@ -149,5 +134,19 @@ namespace ImagesDBLibrary.Database.Model
         }
 
         #endregion Constructor
+    }
+
+    public partial class Source
+    {
+        public Source(string path)
+        {
+            var di = new DirectoryInfo(path);
+            if (!di.Exists)
+            {
+                throw new ArgumentException("Directory does not exist.");
+            }
+
+
+        }
     }
 }

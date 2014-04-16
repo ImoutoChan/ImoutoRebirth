@@ -4,7 +4,14 @@
   <edmx:Runtime>
     <!-- SSDL content -->
     <edmx:StorageModels>
-    <Schema Namespace="ImagesDBModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+    <Schema Namespace="ImagesDBModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityType Name="Collection">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" Nullable="false" />
+          <Property Name="Name" Type="nvarchar" MaxLength="100" Nullable="false" />
+        </EntityType>
         <EntityType Name="Image">
           <Key>
             <PropertyRef Name="Id" />
@@ -13,6 +20,29 @@
           <Property Name="Md5" Type="char" MaxLength="32" Nullable="false" />
           <Property Name="Size" Type="bigint" Nullable="false" />
           <Property Name="Path" Type="nvarchar" MaxLength="4000" Nullable="false" />
+        </EntityType>
+        <EntityType Name="ImagesInSources">
+          <Key>
+            <PropertyRef Name="SourceId" />
+            <PropertyRef Name="ImageId" />
+          </Key>
+          <Property Name="SourceId" Type="int" Nullable="false" />
+          <Property Name="ImageId" Type="int" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Source">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" Nullable="false" />
+          <Property Name="Path" Type="nvarchar" MaxLength="4000" Nullable="false" />
+        </EntityType>
+        <EntityType Name="SourcesInCollection">
+          <Key>
+            <PropertyRef Name="CollectionId" />
+            <PropertyRef Name="SourceId" />
+          </Key>
+          <Property Name="CollectionId" Type="int" Nullable="false" />
+          <Property Name="SourceId" Type="int" Nullable="false" />
         </EntityType>
         <EntityType Name="Tag">
           <Key>
@@ -46,6 +76,54 @@
           <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="Name" Type="nvarchar" MaxLength="100" Nullable="false" />
         </EntityType>
+        <Association Name="FK_ImagesInSources_ToImage">
+          <End Role="Image" Type="Self.Image" Multiplicity="1" />
+          <End Role="ImagesInSources" Type="Self.ImagesInSources" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Image">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="ImagesInSources">
+              <PropertyRef Name="ImageId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_ImagesInSources_ToSource">
+          <End Role="Source" Type="Self.Source" Multiplicity="1" />
+          <End Role="ImagesInSources" Type="Self.ImagesInSources" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Source">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="ImagesInSources">
+              <PropertyRef Name="SourceId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_SourcesInCollection_ToCollection">
+          <End Role="Collection" Type="Self.Collection" Multiplicity="1" />
+          <End Role="SourcesInCollection" Type="Self.SourcesInCollection" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Collection">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="SourcesInCollection">
+              <PropertyRef Name="CollectionId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_SourcesInCollection_ToSource">
+          <End Role="Source" Type="Self.Source" Multiplicity="1" />
+          <End Role="SourcesInCollection" Type="Self.SourcesInCollection" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Source">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="SourcesInCollection">
+              <PropertyRef Name="SourceId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FK_Tag_ToTagType">
           <End Role="TagType" Type="Self.TagType" Multiplicity="1" />
           <End Role="Tag" Type="Self.Tag" Multiplicity="*" />
@@ -95,11 +173,31 @@
           </ReferentialConstraint>
         </Association>
         <EntityContainer Name="ImagesDBModelStoreContainer">
+          <EntitySet Name="Collection" EntityType="Self.Collection" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Image" EntityType="Self.Image" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="ImagesInSources" EntityType="Self.ImagesInSources" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Source" EntityType="Self.Source" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="SourcesInCollection" EntityType="Self.SourcesInCollection" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Tag" EntityType="Self.Tag" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="TagSet" EntityType="Self.TagSet" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="TagsInTagSet" EntityType="Self.TagsInTagSet" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="TagType" EntityType="Self.TagType" Schema="dbo" store:Type="Tables" />
+          <AssociationSet Name="FK_ImagesInSources_ToImage" Association="Self.FK_ImagesInSources_ToImage">
+            <End Role="Image" EntitySet="Image" />
+            <End Role="ImagesInSources" EntitySet="ImagesInSources" />
+          </AssociationSet>
+          <AssociationSet Name="FK_ImagesInSources_ToSource" Association="Self.FK_ImagesInSources_ToSource">
+            <End Role="Source" EntitySet="Source" />
+            <End Role="ImagesInSources" EntitySet="ImagesInSources" />
+          </AssociationSet>
+          <AssociationSet Name="FK_SourcesInCollection_ToCollection" Association="Self.FK_SourcesInCollection_ToCollection">
+            <End Role="Collection" EntitySet="Collection" />
+            <End Role="SourcesInCollection" EntitySet="SourcesInCollection" />
+          </AssociationSet>
+          <AssociationSet Name="FK_SourcesInCollection_ToSource" Association="Self.FK_SourcesInCollection_ToSource">
+            <End Role="Source" EntitySet="Source" />
+            <End Role="SourcesInCollection" EntitySet="SourcesInCollection" />
+          </AssociationSet>
           <AssociationSet Name="FK_Tag_ToTagType" Association="Self.FK_Tag_ToTagType">
             <End Role="TagType" EntitySet="TagType" />
             <End Role="Tag" EntitySet="Tag" />
@@ -130,6 +228,7 @@
           <Property Name="Size" Type="Int64" Nullable="false" />
           <Property Name="Path" Type="String" MaxLength="4000" FixedLength="false" Unicode="true" Nullable="false" />
           <NavigationProperty Name="TagSets" Relationship="Self.FK_TagSet_ToImage" FromRole="Image" ToRole="TagSet" />
+          <NavigationProperty Name="Sources" Relationship="ImagesDBModel.ImagesInSources" FromRole="Image" ToRole="Source" />
         </EntityType>
         <EntityType Name="Tag">
           <Key>
@@ -205,7 +304,42 @@
             <End Role="Tag" EntitySet="Tags" />
             <End Role="TagSet" EntitySet="TagSets" />
           </AssociationSet>
+          <EntitySet Name="Collections" EntityType="ImagesDBModel.Collection" />
+          <EntitySet Name="Sources" EntityType="ImagesDBModel.Source" />
+          <AssociationSet Name="ImagesInSources" Association="ImagesDBModel.ImagesInSources">
+            <End Role="Image" EntitySet="Images" />
+            <End Role="Source" EntitySet="Sources" />
+          </AssociationSet>
+          <AssociationSet Name="SourcesInCollection" Association="ImagesDBModel.SourcesInCollection">
+            <End Role="Collection" EntitySet="Collections" />
+            <End Role="Source" EntitySet="Sources" />
+          </AssociationSet>
         </EntityContainer>
+        <EntityType Name="Collection">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" />
+          <Property Name="Name" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="Sources" Relationship="ImagesDBModel.SourcesInCollection" FromRole="Collection" ToRole="Source" />
+        </EntityType>
+        <EntityType Name="Source">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" />
+          <Property Name="Path" Type="String" Nullable="false" MaxLength="4000" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="Images" Relationship="ImagesDBModel.ImagesInSources" FromRole="Source" ToRole="Image" />
+          <NavigationProperty Name="Collections" Relationship="ImagesDBModel.SourcesInCollection" FromRole="Source" ToRole="Collection" />
+        </EntityType>
+        <Association Name="ImagesInSources">
+          <End Type="ImagesDBModel.Image" Role="Image" Multiplicity="*" />
+          <End Type="ImagesDBModel.Source" Role="Source" Multiplicity="*" />
+        </Association>
+        <Association Name="SourcesInCollection">
+          <End Type="ImagesDBModel.Collection" Role="Collection" Multiplicity="*" />
+          <End Type="ImagesDBModel.Source" Role="Source" Multiplicity="*" />
+        </Association>
       </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -257,6 +391,38 @@
               <ScalarProperty Name="Id" ColumnName="TagSet" />
             </EndProperty>
           </AssociationSetMapping>
+          <EntitySetMapping Name="Collections">
+            <EntityTypeMapping TypeName="ImagesDBModel.Collection">
+              <MappingFragment StoreEntitySet="Collection">
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Sources">
+            <EntityTypeMapping TypeName="ImagesDBModel.Source">
+              <MappingFragment StoreEntitySet="Source">
+                <ScalarProperty Name="Path" ColumnName="Path" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <AssociationSetMapping Name="ImagesInSources" TypeName="ImagesDBModel.ImagesInSources" StoreEntitySet="ImagesInSources">
+            <EndProperty Name="Source">
+              <ScalarProperty Name="Id" ColumnName="SourceId" />
+            </EndProperty>
+            <EndProperty Name="Image">
+              <ScalarProperty Name="Id" ColumnName="ImageId" />
+            </EndProperty>
+          </AssociationSetMapping>
+          <AssociationSetMapping Name="SourcesInCollection" TypeName="ImagesDBModel.SourcesInCollection" StoreEntitySet="SourcesInCollection">
+            <EndProperty Name="Source">
+              <ScalarProperty Name="Id" ColumnName="SourceId" />
+            </EndProperty>
+            <EndProperty Name="Collection">
+              <ScalarProperty Name="Id" ColumnName="CollectionId" />
+            </EndProperty>
+          </AssociationSetMapping>
         </EntityContainerMapping>
       </Mapping>
     </edmx:Mappings>
@@ -271,7 +437,7 @@
     <Options>
       <DesignerInfoPropertySet>
         <DesignerProperty Name="ValidateOnBuild" Value="true" />
-        <DesignerProperty Name="EnablePluralization" Value="true" />
+        <DesignerProperty Name="EnablePluralization" Value="False" />
         <DesignerProperty Name="IncludeForeignKeysInModel" Value="true" />
         <DesignerProperty Name="UseLegacyProvider" Value="false" />
         <DesignerProperty Name="CodeGenerationStrategy" Value="None" />
