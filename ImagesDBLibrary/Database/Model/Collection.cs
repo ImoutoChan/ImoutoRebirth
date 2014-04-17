@@ -12,20 +12,16 @@ namespace ImagesDBLibrary.Database.Model
     using System;
     using System.Collections.Generic;
     
-    public partial class Image
+    public partial class Collection
     {
-        public Image()
+        public Collection()
         {
-            this.TagSets = new HashSet<TagSet>();
             this.Sources = new HashSet<Source>();
         }
     
         public int Id { get; set; }
-        public string Md5 { get; set; }
-        public long Size { get; set; }
-        public string Path { get; set; }
+        public string Name { get; set; }
     
-        public virtual ICollection<TagSet> TagSets { get; set; }
         public virtual ICollection<Source> Sources { get; set; }
     }
 }
