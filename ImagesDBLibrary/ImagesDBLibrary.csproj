@@ -65,6 +65,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Database\Model\Collection.cs">
+      <DependentUpon>ImageDBConnection.tt</DependentUpon>
+    </Compile>
     <Compile Include="Database\Model\Image.cs">
       <DependentUpon>ImageDBConnection.tt</DependentUpon>
     </Compile>
@@ -85,6 +88,9 @@
     </Compile>
     <Compile Include="Database\Model\ModelExtended.cs" />
     <Compile Include="Database\ImagesDB.cs" />
+    <Compile Include="Database\Model\Source.cs">
+      <DependentUpon>ImageDBConnection.tt</DependentUpon>
+    </Compile>
     <Compile Include="Database\Model\Tag.cs">
       <DependentUpon>ImageDBConnection.tt</DependentUpon>
     </Compile>
@@ -145,6 +151,12 @@
       <ProductName>.NET Framework 3.5 SP1</ProductName>
       <Install>false</Install>
     </BootstrapperPackage>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Utils\Utils.csproj">
+      <Project>{515fb14d-8af1-4440-aa60-b57dee834adc}</Project>
+      <Name>Utils</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
