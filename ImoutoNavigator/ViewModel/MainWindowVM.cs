@@ -158,7 +158,7 @@ namespace ImoutoNavigator.ViewModel
         private void GetImageList()
         {
             _imageList = new ObservableCollection<ImageEntryVM>(
-                Directory.GetFiles(@"C:\Users\Владимир\Downloads\Обои\Обои\Замки")
+                Directory.GetFiles(@"T:\art")
                     .Where(ImageEntry.IsImage)
                     .Take(10)
                     .Select(x =>
@@ -171,14 +171,14 @@ namespace ImoutoNavigator.ViewModel
             
             _dbImages = _imageList.Select(x => new Image(x.ImageEntry.FullName));
 
-            ImagesDB.AddTagsToImages(new List<Tag>
-                                     {
-                                         new Tag("DLS", TagTypes.Copyright),
-                                         new Tag("Downloads", TagTypes.Copyright),
-                                         new Tag("temp", TagTypes.Copyright),
-                                         new Tag("DLS", TagTypes.Copyright),
-                                     }, 
-                                     _dbImages);
+            //ImagesDB.AddTagsToImages(new List<Tag>
+            //                         {
+            //                             new Tag("DLS", TagTypes.Copyright),
+            //                             new Tag("Downloads", TagTypes.Copyright),
+            //                             new Tag("temp", TagTypes.Copyright),
+            //                             new Tag("DLS", TagTypes.Copyright),
+            //                         }, 
+            //                         _dbImages);
 
 
             CurrentTags = new ObservableCollection<KeyValuePair<Tag, int>>(ImagesDB.GetTagsTopFromImages(_dbImages));
