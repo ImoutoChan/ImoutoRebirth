@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Data.Entity;
 using System.IO;
 using System.Linq;
 using System.Security.Cryptography;
@@ -43,24 +44,25 @@ namespace ImagesDBLibrary.Database.Model
 
             using (var db = new ImagesDBConnection())
             {
-                Md5 = Util.GetMd5Checksum(fileInfo);
-                Size = fileInfo.Length;
-
                 var dbimg = db.Images.FirstOrDefault(x => x.Path == Path);
                 if (dbimg != null)
                 {
                     //throw new ArgumentException("Image already in base");
                     
                     Id = dbimg.Id;
+                    Md5 = dbimg.Md5;
+                    Size = dbimg.Size;
                 }
                 else
                 {
+                    Md5 = Util.GetMd5Checksum(fileInfo);
+                    Size = fileInfo.Length;
+
                     //this saves in db with tagset
                     db.TagSets.Add(new TagSet(TagSetTypesEnum.UserTypeName, this));
                     db.SaveChanges();
                 }
             }
-
         }
 
         #endregion Constructors
@@ -162,23 +164,30 @@ namespace ImagesDBLibrary.Database.Model
                 }
                 else
                 {
-                    var images = new List<Image>();
-                    images.AddRange(di.GetFiles().Select(x => new Image(x.FullName, false)));
+                    var files = new List<FileInfo>();
+
+                    files.AddRange(di.GetFiles().Where(x => x.FullName.IsImage()));
                     foreach (var dir in di.GetDirectories(isRecursive: true))
                     {
-                        images
-                            .AddRange(di
-                                .GetFiles()
-                                .Where(x=>x.FullName.IsImage())
-                                .Select(x => new Image(x.FullName, false)));
+                        files.AddRange(di.GetFiles().Where(x=>x.FullName.IsImage()));
                     }
 
-                    //images = db.Images;
+                    var images = files.Select(x => new Image(x.FullName, false));
+
+                    images = images.Select(x => db.Images.Find(x.Id));
 
                     db.Sources.Add(this);
                     db.SaveChanges();
-                }
 
+                    var thiss = db.Sources.Include(x=>x.Images).Single(x=>x.Id == Id);
+
+                    foreach (var image in images)
+                    {
+                        thiss.Images.Add(image);
+                    }
+                    
+                    db.SaveChanges();
+                }
             }
         }
     }

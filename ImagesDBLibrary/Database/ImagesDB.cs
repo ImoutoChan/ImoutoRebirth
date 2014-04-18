@@ -266,7 +266,8 @@ namespace ImagesDBLibrary.Database
         {
             using (var db = new ImagesDBConnection())
             {
-                var source = new Source { Path = path };
+                var source = new Source(path);
+                source = db.Sources.Find(source.Id);
                 db.Collections.Find(collection.Id).Sources.Add(source);
                 db.SaveChanges();
                 return source;
