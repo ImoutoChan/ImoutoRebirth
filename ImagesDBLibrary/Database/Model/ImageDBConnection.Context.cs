@@ -12,6 +12,8 @@ namespace ImagesDBLibrary.Database.Model
     using System;
     using System.Data.Entity;
     using System.Data.Entity.Infrastructure;
+    using System.Data.Entity.Core.Objects;
+    using System.Linq;
     
     public partial class ImagesDBConnection : DbContext
     {
@@ -31,5 +33,10 @@ namespace ImagesDBLibrary.Database.Model
         public virtual DbSet<TagType> TagTypes { get; set; }
         public virtual DbSet<Collection> Collections { get; set; }
         public virtual DbSet<Source> Sources { get; set; }
+    
+        public virtual int FilterImagesByTags()
+        {
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction("FilterImagesByTags");
+        }
     }
 }

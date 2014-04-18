@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using System.IO;
 using System.Linq;
 using System.Security.Cryptography;
+using EntityFrameworkExtras;
 using Utils;
 
 namespace ImagesDBLibrary.Database.Model
@@ -148,5 +150,12 @@ namespace ImagesDBLibrary.Database.Model
 
 
         }
+    }
+
+    [StoredProcedure("FilterImagesByTags")]
+    public class FilterImagesByTagsProcedure
+    {
+        [StoredProcedureParameter(SqlDbType.Udt)]
+        public List<Address> Addresses { get; set; }
     }
 }

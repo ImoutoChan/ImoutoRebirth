@@ -29,6 +29,9 @@ namespace Utils
         [DllImport("Shlwapi.dll", SetLastError = true, CharSet = CharSet.Auto)]
         private extern static bool PathFileExists(StringBuilder path);
 
+        /// <summary>
+        /// Speed raised up only on non existing files.
+        /// </summary>
         public static bool SpeedExists(this FileInfo fi)
         {
             StringBuilder builder = new StringBuilder();

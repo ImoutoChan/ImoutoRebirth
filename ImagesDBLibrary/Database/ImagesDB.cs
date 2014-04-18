@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data.Entity;
+using System.Data.Entity.Migrations.Model;
 using System.Linq;
 using System.Security.Cryptography.X509Certificates;
 using ImagesDBLibrary.Database.Model;
@@ -169,6 +170,83 @@ namespace ImagesDBLibrary.Database
 
                 throw;
             }
+        }
+        //--
+        public static IEnumerable<Collection> GetCollections()
+        {
+            using (var db = new ImagesDBConnection())
+            {
+                return db.Collections;
+            }
+        }
+
+        public static IEnumerable<Source> GetSources(Collection collection)
+        {
+            return GetSources(collection.Id);
+        }
+
+        private static IEnumerable<Source> GetSources(int collectionId)
+        {
+            using (var db = new ImagesDBConnection())
+            {
+                return db.Collections.Find(collectionId).Sources;
+            }
+        }
+
+        public static IEnumerable<Image> GetImages(Collection collection)
+        {
+            using (var db = new ImagesDBConnection())
+            {
+                // TODO STORED PROCEDURES ++ GET IMAGES BY COLLECTION ID
+                return db.Collections.Find(collection.Id).Sources.SelectMany(x=>x.Images);
+            }
+        }
+
+        public static IEnumerable<Image> Filter(IEnumerable<Image> images, IEnumerable<Tag> tags)
+        {
+            var result = new List<Image>();
+            using (var db = new ImagesDBConnection())
+            {
+                tags = tags.Select(x => db.Tags.Find(x.Id));
+                images = images.Select(x => db.Images.Find(x.Id));
+                foreach (var image in images)
+                {
+                    var relatedTagSets = image.TagSets.Where(x => x.Type == TagSetTypesEnum.UserTypeName
+                                                            || x.Type == TagSetTypesEnum.ActualTypeName);
+                    bool isCheck = true;
+                    foreach (var tag in tags)
+                    {
+                        bool tagCheck = false;
+                        foreach (var relatedTagSet in relatedTagSets)
+                        {
+                            if (relatedTagSet.Tags.Contains(tag))
+                            {
+                                tagCheck = true;
+                                break;
+                            }
+                        }
+                        if (!tagCheck)
+                        {
+                            isCheck = false;
+                            break;
+                        }
+                    }
+
+                    if (isCheck)
+                    {
+                        result.Add(image);
+                    }
+                }
+
+                var proc = db.FilterImagesByTags();
+                return result;
+            }
+        }
+
+        public static IEnumerable<Image> Filter(Collection collection, IEnumerable<Tag> tags)
+        {
+            var images = GetImages(collection);
+            return Filter(images, tags);
         }
     }
 }
