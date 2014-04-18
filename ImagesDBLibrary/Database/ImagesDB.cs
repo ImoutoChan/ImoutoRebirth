@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data.Entity;
+using System.Data.Entity.Core.Objects;
+using System.Data.Entity.Infrastructure;
 using System.Data.Entity.Migrations.Model;
 using System.Linq;
 using System.Security.Cryptography.X509Certificates;
@@ -238,7 +240,6 @@ namespace ImagesDBLibrary.Database
                     }
                 }
 
-                var proc = db.FilterImagesByTags();
                 return result;
             }
         }
@@ -247,6 +248,29 @@ namespace ImagesDBLibrary.Database
         {
             var images = GetImages(collection);
             return Filter(images, tags);
+        }
+
+        public static Collection AddCollection(string name)
+        {
+            using (var db = new ImagesDBConnection())
+            {
+                var collection = new Collection {Name = name};
+                db.Collections.Add(collection);
+                db.SaveChanges();
+
+                return collection;
+            }
+        }
+
+        public static Source AddSource(Collection collection, string path)
+        {
+            using (var db = new ImagesDBConnection())
+            {
+                var source = new Source { Path = path };
+                db.Collections.Find(collection.Id).Sources.Add(source);
+                db.SaveChanges();
+                return source;
+            }
         }
     }
 }

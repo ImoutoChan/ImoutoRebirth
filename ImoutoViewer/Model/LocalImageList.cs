@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using Utils;
 
 namespace ImoutoViewer.Model
 {
@@ -78,13 +79,6 @@ namespace ImoutoViewer.Model
             return result;
         }
 
-        private static bool IsImage(string file)
-        {
-            var ci = new CultureInfo("en-US");
-            const string formats = @".jpg|.png|.jpeg|.bmp|.gif|.tiff";
-
-            return formats.Split('|').Any(item => file.EndsWith(item, true, ci));
-        }
 
         private static bool IsFlagged(DirectorySearchFlags flags, DirectorySearchFlags value)
         {
@@ -169,7 +163,7 @@ namespace ImoutoViewer.Model
             //Processing files
             var images =
                 from image in paths
-                where IsImage(image)
+                where image.IsImage()
                 select image;
             var imagesList = images as IList<string> ?? images.ToList();
 
@@ -355,7 +349,7 @@ namespace ImoutoViewer.Model
         {
 
             var images =
-                imagePaths.Where(IsImage)
+                imagePaths.Where(x=>x.IsImage())
                     .OrderByWithDirection(GetFilesOrderProperty, IsFilesSortMethodDescending)
                     .Select(x => new LocalImage(x));
 
@@ -370,7 +364,7 @@ namespace ImoutoViewer.Model
             }
 
             var files = Directory.GetFiles(sourceFolder.FullName, "*.*")
-                    .Where(IsImage)
+                    .Where(x=>x.IsImage())
                     .OrderByWithDirection(GetFilesOrderProperty, IsFilesSortMethodDescending)
                     .Select(x => new LocalImage(x));
 
@@ -470,7 +464,7 @@ namespace ImoutoViewer.Model
             {
                 var files =
                     from file in Directory.GetFiles(sourceFolder.FullName, "*.*")
-                    where IsImage(file)
+                    where file.IsImage()
                     select file;
 
                 if (files.Any())

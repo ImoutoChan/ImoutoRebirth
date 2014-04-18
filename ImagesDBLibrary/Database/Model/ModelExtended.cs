@@ -32,10 +32,10 @@ namespace ImagesDBLibrary.Database.Model
     {
         #region Constructors
 
-        public Image(string path) : this()
+        public Image(string path, bool CheckOnExist = true) : this()
         {
             var fileInfo = new FileInfo(path);
-            if (!fileInfo.Exists)
+            if (CheckOnExist && !fileInfo.Exists)
             {
                 throw new ArgumentException("File does not exist.");
             }
@@ -148,14 +148,38 @@ namespace ImagesDBLibrary.Database.Model
                 throw new ArgumentException("Directory does not exist.");
             }
 
+            
 
+            using (var db = new ImagesDBConnection())
+            {
+                Path = path;
+
+                var dbsource = db.Sources.FirstOrDefault(x => x.Path == path);
+                if (dbsource != null)
+                {
+                    //throw new ArgumentException("Tag already in base");
+                    Id = dbsource.Id;
+                }
+                else
+                {
+                    var images = new List<Image>();
+                    images.AddRange(di.GetFiles().Select(x => new Image(x.FullName, false)));
+                    foreach (var dir in di.GetDirectories(isRecursive: true))
+                    {
+                        images
+                            .AddRange(di
+                                .GetFiles()
+                                .Where(x=>x.FullName.IsImage())
+                                .Select(x => new Image(x.FullName, false)));
+                    }
+
+                    //images = db.Images;
+
+                    db.Sources.Add(this);
+                    db.SaveChanges();
+                }
+
+            }
         }
-    }
-
-    [StoredProcedure("FilterImagesByTags")]
-    public class FilterImagesByTagsProcedure
-    {
-        [StoredProcedureParameter(SqlDbType.Udt)]
-        public List<Address> Addresses { get; set; }
     }
 }

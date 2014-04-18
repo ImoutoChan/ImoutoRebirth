@@ -34,9 +34,9 @@ namespace ImagesDBLibrary.Database.Model
         public virtual DbSet<Collection> Collections { get; set; }
         public virtual DbSet<Source> Sources { get; set; }
     
-        public virtual int FilterImagesByTags()
+        public virtual ObjectResult<Nullable<int>> GetImagesByTags()
         {
-            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction("FilterImagesByTags");
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<Nullable<int>>("GetImagesByTags");
         }
     }
 }
