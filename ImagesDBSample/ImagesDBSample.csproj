@@ -66,6 +66,11 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Model\CollectionM.cs" />
+    <Compile Include="Model\ImageM.cs" />
+    <Compile Include="Model\SourceM.cs" />
+    <Compile Include="Model\TagM.cs" />
+    <Compile Include="Model\TagTypeM.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

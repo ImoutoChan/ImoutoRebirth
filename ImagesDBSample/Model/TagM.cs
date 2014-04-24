@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using ImagesDBLibrary.Database;
@@ -8,7 +9,7 @@ namespace DBConnection.Model
     public class TagM
     {
         #region Constructors
-
+        
         private TagM(Tag tag)
         {
             DbId = tag.Id;
@@ -28,6 +29,34 @@ namespace DBConnection.Model
         
         #endregion Properties
 
+        #region Methods
+
+        public void Rename(string newName)
+        {
+            if (!Tags.Contains(this))
+            {
+                throw new ArgumentException("Source does not exist.");
+            }
+
+            ImagesDB.RenameTag(DbId, newName);
+
+            Name = newName;
+        }
+
+        public void ChangeType(TagTypeM type)
+        {
+            if (!Tags.Contains(this))
+            {
+                throw new ArgumentException("Source does not exist.");
+            }
+
+            ImagesDB.ChangeType(DbId, type.DbId);
+
+            Type = type;
+        }
+
+        #endregion Methods
+
         #region Static members
 
         static TagM()
@@ -37,8 +66,8 @@ namespace DBConnection.Model
 
         public static IEnumerable<TagM> Tags { get; private set; }
 
+        //add
+
         #endregion Static members
     }
-
-    //todo rename, change type;
 }

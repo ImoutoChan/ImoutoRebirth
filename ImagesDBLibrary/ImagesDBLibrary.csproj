@@ -68,6 +68,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Database\IImageDB.cs" />
     <Compile Include="Database\Model\Collection.cs">
       <DependentUpon>ImageDBConnection.tt</DependentUpon>
     </Compile>

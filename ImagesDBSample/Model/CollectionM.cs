@@ -69,6 +69,30 @@ namespace DBConnection.Model
             Sources.Remove(source);
         }
 
+        public void Remove()
+        {
+            if (!Collections.Contains(this))
+            {
+                throw new ArgumentException("Collection already deleted.");
+            }
+
+            ImagesDB.RemoveCollection(DbId);
+
+            Collections.Remove(this);
+        }
+
+        public void Rename(string newName)
+        {
+            if (!Collections.Contains(this))
+            {
+                throw new ArgumentException("Collection does not exist.");
+            }
+
+            ImagesDB.RenameCollection(DbId, newName);
+
+            Name = newName;
+        }
+
         #endregion Methods
 
         #region Static members
@@ -90,30 +114,6 @@ namespace DBConnection.Model
             var newCollection = ImagesDB.AddCollection(name);
 
             Collections.Add(new CollectionM(newCollection, new List<Source>()));
-        }
-
-        public static void Remove(CollectionM collection)
-        {
-            if (!Collections.Contains(collection))
-            {
-                throw new ArgumentException("Collection already deleted.");
-            }
-
-            ImagesDB.RemoveCollection(collection.DbId);
-
-            Collections.Remove(collection);
-        }
-
-        public static void Rename(CollectionM collection, string newName)
-        {
-            if (!Collections.Contains(collection))
-            {
-                throw new ArgumentException("Collection does not exist.");
-            }
-
-            ImagesDB.RenameCollection(collection.DbId, newName);
-
-            collection.Name = newName;
         }
 
         #endregion Static members

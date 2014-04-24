@@ -332,5 +332,20 @@ namespace ImagesDBLibrary.Database
         {
             throw new NotImplementedException();
         }
+
+        public static void RenameTag(int tagId, string newName)
+        {
+            throw new NotImplementedException();
+        }
+
+        public static void ChangeType(int imageId, int newTagTypeId)
+        {
+            throw new NotImplementedException();
+        }
+
+        public static TagType AddTagType(string name)
+        {
+            throw new NotImplementedException();
+        }
     }
 }
