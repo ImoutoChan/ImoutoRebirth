@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Windows.Forms;
 using ImagesDBLibrary.Database.Model;
 using ImagesDBLibrary.Database;
 
@@ -11,9 +12,28 @@ namespace DBConnection
     {
         static void Main(string[] args)
         {
-            var st2 = DateTime.Now;
-            ImagesDB.AddSource(ImagesDB.AddCollection("Lol"), @"C:\Users\Владимир\Downloads\Обои\Обои\Замки");
-            Console.WriteLine((DateTime.Now - st2).TotalMilliseconds); 
+            try
+            {
+                var st2 = DateTime.Now;
+            
+                var collection = ImagesDB.AddCollection("Lol");
+
+                ImagesDB.AddSource(collection, @"C:\Users\Владимир\Downloads\Обои\Обои\Замки");
+                Console.WriteLine((DateTime.Now - st2).TotalMilliseconds);
+
+            
+                st2 = DateTime.Now;
+                ImagesDB.AddSource(collection, @"C:\Users\Владимир\Downloads\Обои\Обои\magnificent_palaces");
+                Console.WriteLine((DateTime.Now - st2).TotalMilliseconds);
+
+                st2 = DateTime.Now;
+                ImagesDB.AddSource(collection, @"C:\Users\Владимир\Downloads\Обои\Обои\");
+                Console.WriteLine((DateTime.Now - st2).TotalMilliseconds); 
+            }
+            catch (Exception)
+            {
+                throw;
+            }
 
             //using (var db = new ImagesDBConnection())
             //{

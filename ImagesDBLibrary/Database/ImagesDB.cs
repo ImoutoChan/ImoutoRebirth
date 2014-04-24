@@ -267,11 +267,70 @@ namespace ImagesDBLibrary.Database
             using (var db = new ImagesDBConnection())
             {
                 var source = new Source(path);
+                
                 source = db.Sources.Find(source.Id);
-                db.Collections.Find(collection.Id).Sources.Add(source);
+                collection = db.Collections.Find(collection.Id);
+
+                if (collection.Sources.Contains(source))
+                {
+                    throw new Exception("Collection already contain this source.");
+                }
+
+                collection.Sources.Add(source);
+
                 db.SaveChanges();
                 return source;
             }
+        }
+
+        public static IEnumerable<TagType> GetTagTypes()
+        {
+            throw new NotImplementedException();
+        }
+
+        public static IEnumerable<Tag> GetTags()
+        {
+            throw new NotImplementedException();
+        }
+
+        public static IEnumerable<Source> GetSources()
+        {
+            throw new NotImplementedException();
+        }
+
+        public static IEnumerable<Image> GetImages(int sourceId)
+        {
+            throw new NotImplementedException();
+        }
+
+        public static void RemoveCollection(int collectionId)
+        {
+            throw new NotImplementedException();
+        }
+
+        public static void RenameCollection(int collectionId, string newName)
+        {
+            throw new NotImplementedException();
+        }
+
+        public static void AddSourceToCollection(int collectionId, int sourceId)
+        {
+            throw new NotImplementedException();
+        }
+
+        public static void RemoveSourceFromCollection(int collectionId, int sourceId)
+        {
+            throw new NotImplementedException();
+        }
+
+        public static Source AddSource(string path)
+        {
+            throw new NotImplementedException();
+        }
+
+        public static void UpdateSource(bool checkHashes = false)
+        {
+            throw new NotImplementedException();
         }
     }
 }

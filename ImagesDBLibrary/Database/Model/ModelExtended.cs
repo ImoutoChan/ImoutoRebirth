@@ -159,7 +159,7 @@ namespace ImagesDBLibrary.Database.Model
                 var dbsource = db.Sources.FirstOrDefault(x => x.Path == path);
                 if (dbsource != null)
                 {
-                    //throw new ArgumentException("Tag already in base");
+                    //throw new ArgumentException("Source already exist");
                     Id = dbsource.Id;
                 }
                 else
