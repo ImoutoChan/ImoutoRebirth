@@ -17,7 +17,7 @@ namespace DBConnection
             {
                 var st2 = DateTime.Now;
             
-                var collection = ImagesDB.AddCollection("Lol");
+                var collection = ImagesDB.CreateCollection("Lol");
 
                 ImagesDB.AddSource(collection, @"C:\Users\Владимир\Downloads\Обои\Обои\Замки");
                 Console.WriteLine((DateTime.Now - st2).TotalMilliseconds);

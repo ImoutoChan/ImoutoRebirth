@@ -8,7 +8,7 @@ namespace ImagesDBLibrary.Database.Access
     public static partial class ImagesDB
     {
         #region OLD
-
+        /*
         public static IEnumerable<Image> GetAllImages()
         {
             using (var db = new ImagesDBConnection())
@@ -164,7 +164,7 @@ namespace ImagesDBLibrary.Database.Access
             var images = GetImages(collection);
             return Filter(images, tags);
         }
-
+        */
         #endregion OLD
 
         #region Collection logic
@@ -177,7 +177,7 @@ namespace ImagesDBLibrary.Database.Access
             }
         }
 
-        public static Collection AddCollection(string name)
+        public static Collection CreateCollection(string name)
         {
             using (var db = new ImagesDBConnection())
             {
@@ -191,22 +191,44 @@ namespace ImagesDBLibrary.Database.Access
 
         public static void RemoveCollection(int collectionId)
         {
-            throw new NotImplementedException();
+            using (var db = new ImagesDBConnection())
+            {
+                db.Collections.Remove(db.Collections.Find(collectionId));
+                db.SaveChanges();
+            }
         }
 
         public static void RenameCollection(int collectionId, string newName)
         {
-            throw new NotImplementedException();
+            using (var db = new ImagesDBConnection())
+            {
+                db.Collections.Find(collectionId).Name = newName;
+                db.SaveChanges();
+            }
         }
 
         public static void AddSourceToCollection(int collectionId, int sourceId)
         {
-            throw new NotImplementedException();
+            using (var db = new ImagesDBConnection())
+            {
+                var source = db.Sources.Find(sourceId);
+                var collection = db.Collections.Find(collectionId);
+
+                collection.Sources.Add(source);
+                db.SaveChanges();
+            }
         }
 
         public static void RemoveSourceFromCollection(int collectionId, int sourceId)
         {
-            throw new NotImplementedException();
+            using (var db = new ImagesDBConnection())
+            {
+                var source = db.Sources.Find(sourceId);
+                var collection = db.Collections.Find(collectionId);
+
+                collection.Sources.Remove(source);
+                db.SaveChanges();
+            }
         }
 
         #endregion Collection logic
@@ -226,46 +248,38 @@ namespace ImagesDBLibrary.Database.Access
             }
         }
 
-        public static Source CreateSource(string path)
-        {
-            throw new NotImplementedException();
-        }
-
-        public static void UpdateSource(bool checkHashes = false)
-        {
-            throw new NotImplementedException();
-        }
-
         public static IEnumerable<Source> GetSources()
         {
-            throw new NotImplementedException();
+            using (var db = new ImagesDBConnection())
+            {
+                return db.Sources;
+            }
         }
 
-        public static Source AddSource(Collection collection, string path)
+        public static Source CreateSource(string path)
         {
             using (var db = new ImagesDBConnection())
             {
                 var source = new Source(path);
-
-                source = db.Sources.Find(source.Id);
-                collection = db.Collections.Find(collection.Id);
-
-                if (collection.Sources.Contains(source))
-                {
-                    throw new Exception("Collection already contain this source.");
-                }
-
-                collection.Sources.Add(source);
-
+                db.Sources.Add(source);
                 db.SaveChanges();
+
                 return source;
             }
+        }
+
+        //todo
+        public static void UpdateSource(bool checkHashes = false)
+        {
+            throw new NotImplementedException();
         }
 
         #endregion Source logic
 
         #region Image logic
 
+        #region OLD
+        /*
         public static void AddTagsToImages(IEnumerable<Tag> tags, IEnumerable<Image> images)
         {
             using (var db = new ImagesDBConnection())
@@ -319,15 +333,31 @@ namespace ImagesDBLibrary.Database.Access
                 db.SaveChanges();
             }
         }
+        */
+        #endregion OLD
 
         public static void AddTagToImage(int imageId, int tagId)
         {
-            throw new NotImplementedException();
+            using (var db = new ImagesDBConnection())
+            {
+                var image = db.Images.Find(imageId);
+                var tag = db.Tags.Find(tagId);
+
+                image.UserTagSets.First().Tags.Add(tag);
+                db.SaveChanges();
+            }
         }
 
         public static void RemoveTagFromImage(int imageId, int tagId)
         {
-            throw new NotImplementedException();
+            using (var db = new ImagesDBConnection())
+            {
+                var image = db.Images.Find(imageId);
+                var tag = db.Tags.Find(tagId);
+
+                image.UserTagSets.First().Tags.Remove(tag);
+                db.SaveChanges();
+            }
         }
 
         public static IEnumerable<Image> GetImages(int sourceId)

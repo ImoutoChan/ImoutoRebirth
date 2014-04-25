@@ -93,6 +93,10 @@ namespace DBConnection.Model
             {
                 throw new ArgumentException("Collection does not exist.");
             }
+            if (Collections.Any(x => x.Name == newName))
+            {
+                throw new ArgumentException("Collection with the same name already exists.");
+            }
 
             ImagesDB.RenameCollection(DbId, newName);
 
@@ -117,7 +121,7 @@ namespace DBConnection.Model
                 throw new ArgumentException("Collection with the same name already exists.");
             }
 
-            var newCollection = ImagesDB.AddCollection(name);
+            var newCollection = ImagesDB.CreateCollection(name);
 
             var collection = new CollectionM(newCollection, new List<Source>());
 
