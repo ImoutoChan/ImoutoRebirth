@@ -1,19 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Data.Entity;
-using System.Data.Entity.Core.Objects;
-using System.Data.Entity.Infrastructure;
-using System.Data.Entity.Migrations.Model;
 using System.Linq;
-using System.Security.Cryptography.X509Certificates;
 using ImagesDBLibrary.Database.Model;
-using Image = ImagesDBLibrary.Database.Model.Image;
-using Tag = ImagesDBLibrary.Database.Model.Tag;
 
-namespace ImagesDBLibrary.Database
+namespace ImagesDBLibrary.Database.Access
 {
-    public static class ImagesDB
+    public static partial class ImagesDB
     {
+        #region OLD
+
         public static IEnumerable<Image> GetAllImages()
         {
             using (var db = new ImagesDBConnection())
@@ -31,7 +26,11 @@ namespace ImagesDBLibrary.Database
 
                 foreach (var tag in tags)
                 {
-                    var relatedTagSets = tag.TagSets.Where(x => x.Type == TagSetTypesEnum.UserTypeName || x.Type == TagSetTypesEnum.ActualTypeName);
+                    var relatedTagSets =
+                        tag.TagSets.Where(
+                                          x =>
+                                          x.Type == TagSetTypesEnum.UserTypeName ||
+                                          x.Type == TagSetTypesEnum.ActualTypeName);
                     foreach (var relatedTagSet in relatedTagSets)
                     {
                         if (!result.Contains(relatedTagSet.Image))
@@ -79,14 +78,193 @@ namespace ImagesDBLibrary.Database
             }
         }
 
-        public static IEnumerable<Tag> GetTagsFromImage(Image image)
+        public static IEnumerable<Tag> GetTagsStartFrom(string newSearchString, int i)
         {
-            return image
-                .UserTagSets
-                .Concat(image.ActualTagSets)
-                .Select(x => x.Tags)
-                .Aggregate((res, x) => res.Union(x).ToList());
+            try
+            {
+
+
+                using (var db = new ImagesDBConnection())
+                {
+                    int length = newSearchString.Count();
+                    var okTags =
+                        db.Tags.Where(x => x.Name.Substring(0, length) == newSearchString)
+                          .Take(i)
+                          .ToList();
+
+                    if (okTags.Count() < i)
+                    {
+                        int moar = i - okTags.Count();
+                        okTags.AddRange(
+                                        db.Tags.Where(x => x.Name.Contains(newSearchString)).Take(moar)
+                            );
+                    }
+
+                    return okTags.Distinct();
+                }
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
         }
+
+        public static IEnumerable<Image> GetImages(Collection collection)
+        {
+            using (var db = new ImagesDBConnection())
+            {
+                // TODO STORED PROCEDURES ++ GET IMAGES BY COLLECTION ID
+                return db.Collections.Find(collection.Id).Sources.SelectMany(x => x.Images);
+            }
+        }
+
+        public static IEnumerable<Image> Filter(IEnumerable<Image> images, IEnumerable<Tag> tags)
+        {
+            var result = new List<Image>();
+            using (var db = new ImagesDBConnection())
+            {
+                tags = tags.Select(x => db.Tags.Find(x.Id));
+                images = images.Select(x => db.Images.Find(x.Id));
+                foreach (var image in images)
+                {
+                    var relatedTagSets = image.TagSets.Where(x => x.Type == TagSetTypesEnum.UserTypeName
+                                                                  || x.Type == TagSetTypesEnum.ActualTypeName);
+                    bool isCheck = true;
+                    foreach (var tag in tags)
+                    {
+                        bool tagCheck = false;
+                        foreach (var relatedTagSet in relatedTagSets)
+                        {
+                            if (relatedTagSet.Tags.Contains(tag))
+                            {
+                                tagCheck = true;
+                                break;
+                            }
+                        }
+                        if (!tagCheck)
+                        {
+                            isCheck = false;
+                            break;
+                        }
+                    }
+
+                    if (isCheck)
+                    {
+                        result.Add(image);
+                    }
+                }
+
+                return result;
+            }
+        }
+
+        public static IEnumerable<Image> Filter(Collection collection, IEnumerable<Tag> tags)
+        {
+            var images = GetImages(collection);
+            return Filter(images, tags);
+        }
+
+        #endregion OLD
+
+        #region Collection logic
+
+        public static IEnumerable<Collection> GetCollections()
+        {
+            using (var db = new ImagesDBConnection())
+            {
+                return db.Collections;
+            }
+        }
+
+        public static Collection AddCollection(string name)
+        {
+            using (var db = new ImagesDBConnection())
+            {
+                var collection = new Collection {Name = name};
+                db.Collections.Add(collection);
+                db.SaveChanges();
+
+                return collection;
+            }
+        }
+
+        public static void RemoveCollection(int collectionId)
+        {
+            throw new NotImplementedException();
+        }
+
+        public static void RenameCollection(int collectionId, string newName)
+        {
+            throw new NotImplementedException();
+        }
+
+        public static void AddSourceToCollection(int collectionId, int sourceId)
+        {
+            throw new NotImplementedException();
+        }
+
+        public static void RemoveSourceFromCollection(int collectionId, int sourceId)
+        {
+            throw new NotImplementedException();
+        }
+
+        #endregion Collection logic
+
+        #region Source logic
+
+        public static IEnumerable<Source> GetSources(Collection collection)
+        {
+            return GetSources(collection.Id);
+        }
+
+        private static IEnumerable<Source> GetSources(int collectionId)
+        {
+            using (var db = new ImagesDBConnection())
+            {
+                return db.Collections.Find(collectionId).Sources;
+            }
+        }
+
+        public static Source CreateSource(string path)
+        {
+            throw new NotImplementedException();
+        }
+
+        public static void UpdateSource(bool checkHashes = false)
+        {
+            throw new NotImplementedException();
+        }
+
+        public static IEnumerable<Source> GetSources()
+        {
+            throw new NotImplementedException();
+        }
+
+        public static Source AddSource(Collection collection, string path)
+        {
+            using (var db = new ImagesDBConnection())
+            {
+                var source = new Source(path);
+
+                source = db.Sources.Find(source.Id);
+                collection = db.Collections.Find(collection.Id);
+
+                if (collection.Sources.Contains(source))
+                {
+                    throw new Exception("Collection already contain this source.");
+                }
+
+                collection.Sources.Add(source);
+
+                db.SaveChanges();
+                return source;
+            }
+        }
+
+        #endregion Source logic
+
+        #region Image logic
 
         public static void AddTagsToImages(IEnumerable<Tag> tags, IEnumerable<Image> images)
         {
@@ -142,158 +320,12 @@ namespace ImagesDBLibrary.Database
             }
         }
 
-        public static IEnumerable<Tag> GetTagsStartFrom(string newSearchString, int i)
-        {
-            try
-            {
-
-
-                using (var db = new ImagesDBConnection())
-                {
-                    int length = newSearchString.Count();
-                    var okTags =
-                        db.Tags.Where(x => x.Name.Substring(0, length) == newSearchString)
-                            .Take(i)
-                            .ToList();
-
-                    if (okTags.Count() < i)
-                    {
-                        int moar = i - okTags.Count();
-                        okTags.AddRange(
-                            db.Tags.Where(x => x.Name.Contains(newSearchString)).Take(moar)
-                            );
-                    }
-
-                    return okTags.Distinct();
-                }
-            }
-            catch (Exception)
-            {
-
-                throw;
-            }
-        }
-        //--
-        public static IEnumerable<Collection> GetCollections()
-        {
-            using (var db = new ImagesDBConnection())
-            {
-                return db.Collections;
-            }
-        }
-
-        public static IEnumerable<Source> GetSources(Collection collection)
-        {
-            return GetSources(collection.Id);
-        }
-
-        private static IEnumerable<Source> GetSources(int collectionId)
-        {
-            using (var db = new ImagesDBConnection())
-            {
-                return db.Collections.Find(collectionId).Sources;
-            }
-        }
-
-        public static IEnumerable<Image> GetImages(Collection collection)
-        {
-            using (var db = new ImagesDBConnection())
-            {
-                // TODO STORED PROCEDURES ++ GET IMAGES BY COLLECTION ID
-                return db.Collections.Find(collection.Id).Sources.SelectMany(x=>x.Images);
-            }
-        }
-
-        public static IEnumerable<Image> Filter(IEnumerable<Image> images, IEnumerable<Tag> tags)
-        {
-            var result = new List<Image>();
-            using (var db = new ImagesDBConnection())
-            {
-                tags = tags.Select(x => db.Tags.Find(x.Id));
-                images = images.Select(x => db.Images.Find(x.Id));
-                foreach (var image in images)
-                {
-                    var relatedTagSets = image.TagSets.Where(x => x.Type == TagSetTypesEnum.UserTypeName
-                                                            || x.Type == TagSetTypesEnum.ActualTypeName);
-                    bool isCheck = true;
-                    foreach (var tag in tags)
-                    {
-                        bool tagCheck = false;
-                        foreach (var relatedTagSet in relatedTagSets)
-                        {
-                            if (relatedTagSet.Tags.Contains(tag))
-                            {
-                                tagCheck = true;
-                                break;
-                            }
-                        }
-                        if (!tagCheck)
-                        {
-                            isCheck = false;
-                            break;
-                        }
-                    }
-
-                    if (isCheck)
-                    {
-                        result.Add(image);
-                    }
-                }
-
-                return result;
-            }
-        }
-
-        public static IEnumerable<Image> Filter(Collection collection, IEnumerable<Tag> tags)
-        {
-            var images = GetImages(collection);
-            return Filter(images, tags);
-        }
-
-        public static Collection AddCollection(string name)
-        {
-            using (var db = new ImagesDBConnection())
-            {
-                var collection = new Collection {Name = name};
-                db.Collections.Add(collection);
-                db.SaveChanges();
-
-                return collection;
-            }
-        }
-
-        public static Source AddSource(Collection collection, string path)
-        {
-            using (var db = new ImagesDBConnection())
-            {
-                var source = new Source(path);
-                
-                source = db.Sources.Find(source.Id);
-                collection = db.Collections.Find(collection.Id);
-
-                if (collection.Sources.Contains(source))
-                {
-                    throw new Exception("Collection already contain this source.");
-                }
-
-                collection.Sources.Add(source);
-
-                db.SaveChanges();
-                return source;
-            }
-        }
-
-        public static IEnumerable<TagType> GetTagTypes()
+        public static void AddTagToImage(int imageId, int tagId)
         {
             throw new NotImplementedException();
         }
 
-        public static IEnumerable<Tag> GetTags()
-        {
-            throw new NotImplementedException();
-        }
-
-        public static IEnumerable<Source> GetSources()
+        public static void RemoveTagFromImage(int imageId, int tagId)
         {
             throw new NotImplementedException();
         }
@@ -303,32 +335,25 @@ namespace ImagesDBLibrary.Database
             throw new NotImplementedException();
         }
 
-        public static void RemoveCollection(int collectionId)
+        public static IEnumerable<Tag> GetTagsFromImage(Image image)
+        {
+            return image
+                .UserTagSets
+                .Concat(image.ActualTagSets)
+                .Select(x => x.Tags)
+                .Aggregate((res, x) => res.Union(x).ToList());
+        }
+
+        #endregion Image logic
+
+        #region Tag logic
+
+        public static IEnumerable<Tag> GetTags()
         {
             throw new NotImplementedException();
         }
 
-        public static void RenameCollection(int collectionId, string newName)
-        {
-            throw new NotImplementedException();
-        }
-
-        public static void AddSourceToCollection(int collectionId, int sourceId)
-        {
-            throw new NotImplementedException();
-        }
-
-        public static void RemoveSourceFromCollection(int collectionId, int sourceId)
-        {
-            throw new NotImplementedException();
-        }
-
-        public static Source AddSource(string path)
-        {
-            throw new NotImplementedException();
-        }
-
-        public static void UpdateSource(bool checkHashes = false)
+        public static Tag CreateTag(string name, int tagTypeId)
         {
             throw new NotImplementedException();
         }
@@ -343,9 +368,30 @@ namespace ImagesDBLibrary.Database
             throw new NotImplementedException();
         }
 
-        public static TagType AddTagType(string name)
+        #endregion Tag logic
+
+        #region TagType logic
+
+        public static IEnumerable<TagType> GetTagTypes()
         {
             throw new NotImplementedException();
         }
+
+        public static TagType CreateTagType(string name)
+        {
+            throw new NotImplementedException();
+        }
+
+        public static void RemoveTagType(int tagTypeId)
+        {
+            throw new NotImplementedException();
+        }
+
+        public static void RenameTagType(int tagTypeId, string newName)
+        {
+            throw new NotImplementedException();
+        }
+
+        #endregion TagType logic
     }
 }

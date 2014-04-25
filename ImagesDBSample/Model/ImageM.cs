@@ -1,9 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
-using System.Text;
-using System.Windows.Forms;
+using ImagesDBLibrary.Database;
+using ImagesDBLibrary.Database.Access;
 using ImagesDBLibrary.Database.Model;
 
 namespace DBConnection.Model
@@ -19,7 +18,7 @@ namespace DBConnection.Model
             Size = dbimage.Size;
             Path = dbimage.Path;
 
-            Tags = tags.Select(x => TagM.Tags.FirstOrDefault(y => y.DbId == x.Id));
+            Tags = tags.Select(x => TagM.Tags.FirstOrDefault(y => y.DbId == x.Id)).ToList();
         }
 
         #endregion Constructors
@@ -28,7 +27,7 @@ namespace DBConnection.Model
 
         public int DbId { get; private set; }
 
-        public IEnumerable<TagM> Tags { get; private set; }
+        public List<TagM> Tags { get; private set; }
 
         public string Md5 { get; private set; }
 
@@ -37,7 +36,33 @@ namespace DBConnection.Model
         public string Path { get; private set; }
 
         #endregion Properties
-    }
 
-    //todo add/remove tags
+        #region Methods
+
+        public void AddTag(TagM tag)
+        {
+            if (Tags.Contains(tag))
+            {
+                throw new ArgumentException("The tag is already contained in this image.");
+            }
+
+            ImagesDB.AddTagToImage(DbId, tag.DbId);
+
+            Tags.Add(tag);
+        }
+
+        public void RemoveTag(TagM tag)
+        {
+            if (!Tags.Contains(tag))
+            {
+                throw new ArgumentException("Tag already removed.");
+            }
+
+            ImagesDB.RemoveTagFromImage(DbId, tag.DbId);
+
+            Tags.Remove(tag);
+        }
+
+        #endregion Methods
+    }
 }

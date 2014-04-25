@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using ImagesDBLibrary.Database;
+using ImagesDBLibrary.Database.Access;
 using ImagesDBLibrary.Database.Model;
 
 namespace DBConnection.Model
@@ -61,12 +62,25 @@ namespace DBConnection.Model
 
         static TagM()
         {
-            Tags = ImagesDB.GetTags().Select(x => new TagM(x));
+            Tags = ImagesDB.GetTags().Select(x => new TagM(x)).ToList();
         }
 
-        public static IEnumerable<TagM> Tags { get; private set; }
+        public static List<TagM> Tags { get; private set; }
 
-        //add
+        public static TagM Create(string name, TagTypeM tagType)
+        {
+            if (Tags.Any(x => x.Name == name && x.Type == tagType))
+            {
+                throw new ArgumentException("Tag with the same name and type already exists.");
+            }
+
+            var newTag = ImagesDB.CreateTag(name, tagType.DbId);
+
+            var tag = new TagM(newTag);
+            Tags.Add(tag);
+
+            return tag;
+        }
 
         #endregion Static members
     }

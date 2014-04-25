@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using ImagesDBLibrary.Database;
+using ImagesDBLibrary.Database.Access;
 using ImagesDBLibrary.Database.Model;
 
 namespace DBConnection.Model
@@ -33,8 +34,18 @@ namespace DBConnection.Model
 
         #region Methods
 
-        public void Prepare()
+        public void Activate()
         {
+            Parallel.ForEach
+            (
+                Collections.Where(x => x != this),
+                x => Parallel.ForEach
+                         (
+                          x.Sources,
+                          y => y.UnloadImages()
+                         )
+            );
+
             Parallel.ForEach(Sources, x => x.LoadImages());
         }
 
@@ -45,19 +56,14 @@ namespace DBConnection.Model
                 throw new ArgumentException("The source is already contained in this collection.");
             }
 
-            var source = SourceM.Sources.FirstOrDefault(x => x.Path == path);
-            if (source == null)
-            {
-                SourceM.Add(path);
-                source = SourceM.Sources.First(x => x.Path == path);
-            }
+            var source = SourceM.Sources.FirstOrDefault(x => x.Path == path) ?? SourceM.Create(path);
 
             ImagesDB.AddSourceToCollection(DbId, source.DbId);
 
             Sources.Add(source);
         }
 
-        public void DeleteSource(SourceM source)
+        public void RemoveSource(SourceM source)
         {
             if (!Sources.Contains(source))
             {
@@ -104,7 +110,7 @@ namespace DBConnection.Model
 
         public static List<CollectionM> Collections { get; private set; }
 
-        public static void Add(string name)
+        public static CollectionM Create(string name)
         {
             if (Collections.Any(x => x.Name == name))
             {
@@ -113,7 +119,11 @@ namespace DBConnection.Model
 
             var newCollection = ImagesDB.AddCollection(name);
 
-            Collections.Add(new CollectionM(newCollection, new List<Source>()));
+            var collection = new CollectionM(newCollection, new List<Source>());
+
+            Collections.Add(collection);
+
+            return collection;
         }
 
         #endregion Static members

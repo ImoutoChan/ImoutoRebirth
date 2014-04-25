@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using ImagesDBLibrary.Database;
+using ImagesDBLibrary.Database.Access;
 using ImagesDBLibrary.Database.Model;
 
 namespace DBConnection.Model
@@ -35,6 +36,11 @@ namespace DBConnection.Model
             Images = ImagesDB.GetImages(DbId).Select(x => new ImageM(x, ImagesDB.GetTagsFromImage(x)));
         }
 
+        public void UnloadImages()
+        {
+            Images = new List<ImageM>();
+        }
+
         public void Update()
         {
             ImagesDB.UpdateSource();
@@ -58,19 +64,21 @@ namespace DBConnection.Model
 
         public static List<SourceM> Sources { get; private set; }
         
-        public static void Add(string path)
+        public static SourceM Create(string path)
         {
             if (Sources.Any(x => x.Path == path))
             {
                 throw new ArgumentException("Source with the same path already exists.");
             }
 
-            var newSource = ImagesDB.AddSource(path);
+            var newSource = ImagesDB.CreateSource(path);
 
-            Sources.Add(new SourceM(newSource));
+            var sourceM = new SourceM(newSource);
+            Sources.Add(sourceM);
+
+            return sourceM;
         }
 
         #endregion Static members
-
     }
 }

@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Data.Entity.Migrations.Model;
 using System.Linq;
 using ImagesDBLibrary.Database;
+using ImagesDBLibrary.Database.Access;
 using ImagesDBLibrary.Database.Model;
 
 namespace DBConnection.Model
@@ -20,6 +20,7 @@ namespace DBConnection.Model
         #endregion Constructors
 
         #region Properties
+
         public string Name { get; private set; }
 
         public int DbId { get; private set; }
@@ -30,12 +31,26 @@ namespace DBConnection.Model
 
         public void Remove()
         {
-            //todo
+            if (!TagTypes.Contains(this))
+            {
+                throw new ArgumentException("TagType does not exist.");
+            }
+
+            ImagesDB.RemoveTagType(DbId);
+
+            TagTypes.Remove(this);
         }
 
-        public void Rename()
+        public void Rename(string newName)
         {
-            //todo
+            if (!TagTypes.Contains(this))
+            {
+                throw new ArgumentException("TagType does not exist.");
+            }
+
+            ImagesDB.RenameTagType(DbId, newName);
+
+            Name = newName;
         }
 
         #endregion Methods
@@ -49,20 +64,21 @@ namespace DBConnection.Model
 
         public static List<TagTypeM> TagTypes { get; private set; }
 
-        public static void Add(string name)
+        public static TagTypeM Create(string name)
         {
             if (TagTypes.Any(x => x.Name == name))
             {
                 throw new ArgumentException("TagType with the same name already exists.");
             }
 
-            var newTagType = ImagesDB.AddTagType(name);
+            var newTagType = ImagesDB.CreateTagType(name);
 
-            TagTypes.Add(new TagTypeM(newTagType));
+            var tagType = new TagTypeM(newTagType);
+            TagTypes.Add(tagType);
+
+            return tagType;
         }
 
         #endregion Static members
     }
-
-    //todo remove/rename
 }
