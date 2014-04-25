@@ -10,7 +10,7 @@ using Utils;
 
 namespace ImagesDBLibrary.Database.Model
 {
-    public static class TagSetTypesEnum
+    internal static class TagSetTypesEnum
     {
         public const string UserTypeName = "User";
         public const string ActualTypeName = "Actual";
@@ -149,8 +149,6 @@ namespace ImagesDBLibrary.Database.Model
             {
                 throw new ArgumentException("Directory does not exist.");
             }
-
-            
 
             using (var db = new ImagesDBConnection())
             {

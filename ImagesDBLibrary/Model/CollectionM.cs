@@ -2,11 +2,10 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using ImagesDBLibrary.Database;
 using ImagesDBLibrary.Database.Access;
 using ImagesDBLibrary.Database.Model;
 
-namespace DBConnection.Model
+namespace ImagesDBLibrary.Model
 {
     public class CollectionM
     {
@@ -30,6 +29,14 @@ namespace DBConnection.Model
 
         public List<SourceM> Sources { get; private set; }
 
+        public IEnumerable<ImageM> Images
+        {
+            get
+            {
+                return Sources.SelectMany(x => x.Images);
+            }
+        } 
+
         #endregion Properties
 
         #region Methods
@@ -41,12 +48,12 @@ namespace DBConnection.Model
                 Collections.Where(x => x != this),
                 x => Parallel.ForEach
                          (
-                          x.Sources,
+                          x.Sources.Where(y => !Sources.Contains(y) && y.IsLoaded),
                           y => y.UnloadImages()
                          )
             );
 
-            Parallel.ForEach(Sources, x => x.LoadImages());
+            Parallel.ForEach(Sources.Where(x => !x.IsLoaded), x => x.LoadImages());
         }
 
         public void AddSource(string path)
@@ -101,6 +108,11 @@ namespace DBConnection.Model
             ImagesDB.RenameCollection(DbId, newName);
 
             Name = newName;
+        }
+
+        public override string ToString()
+        {
+            return String.Format("Name: {0} : Id: {1}", Name, DbId);
         }
 
         #endregion Methods

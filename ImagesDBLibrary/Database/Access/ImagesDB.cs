@@ -5,7 +5,7 @@ using ImagesDBLibrary.Database.Model;
 
 namespace ImagesDBLibrary.Database.Access
 {
-    public static partial class ImagesDB
+    internal static partial class ImagesDB
     {
         #region OLD
         /*
@@ -169,11 +169,11 @@ namespace ImagesDBLibrary.Database.Access
 
         #region Collection logic
 
-        public static IEnumerable<Collection> GetCollections()
+        public static List<Collection> GetCollections()
         {
             using (var db = new ImagesDBConnection())
             {
-                return db.Collections;
+                return db.Collections.ToList();
             }
         }
 
@@ -193,6 +193,8 @@ namespace ImagesDBLibrary.Database.Access
         {
             using (var db = new ImagesDBConnection())
             {
+                var collection = db.Collections.Find(collectionId);
+                collection.Sources.Clear();
                 db.Collections.Remove(db.Collections.Find(collectionId));
                 db.SaveChanges();
             }
@@ -235,24 +237,24 @@ namespace ImagesDBLibrary.Database.Access
 
         #region Source logic
 
-        public static IEnumerable<Source> GetSources(Collection collection)
+        public static List<Source> GetSources(Collection collection)
         {
             return GetSources(collection.Id);
         }
 
-        private static IEnumerable<Source> GetSources(int collectionId)
+        private static List<Source> GetSources(int collectionId)
         {
             using (var db = new ImagesDBConnection())
             {
-                return db.Collections.Find(collectionId).Sources;
+                return db.Collections.Find(collectionId).Sources.ToList();
             }
         }
 
-        public static IEnumerable<Source> GetSources()
+        public static List<Source> GetSources()
         {
             using (var db = new ImagesDBConnection())
             {
-                return db.Sources;
+                return db.Sources.ToList();
             }
         }
 
@@ -261,8 +263,8 @@ namespace ImagesDBLibrary.Database.Access
             using (var db = new ImagesDBConnection())
             {
                 var source = new Source(path);
-                db.Sources.Add(source);
-                db.SaveChanges();
+                //db.Sources.Add(source);
+                //db.SaveChanges();
 
                 return source;
             }
@@ -360,66 +362,108 @@ namespace ImagesDBLibrary.Database.Access
             }
         }
 
-        public static IEnumerable<Image> GetImages(int sourceId)
+        public static List<Image> GetImages(int sourceId)
         {
-            throw new NotImplementedException();
+            using (var db = new ImagesDBConnection())
+            {
+                var source = db.Sources.Find(sourceId);
+
+                return source.Images.ToList();
+            }
         }
 
-        public static IEnumerable<Tag> GetTagsFromImage(Image image)
+        public static List<Tag> GetTagsFromImage(Image image)
         {
-            return image
-                .UserTagSets
-                .Concat(image.ActualTagSets)
-                .Select(x => x.Tags)
-                .Aggregate((res, x) => res.Union(x).ToList());
+            using (var db = new ImagesDBConnection())
+            {
+                var dbimage = db.Images.Find(image.Id);
+                
+                return dbimage.TagSets.Where(x => x.Type == TagSetTypesEnum.ActualTypeName || x.Type == TagSetTypesEnum.UserTypeName).SelectMany(x => x.Tags).Distinct().ToList();
+            }
         }
 
         #endregion Image logic
 
         #region Tag logic
 
-        public static IEnumerable<Tag> GetTags()
+        public static List<Tag> GetTags()
         {
-            throw new NotImplementedException();
+            using (var db = new ImagesDBConnection())
+            {
+                return db.Tags.ToList();
+            }
         }
 
         public static Tag CreateTag(string name, int tagTypeId)
         {
-            throw new NotImplementedException();
+            using (var db = new ImagesDBConnection())
+            {
+                var tag = new Tag() {Name = name, Type = tagTypeId};
+                db.Tags.Add(tag);
+                db.SaveChanges();
+
+                return tag;
+            }
         }
 
         public static void RenameTag(int tagId, string newName)
         {
-            throw new NotImplementedException();
+            using (var db = new ImagesDBConnection())
+            {
+                db.Tags.Find(tagId).Name = newName;
+                db.SaveChanges();
+            }
         }
 
-        public static void ChangeType(int imageId, int newTagTypeId)
+        public static void ChangeType(int tagId, int newTagTypeId)
         {
-            throw new NotImplementedException();
+            using (var db = new ImagesDBConnection())
+            {
+                db.Tags.Find(tagId).Type = newTagTypeId;
+                db.SaveChanges();
+            }
         }
 
         #endregion Tag logic
 
         #region TagType logic
 
-        public static IEnumerable<TagType> GetTagTypes()
+        public static List<TagType> GetTagTypes()
         {
-            throw new NotImplementedException();
+            using (var db = new ImagesDBConnection())
+            {
+                return db.TagTypes.ToList();
+            }
         }
 
         public static TagType CreateTagType(string name)
         {
-            throw new NotImplementedException();
+            using (var db = new ImagesDBConnection())
+            {
+                var tagType = new TagType {Name = name};
+                db.TagTypes.Add(tagType);
+                db.SaveChanges();
+                return tagType;
+            }
         }
 
         public static void RemoveTagType(int tagTypeId)
         {
-            throw new NotImplementedException();
+            using (var db = new ImagesDBConnection())
+            {
+                var tagType = db.TagTypes.Find(tagTypeId);
+                db.TagTypes.Remove(tagType);
+                db.SaveChanges();
+            }
         }
 
         public static void RenameTagType(int tagTypeId, string newName)
         {
-            throw new NotImplementedException();
+            using (var db = new ImagesDBConnection())
+            {
+                db.TagTypes.Find(tagTypeId).Name = newName;
+                db.SaveChanges();
+            }
         }
 
         #endregion TagType logic

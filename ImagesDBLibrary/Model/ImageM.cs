@@ -1,11 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using ImagesDBLibrary.Database;
 using ImagesDBLibrary.Database.Access;
 using ImagesDBLibrary.Database.Model;
 
-namespace DBConnection.Model
+namespace ImagesDBLibrary.Model
 {
     public class ImageM
     {
@@ -61,6 +60,16 @@ namespace DBConnection.Model
             ImagesDB.RemoveTagFromImage(DbId, tag.DbId);
 
             Tags.Remove(tag);
+        }
+
+        public override string ToString()
+        {
+            return String.Format("Name: {0}",
+                                 Path.Split(new[]
+                                            {
+                                                "\\"
+                                            },
+                                            StringSplitOptions.RemoveEmptyEntries).Last());
         }
 
         #endregion Methods

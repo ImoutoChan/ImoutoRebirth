@@ -68,7 +68,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Database\IImageDB.cs" />
+    <Compile Include="Database\Access\IImageDB.cs" />
     <Compile Include="Database\Model\Collection.cs">
       <DependentUpon>ImageDBConnection.tt</DependentUpon>
     </Compile>
@@ -104,6 +104,11 @@
     <Compile Include="Database\Model\TagType.cs">
       <DependentUpon>ImageDBConnection.tt</DependentUpon>
     </Compile>
+    <Compile Include="Model\CollectionM.cs" />
+    <Compile Include="Model\ImageM.cs" />
+    <Compile Include="Model\SourceM.cs" />
+    <Compile Include="Model\TagM.cs" />
+    <Compile Include="Model\TagTypeM.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

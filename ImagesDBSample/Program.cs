@@ -1,11 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.IO;
 using System.Linq;
-using System.Windows.Forms;
-using ImagesDBLibrary.Database.Access;
-using ImagesDBLibrary.Database.Model;
-using ImagesDBLibrary.Database;
+using ImagesDBLibrary.Model;
 
 namespace DBConnection
 {
@@ -15,27 +10,83 @@ namespace DBConnection
         {
             try
             {
+
                 var st2 = DateTime.Now;
-            
-                var collection = ImagesDB.CreateCollection("Lol");
-
-                ImagesDB.AddSource(collection, @"C:\Users\Владимир\Downloads\Обои\Обои\Замки");
+                var collection1 = CollectionM.Create("Collection1");
                 Console.WriteLine((DateTime.Now - st2).TotalMilliseconds);
-
-            
-                st2 = DateTime.Now;
-                ImagesDB.AddSource(collection, @"C:\Users\Владимир\Downloads\Обои\Обои\magnificent_palaces");
+                var collection2 = CollectionM.Create("Collection2");
                 Console.WriteLine((DateTime.Now - st2).TotalMilliseconds);
 
                 st2 = DateTime.Now;
-                ImagesDB.AddSource(collection, @"C:\Users\Владимир\Downloads\Обои\Обои\");
-                Console.WriteLine((DateTime.Now - st2).TotalMilliseconds); 
+                collection1.AddSource(@"C:\Users\oniii-chan\Downloads\temp\source1");
+                collection1.AddSource(@"C:\Users\oniii-chan\Downloads\temp\source2");
+                collection2.AddSource(@"C:\Users\oniii-chan\Downloads\temp\source2");
+                collection2.AddSource(@"C:\Users\oniii-chan\Downloads\temp\source3");
+
+                Console.WriteLine((DateTime.Now - st2).TotalMilliseconds); st2 = DateTime.Now;
+                collection2.Activate();
+
+                collection1.Activate();
+
+                collection2.Activate();
+
+                Console.WriteLine((DateTime.Now - st2).TotalMilliseconds);
+                collection2.RemoveSource(
+                                         collection2
+                                             .Sources
+                                             .First(x => x.Path ==
+                                                         @"C:\Users\oniii-chan\Downloads\temp\source2"));
+
+                Console.WriteLine((DateTime.Now - st2).TotalMilliseconds);
+                collection2.Activate();
+
+                collection1.Activate();
+
+                collection2.Activate();
+
+                Console.WriteLine((DateTime.Now - st2).TotalMilliseconds);
+                collection1.Remove();
+
+                Console.WriteLine((DateTime.Now - st2).TotalMilliseconds);
+                collection2.Rename("Collection2_renamed");
+
+                Console.WriteLine((DateTime.Now - st2).TotalMilliseconds);
+                var collection1new = CollectionM.Create("Collection1");
+
+                Console.WriteLine((DateTime.Now - st2).TotalMilliseconds);
+
+                st2 = DateTime.Now;
+                foreach (var image in collection2.Images)
+                {
+                    Console.WriteLine(image.Path);
+                }
+                Console.WriteLine((DateTime.Now - st2).TotalMilliseconds);
+                st2 = DateTime.Now;
+
+                var testType = TagTypeM.Create("TestType");
+                var tag1 = TagM.Create("tag1", testType);
+                var tag2 = TagM.Create("tag2", testType);
+                var tag3 = TagM.Create("tag3", testType);
+                var tag4 = TagM.Create("tag4", testType);
+
+                collection2.Images.First().AddTag(tag1);
+                collection2.Images.Last().AddTag(tag2);
+
+                collection2.Images.First().RemoveTag(tag1);
+                //collection2.Images.First().RemoveTag(tag2);
+
+                tag2.Rename("tag2_renamed");
+                tag2.ChangeType(TagTypeM.Create("TestTypeSecond"));
+
+                TagTypeM.TagTypes.Find(x => x.Name.EndsWith("d")).Rename("TestTypeSecond_renamed");
+                TagTypeM.Create("TempTagType").Remove();
             }
             catch (Exception)
             {
                 throw;
             }
-
+            /*
+             * 
             //using (var db = new ImagesDBConnection())
             //{
             //    var st2 = DateTime.Now;
@@ -113,7 +164,7 @@ namespace DBConnection
             //    Console.WriteLine((DateTime.Now - st2).TotalMilliseconds);
             //    st2 = DateTime.Now;
             //}
-
+            */
             Console.ReadLine();
         }
     }

@@ -1,9 +1,9 @@
 ﻿using System.Collections.Generic;
 using ImagesDBLibrary.Database.Model;
 
-namespace ImagesDBLibrary.Database
+namespace ImagesDBLibrary.Database.Access
 {
-    public interface IImageDB
+    internal interface IImageDB
     {
         #region Collections
 

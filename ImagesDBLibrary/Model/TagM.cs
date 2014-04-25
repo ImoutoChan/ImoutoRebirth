@@ -1,11 +1,10 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using ImagesDBLibrary.Database;
 using ImagesDBLibrary.Database.Access;
 using ImagesDBLibrary.Database.Model;
 
-namespace DBConnection.Model
+namespace ImagesDBLibrary.Model
 {
     public class TagM
     {
@@ -54,6 +53,11 @@ namespace DBConnection.Model
             ImagesDB.ChangeType(DbId, type.DbId);
 
             Type = type;
+        }
+
+        public override string ToString()
+        {
+            return String.Format("Name: {0} : Type: {1}", Name, Type.Name);
         }
 
         #endregion Methods

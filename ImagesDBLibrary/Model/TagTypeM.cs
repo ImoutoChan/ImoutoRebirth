@@ -1,11 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using ImagesDBLibrary.Database;
 using ImagesDBLibrary.Database.Access;
 using ImagesDBLibrary.Database.Model;
 
-namespace DBConnection.Model
+namespace ImagesDBLibrary.Model
 {
     public class TagTypeM
     {

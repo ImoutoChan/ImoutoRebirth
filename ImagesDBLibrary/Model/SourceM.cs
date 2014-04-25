@@ -1,11 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using ImagesDBLibrary.Database;
 using ImagesDBLibrary.Database.Access;
 using ImagesDBLibrary.Database.Model;
 
-namespace DBConnection.Model
+namespace ImagesDBLibrary.Model
 {
     public class SourceM
     {
@@ -15,6 +14,7 @@ namespace DBConnection.Model
         {
             Path = sourcedb.Path;
             DbId = sourcedb.Id;
+            IsLoaded = false;
         }
 
         #endregion Constructors
@@ -27,6 +27,8 @@ namespace DBConnection.Model
 
         public IEnumerable<ImageM> Images { get; private set; }
 
+        public bool IsLoaded { get; private set; }
+
         #endregion Properties
 
         #region Methods
@@ -34,11 +36,13 @@ namespace DBConnection.Model
         public void LoadImages()
         {
             Images = ImagesDB.GetImages(DbId).Select(x => new ImageM(x, ImagesDB.GetTagsFromImage(x)));
+            IsLoaded = true;
         }
 
         public void UnloadImages()
         {
             Images = new List<ImageM>();
+            IsLoaded = false;
         }
 
         public void Update()
@@ -51,6 +55,11 @@ namespace DBConnection.Model
         {
             ImagesDB.UpdateSource(true);
             LoadImages();
+        }
+
+        public override string ToString()
+        {
+            return String.Format("IsLoaded: {0} : Path: {1} : DBId: {2}", IsLoaded, Path, DbId);
         }
 
         #endregion Methods
