@@ -167,7 +167,7 @@ namespace ImagesDBLibrary.Database.Model
                     files.AddRange(di.GetFiles().Where(x => x.FullName.IsImage()));
                     foreach (var dir in di.GetDirectories(isRecursive: true))
                     {
-                        files.AddRange(di.GetFiles().Where(x=>x.FullName.IsImage()));
+                        files.AddRange(dir.GetFiles().Where(x => x.FullName.IsImage()));
                     }
 
                     var images = files.Select(x => new Image(x.FullName, false));

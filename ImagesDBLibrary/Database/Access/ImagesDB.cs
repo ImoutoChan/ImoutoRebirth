@@ -350,6 +350,29 @@ namespace ImagesDBLibrary.Database.Access
             }
         }
 
+        public static void AddTagsToImage(int imageId, IEnumerable<int> tagsId)
+        {
+            using (var db = new ImagesDBConnection())
+            {
+                var tags = tagsId
+                        .Select(x => db.Tags.Find(x))
+                        .ToList();
+
+                var userTagSet = db
+                    .TagSets
+                    .First(x => x.Type == TagSetTypesEnum.UserTypeName && x.FKImage == imageId);
+
+                foreach (var tag in tags)
+                {
+                    userTagSet
+                        .Tags
+                        .Add(tag);
+                }
+
+                db.SaveChanges();
+            }
+        }
+
         public static void RemoveTagFromImage(int imageId, int tagId)
         {
             using (var db = new ImagesDBConnection())

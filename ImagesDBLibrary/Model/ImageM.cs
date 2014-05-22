@@ -50,6 +50,14 @@ namespace ImagesDBLibrary.Model
             Tags.Add(tag);
         }
 
+        public void AddTags(IEnumerable<TagM> tags)
+        {
+            var tagMs = tags as IList<TagM> ?? tags.ToList();
+
+            ImagesDB.AddTagsToImage(DbId, tagMs.Select(x => x.DbId));
+            Tags.AddRange(tagMs);
+        }
+
         public void RemoveTag(TagM tag)
         {
             if (!Tags.Contains(tag))
@@ -72,6 +80,30 @@ namespace ImagesDBLibrary.Model
                                             StringSplitOptions.RemoveEmptyEntries).Last());
         }
 
+        public bool ContainsTags(IEnumerable<TagM> tags)
+        {
+            return tags.All(x => Tags.Contains(x));
+        }
+
         #endregion Methods
+    }
+
+    public static class ImageMExtention
+    {
+        public static Dictionary<TagM, int> GetTopTags(this IEnumerable<ImageM> images, int? count = null)
+        {
+            var result = images
+                .SelectMany(x => x.Tags)
+                .GroupBy(x => x.DbId)
+                .OrderByDescending(x => x.Count())
+                .ToDictionary(x => x.First(), x => x.Count());
+
+            if (count != null)
+            {
+                result = result.Take(count.GetValueOrDefault()).ToDictionary(x => x.Key, x => x.Value);
+            }
+
+            return result;
+        }
     }
 }

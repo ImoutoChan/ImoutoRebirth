@@ -271,7 +271,7 @@
 
                     <ItemsControl x:Name="SearchListBox"
                                   Grid.Row="2"
-                                  ItemsSource="{Binding Path=InSearchTags, UpdateSourceTrigger=PropertyChanged}"
+                                  ItemsSource="{Binding Path=TagListCurrent, UpdateSourceTrigger=PropertyChanged}"
                                   ItemTemplate="{StaticResource SearchTagElementDataTemplate}"
                                   />
 
@@ -283,7 +283,7 @@
 
                     <ItemsControl x:Name="CurrentTags"
                                   Grid.Row="4"
-                                  ItemsSource="{Binding Path=CurrentTags, UpdateSourceTrigger=PropertyChanged}"
+                                  ItemsSource="{Binding Path=TagListTop, UpdateSourceTrigger=PropertyChanged}"
                                   ItemTemplate="{StaticResource CurrentTagElementDataTemplate}" 
                                   />
                 </Grid>
@@ -295,11 +295,17 @@
                     HorizontalAlignment="Left"
                     VerticalAlignment="Top"
                     Margin="5,30">
-                <ListBox ItemsSource="{Binding SearchTags}" 
+                <ListBox ItemsSource="{Binding TagListHintBox}" 
                             MaxHeight="120">
                     <ListBox.ItemTemplate>
                         <DataTemplate>
-                            <TextBlock Text="{Binding Name}" />
+                            <Button Command="{Binding RelativeSource={RelativeSource FindAncestor,
+                                                      AncestorType={x:Type imoutoNavigator:MainWindow}},
+                                                      Path=DataContext.AddTagToSearch}"
+                                    CommandParameter="{Binding}"
+                                    >
+                                <TextBlock Text="{Binding Name}" />
+                            </Button>
                         </DataTemplate>
                     </ListBox.ItemTemplate>
                 </ListBox>

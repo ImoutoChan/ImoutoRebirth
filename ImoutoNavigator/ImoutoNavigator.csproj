@@ -87,6 +87,9 @@
     </ApplicationDefinition>
     <Compile Include="Commands\RelayCommand.cs" />
     <Compile Include="Converters\VisibilityConverter.cs" />
+    <Compile Include="DebugWindow.xaml.cs">
+      <DependentUpon>DebugWindow.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Model\ImageEntry.cs" />
     <Compile Include="Properties\Annotations.cs" />
     <Compile Include="UserControls\ExtScrollViewer.cs" />
@@ -95,11 +98,13 @@
       <DependentUpon>TagView.xaml</DependentUpon>
     </Compile>
     <Compile Include="UserControls\VirtualizingWrapPanel.cs" />
-    <Compile Include="Utils\CommonUtils.cs" />
-    <Compile Include="Utils\ThreadQueue.cs" />
     <Compile Include="ViewModel\ImageEntryVM.cs" />
     <Compile Include="ViewModel\MainWindowVM.cs" />
     <Compile Include="ViewModel\VMBase.cs" />
+    <Page Include="DebugWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -165,6 +170,10 @@
     <ProjectReference Include="..\ImoutoViewer\ImoutoViewer.csproj">
       <Project>{94cb919f-f3c9-4470-af91-a2878cc8df4a}</Project>
       <Name>ImoutoViewer</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Utils\Utils.csproj">
+      <Project>{515fb14d-8af1-4440-aa60-b57dee834adc}</Project>
+      <Name>Utils</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

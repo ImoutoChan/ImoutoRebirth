@@ -1,15 +1,17 @@
 ﻿using System.Collections.Generic;
-using System.Windows.Documents;
-using ImagesDBLibrary.Database;
-using ImagesDBLibrary.Database.Model;
+using System.ComponentModel;
+using System.Diagnostics;
+using System.Text;
+using System.Windows.Data;
+using ImagesDBLibrary.Model;
 using ImoutoNavigator.Commands;
 using ImoutoNavigator.Model;
 using System;
 using System.Collections.ObjectModel;
-using System.IO;
 using System.Linq;
 using System.Windows;
 using System.Windows.Input;
+using Utils;
 
 namespace ImoutoNavigator.ViewModel
 {
@@ -20,13 +22,13 @@ namespace ImoutoNavigator.ViewModel
         private int _previewSide = 256;
         private readonly MainWindow _view;
         private ObservableCollection<ImageEntryVM> _imageList;
-        private IEnumerable<Image> _dbImages;
-        private ObservableCollection<KeyValuePair<Tag, int>> _inSearchTags = new ObservableCollection<KeyValuePair<Tag, int>>();
-        private ObservableCollection<KeyValuePair<Tag, int>> _currentTags;
+        private ICollectionView _imageListView;
+        private IEnumerable<ImageM> _dbImages;
+        private ObservableCollection<KeyValuePair<TagM, int>> _tagListCurrent = new ObservableCollection<KeyValuePair<TagM, int>>();
         private string _searchString;
-        private ObservableCollection<Tag> _searchTags = new ObservableCollection<Tag>();
+        private ObservableCollection<TagM> _tagListHintBox = new ObservableCollection<TagM>();
 
-        #endregion //Fields
+        #endregion Fields
 
         #region Constructors
 
@@ -41,7 +43,7 @@ namespace ImoutoNavigator.ViewModel
             _view.Show();
         }
 
-        #endregion //Constructors
+        #endregion Constructors
 
         #region Properties
 
@@ -53,11 +55,17 @@ namespace ImoutoNavigator.ViewModel
             }
         }
 
-        public ObservableCollection<ImageEntryVM> ImageList
+        public ICollectionView ImageList
         {
             get
             {
-                return _imageList;
+                if (_imageListView == null)
+                {
+                    _imageListView = new ListCollectionView(_imageList);
+                    _imageListView.Filter = o => (o as ImageEntryVM).ImageModel.ContainsTags(TagListCurrent.Select(x => x.Key));
+                }
+                _imageListView.Refresh();
+                return _imageListView;
             }
         }
 
@@ -69,28 +77,30 @@ namespace ImoutoNavigator.ViewModel
             }
         }
 
-        public ObservableCollection<KeyValuePair<Tag, int>> CurrentTags
-        {
-            get { return _currentTags; }
-            set { _currentTags = value; }
-        }
-
-        public ObservableCollection<KeyValuePair<Tag, int>> InSearchTags
+        public ObservableCollection<KeyValuePair<TagM, int>> TagListTop
         {
             get
             {
-                return _inSearchTags;
-            }
-            set
-            {
-                _inSearchTags = value;
+                return new ObservableCollection<KeyValuePair<TagM, int>>(ImageList.Cast<ImageEntryVM>().Select(x => x.ImageModel).GetTopTags());
             }
         }
 
-        public ObservableCollection<Tag> SearchTags
+        public ObservableCollection<KeyValuePair<TagM, int>> TagListCurrent
         {
-            get { return _searchTags; }
-            set { _searchTags = value; }
+            get
+            {
+                return _tagListCurrent;
+            }
+            set
+            {
+                _tagListCurrent = value;
+            }
+        }
+
+        public ObservableCollection<TagM> TagListHintBox
+        {
+            get { return _tagListHintBox; }
+            set { _tagListHintBox = value; }
         }
 
         public string SearchString
@@ -105,30 +115,28 @@ namespace ImoutoNavigator.ViewModel
                 var newSearchString = value;
                 if (newSearchString == "")
                 {
-                    SearchTags.Clear();
+                    TagListHintBox.Clear();
                 }
                 else
                 {
-                    IEnumerable<Tag> tags = ImagesDB.GetTagsStartFrom(newSearchString, 10);
-                    SearchTags.Clear();
-                    SearchTags = new ObservableCollection<Tag>(tags);
-                    OnPropertyChanged("SearchTags");
+                    IEnumerable<TagM> tags = TagM.Tags.Where(x => x.Name.StartsWith(newSearchString));
+                    TagListHintBox.Clear();
+                    TagListHintBox = new ObservableCollection<TagM>(tags);
+                    OnPropertyChanged("TagListHintBox");
                 }
 
                 _searchString = value;
             }
         }
 
-        #endregion //Properties
+        #endregion Properties
 
         #region Commands
 
         public ICommand ZoomInCommand { get; set; }
         public ICommand ZoomOutCommand { get; set; }
         public ICommand LoadPreviewsCommand { get; set; }
-
         public ICommand AddTagToSearch { get; set; }
-
         public ICommand RemoveTagFromSearch { get; set; }
 
         private void InitializeCommands()
@@ -147,47 +155,118 @@ namespace ImoutoNavigator.ViewModel
             );
             LoadPreviewsCommand = new RelayCommand(x => LoadPreviews());
 
-            AddTagToSearch = new RelayCommand(SearchTag);
-            RemoveTagFromSearch = new RelayCommand(DeSearchTag);
+            AddTagToSearch = new RelayCommand(AddSearchTag);
+            RemoveTagFromSearch = new RelayCommand(RemoveSearchTag);
         }
 
-        #endregion //Commands
+        #endregion Commands
 
         #region Methods
 
         private void GetImageList()
         {
-            _imageList = new ObservableCollection<ImageEntryVM>(
-                Directory.GetFiles(@"T:\art")
-                    .Where(ImageEntry.IsImage)
-                    .Take(10)
-                    .Select(x =>
+            //_imageList = new ObservableCollection<ImageEntryVM>(
+            //    Directory.GetFiles(@"T:\art")
+            //        .Where(ImageEntry.IsImage)
+            //        .Take(10)
+            //        .Select(x =>
+            //        {
+            //            var im = new ImageEntryVM(x, PreviewSize);
+            //            return im;
+            //        })
+            //        .ToList()
+            //    );
+
+            CollectionM collection;
+            if (CollectionM.Collections.Count == 0)
+            {
+                var namedType = TagTypeM.Create("FromName");
+
+                collection = CollectionM.Create("MainColleciton");
+                //collection.AddSource(@"C:\Users\oniii-chan\Downloads\temp\source_named");
+                collection.AddSource(@"C:\Users\oniii-chan\Downloads\DLS\art");
+                collection.AddSource(@"T:\art");
+                collection.Activate();
+
+                int i = 0;
+                int all = collection.Images.Count();
+                var st = DateTime.Now;
+
+                foreach (var image in collection.Images)
+                {
+                    var tags = image
+                                .Path
+                                .Split(new[] { "\\" }, StringSplitOptions.RemoveEmptyEntries)
+                                .Last()
+                                .Split(new[]
+                                                {
+                                                    " ",
+                                                    "."
+                                                },
+                                                StringSplitOptions.RemoveEmptyEntries);
+
+                    var existingTags = tags
+                        .Where(x => TagM
+                                        .Tags
+                                        .Select(y => y.Name.ToLower())
+                                        .Contains(x.ToLower()))
+                        .Select(x => TagM
+                                         .Tags
+                                         .First(y => y.Name == x));
+
+                    try
                     {
-                        var im = new ImageEntryVM(x, PreviewSize);
-                        return im;
-                    })
-                    .ToList()
-                );
-            
-            _dbImages = _imageList.Select(x => new Image(x.ImageEntry.FullName));
-
-            //ImagesDB.AddTagsToImages(new List<Tag>
-            //                         {
-            //                             new Tag("DLS", TagTypes.Copyright),
-            //                             new Tag("Downloads", TagTypes.Copyright),
-            //                             new Tag("temp", TagTypes.Copyright),
-            //                             new Tag("DLS", TagTypes.Copyright),
-            //                         }, 
-            //                         _dbImages);
+                        var nonExistingTags = tags
+                            .Where(x => !TagM
+                                             .Tags
+                                             .Select(y => y.Name.ToLower())
+                                             .Contains(x.ToLower()))
+                            .Select(tag => TagM.Create(tag, namedType));
 
 
-            CurrentTags = new ObservableCollection<KeyValuePair<Tag, int>>(ImagesDB.GetTagsTopFromImages(_dbImages));
+                        var allTags = existingTags.Concat(nonExistingTags).ToList();
+                        image.AddTags(allTags);
+                    }
+                    catch (Exception e)
+                    {
+                        //StringBuilder db = new StringBuilder();
+                        //foreach (var tag in tags.OrderBy(x=>x))
+                        //{
+                        //    db.Append(tag);
+                        //    db.Append(" " + TagM
+                        //                        .Tags
+                        //                        .Select(y => y.Name)
+                        //                        .Contains(tag));
+                        //}
+                        //MessageBox.Show(String.Format("{0}\n {1}\n\n {2}\n\n", image.Path, image.Md5, db));
+                    }
 
+
+                    //var allTags = existingTags.Concat(nonExistingTags).ToList();
+                    //image.AddTags(allTags);
+
+                    //foreach (var ntag in allTags)
+                    //{
+                    //    image.AddTag(ntag);
+                    //}
+
+
+                    //var win = new DebugWindow();
+                    //win.TextBlock.Text = "Progress: " + ++i + "/" + all + " Time passed: " + (DateTime.Now - st).TotalMilliseconds;
+                    //win.Show();
+                }
+            }
+            else
+            {
+                collection = CollectionM.Collections.First();
+            }
+            collection.Activate();
+            _imageList = new ObservableCollection<ImageEntryVM>(collection.Images.Select(x => new ImageEntryVM(x, PreviewSize)));
         }
 
         private void Reload()
         {
-             GetImageList();
+             //GetImageList();
              OnPropertyChanged("ImageList");
         }
 
@@ -211,48 +290,67 @@ namespace ImoutoNavigator.ViewModel
             }
         }
 
-        private void SearchTag(object param)
+        private void AddSearchTag(object param)
         {
             if (param == null)
             {
                 return;
             }
-            var tag = (KeyValuePair<Tag, int>) param;
-
-            if (InSearchTags.All(x => x.Key != tag.Key))
+            try
             {
-                InSearchTags.Add(new KeyValuePair<Tag, int>(tag.Key, tag.Value));
-                OnPropertyChanged("SearchTags");
+                var tag = (KeyValuePair<TagM, int>)param;
 
-                //CurrentTags.Remove(CurrentTags.First(x=>x.Key.Name == tag.Key.Name && x.Key.Type == tag.Key.Type));
-                //OnPropertyChanged("CurrentTags");
+                if (TagListCurrent.All(x => x.Key != tag.Key))
+                {
+                    TagListCurrent.Add(new KeyValuePair<TagM, int>(tag.Key, tag.Value));
+                    OnPropertyChanged("ImageList");
+                    OnPropertyChanged("TagListTop");
+                }
+            }
+            catch (Exception)
+            {
+                try
+                {
+                    var tag = (TagM) param;
+
+                    if (TagListCurrent.All(x => x.Key != tag))
+                    {
+                        TagListCurrent.Add(new KeyValuePair<TagM, int>(tag, -1));
+                        OnPropertyChanged("ImageList");
+                        OnPropertyChanged("TagListTop");
+                    }
+
+                    SearchString = "";
+                }
+                catch { }
             }
         }
 
-        private void DeSearchTag(object param)
+        private void RemoveSearchTag(object param)
         {
             if (param == null)
             {
                 return;
             }
-            var tag = (KeyValuePair<Tag, int>)param;
+            var tag = (KeyValuePair<TagM, int>)param;
 
-            if (CurrentTags.All(x => x.Key != tag.Key))
+            if (TagListCurrent.Select(x => x.Key).Contains(tag.Key))
             {
-                InSearchTags.Remove(InSearchTags.First(x => x.Key.Name == tag.Key.Name && x.Key.Type == tag.Key.Type));
-                OnPropertyChanged("SearchTags");
+                TagListCurrent.Remove(TagListCurrent.First(x => x.Key.Name == tag.Key.Name && x.Key.Type == tag.Key.Type));
+                OnPropertyChanged("ImageList");
+                OnPropertyChanged("TagListTop");
             }
         }
 
-        #endregion //Methods
+        #endregion Methods
 
         #region Event handlers
 
         private void _view_Loaded(object sender, RoutedEventArgs e)
         {
-            Reload();
+            //Reload();
         }
 
-        #endregion //Event handlers
+        #endregion Event handlers
     }
 }
