@@ -24,7 +24,7 @@ namespace ImoutoViewer.Model
         /// <returns>Strings: "jpg", "png", etc</returns>
         public static IEnumerable<string> GetSupportedFormatsList()
         {
-            return Enum.GetNames(typeof (ImageFormat)).Select(x => x.ToLower()).ToList();
+            return Enum.GetNames(typeof (ImageFormat)).Select(x => "." + x.ToLower()).ToList();
         }
     }
 }

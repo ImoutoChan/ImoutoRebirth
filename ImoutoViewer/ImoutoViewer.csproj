@@ -192,6 +192,12 @@
     <Resource Include="Resources\img\edit\ms_paint.ico" />
     <Resource Include="Resources\img\edit\photoshop.ico" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Utils\Utils.csproj">
+      <Project>{515fb14d-8af1-4440-aa60-b57dee834adc}</Project>
+      <Name>Utils</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
