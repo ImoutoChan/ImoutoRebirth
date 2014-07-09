@@ -19,14 +19,14 @@ namespace ImoutoNavigator.ViewModel
     {
         #region Fields
 
-        private int _previewSide = 256;
-        private readonly MainWindow _view;
-        private ObservableCollection<ImageEntryVM> _imageList;
-        private ICollectionView _imageListView;
-        private IEnumerable<ImageM> _dbImages;
-        private ObservableCollection<KeyValuePair<TagM, int>> _tagListCurrent = new ObservableCollection<KeyValuePair<TagM, int>>();
-        private string _searchString;
-        private ObservableCollection<TagM> _tagListHintBox = new ObservableCollection<TagM>();
+        private int                                             _previewSide        = 256;
+        private readonly MainWindow                             _view;
+        private ObservableCollection<ImageEntryVM>              _imageList;
+        private ICollectionView                                 _imageListView;
+        private IEnumerable<ImageM>                             _dbImages;
+        private ObservableCollection<KeyValuePair<TagM, int>>   _tagListCurrent     = new ObservableCollection<KeyValuePair<TagM, int>>();
+        private string                                          _searchString;
+        private ObservableCollection<TagM>                      _tagListHintBox     = new ObservableCollection<TagM>();
 
         #endregion Fields
 
@@ -183,9 +183,9 @@ namespace ImoutoNavigator.ViewModel
                 var namedType = TagTypeM.Create("FromName");
 
                 collection = CollectionM.Create("MainColleciton");
-                //collection.AddSource(@"C:\Users\oniii-chan\Downloads\temp\source_named");
+                collection.AddSource(@"C:\Users\oniii-chan\Downloads\temp\source_named");
                 collection.AddSource(@"C:\Users\oniii-chan\Downloads\DLS\art");
-                collection.AddSource(@"T:\art");
+                //collection.AddSource(@"T:\art");
                 collection.Activate();
 
                 int i = 0;

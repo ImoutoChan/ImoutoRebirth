@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2013
-VisualStudioVersion = 12.0.30110.0
+VisualStudioVersion = 12.0.30324.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ImoutoViewer", "ImoutoViewer\ImoutoViewer.csproj", "{94CB919F-F3C9-4470-AF91-A2878CC8DF4A}"
 EndProject
@@ -10,10 +10,6 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ImagesDBSample", "ImagesDBSample\ImagesDBSample.csproj", "{E4F05857-16FC-4242-89C7-70EAE96DF9C1}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ImagesDBLibrary", "ImagesDBLibrary\ImagesDBLibrary.csproj", "{2588D735-A006-42CE-91D6-85FFC74B9868}"
-EndProject
-VisualStudioVersion = 12.0.30324.0
-MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ImoutoViewer", "ImoutoViewer\ImoutoViewer.csproj", "{94CB919F-F3C9-4470-AF91-A2878CC8DF4A}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Utils", "Utils\Utils.csproj", "{515FB14D-8AF1-4440-AA60-B57DEE834ADC}"
 EndProject
