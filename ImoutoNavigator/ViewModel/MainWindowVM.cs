@@ -27,6 +27,7 @@ namespace ImoutoNavigator.ViewModel
         private ObservableCollection<KeyValuePair<TagM, int>>   _tagListCurrent     = new ObservableCollection<KeyValuePair<TagM, int>>();
         private string                                          _searchString;
         private ObservableCollection<TagM>                      _tagListHintBox     = new ObservableCollection<TagM>();
+        private CollectionManagerVM                             _collectionManager  = new CollectionManagerVM();
 
         #endregion Fields
 
@@ -101,6 +102,14 @@ namespace ImoutoNavigator.ViewModel
         {
             get { return _tagListHintBox; }
             set { _tagListHintBox = value; }
+        }
+
+        public CollectionManagerVM CollectionManager
+        {
+            get
+            {
+                return _collectionManager;
+            }
         }
 
         public string SearchString
@@ -183,8 +192,11 @@ namespace ImoutoNavigator.ViewModel
                 var namedType = TagTypeM.Create("FromName");
 
                 collection = CollectionM.Create("MainColleciton");
-                collection.AddSource(@"C:\Users\oniii-chan\Downloads\temp\source_named");
-                collection.AddSource(@"C:\Users\oniii-chan\Downloads\DLS\art");
+                CollectionM.Create("SubColleciton").AddSource(@"C:\Users\Владимир\Downloads\Обои\Обои\magnificent_palaces");
+                collection.AddSource(@"C:\Users\Владимир\Downloads\Обои\Обои\magnificent_palaces");
+                collection.AddSource(@"C:\Users\Владимир\Downloads\Обои\Обои\Замки");
+                //collection.AddSource(@"C:\Users\oniii-chan\Downloads\temp\source_named");
+                //collection.AddSource(@"C:\Users\oniii-chan\Downloads\DLS\art");
                 //collection.AddSource(@"T:\art");
                 collection.Activate();
 

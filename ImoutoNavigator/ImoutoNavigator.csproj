@@ -65,6 +65,7 @@
     <Reference Include="System.Data" />
     <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.Security" />
+    <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Windows.Interactivity, Version=4.5.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\MahApps.Metro.0.12.1.0\lib\net45\System.Windows.Interactivity.dll</HintPath>
     </Reference>
@@ -98,9 +99,14 @@
       <DependentUpon>TagView.xaml</DependentUpon>
     </Compile>
     <Compile Include="UserControls\VirtualizingWrapPanel.cs" />
+    <Compile Include="ViewModel\CollectionManagerVM.cs" />
+    <Compile Include="ViewModel\CollectionVM.cs" />
     <Compile Include="ViewModel\ImageEntryVM.cs" />
     <Compile Include="ViewModel\MainWindowVM.cs" />
     <Compile Include="ViewModel\VMBase.cs" />
+    <Compile Include="View\CollectionsView.xaml.cs">
+      <DependentUpon>CollectionsView.xaml</DependentUpon>
+    </Compile>
     <Page Include="DebugWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -128,6 +134,10 @@
     <Page Include="UserControls\TagView.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
+    </Page>
+    <Page Include="View\CollectionsView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
   </ItemGroup>
   <ItemGroup>

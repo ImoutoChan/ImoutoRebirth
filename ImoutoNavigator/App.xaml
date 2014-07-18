@@ -9,8 +9,17 @@
                 <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Colors.xaml" />
                 <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Accents/Blue.xaml" />
                 <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Accents/BaseLight.xaml" />
-                <ResourceDictionary Source="styles.xaml"/>
+                <ResourceDictionary Source="styles.xaml"/>                
             </ResourceDictionary.MergedDictionaries>
+
+            <Style TargetType="{x:Type Button}"
+                   BasedOn="{StaticResource {x:Type Button}}"
+                   x:Key="ButtonStyleDefault">
+                <Setter Property="Width"
+                        Value="65" />
+                <Setter Property="Height"
+                        Value="25" />
+            </Style>
         </ResourceDictionary>
     </Application.Resources>
 </Application>

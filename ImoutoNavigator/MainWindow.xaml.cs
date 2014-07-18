@@ -5,6 +5,7 @@ using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
+using MahApps.Metro.Controls;
 
 namespace ImoutoNavigator
 {
@@ -98,6 +99,16 @@ namespace ImoutoNavigator
             var childRectangle = childTransform.TransformBounds(new Rect(new Point(0, 0), child.RenderSize));
             var ownerRectangle = new Rect(new Point(0, 0), scrollViewer.RenderSize);
             return ownerRectangle.IntersectsWith(childRectangle);
+        }
+
+        private void Button_Click(object sender, RoutedEventArgs e)
+        {
+
+            foreach (Flyout item in Flyouts.Items)
+            {
+                item.IsOpen = false;
+            }
+            CollectionsFlyOut.IsOpen = !CollectionsFlyOut.IsOpen;
         }
     }
 }

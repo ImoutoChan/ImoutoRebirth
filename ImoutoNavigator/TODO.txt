@@ -9,3 +9,13 @@ Animuted icon
 drag&drop
 
 Taaags
+
+scroll 1-2 lines only
+tab in search result
++searchresult kire
+tags template
+tags screen
+	add tags
+	remove tags
+	edit tag
+Collection screen

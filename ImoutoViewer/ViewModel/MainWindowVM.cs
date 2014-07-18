@@ -282,7 +282,8 @@ namespace ImoutoViewer.ViewModel
             #if DEBUG
             else
             {
-                _imageList = new LocalImageList(@"c:\Users\oniii-chan\Downloads\DLS\art\loli\715e2f290f6c236fdd6426d83ab9a9e0.jpg");
+                //_imageList = new LocalImageList(@"c:\Users\oniii-chan\Downloads\DLS\art\loli\715e2f290f6c236fdd6426d83ab9a9e0.jpg");
+                _imageList = new LocalImageList(@"C:\Users\Владимир\Downloads\Обои\Обои\magnificent_palaces\Magnificent palaces 003.jpg");
             }
             #else
             else

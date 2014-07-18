@@ -9,33 +9,56 @@
                           xmlns:converter="clr-namespace:ImoutoNavigator.Converters"
                           xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
                           xmlns:imoutoNavigator="clr-namespace:ImoutoNavigator"
+                          xmlns:view="clr-namespace:ImoutoNavigator.View"
                           d:DataContext="{d:DesignInstance viewModel:MainWindowVM, IsDesignTimeCreatable=False}"
                           mc:Ignorable="d"
                           WindowStartupLocation="CenterScreen"
-                          BorderBrush="{DynamicResource AccentColorBrush}"                  
+                          BorderBrush="{DynamicResource AccentColorBrush}"
                           BorderThickness="2"
-                          Height="350" 
-                          Width="525"
+                          Height="720"
+                          Width="1280"
                           ShowWindowCommandsOnTop="False"
                           TitleCaps="False"
-                          Title="{Binding Title}">
+                          Title="{Binding Title}"
+                          WindowState="Maximized">
     <metroControl:MetroWindow.Resources>
         <converter:VisibilityConverter x:Key="VisibilityConverter" />
 
-        <converter:VisibilityConverter x:Key="VisibilityInvertConverter" 
+        <converter:VisibilityConverter x:Key="VisibilityInvertConverter"
                                        IsInvert="True" />
     </metroControl:MetroWindow.Resources>
 
+    <metroControl:MetroWindow.Flyouts>
+        <metroControl:FlyoutsControl>
+            <metroControl:Flyout x:Name="CollectionsFlyOut"
+                                 Width="400"
+                                 Header="Collections"
+                                 Position="Right"
+                                 DataContext="{Binding Path=CollectionManager}"
+                                 Theme="Inverse">
+                <i:Interaction.Triggers>
+                    <i:EventTrigger EventName="IsOpenChanged">
+                        <i:InvokeCommandAction Command="{Binding SaveCommand}" />
+                    </i:EventTrigger>
+                </i:Interaction.Triggers>
+
+                <view:CollectionsView />
+            </metroControl:Flyout>
+        </metroControl:FlyoutsControl>
+    </metroControl:MetroWindow.Flyouts>
+
     <metroControl:MetroWindow.WindowCommands>
         <metroControl:WindowCommands>
-            <Button Content="Choose source..." />
+            <Button Content="Collections..." 
+                    Click="Button_Click"/>
         </metroControl:WindowCommands>
     </metroControl:MetroWindow.WindowCommands>
+    
     <Grid>
         <Grid>
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="*" 
-                                  MinWidth="200" 
+                <ColumnDefinition Width="*"
+                                  MinWidth="200"
                                   MaxWidth="300" />
                 <ColumnDefinition Width="3*" />
             </Grid.ColumnDefinitions>
@@ -44,10 +67,9 @@
                      Grid.Column="1"
                      ScrollViewer.HorizontalScrollBarVisibility="Disabled"
                      ItemsSource="{Binding Path=ImageList, UpdateSourceTrigger=PropertyChanged}"
-                     SelectionMode="Extended"
-                     >
+                     SelectionMode="Extended">
                 <ListBox.InputBindings>
-                    <MouseBinding Command="{Binding Path=ZoomOutCommand}" 
+                    <MouseBinding Command="{Binding Path=ZoomOutCommand}"
                                   Gesture="{x:Static userControl:MouseWheelGesture.CtrlDown}" />
 
                     <MouseBinding Command="{Binding Path=ZoomInCommand}"
@@ -121,7 +143,7 @@
                                             Margin="2">
                                         <Border.InputBindings>
                                             <MouseBinding Command="{Binding OpenCommand}"
-                                              Gesture="LeftDoubleClick"/>
+                                                          Gesture="LeftDoubleClick" />
                                         </Border.InputBindings>
 
                                         <ContentPresenter HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
@@ -207,16 +229,16 @@
                     <DataTemplate>
                         <Border Margin="6,10,10,10">
                             <Border.Effect>
-                                <DropShadowEffect/>
+                                <DropShadowEffect />
                             </Border.Effect>
 
                             <Grid Width="{Binding Path=ViewPortSize.Width}"
                                   Height="{Binding Path=ViewPortSize.Height}">
-                                <Image Source="{Binding Path=Image}" 
+                                <Image Source="{Binding Path=Image}"
                                        Visibility="{Binding Path=IsLoading, 
-                                                            Converter={StaticResource VisibilityInvertConverter}}"/>
+                                                            Converter={StaticResource VisibilityInvertConverter}}" />
 
-                                <Ellipse Width="10" 
+                                <Ellipse Width="10"
                                          Height="10"
                                          Fill="{DynamicResource GrayBrush10}"
                                          Visibility="{Binding Path=IsLoading, 
@@ -227,16 +249,15 @@
                 </ListBox.ItemTemplate>
             </ListBox>
 
-            <GridSplitter Grid.Column="0" 
-                          Width="3" 
-                          ShowsPreview="True" 
-                          Background="{DynamicResource AccentColorBrush}"/>
+            <GridSplitter Grid.Column="0"
+                          Width="0"
+                          ShowsPreview="True"
+                          Background="{DynamicResource AccentColorBrush}" />
 
             <Border Grid.Column="0"
-                    BorderThickness="0,0,0,0"
-                    BorderBrush="{DynamicResource AccentColorBrush}"
-                    >
-                <Grid  >
+                    BorderThickness="0,0,3,0"
+                    BorderBrush="{DynamicResource AccentColorBrush}">
+                <Grid>
                     <Grid.RowDefinitions>
                         <RowDefinition Height="Auto" />
                         <RowDefinition Height="Auto" />
@@ -246,12 +267,12 @@
                     </Grid.RowDefinitions>
 
 
-                    <TextBox Grid.Row="0" 
+                    <TextBox Grid.Row="0"
                              Margin="5"
                              metroControl:TextboxHelper.Watermark="Search tag"
                              Style="{DynamicResource SearchMetroTextBox}"
                              FontSize="14"
-                             Text="{Binding Path=SearchString, UpdateSourceTrigger=PropertyChanged}"/>
+                             Text="{Binding Path=SearchString, UpdateSourceTrigger=PropertyChanged}" />
 
                     <!--<ComboBox Grid.Row="0" 
                               Margin="5"
@@ -272,8 +293,7 @@
                     <ItemsControl x:Name="SearchListBox"
                                   Grid.Row="2"
                                   ItemsSource="{Binding Path=TagListCurrent, UpdateSourceTrigger=PropertyChanged}"
-                                  ItemTemplate="{StaticResource SearchTagElementDataTemplate}"
-                                  />
+                                  ItemTemplate="{StaticResource SearchTagElementDataTemplate}" />
 
                     <Border Grid.Row="3"
                             BorderThickness="1"
@@ -284,30 +304,35 @@
                     <ItemsControl x:Name="CurrentTags"
                                   Grid.Row="4"
                                   ItemsSource="{Binding Path=TagListTop, UpdateSourceTrigger=PropertyChanged}"
-                                  ItemTemplate="{StaticResource CurrentTagElementDataTemplate}" 
-                                  />
+                                  ItemTemplate="{StaticResource CurrentTagElementDataTemplate}" />
                 </Grid>
             </Border>
 
             <Border Grid.Column="0"
-                    BorderThickness="1"
+                    BorderThickness="0"
                     BorderBrush="{DynamicResource GrayBrush7}"
-                    HorizontalAlignment="Left"
+                    HorizontalAlignment="Stretch"
                     VerticalAlignment="Top"
-                    Margin="5,30">
-                <ListBox ItemsSource="{Binding TagListHintBox}" 
-                            MaxHeight="120">
-                    <ListBox.ItemTemplate>
+                    Margin="5,32,9,0">
+                <ListBox ItemsSource="{Binding TagListHintBox}"
+                         MaxHeight="120"
+                         Padding="0"
+                         ItemContainerStyle="{StaticResource SearchHintListBoxItemContainerStyle}"
+                         ScrollViewer.CanContentScroll="False"
+                         VirtualizingPanel.ScrollUnit="Item">
+                    <ItemsControl.ItemTemplate>
                         <DataTemplate>
                             <Button Command="{Binding RelativeSource={RelativeSource FindAncestor,
                                                       AncestorType={x:Type imoutoNavigator:MainWindow}},
                                                       Path=DataContext.AddTagToSearch}"
                                     CommandParameter="{Binding}"
-                                    >
-                                <TextBlock Text="{Binding Name}" />
+                                    Template="{StaticResource TagElementControlTemplate}"
+                                    HorizontalContentAlignment="Left">
+                                <TextBlock Text="{Binding Name}"
+                                           TextAlignment="Left" />
                             </Button>
                         </DataTemplate>
-                    </ListBox.ItemTemplate>
+                    </ItemsControl.ItemTemplate>
                 </ListBox>
             </Border>
         </Grid>
