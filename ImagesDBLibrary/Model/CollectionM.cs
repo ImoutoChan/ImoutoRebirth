@@ -35,7 +35,9 @@ namespace ImagesDBLibrary.Model
             {
                 return Sources.SelectMany(x => x.Images);
             }
-        } 
+        }
+
+        public bool IsActive { get; set; }
 
         #endregion Properties
 
@@ -54,6 +56,14 @@ namespace ImagesDBLibrary.Model
             );
 
             Parallel.ForEach(Sources.Where(x => !x.IsLoaded), x => x.LoadImages());
+            
+            
+            foreach (var collection in CollectionM.Collections)
+            {
+                collection.IsActive = false;
+            }
+
+            IsActive = true;
         }
 
         public void AddSource(string path)

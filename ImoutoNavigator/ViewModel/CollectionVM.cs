@@ -52,6 +52,14 @@ namespace ImoutoNavigator.ViewModel
 
         public SourceM SelectedSource { get; set; }
 
+        public bool IsActive 
+        { 
+            get
+            {
+                return _collection.IsActive;
+            }
+        }
+
         #endregion Properties
 
         #region Methods
@@ -130,26 +138,21 @@ namespace ImoutoNavigator.ViewModel
         {
             try
             {
-                var fbd = new FolderBrowserDialog();
-                DialogResult result = fbd.ShowDialog();
-                string[] files = Directory.GetFiles(fbd.SelectedPath);
-                System.Windows.Forms.MessageBox.Show("Files found: " + files.Length.ToString(), "Message");
-
                 OpenFileDialog openFileDialog1 = new OpenFileDialog();
 
-                openFileDialog1.FileName = "Filename will be ignored";
-                openFileDialog1.CheckPathExists = true;
-                openFileDialog1.ShowReadOnly = false;
-                openFileDialog1.ReadOnlyChecked = true;
-                openFileDialog1.CheckFileExists = false;
+                openFileDialog1.FileName = "Folder Selection";
                 openFileDialog1.ValidateNames = false;
+                openFileDialog1.CheckFileExists = false;
+                openFileDialog1.CheckPathExists = true;
 
                 if (openFileDialog1.ShowDialog() == DialogResult.OK)
                 {
-                    // openFileDialog1.FileName should contain the folder and a dummy filename
+                    var paths = openFileDialog1.FileName.Split(new[] { '\\' });
+                    paths.ToList().RemoveAt(paths.Count());
+                    _collection.AddSource(String.Join("\\", paths));
                 }
 
-                _collection.AddSource(@"C:\Users\Владимир\Downloads\Обои\Обои\magnificent_palaces");
+                
                 Reload();
             }
             catch

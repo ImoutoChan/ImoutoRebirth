@@ -42,7 +42,9 @@ namespace ImoutoNavigator.ViewModel
         public void Reload()
         {
             Collections = new ObservableCollection<CollectionVM>(CollectionM.Collections.Select(x => new CollectionVM(x)));
+            SelectedCollection = Collections.FirstOrDefault(x => x.IsActive);
             OnPropertyChanged("Collections");
+
         }
 
         #endregion Methods
