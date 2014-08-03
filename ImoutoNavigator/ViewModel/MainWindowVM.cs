@@ -27,7 +27,7 @@ namespace ImoutoNavigator.ViewModel
         private ObservableCollection<KeyValuePair<TagM, int>>   _tagListCurrent     = new ObservableCollection<KeyValuePair<TagM, int>>();
         private string                                          _searchString;
         private ObservableCollection<TagM>                      _tagListHintBox     = new ObservableCollection<TagM>();
-        private CollectionManagerVM                             _collectionManager  = new CollectionManagerVM();
+        private CollectionManagerVM                             _collectionManager;
 
         #endregion Fields
 
@@ -36,6 +36,7 @@ namespace ImoutoNavigator.ViewModel
         public MainWindowVM()
         {
             GetImageList();
+            _collectionManager = new CollectionManagerVM();
             InitializeCommands();
 
             _view = new MainWindow {DataContext = this};

@@ -148,10 +148,10 @@ namespace ImoutoNavigator.ViewModel
                 if (openFileDialog1.ShowDialog() == DialogResult.OK)
                 {
                     var paths = openFileDialog1.FileName.Split(new[] { '\\' });
-                    paths.ToList().RemoveAt(paths.Count());
-                    _collection.AddSource(String.Join("\\", paths));
+                    var truePaths = paths.ToList();
+                    truePaths.RemoveAt(paths.Count() - 1);
+                    _collection.AddSource(String.Join("\\", truePaths));
                 }
-
                 
                 Reload();
             }

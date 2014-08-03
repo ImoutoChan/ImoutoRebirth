@@ -6,6 +6,8 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
 using MahApps.Metro.Controls;
+using System.Threading.Tasks;
+using MahApps.Metro.Controls.Dialogs;
 
 namespace ImoutoNavigator
 {

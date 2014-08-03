@@ -44,6 +44,7 @@ namespace ImoutoNavigator.ViewModel
             Collections = new ObservableCollection<CollectionVM>(CollectionM.Collections.Select(x => new CollectionVM(x)));
             SelectedCollection = Collections.FirstOrDefault(x => x.IsActive);
             OnPropertyChanged("Collections");
+            OnPropertyChanged("SelectedCollection");
 
         }
 
@@ -64,14 +65,6 @@ namespace ImoutoNavigator.ViewModel
             get
             {
                 return _removeCommand ?? (_removeCommand = new RelayCommand(Remove, CanDoCollectionCommand));
-            }
-        }
-
-        public ICommand CreateCommand
-        {
-            get
-            {
-                return _createCommand ?? (_createCommand = new RelayCommand(Create));
             }
         }
 
@@ -102,17 +95,18 @@ namespace ImoutoNavigator.ViewModel
             return SelectedCollection != null;
         }
 
-        private void Create(object param)
+        public string CreateCollection(string name)
         {
             try
             {
-                CollectionM.Create("new collection");
+                CollectionM.Create(name);
                 Reload();
+                return null;
             }
-            catch
+            catch (Exception ex)
             {
-
-            }
+                return ex.Message;
+            }            
         }
 
         #endregion Command Handlers
