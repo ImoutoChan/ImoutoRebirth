@@ -64,6 +64,8 @@ namespace ImagesDBLibrary.Model
             }
 
             IsActive = true;
+
+            OnActivatedCollectionChanged(this);
         }
 
         public void AddSource(string path)
@@ -129,12 +131,30 @@ namespace ImagesDBLibrary.Model
 
         #region Static members
 
+        #region Static constructor
+
         static CollectionM()
         {
             Collections = ImagesDB.GetCollections().Select(x => new CollectionM(x, ImagesDB.GetSources(x))).ToList();
         }
 
+        #endregion Static constructor
+
+        #region Static properties
+
         public static List<CollectionM> Collections { get; private set; }
+
+        public static CollectionM ActivatedCollection 
+        { 
+            get
+            {
+                return CollectionM.Collections.FirstOrDefault(x => x.IsActive);
+            }
+        }
+
+        #endregion Static properties
+
+        #region Static methods
 
         public static CollectionM Create(string name)
         {
@@ -151,6 +171,22 @@ namespace ImagesDBLibrary.Model
 
             return collection;
         }
+
+        #endregion Static method
+
+        #region Static events
+        
+        public static event EventHandler ActivatedCollectionChanged;
+
+        private static void OnActivatedCollectionChanged(object sender)
+        {
+            if (ActivatedCollectionChanged != null)
+            {
+                ActivatedCollectionChanged(sender, new EventArgs());
+            }
+        }
+
+        #endregion Static events
 
         #endregion Static members
     }

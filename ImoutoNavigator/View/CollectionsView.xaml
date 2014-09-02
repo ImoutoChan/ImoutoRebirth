@@ -26,11 +26,20 @@
                         Margin="0,5,0,0">
                 <Button Content="Delete" 
                         Command="{Binding RemoveCommand}" />
+
+                <!--<Button Content="Rename"
+                        Command="{Binding CreateCommand}"
+                        Click="Button_Click"
+                        Margin="10,0,0,0" />-->
                 
                 <Button Content="Create"
                         Command="{Binding CreateCommand}"
                         Click="Button_Click"
-                        Margin="10,0,0,0"/>                
+                        Margin="10,0,0,0"/>
+                
+                <Button Content="Activate"
+                        Command="{Binding Path=ActivateCommand}"
+                        Margin="10,0,0,0" />
             </StackPanel>
 
             <TextBlock Text="Sources"

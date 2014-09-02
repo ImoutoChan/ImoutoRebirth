@@ -193,9 +193,9 @@ namespace ImoutoNavigator.ViewModel
                 var namedType = TagTypeM.Create("FromName");
 
                 collection = CollectionM.Create("MainColleciton");
-                CollectionM.Create("SubColleciton").AddSource(@"C:\Users\Владимир\Downloads\Обои\Обои\magnificent_palaces");
-                collection.AddSource(@"C:\Users\Владимир\Downloads\Обои\Обои\magnificent_palaces");
-                collection.AddSource(@"C:\Users\Владимир\Downloads\Обои\Обои\Замки");
+                CollectionM.Create("SubColleciton").AddSource(@"C:\Users\Владимир\Downloads\Обои\Test");
+                collection.AddSource(@"C:\Users\Владимир\Downloads\Обои\Test");
+                //collection.AddSource(@"C:\Users\Владимир\Downloads\Обои\Обои\Замки");
                 //collection.AddSource(@"C:\Users\oniii-chan\Downloads\temp\source_named");
                 //collection.AddSource(@"C:\Users\oniii-chan\Downloads\DLS\art");
                 //collection.AddSource(@"T:\art");
@@ -273,14 +273,20 @@ namespace ImoutoNavigator.ViewModel
             {
                 collection = CollectionM.Collections.First();
             }
-            collection.Activate();
-            _imageList = new ObservableCollection<ImageEntryVM>(collection.Images.Select(x => new ImageEntryVM(x, PreviewSize)));
-        }
+            CollectionM.ActivatedCollectionChanged += (s, e) => Reload();
 
+            collection.Activate();
+        }
+        
         private void Reload()
         {
-             //GetImageList();
-             OnPropertyChanged("ImageList");
+            if (CollectionM.ActivatedCollection != null)
+            {
+                _imageList = new ObservableCollection<ImageEntryVM>((CollectionM.ActivatedCollection.Images.Select(x => new ImageEntryVM(x, PreviewSize))));
+                _imageListView = null;
+            }
+
+            OnPropertyChanged("ImageList");
         }
 
         private void UpdatePreviews()

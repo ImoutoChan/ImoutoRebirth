@@ -17,6 +17,7 @@ namespace ImoutoNavigator.ViewModel
         private ICommand _renameCommand;
         private ICommand _removeCommand;
         private ICommand _createCommand;
+        private ICommand _activateCommand;
 
         #endregion Fields
 
@@ -68,9 +69,25 @@ namespace ImoutoNavigator.ViewModel
             }
         }
 
+        public ICommand ActivateCommand
+        {
+            get
+            {
+                return _activateCommand ?? (_activateCommand = new RelayCommand(Activate));
+            }
+        }
+
         #endregion Commands
 
         #region Command Handlers
+
+        private void Activate(object obj)
+        {
+            if (SelectedCollection != null)
+            {
+                SelectedCollection.Activate();
+            }
+        }
 
         private void Rename(object param)
         {

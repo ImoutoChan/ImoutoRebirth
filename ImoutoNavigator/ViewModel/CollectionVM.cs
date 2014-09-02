@@ -80,6 +80,11 @@ namespace ImoutoNavigator.ViewModel
             _collection.Rename(newName);
         }
 
+        public void Activate()
+        {
+            _collection.Activate();
+        }
+
         #endregion Methods
 
         #region Handlers
@@ -138,20 +143,28 @@ namespace ImoutoNavigator.ViewModel
         {
             try
             {
-                OpenFileDialog openFileDialog1 = new OpenFileDialog();
+                var folderBrowserDialog = new FolderBrowserDialog();
 
-                openFileDialog1.FileName = "Folder Selection";
-                openFileDialog1.ValidateNames = false;
-                openFileDialog1.CheckFileExists = false;
-                openFileDialog1.CheckPathExists = true;
-
-                if (openFileDialog1.ShowDialog() == DialogResult.OK)
+                if (folderBrowserDialog.ShowDialog() == DialogResult.OK)
                 {
-                    var paths = openFileDialog1.FileName.Split(new[] { '\\' });
-                    var truePaths = paths.ToList();
-                    truePaths.RemoveAt(paths.Count() - 1);
-                    _collection.AddSource(String.Join("\\", truePaths));
+                    var path = folderBrowserDialog.SelectedPath;
+                    _collection.AddSource(path);
                 }
+
+                //OpenFileDialog openFileDialog1 = new OpenFileDialog();
+
+                //openFileDialog1.FileName = "Folder Selection";
+                //openFileDialog1.ValidateNames = false;
+                //openFileDialog1.CheckFileExists = false;
+                //openFileDialog1.CheckPathExists = true;
+
+                //if (openFileDialog1.ShowDialog() == DialogResult.OK)
+                //{
+                //    var paths = openFileDialog1.FileName.Split(new[] { '\\' });
+                //    var truePaths = paths.ToList();
+                //    truePaths.RemoveAt(paths.Count() - 1);
+                //    _collection.AddSource(String.Join("\\", truePaths));
+                //}
                 
                 Reload();
             }
