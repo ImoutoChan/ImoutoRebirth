@@ -72,11 +72,17 @@
                 <ColumnDefinition Width="3*" />
             </Grid.ColumnDefinitions>
 
+
+            <metroControl:ProgressRing IsActive="{Binding Path=IsLoading, Mode=OneWay}"
+                                       Grid.Column="1"
+                                       Visibility="{Binding Path=IsLoading, Converter={StaticResource VisibilityConverter}, Mode=OneWay}" />
+            
             <ListBox x:Name="ListBoxElement"
                      Grid.Column="1"
                      ScrollViewer.HorizontalScrollBarVisibility="Disabled"
                      ItemsSource="{Binding Path=ImageList, UpdateSourceTrigger=PropertyChanged}"
-                     SelectionMode="Extended">
+                     SelectionMode="Extended"
+                     Visibility="{Binding Path=IsLoading, Converter={StaticResource VisibilityInvertConverter}, Mode=OneWay}">
                 <ListBox.InputBindings>
                     <MouseBinding Command="{Binding Path=ZoomOutCommand}"
                                   Gesture="{x:Static userControl:MouseWheelGesture.CtrlDown}" />

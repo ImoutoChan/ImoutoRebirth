@@ -4,6 +4,7 @@ using System;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Media.Imaging;
 using Utils;
@@ -162,13 +163,15 @@ namespace ImoutoNavigator.Model
 
         #region Methods
 
-        private void LoadAsyns()
+        private async void LoadAsyns()
         {
             _isLoading = true;
 
             PreviewLoadingThreadQueue.Add(Load);
 
-            OnImageChanged();
+            //await Task.Run(() => Load());
+            //OnImageChanged();
+
         }
 
         private void Load()
@@ -225,18 +228,15 @@ namespace ImoutoNavigator.Model
                     _isLoading = false;
                     _isLoaded = true;
                 }
-
-                OnImageChanged();
             }
             catch (Exception e)
             {
                 IsError = true;
                 ErrorMessage = e.Message;
-
-                OnImageChanged();
             }
             finally
             {
+                OnImageChanged();
             }
         }
 

@@ -10,7 +10,7 @@ drag&drop
 
 Taaags
 
-scroll 1-2 lines only
+scroll 1-2 lines only***
 tab in search result
 +searchresult kire
 tags template
@@ -19,3 +19,4 @@ tags screen
 	remove tags
 	edit tag
 Collection screen
+Collection/source check on exist

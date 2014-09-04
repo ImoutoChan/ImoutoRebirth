@@ -4,6 +4,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:viewModel="clr-namespace:ImoutoNavigator.ViewModel"
+             xmlns:Controls="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
              mc:Ignorable="d"
              d:DesignHeight="700"
              d:DesignWidth="300"
@@ -45,11 +46,25 @@
             <TextBlock Text="Sources"
                        Margin="0,10,0,0" />
 
-            <ListBox ItemsSource="{Binding ElementName=Collectons, Path=SelectedItem.Sources}" 
+            <ListBox ItemsSource="{Binding ElementName=Collectons, Path=SelectedItem.Sources}"
                      Height="300"
-                     DisplayMemberPath="Path"
-                     SelectedItem="{Binding ElementName=Collectons, Path=SelectedItem.SelectedSource}" />
-            
+                     SelectedItem="{Binding ElementName=Collectons, Path=SelectedItem.SelectedSource}">
+                <ListBox.ItemTemplate>
+                    <DataTemplate>
+                        <DockPanel>
+                            <Controls:ProgressRing DockPanel.Dock="Left"
+                                                   Margin="2,2,10,2"
+                                                   Width="10"
+                                                   Height="10"
+                                                   IsActive="{Binding Path=IsLoading, Mode=OneWay}" />                           
+                            <TextBlock DockPanel.Dock="Left"
+                                       Margin="0,4"
+                                       Text="{Binding Path=Path, Mode=OneWay}" />
+                        </DockPanel>
+                    </DataTemplate>
+                </ListBox.ItemTemplate>
+            </ListBox>
+
             <StackPanel HorizontalAlignment="Right"
                         Orientation="Horizontal"
                         Margin="0,5,0,0">

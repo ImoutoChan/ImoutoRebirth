@@ -68,7 +68,7 @@ namespace ImagesDBLibrary.Model
             OnActivatedCollectionChanged(this);
         }
 
-        public void AddSource(string path)
+        public SourceM AddSource(string path)
         {
             if (Sources.Any(x => x.Path == path))
             {
@@ -80,6 +80,8 @@ namespace ImagesDBLibrary.Model
             ImagesDB.AddSourceToCollection(DbId, source.DbId);
 
             Sources.Add(source);
+
+            return SourceM.Sources.FirstOrDefault(x => x.Path == path);
         }
 
         public void RemoveSource(SourceM source)

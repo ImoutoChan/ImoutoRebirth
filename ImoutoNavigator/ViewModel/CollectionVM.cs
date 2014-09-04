@@ -15,7 +15,7 @@ namespace ImoutoNavigator.ViewModel
     class CollectionVM : VMBase
     {
         private CollectionM _collection;
-        private ObservableCollection<SourceM> _sourcesCollection;
+        private ObservableCollection<SourceVM> _sourcesCollection;
         private ICommand _addSourceCommand;
         private ICommand _removeSourceCommand;
 
@@ -23,7 +23,7 @@ namespace ImoutoNavigator.ViewModel
         {
             _collection = collection ?? CollectionM.Create(newCollectionName);
 
-            Reload();
+            LoadSources();
 
             _sourcesCollection.CollectionChanged += _sourcesCollection_CollectionChanged;
         }
@@ -42,7 +42,7 @@ namespace ImoutoNavigator.ViewModel
             }
         }
 
-        public ObservableCollection<SourceM> Sources
+        public ObservableCollection<SourceVM> Sources
         {
             get
             {
@@ -50,7 +50,7 @@ namespace ImoutoNavigator.ViewModel
             }
         }
 
-        public SourceM SelectedSource { get; set; }
+        public SourceVM SelectedSource { get; set; }
 
         public bool IsActive 
         { 
@@ -64,10 +64,9 @@ namespace ImoutoNavigator.ViewModel
 
         #region Methods
         
-        private void Reload()
+        private void LoadSources()
         {
-            _sourcesCollection = new ObservableCollection<SourceM>(_collection.Sources);
-            OnPropertyChanged("Sources");
+            _sourcesCollection = new ObservableCollection<SourceVM>(_collection.Sources.Select(x => new SourceVM(x, _collection)));
         }
 
         public void Remove()
@@ -148,29 +147,11 @@ namespace ImoutoNavigator.ViewModel
                 if (folderBrowserDialog.ShowDialog() == DialogResult.OK)
                 {
                     var path = folderBrowserDialog.SelectedPath;
-                    _collection.AddSource(path);
+                    _sourcesCollection.Add(new SourceVM(path, _collection));
                 }
-
-                //OpenFileDialog openFileDialog1 = new OpenFileDialog();
-
-                //openFileDialog1.FileName = "Folder Selection";
-                //openFileDialog1.ValidateNames = false;
-                //openFileDialog1.CheckFileExists = false;
-                //openFileDialog1.CheckPathExists = true;
-
-                //if (openFileDialog1.ShowDialog() == DialogResult.OK)
-                //{
-                //    var paths = openFileDialog1.FileName.Split(new[] { '\\' });
-                //    var truePaths = paths.ToList();
-                //    truePaths.RemoveAt(paths.Count() - 1);
-                //    _collection.AddSource(String.Join("\\", truePaths));
-                //}
-                
-                Reload();
             }
             catch
             {
-
             }
         }
 
@@ -178,8 +159,8 @@ namespace ImoutoNavigator.ViewModel
         {
             if (SelectedSource != null)
             {
-                _collection.RemoveSource(SelectedSource);
-                Reload();
+                SelectedSource.Remove();
+                _sourcesCollection.Remove(SelectedSource);
             }
         }
 

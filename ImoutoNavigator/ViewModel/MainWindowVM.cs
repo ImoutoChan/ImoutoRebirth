@@ -12,6 +12,7 @@ using System.Linq;
 using System.Windows;
 using System.Windows.Input;
 using Utils;
+using System.Threading.Tasks;
 
 namespace ImoutoNavigator.ViewModel
 {
@@ -28,6 +29,7 @@ namespace ImoutoNavigator.ViewModel
         private string                                          _searchString;
         private ObservableCollection<TagM>                      _tagListHintBox     = new ObservableCollection<TagM>();
         private CollectionManagerVM                             _collectionManager;
+        private bool                                            _isLoading;
 
         #endregion Fields
 
@@ -35,7 +37,6 @@ namespace ImoutoNavigator.ViewModel
 
         public MainWindowVM()
         {
-            GetImageList();
             _collectionManager = new CollectionManagerVM();
             InitializeCommands();
 
@@ -139,6 +140,16 @@ namespace ImoutoNavigator.ViewModel
             }
         }
 
+        public bool IsLoading
+        {
+            get { return _isLoading; }
+            private set
+            {
+                _isLoading = value;
+                OnPropertyChanged("IsLoading");
+            }
+        }
+
         #endregion Properties
 
         #region Commands
@@ -173,8 +184,20 @@ namespace ImoutoNavigator.ViewModel
 
         #region Methods
 
+        public void InitializeCollections()
+        {
+            CollectionM.ActivatedCollectionChanged += (s, e) => Reload();
+            if (CollectionM.Collections.Count != 0)
+            {
+                // TODO save last activated
+                CollectionM.Collections.First().Activate();
+            }
+        }
+
         private void GetImageList()
         {
+
+
             //_imageList = new ObservableCollection<ImageEntryVM>(
             //    Directory.GetFiles(@"T:\art")
             //        .Where(ImageEntry.IsImage)
@@ -271,22 +294,17 @@ namespace ImoutoNavigator.ViewModel
             }
             else
             {
-                collection = CollectionM.Collections.First();
             }
-            CollectionM.ActivatedCollectionChanged += (s, e) => Reload();
 
-            collection.Activate();
+            //collection.Activate();
         }
         
         private void Reload()
         {
             if (CollectionM.ActivatedCollection != null)
             {
-                _imageList = new ObservableCollection<ImageEntryVM>((CollectionM.ActivatedCollection.Images.Select(x => new ImageEntryVM(x, PreviewSize))));
-                _imageListView = null;
+                GetImagesFromCollectionAsync();                
             }
-
-            OnPropertyChanged("ImageList");
         }
 
         private void UpdatePreviews()
@@ -361,13 +379,34 @@ namespace ImoutoNavigator.ViewModel
             }
         }
 
+        private async void GetImagesFromCollectionAsync()
+        {
+            IsLoading = true;
+
+            _imageList = await GetImagesFromCollectionAsyncTask();
+            _imageListView = null;
+            OnPropertyChanged("ImageList");
+            
+            IsLoading = false;
+
+            LoadPreviews();
+        }
+
+        private Task<ObservableCollection<ImageEntryVM>> GetImagesFromCollectionAsyncTask()
+        {
+            return Task.Run<ObservableCollection<ImageEntryVM>>(() => 
+            { 
+                return new ObservableCollection<ImageEntryVM>(CollectionM.ActivatedCollection.Images.Select(x => new ImageEntryVM(x, PreviewSize))); 
+            });
+        }
+
         #endregion Methods
 
         #region Event handlers
 
         private void _view_Loaded(object sender, RoutedEventArgs e)
         {
-            //Reload();
+            InitializeCollections();
         }
 
         #endregion Event handlers

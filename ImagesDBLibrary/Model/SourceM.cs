@@ -59,7 +59,11 @@ namespace ImagesDBLibrary.Model
 
         public override string ToString()
         {
+#if debug
             return String.Format("IsLoaded: {0} : Path: {1} : DBId: {2}", IsLoaded, Path, DbId);
+#else
+            return Path;
+#endif
         }
 
         #endregion Methods

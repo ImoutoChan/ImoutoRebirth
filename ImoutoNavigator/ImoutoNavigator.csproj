@@ -105,6 +105,7 @@
     <Compile Include="ViewModel\CollectionVM.cs" />
     <Compile Include="ViewModel\ImageEntryVM.cs" />
     <Compile Include="ViewModel\MainWindowVM.cs" />
+    <Compile Include="ViewModel\SourceVM.cs" />
     <Compile Include="ViewModel\VMBase.cs" />
     <Compile Include="View\CollectionsView.xaml.cs">
       <DependentUpon>CollectionsView.xaml</DependentUpon>
