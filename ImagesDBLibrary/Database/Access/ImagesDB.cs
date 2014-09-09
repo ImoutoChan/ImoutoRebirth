@@ -400,9 +400,50 @@ namespace ImagesDBLibrary.Database.Access
             using (var db = new ImagesDBConnection())
             {
                 var dbimage = db.Images.Find(image.Id);
-                
-                return dbimage.TagSets.Where(x => x.Type == TagSetTypesEnum.ActualTypeName || x.Type == TagSetTypesEnum.UserTypeName).SelectMany(x => x.Tags).Distinct().ToList();
+
+                //return dbimage.TagSets.Where(x => x.Type == TagSetTypesEnum.ActualTypeName || x.Type == TagSetTypesEnum.UserTypeName).SelectMany(x => x.Tags).Distinct().ToList();
+                return dbimage.TagSets.SelectMany(x => x.Tags).Distinct().ToList();
             }
+        }
+
+        public static Dictionary<Image, List<Tag>> GetTagsForImages(List<Image> images)
+        {
+            var result = new Dictionary<Image, List<Tag>>();
+
+            using (var db = new ImagesDBConnection())
+            {
+                foreach (var image in images)
+                {
+                    var dbimage = db.Images.Find(image.Id);
+
+                    result.Add(image, dbimage.TagSets.Where(x => x.Type == TagSetTypesEnum.ActualTypeName || x.Type == TagSetTypesEnum.UserTypeName).SelectMany(x => x.Tags).Distinct().ToList());
+                }
+            }
+
+            return result;
+        }
+
+        public static Dictionary<Image, List<Tag>> GetTagsForImagesUsingSQL(List<Image> images)
+        {
+            var result = new Dictionary<Image, List<Tag>>();
+
+            using (var db = new ImagesDBConnection())
+            {
+                foreach (var image in images)
+                {                    
+                    var tags = db.Database.SqlQuery<int>(@"     
+                            SELECT t.Id 
+                            FROM Tag t
+                            INNER JOIN TagsInTagSet tits ON tits.Tag = t.Id
+                            INNER JOIN TagSet ts ON ts.FKImage = @p0", image.Id);                   
+
+                    //var dbimage = db.Images.Find(image.Id);
+                    //result.Add(image, dbimage.TagSets.Where(x => x.Type == TagSetTypesEnum.ActualTypeName || x.Type == TagSetTypesEnum.UserTypeName).SelectMany(x => x.Tags).Distinct().ToList());
+                    result.Add(image, db.Tags.Where(x => tags.Contains(x.Id)).ToList());
+                }
+            }
+
+            return result;
         }
 
         #endregion Image logic

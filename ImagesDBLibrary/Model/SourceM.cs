@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using ImagesDBLibrary.Database.Access;
 using ImagesDBLibrary.Database.Model;
+using System.Diagnostics;
 
 namespace ImagesDBLibrary.Model
 {
@@ -35,7 +36,24 @@ namespace ImagesDBLibrary.Model
 
         public void LoadImages()
         {
-            Images = ImagesDB.GetImages(DbId).Select(x => new ImageM(x, ImagesDB.GetTagsFromImage(x)));
+            var sw = new Stopwatch();
+            sw.Start();
+
+            var images = ImagesDB.GetImages(DbId);
+            var imagesWithTags = ImagesDB.GetTagsForImages(images);
+            Images = imagesWithTags.Select(x => new ImageM(x.Key, x.Value));
+
+            //Images = ImagesDB.GetImages(DbId).Select(x => new ImageM(x, ImagesDB.GetTagsFromImage(x))).ToList();
+
+            //var images = ImagesDB.GetImages(DbId);
+            //var imagesWithTags = ImagesDB.GetTagsForImagesUsingSQL(images);
+            //Images = imagesWithTags.Select(x => new ImageM(x.Key, x.Value));
+
+            sw.Stop();
+            //Debug.Print("{0} ms", sw.ElapsedMilliseconds);
+            System.Windows.Forms.MessageBox.Show(String.Format("{0} ms", sw.ElapsedMilliseconds));
+
+
             IsLoaded = true;
         }
 
