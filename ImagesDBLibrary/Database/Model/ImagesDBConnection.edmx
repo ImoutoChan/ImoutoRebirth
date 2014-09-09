@@ -4,7 +4,7 @@
   <edmx:Runtime>
     <!-- SSDL content -->
     <edmx:StorageModels>
-    <Schema Namespace="ImagesDBModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+      <Schema Namespace="ImagesDBModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
         <EntityType Name="Collection">
           <Key>
             <PropertyRef Name="Id" />
@@ -51,30 +51,25 @@
           <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="Name" Type="nvarchar" MaxLength="256" Nullable="false" />
           <Property Name="Type" Type="int" Nullable="false" />
+          <Property Name="HasValue" Type="bit" Nullable="false" />
         </EntityType>
-        <EntityType Name="TagSet">
+        <EntityType Name="TagsInImages">
           <Key>
-            <PropertyRef Name="Id" />
+            <PropertyRef Name="ImageFK" />
+            <PropertyRef Name="TagFK" />
           </Key>
-          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
-          <Property Name="AddedDate" Type="datetime" Nullable="false" />
-          <Property Name="FKImage" Type="int" Nullable="false" />
-          <Property Name="Type" Type="varchar" MaxLength="6" Nullable="false" />
-        </EntityType>
-        <EntityType Name="TagsInTagSet">
-          <Key>
-            <PropertyRef Name="TagSet" />
-            <PropertyRef Name="Tag" />
-          </Key>
-          <Property Name="TagSet" Type="int" Nullable="false" />
-          <Property Name="Tag" Type="int" Nullable="false" />
+          <Property Name="ImageFK" Type="int" Nullable="false" />
+          <Property Name="TagFK" Type="int" Nullable="false" />
+          <Property Name="UserAdded" Type="bit" Nullable="false" />
+          <Property Name="Value" Type="nvarchar" MaxLength="256" />
+          <Property Name="AddedTime" Type="datetime2" Precision="7" Nullable="false" />
         </EntityType>
         <EntityType Name="TagType">
           <Key>
             <PropertyRef Name="Id" />
           </Key>
           <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
-          <Property Name="Name" Type="nvarchar" MaxLength="100" Nullable="false" />
+          <Property Name="Name" Type="nvarchar" MaxLength="256" Nullable="false" />
         </EntityType>
         <Association Name="FK_ImagesInSources_ToImage">
           <End Role="Image" Type="Self.Image" Multiplicity="1" />
@@ -124,7 +119,7 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK_Tag_ToTagType">
+        <Association Name="FK_Tag_TagType">
           <End Role="TagType" Type="Self.TagType" Multiplicity="1" />
           <End Role="Tag" Type="Self.Tag" Multiplicity="*" />
           <ReferentialConstraint>
@@ -136,43 +131,30 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK_TagSet_ToImage">
+        <Association Name="FK_TagsInImages_Image">
           <End Role="Image" Type="Self.Image" Multiplicity="1" />
-          <End Role="TagSet" Type="Self.TagSet" Multiplicity="*" />
+          <End Role="TagsInImages" Type="Self.TagsInImages" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="Image">
               <PropertyRef Name="Id" />
             </Principal>
-            <Dependent Role="TagSet">
-              <PropertyRef Name="FKImage" />
+            <Dependent Role="TagsInImages">
+              <PropertyRef Name="ImageFK" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK_TagsInTagSet_Tag">
+        <Association Name="FK_TagsInImages_Tag">
           <End Role="Tag" Type="Self.Tag" Multiplicity="1" />
-          <End Role="TagsInTagSet" Type="Self.TagsInTagSet" Multiplicity="*" />
+          <End Role="TagsInImages" Type="Self.TagsInImages" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="Tag">
               <PropertyRef Name="Id" />
             </Principal>
-            <Dependent Role="TagsInTagSet">
-              <PropertyRef Name="Tag" />
+            <Dependent Role="TagsInImages">
+              <PropertyRef Name="TagFK" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK_TagsInTagSet_TagSet">
-          <End Role="TagSet" Type="Self.TagSet" Multiplicity="1" />
-          <End Role="TagsInTagSet" Type="Self.TagsInTagSet" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="TagSet">
-              <PropertyRef Name="Id" />
-            </Principal>
-            <Dependent Role="TagsInTagSet">
-              <PropertyRef Name="TagSet" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Function Name="FilterImagesByTags" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" />
         <EntityContainer Name="ImagesDBModelStoreContainer">
           <EntitySet Name="Collection" EntityType="Self.Collection" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Image" EntityType="Self.Image" Schema="dbo" store:Type="Tables" />
@@ -180,8 +162,7 @@
           <EntitySet Name="Source" EntityType="Self.Source" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="SourcesInCollection" EntityType="Self.SourcesInCollection" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Tag" EntityType="Self.Tag" Schema="dbo" store:Type="Tables" />
-          <EntitySet Name="TagSet" EntityType="Self.TagSet" Schema="dbo" store:Type="Tables" />
-          <EntitySet Name="TagsInTagSet" EntityType="Self.TagsInTagSet" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="TagsInImages" EntityType="Self.TagsInImages" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="TagType" EntityType="Self.TagType" Schema="dbo" store:Type="Tables" />
           <AssociationSet Name="FK_ImagesInSources_ToImage" Association="Self.FK_ImagesInSources_ToImage">
             <End Role="Image" EntitySet="Image" />
@@ -199,27 +180,32 @@
             <End Role="Source" EntitySet="Source" />
             <End Role="SourcesInCollection" EntitySet="SourcesInCollection" />
           </AssociationSet>
-          <AssociationSet Name="FK_Tag_ToTagType" Association="Self.FK_Tag_ToTagType">
+          <AssociationSet Name="FK_Tag_TagType" Association="Self.FK_Tag_TagType">
             <End Role="TagType" EntitySet="TagType" />
             <End Role="Tag" EntitySet="Tag" />
           </AssociationSet>
-          <AssociationSet Name="FK_TagSet_ToImage" Association="Self.FK_TagSet_ToImage">
+          <AssociationSet Name="FK_TagsInImages_Image" Association="Self.FK_TagsInImages_Image">
             <End Role="Image" EntitySet="Image" />
-            <End Role="TagSet" EntitySet="TagSet" />
+            <End Role="TagsInImages" EntitySet="TagsInImages" />
           </AssociationSet>
-          <AssociationSet Name="FK_TagsInTagSet_Tag" Association="Self.FK_TagsInTagSet_Tag">
+          <AssociationSet Name="FK_TagsInImages_Tag" Association="Self.FK_TagsInImages_Tag">
             <End Role="Tag" EntitySet="Tag" />
-            <End Role="TagsInTagSet" EntitySet="TagsInTagSet" />
-          </AssociationSet>
-          <AssociationSet Name="FK_TagsInTagSet_TagSet" Association="Self.FK_TagsInTagSet_TagSet">
-            <End Role="TagSet" EntitySet="TagSet" />
-            <End Role="TagsInTagSet" EntitySet="TagsInTagSet" />
+            <End Role="TagsInImages" EntitySet="TagsInImages" />
           </AssociationSet>
         </EntityContainer>
-      </Schema></edmx:StorageModels>
+      </Schema>
+    </edmx:StorageModels>
     <!-- CSDL content -->
     <edmx:ConceptualModels>
       <Schema Namespace="ImagesDBModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+        <EntityType Name="Collection">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Name" Type="String" MaxLength="100" FixedLength="false" Unicode="true" Nullable="false" />
+          <NavigationProperty Name="Sources" Relationship="Self.SourcesInCollection" FromRole="Collection" ToRole="Source" />
+        </EntityType>
         <EntityType Name="Image">
           <Key>
             <PropertyRef Name="Id" />
@@ -228,8 +214,17 @@
           <Property Name="Md5" Type="String" MaxLength="32" FixedLength="true" Unicode="false" Nullable="false" />
           <Property Name="Size" Type="Int64" Nullable="false" />
           <Property Name="Path" Type="String" MaxLength="4000" FixedLength="false" Unicode="true" Nullable="false" />
-          <NavigationProperty Name="TagSets" Relationship="Self.FK_TagSet_ToImage" FromRole="Image" ToRole="TagSet" />
-          <NavigationProperty Name="Sources" Relationship="ImagesDBModel.ImagesInSources" FromRole="Image" ToRole="Source" />
+          <NavigationProperty Name="TagsInImages" Relationship="Self.FK_TagsInImages_Image" FromRole="Image" ToRole="TagsInImages" />
+          <NavigationProperty Name="Sources" Relationship="Self.ImagesInSources" FromRole="Image" ToRole="Source" />
+        </EntityType>
+        <EntityType Name="Source">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Path" Type="String" MaxLength="4000" FixedLength="false" Unicode="true" Nullable="false" />
+          <NavigationProperty Name="Images" Relationship="Self.ImagesInSources" FromRole="Source" ToRole="Image" />
+          <NavigationProperty Name="Collections" Relationship="Self.SourcesInCollection" FromRole="Source" ToRole="Collection" />
         </EntityType>
         <EntityType Name="Tag">
           <Key>
@@ -238,41 +233,44 @@
           <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="Name" Type="String" MaxLength="256" FixedLength="false" Unicode="true" Nullable="false" />
           <Property Name="Type" Type="Int32" Nullable="false" />
-          <NavigationProperty Name="TagType" Relationship="Self.FK_Tag_ToTagType" FromRole="Tag" ToRole="TagType" />
-          <NavigationProperty Name="TagSets" Relationship="Self.TagsInTagSet" FromRole="Tag" ToRole="TagSet" />
+          <Property Name="HasValue" Type="Boolean" Nullable="false" />
+          <NavigationProperty Name="TagType" Relationship="Self.FK_Tag_TagType" FromRole="Tag" ToRole="TagType" />
+          <NavigationProperty Name="TagsInImages" Relationship="Self.FK_TagsInImages_Tag" FromRole="Tag" ToRole="TagsInImages" />
         </EntityType>
-        <EntityType Name="TagSet">
+        <EntityType Name="TagsInImage">
           <Key>
-            <PropertyRef Name="Id" />
+            <PropertyRef Name="ImageFK" />
+            <PropertyRef Name="TagFK" />
           </Key>
-          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="AddedDate" Type="DateTime" Nullable="false" Precision="3" />
-          <Property Name="FKImage" Type="Int32" Nullable="false" />
-          <Property Name="Type" Type="String" MaxLength="6" FixedLength="false" Unicode="false" Nullable="false" />
-          <NavigationProperty Name="Image" Relationship="Self.FK_TagSet_ToImage" FromRole="TagSet" ToRole="Image" />
-          <NavigationProperty Name="Tags" Relationship="Self.TagsInTagSet" FromRole="TagSet" ToRole="Tag" />
+          <Property Name="ImageFK" Type="Int32" Nullable="false" />
+          <Property Name="TagFK" Type="Int32" Nullable="false" />
+          <Property Name="UserAdded" Type="Boolean" Nullable="false" />
+          <Property Name="Value" Type="String" MaxLength="256" FixedLength="false" Unicode="true" />
+          <Property Name="AddedTime" Type="DateTime" Nullable="false" Precision="7" />
+          <NavigationProperty Name="Image" Relationship="Self.FK_TagsInImages_Image" FromRole="TagsInImages" ToRole="Image" />
+          <NavigationProperty Name="Tag" Relationship="Self.FK_TagsInImages_Tag" FromRole="TagsInImages" ToRole="Tag" />
         </EntityType>
         <EntityType Name="TagType">
           <Key>
             <PropertyRef Name="Id" />
           </Key>
           <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="Name" Type="String" MaxLength="100" FixedLength="false" Unicode="true" Nullable="false" />
-          <NavigationProperty Name="Tags" Relationship="Self.FK_Tag_ToTagType" FromRole="TagType" ToRole="Tag" />
+          <Property Name="Name" Type="String" MaxLength="256" FixedLength="false" Unicode="true" Nullable="false" />
+          <NavigationProperty Name="Tags" Relationship="Self.FK_Tag_TagType" FromRole="TagType" ToRole="Tag" />
         </EntityType>
-        <Association Name="FK_TagSet_ToImage">
+        <Association Name="FK_TagsInImages_Image">
           <End Role="Image" Type="Self.Image" Multiplicity="1" />
-          <End Role="TagSet" Type="Self.TagSet" Multiplicity="*" />
+          <End Role="TagsInImages" Type="Self.TagsInImage" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="Image">
               <PropertyRef Name="Id" />
             </Principal>
-            <Dependent Role="TagSet">
-              <PropertyRef Name="FKImage" />
+            <Dependent Role="TagsInImages">
+              <PropertyRef Name="ImageFK" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK_Tag_ToTagType">
+        <Association Name="FK_Tag_TagType">
           <End Role="TagType" Type="Self.TagType" Multiplicity="1" />
           <End Role="Tag" Type="Self.Tag" Multiplicity="*" />
           <ReferentialConstraint>
@@ -284,70 +282,68 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="TagsInTagSet">
-          <End Role="Tag" Type="Self.Tag" Multiplicity="*" />
-          <End Role="TagSet" Type="Self.TagSet" Multiplicity="*" />
+        <Association Name="FK_TagsInImages_Tag">
+          <End Role="Tag" Type="Self.Tag" Multiplicity="1" />
+          <End Role="TagsInImages" Type="Self.TagsInImage" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Tag">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="TagsInImages">
+              <PropertyRef Name="TagFK" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="ImagesInSources">
+          <End Role="Image" Type="Self.Image" Multiplicity="*" />
+          <End Role="Source" Type="Self.Source" Multiplicity="*" />
+        </Association>
+        <Association Name="SourcesInCollection">
+          <End Role="Collection" Type="Self.Collection" Multiplicity="*" />
+          <End Role="Source" Type="Self.Source" Multiplicity="*" />
         </Association>
         <EntityContainer Name="ImagesDBConnection" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="Collections" EntityType="Self.Collection" />
           <EntitySet Name="Images" EntityType="Self.Image" />
+          <EntitySet Name="Sources" EntityType="Self.Source" />
           <EntitySet Name="Tags" EntityType="Self.Tag" />
-          <EntitySet Name="TagSets" EntityType="Self.TagSet" />
+          <EntitySet Name="TagsInImages" EntityType="Self.TagsInImage" />
           <EntitySet Name="TagTypes" EntityType="Self.TagType" />
-          <AssociationSet Name="FK_TagSet_ToImage" Association="Self.FK_TagSet_ToImage">
+          <AssociationSet Name="FK_TagsInImages_Image" Association="Self.FK_TagsInImages_Image">
             <End Role="Image" EntitySet="Images" />
-            <End Role="TagSet" EntitySet="TagSets" />
+            <End Role="TagsInImages" EntitySet="TagsInImages" />
           </AssociationSet>
-          <AssociationSet Name="FK_Tag_ToTagType" Association="Self.FK_Tag_ToTagType">
+          <AssociationSet Name="FK_Tag_TagType" Association="Self.FK_Tag_TagType">
             <End Role="TagType" EntitySet="TagTypes" />
             <End Role="Tag" EntitySet="Tags" />
           </AssociationSet>
-          <AssociationSet Name="TagsInTagSet" Association="Self.TagsInTagSet">
+          <AssociationSet Name="FK_TagsInImages_Tag" Association="Self.FK_TagsInImages_Tag">
             <End Role="Tag" EntitySet="Tags" />
-            <End Role="TagSet" EntitySet="TagSets" />
+            <End Role="TagsInImages" EntitySet="TagsInImages" />
           </AssociationSet>
-          <EntitySet Name="Collections" EntityType="ImagesDBModel.Collection" />
-          <EntitySet Name="Sources" EntityType="ImagesDBModel.Source" />
-          <AssociationSet Name="ImagesInSources" Association="ImagesDBModel.ImagesInSources">
+          <AssociationSet Name="ImagesInSources" Association="Self.ImagesInSources">
             <End Role="Image" EntitySet="Images" />
             <End Role="Source" EntitySet="Sources" />
           </AssociationSet>
-          <AssociationSet Name="SourcesInCollection" Association="ImagesDBModel.SourcesInCollection">
+          <AssociationSet Name="SourcesInCollection" Association="Self.SourcesInCollection">
             <End Role="Collection" EntitySet="Collections" />
             <End Role="Source" EntitySet="Sources" />
           </AssociationSet>
-          <FunctionImport Name="GetImagesByTags" ReturnType="Collection(Int32)" />
         </EntityContainer>
-        <EntityType Name="Collection">
-          <Key>
-            <PropertyRef Name="Id" />
-          </Key>
-          <Property Name="Id" Type="Int32" Nullable="false" />
-          <Property Name="Name" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="true" />
-          <NavigationProperty Name="Sources" Relationship="ImagesDBModel.SourcesInCollection" FromRole="Collection" ToRole="Source" />
-        </EntityType>
-        <EntityType Name="Source">
-          <Key>
-            <PropertyRef Name="Id" />
-          </Key>
-          <Property Name="Id" Type="Int32" Nullable="false" />
-          <Property Name="Path" Type="String" Nullable="false" MaxLength="4000" FixedLength="false" Unicode="true" />
-          <NavigationProperty Name="Images" Relationship="ImagesDBModel.ImagesInSources" FromRole="Source" ToRole="Image" />
-          <NavigationProperty Name="Collections" Relationship="ImagesDBModel.SourcesInCollection" FromRole="Source" ToRole="Collection" />
-        </EntityType>
-        <Association Name="ImagesInSources">
-          <End Type="ImagesDBModel.Image" Role="Image" Multiplicity="*" />
-          <End Type="ImagesDBModel.Source" Role="Source" Multiplicity="*" />
-        </Association>
-        <Association Name="SourcesInCollection">
-          <End Type="ImagesDBModel.Collection" Role="Collection" Multiplicity="*" />
-          <End Type="ImagesDBModel.Source" Role="Source" Multiplicity="*" />
-        </Association>
       </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
     <edmx:Mappings>
       <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
         <EntityContainerMapping StorageEntityContainer="ImagesDBModelStoreContainer" CdmEntityContainer="ImagesDBConnection">
+          <EntitySetMapping Name="Collections">
+            <EntityTypeMapping TypeName="ImagesDBModel.Collection">
+              <MappingFragment StoreEntitySet="Collection">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
           <EntitySetMapping Name="Images">
             <EntityTypeMapping TypeName="ImagesDBModel.Image">
               <MappingFragment StoreEntitySet="Image">
@@ -358,22 +354,32 @@
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
+          <EntitySetMapping Name="Sources">
+            <EntityTypeMapping TypeName="ImagesDBModel.Source">
+              <MappingFragment StoreEntitySet="Source">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="Path" ColumnName="Path" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
           <EntitySetMapping Name="Tags">
             <EntityTypeMapping TypeName="ImagesDBModel.Tag">
               <MappingFragment StoreEntitySet="Tag">
                 <ScalarProperty Name="Id" ColumnName="Id" />
                 <ScalarProperty Name="Name" ColumnName="Name" />
                 <ScalarProperty Name="Type" ColumnName="Type" />
+                <ScalarProperty Name="HasValue" ColumnName="HasValue" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
-          <EntitySetMapping Name="TagSets">
-            <EntityTypeMapping TypeName="ImagesDBModel.TagSet">
-              <MappingFragment StoreEntitySet="TagSet">
-                <ScalarProperty Name="Id" ColumnName="Id" />
-                <ScalarProperty Name="AddedDate" ColumnName="AddedDate" />
-                <ScalarProperty Name="FKImage" ColumnName="FKImage" />
-                <ScalarProperty Name="Type" ColumnName="Type" />
+          <EntitySetMapping Name="TagsInImages">
+            <EntityTypeMapping TypeName="ImagesDBModel.TagsInImage">
+              <MappingFragment StoreEntitySet="TagsInImages">
+                <ScalarProperty Name="ImageFK" ColumnName="ImageFK" />
+                <ScalarProperty Name="TagFK" ColumnName="TagFK" />
+                <ScalarProperty Name="UserAdded" ColumnName="UserAdded" />
+                <ScalarProperty Name="Value" ColumnName="Value" />
+                <ScalarProperty Name="AddedTime" ColumnName="AddedTime" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
@@ -385,47 +391,22 @@
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
-          <AssociationSetMapping Name="TagsInTagSet" TypeName="ImagesDBModel.TagsInTagSet" StoreEntitySet="TagsInTagSet">
-            <EndProperty Name="Tag">
-              <ScalarProperty Name="Id" ColumnName="Tag" />
-            </EndProperty>
-            <EndProperty Name="TagSet">
-              <ScalarProperty Name="Id" ColumnName="TagSet" />
-            </EndProperty>
-          </AssociationSetMapping>
-          <EntitySetMapping Name="Collections">
-            <EntityTypeMapping TypeName="ImagesDBModel.Collection">
-              <MappingFragment StoreEntitySet="Collection">
-                <ScalarProperty Name="Name" ColumnName="Name" />
-                <ScalarProperty Name="Id" ColumnName="Id" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <EntitySetMapping Name="Sources">
-            <EntityTypeMapping TypeName="ImagesDBModel.Source">
-              <MappingFragment StoreEntitySet="Source">
-                <ScalarProperty Name="Path" ColumnName="Path" />
-                <ScalarProperty Name="Id" ColumnName="Id" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
           <AssociationSetMapping Name="ImagesInSources" TypeName="ImagesDBModel.ImagesInSources" StoreEntitySet="ImagesInSources">
-            <EndProperty Name="Source">
-              <ScalarProperty Name="Id" ColumnName="SourceId" />
-            </EndProperty>
             <EndProperty Name="Image">
               <ScalarProperty Name="Id" ColumnName="ImageId" />
             </EndProperty>
-          </AssociationSetMapping>
-          <AssociationSetMapping Name="SourcesInCollection" TypeName="ImagesDBModel.SourcesInCollection" StoreEntitySet="SourcesInCollection">
             <EndProperty Name="Source">
               <ScalarProperty Name="Id" ColumnName="SourceId" />
             </EndProperty>
+          </AssociationSetMapping>
+          <AssociationSetMapping Name="SourcesInCollection" TypeName="ImagesDBModel.SourcesInCollection" StoreEntitySet="SourcesInCollection">
             <EndProperty Name="Collection">
               <ScalarProperty Name="Id" ColumnName="CollectionId" />
             </EndProperty>
+            <EndProperty Name="Source">
+              <ScalarProperty Name="Id" ColumnName="SourceId" />
+            </EndProperty>
           </AssociationSetMapping>
-          <FunctionImportMapping FunctionImportName="GetImagesByTags" FunctionName="ImagesDBModel.Store.FilterImagesByTags" />
         </EntityContainerMapping>
       </Mapping>
     </edmx:Mappings>
@@ -440,7 +421,7 @@
     <Options>
       <DesignerInfoPropertySet>
         <DesignerProperty Name="ValidateOnBuild" Value="true" />
-        <DesignerProperty Name="EnablePluralization" Value="False" />
+        <DesignerProperty Name="EnablePluralization" Value="true" />
         <DesignerProperty Name="IncludeForeignKeysInModel" Value="true" />
         <DesignerProperty Name="UseLegacyProvider" Value="false" />
         <DesignerProperty Name="CodeGenerationStrategy" Value="None" />

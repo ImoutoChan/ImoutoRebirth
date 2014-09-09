@@ -39,11 +39,11 @@ namespace ImagesDBLibrary.Model
             var sw = new Stopwatch();
             sw.Start();
 
-            var images = ImagesDB.GetImages(DbId);
-            var imagesWithTags = ImagesDB.GetTagsForImages(images);
-            Images = imagesWithTags.Select(x => new ImageM(x.Key, x.Value));
+            //var images = ImagesDB.GetImages(DbId);
+            //var imagesWithTags = ImagesDB.GetTagsForImages(images);
+            //Images = imagesWithTags.Select(x => new ImageM(x.Key, x.Value));
 
-            //Images = ImagesDB.GetImages(DbId).Select(x => new ImageM(x, ImagesDB.GetTagsFromImage(x))).ToList();
+            Images = ImagesDB.GetImages(DbId).Select(x => new ImageM(x, ImagesDB.GetTagsFromImage(x))).ToList();
 
             //var images = ImagesDB.GetImages(DbId);
             //var imagesWithTags = ImagesDB.GetTagsForImagesUsingSQL(images);

@@ -12,19 +12,15 @@ namespace ImagesDBLibrary.Database.Model
     using System;
     using System.Collections.Generic;
     
-    public partial class TagSet
+    public partial class TagsInImage
     {
-        public TagSet()
-        {
-            this.Tags = new HashSet<Tag>();
-        }
-    
-        public int Id { get; set; }
-        public System.DateTime AddedDate { get; set; }
-        public int FKImage { get; set; }
-        public string Type { get; set; }
+        public int ImageFK { get; set; }
+        public int TagFK { get; set; }
+        public bool UserAdded { get; set; }
+        public string Value { get; set; }
+        public System.DateTime AddedTime { get; set; }
     
         public virtual Image Image { get; set; }
-        public virtual ICollection<Tag> Tags { get; set; }
+        public virtual Tag Tag { get; set; }
     }
 }

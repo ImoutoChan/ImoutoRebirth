@@ -16,14 +16,15 @@ namespace ImagesDBLibrary.Database.Model
     {
         public Tag()
         {
-            this.TagSets = new HashSet<TagSet>();
+            this.TagsInImages = new HashSet<TagsInImage>();
         }
     
         public int Id { get; set; }
         public string Name { get; set; }
         public int Type { get; set; }
+        public bool HasValue { get; set; }
     
         public virtual TagType TagType { get; set; }
-        public virtual ICollection<TagSet> TagSets { get; set; }
+        public virtual ICollection<TagsInImage> TagsInImages { get; set; }
     }
 }

@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+ <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <!-- Diagram content (shape and connector positions) -->
+    <edmx:Diagrams>
+      <Diagram DiagramId="e5783258400e42d584f026b3b8f135a8" Name="Diagram1">
+        <EntityTypeShape EntityType="ImagesDBModel.Collection" Width="1.5" PointX="0.75" PointY="1.125" IsExpanded="true" />
+        <EntityTypeShape EntityType="ImagesDBModel.Image" Width="1.5" PointX="0.75" PointY="3.875" IsExpanded="true" />
+        <EntityTypeShape EntityType="ImagesDBModel.Source" Width="1.5" PointX="3" PointY="4" IsExpanded="true" />
+        <EntityTypeShape EntityType="ImagesDBModel.Tag" Width="1.5" PointX="0.75" PointY="6.875" IsExpanded="true" />
+        <EntityTypeShape EntityType="ImagesDBModel.TagsInImage" Width="1.5" PointX="3" PointY="0.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="ImagesDBModel.TagType" Width="1.5" PointX="1.5" PointY="10.125" IsExpanded="true" />
+        <AssociationConnector Association="ImagesDBModel.FK_TagsInImages_Image" ManuallyRouted="false" />
+        <AssociationConnector Association="ImagesDBModel.FK_Tag_TagType" ManuallyRouted="false" />
+        <AssociationConnector Association="ImagesDBModel.FK_TagsInImages_Tag" ManuallyRouted="false" />
+        <AssociationConnector Association="ImagesDBModel.ImagesInSources" ManuallyRouted="false" />
+        <AssociationConnector Association="ImagesDBModel.SourcesInCollection" ManuallyRouted="false" />
+      </Diagram>
+    </edmx:Diagrams>
+  </edmx:Designer>
+</edmx:Edmx>

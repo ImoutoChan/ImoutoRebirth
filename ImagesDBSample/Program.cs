@@ -13,17 +13,30 @@ namespace DBConnection
 
                 var st2 = DateTime.Now;
                 var collection1 = CollectionM.Create("Collection1");
-                Console.WriteLine((DateTime.Now - st2).TotalMilliseconds);
+                Console.WriteLine("Creating coollection1 :" + (DateTime.Now - st2).TotalMilliseconds);
                 var collection2 = CollectionM.Create("Collection2");
-                Console.WriteLine((DateTime.Now - st2).TotalMilliseconds);
+                Console.WriteLine("Creating coollection2 :" + (DateTime.Now - st2).TotalMilliseconds);
 
+                Console.Write("\nTimer reset.\n\n");
                 st2 = DateTime.Now;
-                collection1.AddSource(@"C:\Users\oniii-chan\Downloads\temp\source1");
-                collection1.AddSource(@"C:\Users\oniii-chan\Downloads\temp\source2");
-                collection2.AddSource(@"C:\Users\oniii-chan\Downloads\temp\source2");
-                collection2.AddSource(@"C:\Users\oniii-chan\Downloads\temp\source3");
+                //collection1.AddSource(@"C:\Users\oniii-chan\Downloads\temp\source1");
+                //collection1.AddSource(@"C:\Users\oniii-chan\Downloads\temp\source2");
+                //collection2.AddSource(@"C:\Users\oniii-chan\Downloads\temp\source2");
+                //collection2.AddSource(@"C:\Users\oniii-chan\Downloads\temp\source3");
+                
+                collection1.AddSource(@"C:\Users\Владимир\Downloads\Обои");
+                Console.WriteLine("Add source 'Обои' to collection1" + (DateTime.Now - st2).TotalMilliseconds);
 
-                Console.WriteLine((DateTime.Now - st2).TotalMilliseconds); st2 = DateTime.Now;
+                Console.Write("\nTimer reset.\n\n");
+                st2 = DateTime.Now;
+
+                collection2.AddSource(@"C:\Users\Владимир\Downloads\Обои");
+                Console.WriteLine("Add source 'Обои' to collection2" + (DateTime.Now - st2).TotalMilliseconds);
+
+
+                Console.Write("\nTimer reset.\n\n");
+                st2 = DateTime.Now;
+
                 collection2.Activate();
 
                 collection1.Activate();
@@ -31,6 +44,8 @@ namespace DBConnection
                 collection2.Activate();
 
                 Console.WriteLine((DateTime.Now - st2).TotalMilliseconds);
+
+
                 collection2.RemoveSource(
                                          collection2
                                              .Sources

@@ -338,14 +338,18 @@ namespace ImagesDBLibrary.Database.Access
         */
         #endregion OLD
 
-        public static void AddTagToImage(int imageId, int tagId)
+        public static void AddTagToImage(int imageId, int tagId, string tagValue = null)
         {
             using (var db = new ImagesDBConnection())
             {
                 var image = db.Images.Find(imageId);
                 var tag = db.Tags.Find(tagId);
+                if (!tag.HasValue)
+                {
+                    tagValue = null;
+                }
 
-                image.UserTagSets.First().Tags.Add(tag);
+                image.TagsInImages.Add(new TagsInImage(image, tag,tagValue));
                 db.SaveChanges();
             }
         }
@@ -358,15 +362,11 @@ namespace ImagesDBLibrary.Database.Access
                         .Select(x => db.Tags.Find(x))
                         .ToList();
 
-                var userTagSet = db
-                    .TagSets
-                    .First(x => x.Type == TagSetTypesEnum.UserTypeName && x.FKImage == imageId);
-
+                var image = db.Images.Find(imageId);
+                
                 foreach (var tag in tags)
                 {
-                    userTagSet
-                        .Tags
-                        .Add(tag);
+                    image.TagsInImages.Add(new TagsInImage(image, tag));
                 }
 
                 db.SaveChanges();
@@ -377,10 +377,9 @@ namespace ImagesDBLibrary.Database.Access
         {
             using (var db = new ImagesDBConnection())
             {
-                var image = db.Images.Find(imageId);
-                var tag = db.Tags.Find(tagId);
+                var tagEntry = db.TagsInImages.Find(imageId, tagId);
 
-                image.UserTagSets.First().Tags.Remove(tag);
+                db.TagsInImages.Remove(tagEntry);
                 db.SaveChanges();
             }
         }
@@ -399,52 +398,53 @@ namespace ImagesDBLibrary.Database.Access
         {
             using (var db = new ImagesDBConnection())
             {
-                var dbimage = db.Images.Find(image.Id);
+                //var dbimage = db.Images.Find(image.Id);
 
                 //return dbimage.TagSets.Where(x => x.Type == TagSetTypesEnum.ActualTypeName || x.Type == TagSetTypesEnum.UserTypeName).SelectMany(x => x.Tags).Distinct().ToList();
-                return dbimage.TagSets.SelectMany(x => x.Tags).Distinct().ToList();
+                
+                return db.TagsInImages.Where(x => x.ImageFK == image.Id).Select(x => x.Tag).ToList();
             }
         }
 
-        public static Dictionary<Image, List<Tag>> GetTagsForImages(List<Image> images)
-        {
-            var result = new Dictionary<Image, List<Tag>>();
+//        public static Dictionary<Image, List<Tag>> GetTagsForImages(List<Image> images)
+//        {
+//            var result = new Dictionary<Image, List<Tag>>();
 
-            using (var db = new ImagesDBConnection())
-            {
-                foreach (var image in images)
-                {
-                    var dbimage = db.Images.Find(image.Id);
+//            using (var db = new ImagesDBConnection())
+//            {
+//                foreach (var image in images)
+//                {
+//                    var dbimage = db.Images.Find(image.Id);
 
-                    result.Add(image, dbimage.TagSets.Where(x => x.Type == TagSetTypesEnum.ActualTypeName || x.Type == TagSetTypesEnum.UserTypeName).SelectMany(x => x.Tags).Distinct().ToList());
-                }
-            }
+//                    result.Add(image, dbimage.TagSets.Where(x => x.Type == TagSetTypesEnum.ActualTypeName || x.Type == TagSetTypesEnum.UserTypeName).SelectMany(x => x.Tags).Distinct().ToList());
+//                }
+//            }
 
-            return result;
-        }
+//            return result;
+//        }
 
-        public static Dictionary<Image, List<Tag>> GetTagsForImagesUsingSQL(List<Image> images)
-        {
-            var result = new Dictionary<Image, List<Tag>>();
+//        public static Dictionary<Image, List<Tag>> GetTagsForImagesUsingSQL(List<Image> images)
+//        {
+//            var result = new Dictionary<Image, List<Tag>>();
 
-            using (var db = new ImagesDBConnection())
-            {
-                foreach (var image in images)
-                {                    
-                    var tags = db.Database.SqlQuery<int>(@"     
-                            SELECT t.Id 
-                            FROM Tag t
-                            INNER JOIN TagsInTagSet tits ON tits.Tag = t.Id
-                            INNER JOIN TagSet ts ON ts.FKImage = @p0", image.Id);                   
+//            using (var db = new ImagesDBConnection())
+//            {
+//                foreach (var image in images)
+//                {                    
+//                    var tags = db.Database.SqlQuery<int>(@"     
+//                            SELECT t.Id 
+//                            FROM Tag t
+//                            INNER JOIN TagsInTagSet tits ON tits.Tag = t.Id
+//                            INNER JOIN TagSet ts ON ts.FKImage = @p0", image.Id);                   
 
-                    //var dbimage = db.Images.Find(image.Id);
-                    //result.Add(image, dbimage.TagSets.Where(x => x.Type == TagSetTypesEnum.ActualTypeName || x.Type == TagSetTypesEnum.UserTypeName).SelectMany(x => x.Tags).Distinct().ToList());
-                    result.Add(image, db.Tags.Where(x => tags.Contains(x.Id)).ToList());
-                }
-            }
+//                    //var dbimage = db.Images.Find(image.Id);
+//                    //result.Add(image, dbimage.TagSets.Where(x => x.Type == TagSetTypesEnum.ActualTypeName || x.Type == TagSetTypesEnum.UserTypeName).SelectMany(x => x.Tags).Distinct().ToList());
+//                    result.Add(image, db.Tags.Where(x => tags.Contains(x.Id)).ToList());
+//                }
+//            }
 
-            return result;
-        }
+//            return result;
+//        }
 
         #endregion Image logic
 
@@ -504,7 +504,7 @@ namespace ImagesDBLibrary.Database.Access
         {
             using (var db = new ImagesDBConnection())
             {
-                var tagType = new TagType {Name = name};
+                var tagType = new TagType { Name = name };
                 db.TagTypes.Add(tagType);
                 db.SaveChanges();
                 return tagType;

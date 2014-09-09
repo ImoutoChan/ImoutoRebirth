@@ -10,18 +10,18 @@ using Utils;
 
 namespace ImagesDBLibrary.Database.Model
 {
-    internal static class TagSetTypesEnum
-    {
-        public const string UserTypeName = "User";
-        public const string ActualTypeName = "Actual";
-    }
+    //internal static class TagSetTypesEnum
+    //{
+    //    public const string UserTypeName = "User";
+    //    public const string ActualTypeName = "Actual";
+    //}
 
-    public enum TagSetTypes
-    {
-        User = 3,
-        Actual = 2,
-        None = 1
-    }
+    //public enum TagSetTypes
+    //{
+    //    User = 3,
+    //    Actual = 2,
+    //    None = 1
+    //}
 
     public enum TagTypes
     {
@@ -29,6 +29,7 @@ namespace ImagesDBLibrary.Database.Model
         Character = 2,
         Copyright = 1
     }
+
     public partial class Image
     {
         #region Constructors
@@ -59,7 +60,7 @@ namespace ImagesDBLibrary.Database.Model
                     Size = fileInfo.Length;
 
                     //this saves in db with tagset
-                    db.TagSets.Add(new TagSet(TagSetTypesEnum.UserTypeName, this));
+                    //db.TagSets.Add(new TagSet(TagSetTypesEnum.UserTypeName, this));
                     db.SaveChanges();
                 }
             }
@@ -69,17 +70,33 @@ namespace ImagesDBLibrary.Database.Model
 
         #region Properties
 
-        public IEnumerable<TagSet> UserTagSets
-        {
-            get { return TagSets.Where(x => x.Type == TagSetTypesEnum.UserTypeName); }
-        }
+        //public IEnumerable<TagSet> UserTagSets
+        //{
+        //    get { return TagSets.Where(x => x.Type == TagSetTypesEnum.UserTypeName); }
+        //}
 
-        public IEnumerable<TagSet> ActualTagSets
-        {
-            get { return TagSets.Where(x => x.Type == TagSetTypesEnum.ActualTypeName); }
-        }
+        //public IEnumerable<TagSet> ActualTagSets
+        //{
+        //    get { return TagSets.Where(x => x.Type == TagSetTypesEnum.ActualTypeName); }
+        //}
 
         #endregion Properties 
+    }
+
+    public partial class TagsInImage
+    {
+        #region Constructors
+
+        public TagsInImage(Image image, Tag tag, string value = null, bool isUserAdded = true)
+        {
+            AddedTime = DateTime.Now;
+            Image = image;
+            Tag = tag;
+            Value = value;
+            UserAdded = isUserAdded;
+        }
+
+        #endregion Constructors
     }
 
     public partial class Tag
@@ -113,32 +130,32 @@ namespace ImagesDBLibrary.Database.Model
 
         #region Properties
 
-        public IEnumerable<TagSet> UserTagSets
-        {
-            get { return TagSets.Where(x => x.Type == TagSetTypesEnum.UserTypeName); }
-        }
+        //public IEnumerable<TagSet> UserTagSets
+        //{
+        //    get { return TagSets.Where(x => x.Type == TagSetTypesEnum.UserTypeName); }
+        //}
 
-        public IEnumerable<TagSet> ActualTagSets
-        {
-            get { return TagSets.Where(x => x.Type == TagSetTypesEnum.ActualTypeName); }
-        }
+        //public IEnumerable<TagSet> ActualTagSets
+        //{
+        //    get { return TagSets.Where(x => x.Type == TagSetTypesEnum.ActualTypeName); }
+        //}
 
         #endregion Properties 
     }
 
-    public partial class TagSet
-    {
-        #region Constructor
+    //public partial class TagSet
+    //{
+    //    #region Constructor
 
-        public TagSet(string type, Image image) : this()
-        {
-            Type = type;
-            AddedDate = DateTime.Now;
-            Image = image;
-        }
+    //    public TagSet(string type, Image image) : this()
+    //    {
+    //        Type = type;
+    //        AddedDate = DateTime.Now;
+    //        Image = image;
+    //    }
 
-        #endregion Constructor
-    }
+    //    #endregion Constructor
+    //}
 
     public partial class Source
     {

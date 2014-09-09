@@ -12,8 +12,6 @@ namespace ImagesDBLibrary.Database.Model
     using System;
     using System.Data.Entity;
     using System.Data.Entity.Infrastructure;
-    using System.Data.Entity.Core.Objects;
-    using System.Linq;
     
     public partial class ImagesDBConnection : DbContext
     {
@@ -27,16 +25,11 @@ namespace ImagesDBLibrary.Database.Model
             throw new UnintentionalCodeFirstException();
         }
     
-        public virtual DbSet<Image> Images { get; set; }
-        public virtual DbSet<Tag> Tags { get; set; }
-        public virtual DbSet<TagSet> TagSets { get; set; }
-        public virtual DbSet<TagType> TagTypes { get; set; }
         public virtual DbSet<Collection> Collections { get; set; }
+        public virtual DbSet<Image> Images { get; set; }
         public virtual DbSet<Source> Sources { get; set; }
-    
-        public virtual ObjectResult<Nullable<int>> GetImagesByTags()
-        {
-            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<Nullable<int>>("GetImagesByTags");
-        }
+        public virtual DbSet<Tag> Tags { get; set; }
+        public virtual DbSet<TagsInImage> TagsInImages { get; set; }
+        public virtual DbSet<TagType> TagTypes { get; set; }
     }
 }

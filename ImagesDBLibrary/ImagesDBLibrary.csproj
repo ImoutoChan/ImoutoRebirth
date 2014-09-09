@@ -11,6 +11,7 @@
     <AssemblyName>ImagesDBLibrary</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
+    <IsWebBootstrapper>false</IsWebBootstrapper>
     <PublishUrl>publish\</PublishUrl>
     <Install>true</Install>
     <InstallFrom>Disk</InstallFrom>
@@ -23,7 +24,6 @@
     <MapFileExtensions>true</MapFileExtensions>
     <ApplicationRevision>0</ApplicationRevision>
     <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
-    <IsWebBootstrapper>false</IsWebBootstrapper>
     <UseApplicationTrust>false</UseApplicationTrust>
     <BootstrapperEnabled>true</BootstrapperEnabled>
   </PropertyGroup>
@@ -71,39 +71,39 @@
   <ItemGroup>
     <Compile Include="Database\Access\IImageDB.cs" />
     <Compile Include="Database\Model\Collection.cs">
-      <DependentUpon>ImageDBConnection.tt</DependentUpon>
+      <DependentUpon>ImagesDBConnection.tt</DependentUpon>
     </Compile>
     <Compile Include="Database\Model\Image.cs">
-      <DependentUpon>ImageDBConnection.tt</DependentUpon>
+      <DependentUpon>ImagesDBConnection.tt</DependentUpon>
     </Compile>
-    <Compile Include="Database\Model\ImageDBConnection.Context.cs">
+    <Compile Include="Database\Model\ImagesDBConnection.Context.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
-      <DependentUpon>ImageDBConnection.Context.tt</DependentUpon>
+      <DependentUpon>ImagesDBConnection.Context.tt</DependentUpon>
     </Compile>
-    <Compile Include="Database\Model\ImageDBConnection.cs">
+    <Compile Include="Database\Model\ImagesDBConnection.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
-      <DependentUpon>ImageDBConnection.tt</DependentUpon>
+      <DependentUpon>ImagesDBConnection.tt</DependentUpon>
     </Compile>
-    <Compile Include="Database\Model\ImageDBConnection.Designer.cs">
+    <Compile Include="Database\Model\ImagesDBConnection.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
-      <DependentUpon>ImageDBConnection.edmx</DependentUpon>
+      <DependentUpon>ImagesDBConnection.edmx</DependentUpon>
     </Compile>
     <Compile Include="Database\Model\ModelExtended.cs" />
     <Compile Include="Database\Access\ImagesDB.cs" />
     <Compile Include="Database\Model\Source.cs">
-      <DependentUpon>ImageDBConnection.tt</DependentUpon>
+      <DependentUpon>ImagesDBConnection.tt</DependentUpon>
     </Compile>
     <Compile Include="Database\Model\Tag.cs">
-      <DependentUpon>ImageDBConnection.tt</DependentUpon>
+      <DependentUpon>ImagesDBConnection.tt</DependentUpon>
     </Compile>
-    <Compile Include="Database\Model\TagSet.cs">
-      <DependentUpon>ImageDBConnection.tt</DependentUpon>
+    <Compile Include="Database\Model\TagsInImage.cs">
+      <DependentUpon>ImagesDBConnection.tt</DependentUpon>
     </Compile>
     <Compile Include="Database\Model\TagType.cs">
-      <DependentUpon>ImageDBConnection.tt</DependentUpon>
+      <DependentUpon>ImagesDBConnection.tt</DependentUpon>
     </Compile>
     <Compile Include="Model\CollectionM.cs" />
     <Compile Include="Model\ImageM.cs" />
@@ -123,22 +123,22 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.Config" />
-    <EntityDeploy Include="Database\Model\ImageDBConnection.edmx">
+    <EntityDeploy Include="Database\Model\ImagesDBConnection.edmx">
       <Generator>EntityModelCodeGenerator</Generator>
-      <LastGenOutput>ImageDBConnection.Designer.cs</LastGenOutput>
+      <LastGenOutput>ImagesDBConnection.Designer.cs</LastGenOutput>
     </EntityDeploy>
-    <None Include="Database\Model\ImageDBConnection.Context.tt">
+    <None Include="Database\Model\ImagesDBConnection.Context.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
-      <DependentUpon>ImageDBConnection.edmx</DependentUpon>
-      <LastGenOutput>ImageDBConnection.Context.cs</LastGenOutput>
+      <DependentUpon>ImagesDBConnection.edmx</DependentUpon>
+      <LastGenOutput>ImagesDBConnection.Context.cs</LastGenOutput>
     </None>
-    <None Include="Database\Model\ImageDBConnection.edmx.diagram">
-      <DependentUpon>ImageDBConnection.edmx</DependentUpon>
+    <None Include="Database\Model\ImagesDBConnection.edmx.diagram">
+      <DependentUpon>ImagesDBConnection.edmx</DependentUpon>
     </None>
-    <None Include="Database\Model\ImageDBConnection.tt">
+    <None Include="Database\Model\ImagesDBConnection.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
-      <DependentUpon>ImageDBConnection.edmx</DependentUpon>
-      <LastGenOutput>ImageDBConnection.cs</LastGenOutput>
+      <DependentUpon>ImagesDBConnection.edmx</DependentUpon>
+      <LastGenOutput>ImagesDBConnection.cs</LastGenOutput>
     </None>
     <None Include="packages.config" />
   </ItemGroup>
