@@ -16,8 +16,8 @@ namespace ImagesDBLibrary.Database.Model
     {
         public Image()
         {
+            this.ImagesInSources = new HashSet<ImagesInSource>();
             this.TagsInImages = new HashSet<TagsInImage>();
-            this.Sources = new HashSet<Source>();
         }
     
         public int Id { get; set; }
@@ -25,7 +25,7 @@ namespace ImagesDBLibrary.Database.Model
         public long Size { get; set; }
         public string Path { get; set; }
     
+        public virtual ICollection<ImagesInSource> ImagesInSources { get; set; }
         public virtual ICollection<TagsInImage> TagsInImages { get; set; }
-        public virtual ICollection<Source> Sources { get; set; }
     }
 }

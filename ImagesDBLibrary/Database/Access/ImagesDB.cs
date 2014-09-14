@@ -338,6 +338,100 @@ namespace ImagesDBLibrary.Database.Access
         */
         #endregion OLD
 
+
+        public static Dictionary<Image, List<Tag>> GetImagesByTags(int sourceId, ref int take, ref int skip, List<int> withTags)
+        {
+            var imageFiltered = new Dictionary<Image, List<Tag>>();
+            if (withTags != null)
+            {
+                using (var db = new ImagesDBConnection())
+                {
+                    var imageIds = db.ImagesInSources.Where(x => x.SourceId == sourceId).Select(x => x.ImageId);
+                    foreach (var imageId in imageIds)
+                    {
+                        var tags = db.TagsInImages.Where(x => x.ImageFK == imageId).ToList();
+                        if (withTags.All(x => tags.Select(y => y.TagFK).Contains(x)))
+                        {
+                            if (skip > 0)
+                            {
+                                skip--;
+                            }
+                            else if (take > 0)
+                            {
+                                imageFiltered.Add(db.Images.First(x => x.Id == imageId), tags.Select(x => x.Tag).ToList());
+                                
+                                take--;
+                                if (take == 0)
+                                {
+                                    break;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            else
+            {
+                using (var db = new ImagesDBConnection())
+                {
+                    var imageIds = db.ImagesInSources.Where(x => x.SourceId == sourceId).Select(x => x.ImageId);                    
+                    foreach (var imageId in imageIds)
+                    {
+                        if (skip > 0)
+                        {
+                            skip--;
+                        }
+                        else if (take > 0)
+                        {
+                            var tags = db.TagsInImages.Where(x => x.ImageFK == imageId).ToList();
+                            imageFiltered.Add(db.Images.First(x => x.Id == imageId), tags.Select(x => x.Tag).ToList());
+                            take--;
+                        }
+                    }
+                }
+            }
+            return imageFiltered;
+
+            //using (var db = new ImagesDBConnection())
+            //{
+            //    var tagIds = withTags.Select(x => x.Id);
+            //    var imageSourceEntry = db
+            //                            .ImagesInSources
+            //                            .Where(x => x.SourceId == sourceId)
+            //                            .Select(x => x.Image)
+            //                            .Where(x => x
+            //                                        .TagsInImages
+            //                                        .Any(y => tagIds.Contains(y.TagFK))
+            //                                        )
+            //                            .Skip(skip)
+            //                            .Take(take);
+            //    var res = imageSourceEntry.ToList();
+            //    take -= res.Count();
+            //    if (res.Count() > 0)
+            //    {
+            //        skip = 0;
+            //    }
+            //    else
+            //    {
+            //        take -= db
+            //                    .ImagesInSources
+            //                    .Where(x => x.SourceId == sourceId)
+            //                    .Select(x => x.Image)
+            //                    .Where(x => x
+            //                                .TagsInImages
+            //                                .Any(y => tagIds.Contains(y.TagFK))
+            //                                ).Count();
+            //    }
+            //    foreach (var item in res)
+            //    {                    
+            //        tags.Add(item, item.TagsInImages.Select(x => x.Tag).ToList());
+            //    }
+
+
+            //    return res;
+            
+        }
+
         public static void AddTagToImage(int imageId, int tagId, string tagValue = null)
         {
             using (var db = new ImagesDBConnection())
@@ -349,7 +443,8 @@ namespace ImagesDBLibrary.Database.Access
                     tagValue = null;
                 }
 
-                image.TagsInImages.Add(new TagsInImage(image, tag,tagValue));
+                var tags = new TagsInImage(image, tag, tagValue);
+                image.TagsInImages.Add(tags);
                 db.SaveChanges();
             }
         }
@@ -388,9 +483,9 @@ namespace ImagesDBLibrary.Database.Access
         {
             using (var db = new ImagesDBConnection())
             {
-                var source = db.Sources.Find(sourceId);
+                var imageSourceEntry = db.ImagesInSources.Where(x => x.SourceId == sourceId);
 
-                return source.Images.ToList();
+                return imageSourceEntry.Select(x => x.Image).ToList();
             }
         }
 

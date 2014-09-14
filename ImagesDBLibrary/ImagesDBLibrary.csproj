@@ -91,6 +91,9 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>ImagesDBConnection.edmx</DependentUpon>
     </Compile>
+    <Compile Include="Database\Model\ImagesInSource.cs">
+      <DependentUpon>ImagesDBConnection.tt</DependentUpon>
+    </Compile>
     <Compile Include="Database\Model\ModelExtended.cs" />
     <Compile Include="Database\Access\ImagesDB.cs" />
     <Compile Include="Database\Model\Source.cs">

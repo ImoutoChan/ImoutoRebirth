@@ -34,28 +34,33 @@ namespace ImagesDBLibrary.Model
 
         #region Methods
 
-        public void LoadImages()
+        public List<ImageM> GetImages(ref int take, ref int skip, List<int> withTags)
         {
-            var sw = new Stopwatch();
-            sw.Start();
-
-            //var images = ImagesDB.GetImages(DbId);
-            //var imagesWithTags = ImagesDB.GetTagsForImages(images);
-            //Images = imagesWithTags.Select(x => new ImageM(x.Key, x.Value));
-
-            Images = ImagesDB.GetImages(DbId).Select(x => new ImageM(x, ImagesDB.GetTagsFromImage(x))).ToList();
-
-            //var images = ImagesDB.GetImages(DbId);
-            //var imagesWithTags = ImagesDB.GetTagsForImagesUsingSQL(images);
-            //Images = imagesWithTags.Select(x => new ImageM(x.Key, x.Value));
-
-            sw.Stop();
-            //Debug.Print("{0} ms", sw.ElapsedMilliseconds);
-            System.Windows.Forms.MessageBox.Show(String.Format("{0} ms", sw.ElapsedMilliseconds));
-
-
-            IsLoaded = true;
+            return ImagesDB.GetImagesByTags(this.DbId, ref take, ref skip, withTags).Select(x => new ImageM(x.Key, x.Value)).ToList();
         }
+
+        //public void LoadImages()
+        //{
+        //    var sw = new Stopwatch();
+        //    sw.Start();
+
+        //    //var images = ImagesDB.GetImages(DbId);
+        //    //var imagesWithTags = ImagesDB.GetTagsForImages(images);
+        //    //Images = imagesWithTags.Select(x => new ImageM(x.Key, x.Value));
+
+        //    Images = ImagesDB.GetImages(DbId).Select(x => new ImageM(x, ImagesDB.GetTagsFromImage(x))).ToList();
+
+        //    //var images = ImagesDB.GetImages(DbId);
+        //    //var imagesWithTags = ImagesDB.GetTagsForImagesUsingSQL(images);
+        //    //Images = imagesWithTags.Select(x => new ImageM(x.Key, x.Value));
+
+        //    sw.Stop();
+        //    Debug.Print("{0} ms", sw.ElapsedMilliseconds);
+        //    //System.Windows.Forms.MessageBox.Show(String.Format("{0} ms", sw.ElapsedMilliseconds));
+
+
+        //    IsLoaded = true;
+        //}
 
         public void UnloadImages()
         {
@@ -66,13 +71,13 @@ namespace ImagesDBLibrary.Model
         public void Update()
         {
             ImagesDB.UpdateSource();
-            LoadImages();
+            //LoadImages();
         }
 
         public void FullUpdate()
         {
             ImagesDB.UpdateSource(true);
-            LoadImages();
+            //LoadImages();
         }
 
         public override string ToString()
@@ -111,5 +116,6 @@ namespace ImagesDBLibrary.Model
         }
 
         #endregion Static members
+
     }
 }

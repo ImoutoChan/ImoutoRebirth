@@ -27,6 +27,7 @@ namespace ImagesDBLibrary.Database.Model
     
         public virtual DbSet<Collection> Collections { get; set; }
         public virtual DbSet<Image> Images { get; set; }
+        public virtual DbSet<ImagesInSource> ImagesInSources { get; set; }
         public virtual DbSet<Source> Sources { get; set; }
         public virtual DbSet<Tag> Tags { get; set; }
         public virtual DbSet<TagsInImage> TagsInImages { get; set; }

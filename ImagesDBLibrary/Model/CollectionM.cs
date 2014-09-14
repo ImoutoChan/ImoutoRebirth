@@ -29,13 +29,13 @@ namespace ImagesDBLibrary.Model
 
         public List<SourceM> Sources { get; private set; }
 
-        public IEnumerable<ImageM> Images
-        {
-            get
-            {
-                return Sources.SelectMany(x => x.Images);
-            }
-        }
+        //public IEnumerable<ImageM> Images
+        //{
+        //    get
+        //    {
+        //        return Sources.SelectMany(x => x.Images);
+        //    }
+        //}
 
         public bool IsActive { get; set; }
 
@@ -43,19 +43,36 @@ namespace ImagesDBLibrary.Model
 
         #region Methods
 
-        public void Activate()
+        public List<ImageM> GetImages(int take = 200, int skip = 0, List<TagM> withTags = null)
         {
-            Parallel.ForEach
-            (
-                Collections.Where(x => x != this),
-                x => Parallel.ForEach
-                         (
-                          x.Sources.Where(y => !Sources.Contains(y) && y.IsLoaded),
-                          y => y.UnloadImages()
-                         )
-            );
+            var result = new List<ImageM>();
+            withTags = withTags ?? new List<TagM>();
+            foreach (var source in Sources)
+            {
+                result.AddRange(source.GetImages(ref take, ref skip, withTags.Select(x => x.DbId).ToList()));
+                if (take == 0)
+                {
+                    break;
+                }
+            }
+            return result;
+        }
 
-            Parallel.ForEach(Sources.Where(x => !x.IsLoaded), x => x.LoadImages());
+        public void Activate(int count = 200)
+        {
+            //Parallel.ForEach
+            //(
+            //    Collections.Where(x => x != this),
+            //    x => Parallel.ForEach
+            //             (
+            //              x.Sources.Where(y => !Sources.Contains(y) && y.IsLoaded),
+            //              y => y.UnloadImages()
+            //             )
+            //);
+
+            //Parallel.ForEach(Sources.Where(x => !x.IsLoaded), x => x.LoadImages());
+
+
             
             
             foreach (var collection in CollectionM.Collections)

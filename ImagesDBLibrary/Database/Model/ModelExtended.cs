@@ -61,6 +61,7 @@ namespace ImagesDBLibrary.Database.Model
 
                     //this saves in db with tagset
                     //db.TagSets.Add(new TagSet(TagSetTypesEnum.UserTypeName, this));
+                    db.Images.Add(this);
                     db.SaveChanges();
                 }
             }
@@ -86,6 +87,8 @@ namespace ImagesDBLibrary.Database.Model
     public partial class TagsInImage
     {
         #region Constructors
+
+        public TagsInImage() { }
 
         public TagsInImage(Image image, Tag tag, string value = null, bool isUserAdded = true)
         {
@@ -189,17 +192,19 @@ namespace ImagesDBLibrary.Database.Model
 
                     var images = files.Select(x => new Image(x.FullName, false));
 
-                    images = images.Select(x => db.Images.Find(x.Id));
+                    //images = images.Select(x => db.Images.Find(x.Id));
 
                     db.Sources.Add(this);
                     db.SaveChanges();
 
-                    var thiss = db.Sources.Include(x=>x.Images).Single(x=>x.Id == Id);
+                    //var thiss = db.Sources.Include(x=>x.Images).Single(x=>x.Id == Id);
+                    //foreach (var image in images)
+                    //{
+                    //    thiss.Images.Add(image);
+                    //}
 
-                    foreach (var image in images)
-                    {
-                        thiss.Images.Add(image);
-                    }
+                    var imageSourceEntry = images.Select(x => new ImagesInSource { ImageId = x.Id, SourceId = this.Id });
+                    db.ImagesInSources.AddRange(imageSourceEntry);                                   
                     
                     db.SaveChanges();
                 }
