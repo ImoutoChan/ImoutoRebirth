@@ -39,6 +39,11 @@ namespace ImagesDBLibrary.Model
             return ImagesDB.GetImagesByTags(this.DbId, ref take, ref skip, withTags).Select(x => new ImageM(x.Key, x.Value)).ToList();
         }
 
+        public int CountImagesWithTags(List<int> withTags)
+        {
+            return ImagesDB.CountImagesWithTags(this.DbId, withTags);
+        }
+
         //public void LoadImages()
         //{
         //    var sw = new Stopwatch();
@@ -116,6 +121,5 @@ namespace ImagesDBLibrary.Model
         }
 
         #endregion Static members
-
     }
 }

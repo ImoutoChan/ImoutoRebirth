@@ -7,14 +7,13 @@ namespace ImoutoNavigator.UserControls
     {
         //public bool IsNeedScrollHome { get; set; }
 
-        //#region Constructors
+        #region Constructors
 
-        //public ExtScrollViewer()
-        //{
-        //    Loaded += ExtScrollViewer_Loaded;
-        //}
+        public ExtScrollViewer()
+        {
+        }
 
-        //#endregion //Constructors
+        #endregion //Constructors
 
         //#region Event handlers
 
@@ -51,13 +50,37 @@ namespace ImoutoNavigator.UserControls
 
         //#endregion //Event handlers
 
+        #region Methods
+
+        private void Scrolling(int delta)
+        {
+            //base.OnMouseWheel(e);
+            
+            //if (this.HandlesMouseWheelScrolling)
+            {
+                if (this.ScrollInfo != null)
+                {
+                    if (delta < 0)
+                    {
+                        this.ScrollInfo.LineDown();
+                    }
+                    else
+                    {
+                        this.ScrollInfo.LineUp();
+                    }
+                }
+            }
+        }
+
+        #endregion Methods
+
         #region Events
 
         protected override void OnMouseWheel(MouseWheelEventArgs e)
         {
-            if (!(Keyboard.IsKeyDown(Key.LeftCtrl) || Keyboard.IsKeyDown(Key.RightCtrl)))
+            if (!(Keyboard.IsKeyDown(Key.LeftCtrl) || Keyboard.IsKeyDown(Key.RightCtrl)) && !e.Handled)
             {
-                base.OnMouseWheel(e);
+                Scrolling(e.Delta);
                 e.Handled = true;
                 return;
             }

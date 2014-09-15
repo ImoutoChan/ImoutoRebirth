@@ -73,7 +73,7 @@ namespace ImoutoNavigator.ViewModel
         {
             get
             {
-                return _activateCommand ?? (_activateCommand = new RelayCommand(Activate));
+                return _activateCommand ?? (_activateCommand = new RelayCommand(Activate, CanDoCollectionCommand));
             }
         }
 

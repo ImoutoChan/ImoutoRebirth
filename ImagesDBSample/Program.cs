@@ -45,26 +45,31 @@ namespace DBConnection
                 if (CollectionM.Collections.Count == 0)
                 {
                     var st2 = DateTime.Now;
+
                     collection1 = CollectionM.Create("Collection1");
                     Console.WriteLine("Creating coollection1 : " + (DateTime.Now - st2).TotalMilliseconds);
+
                     var collection2 = CollectionM.Create("Collection2");
                     Console.WriteLine("Creating coollection2 : " + (DateTime.Now - st2).TotalMilliseconds);
 
                     Console.Write("\nTimer reset.\n\n");
                     st2 = DateTime.Now;
-                    //collection1.AddSource(@"C:\Users\oniii-chan\Downloads\temp\source1");
-                    //collection1.AddSource(@"C:\Users\oniii-chan\Downloads\temp\source2");
-                    //collection2.AddSource(@"C:\Users\oniii-chan\Downloads\temp\source2");
-                    //collection2.AddSource(@"C:\Users\oniii-chan\Downloads\temp\source3");
 
-                    collection1.AddSource(@"C:\Users\Владимир\Downloads\Обои\");
+                    collection1.AddSource(@"C:\Users\oniii-chan\Downloads\temp\source1");
+                    collection1.AddSource(@"C:\Users\oniii-chan\Downloads\temp\source2");
+                    collection2.AddSource(@"C:\Users\oniii-chan\Downloads\temp\source2");
+                    collection2.AddSource(@"C:\Users\oniii-chan\Downloads\temp\source3");
+
+                    //collection1.AddSource(@"C:\Users\Владимир\Downloads\Обои\");
+                    //collection1.AddSource(@"C:\Users\oniii-chan\Downloads\temp\");
+
                     Console.WriteLine("Add source 'Обои' to collection1 : " + (DateTime.Now - st2).TotalMilliseconds);
 
                     Console.Write("\nTimer reset.\n\n");
                     st2 = DateTime.Now;
 
-                    collection2.AddSource(@"C:\Users\Владимир\Downloads\Обои\Test");
-                    Console.WriteLine("Add source 'Обои' to collection2 : " + (DateTime.Now - st2).TotalMilliseconds);
+                    //collection2.AddSource(@"C:\Users\Владимир\Downloads\Обои\Test");
+                    //Console.WriteLine("Add source 'Обои' to collection2 : " + (DateTime.Now - st2).TotalMilliseconds);
 
                     Console.Write("Timer reset.\n\n");
                     st2 = DateTime.Now;
@@ -114,7 +119,7 @@ namespace DBConnection
                     Console.WriteLine((DateTime.Now - st2).TotalMilliseconds);
                     st2 = DateTime.Now;
 
-                    images = collection1.GetImages(300);
+                    images = collection1.GetImages(30);
 
                     Console.WriteLine("getting image in : " + (DateTime.Now - st2).TotalMilliseconds);
                     st2 = DateTime.Now;
@@ -137,8 +142,6 @@ namespace DBConnection
                     var random = new Random();
                     foreach (var image in images)
                     {
-                        if (random.Next() % 2 == 0)
-                            continue;
                         var alreadyAddedTags = new List<TagM>();
                         for (int i = 0; i < random.Next(1, 10); i++)
                         {
@@ -151,13 +154,11 @@ namespace DBConnection
                         }
                     }
 
-                    Console.WriteLine((DateTime.Now - st2).TotalMilliseconds);
+                    Console.WriteLine(@"tags added in: " + (DateTime.Now - st2).TotalMilliseconds);
                     st2 = DateTime.Now;
 
-                    foreach (var image in images.Take(50))
+                    foreach (var image in images)
                     {
-                        if (random.Next() % 2 == 0)
-                            continue;
                         Console.WriteLine("{0} ; tags: {1}\n\n", image.Path.Substring(image.Path.Length - 10), String.Join(", ", image.Tags.Select(x => x.Name)));
                     }
 
@@ -170,11 +171,14 @@ namespace DBConnection
                     tags = TagM.Tags.Skip(TagM.Tags.Count - 10).Take(10).ToList();
                 }
 
+                int count = collection1.CountImagesWithTags(new List<TagM> { tags[5] });
 
-                var images1 = collection1.GetImages(50, 0, new List<TagM> { tags[10] });
+                var images1 = collection1.GetImages(10, 0, new List<TagM> { tags[5] });
+
                 foreach (var image in images1)
                 {
-                    Console.WriteLine("{0} ; tags: {1}\n\n", image.Path.Substring(image.Path.Length - 10), String.Join(", ", image.Tags.Select(x => x.Name)));
+                    Console.WriteLine("{0} ; tags: {1}\n\n", image.Path.Split('\\').Last(), String.Join(", ", image.Tags.Select(x => x.Name)));
+                    
                 }
 
 

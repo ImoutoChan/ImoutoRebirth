@@ -2,6 +2,11 @@
 using System.Collections.Generic;
 using System.Linq;
 using ImagesDBLibrary.Database.Model;
+using System.Data;
+using System.Data.SqlClient;
+using Microsoft.SqlServer.Server;
+using System.Data.Entity.Core.EntityClient;
+using System.Data.Common;
 
 namespace ImagesDBLibrary.Database.Access
 {
@@ -338,11 +343,57 @@ namespace ImagesDBLibrary.Database.Access
         */
         #endregion OLD
 
-
-        public static Dictionary<Image, List<Tag>> GetImagesByTags(int sourceId, ref int take, ref int skip, List<int> withTags)
+        public static int CountImagesWithTags(int sourceId, List<int> withTags)
         {
-            var imageFiltered = new Dictionary<Image, List<Tag>>();
-            if (withTags != null)
+            var result = 0;
+
+            using (var db = new ImagesDBConnection())
+            {
+                //DataTable Ids = new DataTable();
+                //Ids.Columns.Add("Id",
+                //           typeof(int));
+                //withTags.ForEach(x => Ids.Rows.Add(x));
+
+                //SqlConnection storeConnection = db.Database.Connection as SqlConnection;
+                //try
+                //{
+                //    storeConnection.Open();
+
+                //    SqlCommand command = new SqlCommand("[dbo].[CountImagesByTags]", storeConnection);
+                //    command.CommandType = CommandType.StoredProcedure;
+                //    command.Parameters.Add(new SqlParameter("@sourceId", sourceId));
+                //    command.Parameters.Add(new SqlParameter("@tagList", Ids));
+
+                //    var reader = command.ExecuteReader();
+
+                //    while (reader.Read())
+                //    {
+                //        result = reader.GetInt32(0);
+                //    }
+                //}
+                //finally
+                //{
+                //    storeConnection.Close();
+                //}
+
+
+                var imageIds = db.ImagesInSources.Where(x => x.SourceId == sourceId).Select(x => x.ImageId);
+                foreach (var imageId in imageIds)
+                {
+                    var tags = db.TagsInImages.Where(x => x.ImageFK == imageId).ToList();
+                    if (withTags.All(x => tags.Select(y => y.TagFK).Contains(x)))
+                    {
+                        result++;
+                    }
+                }
+            }
+            return result;
+        }
+
+        public static Dictionary<Image, List<TagsInImage>> GetImagesByTags(int sourceId, ref int take, ref int skip, List<int> withTags)
+        {
+            var imageFiltered = new Dictionary<Image, List<TagsInImage>>();
+            if (withTags != null && withTags.Count != 0)
             {
                 using (var db = new ImagesDBConnection())
                 {
@@ -358,7 +409,7 @@ namespace ImagesDBLibrary.Database.Access
                             }
                             else if (take > 0)
                             {
-                                imageFiltered.Add(db.Images.First(x => x.Id == imageId), tags.Select(x => x.Tag).ToList());
+                                imageFiltered.Add(db.Images.First(x => x.Id == imageId), tags);
                                 
                                 take--;
                                 if (take == 0)
@@ -384,7 +435,7 @@ namespace ImagesDBLibrary.Database.Access
                         else if (take > 0)
                         {
                             var tags = db.TagsInImages.Where(x => x.ImageFK == imageId).ToList();
-                            imageFiltered.Add(db.Images.First(x => x.Id == imageId), tags.Select(x => x.Tag).ToList());
+                            imageFiltered.Add(db.Images.First(x => x.Id == imageId), tags);
                             take--;
                         }
                     }

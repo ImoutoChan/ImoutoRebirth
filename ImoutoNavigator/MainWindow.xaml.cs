@@ -112,5 +112,18 @@ namespace ImoutoNavigator
             }
             CollectionsFlyOut.IsOpen = !CollectionsFlyOut.IsOpen;
         }
+
+        private void Grid_MouseLeftButtonUp(object sender, System.Windows.Input.MouseButtonEventArgs e)
+        {
+            foreach (Flyout item in Flyouts.Items)
+            {
+                if (item.IsOpen)
+                {
+                    e.Handled = true;
+                }
+                item.IsOpen = false;
+            }
+            Client.Focus();
+        }
     }
 }

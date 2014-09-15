@@ -42,22 +42,7 @@ namespace ImagesDBLibrary.Model
         #endregion Properties
 
         #region Methods
-
-        public List<ImageM> GetImages(int take = 200, int skip = 0, List<TagM> withTags = null)
-        {
-            var result = new List<ImageM>();
-            withTags = withTags ?? new List<TagM>();
-            foreach (var source in Sources)
-            {
-                result.AddRange(source.GetImages(ref take, ref skip, withTags.Select(x => x.DbId).ToList()));
-                if (take == 0)
-                {
-                    break;
-                }
-            }
-            return result;
-        }
-
+        
         public void Activate(int count = 200)
         {
             //Parallel.ForEach
@@ -144,6 +129,32 @@ namespace ImagesDBLibrary.Model
         public override string ToString()
         {
             return String.Format("Name: {0} : Id: {1}", Name, DbId);
+        }
+
+        public List<ImageM> GetImages(int take = 200, int skip = 0, List<TagM> withTags = null)
+        {
+            var result = new List<ImageM>();
+            withTags = withTags ?? new List<TagM>();
+            foreach (var source in Sources)
+            {
+                result.AddRange(source.GetImages(ref take, ref skip, withTags.Select(x => x.DbId).ToList()));
+                if (take == 0)
+                {
+                    break;
+                }
+            }
+            return result;
+        }
+
+        public int CountImagesWithTags(List<TagM> withTags)
+        {
+            int result = 0;
+            withTags = withTags ?? new List<TagM>();
+            foreach (var source in Sources)
+            {
+                result += source.CountImagesWithTags(withTags.Select(x => x.DbId).ToList());
+            }
+            return result;
         }
 
         #endregion Methods

@@ -13,6 +13,7 @@ using System.Windows;
 using System.Windows.Input;
 using Utils;
 using System.Threading.Tasks;
+using System.Threading;
 
 namespace ImoutoNavigator.ViewModel
 {
@@ -30,6 +31,7 @@ namespace ImoutoNavigator.ViewModel
         private ObservableCollection<TagM>                      _tagListHintBox     = new ObservableCollection<TagM>();
         private CollectionManagerVM                             _collectionManager;
         private bool                                            _isLoading;
+        private CancellationTokenSource                         _ctsImageLoading;
 
         #endregion Fields
 
@@ -58,17 +60,25 @@ namespace ImoutoNavigator.ViewModel
             }
         }
 
-        public ICollectionView ImageList
+        //public ICollectionView ImageList
+        //{
+        //    get
+        //    {
+        //        if (_imageListView == null)
+        //        {
+        //            _imageListView = new ListCollectionView(_imageList);
+        //            _imageListView.Filter = o => (o as ImageEntryVM).ImageModel.ContainsTags(TagListCurrent.Select(x => x.Key));
+        //        }
+        //        _imageListView.Refresh();
+        //        return _imageListView;
+        //    }
+        //}
+
+        public ObservableCollection<ImageEntryVM> ImageList
         {
             get
             {
-                if (_imageListView == null)
-                {
-                    _imageListView = new ListCollectionView(_imageList);
-                    _imageListView.Filter = o => (o as ImageEntryVM).ImageModel.ContainsTags(TagListCurrent.Select(x => x.Key));
-                }
-                _imageListView.Refresh();
-                return _imageListView;
+                return _imageList;
             }
         }
 
@@ -164,12 +174,17 @@ namespace ImoutoNavigator.ViewModel
         {
             ZoomInCommand = new RelayCommand(x =>
                 {
+                    if (_previewSide > 1024)
+                        return;
+
                     _previewSide = Convert.ToInt32(Math.Floor(_previewSide * 1.1));
                     UpdatePreviews();
                 } 
             );
             ZoomOutCommand = new RelayCommand(x =>
                 {
+                    if (_previewSide < 64)
+                        return;
                     _previewSide = Convert.ToInt32(Math.Floor(_previewSide * 0.9));
                     UpdatePreviews();
                 }
@@ -216,19 +231,19 @@ namespace ImoutoNavigator.ViewModel
                 var namedType = TagTypeM.Create("FromName");
 
                 collection = CollectionM.Create("MainColleciton");
-                CollectionM.Create("SubColleciton").AddSource(@"C:\Users\Владимир\Downloads\Обои\Test");
-                collection.AddSource(@"C:\Users\Владимир\Downloads\Обои\Test");
-                //collection.AddSource(@"C:\Users\Владимир\Downloads\Обои\Обои\Замки");
-                //collection.AddSource(@"C:\Users\oniii-chan\Downloads\temp\source_named");
-                //collection.AddSource(@"C:\Users\oniii-chan\Downloads\DLS\art");
-                //collection.AddSource(@"T:\art");
+                //CollectionM.Create("SubColleciton").AddSource(@"C:\Users\Владимир\Downloads\Обои\Test");
+                //collection.AddSource(@"C:\Users\Владимир\Downloads\Обои\Test");
+                collection.AddSource(@"C:\Users\Владимир\Downloads\Обои\Обои\Замки");
+                collection.AddSource(@"C:\Users\oniii-chan\Downloads\temp\source_named");
+                collection.AddSource(@"C:\Users\oniii-chan\Downloads\DLS\art");
+                collection.AddSource(@"T:\art");
                 collection.Activate();
 
                 int i = 0;
-                int all = collection.Images.Count();
+                int all = collection.CountImagesWithTags(null);
                 var st = DateTime.Now;
 
-                foreach (var image in collection.Images)
+                foreach (var image in collection.GetImages())
                 {
                     var tags = image
                                 .Path
@@ -303,7 +318,17 @@ namespace ImoutoNavigator.ViewModel
         {
             if (CollectionM.ActivatedCollection != null)
             {
-                GetImagesFromCollectionAsync();                
+                if (_imageList != null)
+                {
+                    _imageList.Clear();
+                }
+                else
+                {
+                    _imageList = new ObservableCollection<ImageEntryVM>();
+                }
+                IsLoading = true;
+
+                GetImagesFromCollectionAsync(1000);                
             }
         }
 
@@ -379,24 +404,88 @@ namespace ImoutoNavigator.ViewModel
             }
         }
 
-        private async void GetImagesFromCollectionAsync()
+        private async void GetImagesFromCollectionAsync(int count, int skip = 0, int block = 10)
         {
-            IsLoading = true;
+            // TODO COUNT
 
-            _imageList = await GetImagesFromCollectionAsyncTask();
-            _imageListView = null;
-            OnPropertyChanged("ImageList");
+            var total = await GetImagesCountFromCollectionAsyncTask() - skip;
+
+            count = (count < total) ? count : total;
             
-            IsLoading = false;
+            if (count == 0)
+            {
+                return;
+            }          
+  
+            if (_ctsImageLoading != null)
+            {
+                _ctsImageLoading.Cancel();
+            }
+            var newCTS = new CancellationTokenSource();
+            _ctsImageLoading = newCTS;
 
-            LoadPreviews();
+            try
+            {
+                await LoadImages(count, skip, block, _ctsImageLoading.Token);
+
+                LoadPreviews();
+            }
+            catch (OperationCanceledException)
+            { }
+
+            if (_ctsImageLoading == newCTS)
+            {
+                _ctsImageLoading = null;
+            }
         }
 
-        private Task<ObservableCollection<ImageEntryVM>> GetImagesFromCollectionAsyncTask()
+        private async Task LoadImages(int count, int skip, int block, CancellationToken ct)
+        {
+            for (int i = count; i > 0; i -= block)
+            {
+                var sw = new Stopwatch();
+                sw.Start();
+
+                (await GetImagesFromCollectionAsyncTask(block, skip + count - i)).ForEach(x => _imageList.Add(x));
+
+                sw.Stop();
+                Debug.WriteLine("Loading {0} elemets, skip {1} elemets in ms: {2}", block, skip + count - i, sw.ElapsedMilliseconds);
+
+                //OnPropertyChanged("ImageList");
+
+                ct.ThrowIfCancellationRequested();
+
+                if (i == count)
+                {
+                    OnPropertyChanged("ImageList");
+                    IsLoading = false;
+                }
+            }
+        }
+
+        private Task<ObservableCollection<ImageEntryVM>> GetImagesFromCollectionAsyncTask(int count, int skip)
         {
             return Task.Run<ObservableCollection<ImageEntryVM>>(() => 
             { 
-                return new ObservableCollection<ImageEntryVM>(CollectionM.ActivatedCollection.Images.Select(x => new ImageEntryVM(x, PreviewSize))); 
+                return new ObservableCollection<ImageEntryVM>(
+                    CollectionM
+                        .ActivatedCollection
+                        .GetImages(count, 
+                                    skip, 
+                                    TagListCurrent.Select(x => x.Key).ToList())
+                        .Select(x => new ImageEntryVM(x, PreviewSize))
+                    );
+            });
+        }
+
+        private Task<int> GetImagesCountFromCollectionAsyncTask()
+        {
+            return Task.Run<int>(() =>
+            {
+                return 
+                    CollectionM
+                        .ActivatedCollection
+                        .CountImagesWithTags(TagListCurrent.Select(x => x.Key).ToList());
             });
         }
 

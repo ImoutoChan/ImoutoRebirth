@@ -44,7 +44,8 @@
                                  Header="Collections"
                                  Position="Right"
                                  DataContext="{Binding Path=CollectionManager}"
-                                 Theme="Inverse">
+                                 Theme="Inverse"
+                                 IsPinnable="False">
                 <i:Interaction.Triggers>
                     <i:EventTrigger EventName="IsOpenChanged">
                         <i:InvokeCommandAction Command="{Binding SaveCommand}" />
@@ -62,8 +63,9 @@
                     Click="Button_Click"/>
         </metroControl:WindowCommands>
     </metroControl:MetroWindow.WindowCommands>
-    
-    <Grid>
+        
+    <Grid MouseLeftButtonUp="Grid_MouseLeftButtonUp"
+          x:Name="Client">
         <Grid>
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*"
@@ -110,15 +112,9 @@
                         <Setter Property="Padding"
                                 Value="4,1" />
                         <Setter Property="HorizontalContentAlignment"
-                                Value="{Binding HorizontalContentAlignment,
-                                                RelativeSource={RelativeSource FindAncestor,
-                                                                               AncestorLevel=1,
-                                                                               AncestorType={x:Type ItemsControl}}}" />
+                                Value="Center" />
                         <Setter Property="VerticalContentAlignment"
-                                Value="{Binding VerticalContentAlignment,
-                                                RelativeSource={RelativeSource FindAncestor,
-                                                                               AncestorLevel=1,
-                                                                               AncestorType={x:Type ItemsControl}}}" />
+                                Value="Center" />
                         <Setter Property="Background"
                                 Value="Transparent" />
                         <Setter Property="BorderBrush"

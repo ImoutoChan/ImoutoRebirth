@@ -10,14 +10,14 @@ namespace ImagesDBLibrary.Model
     {
         #region Constructors
 
-        public ImageM(Image dbimage, IEnumerable<Tag> tags)
+        public ImageM(Image dbimage, IEnumerable<TagsInImage> tags)
         {
             DbId = dbimage.Id;
             Md5 = dbimage.Md5;
             Size = dbimage.Size;
             Path = dbimage.Path;
 
-            Tags = tags.Select(x => TagM.Tags.FirstOrDefault(y => y.DbId == x.Id)).ToList();
+            TagInfoList = tags.Select(x => new TagInfoM(x)).ToList();
         }
 
         #endregion Constructors
@@ -26,13 +26,16 @@ namespace ImagesDBLibrary.Model
 
         public int DbId { get; private set; }
 
-        public List<TagM> Tags { get; private set; }
+        public List<TagInfoM> TagInfoList { get; private set; }
 
         public string Md5 { get; private set; }
 
         public long Size { get; private set; }
 
         public string Path { get; private set; }
+
+        //TEMPORARY
+        public List<TagM> Tags { get { return TagInfoList.Select(x => x.Tag).ToList(); } }
 
         #endregion Properties
 
