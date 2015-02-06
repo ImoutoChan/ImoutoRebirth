@@ -415,6 +415,7 @@ namespace ImoutoNavigator.ViewModel
             if (count == 0)
             {
                 return;
+                IsLoading = false;
             }          
   
             if (_ctsImageLoading != null)

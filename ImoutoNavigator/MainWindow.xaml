@@ -44,8 +44,7 @@
                                  Header="Collections"
                                  Position="Right"
                                  DataContext="{Binding Path=CollectionManager}"
-                                 Theme="Inverse"
-                                 IsPinnable="False">
+                                 Theme="Inverse">
                 <i:Interaction.Triggers>
                     <i:EventTrigger EventName="IsOpenChanged">
                         <i:InvokeCommandAction Command="{Binding SaveCommand}" />
