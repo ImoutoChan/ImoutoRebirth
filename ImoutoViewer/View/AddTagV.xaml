@@ -48,13 +48,24 @@
                              metroControls:TextBoxHelper.Watermark="Value"
                              metroControls:TextBoxHelper.UseFloatingWatermark="True"
                              Margin="0,0,0,5"
+                             PreviewKeyDown="KeyDownEventHandler"
+                             PreviewKeyUp="KeyUpEventHandler"
                              Visibility="{Binding SelectedTag.HasValue, Converter={StaticResource ConditionVisibilityConverter}, ConverterParameter=true, FallbackValue=Collapsed}" />
 
-                    <Button Content="Add"
-                            HorizontalAlignment="Right"
-                            Width="85"
-                            Margin="0,15,0,0"
-                            Command="{Binding SaveCommand}" />
+                    <Grid>
+                        <Button Content="Create"
+                                HorizontalAlignment="Left"
+                                Width="85"
+                                Margin="0,15,0,0"
+                                Command="{Binding CreateTagCommand}" />
+
+                        <Button Content="Add"
+                                HorizontalAlignment="Right"
+                                Width="85"
+                                Margin="0,15,0,0"
+                                Command="{Binding SaveCommand}" />
+                    </Grid>
+
                 </StackPanel>
             </ScrollViewer>
         </Grid>

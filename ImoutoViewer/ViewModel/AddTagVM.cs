@@ -1,6 +1,5 @@
 ﻿using ImoutoViewer.Commands;
 using ImoutoViewer.WCF;
-using MahApps.Metro.Controls.Dialogs;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -134,6 +133,24 @@ namespace ImoutoViewer.ViewModel
 
         #endregion Reset command
 
+        #region CreateTag Command
+
+        private ICommand _createTagCommand;
+        public ICommand CreateTagCommand
+        {
+            get
+            {
+                return _createTagCommand ?? (_createTagCommand = new RelayCommand(CreateTag));
+            }
+        }
+
+        private void CreateTag(object obj)
+        {
+            _parent.View.ShowCreateTagFlyout();
+        }
+
+        #endregion CreateTag Command
+
         #endregion Commands
 
         #region Methods
@@ -191,19 +208,6 @@ namespace ImoutoViewer.ViewModel
 
                 return tags;
             });
-        }
-
-        private async void ShowMessageDialog(string message)
-        {
-            _parent.View.MetroDialogOptions.ColorScheme = MetroDialogColorScheme.Accented;
-
-            var mySettings = new MetroDialogSettings()
-            {
-                AffirmativeButtonText = "Ok",
-                ColorScheme = MetroDialogColorScheme.Accented
-            };
-
-            await _parent.View.ShowMessageAsync("Adding tag to current image", message, MessageDialogStyle.Affirmative, mySettings);
         }
 
         #endregion Methods

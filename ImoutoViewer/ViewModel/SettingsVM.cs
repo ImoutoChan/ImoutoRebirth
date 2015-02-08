@@ -185,11 +185,11 @@ namespace ImoutoViewer.ViewModel
                 switch (value)
                 {
                     case 1:
-                        ThemeManager.ChangeAppStyle(Application.Current, theme.Item2, ThemeManager.AppThemes.First());
+                        ThemeManager.ChangeAppStyle(Application.Current, theme.Item2, ThemeManager.AppThemes.Last());
                         Settings.Default.ThemeIndex = 1;
                         break;
                     default:
-                        ThemeManager.ChangeAppStyle(Application.Current, theme.Item2, ThemeManager.AppThemes.Last());
+                        ThemeManager.ChangeAppStyle(Application.Current, theme.Item2, ThemeManager.AppThemes.First());
                         Settings.Default.ThemeIndex = 0;
                         break;
                 }

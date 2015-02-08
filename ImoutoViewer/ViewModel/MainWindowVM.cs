@@ -23,6 +23,7 @@ namespace ImoutoViewer.ViewModel
         private DispatcherTimer _timer;
         private TagsVM _tagsVM;
         private AddTagVM _addTagVM;
+        private CreateTagVM _createTagVM;
 
         #endregion Fields
 
@@ -38,6 +39,7 @@ namespace ImoutoViewer.ViewModel
             _mainWindowView.Client.SizeChanged += _mainWindowView_SizeChanged;
             _tagsVM = new TagsVM(this);
             _addTagVM = new AddTagVM(this);
+            _createTagVM = new CreateTagVM(this);
 
             InitializeCommands();
             InitializeSettings();
@@ -64,6 +66,14 @@ namespace ImoutoViewer.ViewModel
             get
             {
                 return _addTagVM;
+            }
+        }
+
+        public CreateTagVM CreateTagVM
+        {
+            get
+            {
+                return _createTagVM;
             }
         }
 
@@ -311,7 +321,7 @@ namespace ImoutoViewer.ViewModel
             Tags.ShowTags = Settings.ShowTags;
         }
 
-        private void InitializeImageList(IEnumerable<string> images = null)
+        private void InitializeImageList(IEnumerable<string> images)
         {
             if (images != null)
             {
@@ -373,20 +383,20 @@ namespace ImoutoViewer.ViewModel
 
                 UpdateView();
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 //Debug.WriteLine(ex.Message);
                 //NextImage();
             }
         }
 
-        private async void InitializeImageListAsync()
+        private async void InitializeImageListAsync(IEnumerable<string> images = null)
         {
             IsLoading = true;
             OnPropertyChanged("Status");
             OnPropertyChanged("IsLoading");
 
-            await Task.Run(() => InitializeImageList());
+            await Task.Run(() => InitializeImageList(images));
 
             IsLoading = false;
             UpdateView();
@@ -548,14 +558,14 @@ namespace ImoutoViewer.ViewModel
         private void _settings_SelectedDirectorySearchTypeChanged(object sender, EventArgs e)
         {
             LocalImageList.FilesGettingMethods = Settings.DirectorySearchFlags;
-            InitializeImageList(new[] { CurrentLocalImage.Path });
+            InitializeImageListAsync(new[] { CurrentLocalImage.Path });
         }
 
         private void Settings_SelectedFoldersSortingChanged(object sender, EventArgs e)
         {
             LocalImageList.FoldersSortMethod = Settings.SelectedFoldersSorting.Method;
             LocalImageList.IsFoldersSortMethodDescending = Settings.IsSelectedFoldersSortingDescending;
-            InitializeImageList(new[] { CurrentLocalImage.Path });
+            InitializeImageListAsync(new[] { CurrentLocalImage.Path });
         }
 
         private void Settings_SelectedFilesSortingChanged(object sender, EventArgs e)
@@ -623,7 +633,7 @@ namespace ImoutoViewer.ViewModel
             catch
             { }
 
-            InitializeImageList(droppedFiles);
+            InitializeImageListAsync(droppedFiles);
         }
 
         #endregion IDropable members

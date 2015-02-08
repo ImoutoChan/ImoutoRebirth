@@ -1,5 +1,6 @@
 ﻿using ImoutoViewer.ViewModel;
 using MahApps.Metro.Controls;
+using MahApps.Metro.Controls.Dialogs;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -186,6 +187,25 @@ namespace ImoutoViewer
             {
                 item.IsOpen = false;
             }
+        }
+
+        public async void ShowMessageDialog(string title, string message)
+        {
+            MetroDialogOptions.ColorScheme = MetroDialogColorScheme.Accented;
+
+            var mySettings = new MetroDialogSettings()
+            {
+                AffirmativeButtonText = "Ok",
+                ColorScheme = MetroDialogColorScheme.Accented
+            };
+
+            await this.ShowMessageAsync(title, message, MessageDialogStyle.Affirmative, mySettings);
+        }
+
+        public void ShowCreateTagFlyout()
+        {
+            CloseAllFlyouts();
+            CreateTagFlyout.IsOpen = !CreateTagFlyout.IsOpen;
         }
         #endregion Methods
     }

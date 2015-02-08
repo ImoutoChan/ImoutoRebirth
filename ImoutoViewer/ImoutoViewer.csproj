@@ -112,12 +112,16 @@
     <Compile Include="UserControls\MouseWheelGesture.cs" />
     <Compile Include="ViewModel\AddTagVM.cs" />
     <Compile Include="ViewModel\BindedTagVM.cs" />
+    <Compile Include="ViewModel\CreateTagVM.cs" />
     <Compile Include="ViewModel\MainWindowVM.cs" />
     <Compile Include="ViewModel\OpenWithVM.cs" />
     <Compile Include="ViewModel\SettingsVM.cs" />
     <Compile Include="ViewModel\SourceVM.cs" />
     <Compile Include="ViewModel\TagsVM.cs" />
     <Compile Include="ViewModel\VMBase.cs" />
+    <Compile Include="View\CreateTagV.xaml.cs">
+      <DependentUpon>CreateTagV.xaml</DependentUpon>
+    </Compile>
     <Compile Include="View\AddTagV.xaml.cs">
       <DependentUpon>AddTagV.xaml</DependentUpon>
     </Compile>
@@ -139,6 +143,10 @@
       <SubType>Code</SubType>
     </Compile>
     <Page Include="Resources\Icons.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="View\CreateTagV.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>

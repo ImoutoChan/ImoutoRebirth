@@ -1,5 +1,4 @@
 ﻿using ImoutoViewer.WCF;
-using MahApps.Metro.Controls.Dialogs;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -107,12 +106,28 @@ namespace ImoutoViewer.ViewModel
             }
         }
 
+        public async void CreateTagAsync(CreateTagVM createTagVM)
+        {
+            try
+            {
+                await CreateTagTask(createTagVM);
+
+                _parent.View.ShowMessageDialog("Tag creating", "Tag succsessfully created");
+
+            }
+            catch (Exception ex)
+            {
+                _parent.View.ShowMessageDialog("Tag creating", "Error while creating: " + ex.Message);
+            }
+
+            _parent.View.CloseAllFlyouts();
+        }
 
         public async void UnbindTagAsync(BindedTagVM bindedTagVM)
         {
             if (CurrentId == null)
             {
-                ShowMessageDialog("Can't remove tag: image is not in database");
+                _parent.View.ShowMessageDialog("Removing tag from current image", "Can't remove tag: image is not in database");
                 return;
             }
 
@@ -120,12 +135,12 @@ namespace ImoutoViewer.ViewModel
             {
                 await UnbindTagTask(CurrentId.Value, bindedTagVM.Id);
 
-                ShowMessageDialog("Tag succsessfully removed");
+                _parent.View.ShowMessageDialog("Removing tag from current image", "Tag succsessfully removed");
 
             }
             catch (Exception ex)
             {
-                ShowMessageDialog("Error while removing: " + ex.Message);
+                _parent.View.ShowMessageDialog("Removing tag from current image", "Error while removing: " + ex.Message);
             }
 
             ReloadAsync(true);
@@ -136,7 +151,7 @@ namespace ImoutoViewer.ViewModel
         {
             if (_parent.Tags.CurrentId == null)
             {
-                ShowMessageDialog("Can't add tag: image is not in database");
+                _parent.View.ShowMessageDialog("Adding tag to current image", "Can't add tag: image is not in database");
                 return;
             }
 
@@ -146,12 +161,12 @@ namespace ImoutoViewer.ViewModel
             {
                 await BindTagTask(addTagVM);
 
-                ShowMessageDialog("Tag succsessfully added");
+                _parent.View.ShowMessageDialog("Adding tag to current image", "Tag succsessfully added");
                 _parent.View.CloseAllFlyouts();
             }
             catch (Exception ex)
             {
-                ShowMessageDialog("Error while adding: " + ex.Message);
+                _parent.View.ShowMessageDialog("Adding tag to current image", "Error while adding: " + ex.Message);
 
                 addTagVM.IsEnabled = true;
             }
@@ -162,6 +177,23 @@ namespace ImoutoViewer.ViewModel
         #endregion Public methods
 
         #region Private methods
+
+        private Task CreateTagTask(CreateTagVM createTagVM)
+        {
+            return Task.Run(() =>
+            {
+                ImoutoService.Use(imoutoService =>
+                {
+                    imoutoService.CreateTag(new Tag
+                    {
+                        HasValue = createTagVM.HasValue,
+                        SynonymsCollection = createTagVM.SynonymsCollection,
+                        Title = createTagVM.Title,
+                        Type = createTagVM.SelectedType
+                    });
+                });
+            });
+        }
 
         private Task<List<BindedTag>> LoadTagsTask(string path)
         {
@@ -190,7 +222,7 @@ namespace ImoutoViewer.ViewModel
         {
             TagsCollection.Clear();
 
-            foreach (var tag in tags.Where(x => x.Tag.Type.Title != "localmeta"))
+            foreach (var tag in tags.Where(x => x.Source != Source.System))
             {
                 TagsCollection.Add(new BindedTagVM(tag, this));
             }
@@ -241,19 +273,6 @@ namespace ImoutoViewer.ViewModel
                         });
                 });
             });
-        }
-
-        private async void ShowMessageDialog(string message)
-        {
-            _parent.View.MetroDialogOptions.ColorScheme = MetroDialogColorScheme.Accented;
-
-            var mySettings = new MetroDialogSettings()
-            {
-                AffirmativeButtonText = "Ok",
-                ColorScheme = MetroDialogColorScheme.Accented
-            };
-
-            await _parent.View.ShowMessageAsync("Removing tag from current image", message, MessageDialogStyle.Affirmative, mySettings);
         }
 
         #endregion Private methods
