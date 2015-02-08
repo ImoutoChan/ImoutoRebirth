@@ -21,7 +21,6 @@
                           WindowState="Maximized"
                           BorderBrush="{DynamicResource AccentColorBrush}"                      
                           BorderThickness="2"
-                          ShowWindowCommandsOnTop="False"
                           gif:ImageBehavior.AnimateInDesignMode="True"
                           KeyUp="MainWindow_OnKeyUp"
                           TitleCaps="False"
@@ -76,8 +75,8 @@
             <i:InvokeCommandAction Command="{Binding PrevImageCommand}" />
         </i:EventTrigger>
     </i:Interaction.Triggers>
-    
-    <metroControl:MetroWindow.WindowCommands>
+
+    <metroControl:MetroWindow.RightWindowCommands>
         <metroControl:WindowCommands>
             <Button Content="Slideshow"
                     Click="SlideShowButton_OnClick"
@@ -89,7 +88,7 @@
             <Button Content="Settings" 
                     Click="Button_Click" />
         </metroControl:WindowCommands>
-    </metroControl:MetroWindow.WindowCommands>
+    </metroControl:MetroWindow.RightWindowCommands>
     
     <i:Interaction.Behaviors>
         <behavior:FrameworkElementDropBehavior />

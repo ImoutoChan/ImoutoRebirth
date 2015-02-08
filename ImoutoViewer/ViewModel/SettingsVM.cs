@@ -49,7 +49,7 @@ namespace ImoutoViewer.ViewModel
             IsSelectedFilesSortingDescending = Settings.Default.FilesSortingDesc;
             IsSelectedFoldersSortingDescending = Settings.Default.FoldersSortingDesc;
 
-            AccentColors = ThemeManager.DefaultAccents
+            AccentColors = ThemeManager.Accents
                                 .Select(a => new AccentColorMenuData
                                 {
                                     Name = a.Name, 
@@ -181,15 +181,15 @@ namespace ImoutoViewer.ViewModel
             set
             {
                 _selectedTheme = value;
-                var theme = ThemeManager.DetectTheme(Application.Current);
+                var theme = ThemeManager.DetectAppStyle(Application.Current);
                 switch (value)
                 {
                     case 1:
-                        ThemeManager.ChangeTheme(Application.Current, theme.Item2, Theme.Dark);
+                        ThemeManager.ChangeAppStyle(Application.Current, theme.Item2, ThemeManager.AppThemes.First());
                         Settings.Default.ThemeIndex = 1;
                         break;
                     default:
-                        ThemeManager.ChangeTheme(Application.Current, theme.Item2, Theme.Light);
+                        ThemeManager.ChangeAppStyle(Application.Current, theme.Item2, ThemeManager.AppThemes.Last());
                         Settings.Default.ThemeIndex = 0;
                         break;
                 }
@@ -440,9 +440,9 @@ namespace ImoutoViewer.ViewModel
 
         public void ChangeAccent()
         {
-            var theme = ThemeManager.DetectTheme(Application.Current);
-            var accent = ThemeManager.DefaultAccents.First(x => x.Name == Name);
-            ThemeManager.ChangeTheme(Application.Current, accent, theme.Item1);
+            var theme = ThemeManager.DetectAppStyle(Application.Current);
+            var accent = ThemeManager.GetAccent(Name);
+            ThemeManager.ChangeAppStyle(Application.Current, accent, theme.Item1);
             Settings.Default.AccentColorName = Name;
         }
     }
