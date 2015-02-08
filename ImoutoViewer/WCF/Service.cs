@@ -5,6 +5,7 @@ using WCFExchageLibrary.Operations;
 namespace ImoutoViewer.WCF
 {
     public delegate TResult UseServiceDelegate<TResult>(IImoutoWCFService proxy);
+    public delegate void UseServiceDelegate(IImoutoWCFService proxy);
 
     public static class ImoutoService
     {
@@ -52,6 +53,43 @@ namespace ImoutoViewer.WCF
             }
 
             return result;
+        }
+
+        public static void Use(UseServiceDelegate codeBlock)
+        {
+            IClientChannel proxy = (IClientChannel)_channelFactory.CreateChannel();
+            bool success = false;
+            bool getResultSuccess = false;
+
+            try
+            {
+                codeBlock((IImoutoWCFService)proxy);
+                getResultSuccess = true;
+
+                proxy.Close();
+                success = true;
+            }
+            catch (Exception ex)
+            {
+                try
+                {
+                    proxy.Close();
+                    success = true;
+                }
+                catch { }
+
+                if (!getResultSuccess)
+                {
+                    throw ex;
+                }
+            }
+            finally
+            {
+                if (!success)
+                {
+                    proxy.Abort();
+                }
+            }
         }
     }
 }

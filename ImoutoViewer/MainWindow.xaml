@@ -8,6 +8,7 @@
                           xmlns:behavior="clr-namespace:ImoutoViewer.Behavior"                      
                           xmlns:converter="clr-namespace:ImoutoViewer.Converters"
                           xmlns:viewModel="clr-namespace:ImoutoViewer.ViewModel"
+                          xmlns:view="clr-namespace:ImoutoViewer.View"
                           xmlns:gif="http://wpfanimatedgif.codeplex.com"
                           xmlns:metroControl="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
                           xmlns:metroBehaviour="clr-namespace:MahApps.Metro.Behaviours;assembly=MahApps.Metro"
@@ -44,11 +45,11 @@
         
         <MouseBinding Command="{Binding ZoomInCommand}"
                       Gesture="{x:Static userControl:MouseWheelGesture.CtrlUp}" />
-        
-        <KeyBinding Command="{Binding RotateCommand}" 
+
+        <KeyBinding Command="{Binding RotateCommand}"
                     CommandParameter="left"
                     Key="L" />
-        
+
         <KeyBinding Command="{Binding RotateCommand}" 
                     CommandParameter="right"
                     Key="R" />
@@ -314,7 +315,23 @@
                     
                     <TextBlock>SFGGFGF</TextBlock>
                 </StackPanel>
-             </metroControl:Flyout>
+            </metroControl:Flyout>
+            
+            <metroControl:Flyout x:Name="AddTagFlyout"
+                                 Width="250"
+                                 Header="Add tag"
+                                 Position="Right"
+                                 DataContext="{Binding Path=AddTagVM}"
+                                 MouseLeftButtonUp="Disable_MouseButton"
+                                 Theme="Inverse">
+                <i:Interaction.Triggers>
+                    <i:EventTrigger EventName="IsOpenChanged">
+                        <i:InvokeCommandAction Command="{Binding ResetCommand}" />
+                    </i:EventTrigger>
+                </i:Interaction.Triggers>
+
+                <view:AddTagV IsEnabled="{Binding IsEnabled}"/>
+            </metroControl:Flyout>
         </metroControl:FlyoutsControl>
     </metroControl:MetroWindow.Flyouts>
     
@@ -397,19 +414,47 @@
                                 <StackPanel>
                                     <TextBlock Text="{Binding Title}"
                                                 FontSize="15"
-                                                Margin="0,0,0,2"/>
+                                                Margin="0,0,0,2"/>          
                                     
                                     <ItemsControl ItemsSource="{Binding TagsCollection}">
                                         <ItemsControl.ItemTemplate>
                                             <DataTemplate>
-                                                <TextBlock Text="{Binding Title}"
-                                                        Foreground="{Binding TypeBrush}"
-                                                        FontFamily="Comic Sans MS"
-                                                        Margin="5,0,0,2"
-                                                        FontSize="13"
-                                                        FontWeight="Bold"
-                                                        TextWrapping="Wrap"
-                                                        ToolTip="{Binding Title}"/>
+                                                <Grid>
+                                                    <Grid.ColumnDefinitions>
+                                                        <ColumnDefinition Width="*" />
+                                                        <ColumnDefinition Width="Auto" />
+                                                    </Grid.ColumnDefinitions>
+                                                    
+                                                    <TextBlock Grid.Column="0"
+                                                               Text="{Binding Title}"
+                                                               Foreground="{Binding TypeBrush}"
+                                                               FontFamily="Comic Sans MS"
+                                                               Margin="5,0,0,2"
+                                                               FontSize="13"
+                                                               FontWeight="Bold"
+                                                               TextWrapping="Wrap"
+                                                               ToolTip="{Binding Title}"/>
+
+                                                    <Button Grid.Column="1"
+                                                            Width="25"
+                                                            Height="25"
+                                                            Margin="0, 0, 0, 0"
+                                                            Style="{DynamicResource MetroCircleButtonStyle}"
+                                                            HorizontalAlignment="Left"
+                                                            Command="{Binding UnbindCommand}"
+                                                            Visibility="{Binding IsEditable, Mode=OneWay, Converter={StaticResource ConditionVisibilityConverter}, ConverterParameter=true, FallbackValue=Collapsed}">
+                                                        <Rectangle Width="9"
+                                                                   Height="9"
+                                                                   Fill="{Binding Path=Foreground, 
+                                                                       RelativeSource={RelativeSource FindAncestor, 
+                                                                           AncestorType={x:Type Button}}}">
+                                                            <Rectangle.OpacityMask>
+                                                                <VisualBrush Stretch="Fill"
+                                                                             Visual="{DynamicResource appbar_close}" />
+                                                            </Rectangle.OpacityMask>
+                                                        </Rectangle>
+                                                    </Button>
+                                                </Grid>
                                             </DataTemplate>
                                         </ItemsControl.ItemTemplate>
                                     </ItemsControl>
@@ -422,7 +467,8 @@
                             Height="25"
                             Margin="10, 0, 10, 0"
                             Style="{DynamicResource MetroCircleButtonStyle}"
-                            HorizontalAlignment="Left">
+                            HorizontalAlignment="Left"
+                            Click="ShowAddDialog">
                         <Rectangle Width="10"
                                    Height="10"
                                    Fill="{Binding Path=Foreground, 

@@ -1,5 +1,7 @@
 ﻿using ImoutoViewer.ViewModel;
 using MahApps.Metro.Controls;
+using MahApps.Metro.Controls.Dialogs;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -58,21 +60,15 @@ namespace ImoutoViewer
         //Open setting flyout
         private void Button_Click(object sender, RoutedEventArgs e)
         {
-            foreach (Flyout item in Flyouts.Items)
-            {
-                item.IsOpen = false;
-            }
+            CloseAllFlyouts();
             SettingFlyout.IsOpen = !SettingFlyout.IsOpen;
         }
 
         //Open OpenWith flyout
         private void ButtonBase_OnClick(object sender, RoutedEventArgs e)
         {
-            foreach (Flyout item in Flyouts.Items)
-            {
-                item.IsOpen = false;
-            }
-            EditWithFlyout.IsOpen = !SettingFlyout.IsOpen;
+            CloseAllFlyouts();
+            EditWithFlyout.IsOpen = !EditWithFlyout.IsOpen;
         }
 
         //Close all flyouts
@@ -130,7 +126,16 @@ namespace ImoutoViewer
             (DataContext as MainWindowVM).ToggleSlideshowCommand.Execute(null);
         }
 
+        //Show add dialog
+        private void ShowAddDialog(object sender, RoutedEventArgs e)
+        {
+            CloseAllFlyouts();
+            AddTagFlyout.IsOpen = !AddTagFlyout.IsOpen;
+        }
+
         #endregion Event handlers
+
+        #region Methods
 
         private void DeactivateFullscreen()
         {
@@ -176,5 +181,14 @@ namespace ImoutoViewer
                 ActivateFullscreen();
             }
         }
+
+        public void CloseAllFlyouts()
+        {
+            foreach (Flyout item in Flyouts.Items)
+            {
+                item.IsOpen = false;
+            }
+        }
+        #endregion Methods
     }
 }

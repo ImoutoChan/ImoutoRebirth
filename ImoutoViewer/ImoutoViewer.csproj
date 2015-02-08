@@ -40,6 +40,7 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <Prefer32Bit>true</Prefer32Bit>
+    <UseVSHostingProcess>true</UseVSHostingProcess>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -66,6 +67,7 @@
     <Reference Include="System.Drawing" />
     <Reference Include="System.Net" />
     <Reference Include="System.ServiceModel" />
+    <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Windows.Interactivity, Version=4.5.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\MahApps.Metro.1.0.0.0\lib\net45\System.Windows.Interactivity.dll</HintPath>
     </Reference>
@@ -108,6 +110,7 @@
     <Compile Include="Model\SortMethod.cs" />
     <Compile Include="UserControls\ExtScrollViewer.cs" />
     <Compile Include="UserControls\MouseWheelGesture.cs" />
+    <Compile Include="ViewModel\AddTagVM.cs" />
     <Compile Include="ViewModel\BindedTagVM.cs" />
     <Compile Include="ViewModel\MainWindowVM.cs" />
     <Compile Include="ViewModel\OpenWithVM.cs" />
@@ -115,6 +118,9 @@
     <Compile Include="ViewModel\SourceVM.cs" />
     <Compile Include="ViewModel\TagsVM.cs" />
     <Compile Include="ViewModel\VMBase.cs" />
+    <Compile Include="View\AddTagV.xaml.cs">
+      <DependentUpon>AddTagV.xaml</DependentUpon>
+    </Compile>
     <Compile Include="WCF\Service.cs" />
     <Page Include="AppResourceDictionary.xaml">
       <SubType>Designer</SubType>
@@ -135,6 +141,10 @@
     <Page Include="Resources\Icons.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
+    </Page>
+    <Page Include="View\AddTagV.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
   </ItemGroup>
   <ItemGroup>

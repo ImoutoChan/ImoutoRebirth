@@ -1,9 +1,8 @@
-﻿using System;
+﻿using ImoutoViewer.Commands;
+using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Net;
-using System.Text;
-using System.Threading.Tasks;
+using System.Windows.Input;
 using System.Windows.Media;
 using WCFExchageLibrary.Data;
 
@@ -48,6 +47,14 @@ namespace ImoutoViewer.ViewModel
             }
         }
 
+        public int Id
+        {
+            get
+            {
+                return _modelTag.Tag.Id.Value;
+            }
+        }
+
         public Brush TypeBrush
         {
             get
@@ -77,6 +84,28 @@ namespace ImoutoViewer.ViewModel
             {
                 return _modelTag.Source.ToString();
             }
+        }
+
+        public bool IsEditable
+        {
+            get
+            {
+                return _modelTag.IsEditable;
+            }
+        }
+
+        private ICommand _unbindCommand;
+        public ICommand UnbindCommand
+        {
+            get
+            {
+                return _unbindCommand ?? (_unbindCommand = new RelayCommand(Unbind));
+            }
+        }
+
+        private void Unbind(object obj)
+        {
+            _parantVM.UnbindTagAsync(this);
         }
     }
 }

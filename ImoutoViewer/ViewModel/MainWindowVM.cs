@@ -25,6 +25,7 @@ namespace ImoutoViewer.ViewModel
         private bool _isSlideshowActive;
         private DispatcherTimer _timer;
         private TagsVM _tagsVM;
+        private AddTagVM _addTagVM;
 
         #endregion Fields
 
@@ -39,10 +40,10 @@ namespace ImoutoViewer.ViewModel
             _mainWindowView.SizeChanged += _mainWindowView_SizeChanged;
             _mainWindowView.Client.SizeChanged += _mainWindowView_SizeChanged;
             _tagsVM = new TagsVM(this);
+            _addTagVM = new AddTagVM(this);
 
             InitializeCommands();
             InitializeSettings();
-
 
             _mainWindowView.Show();
 
@@ -52,6 +53,22 @@ namespace ImoutoViewer.ViewModel
         #endregion Constructors
 
         #region Properties
+
+        public MainWindow View
+        {
+            get
+            {
+                return _mainWindowView;
+            }
+        }
+
+        public AddTagVM AddTagVM
+        {
+            get
+            {
+                return _addTagVM;
+            }
+        }
 
         public TagsVM Tags
         {

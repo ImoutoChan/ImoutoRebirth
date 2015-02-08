@@ -1,4 +1,5 @@
 ﻿using ImoutoViewer.WCF;
+using MahApps.Metro.Controls.Dialogs;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -14,7 +15,7 @@ namespace ImoutoViewer.ViewModel
     {
         #region Fields
 
-        private MainWindowVM _mainVM;
+        private MainWindowVM _parent;
 
         private int? _currentId;
         private string _currentPath = "";
@@ -27,7 +28,7 @@ namespace ImoutoViewer.ViewModel
         
         public TagsVM(MainWindowVM mainVM)
         {
-            _mainVM = mainVM;
+            _parent = mainVM;
         }
 
         #endregion Constructors
@@ -50,15 +51,23 @@ namespace ImoutoViewer.ViewModel
             }
         } 
 
+        public int? CurrentId
+        {
+            get
+            {
+                return _currentId;
+            }
+        }
+
         #endregion Properties
 
         #region Public methods
 
-        public async void ReloadAsync()
+        public async void ReloadAsync(bool fullReload = false)
         {
             try
             {
-                var path = _mainVM.CurrentLocalImage.Path;
+                var path = _parent.CurrentLocalImage.Path;
 
                 var needReload = false;
                 lock (_currentPath)
@@ -71,9 +80,11 @@ namespace ImoutoViewer.ViewModel
                 }
 
                 List<BindedTag> tags = new List<BindedTag>();
-                if (needReload)
+
+                if (needReload || fullReload)
                 {
-                    tags = await LoadTagsAsync(path);
+                    tags = await LoadTagsTask(path);
+                    _isLastSuccessConnected = true;
 
                     lock (_currentPath)
                     {
@@ -83,8 +94,6 @@ namespace ImoutoViewer.ViewModel
                         }
                     }
                 }
-
-                _isLastSuccessConnected = true;
             }
             catch (System.ServiceModel.EndpointNotFoundException)
             {
@@ -93,11 +102,68 @@ namespace ImoutoViewer.ViewModel
             }
             catch (Exception ex)
             {
+                _isLastSuccessConnected = false;
                 Debug.WriteLine(ex.Message);
             }
         }
 
-        private Task<List<BindedTag>> LoadTagsAsync(string path)
+
+        public async void UnbindTagAsync(BindedTagVM bindedTagVM)
+        {
+            if (CurrentId == null)
+            {
+                ShowMessageDialog("Can't remove tag: image is not in database");
+                return;
+            }
+
+            try
+            {
+                await UnbindTagTask(CurrentId.Value, bindedTagVM.Id);
+
+                ShowMessageDialog("Tag succsessfully removed");
+
+            }
+            catch (Exception ex)
+            {
+                ShowMessageDialog("Error while removing: " + ex.Message);
+            }
+
+            ReloadAsync(true);
+        }
+
+        
+        public async void BindTagAsync(AddTagVM addTagVM)
+        {
+            if (_parent.Tags.CurrentId == null)
+            {
+                ShowMessageDialog("Can't add tag: image is not in database");
+                return;
+            }
+
+            addTagVM.IsEnabled = false;
+
+            try
+            {
+                await BindTagTask(addTagVM);
+
+                ShowMessageDialog("Tag succsessfully added");
+                _parent.View.CloseAllFlyouts();
+            }
+            catch (Exception ex)
+            {
+                ShowMessageDialog("Error while adding: " + ex.Message);
+
+                addTagVM.IsEnabled = true;
+            }
+
+            _parent.Tags.ReloadAsync(true);
+        }
+
+        #endregion Public methods
+
+        #region Private methods
+
+        private Task<List<BindedTag>> LoadTagsTask(string path)
         {
             return Task.Run(() =>
             {
@@ -120,10 +186,6 @@ namespace ImoutoViewer.ViewModel
             });
         }
 
-        #endregion Public methods
-
-        #region Private methods
-
         private void TagsReload(List<BindedTag> tags)
         {
             TagsCollection.Clear();
@@ -138,7 +200,7 @@ namespace ImoutoViewer.ViewModel
             OnPropertyChanged(() => ShowTags);
             OnTagsLoaded();
         }
-
+        
         private void UpdateSources()
         {
             SourcesCollection.Clear();
@@ -149,6 +211,49 @@ namespace ImoutoViewer.ViewModel
 
                 TagsCollection.Where(x => x.Source == source).ForEach(x => SourcesCollection.Last().TagsCollection.Add(x));                
             }
+        }
+        
+        private Task UnbindTagTask(int imageId, int tagId)
+        {
+            return Task.Run(() =>
+            {
+                ImoutoService.Use(imoutoService =>
+                {
+                    imoutoService.UnbindTag(imageId, tagId);
+                });
+            });
+        }
+        
+        private Task BindTagTask(AddTagVM addTagVM)
+        {
+            return Task.Run(() =>
+            {
+                ImoutoService.Use(imoutoService =>
+                {
+                    imoutoService.BindTag(
+                        CurrentId.Value,
+                        new BindedTag
+                        {
+                            Tag = addTagVM.SelectedTag,
+                            DateAdded = DateTime.Now,
+                            Source = Source.User,
+                            Value = (addTagVM.SelectedTag.HasValue) ? addTagVM.Value : null
+                        });
+                });
+            });
+        }
+
+        private async void ShowMessageDialog(string message)
+        {
+            _parent.View.MetroDialogOptions.ColorScheme = MetroDialogColorScheme.Accented;
+
+            var mySettings = new MetroDialogSettings()
+            {
+                AffirmativeButtonText = "Ok",
+                ColorScheme = MetroDialogColorScheme.Accented
+            };
+
+            await _parent.View.ShowMessageAsync("Removing tag from current image", message, MessageDialogStyle.Affirmative, mySettings);
         }
 
         #endregion Private methods
