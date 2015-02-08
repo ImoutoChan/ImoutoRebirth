@@ -91,7 +91,7 @@ ________________________________________________________________________________
 unknown:
 --improve memory usage, especially for gif
 --glow around window
---PREPARE AND RESIZE FOR POST IN 2CH
+--?--PREPARE AND RESIZE FOR POST IN 2CH
 --LOADING IMAGE IN BACKGROUND
 --resize before drag
 
