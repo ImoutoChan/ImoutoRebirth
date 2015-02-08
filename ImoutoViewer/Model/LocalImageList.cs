@@ -21,7 +21,7 @@ namespace ImoutoViewer.Model
         private static DirectorySearchFlags _filesGettingMethod = DirectorySearchFlags.Folder |
                                                                 DirectorySearchFlags.AllDepthSubfolders;
 
-        #endregion //Static fields
+        #endregion Static fields
 
         #region Static Properties
 
@@ -47,7 +47,7 @@ namespace ImoutoViewer.Model
             set { _filesGettingMethod = value; }
         }
 
-        #endregion //Static Properties
+        #endregion Static Properties
 
         #region Static methods
 
@@ -113,9 +113,9 @@ namespace ImoutoViewer.Model
             }
         }
 
-        #endregion // Static members
+        #endregion  Static members
 
-        #endregion //Static members
+        #endregion Static members
 
         #region Fields
 
@@ -125,7 +125,7 @@ namespace ImoutoViewer.Model
         private DirectoryInfo _currentDirectory;
         private LocalImage _currentImage;
 
-        #endregion //Fields
+        #endregion Fields
 
         #region Constructors
 
@@ -218,7 +218,7 @@ namespace ImoutoViewer.Model
             }
         }
 
-        #endregion //Constructors
+        #endregion Constructors
 
         #region Properties
 
@@ -276,7 +276,7 @@ namespace ImoutoViewer.Model
 
         public bool IsDirectoryActive { get; private set; }
 
-        #endregion //Properties
+        #endregion Properties
 
         #region Public methods
 
@@ -341,7 +341,7 @@ namespace ImoutoViewer.Model
             _imageList = new List<LocalImage>(_imageList.OrderByWithDirection(x => GetFilesOrderProperty(x.Path), IsFilesSortMethodDescending));
         }
 
-        #endregion //Public methods
+        #endregion Public methods
 
         #region Methods
 
@@ -539,7 +539,7 @@ namespace ImoutoViewer.Model
             }
         }
 
-        #endregion //Methods
+        #endregion Methods
 
         #region Events
 
@@ -552,7 +552,7 @@ namespace ImoutoViewer.Model
             }
         }
 
-        #endregion //Events
+        #endregion Events
 
         #region IEnumerable members
 
@@ -561,6 +561,6 @@ namespace ImoutoViewer.Model
             return ((IEnumerable) _imageList).GetEnumerator();
         }
 
-        #endregion // IEnumerable members
+        #endregion  IEnumerable members
     }
 }

@@ -32,7 +32,7 @@ namespace ImoutoViewer.Model
         private double _autoResized;
         private double _localZoom;
 
-        #endregion //Fields
+        #endregion Fields
 
         #region Constructors
 
@@ -49,7 +49,7 @@ namespace ImoutoViewer.Model
             IsError = false;
         }
 
-        #endregion //Constructors
+        #endregion Constructors
 
         #region Properties
 
@@ -137,7 +137,7 @@ namespace ImoutoViewer.Model
             get { return LocalZoom * _autoResized * StaticZoom; }
         }
 
-        #endregion //Properties
+        #endregion Properties
 
         #region Public methods
 
@@ -252,7 +252,7 @@ namespace ImoutoViewer.Model
             OnImageChanged();
         }
 
-        #endregion //Public methods
+        #endregion Public methods
 
         #region Methods
 
@@ -271,7 +271,7 @@ namespace ImoutoViewer.Model
             Image = trasformedBitmap;
         }
 
-        #endregion //Methods
+        #endregion Methods
 
         #region Events
 
@@ -284,7 +284,7 @@ namespace ImoutoViewer.Model
             }
         }
 
-        #endregion //Events
+        #endregion Events
 
         #region Static methods
 
@@ -421,6 +421,6 @@ namespace ImoutoViewer.Model
             return result;
         }
 
-        #endregion //Static methods
+        #endregion Static methods
     }
 }

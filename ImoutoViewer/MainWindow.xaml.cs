@@ -17,7 +17,7 @@ namespace ImoutoViewer
         private bool _isFullscreen;
         private WindowState _lastState;
 
-        #endregion // Fields
+        #endregion  Fields
 
         #region Constructors
 
@@ -28,7 +28,7 @@ namespace ImoutoViewer
             RenderOptions.SetBitmapScalingMode(ViewPort, BitmapScalingMode.Fant);
         }
 
-        #endregion //Constructors
+        #endregion Constructors
 
         #region Event handlers
 
@@ -130,7 +130,7 @@ namespace ImoutoViewer
             (DataContext as MainWindowVM).ToggleSlideshowCommand.Execute(null);
         }
 
-        #endregion //Event handlers
+        #endregion Event handlers
 
         private void DeactivateFullscreen()
         {

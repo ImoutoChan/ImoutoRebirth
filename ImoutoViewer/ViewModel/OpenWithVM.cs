@@ -20,7 +20,7 @@ namespace ImoutoViewer.ViewModel
             CurrentList = EditProgram.List.Where(x=>x.IsAvailable).ToList();
         }
 
-        #endregion //Constructors
+        #endregion Constructors
 
         public List<EditProgram> CurrentList { get; set; }
 
@@ -35,7 +35,7 @@ namespace ImoutoViewer.ViewModel
             ClickCommand = new RelayCommand(Click);
         }
 
-        #endregion //Constructors
+        #endregion Constructors
 
         #region Properties
 
@@ -49,7 +49,7 @@ namespace ImoutoViewer.ViewModel
 
         public string IconPath { get; set; }
 
-        #endregion // Properties
+        #endregion  Properties
 
         #region Commands
 
@@ -66,7 +66,7 @@ namespace ImoutoViewer.ViewModel
             catch { }
         }
 
-        #endregion // Commands
+        #endregion  Commands
 
         static EditProgram()
         {

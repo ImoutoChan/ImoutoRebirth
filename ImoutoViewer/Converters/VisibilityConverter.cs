@@ -1,50 +1,47 @@
 ﻿using System;
+using System.Linq;
 using System.Windows;
 using System.Windows.Data;
+using Utils;
 
 namespace ImoutoViewer.Converters
 {
-    [ValueConversion(typeof(Visibility), typeof(Boolean))]
-    class VisibilityConverter : IValueConverter
+    public class ConditionVisibilityConverter : IValueConverter
     {
-        public VisibilityConverter()
-        {
-            IsInvert = false;
-            CollapsedOnFalse = false;
-        }
-
-        public bool IsInvert { private get; set; }
-        public bool CollapsedOnFalse { private get; set; }
-
         public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
         {
-            if (!(value is Boolean)) throw new ArgumentException("The input variable has wrong type.");
-
-            var isCheck = (Boolean)value;
-
-            if (IsInvert)
+            var result = Visibility.Collapsed;
+            if (parameter != null)
             {
-                isCheck = !isCheck;
-            }
+                var paramsConv = parameter.ToString();
+                var paramsList = paramsConv.Split('|');
 
-            return isCheck
-                       ? Visibility.Visible
-                       : CollapsedOnFalse
-                             ? Visibility.Collapsed
-                             : Visibility.Hidden;
+                if (BooleanResultConverter.CheckedValue(value, paramsList[0]))
+                {
+                    result = Visibility.Visible;
+                }
+                else if (paramsList.Count() >= 2 && BooleanResultConverter.CheckedValue(value, paramsList[1]))
+                {
+                    result = Visibility.Hidden;
+                }
+                else if (paramsList.Count() >= 3)
+                {
+                    if (!BooleanResultConverter.CheckedValue(value, paramsList[2]))
+                        result = Visibility.Visible;
+                }
+            }
+            else if (Converts.To<object>(value) != null)
+            {
+                result = Visibility.Visible;
+
+            }
+            return result;
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
         {
-            if (!(value is Visibility))
-            {
-                throw new ArgumentException("The input variable has wrong type.");
-            }
-
-            bool result = (Visibility) value == Visibility.Visible;
-            return (IsInvert)
-                       ? !result
-                       : result;
+            throw new NotImplementedException();
         }
+
     }
 }

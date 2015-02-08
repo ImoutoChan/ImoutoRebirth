@@ -23,8 +23,9 @@ namespace ImoutoViewer.ViewModel
         private bool _isSelectedFilesSortingDescending;
         private AccentColorMenuData _selectedAccentColor;
         private int _selectedTheme;
+        private bool _showTags;
 
-        #endregion //Fileds
+        #endregion Fileds
         
         #region Constructors
 
@@ -60,9 +61,11 @@ namespace ImoutoViewer.ViewModel
             SelectedIndexTheme = Settings.Default.ThemeIndex;
 
             SaveCommand = new RelayCommand(x=> Save());
+                       
+            ShowTags = Settings.Default.ShowTags;
         }
 
-        #endregion //Constructors
+        #endregion Constructors
 
         #region Properties
 
@@ -192,8 +195,22 @@ namespace ImoutoViewer.ViewModel
                 }
             }
         }
+        
+        public bool ShowTags
+        {
+            get
+            {
+                return _showTags;
+            }
+            set
+            {
+                OnPropertyChanged(ref _showTags, value, () => ShowTags);
+                Settings.Default.ShowTags = _showTags;
+                OnSelectedTagsModeChanged();
+            }
+        }
 
-        #endregion //Properties
+        #endregion Properties
 
         #region Commands
 
@@ -204,7 +221,7 @@ namespace ImoutoViewer.ViewModel
             Settings.Default.Save();
         }
 
-        #endregion //Commands
+        #endregion Commands
 
         #region Event handlers
 
@@ -213,7 +230,7 @@ namespace ImoutoViewer.ViewModel
             OnSelectedDirectorySearchTypeChanged();
         }
 
-        #endregion // Event handlers
+        #endregion  Event handlers
 
         #region Events
 
@@ -253,7 +270,15 @@ namespace ImoutoViewer.ViewModel
             }
         }
 
-        #endregion //Events
+        public event EventHandler SelectedTagsModeChanged;
+        private void OnSelectedTagsModeChanged()
+        {
+            if (SelectedTagsModeChanged != null)
+            {
+                SelectedTagsModeChanged(this, null);
+            }
+        }
+        #endregion Events
     }
 
     class ResizeTypeDescriptor
@@ -263,7 +288,7 @@ namespace ImoutoViewer.ViewModel
         public string Name { get; private set; }
         public ResizeType Type { get; private set; }
 
-        #endregion //Properties
+        #endregion Properties
 
         #region Methods
 
@@ -272,7 +297,7 @@ namespace ImoutoViewer.ViewModel
             return Name;
         }
 
-        #endregion //Methods
+        #endregion Methods
 
         #region Static methods
 
@@ -288,7 +313,7 @@ namespace ImoutoViewer.ViewModel
             };
         }
 
-        #endregion //Static methods
+        #endregion Static methods
     }
 
     class DirectorySearchTypeDescriptor
@@ -297,7 +322,7 @@ namespace ImoutoViewer.ViewModel
 
         private bool? _isSelected;
 
-        #endregion // Fields
+        #endregion  Fields
 
         #region Properties
 
@@ -323,7 +348,7 @@ namespace ImoutoViewer.ViewModel
             }
         }
 
-        #endregion //Properties
+        #endregion Properties
 
         #region Methods
 
@@ -332,7 +357,7 @@ namespace ImoutoViewer.ViewModel
             return Name;
         }
 
-        #endregion //Methods
+        #endregion Methods
 
         #region Static methods
 
@@ -348,7 +373,7 @@ namespace ImoutoViewer.ViewModel
             };
         }
 
-        #endregion //Static methods
+        #endregion Static methods
 
         #region Events
 
@@ -361,7 +386,7 @@ namespace ImoutoViewer.ViewModel
             }
         }
 
-        #endregion //Events
+        #endregion Events
     }
 
     class SortingDescriptor
@@ -371,7 +396,7 @@ namespace ImoutoViewer.ViewModel
         public string Name { get; set; }
         public SortMethod Method { get; set; }
 
-        #endregion //Properties
+        #endregion Properties
 
         #region Methods
 
@@ -380,7 +405,7 @@ namespace ImoutoViewer.ViewModel
             return Name;
         }
 
-        #endregion //Methods
+        #endregion Methods
 
         #region Static methods
 
@@ -405,7 +430,7 @@ namespace ImoutoViewer.ViewModel
             };
         }
 
-        #endregion //Static methods
+        #endregion Static methods
     }
 
     class AccentColorMenuData
@@ -420,6 +445,38 @@ namespace ImoutoViewer.ViewModel
             ThemeManager.ChangeTheme(Application.Current, accent, theme.Item1);
             Settings.Default.AccentColorName = Name;
         }
+    }
+
+    class TagsModeDescriptor
+    {
+        #region Properties
+
+        public string Name { get; set; }
+        public byte Value { get; set; }
+
+        #endregion Properties
+
+        #region Methods
+
+        public override string ToString()
+        {
+            return Name;
+        }
+
+        #endregion Methods
+
+        #region Static methods
+
+        public static List<TagsModeDescriptor> GetListForFiles()
+        {
+            return new List<TagsModeDescriptor>
+            {
+                new TagsModeDescriptor { Name = "Show", Value = 1 },
+                new TagsModeDescriptor { Name = "Hide", Value = 0  },
+            };
+        }
+
+        #endregion Static methods
     }
 
 }

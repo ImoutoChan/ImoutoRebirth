@@ -24,7 +24,9 @@
                           ShowWindowCommandsOnTop="False"
                           gif:ImageBehavior.AnimateInDesignMode="True"
                           KeyUp="MainWindow_OnKeyUp"
-                          TitleCaps="False">
+                          TitleCaps="False"
+                          MinHeight="180"
+                          MinWidth="320">
     <metroControl:MetroWindow.InputBindings>
         <MouseBinding Command="{Binding SimpleNextImageCommand}" 
                       Gesture="{x:Static userControl:MouseWheelGesture.Down}" />
@@ -60,6 +62,9 @@
         
         <KeyBinding Command="{Binding FixZoomCommand}"
                     Key="F"/>
+        
+        <KeyBinding Command="{Binding ToggleTagsCommand}"
+                    Key="T"/>
     </metroControl:MetroWindow.InputBindings>
     
     <i:Interaction.Triggers>
@@ -93,17 +98,19 @@
     </i:Interaction.Behaviors>
     
     <metroControl:MetroWindow.Resources>
-        <converter:VisibilityConverter x:Key="VisibilityConverter" />
+        <converter:BooleanToVisibilityConverter x:Key="VisibilityConverter" />
         
-        <converter:VisibilityConverter x:Key="VisibilityInvertConverter" 
+        <converter:BooleanToVisibilityConverter x:Key="VisibilityInvertConverter" 
                                        IsInvert="True" />
         
-        <converter:VisibilityConverter x:Key="CollapsedVisibilityConverter"
+        <converter:BooleanToVisibilityConverter x:Key="CollapsedVisibilityConverter"
                                        CollapsedOnFalse="True"/>
         
-        <converter:VisibilityConverter x:Key="CollapsedVisibilityInvertConverter"
+        <converter:BooleanToVisibilityConverter x:Key="CollapsedVisibilityInvertConverter"
                                        CollapsedOnFalse="True"
                                        IsInvert="True"/>
+        
+        <converter:ConditionVisibilityConverter x:Key="ConditionVisibilityConverter"/>
     </metroControl:MetroWindow.Resources>
     
     <metroControl:MetroWindow.Flyouts>
@@ -263,6 +270,11 @@
                                     x:Name="Slider"
                                     Value="{Binding SlideshowDelay}"
                                     />
+                            
+                            
+                            <CheckBox Margin="0,25,0,0"
+                                      Content="Show tags"
+                                      IsChecked="{Binding ShowTags}"/>
                         </StackPanel>
                     </ScrollViewer>
                 </Grid>
@@ -314,8 +326,16 @@
             <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
         
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto"
+                              MaxWidth="250" />
+            <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
+        
         <Grid x:Name="Client"
-              MouseUp="Client_OnMouseUp">
+              MouseUp="Client_OnMouseUp"
+              Grid.Column="1"
+              Grid.Row="0">
             <userControl:ExtScrollViewer x:Name="ScrollViewerObject" 
     			                         HorizontalScrollBarVisibility="Auto" 
     			                         VerticalScrollBarVisibility="Auto"
@@ -358,8 +378,69 @@
             </userControl:ExtScrollViewer>
         </Grid>
         
+        <Grid VerticalAlignment="Stretch"
+              HorizontalAlignment="Left"
+              MaxWidth="250"
+              MouseLeftButtonUp="Disable_MouseButton" 
+              Visibility="{Binding Tags.ShowTags, Converter={StaticResource ConditionVisibilityConverter}, ConverterParameter=true}">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+                 
+            <ScrollViewer Style="{StaticResource LeftScrollViewer}"
+                            VerticalScrollBarVisibility="Auto"
+                            HorizontalScrollBarVisibility="Disabled">
+                <StackPanel>
+                    <ItemsControl ItemsSource="{Binding Tags.SourcesCollection}"
+                                  Margin="10"> 
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <StackPanel>
+                                    <TextBlock Text="{Binding Title}"
+                                                FontSize="15"
+                                                Margin="0,0,0,2"/>
+                                    
+                                    <ItemsControl ItemsSource="{Binding TagsCollection}">
+                                        <ItemsControl.ItemTemplate>
+                                            <DataTemplate>
+                                                <TextBlock Text="{Binding Title}"
+                                                        Foreground="{Binding TypeBrush}"
+                                                        FontFamily="Comic Sans MS"
+                                                        Margin="5,0,0,2"
+                                                        FontSize="13"
+                                                        FontWeight="Bold"
+                                                        TextWrapping="Wrap"
+                                                        ToolTip="{Binding Title}"/>
+                                            </DataTemplate>
+                                        </ItemsControl.ItemTemplate>
+                                    </ItemsControl>
+                                </StackPanel>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                    
+                    <Button Width="25"
+                            Height="25"
+                            Margin="10, 0, 10, 0"
+                            Style="{DynamicResource MetroCircleButtonStyle}"
+                            HorizontalAlignment="Left">
+                        <Rectangle Width="10"
+                                   Height="10"
+                                   Fill="{Binding Path=Foreground, 
+                                                  RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Button}}}">
+                            <Rectangle.OpacityMask>
+                                <VisualBrush Stretch="Fill"
+                                         Visual="{DynamicResource appbar_add}" />
+                            </Rectangle.OpacityMask>
+                        </Rectangle>
+                    </Button>
+                </StackPanel>
+            </ScrollViewer>
+        </Grid>
+
         <StatusBar Background="{DynamicResource AccentColorBrush}"
                    Grid.Row="1"
+                   Grid.ColumnSpan="2"
                    MouseUp="Disable_MouseButton"
                    Visibility="{Binding RelativeSource={RelativeSource FindAncestor,
                                                                        AncestorType={x:Type imoutoViewer:MainWindow}},

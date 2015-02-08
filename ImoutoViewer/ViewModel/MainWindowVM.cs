@@ -1,30 +1,33 @@
-﻿using System.Threading;
-using System.Windows.Threading;
-using ImoutoViewer.Behavior;
+﻿using ImoutoViewer.Behavior;
 using ImoutoViewer.Commands;
 using ImoutoViewer.Model;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Diagnostics;
+using System.Linq;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media.Imaging;
+using System.Windows.Threading;
 
 namespace ImoutoViewer.ViewModel
 {
     class MainWindowVM : VMBase, IDragable, IDropable
     {
         #region Fields
+
         private readonly Guid _appGuid = Guid.NewGuid();
 
         private readonly MainWindow _mainWindowView;
         private LocalImageList _imageList;
-        private readonly BackgroundWorker _initBackgroundWorker;
         private bool _isSlideshowActive;
         private DispatcherTimer _timer;
+        private TagsVM _tagsVM;
 
-        #endregion //Fields
-        
+        #endregion Fields
+
         #region Constructors
 
         public MainWindowVM()
@@ -34,21 +37,29 @@ namespace ImoutoViewer.ViewModel
 
             _mainWindowView = new MainWindow {DataContext = this};
             _mainWindowView.SizeChanged += _mainWindowView_SizeChanged;
+            _mainWindowView.Client.SizeChanged += _mainWindowView_SizeChanged;
+            _tagsVM = new TagsVM(this);
 
             InitializeCommands();
             InitializeSettings();
 
+
             _mainWindowView.Show();
 
-            _initBackgroundWorker = new BackgroundWorker();
-            _initBackgroundWorker.RunWorkerCompleted += _backgroundWorker_RunWorkerCompleted;
-            _initBackgroundWorker.DoWork += _backgroundWorker_DoWork;
-            _initBackgroundWorker.RunWorkerAsync();
+            InitializeImageListAsync();
         }
 
-        #endregion //Constructors
+        #endregion Constructors
 
         #region Properties
+
+        public TagsVM Tags
+        {
+            get
+            {
+                return _tagsVM;
+            }
+        }
 
         public bool IsSlideshowActive
         {
@@ -74,18 +85,16 @@ namespace ImoutoViewer.ViewModel
             }
         }
 
-        private LocalImage CurrentLocalImage
+        public LocalImage CurrentLocalImage
         {
             get
             {
-                var bs = _imageList.CurrentImage.Image;
-                if (IsError)
+                var bs = _imageList?.CurrentImage.Image;
+                if (IsError || bs == null)
                 {
                     return null;
                 }
-
-                _imageList.CurrentImage.Resize(_mainWindowView.Client.RenderSize, Settings.SelectedResizeType.Type);
-                return _imageList.CurrentImage;
+                return _imageList?.CurrentImage;
             }
         }
 
@@ -95,7 +104,7 @@ namespace ImoutoViewer.ViewModel
             {
                 string title = "";
 
-                if (CurrentLocalImage != null && !_imageList.IsEmpty)
+                if (CurrentLocalImage != null && _imageList != null && !_imageList.IsEmpty)
                 {
                     title += CurrentLocalImage.Name + " - " ;
                 }
@@ -128,6 +137,11 @@ namespace ImoutoViewer.ViewModel
         {
             get
             {
+                if (_imageList == null)
+                {
+                    return null;
+                }
+
                 int i = (int)Math.Log10(_imageList.DirectoriesCount) + 1;
                 return String.Format("{0," + i + "} / {1," + i + "}",
                     _imageList.CurrentDirectoryIndex + 1,
@@ -139,6 +153,11 @@ namespace ImoutoViewer.ViewModel
         {
             get
             {
+                if (_imageList == null)
+                {
+                    return null;
+                }
+
                 return _imageList.CurrentDirectory.Name;
             }
         }
@@ -147,6 +166,11 @@ namespace ImoutoViewer.ViewModel
         {
             get
             {
+                if (_imageList == null)
+                {
+                    return null;
+                }
+
                 int i = (int)Math.Log10(_imageList.ImagesCount) + 1;
                 return String.Format("{0," + i + "} / {1," + i + "}",
                             _imageList.CurrentImageIndex + 1,
@@ -220,7 +244,7 @@ namespace ImoutoViewer.ViewModel
         {
             get
             {
-                return _imageList.CurrentImage.IsError;
+                return _imageList?.CurrentImage != null && _imageList.CurrentImage.IsError;
             }
         }
 
@@ -228,7 +252,7 @@ namespace ImoutoViewer.ViewModel
         {
             get
             {
-                return _imageList.CurrentImage.ErrorMessage;
+                return _imageList?.CurrentImage?.ErrorMessage;
             }
         }
 
@@ -247,7 +271,7 @@ namespace ImoutoViewer.ViewModel
             get { return LocalImage.IsZoomFixed; }
         }
 
-        #endregion //Properties
+        #endregion Properties
 
         #region Methods
 
@@ -258,12 +282,19 @@ namespace ImoutoViewer.ViewModel
             Settings.SelectedDirectorySearchTypeChanged += _settings_SelectedDirectorySearchTypeChanged;
             Settings.SelectedFilesSortingChanged += Settings_SelectedFilesSortingChanged;
             Settings.SelectedFoldersSortingChanged += Settings_SelectedFoldersSortingChanged;
+            Settings.SelectedTagsModeChanged += Settings_SelectedTagsModeChanged;
 
             LocalImageList.FilesGettingMethods = Settings.DirectorySearchFlags;
             LocalImageList.FilesSortMethod = Settings.SelectedFilesSorting.Method;
             LocalImageList.IsFilesSortMethodDescending = Settings.IsSelectedFilesSortingDescending;
             LocalImageList.FoldersSortMethod = Settings.SelectedFoldersSorting.Method;
             LocalImageList.IsFoldersSortMethodDescending = Settings.IsSelectedFoldersSortingDescending;
+            Tags.ShowTags = Settings.ShowTags;
+        }
+
+        private void Settings_SelectedTagsModeChanged(object sender, EventArgs e)
+        {
+            Tags.ShowTags = Settings.ShowTags;
         }
 
         private void InitializeImageList(IEnumerable<string> images = null)
@@ -298,6 +329,8 @@ namespace ImoutoViewer.ViewModel
         {
             try
             {
+                _imageList?.CurrentImage?.Resize(_mainWindowView.Client.RenderSize, Settings.SelectedResizeType.Type);
+
                 OnPropertyChanged("Title");
                 OnPropertyChanged("ViewportHeight");
                 OnPropertyChanged("ViewportWidth");
@@ -317,7 +350,7 @@ namespace ImoutoViewer.ViewModel
                 if (_mainWindowView.ScrollViewerObject.IsNeedScrollHome)
                 {
                     _mainWindowView.ScrollViewerObject.ScrollToHome();
-                }
+                }                
             }
             catch (OutOfMemoryException)
             {
@@ -326,13 +359,28 @@ namespace ImoutoViewer.ViewModel
 
                 UpdateView();
             }
-            catch
+            catch (Exception ex)
             {
-                NextImage();
+                //Debug.WriteLine(ex.Message);
+                //NextImage();
             }
         }
+        
+        private async void InitializeImageListAsync()
+        {
+            IsLoading = true;
+            OnPropertyChanged("Status");
+            OnPropertyChanged("IsLoading");
 
-        #endregion //Methods
+            await Task.Run(() => InitializeImageList());
+
+            IsLoading = false;
+            UpdateView();
+
+            _tagsVM.ReloadAsync();
+        }
+
+        #endregion Methods
 
         #region Commands
 
@@ -353,6 +401,7 @@ namespace ImoutoViewer.ViewModel
         /// "left to rotate image on -90 deg left.
         /// </summary>
         public ICommand RotateCommand { get; private set; }
+        public ICommand ToggleTagsCommand { get; private set; }
 
         private void InitializeCommands()
         {
@@ -385,11 +434,18 @@ namespace ImoutoViewer.ViewModel
 
             FixZoomCommand = new RelayCommand(param => FixZoom());
             ToggleSlideshowCommand = new RelayCommand(param => ToggleSlideshow(param));
+            ToggleTagsCommand = new RelayCommand(param => ToggleTags());
         }
 
-        #endregion //Commands
+        #endregion Commands
 
         #region Command handlers
+
+        private void ToggleTags()
+        {
+            Settings.ShowTags = !Settings.ShowTags;
+            Settings.SaveCommand.Execute(new object());
+        }
 
         private void ToggleSlideshow(object param)
         {
@@ -405,13 +461,13 @@ namespace ImoutoViewer.ViewModel
 
         private void NextImage()
         {            
-            _imageList.Next();
+            _imageList?.Next();
             UpdateView();
         }
 
         private void PrevImage()
         {
-            _imageList.Previous();
+            _imageList?.Previous();
             UpdateView();
         }
 
@@ -461,7 +517,7 @@ namespace ImoutoViewer.ViewModel
             OnPropertyChanged("IsZoomFixed");
         }
 
-        #endregion //Command handlers
+        #endregion Command handlers
 
         #region Event handlers
 
@@ -478,14 +534,14 @@ namespace ImoutoViewer.ViewModel
         private void _settings_SelectedDirectorySearchTypeChanged(object sender, EventArgs e)
         {
             LocalImageList.FilesGettingMethods = Settings.DirectorySearchFlags;
-            _initBackgroundWorker.RunWorkerAsync(new[] { CurrentLocalImage.Path });
+            InitializeImageList(new[] { CurrentLocalImage.Path });
         }
 
         private void Settings_SelectedFoldersSortingChanged(object sender, EventArgs e)
         {
             LocalImageList.FoldersSortMethod = Settings.SelectedFoldersSorting.Method;
             LocalImageList.IsFoldersSortMethodDescending = Settings.IsSelectedFoldersSortingDescending;
-            _initBackgroundWorker.RunWorkerAsync(new[] { CurrentLocalImage.Path });
+            InitializeImageList(new[] { CurrentLocalImage.Path });
         }
 
         private void Settings_SelectedFilesSortingChanged(object sender, EventArgs e)
@@ -496,34 +552,14 @@ namespace ImoutoViewer.ViewModel
             UpdateView();
         }
 
-        private void _backgroundWorker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
-        {
-            IsLoading = false;
-            UpdateView();
-        }
-
-        private void _backgroundWorker_DoWork(object sender, DoWorkEventArgs e)
-        {
-            IsLoading = true;
-            OnPropertyChanged("Status");
-            OnPropertyChanged("IsLoading");
-
-            if ((e.Argument as string[]) != null)
-            {
-                InitializeImageList(e.Argument as string[]);
-            }
-            else
-            {
-                InitializeImageList();
-            }
-        }
-
         private void _imageList_CurrentImageChanged(object sender, EventArgs e)
         {
             _mainWindowView.ScrollViewerObject.IsNeedScrollHome = true;
+
+            _tagsVM.ReloadAsync();
         }
 
-        #endregion //Event handlers
+        #endregion Event handlers
 
         #region IDragable members
 
@@ -545,7 +581,7 @@ namespace ImoutoViewer.ViewModel
             }
         }
 
-        #endregion //IDragable members
+        #endregion IDragable members
 
         #region IDropable members
 
@@ -573,9 +609,9 @@ namespace ImoutoViewer.ViewModel
             catch
             {}
 
-            _initBackgroundWorker.RunWorkerAsync(droppedFiles);
+            InitializeImageList(droppedFiles);
         }
 
-        #endregion //IDropable members
+        #endregion IDropable members
     }
 }

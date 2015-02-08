@@ -16,7 +16,7 @@ namespace ImoutoViewer.UserControls
             Loaded += ExtScrollViewer_Loaded;
         }
 
-        #endregion //Constructors
+        #endregion Constructors
 
         #region Event handlers
 
@@ -51,7 +51,7 @@ namespace ImoutoViewer.UserControls
             ScrollToHorizontalOffset(wNewOffset);
         }
 
-        #endregion //Event handlers
+        #endregion Event handlers
 
         #region Events
 
@@ -71,6 +71,6 @@ namespace ImoutoViewer.UserControls
             e.Handled = false;
         }
 
-        #endregion //Events
+        #endregion Events
     }
 }

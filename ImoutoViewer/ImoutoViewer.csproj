@@ -64,6 +64,8 @@
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Drawing" />
+    <Reference Include="System.Net" />
+    <Reference Include="System.ServiceModel" />
     <Reference Include="System.Windows.Interactivity, Version=4.5.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\MahApps.Metro.0.12.1.0\lib\net45\System.Windows.Interactivity.dll</HintPath>
     </Reference>
@@ -74,6 +76,9 @@
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="System.Xaml">
       <RequiredTargetFramework>4.0</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="WCFExchageLibrary">
+      <HintPath>..\..\..\Wcf\WCFExchageLibrary\WCFExchageLibrary\bin\Release\WCFExchageLibrary.dll</HintPath>
     </Reference>
     <Reference Include="WindowsBase" />
     <Reference Include="PresentationCore" />
@@ -93,6 +98,8 @@
     <Compile Include="Behavior\IDragable.cs" />
     <Compile Include="Behavior\IDropable.cs" />
     <Compile Include="Commands\RelayCommand.cs" />
+    <Compile Include="Converters\BooleanResultConverter.cs" />
+    <Compile Include="Converters\BooleanToVisibilityConverter.cs" />
     <Compile Include="Converters\VisibilityConverter.cs" />
     <Compile Include="Model\Extentions.cs" />
     <Compile Include="Model\DirectorySearchFlags.cs" />
@@ -101,10 +108,14 @@
     <Compile Include="Model\SortMethod.cs" />
     <Compile Include="UserControls\ExtScrollViewer.cs" />
     <Compile Include="UserControls\MouseWheelGesture.cs" />
+    <Compile Include="ViewModel\BindedTagVM.cs" />
     <Compile Include="ViewModel\MainWindowVM.cs" />
     <Compile Include="ViewModel\OpenWithVM.cs" />
     <Compile Include="ViewModel\SettingsVM.cs" />
+    <Compile Include="ViewModel\SourceVM.cs" />
+    <Compile Include="ViewModel\TagsVM.cs" />
     <Compile Include="ViewModel\VMBase.cs" />
+    <Compile Include="WCF\Service.cs" />
     <Page Include="AppResourceDictionary.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -198,6 +209,7 @@
       <Name>Utils</Name>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
