@@ -146,6 +146,12 @@ namespace ImoutoViewer.ViewModel
 
         private void Reset(object obj)
         {
+            if (obj is bool && !(bool)obj)
+            {
+                return;
+            }
+
+            _tagTypesLoaded = false;
             ReloadTagTypesAsync();
             SelectedType = null;
             Synonyms = "";

@@ -340,7 +340,8 @@
                                  Theme="Inverse">
                 <i:Interaction.Triggers>
                     <i:EventTrigger EventName="IsOpenChanged">
-                        <i:InvokeCommandAction Command="{Binding ResetCommand}" />
+                        <i:InvokeCommandAction Command="{Binding ResetCommand}"
+                                               CommandParameter="{Binding ElementName=CreateTagFlyout, Path=IsOpen}" />
                     </i:EventTrigger>
                 </i:Interaction.Triggers>
 
