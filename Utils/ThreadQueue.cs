@@ -48,7 +48,7 @@ namespace Utils
                 {
                     //_isEmpty = true;
                 }
-                return result;            
+                return result;
             }
         }
 

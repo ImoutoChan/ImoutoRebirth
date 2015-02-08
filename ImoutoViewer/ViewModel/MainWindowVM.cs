@@ -3,9 +3,6 @@ using ImoutoViewer.Commands;
 using ImoutoViewer.Model;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Diagnostics;
-using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
@@ -34,9 +31,9 @@ namespace ImoutoViewer.ViewModel
         public MainWindowVM()
         {
             OpenWith = new OpenWithVM();
-            IsSimpleWheelNavigationEnable = true;            
+            IsSimpleWheelNavigationEnable = true;
 
-            _mainWindowView = new MainWindow {DataContext = this};
+            _mainWindowView = new MainWindow { DataContext = this };
             _mainWindowView.SizeChanged += _mainWindowView_SizeChanged;
             _mainWindowView.Client.SizeChanged += _mainWindowView_SizeChanged;
             _tagsVM = new TagsVM(this);
@@ -123,7 +120,7 @@ namespace ImoutoViewer.ViewModel
 
                 if (CurrentLocalImage != null && _imageList != null && !_imageList.IsEmpty)
                 {
-                    title += CurrentLocalImage.Name + " - " ;
+                    title += CurrentLocalImage.Name + " - ";
                 }
 
                 title += System.Reflection.Assembly.GetExecutingAssembly().GetName().Name;
@@ -200,14 +197,14 @@ namespace ImoutoViewer.ViewModel
             get
             {
                 return CurrentLocalImage != null
-                    ? String.Format("{0:N0} %", CurrentLocalImage.Zoom * 100) 
+                    ? String.Format("{0:N0} %", CurrentLocalImage.Zoom * 100)
                     : "100 %";
             }
         }
 
         public BitmapSource Image
         {
-            get 
+            get
             {
                 return CurrentLocalImage == null || CurrentLocalImage.ImageFormat == ImageFormat.GIF
                     ? null
@@ -217,7 +214,7 @@ namespace ImoutoViewer.ViewModel
 
         public BitmapSource AnimutedImage
         {
-            get 
+            get
             {
                 return CurrentLocalImage != null && CurrentLocalImage.ImageFormat == ImageFormat.GIF
                     ? CurrentLocalImage.Image
@@ -327,17 +324,17 @@ namespace ImoutoViewer.ViewModel
 
                 _imageList = new LocalImageList(fname);
             }
-            #if DEBUG
+#if DEBUG
             else
             {
                 _imageList = new LocalImageList(@"c:\Users\oniii-chan\Downloads\DLS\art\loli\715e2f290f6c236fdd6426d83ab9a9e0.jpg");
             }
-            #else
+#else
             else
             {
                 _imageList = new LocalImageList();
             }            
-            #endif
+#endif
 
             _imageList.CurrentImageChanged += _imageList_CurrentImageChanged;
         }
@@ -367,7 +364,7 @@ namespace ImoutoViewer.ViewModel
                 if (_mainWindowView.ScrollViewerObject.IsNeedScrollHome)
                 {
                     _mainWindowView.ScrollViewerObject.ScrollToHome();
-                }                
+                }
             }
             catch (OutOfMemoryException)
             {
@@ -382,7 +379,7 @@ namespace ImoutoViewer.ViewModel
                 //NextImage();
             }
         }
-        
+
         private async void InitializeImageListAsync()
         {
             IsLoading = true;
@@ -422,7 +419,7 @@ namespace ImoutoViewer.ViewModel
 
         private void InitializeCommands()
         {
-            SimpleNextImageCommand = new RelayCommand(param => 
+            SimpleNextImageCommand = new RelayCommand(param =>
                 {
                     if (IsSimpleWheelNavigationEnable)
                     {
@@ -477,7 +474,7 @@ namespace ImoutoViewer.ViewModel
         }
 
         private void NextImage()
-        {            
+        {
             _imageList?.Next();
             UpdateView();
         }
@@ -580,7 +577,7 @@ namespace ImoutoViewer.ViewModel
 
         #region IDragable members
 
-        public object Data 
+        public object Data
         {
             get
             {
@@ -624,7 +621,7 @@ namespace ImoutoViewer.ViewModel
                 }
             }
             catch
-            {}
+            { }
 
             InitializeImageList(droppedFiles);
         }

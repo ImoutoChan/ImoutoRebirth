@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.Linq;
@@ -70,7 +69,7 @@ namespace Utils
                 }
                 #endregion
 
-                foreach (DirectoryInfo folder in source.GetDirectories().OrderBy(x=>x.Name))
+                foreach (DirectoryInfo folder in source.GetDirectories().OrderBy(x => x.Name))
                 {
                     result.Add(folder);
 

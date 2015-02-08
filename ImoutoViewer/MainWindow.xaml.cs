@@ -1,7 +1,5 @@
 ﻿using ImoutoViewer.ViewModel;
 using MahApps.Metro.Controls;
-using MahApps.Metro.Controls.Dialogs;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -12,7 +10,7 @@ namespace ImoutoViewer
     /// <summary>
     /// Interaction logic for MainWindow.xaml
     /// </summary>
-    public partial class MainWindow
+    partial class MainWindow
     {
         #region Fields
 
@@ -26,7 +24,7 @@ namespace ImoutoViewer
         public MainWindow()
         {
             InitializeComponent();
-            
+
             RenderOptions.SetBitmapScalingMode(ViewPort, BitmapScalingMode.Fant);
         }
 
@@ -94,8 +92,8 @@ namespace ImoutoViewer
         //Full screen
         private void MainWindow_OnKeyUp(object sender, KeyEventArgs e)
         {
-            if (e.Key == Key.F11 
-                || (e.Key == Key.Enter 
+            if (e.Key == Key.F11
+                || (e.Key == Key.Enter
                 && e.Key == Key.LeftAlt || e.Key == Key.RightAlt))
             {
                 ToggleFullscreen();

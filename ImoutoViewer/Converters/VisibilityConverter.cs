@@ -6,7 +6,7 @@ using Utils;
 
 namespace ImoutoViewer.Converters
 {
-    public class ConditionVisibilityConverter : IValueConverter
+    class ConditionVisibilityConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
         {
@@ -27,7 +27,9 @@ namespace ImoutoViewer.Converters
                 else if (paramsList.Count() >= 3)
                 {
                     if (!BooleanResultConverter.CheckedValue(value, paramsList[2]))
+                    {
                         result = Visibility.Visible;
+                    }
                 }
             }
             else if (Converts.To<object>(value) != null)

@@ -1,23 +1,20 @@
+using ImoutoViewer.Commands;
+using Microsoft.Win32;
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-using System.Windows.Documents;
 using System.Windows.Input;
-using ImoutoViewer.Commands;
-using ImoutoViewer.Model;
-using Microsoft.Win32;
 
 namespace ImoutoViewer.ViewModel
 {
-    public class OpenWithVM
+    class OpenWithVM
     {
         #region Constructors
 
         public OpenWithVM()
         {
-            CurrentList = EditProgram.List.Where(x=>x.IsAvailable).ToList();
+            CurrentList = EditProgram.List.Where(x => x.IsAvailable).ToList();
         }
 
         #endregion Constructors
@@ -26,7 +23,7 @@ namespace ImoutoViewer.ViewModel
 
     }
 
-    public class EditProgram
+    class EditProgram
     {
         #region Constructors
 
@@ -58,7 +55,7 @@ namespace ImoutoViewer.ViewModel
         private void Click(object arg)
         {
             if (!(arg is string)) return;
-            
+
             try
             {
                 Process.Start(ExePath, "\"" + arg + "\"");
@@ -74,19 +71,19 @@ namespace ImoutoViewer.ViewModel
             {
                 new EditProgram()
                 {
-                    Name = "Photoshop", 
+                    Name = "Photoshop",
                     RegistryPath = @"Photoshop.exe\shell\edit\command",
                     IconPath = @"pack://application:,,,/Resources/img/edit/photoshop.ico"
                 },
                 new EditProgram()
                 {
-                    Name = "Paint", 
+                    Name = "Paint",
                     RegistryPath = @"mspaint.exe\shell\edit\command",
                     IconPath = @"pack://application:,,,/Resources/img/edit/ms_paint.ico"
                 },
                 new EditProgram()
                 {
-                    Name = "IrfanView", 
+                    Name = "IrfanView",
                     RegistryPath = @"i_view32.exe\shell\open\command",
                     IconPath = @"pack://application:,,,/Resources/img/edit/irfan_view.ico"
                 },
@@ -101,7 +98,7 @@ namespace ImoutoViewer.ViewModel
                     entry.ExePath =
                         prog.GetValue("")
                             .ToString()
-                            .Split(new char[] {'\"'}, StringSplitOptions.RemoveEmptyEntries)
+                            .Split(new char[] { '\"' }, StringSplitOptions.RemoveEmptyEntries)
                             .First();
                     entry.IsAvailable = true;
                 }

@@ -4,7 +4,7 @@ using System.Windows.Interactivity;
 
 namespace ImoutoViewer.Behavior
 {
-    public class FrameworkElementDragBehavior : Behavior<FrameworkElement>
+    class FrameworkElementDragBehavior : Behavior<FrameworkElement>
     {
         private bool _isMouseClicked;
 

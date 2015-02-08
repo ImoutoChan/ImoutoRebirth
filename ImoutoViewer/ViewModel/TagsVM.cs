@@ -25,7 +25,7 @@ namespace ImoutoViewer.ViewModel
         #endregion Fields
 
         #region Constructors
-        
+
         public TagsVM(MainWindowVM mainVM)
         {
             _parent = mainVM;
@@ -49,7 +49,7 @@ namespace ImoutoViewer.ViewModel
             {
                 OnPropertyChanged(ref _showTags, value, () => ShowTags);
             }
-        } 
+        }
 
         public int? CurrentId
         {
@@ -131,7 +131,7 @@ namespace ImoutoViewer.ViewModel
             ReloadAsync(true);
         }
 
-        
+
         public async void BindTagAsync(AddTagVM addTagVM)
         {
             if (_parent.Tags.CurrentId == null)
@@ -200,7 +200,7 @@ namespace ImoutoViewer.ViewModel
             OnPropertyChanged(() => ShowTags);
             OnTagsLoaded();
         }
-        
+
         private void UpdateSources()
         {
             SourcesCollection.Clear();
@@ -209,10 +209,10 @@ namespace ImoutoViewer.ViewModel
             {
                 SourcesCollection.Add(new SourceVM { Title = source });
 
-                TagsCollection.Where(x => x.Source == source).ForEach(x => SourcesCollection.Last().TagsCollection.Add(x));                
+                TagsCollection.Where(x => x.Source == source).ForEach(x => SourcesCollection.Last().TagsCollection.Add(x));
             }
         }
-        
+
         private Task UnbindTagTask(int imageId, int tagId)
         {
             return Task.Run(() =>
@@ -223,7 +223,7 @@ namespace ImoutoViewer.ViewModel
                 });
             });
         }
-        
+
         private Task BindTagTask(AddTagVM addTagVM)
         {
             return Task.Run(() =>

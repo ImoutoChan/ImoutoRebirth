@@ -4,7 +4,7 @@ using Utils;
 
 namespace ImoutoViewer.Converters
 {
-    public class BooleanResultConverter : IValueConverter
+    class BooleanResultConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
         {
@@ -12,7 +12,7 @@ namespace ImoutoViewer.Converters
             {
                 var paramsConv = parameter.ToString();
 
-                return BooleanResultConverter.CheckedValue(value, paramsConv);
+                return CheckedValue(value, paramsConv);
             }
             return false;
         }
@@ -25,7 +25,9 @@ namespace ImoutoViewer.Converters
         public static bool CheckedValue(object value, string param)
         {
             if (string.IsNullOrWhiteSpace(param))
+            {
                 return false;
+            }
             var paramToLower = param.Trim().ToLowerInvariant();
             switch (paramToLower)
             {
@@ -50,7 +52,9 @@ namespace ImoutoViewer.Converters
                             return (valueStr != param);
                         }
                         else
+                        {
                             return (valueStr == param);
+                        }
                     }
             }
         }

@@ -1,5 +1,4 @@
-﻿using System.Windows.Input;
-using ImoutoViewer.Commands;
+﻿using ImoutoViewer.Commands;
 using ImoutoViewer.Model;
 using ImoutoViewer.Properties;
 using MahApps.Metro;
@@ -8,6 +7,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Windows;
+using System.Windows.Input;
 using System.Windows.Media;
 
 namespace ImoutoViewer.ViewModel
@@ -26,7 +26,7 @@ namespace ImoutoViewer.ViewModel
         private bool _showTags;
 
         #endregion Fileds
-        
+
         #region Constructors
 
         public SettingsVM()
@@ -52,7 +52,7 @@ namespace ImoutoViewer.ViewModel
             AccentColors = ThemeManager.Accents
                                 .Select(a => new AccentColorMenuData
                                 {
-                                    Name = a.Name, 
+                                    Name = a.Name,
                                     ColorBrush = a.Resources["AccentColorBrush"] as Brush
                                 })
                                 .ToList();
@@ -60,8 +60,8 @@ namespace ImoutoViewer.ViewModel
 
             SelectedIndexTheme = Settings.Default.ThemeIndex;
 
-            SaveCommand = new RelayCommand(x=> Save());
-                       
+            SaveCommand = new RelayCommand(x => Save());
+
             ShowTags = Settings.Default.ShowTags;
         }
 
@@ -83,7 +83,7 @@ namespace ImoutoViewer.ViewModel
         }
 
         public List<ResizeTypeDescriptor> ResizeTypes { get; private set; }
-        public ResizeTypeDescriptor SelectedResizeType 
+        public ResizeTypeDescriptor SelectedResizeType
         {
             get
             {
@@ -175,8 +175,8 @@ namespace ImoutoViewer.ViewModel
         public int SelectedIndexTheme
         {
             get
-            { 
-                return _selectedTheme; 
+            {
+                return _selectedTheme;
             }
             set
             {
@@ -195,7 +195,7 @@ namespace ImoutoViewer.ViewModel
                 }
             }
         }
-        
+
         public bool ShowTags
         {
             get
@@ -306,9 +306,9 @@ namespace ImoutoViewer.ViewModel
             return new List<ResizeTypeDescriptor>
             {
                 new ResizeTypeDescriptor { Name = "Fit to screen (downscale only)", Type = ResizeType.DownscaleToViewPort },
-                new ResizeTypeDescriptor { Name = "Fit to screen (down & up scale)", Type = ResizeType.FitToViewPort },            
-                new ResizeTypeDescriptor { Name = "Fit to screen width (downscale only)", Type = ResizeType.DownscaleToViewPortWidth },            
-                new ResizeTypeDescriptor { Name = "Fit to screen width (down & up scale)", Type = ResizeType.FitToViewPortWidth },            
+                new ResizeTypeDescriptor { Name = "Fit to screen (down & up scale)", Type = ResizeType.FitToViewPort },
+                new ResizeTypeDescriptor { Name = "Fit to screen width (downscale only)", Type = ResizeType.DownscaleToViewPortWidth },
+                new ResizeTypeDescriptor { Name = "Fit to screen width (down & up scale)", Type = ResizeType.FitToViewPortWidth },
                 new ResizeTypeDescriptor { Name = "Original size (no resize)", Type = ResizeType.NoResize },
             };
         }
@@ -366,9 +366,9 @@ namespace ImoutoViewer.ViewModel
             return new ObservableCollection<DirectorySearchTypeDescriptor>
             {
                 new DirectorySearchTypeDescriptor { Name = "All Pre", Type = DirectorySearchFlags.AllDepthPrefolder },
-                new DirectorySearchTypeDescriptor { Name = "Pre", Type = DirectorySearchFlags.Prefolders },            
-                new DirectorySearchTypeDescriptor { Name = "Cur", Type = DirectorySearchFlags.Folder },            
-                new DirectorySearchTypeDescriptor { Name = "Sub", Type = DirectorySearchFlags.Subfolders },            
+                new DirectorySearchTypeDescriptor { Name = "Pre", Type = DirectorySearchFlags.Prefolders },
+                new DirectorySearchTypeDescriptor { Name = "Cur", Type = DirectorySearchFlags.Folder },
+                new DirectorySearchTypeDescriptor { Name = "Sub", Type = DirectorySearchFlags.Subfolders },
                 new DirectorySearchTypeDescriptor { Name = "All Sub", Type = DirectorySearchFlags.AllDepthSubfolders },
             };
         }
@@ -414,7 +414,7 @@ namespace ImoutoViewer.ViewModel
             return new List<SortingDescriptor>
             {
                 new SortingDescriptor { Name = "Name", Method = SortMethod.ByName },
-                new SortingDescriptor { Name = "Date created", Method = SortMethod.ByCreateDate  },            
+                new SortingDescriptor { Name = "Date created", Method = SortMethod.ByCreateDate  },
                 new SortingDescriptor { Name = "Date modified", Method = SortMethod.ByUpdateDate },
                 new SortingDescriptor { Name = "Size", Method = SortMethod.BySize }
             };
@@ -425,7 +425,7 @@ namespace ImoutoViewer.ViewModel
             return new List<SortingDescriptor>
             {
                 new SortingDescriptor { Name = "Name", Method = SortMethod.ByName },
-                new SortingDescriptor { Name = "Date created", Method = SortMethod.ByCreateDate  },            
+                new SortingDescriptor { Name = "Date created", Method = SortMethod.ByCreateDate  },
                 new SortingDescriptor { Name = "Date modified", Method = SortMethod.ByUpdateDate }
             };
         }

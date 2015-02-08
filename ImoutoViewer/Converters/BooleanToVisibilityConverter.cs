@@ -14,6 +14,7 @@ namespace ImoutoViewer.Converters
         }
 
         public bool IsInvert { private get; set; }
+
         public bool CollapsedOnFalse { private get; set; }
 
         public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
@@ -41,7 +42,7 @@ namespace ImoutoViewer.Converters
                 throw new ArgumentException("The input variable has wrong type.");
             }
 
-            bool result = (Visibility) value == Visibility.Visible;
+            bool result = (Visibility)value == Visibility.Visible;
             return (IsInvert)
                        ? !result
                        : result;

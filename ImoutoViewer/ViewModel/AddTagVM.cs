@@ -1,15 +1,14 @@
 ﻿using ImoutoViewer.Commands;
-using System.Collections.ObjectModel;
-using System.Windows.Input;
-using WCFExchageLibrary.Data;
-using System;
-using System.Threading.Tasks;
-using System.Collections.Generic;
 using ImoutoViewer.WCF;
+using MahApps.Metro.Controls.Dialogs;
+using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Linq;
-using MahApps.Metro.Controls.Dialogs;
-using System.Windows;
+using System.Threading.Tasks;
+using System.Windows.Input;
+using WCFExchageLibrary.Data;
 
 namespace ImoutoViewer.ViewModel
 {
@@ -38,8 +37,8 @@ namespace ImoutoViewer.ViewModel
         }
 
         private string _searchText = "";
-        public string SearchText 
-        { 
+        public string SearchText
+        {
             get
             {
                 return _searchText;
@@ -199,7 +198,7 @@ namespace ImoutoViewer.ViewModel
             _parent.View.MetroDialogOptions.ColorScheme = MetroDialogColorScheme.Accented;
 
             var mySettings = new MetroDialogSettings()
-            {                
+            {
                 AffirmativeButtonText = "Ok",
                 ColorScheme = MetroDialogColorScheme.Accented
             };

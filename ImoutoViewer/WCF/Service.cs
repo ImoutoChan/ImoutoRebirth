@@ -4,12 +4,12 @@ using WCFExchageLibrary.Operations;
 
 namespace ImoutoViewer.WCF
 {
-    public delegate TResult UseServiceDelegate<TResult>(IImoutoWCFService proxy);
-    public delegate void UseServiceDelegate(IImoutoWCFService proxy);
+    delegate TResult UseServiceDelegate<TResult>(IImoutoWCFService proxy);
+    delegate void UseServiceDelegate(IImoutoWCFService proxy);
 
-    public static class ImoutoService
+    static class ImoutoService
     {
-        public static ChannelFactory<IImoutoWCFService> _channelFactory 
+        public static ChannelFactory<IImoutoWCFService> _channelFactory
             = new ChannelFactory<IImoutoWCFService>(
                 new NetNamedPipeBinding(),
                 new EndpointAddress("net.pipe://localhost/ImoutoServiceWcf"));

@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Globalization;
 using System.IO;
 using System.Linq;
 using Utils;
@@ -349,7 +348,7 @@ namespace ImoutoViewer.Model
         {
 
             var images =
-                imagePaths.Where(x=>x.IsImage())
+                imagePaths.Where(x => x.IsImage())
                     .OrderByWithDirection(GetFilesOrderProperty, IsFilesSortMethodDescending)
                     .Select(x => new LocalImage(x));
 
@@ -364,7 +363,7 @@ namespace ImoutoViewer.Model
             }
 
             var files = Directory.GetFiles(sourceFolder.FullName, "*.*")
-                    .Where(x=>x.IsImage())
+                    .Where(x => x.IsImage())
                     .OrderByWithDirection(GetFilesOrderProperty, IsFilesSortMethodDescending)
                     .Select(x => new LocalImage(x));
 
@@ -558,7 +557,7 @@ namespace ImoutoViewer.Model
 
         public IEnumerator GetEnumerator()
         {
-            return ((IEnumerable) _imageList).GetEnumerator();
+            return ((IEnumerable)_imageList).GetEnumerator();
         }
 
         #endregion  IEnumerable members

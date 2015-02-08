@@ -26,11 +26,11 @@
                           VerticalScrollBarVisibility="Auto">
                 <StackPanel Orientation="Vertical">
                     <TextBox Text="{Binding SearchText, UpdateSourceTrigger=PropertyChanged}"
-                                     metroControls:TextBoxHelper.Watermark="Search tag..."
-                                     metroControls:TextBoxHelper.UseFloatingWatermark="True"
-                                     Margin="0,0,0,5"
-                                     PreviewKeyDown="KeyDownEventHandler"
-                                     PreviewKeyUp="KeyUpEventHandler"/>
+                             metroControls:TextBoxHelper.Watermark="Search tag..."
+                             metroControls:TextBoxHelper.UseFloatingWatermark="True"
+                             Margin="0,0,0,5"
+                             PreviewKeyDown="KeyDownEventHandler"
+                             PreviewKeyUp="KeyUpEventHandler" />
 
                     <ListBox ItemsSource="{Binding FoundTags}"
                              Margin="0,0,0,5"
@@ -48,13 +48,13 @@
                              metroControls:TextBoxHelper.Watermark="Value"
                              metroControls:TextBoxHelper.UseFloatingWatermark="True"
                              Margin="0,0,0,5"
-                             Visibility="{Binding SelectedTag.HasValue, Converter={StaticResource ConditionVisibilityConverter}, ConverterParameter=true, FallbackValue=Collapsed}"/>
-                    
+                             Visibility="{Binding SelectedTag.HasValue, Converter={StaticResource ConditionVisibilityConverter}, ConverterParameter=true, FallbackValue=Collapsed}" />
+
                     <Button Content="Add"
                             HorizontalAlignment="Right"
                             Width="85"
                             Margin="0,15,0,0"
-                            Command="{Binding SaveCommand}"/>
+                            Command="{Binding SaveCommand}" />
                 </StackPanel>
             </ScrollViewer>
         </Grid>

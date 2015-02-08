@@ -3,7 +3,7 @@
 namespace ImoutoViewer.Model
 {
     [Serializable]
-    public enum ResizeType
+    enum ResizeType
     {
         FitToViewPort,
         DownscaleToViewPort,
