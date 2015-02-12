@@ -5,9 +5,10 @@
                           xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
                           xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
                           xmlns:userControl="clr-namespace:ImoutoViewer.UserControls"
-                          xmlns:behavior="clr-namespace:ImoutoViewer.Behavior"                      
+                          xmlns:behavior="clr-namespace:ImoutoViewer.Behavior"
                           xmlns:converter="clr-namespace:ImoutoViewer.Converters"
                           xmlns:viewModel="clr-namespace:ImoutoViewer.ViewModel"
+                          xmlns:view="clr-namespace:ImoutoViewer.View"
                           xmlns:gif="http://wpfanimatedgif.codeplex.com"
                           xmlns:metroControl="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
                           xmlns:metroBehaviour="clr-namespace:MahApps.Metro.Behaviours;assembly=MahApps.Metro"
@@ -15,155 +16,160 @@
                           mc:Ignorable="d"
                           d:DataContext="{d:DesignInstance viewModel:MainWindowVM, IsDesignTimeCreatable=False}"
                           Title="{Binding Path=Title}"
-                          Height="350" 
+                          Height="350"
                           Width="525"
-                          WindowStartupLocation="CenterScreen" 
+                          WindowStartupLocation="CenterScreen"
                           WindowState="Maximized"
-                          BorderBrush="{DynamicResource AccentColorBrush}"                      
+                          BorderBrush="{DynamicResource AccentColorBrush}"
                           BorderThickness="2"
-                          ShowWindowCommandsOnTop="False"
                           gif:ImageBehavior.AnimateInDesignMode="True"
                           KeyUp="MainWindow_OnKeyUp"
-                          TitleCaps="False">
+                          TitleCaps="False"
+                          MinHeight="180"
+                          MinWidth="320">
     <metroControl:MetroWindow.InputBindings>
-        <MouseBinding Command="{Binding SimpleNextImageCommand}" 
+        <MouseBinding Command="{Binding SimpleNextImageCommand}"
                       Gesture="{x:Static userControl:MouseWheelGesture.Down}" />
-        
+
         <MouseBinding Command="{Binding SimplePrevImageCommand}"
                       Gesture="{x:Static userControl:MouseWheelGesture.Up}" />
-        
-        <MouseBinding Command="{Binding NextImageCommand}" 
+
+        <MouseBinding Command="{Binding NextImageCommand}"
                       Gesture="{x:Static userControl:MouseWheelGesture.ShiftDown}" />
-        
+
         <MouseBinding Command="{Binding PrevImageCommand}"
                       Gesture="{x:Static userControl:MouseWheelGesture.ShiftUp}" />
-        
-        <MouseBinding Command="{Binding ZoomOutCommand}" 
+
+        <MouseBinding Command="{Binding ZoomOutCommand}"
                       Gesture="{x:Static userControl:MouseWheelGesture.CtrlDown}" />
-        
+
         <MouseBinding Command="{Binding ZoomInCommand}"
                       Gesture="{x:Static userControl:MouseWheelGesture.CtrlUp}" />
-        
-        <KeyBinding Command="{Binding RotateCommand}" 
+
+        <KeyBinding Command="{Binding RotateCommand}"
                     CommandParameter="left"
                     Key="L" />
-        
-        <KeyBinding Command="{Binding RotateCommand}" 
+
+        <KeyBinding Command="{Binding RotateCommand}"
                     CommandParameter="right"
                     Key="R" />
-        
+
         <KeyBinding Command="{Binding NextFolderCommand}"
-                    Key="Down"/>
-        
+                    Key="Down" />
+
         <KeyBinding Command="{Binding PrevFolderCommand}"
-                    Key="Up"/>
-        
+                    Key="Up" />
+
         <KeyBinding Command="{Binding FixZoomCommand}"
-                    Key="F"/>
+                    Key="F" />
+
+        <KeyBinding Command="{Binding ToggleTagsCommand}"
+                    Key="T" />
     </metroControl:MetroWindow.InputBindings>
-    
+
     <i:Interaction.Triggers>
         <i:EventTrigger EventName="MouseLeftButtonUp">
             <i:InvokeCommandAction Command="{Binding NextImageCommand}" />
         </i:EventTrigger>
-        
+
         <i:EventTrigger EventName="MouseRightButtonUp">
             <i:InvokeCommandAction Command="{Binding PrevImageCommand}" />
         </i:EventTrigger>
     </i:Interaction.Triggers>
-    
-    <metroControl:MetroWindow.WindowCommands>
+
+    <metroControl:MetroWindow.RightWindowCommands>
         <metroControl:WindowCommands>
             <Button Content="Slideshow"
-                    Click="SlideShowButton_OnClick"
-                    />
-            
-            <Button Content="Edit with..." 
-                    Click="ButtonBase_OnClick"/>
-            
-            <Button Content="Settings" 
+                    Click="SlideShowButton_OnClick" />
+
+            <Button Content="Edit with..."
+                    Click="ButtonBase_OnClick" />
+
+            <Button Content="Settings"
                     Click="Button_Click" />
         </metroControl:WindowCommands>
-    </metroControl:MetroWindow.WindowCommands>
-    
+    </metroControl:MetroWindow.RightWindowCommands>
+
     <i:Interaction.Behaviors>
         <behavior:FrameworkElementDropBehavior />
-        
+
         <metroBehaviour:BorderlessWindowBehavior />
     </i:Interaction.Behaviors>
-    
+
     <metroControl:MetroWindow.Resources>
-        <converter:VisibilityConverter x:Key="VisibilityConverter" />
-        
-        <converter:VisibilityConverter x:Key="VisibilityInvertConverter" 
-                                       IsInvert="True" />
-        
-        <converter:VisibilityConverter x:Key="CollapsedVisibilityConverter"
-                                       CollapsedOnFalse="True"/>
-        
-        <converter:VisibilityConverter x:Key="CollapsedVisibilityInvertConverter"
-                                       CollapsedOnFalse="True"
-                                       IsInvert="True"/>
+        <converter:BooleanToVisibilityConverter x:Key="VisibilityConverter" />
+
+        <converter:BooleanToVisibilityConverter x:Key="VisibilityInvertConverter"
+                                                IsInvert="True" />
+
+        <converter:BooleanToVisibilityConverter x:Key="CollapsedVisibilityConverter"
+                                                CollapsedOnFalse="True" />
+
+        <converter:BooleanToVisibilityConverter x:Key="CollapsedVisibilityInvertConverter"
+                                                CollapsedOnFalse="True"
+                                                IsInvert="True" />
+
+        <converter:ConditionVisibilityConverter x:Key="ConditionVisibilityConverter" />
     </metroControl:MetroWindow.Resources>
-    
+
     <metroControl:MetroWindow.Flyouts>
         <metroControl:FlyoutsControl>
             <metroControl:Flyout x:Name="SettingFlyout"
-                                 Width="250" 
-                                 Header="Settings" 
+                                 Width="250"
+                                 Header="Settings"
                                  Position="Right"
                                  DataContext="{Binding Path=Settings}"
-                                 MouseLeftButtonUp="Disable_MouseButton" 
-                                 Theme="Inverse" >
+                                 MouseLeftButtonUp="Disable_MouseButton"
+                                 Theme="Inverse">
                 <i:Interaction.Triggers>
                     <i:EventTrigger EventName="IsOpenChanged">
-                        <i:InvokeCommandAction Command="{Binding SaveCommand}"/>
+                        <i:InvokeCommandAction Command="{Binding SaveCommand}" />
                     </i:EventTrigger>
                 </i:Interaction.Triggers>
-                
+
                 <Grid Margin="20">
                     <Grid.RowDefinitions>
                         <RowDefinition Height="Auto" />
                         <RowDefinition Height="*" />
                         <RowDefinition Height="Auto" />
                     </Grid.RowDefinitions>
-                    
-                    <ScrollViewer Grid.Row="1" 
+
+                    <ScrollViewer Grid.Row="1"
                                   VerticalScrollBarVisibility="Auto">
                         <StackPanel Orientation="Vertical">
-                            <TextBlock Text="Resize" 
-                                       Margin="0,0,0,5"/>
+                            <TextBlock Text="Resize"
+                                       Margin="0,0,0,5" />
                             <ComboBox ItemsSource="{Binding Path=ResizeTypes}"
                                       SelectedItem="{Binding Path=SelectedResizeType}" />
-                            
-                            <TextBlock Text="Folders loading" 
+
+                            <TextBlock Text="Folders loading"
                                        Margin="0,25,0,5" />
                             <ItemsControl ItemsSource="{Binding Path=DirectorySearchTypes}">
                                 <ItemsControl.ItemsPanel>
                                     <ItemsPanelTemplate>
-                                        <StackPanel Orientation="Horizontal"/>
+                                        <StackPanel Orientation="Horizontal" />
                                     </ItemsPanelTemplate>
                                 </ItemsControl.ItemsPanel>
-                                
+
                                 <ItemsControl.ItemTemplate>
                                     <DataTemplate>
                                         <ToggleButton Margin="0,0,11,5"
-                                                      Content="{Binding Name}" 
+                                                      Content="{Binding Name}"
                                                       IsChecked="{Binding IsSelected}"
                                                       Style="{DynamicResource CustomMetroToggleButton}" />
                                     </DataTemplate>
                                 </ItemsControl.ItemTemplate>
                             </ItemsControl>
 
-                            <DockPanel LastChildFill="False" 
+                            <DockPanel LastChildFill="False"
                                        Margin="0,25,0,0">
                                 <StackPanel DockPanel.Dock="Left">
                                     <TextBlock Text="Files sorting" />
 
                                     <ComboBox ItemsSource="{Binding Path=FilesSortingMethods}"
-                                              SelectedItem="{Binding Path=SelectedFilesSorting}" 
-                                              Margin="0,5,0,10"/>
-                                    
+                                              SelectedItem="{Binding Path=SelectedFilesSorting}"
+                                              Margin="0,5,0,10" />
+
                                     <CheckBox IsChecked="{Binding Path=IsSelectedFilesSortingDescending}"
                                               Content="Descending" />
                                 </StackPanel>
@@ -171,19 +177,19 @@
                                     <TextBlock Text="Folders sorting" />
 
                                     <ComboBox ItemsSource="{Binding Path=FoldersSortingMethods}"
-                                              SelectedItem="{Binding Path=SelectedFoldersSorting}" 
-                                              Margin="0,5,0,10"/>
-                                    
+                                              SelectedItem="{Binding Path=SelectedFoldersSorting}"
+                                              Margin="0,5,0,10" />
+
                                     <CheckBox IsChecked="{Binding Path=IsSelectedFoldersSortingDescending}"
                                               Content="Descending" />
                                 </StackPanel>
                             </DockPanel>
-                            
-                            <DockPanel LastChildFill="False" 
+
+                            <DockPanel LastChildFill="False"
                                        Margin="0,25,0,0">
                                 <StackPanel DockPanel.Dock="Left">
                                     <TextBlock Text="Accent" />
-                                    
+
                                     <ComboBox Margin="0,5,0,0"
                                               ItemsSource="{Binding AccentColors, Mode=OneWay}"
                                               SelectedItem="{Binding SelectedAccentColor, Mode=TwoWay}">
@@ -194,12 +200,12 @@
                                                         <ColumnDefinition Width="20" />
                                                         <ColumnDefinition Width="*" />
                                                     </Grid.ColumnDefinitions>
-                                                    
+
                                                     <Ellipse Grid.Column="0"
                                                              Width="16"
                                                              Height="16"
                                                              Fill="{Binding ColorBrush, Mode=OneWay}" />
-                                                    
+
                                                     <Label Grid.Column="1"
                                                            Content="{Binding Name, Mode=OneWay}" />
                                                 </Grid>
@@ -210,8 +216,8 @@
 
                                 <StackPanel DockPanel.Dock="Right">
                                     <TextBlock Text="Theme" />
-                                    
-                                    <ComboBox SelectedIndex="{Binding SelectedIndexTheme, Mode=TwoWay}" 
+
+                                    <ComboBox SelectedIndex="{Binding SelectedIndexTheme, Mode=TwoWay}"
                                               Margin="0,5,0,0">
                                         <ComboBoxItem>
                                             <Grid>
@@ -224,13 +230,13 @@
                                                          Height="16"
                                                          StrokeThickness="1"
                                                          Stroke="{DynamicResource BlackBrush}"
-                                                         Fill="{DynamicResource BlackBrush}"/>
-                                                
+                                                         Fill="{DynamicResource BlackBrush}" />
+
                                                 <Label Grid.Column="1"
-                                                       Content="Light"/>
+                                                       Content="Light" />
                                             </Grid>
                                         </ComboBoxItem>
-                                        
+
                                         <ComboBoxItem>
                                             <Grid>
                                                 <Grid.ColumnDefinitions>
@@ -238,14 +244,14 @@
                                                     <ColumnDefinition Width="*" />
                                                 </Grid.ColumnDefinitions>
                                                 <Ellipse Grid.Column="0"
-                            					         Width="16"
-                            					         Height="16"
-                            					         StrokeThickness="1"
-                            				  	         Stroke="{DynamicResource BlackBrush}"
-                            				 	         Fill="{DynamicResource WhiteBrush}" />
-                                                
+                                                         Width="16"
+                                                         Height="16"
+                                                         StrokeThickness="1"
+                                                         Stroke="{DynamicResource BlackBrush}"
+                                                         Fill="{DynamicResource WhiteBrush}" />
+
                                                 <Label Grid.Column="1"
-                            					       Content="Dark"/>
+                                                       Content="Dark" />
                                             </Grid>
                                         </ComboBoxItem>
                                     </ComboBox>
@@ -257,12 +263,16 @@
                                 <TextBlock Text="Slideshow delay: " />
                                 <TextBlock Text="{Binding Value, ElementName=Slider}" />
                             </StackPanel>
-                            
-                            <Slider Minimum="0" 
+
+                            <Slider Minimum="0"
                                     Maximum="100"
                                     x:Name="Slider"
-                                    Value="{Binding SlideshowDelay}"
-                                    />
+                                    Value="{Binding SlideshowDelay}" />
+
+
+                            <CheckBox Margin="0,25,0,0"
+                                      Content="Show tags"
+                                      IsChecked="{Binding ShowTags}" />
                         </StackPanel>
                     </ScrollViewer>
                 </Grid>
@@ -270,23 +280,23 @@
 
             <metroControl:Flyout x:Name="EditWithFlyout"
                                  Height="80"
-                                 Header="Edit With" 
+                                 Header="Edit With"
                                  Position="Bottom"
                                  DataContext="{Binding Path=OpenWith}"
-                                 MouseLeftButtonUp="Disable_MouseButton" 
-                                 Theme="Inverse" >
+                                 MouseLeftButtonUp="Disable_MouseButton"
+                                 Theme="Inverse">
                 <StackPanel HorizontalAlignment="Center">
-                    <ItemsControl ItemsSource="{Binding Path=CurrentList}" >
+                    <ItemsControl ItemsSource="{Binding Path=CurrentList}">
                         <ItemsControl.ItemsPanel>
                             <ItemsPanelTemplate>
-                                <StackPanel Orientation="Horizontal"/>
+                                <StackPanel Orientation="Horizontal" />
                             </ItemsPanelTemplate>
                         </ItemsControl.ItemsPanel>
 
                         <ItemsControl.ItemTemplate>
                             <DataTemplate>
-                                <Button ToolTip="{Binding Name}" 
-                                        Command="{Binding ClickCommand}" 
+                                <Button ToolTip="{Binding Name}"
+                                        Command="{Binding ClickCommand}"
                                         CommandParameter="{Binding 
                                             RelativeSource={RelativeSource 
                                                 FindAncestor,
@@ -295,71 +305,203 @@
                                         Margin="10"
                                         Style="{StaticResource {x:Static ToolBar.ButtonStyleKey}}"
                                         Height="60">
-                                    <Image Source="{Binding IconPath}"/>
+                                    <Image Source="{Binding IconPath}" />
                                 </Button>
                             </DataTemplate>
                         </ItemsControl.ItemTemplate>
                     </ItemsControl>
-                    
+
                     <TextBlock>SFGGFGF</TextBlock>
                 </StackPanel>
-             </metroControl:Flyout>
+            </metroControl:Flyout>
+
+            <metroControl:Flyout x:Name="AddTagFlyout"
+                                 Width="250"
+                                 Header="Add tag"
+                                 Position="Right"
+                                 DataContext="{Binding Path=AddTagVM}"
+                                 MouseLeftButtonUp="Disable_MouseButton"
+                                 Theme="Inverse">
+                <i:Interaction.Triggers>
+                    <i:EventTrigger EventName="IsOpenChanged">
+                        <i:InvokeCommandAction Command="{Binding ResetCommand}" />
+                    </i:EventTrigger>
+                </i:Interaction.Triggers>
+
+                <view:AddTagV IsEnabled="{Binding IsEnabled}" />
+            </metroControl:Flyout>
+
+            <metroControl:Flyout x:Name="CreateTagFlyout"
+                                 Width="250"
+                                 Header="Create tag"
+                                 Position="Right"
+                                 DataContext="{Binding Path=CreateTagVM}"
+                                 MouseLeftButtonUp="Disable_MouseButton"
+                                 Theme="Inverse">
+                <i:Interaction.Triggers>
+                    <i:EventTrigger EventName="IsOpenChanged">
+                        <i:InvokeCommandAction Command="{Binding ResetCommand}"
+                                               CommandParameter="{Binding ElementName=CreateTagFlyout, Path=IsOpen}" />
+                    </i:EventTrigger>
+                </i:Interaction.Triggers>
+
+                <view:CreateTagV />
+            </metroControl:Flyout>
         </metroControl:FlyoutsControl>
     </metroControl:MetroWindow.Flyouts>
-    
-    <Grid Focusable="True" 
-		  MouseLeftButtonUp="Client_MouseLeftButtonUp">
+
+    <Grid Focusable="True"
+          MouseLeftButtonUp="Client_MouseLeftButtonUp">
         <Grid.RowDefinitions>
             <RowDefinition Height="*" />
             <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
-        
+
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto"
+                              MaxWidth="250" />
+            <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
+
         <Grid x:Name="Client"
-              MouseUp="Client_OnMouseUp">
-            <userControl:ExtScrollViewer x:Name="ScrollViewerObject" 
-    			                         HorizontalScrollBarVisibility="Auto" 
-    			                         VerticalScrollBarVisibility="Auto"
-    			                         ScrollChanged="ScrollViewerObject_ScrollChanged"
-    			                         Focusable="False"
-    			                         Grid.Row ="0">
+              MouseUp="Client_OnMouseUp"
+              Grid.Column="1"
+              Grid.Row="0">
+            <userControl:ExtScrollViewer x:Name="ScrollViewerObject"
+                                         HorizontalScrollBarVisibility="Auto"
+                                         VerticalScrollBarVisibility="Auto"
+                                         ScrollChanged="ScrollViewerObject_ScrollChanged"
+                                         Focusable="False"
+                                         Grid.Row="0">
                 <Grid>
                     <Image VerticalAlignment="Center"
-    					   HorizontalAlignment="Center"
-    					   Height="{Binding ViewportHeight}"
-    					   Width="{Binding ViewportWidth}"
-    					   gif:ImageBehavior.AnimatedSource="{Binding AnimutedImage}"
-    					   Visibility="{Binding IsAnimuted, Converter={StaticResource VisibilityConverter}}" >
+                           HorizontalAlignment="Center"
+                           Height="{Binding ViewportHeight}"
+                           Width="{Binding ViewportWidth}"
+                           gif:ImageBehavior.AnimatedSource="{Binding AnimutedImage}"
+                           Visibility="{Binding IsAnimuted, Converter={StaticResource VisibilityConverter}}">
                         <i:Interaction.Behaviors>
                             <behavior:FrameworkElementDragBehavior />
                         </i:Interaction.Behaviors>
                     </Image>
-                    
+
                     <Image x:Name="ViewPort"
-    					   VerticalAlignment="Center"
-    					   HorizontalAlignment="Center"
-    					   Height="{Binding ViewportHeight}"
-    					   Width="{Binding ViewportWidth}"
-    					   Source="{Binding Image}"                     
-    					   Visibility="{Binding IsAnimuted, Converter={StaticResource VisibilityInvertConverter}}" >
+                           VerticalAlignment="Center"
+                           HorizontalAlignment="Center"
+                           Height="{Binding ViewportHeight}"
+                           Width="{Binding ViewportWidth}"
+                           Source="{Binding Image}"
+                           Visibility="{Binding IsAnimuted, Converter={StaticResource VisibilityInvertConverter}}">
                         <i:Interaction.Behaviors>
                             <behavior:FrameworkElementDragBehavior />
                         </i:Interaction.Behaviors>
                     </Image>
-                    
+
                     <metroControl:ProgressRing IsActive="{Binding IsLoading}" />
-                    
-                    <Label HorizontalAlignment="Stretch"                       
-    					   VerticalAlignment="Stretch"
-    					   HorizontalContentAlignment="Center"
-    					   VerticalContentAlignment="Center"
-    					   Content="{Binding ErrorMessage}"
-    					   Visibility="{Binding IsError, Converter={StaticResource VisibilityConverter}}" />
+
+                    <Label HorizontalAlignment="Stretch"
+                           VerticalAlignment="Stretch"
+                           HorizontalContentAlignment="Center"
+                           VerticalContentAlignment="Center"
+                           Content="{Binding ErrorMessage}"
+                           Visibility="{Binding IsError, Converter={StaticResource VisibilityConverter}}" />
                 </Grid>
             </userControl:ExtScrollViewer>
         </Grid>
-        
+
+        <Grid VerticalAlignment="Stretch"
+              HorizontalAlignment="Left"
+              MaxWidth="250"
+              MouseLeftButtonUp="Disable_MouseButton"
+              Visibility="{Binding Tags.ShowTags, Converter={StaticResource ConditionVisibilityConverter}, ConverterParameter=true}">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*" />
+            </Grid.RowDefinitions>
+
+            <ScrollViewer Style="{StaticResource LeftScrollViewer}"
+                          VerticalScrollBarVisibility="Auto"
+                          HorizontalScrollBarVisibility="Disabled">
+                <StackPanel>
+                    <ItemsControl ItemsSource="{Binding Tags.SourcesCollection}"
+                                  Margin="10">
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <StackPanel>
+                                    <TextBlock Text="{Binding Title}"
+                                               FontSize="15"
+                                               Margin="0,0,0,2" />
+
+                                    <ItemsControl ItemsSource="{Binding TagsCollection}">
+                                        <ItemsControl.ItemTemplate>
+                                            <DataTemplate>
+                                                <Grid>
+                                                    <Grid.ColumnDefinitions>
+                                                        <ColumnDefinition Width="*" />
+                                                        <ColumnDefinition Width="Auto" />
+                                                    </Grid.ColumnDefinitions>
+
+                                                    <TextBlock Grid.Column="0"
+                                                               Text="{Binding Title}"
+                                                               Foreground="{Binding TypeBrush}"
+                                                               FontFamily="Comic Sans MS"
+                                                               Margin="5,0,0,2"
+                                                               FontSize="13"
+                                                               FontWeight="Bold"
+                                                               TextWrapping="Wrap"
+                                                               ToolTip="{Binding Title}"
+                                                               VerticalAlignment="Center" />
+
+                                                    <Button Grid.Column="1"
+                                                            Width="20"
+                                                            Height="20"
+                                                            Margin="0, 0, 0, 0"
+                                                            Style="{DynamicResource MetroCircleButtonStyle}"
+                                                            HorizontalAlignment="Left"
+                                                            Command="{Binding UnbindCommand}"
+                                                            Visibility="{Binding IsEditable, Mode=OneWay, Converter={StaticResource ConditionVisibilityConverter}, ConverterParameter=true, FallbackValue=Collapsed}">
+                                                        <Rectangle Width="8"
+                                                                   Height="8"
+                                                                   Fill="{Binding Path=Foreground, 
+                                                                       RelativeSource={RelativeSource FindAncestor, 
+                                                                           AncestorType={x:Type Button}}}">
+                                                            <Rectangle.OpacityMask>
+                                                                <VisualBrush Stretch="Fill"
+                                                                             Visual="{DynamicResource appbar_close}" />
+                                                            </Rectangle.OpacityMask>
+                                                        </Rectangle>
+                                                    </Button>
+                                                </Grid>
+                                            </DataTemplate>
+                                        </ItemsControl.ItemTemplate>
+                                    </ItemsControl>
+                                </StackPanel>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+
+                    <Button Width="25"
+                            Height="25"
+                            Margin="10, 0, 10, 0"
+                            Style="{DynamicResource MetroCircleButtonStyle}"
+                            HorizontalAlignment="Left"
+                            Click="ShowAddDialog">
+                        <Rectangle Width="10"
+                                   Height="10"
+                                   Fill="{Binding Path=Foreground, 
+                                                  RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Button}}}">
+                            <Rectangle.OpacityMask>
+                                <VisualBrush Stretch="Fill"
+                                             Visual="{DynamicResource appbar_add}" />
+                            </Rectangle.OpacityMask>
+                        </Rectangle>
+                    </Button>
+                </StackPanel>
+            </ScrollViewer>
+        </Grid>
+
         <StatusBar Background="{DynamicResource AccentColorBrush}"
                    Grid.Row="1"
+                   Grid.ColumnSpan="2"
                    MouseUp="Disable_MouseButton"
                    Visibility="{Binding RelativeSource={RelativeSource FindAncestor,
                                                                        AncestorType={x:Type imoutoViewer:MainWindow}},
@@ -367,7 +509,8 @@
                                                                        Converter={StaticResource CollapsedVisibilityInvertConverter}}"
                    Height="25">
             <StatusBar.Resources>
-                <SolidColorBrush x:Key="StatusBarForeground" Color="White"/>
+                <SolidColorBrush x:Key="StatusBarForeground"
+                                 Color="White" />
             </StatusBar.Resources>
             <StatusBar.ItemsPanel>
                 <ItemsPanelTemplate>
@@ -384,57 +527,57 @@
                     </Grid>
                 </ItemsPanelTemplate>
             </StatusBar.ItemsPanel>
-            
+
             <StatusBarItem>
                 <TextBlock Margin="3,0,0,0"
-                           Foreground="{StaticResource StatusBarForeground}" 
-					       Text="{Binding Status}" />
+                           Foreground="{StaticResource StatusBarForeground}"
+                           Text="{Binding Status}" />
             </StatusBarItem>
 
             <StatusBarItem Grid.Column="1">
-                <StackPanel Orientation="Horizontal" >
-                    <TextBlock Text="Zoom " 
-                               Foreground="{StaticResource StatusBarForeground}"/>
-                    
-                    <TextBlock Text="(fixed) " 
+                <StackPanel Orientation="Horizontal">
+                    <TextBlock Text="Zoom "
+                               Foreground="{StaticResource StatusBarForeground}" />
+
+                    <TextBlock Text="(fixed) "
                                Foreground="{StaticResource StatusBarForeground}"
                                Visibility="{Binding IsZoomFixed, 
-                                                    Converter={StaticResource VisibilityConverter}}"/>
+                                                    Converter={StaticResource VisibilityConverter}}" />
 
                     <TextBlock Text="{Binding Path=Zoom}"
-                               Foreground="{StaticResource StatusBarForeground}"/>
+                               Foreground="{StaticResource StatusBarForeground}" />
                 </StackPanel>
             </StatusBarItem>
 
             <StatusBarItem Grid.Column="2"
                            Visibility="{Binding IsSlideshowActive, Converter={StaticResource VisibilityConverter}}">
-                <StackPanel Orientation="Horizontal" >
-                    <TextBlock Text="Slideshow " 
-                               Foreground="{StaticResource StatusBarForeground}"/>
+                <StackPanel Orientation="Horizontal">
+                    <TextBlock Text="Slideshow "
+                               Foreground="{StaticResource StatusBarForeground}" />
 
                     <TextBlock Text="{Binding Path=Settings.SlideshowDelay, StringFormat='({0})'}"
-                               Foreground="{StaticResource StatusBarForeground}"/>
+                               Foreground="{StaticResource StatusBarForeground}" />
                 </StackPanel>
             </StatusBarItem>
 
-            <StatusBarItem Grid.Column="5" >
-                <StackPanel Orientation="Horizontal" >
-                    <TextBlock Text="File " 
-                               Foreground="{StaticResource StatusBarForeground}"/>
+            <StatusBarItem Grid.Column="5">
+                <StackPanel Orientation="Horizontal">
+                    <TextBlock Text="File "
+                               Foreground="{StaticResource StatusBarForeground}" />
 
-                    <TextBlock Text="{Binding FileStatus}" 
-                               Foreground="{StaticResource StatusBarForeground}"/>
+                    <TextBlock Text="{Binding FileStatus}"
+                               Foreground="{StaticResource StatusBarForeground}" />
                 </StackPanel>
             </StatusBarItem>
 
-            <StatusBarItem Grid.Column="6" >
-                <StackPanel Orientation="Horizontal" 
+            <StatusBarItem Grid.Column="6">
+                <StackPanel Orientation="Horizontal"
                             ToolTip="{Binding DirStatusToolTip}">
-                    <TextBlock Text="Dir " 
-                               Foreground="{StaticResource StatusBarForeground}"/>
+                    <TextBlock Text="Dir "
+                               Foreground="{StaticResource StatusBarForeground}" />
 
-                    <TextBlock Text="{Binding DirStatus}" 
-                               Foreground="{StaticResource StatusBarForeground}"/>
+                    <TextBlock Text="{Binding DirStatus}"
+                               Foreground="{StaticResource StatusBarForeground}" />
                 </StackPanel>
             </StatusBarItem>
         </StatusBar>

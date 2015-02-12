@@ -1,5 +1,5 @@
-﻿using System.Linq;
-using ImoutoViewer.ViewModel;
+﻿using ImoutoViewer.ViewModel;
+using System.Linq;
 using System.Windows;
 
 namespace ImoutoViewer
@@ -7,7 +7,7 @@ namespace ImoutoViewer
     /// <summary>
     /// Interaction logic for App.xaml
     /// </summary>
-    public partial class App
+    partial class App
     {
         private MainWindowVM _mainWindowVM;
 

@@ -9,8 +9,12 @@ namespace ImoutoViewer.Model
     {
         private const ResizeType DefaultResizeType = ResizeType.DownscaleToViewPort;
 
-        public static bool IsZoomFixed { get; set; }
+        #region Static members
+
         private static double _constZoom;
+
+        public static bool IsZoomFixed { get; set; }
+
         public static double StaticZoom
         {
             private get
@@ -22,269 +26,6 @@ namespace ImoutoViewer.Model
                 _constZoom = value;
             }
         }
-
-        #region Fields
-
-        private readonly string _filePath;
-
-        private BitmapSource _image;
-
-        private double _autoResized;
-        private double _localZoom;
-
-        #endregion //Fields
-
-        #region Constructors
-
-        static LocalImage()
-        {
-            StaticZoom = 1;
-            IsZoomFixed = false;
-        }
-
-        public LocalImage(string imagePath)
-        {
-            LocalZoom = 1;
-            _filePath = imagePath;
-            IsError = false;
-        }
-
-        #endregion //Constructors
-
-        #region Properties
-
-        private double LocalZoom
-        {
-            get
-            {
-                return IsZoomFixed ? 1 : _localZoom;
-            }
-            set
-            {
-                _localZoom = value;
-            }
-        }
-
-        public BitmapSource Image
-        {
-            get
-            {
-                if (_image == null && !IsError)
-                {
-                    Load();
-                }
-                return _image;
-            }
-            private set
-            {
-                _image = value;
-            }
-        }
-
-        public bool IsError { get; private set; }
-
-        public string ErrorMessage { get; private set; }
-
-        public Size ResizedSize
-        {
-            get
-            {
-                return new Size(Image.PixelWidth * Zoom, Image.PixelHeight * Zoom);
-            }
-        }
-
-        public ImageFormat ImageFormat
-        {
-            get
-            {
-                switch (_filePath.Split('.')[_filePath.Split('.').Length - 1].ToLower())
-                {
-                    case "jpg":
-                    case "jpeg":
-                        return ImageFormat.JPG;
-                    case "gif":
-                        return ImageFormat.GIF;
-                    case "bmp":
-                        return ImageFormat.BMP;
-                    case "tiff":
-                        return ImageFormat.TIFF;
-                    case "png":
-                        return ImageFormat.PNG;
-                    default:
-                        return ImageFormat.JPG;
-                }
-            }
-        }
-
-        public string Name
-        {
-            get
-            {
-                return _filePath.Split('\\')[_filePath.Split('\\').Length - 1];
-            }
-        }
-
-        public string Path
-        {
-            get
-            {
-                return _filePath;
-            }
-        }
-
-        public double Zoom 
-        {
-            get { return LocalZoom * _autoResized * StaticZoom; }
-        }
-
-        #endregion //Properties
-
-        #region Public methods
-
-        private void Load()
-        {
-            try
-            {
-                try
-                {
-                    var bi = new BitmapImage();
-
-                    bi.BeginInit();
-                    bi.CacheOption = BitmapCacheOption.OnDemand;
-                    bi.UriSource = new Uri(_filePath);
-                    bi.EndInit();
-
-                    _image = bi;
-                }
-                catch (ArgumentException e)
-                {
-                    //Process fail in color reading exception.
-                    var bi = new BitmapImage();
-
-                    bi.BeginInit();
-                    bi.CacheOption = BitmapCacheOption.OnDemand;
-                    bi.CreateOptions |= BitmapCreateOptions.IgnoreColorProfile;
-                    bi.UriSource = new Uri(_filePath);
-                    bi.EndInit();
-
-                    _image = bi;
-                }
-            }
-            catch (Exception e)
-            {
-                IsError = true;
-                ErrorMessage = e.Message;
-            }
-        }
-
-        public void FreeMemory()
-        {
-            _image = null;
-
-            GC.Collect();
-            GC.WaitForPendingFinalizers();
-        }
-
-        public void Resize(Size viewPort, ResizeType resizedType = ResizeType.Default)
-        {
-            if (IsZoomFixed)
-            {
-                _autoResized = 1;
-            }
-            else
-            {
-                if (resizedType == ResizeType.Default)
-                {
-                    resizedType = DefaultResizeType;
-                }
-
-                 var resizedSize = ResizeImage(new Size(Image.PixelWidth, Image.PixelHeight),
-                                           new Size(viewPort.Width, viewPort.Height),
-                                           resizedType);
-
-                 _autoResized = resizedSize.Width / Image.PixelWidth;
-            }
-        }
-
-        public void ZoomIn()
-        {
-            if (IsZoomFixed)
-            {
-                StaticZoom *= 1.1;
-            }
-            else
-            {
-                LocalZoom *= 1.1;
-            }
-
-            OnImageChanged();
-        }
-
-        public void ZoomOut()
-        {
-            if (IsZoomFixed)
-            {
-                StaticZoom *= 0.9;
-            }
-            else
-            {
-                LocalZoom *= 0.9;
-            }
-
-            OnImageChanged();
-        }
-
-        public void ResetZoom()
-        {
-            LocalZoom = 1;
-            OnImageChanged();
-        }
-
-        public void RotateLeft()
-        {
-            Rotate(-90);
-            OnImageChanged();
-        }
-
-        public void RotateRight()
-        {
-            Rotate(90);
-            OnImageChanged();
-        }
-
-        #endregion //Public methods
-
-        #region Methods
-
-        private void Rotate(int angle)
-        {
-            var trasformedBitmap = new TransformedBitmap();
-
-            trasformedBitmap.BeginInit();
-            trasformedBitmap.Source = Image;
-
-            var rotateTransform = new RotateTransform(angle);
-            trasformedBitmap.Transform = rotateTransform;
-
-            trasformedBitmap.EndInit();
-
-            Image = trasformedBitmap;
-        }
-
-        #endregion //Methods
-
-        #region Events
-
-        public event EventHandler ImageChanged;
-        private void OnImageChanged()
-        {
-            if (ImageChanged != null)
-            {
-                ImageChanged(this, new EventArgs());
-            }
-        }
-
-        #endregion //Events
 
         #region Static methods
 
@@ -421,6 +162,272 @@ namespace ImoutoViewer.Model
             return result;
         }
 
-        #endregion //Static methods
+        #endregion Static methods
+
+        #endregion Static members
+
+        #region Fields
+
+        private readonly string _filePath;
+
+        private BitmapSource _image;
+
+        private double _autoResized;
+        private double _localZoom;
+
+        #endregion Fields
+
+        #region Constructors
+
+        static LocalImage()
+        {
+            StaticZoom = 1;
+            IsZoomFixed = false;
+        }
+
+        public LocalImage(string imagePath)
+        {
+            LocalZoom = 1;
+            _filePath = imagePath;
+            IsError = false;
+        }
+
+        #endregion Constructors
+
+        #region Properties
+
+        private double LocalZoom
+        {
+            get
+            {
+                return IsZoomFixed ? 1 : _localZoom;
+            }
+            set
+            {
+                _localZoom = value;
+            }
+        }
+
+        public BitmapSource Image
+        {
+            get
+            {
+                if (_image == null && !IsError)
+                {
+                    Load();
+                }
+                return _image;
+            }
+            private set
+            {
+                _image = value;
+            }
+        }
+
+        public bool IsError { get; private set; }
+
+        public string ErrorMessage { get; private set; }
+
+        public Size ResizedSize
+        {
+            get
+            {
+                return new Size(Image.PixelWidth * Zoom, Image.PixelHeight * Zoom);
+            }
+        }
+
+        public ImageFormat ImageFormat
+        {
+            get
+            {
+                switch (_filePath.Split('.')[_filePath.Split('.').Length - 1].ToLower())
+                {
+                    case "jpg":
+                    case "jpeg":
+                        return ImageFormat.JPG;
+                    case "gif":
+                        return ImageFormat.GIF;
+                    case "bmp":
+                        return ImageFormat.BMP;
+                    case "tiff":
+                        return ImageFormat.TIFF;
+                    case "png":
+                        return ImageFormat.PNG;
+                    default:
+                        return ImageFormat.JPG;
+                }
+            }
+        }
+
+        public string Name
+        {
+            get
+            {
+                return _filePath.Split('\\')[_filePath.Split('\\').Length - 1];
+            }
+        }
+
+        public string Path
+        {
+            get
+            {
+                return _filePath;
+            }
+        }
+
+        public double Zoom
+        {
+            get { return LocalZoom * _autoResized * StaticZoom; }
+        }
+
+        #endregion Properties
+
+        #region Public methods
+
+        private void Load()
+        {
+            try
+            {
+                try
+                {
+                    var bi = new BitmapImage();
+
+                    bi.BeginInit();
+                    bi.CacheOption = BitmapCacheOption.OnDemand;
+                    bi.UriSource = new Uri(_filePath);
+                    bi.EndInit();
+
+                    _image = bi;
+                }
+                catch (ArgumentException e)
+                {
+                    //Process fail in color reading exception.
+                    var bi = new BitmapImage();
+
+                    bi.BeginInit();
+                    bi.CacheOption = BitmapCacheOption.OnDemand;
+                    bi.CreateOptions |= BitmapCreateOptions.IgnoreColorProfile;
+                    bi.UriSource = new Uri(_filePath);
+                    bi.EndInit();
+
+                    _image = bi;
+                }
+            }
+            catch (Exception e)
+            {
+                IsError = true;
+                ErrorMessage = e.Message;
+            }
+        }
+
+        public void FreeMemory()
+        {
+            _image = null;
+
+            GC.Collect();
+            GC.WaitForPendingFinalizers();
+        }
+
+        public void Resize(Size viewPort, ResizeType resizedType = ResizeType.Default)
+        {
+            if (IsZoomFixed)
+            {
+                _autoResized = 1;
+            }
+            else
+            {
+                if (resizedType == ResizeType.Default)
+                {
+                    resizedType = DefaultResizeType;
+                }
+
+                var resizedSize = ResizeImage(new Size(Image.PixelWidth, Image.PixelHeight),
+                                          new Size(viewPort.Width, viewPort.Height),
+                                          resizedType);
+
+                _autoResized = resizedSize.Width / Image.PixelWidth;
+            }
+        }
+
+        public void ZoomIn()
+        {
+            if (IsZoomFixed)
+            {
+                StaticZoom *= 1.1;
+            }
+            else
+            {
+                LocalZoom *= 1.1;
+            }
+
+            OnImageChanged();
+        }
+
+        public void ZoomOut()
+        {
+            if (IsZoomFixed)
+            {
+                StaticZoom *= 0.9;
+            }
+            else
+            {
+                LocalZoom *= 0.9;
+            }
+
+            OnImageChanged();
+        }
+
+        public void ResetZoom()
+        {
+            LocalZoom = 1;
+            OnImageChanged();
+        }
+
+        public void RotateLeft()
+        {
+            Rotate(-90);
+            OnImageChanged();
+        }
+
+        public void RotateRight()
+        {
+            Rotate(90);
+            OnImageChanged();
+        }
+
+        #endregion Public methods
+
+        #region Methods
+
+        private void Rotate(int angle)
+        {
+            var trasformedBitmap = new TransformedBitmap();
+
+            trasformedBitmap.BeginInit();
+            trasformedBitmap.Source = Image;
+
+            var rotateTransform = new RotateTransform(angle);
+            trasformedBitmap.Transform = rotateTransform;
+
+            trasformedBitmap.EndInit();
+
+            Image = trasformedBitmap;
+        }
+
+        #endregion Methods
+
+        #region Events
+
+        public event EventHandler ImageChanged;
+        private void OnImageChanged()
+        {
+            if (ImageChanged != null)
+            {
+                ImageChanged(this, new EventArgs());
+            }
+        }
+
+        #endregion Events
+
     }
 }

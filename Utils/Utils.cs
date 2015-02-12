@@ -69,7 +69,7 @@ namespace Utils
                 }
                 #endregion
 
-                foreach (DirectoryInfo folder in source.GetDirectories().OrderBy(x=>x.Name))
+                foreach (DirectoryInfo folder in source.GetDirectories().OrderBy(x => x.Name))
                 {
                     result.Add(folder);
 

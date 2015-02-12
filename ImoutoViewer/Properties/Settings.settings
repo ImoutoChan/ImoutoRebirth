@@ -6,7 +6,7 @@
       <Value Profile="(Default)">DownscaleToViewPort</Value>
     </Setting>
     <Setting Name="DirectorySearchFlags" Type="ImoutoViewer.Model.DirectorySearchFlags" Scope="User">
-      <Value Profile="(Default)">Folder | Subfolders</Value>
+      <Value Profile="(Default)">Folder, Subfolders</Value>
     </Setting>
     <Setting Name="FilesSorting" Type="ImoutoViewer.Model.SortMethod" Scope="User">
       <Value Profile="(Default)">ByName</Value>
@@ -28,6 +28,9 @@
     </Setting>
     <Setting Name="SlideshowDelay" Type="System.Int32" Scope="User">
       <Value Profile="(Default)">3</Value>
+    </Setting>
+    <Setting Name="ShowTags" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">True</Value>
     </Setting>
   </Settings>
 </SettingsFile>

@@ -2,7 +2,7 @@
 
 namespace ImoutoViewer.UserControls
 {
-    public class MouseWheelGesture : MouseGesture
+    class MouseWheelGesture : MouseGesture
     {
         private WheelDirection Direction { get; set; }
 
@@ -81,7 +81,7 @@ namespace ImoutoViewer.UserControls
         public override bool Matches(object targetElement, InputEventArgs inputEventArgs)
         {
             if (!base.Matches(targetElement, inputEventArgs)
-                || !(inputEventArgs is MouseWheelEventArgs)) 
+                || !(inputEventArgs is MouseWheelEventArgs))
                 return false;
 
             var args = (MouseWheelEventArgs)inputEventArgs;

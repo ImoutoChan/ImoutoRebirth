@@ -1,5 +1,4 @@
-﻿using System.Windows.Input;
-using ImoutoViewer.Commands;
+﻿using ImoutoViewer.Commands;
 using ImoutoViewer.Model;
 using ImoutoViewer.Properties;
 using MahApps.Metro;
@@ -8,6 +7,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Windows;
+using System.Windows.Input;
 using System.Windows.Media;
 
 namespace ImoutoViewer.ViewModel
@@ -23,9 +23,10 @@ namespace ImoutoViewer.ViewModel
         private bool _isSelectedFilesSortingDescending;
         private AccentColorMenuData _selectedAccentColor;
         private int _selectedTheme;
+        private bool _showTags;
 
-        #endregion //Fileds
-        
+        #endregion Fileds
+
         #region Constructors
 
         public SettingsVM()
@@ -48,10 +49,10 @@ namespace ImoutoViewer.ViewModel
             IsSelectedFilesSortingDescending = Settings.Default.FilesSortingDesc;
             IsSelectedFoldersSortingDescending = Settings.Default.FoldersSortingDesc;
 
-            AccentColors = ThemeManager.DefaultAccents
+            AccentColors = ThemeManager.Accents
                                 .Select(a => new AccentColorMenuData
                                 {
-                                    Name = a.Name, 
+                                    Name = a.Name,
                                     ColorBrush = a.Resources["AccentColorBrush"] as Brush
                                 })
                                 .ToList();
@@ -59,10 +60,12 @@ namespace ImoutoViewer.ViewModel
 
             SelectedIndexTheme = Settings.Default.ThemeIndex;
 
-            SaveCommand = new RelayCommand(x=> Save());
+            SaveCommand = new RelayCommand(x => Save());
+
+            ShowTags = Settings.Default.ShowTags;
         }
 
-        #endregion //Constructors
+        #endregion Constructors
 
         #region Properties
 
@@ -80,7 +83,7 @@ namespace ImoutoViewer.ViewModel
         }
 
         public List<ResizeTypeDescriptor> ResizeTypes { get; private set; }
-        public ResizeTypeDescriptor SelectedResizeType 
+        public ResizeTypeDescriptor SelectedResizeType
         {
             get
             {
@@ -172,28 +175,42 @@ namespace ImoutoViewer.ViewModel
         public int SelectedIndexTheme
         {
             get
-            { 
-                return _selectedTheme; 
+            {
+                return _selectedTheme;
             }
             set
             {
                 _selectedTheme = value;
-                var theme = ThemeManager.DetectTheme(Application.Current);
+                var theme = ThemeManager.DetectAppStyle(Application.Current);
                 switch (value)
                 {
                     case 1:
-                        ThemeManager.ChangeTheme(Application.Current, theme.Item2, Theme.Dark);
+                        ThemeManager.ChangeAppStyle(Application.Current, theme.Item2, ThemeManager.AppThemes.Last());
                         Settings.Default.ThemeIndex = 1;
                         break;
                     default:
-                        ThemeManager.ChangeTheme(Application.Current, theme.Item2, Theme.Light);
+                        ThemeManager.ChangeAppStyle(Application.Current, theme.Item2, ThemeManager.AppThemes.First());
                         Settings.Default.ThemeIndex = 0;
                         break;
                 }
             }
         }
 
-        #endregion //Properties
+        public bool ShowTags
+        {
+            get
+            {
+                return _showTags;
+            }
+            set
+            {
+                OnPropertyChanged(ref _showTags, value, () => ShowTags);
+                Settings.Default.ShowTags = _showTags;
+                OnSelectedTagsModeChanged();
+            }
+        }
+
+        #endregion Properties
 
         #region Commands
 
@@ -204,7 +221,7 @@ namespace ImoutoViewer.ViewModel
             Settings.Default.Save();
         }
 
-        #endregion //Commands
+        #endregion Commands
 
         #region Event handlers
 
@@ -213,7 +230,7 @@ namespace ImoutoViewer.ViewModel
             OnSelectedDirectorySearchTypeChanged();
         }
 
-        #endregion // Event handlers
+        #endregion  Event handlers
 
         #region Events
 
@@ -253,7 +270,15 @@ namespace ImoutoViewer.ViewModel
             }
         }
 
-        #endregion //Events
+        public event EventHandler SelectedTagsModeChanged;
+        private void OnSelectedTagsModeChanged()
+        {
+            if (SelectedTagsModeChanged != null)
+            {
+                SelectedTagsModeChanged(this, null);
+            }
+        }
+        #endregion Events
     }
 
     class ResizeTypeDescriptor
@@ -263,7 +288,7 @@ namespace ImoutoViewer.ViewModel
         public string Name { get; private set; }
         public ResizeType Type { get; private set; }
 
-        #endregion //Properties
+        #endregion Properties
 
         #region Methods
 
@@ -272,7 +297,7 @@ namespace ImoutoViewer.ViewModel
             return Name;
         }
 
-        #endregion //Methods
+        #endregion Methods
 
         #region Static methods
 
@@ -281,14 +306,14 @@ namespace ImoutoViewer.ViewModel
             return new List<ResizeTypeDescriptor>
             {
                 new ResizeTypeDescriptor { Name = "Fit to screen (downscale only)", Type = ResizeType.DownscaleToViewPort },
-                new ResizeTypeDescriptor { Name = "Fit to screen (down & up scale)", Type = ResizeType.FitToViewPort },            
-                new ResizeTypeDescriptor { Name = "Fit to screen width (downscale only)", Type = ResizeType.DownscaleToViewPortWidth },            
-                new ResizeTypeDescriptor { Name = "Fit to screen width (down & up scale)", Type = ResizeType.FitToViewPortWidth },            
+                new ResizeTypeDescriptor { Name = "Fit to screen (down & up scale)", Type = ResizeType.FitToViewPort },
+                new ResizeTypeDescriptor { Name = "Fit to screen width (downscale only)", Type = ResizeType.DownscaleToViewPortWidth },
+                new ResizeTypeDescriptor { Name = "Fit to screen width (down & up scale)", Type = ResizeType.FitToViewPortWidth },
                 new ResizeTypeDescriptor { Name = "Original size (no resize)", Type = ResizeType.NoResize },
             };
         }
 
-        #endregion //Static methods
+        #endregion Static methods
     }
 
     class DirectorySearchTypeDescriptor
@@ -297,7 +322,7 @@ namespace ImoutoViewer.ViewModel
 
         private bool? _isSelected;
 
-        #endregion // Fields
+        #endregion  Fields
 
         #region Properties
 
@@ -323,7 +348,7 @@ namespace ImoutoViewer.ViewModel
             }
         }
 
-        #endregion //Properties
+        #endregion Properties
 
         #region Methods
 
@@ -332,7 +357,7 @@ namespace ImoutoViewer.ViewModel
             return Name;
         }
 
-        #endregion //Methods
+        #endregion Methods
 
         #region Static methods
 
@@ -341,14 +366,14 @@ namespace ImoutoViewer.ViewModel
             return new ObservableCollection<DirectorySearchTypeDescriptor>
             {
                 new DirectorySearchTypeDescriptor { Name = "All Pre", Type = DirectorySearchFlags.AllDepthPrefolder },
-                new DirectorySearchTypeDescriptor { Name = "Pre", Type = DirectorySearchFlags.Prefolders },            
-                new DirectorySearchTypeDescriptor { Name = "Cur", Type = DirectorySearchFlags.Folder },            
-                new DirectorySearchTypeDescriptor { Name = "Sub", Type = DirectorySearchFlags.Subfolders },            
+                new DirectorySearchTypeDescriptor { Name = "Pre", Type = DirectorySearchFlags.Prefolders },
+                new DirectorySearchTypeDescriptor { Name = "Cur", Type = DirectorySearchFlags.Folder },
+                new DirectorySearchTypeDescriptor { Name = "Sub", Type = DirectorySearchFlags.Subfolders },
                 new DirectorySearchTypeDescriptor { Name = "All Sub", Type = DirectorySearchFlags.AllDepthSubfolders },
             };
         }
 
-        #endregion //Static methods
+        #endregion Static methods
 
         #region Events
 
@@ -361,7 +386,7 @@ namespace ImoutoViewer.ViewModel
             }
         }
 
-        #endregion //Events
+        #endregion Events
     }
 
     class SortingDescriptor
@@ -371,7 +396,7 @@ namespace ImoutoViewer.ViewModel
         public string Name { get; set; }
         public SortMethod Method { get; set; }
 
-        #endregion //Properties
+        #endregion Properties
 
         #region Methods
 
@@ -380,7 +405,7 @@ namespace ImoutoViewer.ViewModel
             return Name;
         }
 
-        #endregion //Methods
+        #endregion Methods
 
         #region Static methods
 
@@ -389,7 +414,7 @@ namespace ImoutoViewer.ViewModel
             return new List<SortingDescriptor>
             {
                 new SortingDescriptor { Name = "Name", Method = SortMethod.ByName },
-                new SortingDescriptor { Name = "Date created", Method = SortMethod.ByCreateDate  },            
+                new SortingDescriptor { Name = "Date created", Method = SortMethod.ByCreateDate  },
                 new SortingDescriptor { Name = "Date modified", Method = SortMethod.ByUpdateDate },
                 new SortingDescriptor { Name = "Size", Method = SortMethod.BySize }
             };
@@ -400,12 +425,12 @@ namespace ImoutoViewer.ViewModel
             return new List<SortingDescriptor>
             {
                 new SortingDescriptor { Name = "Name", Method = SortMethod.ByName },
-                new SortingDescriptor { Name = "Date created", Method = SortMethod.ByCreateDate  },            
+                new SortingDescriptor { Name = "Date created", Method = SortMethod.ByCreateDate  },
                 new SortingDescriptor { Name = "Date modified", Method = SortMethod.ByUpdateDate }
             };
         }
 
-        #endregion //Static methods
+        #endregion Static methods
     }
 
     class AccentColorMenuData
@@ -415,11 +440,43 @@ namespace ImoutoViewer.ViewModel
 
         public void ChangeAccent()
         {
-            var theme = ThemeManager.DetectTheme(Application.Current);
-            var accent = ThemeManager.DefaultAccents.First(x => x.Name == Name);
-            ThemeManager.ChangeTheme(Application.Current, accent, theme.Item1);
+            var theme = ThemeManager.DetectAppStyle(Application.Current);
+            var accent = ThemeManager.GetAccent(Name);
+            ThemeManager.ChangeAppStyle(Application.Current, accent, theme.Item1);
             Settings.Default.AccentColorName = Name;
         }
+    }
+
+    class TagsModeDescriptor
+    {
+        #region Properties
+
+        public string Name { get; set; }
+        public byte Value { get; set; }
+
+        #endregion Properties
+
+        #region Methods
+
+        public override string ToString()
+        {
+            return Name;
+        }
+
+        #endregion Methods
+
+        #region Static methods
+
+        public static List<TagsModeDescriptor> GetListForFiles()
+        {
+            return new List<TagsModeDescriptor>
+            {
+                new TagsModeDescriptor { Name = "Show", Value = 1 },
+                new TagsModeDescriptor { Name = "Hide", Value = 0  },
+            };
+        }
+
+        #endregion Static methods
     }
 
 }

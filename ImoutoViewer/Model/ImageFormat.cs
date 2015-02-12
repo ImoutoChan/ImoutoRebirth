@@ -1,12 +1,10 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using System.Windows.Documents;
 
 namespace ImoutoViewer.Model
 {
-    public enum ImageFormat
+    enum ImageFormat
     {
         JPEG,
         JPG,
@@ -16,7 +14,7 @@ namespace ImoutoViewer.Model
         GIF
     }
 
-    public static class ImageFormats
+    static class ImageFormats
     {
         /// <summary>
         /// Get supported formats list in string format.
@@ -24,7 +22,7 @@ namespace ImoutoViewer.Model
         /// <returns>Strings: "jpg", "png", etc</returns>
         public static IEnumerable<string> GetSupportedFormatsList()
         {
-            return Enum.GetNames(typeof (ImageFormat)).Select(x => "." + x.ToLower()).ToList();
+            return Enum.GetNames(typeof(ImageFormat)).Select(x => "." + x.ToLower()).ToList();
         }
     }
 }

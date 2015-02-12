@@ -142,3 +142,11 @@ $RECYCLE.BIN/
 
 # Mac crap
 .DS_Store
+
+#################
+## CUSTOM
+#################
+
+#TO DO.txt
+packages/
+ImoutoViewer.sln.ide/*

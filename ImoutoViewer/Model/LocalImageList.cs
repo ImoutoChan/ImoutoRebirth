@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Globalization;
 using System.IO;
 using System.Linq;
 using Utils;
@@ -21,7 +20,7 @@ namespace ImoutoViewer.Model
         private static DirectorySearchFlags _filesGettingMethod = DirectorySearchFlags.Folder |
                                                                 DirectorySearchFlags.AllDepthSubfolders;
 
-        #endregion //Static fields
+        #endregion Static fields
 
         #region Static Properties
 
@@ -47,7 +46,7 @@ namespace ImoutoViewer.Model
             set { _filesGettingMethod = value; }
         }
 
-        #endregion //Static Properties
+        #endregion Static Properties
 
         #region Static methods
 
@@ -113,9 +112,9 @@ namespace ImoutoViewer.Model
             }
         }
 
-        #endregion // Static members
+        #endregion  Static members
 
-        #endregion //Static members
+        #endregion Static members
 
         #region Fields
 
@@ -125,7 +124,7 @@ namespace ImoutoViewer.Model
         private DirectoryInfo _currentDirectory;
         private LocalImage _currentImage;
 
-        #endregion //Fields
+        #endregion Fields
 
         #region Constructors
 
@@ -218,7 +217,7 @@ namespace ImoutoViewer.Model
             }
         }
 
-        #endregion //Constructors
+        #endregion Constructors
 
         #region Properties
 
@@ -276,7 +275,7 @@ namespace ImoutoViewer.Model
 
         public bool IsDirectoryActive { get; private set; }
 
-        #endregion //Properties
+        #endregion Properties
 
         #region Public methods
 
@@ -341,7 +340,7 @@ namespace ImoutoViewer.Model
             _imageList = new List<LocalImage>(_imageList.OrderByWithDirection(x => GetFilesOrderProperty(x.Path), IsFilesSortMethodDescending));
         }
 
-        #endregion //Public methods
+        #endregion Public methods
 
         #region Methods
 
@@ -349,7 +348,7 @@ namespace ImoutoViewer.Model
         {
 
             var images =
-                imagePaths.Where(x=>x.IsImage())
+                imagePaths.Where(x => x.IsImage())
                     .OrderByWithDirection(GetFilesOrderProperty, IsFilesSortMethodDescending)
                     .Select(x => new LocalImage(x));
 
@@ -364,7 +363,7 @@ namespace ImoutoViewer.Model
             }
 
             var files = Directory.GetFiles(sourceFolder.FullName, "*.*")
-                    .Where(x=>x.IsImage())
+                    .Where(x => x.IsImage())
                     .OrderByWithDirection(GetFilesOrderProperty, IsFilesSortMethodDescending)
                     .Select(x => new LocalImage(x));
 
@@ -539,7 +538,7 @@ namespace ImoutoViewer.Model
             }
         }
 
-        #endregion //Methods
+        #endregion Methods
 
         #region Events
 
@@ -552,15 +551,15 @@ namespace ImoutoViewer.Model
             }
         }
 
-        #endregion //Events
+        #endregion Events
 
         #region IEnumerable members
 
         public IEnumerator GetEnumerator()
         {
-            return ((IEnumerable) _imageList).GetEnumerator();
+            return ((IEnumerable)_imageList).GetEnumerator();
         }
 
-        #endregion // IEnumerable members
+        #endregion  IEnumerable members
     }
 }

@@ -1,11 +1,10 @@
-using System;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 
 namespace ImoutoViewer.UserControls
 {
-    public class ExtScrollViewer : ScrollViewer
+    class ExtScrollViewer : ScrollViewer
     {
         public bool IsNeedScrollHome { get; set; }
 
@@ -16,7 +15,7 @@ namespace ImoutoViewer.UserControls
             Loaded += ExtScrollViewer_Loaded;
         }
 
-        #endregion //Constructors
+        #endregion Constructors
 
         #region Event handlers
 
@@ -38,20 +37,20 @@ namespace ImoutoViewer.UserControls
                 return;
             }
 
-            double hZoomTo = Mouse.GetPosition(this).Y/ActualHeight; //0.5;
-            double wZoomTo = Mouse.GetPosition(this).X/ActualWidth; //0.5;
+            double hZoomTo = Mouse.GetPosition(this).Y / ActualHeight; //0.5;
+            double wZoomTo = Mouse.GetPosition(this).X / ActualWidth; //0.5;
             // Current view offset, range [0;1]
-            double hCVO = (VerticalOffset + ViewportHeight*hZoomTo)/ExtentHeight;
-            double wCVO = (HorizontalOffset + ViewportWidth*wZoomTo)/ExtentWidth;
+            double hCVO = (VerticalOffset + ViewportHeight * hZoomTo) / ExtentHeight;
+            double wCVO = (HorizontalOffset + ViewportWidth * wZoomTo) / ExtentWidth;
 
-            double hNewOffset = e.NewSize.Height*hCVO - ViewportHeight*hZoomTo;
-            double wNewOffset = e.NewSize.Width*wCVO - ViewportWidth*wZoomTo;
+            double hNewOffset = e.NewSize.Height * hCVO - ViewportHeight * hZoomTo;
+            double wNewOffset = e.NewSize.Width * wCVO - ViewportWidth * wZoomTo;
 
             ScrollToVerticalOffset(hNewOffset);
             ScrollToHorizontalOffset(wNewOffset);
         }
 
-        #endregion //Event handlers
+        #endregion Event handlers
 
         #region Events
 
@@ -71,6 +70,6 @@ namespace ImoutoViewer.UserControls
             e.Handled = false;
         }
 
-        #endregion //Events
+        #endregion Events
     }
 }
