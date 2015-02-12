@@ -79,8 +79,11 @@
     <Reference Include="System.Xaml">
       <RequiredTargetFramework>4.0</RequiredTargetFramework>
     </Reference>
+    <Reference Include="Utils">
+      <HintPath>..\..\..\Imouto Library\Source code\bin\Release\Utils.dll</HintPath>
+    </Reference>
     <Reference Include="WCFExchageLibrary">
-      <HintPath>..\..\..\Wcf\WCFExchageLibrary\WCFExchageLibrary\bin\Release\WCFExchageLibrary.dll</HintPath>
+      <HintPath>..\..\..\Imouto Library\Source code\bin\Release\WCFExchageLibrary.dll</HintPath>
     </Reference>
     <Reference Include="WindowsBase" />
     <Reference Include="PresentationCore" />
@@ -219,12 +222,6 @@
     <Resource Include="Resources\img\edit\irfan_view.ico" />
     <Resource Include="Resources\img\edit\ms_paint.ico" />
     <Resource Include="Resources\img\edit\photoshop.ico" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\Utils\Utils.csproj">
-      <Project>{515fb14d-8af1-4440-aa60-b57dee834adc}</Project>
-      <Name>Utils</Name>
-    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Resources\WindowsIcons-license.txt" />
