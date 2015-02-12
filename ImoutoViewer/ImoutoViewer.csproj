@@ -62,6 +62,9 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\MahApps.Metro.1.0.0.0\lib\net45\MahApps.Metro.dll</HintPath>
     </Reference>
+    <Reference Include="SharedModelLibrary">
+      <HintPath>..\..\..\Imouto Library\Source code\bin\Release\SharedModelLibrary.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Drawing" />
@@ -108,8 +111,6 @@
     <Compile Include="Converters\VisibilityConverter.cs" />
     <Compile Include="Model\Extentions.cs" />
     <Compile Include="Model\DirectorySearchFlags.cs" />
-    <Compile Include="Model\ImageFormat.cs" />
-    <Compile Include="Model\ResizeType.cs" />
     <Compile Include="Model\SortMethod.cs" />
     <Compile Include="UserControls\ExtScrollViewer.cs" />
     <Compile Include="UserControls\MouseWheelGesture.cs" />

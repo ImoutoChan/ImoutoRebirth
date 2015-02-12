@@ -26,9 +26,9 @@ namespace ImoutoViewer.Properties {
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("DownscaleToViewPort")]
-        public global::ImoutoViewer.Model.ResizeType ResizeType {
+        public global::Imouto.ResizeType ResizeType {
             get {
-                return ((global::ImoutoViewer.Model.ResizeType)(this["ResizeType"]));
+                return ((global::Imouto.ResizeType)(this["ResizeType"]));
             }
             set {
                 this["ResizeType"] = value;

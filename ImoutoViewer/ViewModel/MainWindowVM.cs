@@ -1,4 +1,5 @@
-﻿using ImoutoViewer.Behavior;
+﻿using Imouto;
+using ImoutoViewer.Behavior;
 using ImoutoViewer.Commands;
 using ImoutoViewer.Model;
 using System;
@@ -337,7 +338,7 @@ namespace ImoutoViewer.ViewModel
 #if DEBUG
             else
             {
-                _imageList = new LocalImageList(@"c:\Users\oniii-chan\Downloads\DLS\art\loli\715e2f290f6c236fdd6426d83ab9a9e0.jpg");
+                _imageList = new LocalImageList(@"D:\!Download\DLS\мясо");
             }
 #else
             else

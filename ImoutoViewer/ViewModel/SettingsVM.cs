@@ -1,4 +1,5 @@
-﻿using ImoutoViewer.Commands;
+﻿using Imouto;
+using ImoutoViewer.Commands;
 using ImoutoViewer.Model;
 using ImoutoViewer.Properties;
 using MahApps.Metro;
