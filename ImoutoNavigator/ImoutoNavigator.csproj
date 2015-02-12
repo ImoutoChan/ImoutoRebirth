@@ -62,6 +62,9 @@
       <HintPath>..\packages\MahApps.Metro.0.14.0-ALPHA98\lib\net45\MahApps.Metro.dll</HintPath>
     </Reference>
     <Reference Include="PresentationFramework.Aero" />
+    <Reference Include="SharedModelLibrary">
+      <HintPath>..\..\..\Imouto Library\Source code\bin\Release\SharedModelLibrary.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Data" />
@@ -78,6 +81,10 @@
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="System.Xaml">
       <RequiredTargetFramework>4.0</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="Utils, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\Imouto Library\Source code\bin\Release\Utils.dll</HintPath>
     </Reference>
     <Reference Include="WindowsBase" />
     <Reference Include="PresentationCore" />
@@ -176,14 +183,6 @@
     <ProjectReference Include="..\ImagesDBLibrary\ImagesDBLibrary.csproj">
       <Project>{2588d735-a006-42ce-91d6-85ffc74b9868}</Project>
       <Name>ImagesDBLibrary</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\ImoutoViewer\ImoutoViewer.csproj">
-      <Project>{94cb919f-f3c9-4470-af91-a2878cc8df4a}</Project>
-      <Name>ImoutoViewer</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Utils\Utils.csproj">
-      <Project>{515fb14d-8af1-4440-aa60-b57dee834adc}</Project>
-      <Name>Utils</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
