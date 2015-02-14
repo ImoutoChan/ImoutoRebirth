@@ -1,904 +1,827 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
+using System.Collections.Specialized;
 using System.ComponentModel;
-using System.Diagnostics;
-using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
-using System.Windows.Input;
 using System.Windows.Media;
 
 namespace ImoutoNavigator.UserControls
 {
     public class VirtualizingWrapPanel : VirtualizingPanel, IScrollInfo
     {
-        #region Fields
+        #region ItemSize
 
-        UIElementCollection _children;
-        ItemsControl _itemsControl;
-        IItemContainerGenerator _generator;
-        private Point _offset = new Point(0, 0);
-        private Size _extent = new Size(0, 0);
-        private Size _viewport = new Size(0, 0);
-        private int firstIndex = 0;
-        private Size childSize;
-        private Size _pixelMeasuredViewport = new Size(0, 0);
-        Dictionary<UIElement, Rect> _realizedChildLayout = new Dictionary<UIElement, Rect>();
-        WrapPanelAbstraction _abstractPanel;
-        
-        #endregion
+        #region ItemWidth
 
-        #region Properties
+        /// <summary>
+        /// <see cref="ItemWidth"/> 依存関係プロパティの識別子。
+        /// </summary>
+        public static readonly DependencyProperty ItemWidthProperty =
+            DependencyProperty.Register(
+                "ItemWidth",
+                typeof(double),
+                typeof(VirtualizingWrapPanel),
+                new FrameworkPropertyMetadata(
+                    double.NaN,
+                    FrameworkPropertyMetadataOptions.AffectsMeasure
+                ),
+                new ValidateValueCallback(VirtualizingWrapPanel.IsWidthHeightValid)
+            );
 
-        private Size ChildSlotSize
-        {
-            get
-            {
-                return new Size(ItemWidth, ItemHeight);
-            }
-        }
-
-        #endregion
-
-        #region Dependency Properties
-
-        [TypeConverter(typeof(LengthConverter))]
-        public double ItemHeight
-        {
-            get
-            {
-                return (double)base.GetValue(ItemHeightProperty);
-            }
-            set
-            {
-                base.SetValue(ItemHeightProperty, value);
-            }
-        }
-
-        [TypeConverter(typeof(LengthConverter))]
+        /// <summary>
+        /// VirtualizingWrapPanel 内に含まれているすべての項目の幅を
+        /// 指定する値を取得、または設定する。
+        /// </summary>
+        [TypeConverter(typeof(LengthConverter)), Category("共通")]
         public double ItemWidth
         {
-            get
-            {
-                return (double)base.GetValue(ItemWidthProperty);
-            }
-            set
-            {
-                base.SetValue(ItemWidthProperty, value);
-            }
+            get { return (double)this.GetValue(ItemWidthProperty); }
+            set { this.SetValue(ItemWidthProperty, value); }
         }
 
+        #endregion
+
+        #region ItemHeight
+
+        /// <summary>
+        /// <see cref="ItemHeight"/> 依存関係プロパティの識別子。
+        /// </summary>
+        public static readonly DependencyProperty ItemHeightProperty =
+            DependencyProperty.Register(
+                "ItemHeight",
+                typeof(double),
+                typeof(VirtualizingWrapPanel),
+                new FrameworkPropertyMetadata(
+                    double.NaN,
+                    FrameworkPropertyMetadataOptions.AffectsMeasure
+                ),
+                new ValidateValueCallback(VirtualizingWrapPanel.IsWidthHeightValid)
+            );
+
+        /// <summary>
+        /// VirtualizingWrapPanel 内に含まれているすべての項目の高さを
+        /// 指定する値を取得、または設定する。
+        /// </summary>
+        [TypeConverter(typeof(LengthConverter)), Category("共通")]
+        public double ItemHeight
+        {
+            get { return (double)this.GetValue(ItemHeightProperty); }
+            set { this.SetValue(ItemHeightProperty, value); }
+        }
+
+        #endregion
+
+        #region IsWidthHeightValid
+        /// <summary>
+        /// <see cref="ItemWidth"/>, <see cref="ItemHeight"/> に設定された値が
+        /// 有効かどうかを検証するコールバック。
+        /// </summary>
+        /// <param name="value">プロパティに設定された値。</param>
+        /// <returns>値が有効な場合は true、無効な場合は false。</returns>
+        private static bool IsWidthHeightValid(object value)
+        {
+            var d = (double)value;
+            return double.IsNaN(d) || ((d >= 0) && !double.IsPositiveInfinity(d));
+        }
+        #endregion
+
+        #endregion
+
+        #region Orientation
+
+        /// <summary>
+        /// <see cref="Orientation"/> 依存関係プロパティの識別子。
+        /// </summary>
+        public static readonly DependencyProperty OrientationProperty =
+            WrapPanel.OrientationProperty.AddOwner(
+                typeof(VirtualizingWrapPanel),
+                new FrameworkPropertyMetadata(
+                    Orientation.Horizontal,
+                    FrameworkPropertyMetadataOptions.AffectsMeasure,
+                    new PropertyChangedCallback(VirtualizingWrapPanel.OnOrientationChanged)
+                )
+            );
+
+        /// <summary>
+        /// 子コンテンツが配置される方向を指定する値を取得、または設定する。
+        /// </summary>
+        [Category("共通")]
         public Orientation Orientation
         {
-            get { return (Orientation)GetValue(OrientationProperty); }
-            set { SetValue(OrientationProperty, value); }
+            get { return (Orientation)this.GetValue(OrientationProperty); }
+            set { this.SetValue(OrientationProperty, value); }
         }
 
-        public static readonly DependencyProperty ItemHeightProperty = DependencyProperty.Register("ItemHeight", typeof(double), typeof(VirtualizingWrapPanel), new FrameworkPropertyMetadata(double.PositiveInfinity));
-        public static readonly DependencyProperty ItemWidthProperty = DependencyProperty.Register("ItemWidth", typeof(double), typeof(VirtualizingWrapPanel), new FrameworkPropertyMetadata(double.PositiveInfinity));
-        public static readonly DependencyProperty OrientationProperty = StackPanel.OrientationProperty.AddOwner(typeof(VirtualizingWrapPanel), new FrameworkPropertyMetadata(Orientation.Horizontal));
+        /// <summary>
+        /// <see cref="Orientation"/> 依存関係プロパティが変更されたときに呼び出されるコールバック。
+        /// </summary>
+        /// <param name="d">プロパティの値が変更された <see cref="System.Windows.DependencyObject"/>。</param>
+        /// <param name="e">このプロパティの有効値に対する変更を追跡するイベントによって発行されるイベントデータ。</param>
+        private static void OnOrientationChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            var panel = d as VirtualizingWrapPanel;
+            panel.offset = default(Point);
+            panel.InvalidateMeasure();
+        }
 
         #endregion
 
-        #region Methods
+        #region MeasureOverride, ArrangeOverride
 
-        private void SetFirstRowViewItemIndex(int index)
-        {
-            SetVerticalOffset((index) / Math.Floor((_viewport.Width) / childSize.Width));
-            SetHorizontalOffset((index) / Math.Floor((_viewport.Height) / childSize.Height));
-        }
+        /// <summary>
+        /// 指定したインデックスのアイテムの位置およびサイズを記憶するディクショナリ。
+        /// </summary>
+        private Dictionary<int, Rect> containerLayouts = new Dictionary<int, Rect>();
 
-        public void Resizing(object sender, EventArgs e)
-        {
-            if (_viewport.Width != 0)
-            {
-                int firstIndexCache = firstIndex;
-                _abstractPanel = null;
-                MeasureOverride(_viewport);
-                SetFirstRowViewItemIndex(firstIndex);
-                firstIndex = firstIndexCache;
-            }
-        }
-
-        public int GetFirstVisibleSection()
-        {
-            int section;
-            var maxSection = 0;
-            if (_abstractPanel != null)
-            {
-                maxSection = _abstractPanel.Max(x => x.Section);
-            }
-            if (Orientation == Orientation.Horizontal)
-            {
-                section = (int)_offset.Y;
-            }
-            else
-            {
-                section = (int)_offset.X;
-            }
-            if (section > maxSection)
-                section = maxSection;
-            return section;
-        }
-
-        public int GetFirstVisibleIndex()
-        {
-            int section = GetFirstVisibleSection();
-
-            if (_abstractPanel != null)
-            {
-                var item = _abstractPanel.Where(x => x.Section == section).FirstOrDefault();
-                if (item != null)
-                    return item._index;
-            }
-            return 0;
-        }
-
-        public void CleanUpItems(int minDesiredGenerated, int maxDesiredGenerated)
-        {
-            for (int i = _children.Count - 1; i >= 0; i--)
-            {
-                GeneratorPosition childGeneratorPos = new GeneratorPosition(i, 0);
-                int itemIndex = _generator.IndexFromGeneratorPosition(childGeneratorPos);
-                if (itemIndex < minDesiredGenerated || itemIndex > maxDesiredGenerated)
-                {
-                    _generator.Remove(childGeneratorPos, 1);
-                    RemoveInternalChildRange(i, 1);
-                }
-            }
-        }
-
-        private void ComputeExtentAndViewport(Size pixelMeasuredViewportSize, int visibleSections)
-        {
-            if (Orientation == Orientation.Horizontal)
-            {
-                _viewport.Height = visibleSections;
-                _viewport.Width = pixelMeasuredViewportSize.Width;
-            }
-            else
-            {
-                _viewport.Width = visibleSections;
-                _viewport.Height = pixelMeasuredViewportSize.Height;
-            }
-
-            if (Orientation == Orientation.Horizontal)
-            {
-                _extent.Height = _abstractPanel.SectionCount + ViewportHeight - 1;
-
-            }
-            else
-            {
-                _extent.Width = _abstractPanel.SectionCount + ViewportWidth - 1;
-            }
-            _owner.InvalidateScrollInfo();
-        }
-
-        private void ResetScrollInfo()
-        {
-            _offset.X = 0;
-            _offset.Y = 0;
-        }
-
-        private int GetNextSectionClosestIndex(int itemIndex)
-        {
-            var abstractItem = _abstractPanel[itemIndex];
-            if (abstractItem.Section < _abstractPanel.SectionCount - 1)
-            {
-                var ret = _abstractPanel.
-                    Where(x => x.Section == abstractItem.Section + 1).
-                    OrderBy(x => Math.Abs(x.SectionIndex - abstractItem.SectionIndex)).
-                    First();
-                return ret._index;
-            }
-            else
-                return itemIndex;
-        }
-
-        private int GetLastSectionClosestIndex(int itemIndex)
-        {
-            var abstractItem = _abstractPanel[itemIndex];
-            if (abstractItem.Section > 0)
-            {
-                var ret = _abstractPanel.
-                    Where(x => x.Section == abstractItem.Section - 1).
-                    OrderBy(x => Math.Abs(x.SectionIndex - abstractItem.SectionIndex)).
-                    First();
-                return ret._index;
-            }
-            else
-                return itemIndex;
-        }
-
-        private void NavigateDown()
-        {
-            var gen = _generator.GetItemContainerGeneratorForPanel(this);
-            UIElement selected = (UIElement)Keyboard.FocusedElement;
-            int itemIndex = gen.IndexFromContainer(selected);
-            int depth = 0;
-            while (itemIndex == -1)
-            {
-                selected = (UIElement)VisualTreeHelper.GetParent(selected);
-                itemIndex = gen.IndexFromContainer(selected);
-                depth++;
-            }
-            DependencyObject next = null;
-            if (Orientation == Orientation.Horizontal)
-            {
-                int nextIndex = GetNextSectionClosestIndex(itemIndex);
-                next = gen.ContainerFromIndex(nextIndex);
-                while (next == null)
-                {
-                    SetVerticalOffset(VerticalOffset + 1);
-                    UpdateLayout();
-                    next = gen.ContainerFromIndex(nextIndex);
-                }
-            }
-            else
-            {
-                if (itemIndex == _abstractPanel._itemCount - 1)
-                    return;
-                next = gen.ContainerFromIndex(itemIndex + 1);
-                while (next == null)
-                {
-                    SetHorizontalOffset(HorizontalOffset + 1);
-                    UpdateLayout();
-                    next = gen.ContainerFromIndex(itemIndex + 1);
-                }
-            }
-            while (depth != 0)
-            {
-                next = VisualTreeHelper.GetChild(next, 0);
-                depth--;
-            }
-            (next as UIElement).Focus();
-        }
-
-        private void NavigateLeft()
-        {
-            var gen = _generator.GetItemContainerGeneratorForPanel(this);
-
-            UIElement selected = (UIElement)Keyboard.FocusedElement;
-            int itemIndex = gen.IndexFromContainer(selected);
-            int depth = 0;
-            while (itemIndex == -1)
-            {
-                selected = (UIElement)VisualTreeHelper.GetParent(selected);
-                itemIndex = gen.IndexFromContainer(selected);
-                depth++;
-            }
-            DependencyObject next = null;
-            if (Orientation == Orientation.Vertical)
-            {
-                int nextIndex = GetLastSectionClosestIndex(itemIndex);
-                next = gen.ContainerFromIndex(nextIndex);
-                while (next == null)
-                {
-                    SetHorizontalOffset(HorizontalOffset - 1);
-                    UpdateLayout();
-                    next = gen.ContainerFromIndex(nextIndex);
-                }
-            }
-            else
-            {
-                if (itemIndex == 0)
-                    return;
-                next = gen.ContainerFromIndex(itemIndex - 1);
-                while (next == null)
-                {
-                    SetVerticalOffset(VerticalOffset - 1);
-                    UpdateLayout();
-                    next = gen.ContainerFromIndex(itemIndex - 1);
-                }
-            }
-            while (depth != 0)
-            {
-                next = VisualTreeHelper.GetChild(next, 0);
-                depth--;
-            }
-            (next as UIElement).Focus();
-        }
-
-        private void NavigateRight()
-        {
-            var gen = _generator.GetItemContainerGeneratorForPanel(this);
-            UIElement selected = (UIElement)Keyboard.FocusedElement;
-            int itemIndex = gen.IndexFromContainer(selected);
-            int depth = 0;
-            while (itemIndex == -1)
-            {
-                selected = (UIElement)VisualTreeHelper.GetParent(selected);
-                itemIndex = gen.IndexFromContainer(selected);
-                depth++;
-            }
-            DependencyObject next = null;
-            if (Orientation == Orientation.Vertical)
-            {
-                int nextIndex = GetNextSectionClosestIndex(itemIndex);
-                next = gen.ContainerFromIndex(nextIndex);
-                while (next == null)
-                {
-                    SetHorizontalOffset(HorizontalOffset + 1);
-                    UpdateLayout();
-                    next = gen.ContainerFromIndex(nextIndex);
-                }
-            }
-            else
-            {
-                if (itemIndex == _abstractPanel._itemCount - 1)
-                    return;
-                next = gen.ContainerFromIndex(itemIndex + 1);
-                while (next == null)
-                {
-                    SetVerticalOffset(VerticalOffset + 1);
-                    UpdateLayout();
-                    next = gen.ContainerFromIndex(itemIndex + 1);
-                }
-            }
-            while (depth != 0)
-            {
-                next = VisualTreeHelper.GetChild(next, 0);
-                depth--;
-            }
-            (next as UIElement).Focus();
-        }
-
-        private void NavigateUp()
-        {
-            var gen = _generator.GetItemContainerGeneratorForPanel(this);
-            UIElement selected = (UIElement)Keyboard.FocusedElement;
-            int itemIndex = gen.IndexFromContainer(selected);
-            int depth = 0;
-            while (itemIndex == -1)
-            {
-                selected = (UIElement)VisualTreeHelper.GetParent(selected);
-                itemIndex = gen.IndexFromContainer(selected);
-                depth++;
-            }
-            DependencyObject next = null;
-            if (Orientation == Orientation.Horizontal)
-            {
-                int nextIndex = GetLastSectionClosestIndex(itemIndex);
-                next = gen.ContainerFromIndex(nextIndex);
-                while (next == null)
-                {
-                    SetVerticalOffset(VerticalOffset - 1);
-                    UpdateLayout();
-                    next = gen.ContainerFromIndex(nextIndex);
-                }
-            }
-            else
-            {
-                if (itemIndex == 0)
-                    return;
-                next = gen.ContainerFromIndex(itemIndex - 1);
-                while (next == null)
-                {
-                    SetHorizontalOffset(HorizontalOffset - 1);
-                    UpdateLayout();
-                    next = gen.ContainerFromIndex(itemIndex - 1);
-                }
-            }
-            while (depth != 0)
-            {
-                next = VisualTreeHelper.GetChild(next, 0);
-                depth--;
-            }
-            (next as UIElement).Focus();
-        }
-
-
-        #endregion
-
-        #region Override
-
-        protected override void OnKeyDown(KeyEventArgs e)
-        {
-            switch (e.Key)
-            {
-                case Key.Down:
-                    NavigateDown();
-                    e.Handled = true;
-                    break;
-                case Key.Left:
-                    NavigateLeft();
-                    e.Handled = true;
-                    break;
-                case Key.Right:
-                    NavigateRight();
-                    e.Handled = true;
-                    break;
-                case Key.Up:
-                    NavigateUp();
-                    e.Handled = true;
-                    break;
-                default:
-                    base.OnKeyDown(e);
-                    break;
-            }
-        }
-
-        protected override void OnItemsChanged(object sender, ItemsChangedEventArgs args)
-        {
-            base.OnItemsChanged(sender, args);
-            _abstractPanel = null;
-            ResetScrollInfo();
-        }
-
-        protected override void OnInitialized(EventArgs e)
-        {
-            base.OnInitialized(e);
-            _itemsControl = ItemsControl.GetItemsOwner(this);
-            _children = InternalChildren;
-            _generator = ItemContainerGenerator;
-            this.SizeChanged += new SizeChangedEventHandler(this.Resizing);
-        }
-
+        /// <summary>
+        /// 子要素に必要なレイアウトのサイズを測定し、パネルのサイズを決定する。
+        /// </summary>
+        /// <param name="availableSize">子要素に与えることができる使用可能なサイズ。</param>
+        /// <returns>レイアウト時にこのパネルが必要とするサイズ。</returns>
         protected override Size MeasureOverride(Size availableSize)
         {
-            if (_itemsControl == null || _itemsControl.Items.Count == 0)
-                return availableSize;
-            if (_abstractPanel == null)
-                _abstractPanel = new WrapPanelAbstraction(_itemsControl.Items.Count);
+            this.containerLayouts.Clear();
 
-            _pixelMeasuredViewport = availableSize;
+            var isAutoWidth = double.IsNaN(this.ItemWidth);
+            var isAutoHeight = double.IsNaN(this.ItemHeight);
+            var childAvailable = new Size(isAutoWidth ? double.PositiveInfinity : this.ItemWidth, isAutoHeight ? double.PositiveInfinity : this.ItemHeight);
+            var isHorizontal = this.Orientation == Orientation.Horizontal;
 
-            _realizedChildLayout.Clear();
+            var childrenCount = this.InternalChildren.Count;
 
-            Size realizedFrameSize = availableSize;
+            var itemsControl = ItemsControl.GetItemsOwner(this);
+            if (itemsControl != null)
+                childrenCount = itemsControl.Items.Count;
 
-            int itemCount = _itemsControl.Items.Count;
-            int firstVisibleIndex = GetFirstVisibleIndex();
+            var generator = new ChildGenerator(this);
 
-            GeneratorPosition startPos = _generator.GeneratorPositionFromIndex(firstVisibleIndex);
+            var x = 0.0;
+            var y = 0.0;
+            var lineSize = default(Size);
+            var maxSize = default(Size);
 
-            int childIndex = (startPos.Offset == 0) ? startPos.Index : startPos.Index + 1;
-            int current = firstVisibleIndex;
-            int visibleSections = 1;
-            using (_generator.StartAt(startPos, GeneratorDirection.Forward, true))
+            for (int i = 0; i < childrenCount; i++)
             {
-                bool stop = false;
-                bool isHorizontal = Orientation == Orientation.Horizontal;
-                double currentX = 0;
-                double currentY = 0;
-                double maxItemSize = 0;
-                int currentSection = GetFirstVisibleSection();
-                while (current < itemCount)
+                var childSize = this.ContainerSizeForIndex(i);
+
+                // ビューポートとの交差判定用に仮サイズで x, y を調整
+                var isWrapped = isHorizontal ?
+                    lineSize.Width + childSize.Width > availableSize.Width :
+                    lineSize.Height + childSize.Height > availableSize.Height;
+                if (isWrapped)
                 {
-                    bool newlyRealized;
+                    x = isHorizontal ? 0 : x + lineSize.Width;
+                    y = isHorizontal ? y + lineSize.Height : 0;
+                }
 
-                    // Get or create the child                    
-                    UIElement child = _generator.GenerateNext(out newlyRealized) as UIElement;
-                    if (newlyRealized)
-                    {
-                        // Figure out if we need to insert the child at the end or somewhere in the middle
-                        if (childIndex >= _children.Count)
-                        {
-                            base.AddInternalChild(child);
-                        }
-                        else
-                        {
-                            base.InsertInternalChild(childIndex, child);
-                        }
-                        _generator.PrepareItemContainer(child);
-                        child.Measure(ChildSlotSize);
-                    }
-                    else
-                    {
-                        // The child has already been created, let's be sure it's in the right spot
-                        Debug.Assert(child == _children[childIndex], "Wrong child was generated");
-                    }
-                    childSize = child.DesiredSize;
-                    Rect childRect = new Rect(new Point(currentX, currentY), childSize);
-                    if (isHorizontal)
-                    {
-                        maxItemSize = Math.Max(maxItemSize, childRect.Height);
-                        if (childRect.Right > realizedFrameSize.Width) //wrap to a new line
-                        {
-                            currentY = currentY + maxItemSize;
-                            currentX = 0;
-                            maxItemSize = childRect.Height;
-                            childRect.X = currentX;
-                            childRect.Y = currentY;
-                            currentSection++;
-                            visibleSections++;
-                        }
-                        if (currentY > realizedFrameSize.Height)
-                            stop = true;
-                        currentX = childRect.Right;
-                    }
-                    else
-                    {
-                        maxItemSize = Math.Max(maxItemSize, childRect.Width);
-                        if (childRect.Bottom > realizedFrameSize.Height) //wrap to a new column
-                        {
-                            currentX = currentX + maxItemSize;
-                            currentY = 0;
-                            maxItemSize = childRect.Width;
-                            childRect.X = currentX;
-                            childRect.Y = currentY;
-                            currentSection++;
-                            visibleSections++;
-                        }
-                        if (currentX > realizedFrameSize.Width)
-                            stop = true;
-                        currentY = childRect.Bottom;
-                    }
-                    _realizedChildLayout.Add(child, childRect);
-                    _abstractPanel.SetItemSection(current, currentSection);
+                // 子要素がビューポート内であれば子要素を生成しサイズを再計測
+                var itemRect = new Rect(x, y, childSize.Width, childSize.Height);
+                var viewportRect = new Rect(this.offset, availableSize);
+                if (itemRect.IntersectsWith(viewportRect))
+                {
+                    var child = generator.GetOrCreateChild(i);
+                    child.Measure(childAvailable);
+                    childSize = this.ContainerSizeForIndex(i);
+                }
 
-                    if (stop)
-                        break;
-                    current++;
-                    childIndex++;
+                // 確定したサイズを記憶
+                this.containerLayouts[i] = new Rect(x, y, childSize.Width, childSize.Height);
+
+                // lineSize, maxSize を計算
+                isWrapped = isHorizontal ?
+                    lineSize.Width + childSize.Width > availableSize.Width :
+                    lineSize.Height + childSize.Height > availableSize.Height;
+                if (isWrapped)
+                {
+                    maxSize.Width = isHorizontal ? Math.Max(lineSize.Width, maxSize.Width) : maxSize.Width + lineSize.Width;
+                    maxSize.Height = isHorizontal ? maxSize.Height + lineSize.Height : Math.Max(lineSize.Height, maxSize.Height);
+                    lineSize = childSize;
+
+                    isWrapped = isHorizontal ?
+                        childSize.Width > availableSize.Width :
+                        childSize.Height > availableSize.Height;
+                    if (isWrapped)
+                    {
+                        maxSize.Width = isHorizontal ? Math.Max(childSize.Width, maxSize.Width) : maxSize.Width + childSize.Width;
+                        maxSize.Height = isHorizontal ? maxSize.Height + childSize.Height : Math.Max(childSize.Height, maxSize.Height);
+                        lineSize = default(Size);
+                    }
+                }
+                else
+                {
+                    lineSize.Width = isHorizontal ? lineSize.Width + childSize.Width : Math.Max(childSize.Width, lineSize.Width);
+                    lineSize.Height = isHorizontal ? Math.Max(childSize.Height, lineSize.Height) : lineSize.Height + childSize.Height;
+                }
+
+                x = isHorizontal ? lineSize.Width : maxSize.Width;
+                y = isHorizontal ? maxSize.Height : lineSize.Height;
+            }
+
+            maxSize.Width = isHorizontal ? Math.Max(lineSize.Width, maxSize.Width) : maxSize.Width + lineSize.Width;
+            maxSize.Height = isHorizontal ? maxSize.Height + lineSize.Height : Math.Max(lineSize.Height, maxSize.Height);
+
+            this.extent = maxSize;
+            this.viewport = availableSize;
+
+            generator.CleanupChildren();
+            generator.Dispose();
+
+            if (this.ScrollOwner != null)
+                this.ScrollOwner.InvalidateScrollInfo();
+
+            return maxSize;
+        }
+
+        #region ChildGenerator
+        /// <summary>
+        /// <see cref="VirtualizingWrapPanel"/> のアイテムを管理する。
+        /// </summary>
+        private class ChildGenerator : IDisposable
+        {
+            #region fields
+
+            /// <summary>
+            /// アイテムを生成する対象の <see cref="VirtualizingWrapPanel"/>。
+            /// </summary>
+            private VirtualizingWrapPanel owner;
+
+            /// <summary>
+            /// <see cref="owner"/> の <see cref="System.Windows.Controls.ItemContainerGenerator"/>。
+            /// </summary>
+            private IItemContainerGenerator generator;
+
+            /// <summary>
+            /// <see cref="generator"/> の生成プロセスの有効期間を追跡するオブジェクト。
+            /// </summary>
+            private IDisposable generatorTracker;
+
+            /// <summary>
+            /// 表示範囲内にある最初の要素のインデックス。
+            /// </summary>
+            private int firstGeneratedIndex;
+
+            /// <summary>
+            /// 表示範囲内にある最後の要素のインデックス。
+            /// </summary>
+            private int lastGeneratedIndex;
+
+            /// <summary>
+            /// 次に生成される要素の <see cref="System.Windows.Controls.Panel.InternalChildren"/> 内のインデックス。
+            /// </summary>
+            private int currentGenerateIndex;
+
+            #endregion
+
+            #region _ctor
+
+            /// <summary>
+            /// <see cref="ChildGenerator"/> の新しいインスタンスを生成する。
+            /// </summary>
+            /// <param name="owner">アイテムを生成する対象の <see cref="VirtualizingWrapPanel"/>。</param>
+            public ChildGenerator(VirtualizingWrapPanel owner)
+            {
+                this.owner = owner;
+
+                // ItemContainerGenerator 取得前に InternalChildren にアクセスしないと null になる
+                var childrenCount = owner.InternalChildren.Count;
+                this.generator = owner.ItemContainerGenerator;
+            }
+
+            /// <summary>
+            /// <see cref="ChildGenerator"/> のインスタンスを破棄する。
+            /// </summary>
+            ~ChildGenerator()
+            {
+                this.Dispose();
+            }
+
+            /// <summary>
+            /// アイテムの生成を終了する。
+            /// </summary>
+            public void Dispose()
+            {
+                if (this.generatorTracker != null)
+                    this.generatorTracker.Dispose();
+            }
+
+            #endregion
+
+            #region GetOrCreateChild
+
+            /// <summary>
+            /// アイテムの生成を開始する。
+            /// </summary>
+            /// <param name="index">アイテムのインデックス。</param>
+            private void BeginGenerate(int index)
+            {
+                this.firstGeneratedIndex = index;
+                var startPos = this.generator.GeneratorPositionFromIndex(index);
+                this.currentGenerateIndex = (startPos.Offset == 0) ? startPos.Index : startPos.Index + 1;
+                this.generatorTracker = this.generator.StartAt(startPos, GeneratorDirection.Forward, true);
+            }
+
+            /// <summary>
+            /// 必要に応じてアイテムを生成し、指定したインデックスのアイテムを取得する。
+            /// </summary>
+            /// <param name="index">取得するアイテムのインデックス。</param>
+            /// <returns>指定したインデックスのアイテム。</returns>
+            public UIElement GetOrCreateChild(int index)
+            {
+                if (this.generator == null)
+                    return this.owner.InternalChildren[index];
+
+                if (this.generatorTracker == null)
+                    this.BeginGenerate(index);
+
+                bool newlyRealized;
+                var child = this.generator.GenerateNext(out newlyRealized) as UIElement;
+                if (newlyRealized)
+                {
+                    if (this.currentGenerateIndex >= this.owner.InternalChildren.Count)
+                        this.owner.AddInternalChild(child);
+                    else
+                        this.owner.InsertInternalChild(this.currentGenerateIndex, child);
+
+                    this.generator.PrepareItemContainer(child);
+                }
+
+                this.lastGeneratedIndex = index;
+                this.currentGenerateIndex++;
+
+                return child;
+            }
+
+            #endregion
+
+            #region CleanupChildren
+            /// <summary>
+            /// 表示範囲外のアイテムを削除する。
+            /// </summary>
+            public void CleanupChildren()
+            {
+                if (this.generator == null)
+                    return;
+
+                var children = this.owner.InternalChildren;
+
+                for (int i = children.Count - 1; i >= 0; i--)
+                {
+                    var childPos = new GeneratorPosition(i, 0);
+                    var index = generator.IndexFromGeneratorPosition(childPos);
+                    if (index < this.firstGeneratedIndex || index > this.lastGeneratedIndex)
+                    {
+                        this.generator.Remove(childPos, 1);
+                        this.owner.RemoveInternalChildRange(i, 1);
+                    }
                 }
             }
-            CleanUpItems(firstVisibleIndex, current - 1);
-
-            ComputeExtentAndViewport(availableSize, visibleSections);
-
-            return availableSize;
+            #endregion
         }
+        #endregion
+
+        /// <summary>
+        /// 子要素を配置し、パネルのサイズを決定する。
+        /// </summary>
+        /// <param name="finalSize">パネル自体と子要素を配置するために使用する親の末尾の領域。</param>
+        /// <returns>使用する実際のサイズ。</returns>
         protected override Size ArrangeOverride(Size finalSize)
         {
-            if (_children != null)
+            foreach (UIElement child in this.InternalChildren)
             {
-                foreach (UIElement child in _children)
+                var gen = this.ItemContainerGenerator as ItemContainerGenerator;
+                var index = (gen != null) ? gen.IndexFromContainer(child) : this.InternalChildren.IndexOf(child);
+                if (this.containerLayouts.ContainsKey(index))
                 {
-                    var layoutInfo = _realizedChildLayout[child];
-                    child.Arrange(layoutInfo);
+                    var layout = this.containerLayouts[index];
+                    layout.Offset(this.offset.X * -1, this.offset.Y * -1);
+                    child.Arrange(layout);
                 }
             }
+
             return finalSize;
         }
 
         #endregion
 
-        #region IScrollInfo Members
+        #region ContainerSizeForIndex
 
-        private bool _canHScroll = false;
-        public bool CanHorizontallyScroll
-        {
-            get { return _canHScroll; }
-            set { _canHScroll = value; }
-        }
+        /// <summary>
+        /// 直前にレイアウトした要素のサイズ。
+        /// </summary>
+        /// <remarks>
+        /// <see cref="System.Windows.DataTemplate"/> 使用時、全要素のサイズが一致することを前提に、
+        /// 要素のサイズの推定に使用する。
+        /// </remarks>
+        private Size prevSize = new Size(16, 16);
 
-        private bool _canVScroll = false;
-        public bool CanVerticallyScroll
+        /// <summary>
+        /// 指定したインデックスに対するアイテムのサイズを、実際にアイテムを生成せずに推定する。
+        /// </summary>
+        /// <param name="index">アイテムのインデックス。</param>
+        /// <returns>指定したインデックスに対するアイテムの推定サイズ。</returns>
+        private Size ContainerSizeForIndex(int index)
         {
-            get { return _canVScroll; }
-            set { _canVScroll = value; }
-        }
-
-        public double ExtentHeight
-        {
-            get { return _extent.Height; }
-        }
-
-        public double ExtentWidth
-        {
-            get { return _extent.Width; }
-        }
-
-        public double HorizontalOffset
-        {
-            get { return _offset.X; }
-        }
-
-        public double VerticalOffset
-        {
-            get { return _offset.Y; }
-        }
-
-        public void LineDown()
-        {
-            if (Orientation == Orientation.Vertical)
-                SetVerticalOffset(VerticalOffset + 20);
-            else
-                SetVerticalOffset(VerticalOffset + 1);
-        }
-
-        public void LineLeft()
-        {
-            if (Orientation == Orientation.Horizontal)
-                SetHorizontalOffset(HorizontalOffset - 20);
-            else
-                SetHorizontalOffset(HorizontalOffset - 1);
-        }
-
-        public void LineRight()
-        {
-            if (Orientation == Orientation.Horizontal)
-                SetHorizontalOffset(HorizontalOffset + 20);
-            else
-                SetHorizontalOffset(HorizontalOffset + 1);
-        }
-
-        public void LineUp()
-        {
-            if (Orientation == Orientation.Vertical)
-                SetVerticalOffset(VerticalOffset - 20);
-            else
-                SetVerticalOffset(VerticalOffset - 1);
-        }
-
-        public Rect MakeVisible(Visual visual, Rect rectangle)
-        {
-            var gen = (ItemContainerGenerator)_generator.GetItemContainerGeneratorForPanel(this);
-            var element = (UIElement)visual;
-            int itemIndex = gen.IndexFromContainer(element);
-            while (itemIndex == -1)
+            var getSize = new Func<int, Size>(idx =>
             {
-                element = (UIElement)VisualTreeHelper.GetParent(element);
-                itemIndex = gen.IndexFromContainer(element);
-            }
-            int section = _abstractPanel[itemIndex].Section;
-            Rect elementRect = _realizedChildLayout[element];
-            if (Orientation == Orientation.Horizontal)
-            {
-                double viewportHeight = _pixelMeasuredViewport.Height;
-                if (elementRect.Bottom > viewportHeight)
-                    _offset.Y += 1;
-                else if (elementRect.Top < 0)
-                    _offset.Y -= 1;
-            }
-            else
-            {
-                double viewportWidth = _pixelMeasuredViewport.Width;
-                if (elementRect.Right > viewportWidth)
-                    _offset.X += 1;
-                else if (elementRect.Left < 0)
-                    _offset.X -= 1;
-            }
-            InvalidateMeasure();
-            return elementRect;
-        }
+                UIElement item = null;
+                var itemsOwner = ItemsControl.GetItemsOwner(this);
+                var generator = this.ItemContainerGenerator as ItemContainerGenerator;
 
-        public void MouseWheelDown()
-        {
-            PageDown();
-        }
-
-        public void MouseWheelLeft()
-        {
-            PageLeft();
-        }
-
-        public void MouseWheelRight()
-        {
-            PageRight();
-        }
-
-        public void MouseWheelUp()
-        {
-            PageUp();
-        }
-
-        public void PageDown()
-        {
-            SetVerticalOffset(VerticalOffset + _viewport.Height * 0.8);
-        }
-
-        public void PageLeft()
-        {
-            SetHorizontalOffset(HorizontalOffset - _viewport.Width * 0.8);
-        }
-
-        public void PageRight()
-        {
-            SetHorizontalOffset(HorizontalOffset + _viewport.Width * 0.8);
-        }
-
-        public void PageUp()
-        {
-            SetVerticalOffset(VerticalOffset - _viewport.Height * 0.8);
-        }
-
-        private ScrollViewer _owner;
-        public ScrollViewer ScrollOwner
-        {
-            get { return _owner; }
-            set { _owner = value; }
-        }
-
-        public void SetHorizontalOffset(double offset)
-        {
-            if (offset < 0 || _viewport.Width >= _extent.Width)
-            {
-                offset = 0;
-            }
-            else
-            {
-                if (offset + _viewport.Width >= _extent.Width)
+                if (itemsOwner == null || generator == null)
                 {
-                    offset = _extent.Width - _viewport.Width;
+                    // VirtualizingWrapPanel 単体で使用されている場合、自身のアイテムを返す
+                    if (this.InternalChildren.Count > idx)
+                        item = this.InternalChildren[idx];
                 }
-            }
-
-            _offset.X = offset;
-
-            if (_owner != null)
-                _owner.InvalidateScrollInfo();
-
-            InvalidateMeasure();
-            firstIndex = GetFirstVisibleIndex();
-        }
-
-        public void SetVerticalOffset(double offset)
-        {
-            if (offset < 0 || _viewport.Height >= _extent.Height)
-            {
-                offset = 0;
-            }
-            else
-            {
-                if (offset + _viewport.Height >= _extent.Height)
+                else
                 {
-                    offset = _extent.Height - _viewport.Height;
+                    // generator がアイテムを未生成の場合、Items が使えればそちらを使う
+                    if (generator.ContainerFromIndex(idx) != null)
+                        item = generator.ContainerFromIndex(idx) as UIElement;
+                    else if (itemsOwner.Items.Count > idx)
+                        item = itemsOwner.Items[idx] as UIElement;
                 }
-            }
 
-            _offset.Y = offset;
+                if (item != null)
+                {
+                    // アイテムのサイズが測定済みであればそのサイズを返す
+                    if (item.IsMeasureValid)
+                        return item.DesiredSize;
 
-            if (_owner != null)
-                _owner.InvalidateScrollInfo();
+                    // アイテムのサイズが未測定の場合、推奨値を使う
+                    var i = item as FrameworkElement;
+                    if (i != null)
+                        return new Size(i.Width, i.Height);
+                }
 
-            //_trans.Y = -offset;
+                // 前回の測定値があればそちらを使う
+                if (this.containerLayouts.ContainsKey(idx))
+                    return this.containerLayouts[idx].Size;
 
-            InvalidateMeasure();
-            firstIndex = GetFirstVisibleIndex();
-        }
+                // 有効なサイズが取得できなかった場合、直前のアイテムのサイズを返す
+                return this.prevSize;
+            });
 
-        public double ViewportHeight
-        {
-            get { return _viewport.Height; }
-        }
+            var size = getSize(index);
 
-        public double ViewportWidth
-        {
-            get { return _viewport.Width; }
+            // ItemWidth, ItemHeight が指定されていれば調整する
+            if (!double.IsNaN(this.ItemWidth))
+                size.Width = this.ItemWidth;
+            if (!double.IsNaN(this.ItemHeight))
+                size.Height = this.ItemHeight;
+
+            return this.prevSize = size;
         }
 
         #endregion
 
-        #region helper data structures
-
-        class ItemAbstraction
+        #region OnItemsChanged
+        /// <summary>
+        /// このパネルの <see cref="System.Windows.Controls.ItemsControl"/> に関連付けられている
+        /// <see cref="System.Windows.Controls.ItemsControl.Items"/> コレクションが変更されたときに
+        /// 呼び出されるコールバック。
+        /// </summary>
+        /// <param name="sender">イベントを発生させた <see cref="System.Object"/></param>
+        /// <param name="args">イベントデータ。</param>
+        /// <remarks>
+        /// <see cref="System.Windows.Controls.ItemsControl.Items"/> が変更された際
+        /// <see cref="System.Windows.Controls.Panel.InternalChildren"/> にも反映する。
+        /// </remarks>
+        protected override void OnItemsChanged(object sender, ItemsChangedEventArgs args)
         {
-            public ItemAbstraction(WrapPanelAbstraction panel, int index)
+            switch (args.Action)
             {
-                _panel = panel;
-                _index = index;
-            }
-
-            WrapPanelAbstraction _panel;
-
-            public readonly int _index;
-
-            int _sectionIndex = -1;
-            public int SectionIndex
-            {
-                get
-                {
-                    if (_sectionIndex == -1)
-                    {
-                        return _index % _panel._averageItemsPerSection - 1;
-                    }
-                    return _sectionIndex;
-                }
-                set
-                {
-                    if (_sectionIndex == -1)
-                        _sectionIndex = value;
-                }
-            }
-
-            int _section = -1;
-            public int Section
-            {
-                get
-                {
-                    if (_section == -1)
-                    {
-                        return _index / _panel._averageItemsPerSection;
-                    }
-                    return _section;
-                }
-                set
-                {
-                    if (_section == -1)
-                        _section = value;
-                }
+                case NotifyCollectionChangedAction.Remove:
+                case NotifyCollectionChangedAction.Replace:
+                case NotifyCollectionChangedAction.Move:
+                    RemoveInternalChildRange(args.Position.Index, args.ItemUICount);
+                    break;
             }
         }
+        #endregion
 
-        class WrapPanelAbstraction : IEnumerable<ItemAbstraction>
+        #region IScrollInfo Members
+
+        #region Extent
+
+        /// <summary>
+        /// エクステントのサイズ。
+        /// </summary>
+        private Size extent = default(Size);
+
+        /// <summary>
+        /// エクステントの縦幅を取得する。
+        /// </summary>
+        public double ExtentHeight
         {
-            public WrapPanelAbstraction(int itemCount)
-            {
-                List<ItemAbstraction> items = new List<ItemAbstraction>(itemCount);
-                for (int i = 0; i < itemCount; i++)
-                {
-                    ItemAbstraction item = new ItemAbstraction(this, i);
-                    items.Add(item);
-                }
-
-                Items = new ReadOnlyCollection<ItemAbstraction>(items);
-                _averageItemsPerSection = itemCount;
-                _itemCount = itemCount;
-            }
-
-            public readonly int _itemCount;
-            public int _averageItemsPerSection;
-            private int _currentSetSection = -1;
-            private int _currentSetItemIndex = -1;
-            private int _itemsInCurrentSecction = 0;
-            private object _syncRoot = new object();
-
-            public int SectionCount
-            {
-                get
-                {
-                    int ret = _currentSetSection + 1;
-                    if (_currentSetItemIndex + 1 < Items.Count)
-                    {
-                        int itemsLeft = Items.Count - _currentSetItemIndex;
-                        ret += itemsLeft / _averageItemsPerSection + 1;
-                    }
-                    return ret;
-                }
-            }
-
-            private ReadOnlyCollection<ItemAbstraction> Items { get; set; }
-
-            public void SetItemSection(int index, int section)
-            {
-                lock (_syncRoot)
-                {
-                    if (section <= _currentSetSection + 1 && index == _currentSetItemIndex + 1)
-                    {
-                        _currentSetItemIndex++;
-                        Items[index].Section = section;
-                        if (section == _currentSetSection + 1)
-                        {
-                            _currentSetSection = section;
-                            if (section > 0)
-                            {
-                                _averageItemsPerSection = (index) / (section);
-                            }
-                            _itemsInCurrentSecction = 1;
-                        }
-                        else
-                            _itemsInCurrentSecction++;
-                        Items[index].SectionIndex = _itemsInCurrentSecction - 1;
-                    }
-                }
-            }
-
-            public ItemAbstraction this[int index]
-            {
-                get { return Items[index]; }
-            }
-
-            #region IEnumerable<ItemAbstraction> Members
-
-            public IEnumerator<ItemAbstraction> GetEnumerator()
-            {
-                return Items.GetEnumerator();
-            }
-
-            #endregion
-
-            #region IEnumerable Members
-
-            System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
-            {
-                return GetEnumerator();
-            }
-
-            #endregion
+            get { return this.extent.Height; }
         }
+
+        /// <summary>
+        /// エクステントの横幅を取得する。
+        /// </summary>
+        public double ExtentWidth
+        {
+            get { return this.extent.Width; }
+        }
+
+        #endregion Extent
+
+        #region Viewport
+
+        /// <summary>
+        /// ビューポートのサイズ。
+        /// </summary>
+        private Size viewport = default(Size);
+
+        /// <summary>
+        /// このコンテンツに対するビューポートの縦幅を取得する。
+        /// </summary>
+        public double ViewportHeight
+        {
+            get { return this.viewport.Height; }
+        }
+
+        /// <summary>
+        /// このコンテンツに対するビューポートの横幅を取得する。
+        /// </summary>
+        public double ViewportWidth
+        {
+            get { return this.viewport.Width; }
+        }
+
+        #endregion
+
+        #region Offset
+
+        /// <summary>
+        /// スクロールしたコンテンツのオフセット。
+        /// </summary>
+        private Point offset;
+
+        /// <summary>
+        /// スクロールしたコンテンツの水平オフセットを取得する。
+        /// </summary>
+        public double HorizontalOffset
+        {
+            get { return this.offset.X; }
+        }
+
+        /// <summary>
+        /// スクロールしたコンテンツの垂直オフセットを取得する。
+        /// </summary>
+        public double VerticalOffset
+        {
+            get { return this.offset.Y; }
+        }
+
+        #endregion
+
+        #region ScrollOwner
+        /// <summary>
+        /// スクロール動作を制御する <see cref="System.Windows.Controls.ScrollViewer"/> 要素を
+        /// 取得、または設定する。
+        /// </summary>
+        public ScrollViewer ScrollOwner { get; set; }
+        #endregion
+
+        #region CanHorizontallyScroll
+        /// <summary>
+        /// 水平軸のスクロールが可能かどうかを示す値を取得、または設定する。
+        /// </summary>
+        public bool CanHorizontallyScroll { get; set; }
+        #endregion
+
+        #region CanVerticallyScroll
+        /// <summary>
+        /// 垂直軸のスクロールが可能かどうかを示す値を取得、または設定する。
+        /// </summary>
+        public bool CanVerticallyScroll { get; set; }
+        #endregion
+
+        #region LineUp
+        /// <summary>
+        /// コンテンツ内を 1 論理単位ずつ上にスクロールする。
+        /// </summary>
+        public void LineUp()
+        {
+            //this.SetVerticalOffset(this.VerticalOffset - SystemParameters.ScrollHeight);
+
+            var currentTopLine = this.VerticalOffset / this.ItemHeight - 1;
+            this.SetVerticalOffset(Math.Ceiling(currentTopLine) * this.ItemHeight);
+        }
+        #endregion
+
+        #region LineDown
+        /// <summary>
+        /// コンテンツ内を 1 論理単位ずつ下にスクロールする。
+        /// </summary>
+        public void LineDown()
+        {
+            //this.SetVerticalOffset(this.VerticalOffset + SystemParameters.ScrollHeight);
+
+            var currentBottomLine = (this.VerticalOffset + this.ViewportHeight) / this.ItemHeight + 1;
+            this.SetVerticalOffset(Math.Floor(currentBottomLine) * this.ItemHeight - this.ViewportHeight);
+        }
+        #endregion
+
+        #region LineLeft
+        /// <summary>
+        /// コンテンツ内を 1 論理単位ずつ左にスクロールする。
+        /// </summary>
+        public void LineLeft()
+        {
+            this.SetHorizontalOffset(this.HorizontalOffset - SystemParameters.ScrollWidth);
+        }
+        #endregion
+
+        #region LineRight
+        /// <summary>
+        /// コンテンツ内を 1 論理単位ずつ右にスクロールする。
+        /// </summary>
+        public void LineRight()
+        {
+            this.SetHorizontalOffset(this.HorizontalOffset + SystemParameters.ScrollWidth);
+        }
+        #endregion
+
+        #region PageUp
+        /// <summary>
+        /// コンテンツ内を 1 ページずつ上にスクロールする。
+        /// </summary>
+        public void PageUp()
+        {
+            this.SetVerticalOffset(this.VerticalOffset - this.viewport.Height);
+        }
+        #endregion
+
+        #region PageDown
+        /// <summary>
+        /// コンテンツ内を 1 ページずつ下にスクロールする。
+        /// </summary>
+        public void PageDown()
+        {
+            this.SetVerticalOffset(this.VerticalOffset + this.viewport.Height);
+        }
+        #endregion
+
+        #region PageLeft
+        /// <summary>
+        /// コンテンツ内を 1 ページずつ左にスクロールする。
+        /// </summary>
+        public void PageLeft()
+        {
+            this.SetHorizontalOffset(this.HorizontalOffset - this.viewport.Width);
+        }
+        #endregion
+
+        #region PageRight
+        /// <summary>
+        /// コンテンツ内を 1 ページずつ右にスクロールする。
+        /// </summary>
+        public void PageRight()
+        {
+            this.SetHorizontalOffset(this.HorizontalOffset + this.viewport.Width);
+        }
+        #endregion
+
+        #region MouseWheelUp
+        /// <summary>
+        /// ユーザがマウスのホイールボタンをクリックした後に、コンテンツ内を上にスクロールする。
+        /// </summary>
+        public void MouseWheelUp()
+        {
+            this.SetVerticalOffset(this.VerticalOffset - SystemParameters.ScrollHeight * SystemParameters.WheelScrollLines);
+        }
+        #endregion
+
+        #region MouseWheelDown
+        /// <summary>
+        /// ユーザがマウスのホイールボタンをクリックした後に、コンテンツ内を下にスクロールする。
+        /// </summary>
+        public void MouseWheelDown()
+        {
+            this.SetVerticalOffset(this.VerticalOffset + SystemParameters.ScrollHeight * SystemParameters.WheelScrollLines);
+        }
+        #endregion
+
+        #region MouseWheelLeft
+        /// <summary>
+        /// ユーザがマウスのホイールボタンをクリックした後に、コンテンツ内を左にスクロールする。
+        /// </summary>
+        public void MouseWheelLeft()
+        {
+            this.SetHorizontalOffset(this.HorizontalOffset - SystemParameters.ScrollWidth * SystemParameters.WheelScrollLines);
+        }
+        #endregion
+
+        #region MouseWheelRight
+        /// <summary>
+        /// ユーザがマウスのホイールボタンをクリックした後に、コンテンツ内を右にスクロールする。
+        /// </summary>
+        public void MouseWheelRight()
+        {
+            this.SetHorizontalOffset(this.HorizontalOffset + SystemParameters.ScrollWidth * SystemParameters.WheelScrollLines);
+        }
+        #endregion
+
+        #region MakeVisible
+        /// <summary>
+        /// <see cref="System.Windows.Media.Visual"/> オブジェクトの座標空間が表示されるまで、
+        /// コンテンツを強制的にスクロールする。
+        /// </summary>
+        /// <param name="visual">表示可能になる <see cref="System.Windows.Media.Visual"/>。</param>
+        /// <param name="rectangle">表示する座標空間を識別する外接する四角形。</param>
+        /// <returns>表示される <see cref="System.Windows.Rect"/>。</returns>
+        public Rect MakeVisible(Visual visual, Rect rectangle)
+        {
+            var idx = this.InternalChildren.IndexOf(visual as UIElement);
+
+            var generator = this.ItemContainerGenerator as IItemContainerGenerator;
+            if (generator != null)
+            {
+                var pos = new GeneratorPosition(idx, 0);
+                idx = generator.IndexFromGeneratorPosition(pos);
+            }
+
+            if (idx < 0)
+                return Rect.Empty;
+
+            if (!this.containerLayouts.ContainsKey(idx))
+                return Rect.Empty;
+
+            var layout = this.containerLayouts[idx];
+
+            if (this.HorizontalOffset + this.ViewportWidth < layout.X + layout.Width)
+                this.SetHorizontalOffset(layout.X + layout.Width - this.ViewportWidth);
+            if (layout.X < this.HorizontalOffset)
+                this.SetHorizontalOffset(layout.X);
+
+            if (this.VerticalOffset + this.ViewportHeight < layout.Y + layout.Height)
+                this.SetVerticalOffset(layout.Y + layout.Height - this.ViewportHeight);
+            if (layout.Y < this.VerticalOffset)
+                this.SetVerticalOffset(layout.Y);
+
+            layout.Width = Math.Min(this.ViewportWidth, layout.Width);
+            layout.Height = Math.Min(this.ViewportHeight, layout.Height);
+
+            return layout;
+        }
+        #endregion
+
+        #region SetHorizontalOffset
+        /// <summary>
+        /// 水平オフセットの値を設定する。
+        /// </summary>
+        /// <param name="offset">包含するビューポートからのコンテンツの水平方向オフセットの程度。</param>
+        public void SetHorizontalOffset(double offset)
+        {
+            if (offset < 0 || this.ViewportWidth >= this.ExtentWidth)
+            {
+                offset = 0;
+            }
+            else
+            {
+                if (offset + this.ViewportWidth >= this.ExtentWidth)
+                    offset = this.ExtentWidth - this.ViewportWidth;
+            }
+
+            this.offset.X = offset;
+
+            if (this.ScrollOwner != null)
+                this.ScrollOwner.InvalidateScrollInfo();
+
+            this.InvalidateMeasure();
+        }
+        #endregion
+
+        #region SetVerticalOffset
+        /// <summary>
+        /// 垂直オフセットの値を設定する。
+        /// </summary>
+        /// <param name="offset">包含するビューポートからの垂直方向オフセットの程度。</param>
+        public void SetVerticalOffset(double offset)
+        {
+            if (offset < 0 || this.ViewportHeight >= this.ExtentHeight)
+            {
+                offset = 0;
+            }
+            else
+            {
+                if (offset + this.ViewportHeight >= this.ExtentHeight)
+                    offset = this.ExtentHeight - this.ViewportHeight;
+            }
+
+            this.offset.Y = offset;
+
+            if (this.ScrollOwner != null)
+                this.ScrollOwner.InvalidateScrollInfo();
+
+            this.InvalidateMeasure();
+        }
+        #endregion
 
         #endregion
     }

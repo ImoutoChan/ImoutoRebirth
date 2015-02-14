@@ -38,20 +38,20 @@ namespace ImoutoNavigator.View
             if (result == null) //user pressed cancel
                 return;
 
-            var error = (DataContext as CollectionManagerVM).CreateCollection(result);
-            if (error != null)
-            {
-                await parentWindow.ShowMessageAsync("Can not create collection", error);
-            }
-            else
-            {
-                var dialog = (BaseMetroDialog)parentWindow.Resources["SuccessCreateCollectionDialog"];
-                dialog = dialog.ShowDialogExternally();
+            //var error = (DataContext as CollectionManagerVM).CreateCollection(result);
+            //if (error != null)
+            //{
+            //    await parentWindow.ShowMessageAsync("Can not create collection", error);
+            //}
+            //else
+            //{
+            //    var dialog = (BaseMetroDialog)parentWindow.Resources["SuccessCreateCollectionDialog"];
+            //    dialog = dialog.ShowDialogExternally();
 
-                await Task.Delay(2000);
+            //    await Task.Delay(2000);
 
-                await dialog.RequestCloseAsync();
-            }
+            //    await dialog.RequestCloseAsync();
+            //}
         }
     }
 }

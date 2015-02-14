@@ -11,6 +11,7 @@
                           xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
                           xmlns:imoutoNavigator="clr-namespace:ImoutoNavigator"
                           xmlns:view="clr-namespace:ImoutoNavigator.View"
+                          xmlns:telerik="http://schemas.telerik.com/2008/xaml/presentation"
                           d:DataContext="{d:DesignInstance viewModel:MainWindowVM, IsDesignTimeCreatable=False}"
                           mc:Ignorable="d"
                           WindowStartupLocation="CenterScreen"
@@ -58,11 +59,11 @@
 
     <metroControl:MetroWindow.WindowCommands>
         <metroControl:WindowCommands>
-            <Button Content="Collections..." 
-                    Click="Button_Click"/>
+            <Button Content="Collections..."
+                    Click="Button_Click" />
         </metroControl:WindowCommands>
     </metroControl:MetroWindow.WindowCommands>
-        
+
     <Grid MouseLeftButtonUp="Grid_MouseLeftButtonUp"
           x:Name="Client">
         <Grid>
@@ -77,7 +78,7 @@
             <metroControl:ProgressRing IsActive="{Binding Path=IsLoading, Mode=OneWay}"
                                        Grid.Column="1"
                                        Visibility="{Binding Path=IsLoading, Converter={StaticResource VisibilityConverter}, Mode=OneWay}" />
-            
+
             <ListBox x:Name="ListBoxElement"
                      Grid.Column="1"
                      ScrollViewer.HorizontalScrollBarVisibility="Disabled"
@@ -98,7 +99,8 @@
                                                      Padding="{TemplateBinding Padding}"
                                                      Background="{TemplateBinding Background}"
                                                      BorderBrush="Transparent"
-                                                     BorderThickness="0">
+                                                     BorderThickness="0"
+                                                     CanContentScroll="True">
                             <ItemsPresenter />
                         </userControl:ExtScrollViewer>
                     </ControlTemplate>
@@ -109,7 +111,7 @@
                         <Setter Property="SnapsToDevicePixels"
                                 Value="True" />
                         <Setter Property="Padding"
-                                Value="4,1" />
+                                Value="4,4" />
                         <Setter Property="HorizontalContentAlignment"
                                 Value="Center" />
                         <Setter Property="VerticalContentAlignment"
@@ -231,13 +233,21 @@
 
                 <ListBox.ItemsPanel>
                     <ItemsPanelTemplate>
-                        <userControl:VirtualizingWrapPanel Orientation="Horizontal" />
+                        <!--<userControl:VirtualizingWrapPanel Orientation="Horizontal" ItemWidth="{Binding PreviewSize}" />-->
+                        <!--<telerik:VirtualizingWrapPanel IsItemsHost="True"
+                                                       Orientation="Horizontal"
+                                                       ItemWidth="{Binding SlotSize.Width}"
+                                                       ItemHeight="{Binding SlotSize.Height}"/>-->
+                        <userControl:VirtualizingWrapPanel IsItemsHost="True"
+                                                             Orientation="Horizontal"
+                                                             ItemWidth="{Binding SlotSize.Width}"
+                                                             ItemHeight="{Binding SlotSize.Height}" />
                     </ItemsPanelTemplate>
                 </ListBox.ItemsPanel>
 
                 <ListBox.ItemTemplate>
                     <DataTemplate>
-                        <Border Margin="6,10,10,10">
+                        <Border Margin="0,11,0,11">
                             <Border.Effect>
                                 <DropShadowEffect />
                             </Border.Effect>
@@ -346,6 +356,5 @@
                 </ListBox>
             </Border>
         </Grid>
-
     </Grid>
 </metroControl:MetroWindow>

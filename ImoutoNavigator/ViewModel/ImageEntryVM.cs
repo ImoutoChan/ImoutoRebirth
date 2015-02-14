@@ -2,7 +2,6 @@
 using System.Diagnostics;
 using System.Windows;
 using System.Windows.Input;
-using ImagesDBLibrary.Model;
 using ImoutoNavigator.Commands;
 using ImoutoNavigator.Model;
 using System.Windows.Media.Imaging;
@@ -13,7 +12,7 @@ namespace ImoutoNavigator.ViewModel
     {
         #region Fields
 
-        private ImageM _imageModel;
+        //private ImageM _imageModel;
         private readonly ImageEntry _imageEntry;
         private ICommand _openFileCommand;
 
@@ -21,34 +20,45 @@ namespace ImoutoNavigator.ViewModel
 
         #region Constructors
 
-        public ImageEntryVM(ImageM imageModel, Size initPreviewSize = new Size())
-        {
-            _imageModel = imageModel;
+        //public ImageEntryVM(ImageM imageModel, Size initPreviewSize = new Size())
+        //{
+        //    _imageModel = imageModel;
 
-            _imageEntry = new ImageEntry(_imageModel.Path, initPreviewSize);
-            _imageEntry.ImageChanged += (s, e) => 
-                {
-                    OnPropertyChanged("IsLoading");
-                    OnPropertyChanged("Image");
-                    OnImageChanged(); 
-                };
+        //    _imageEntry = new ImageEntry(_imageModel.Path, initPreviewSize);
+        //    _imageEntry.ImageChanged += (s, e) => 
+        //        {
+        //            OnPropertyChanged("IsLoading");
+        //            OnPropertyChanged("Image");
+        //            OnImageChanged(); 
+        //        };
+        //}
+
+        public ImageEntryVM(string imagePath, Size initPreviewSize = new Size())
+        {
+            _imageEntry = new ImageEntry(imagePath, initPreviewSize);
+            _imageEntry.ImageChanged += (s, e) =>
+            {
+                OnPropertyChanged("IsLoading");
+                OnPropertyChanged("Image");
+                OnImageChanged();
+            };
         }
 
         #endregion //Constructors
 
         #region Properties
 
-        public ImageM ImageModel
-        {
-            get
-            {
-                return _imageModel;
-            }
-            set
-            {
-                _imageModel = value;
-            }
-        }
+        //public ImageM ImageModel
+        //{
+        //    get
+        //    {
+        //        return _imageModel;
+        //    }
+        //    set
+        //    {
+        //        _imageModel = value;
+        //    }
+        //}
 
         public ImageEntry ImageEntry
         {
