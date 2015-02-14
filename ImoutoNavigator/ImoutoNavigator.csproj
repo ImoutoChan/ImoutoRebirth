@@ -83,9 +83,6 @@
     <Reference Include="System.Xaml">
       <RequiredTargetFramework>4.0</RequiredTargetFramework>
     </Reference>
-    <Reference Include="Telerik.Windows.Controls">
-      <HintPath>..\..\Libs\Telerik.Windows.Controls.dll</HintPath>
-    </Reference>
     <Reference Include="Utils, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\Imouto Library\Source code\bin\Release\Utils.dll</HintPath>
@@ -106,13 +103,12 @@
     </Compile>
     <Compile Include="Model\ImageEntry.cs" />
     <Compile Include="Properties\Annotations.cs" />
-    <Compile Include="UserControls\chVWP.cs" />
+    <Compile Include="UserControls\VirtualizingWrapPanel.cs" />
     <Compile Include="UserControls\ExtScrollViewer.cs" />
     <Compile Include="UserControls\MouseWheelGesture.cs" />
     <Compile Include="UserControls\TagView.xaml.cs">
       <DependentUpon>TagView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="UserControls\VWP.cs" />
     <Compile Include="ViewModel\CollectionManagerVM.cs" />
     <Compile Include="ViewModel\CollectionVM.cs" />
     <Compile Include="ViewModel\ImageEntryVM.cs" />

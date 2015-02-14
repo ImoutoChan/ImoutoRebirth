@@ -11,7 +11,6 @@
                           xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
                           xmlns:imoutoNavigator="clr-namespace:ImoutoNavigator"
                           xmlns:view="clr-namespace:ImoutoNavigator.View"
-                          xmlns:telerik="http://schemas.telerik.com/2008/xaml/presentation"
                           d:DataContext="{d:DesignInstance viewModel:MainWindowVM, IsDesignTimeCreatable=False}"
                           mc:Ignorable="d"
                           WindowStartupLocation="CenterScreen"
@@ -233,15 +232,10 @@
 
                 <ListBox.ItemsPanel>
                     <ItemsPanelTemplate>
-                        <!--<userControl:VirtualizingWrapPanel Orientation="Horizontal" ItemWidth="{Binding PreviewSize}" />-->
-                        <!--<telerik:VirtualizingWrapPanel IsItemsHost="True"
-                                                       Orientation="Horizontal"
-                                                       ItemWidth="{Binding SlotSize.Width}"
-                                                       ItemHeight="{Binding SlotSize.Height}"/>-->
                         <userControl:VirtualizingWrapPanel IsItemsHost="True"
-                                                             Orientation="Horizontal"
-                                                             ItemWidth="{Binding SlotSize.Width}"
-                                                             ItemHeight="{Binding SlotSize.Height}" />
+                                                           Orientation="Horizontal"
+                                                           ItemWidth="{Binding SlotSize.Width}"
+                                                           ItemHeight="{Binding SlotSize.Height}" />
                     </ItemsPanelTemplate>
                 </ListBox.ItemsPanel>
 
