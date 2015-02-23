@@ -71,6 +71,7 @@
     <Reference Include="System.Data" />
     <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.Security" />
+    <Reference Include="System.ServiceModel" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Windows.Interactivity, Version=4.5.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\MahApps.Metro.0.14.0-ALPHA98\lib\net45\System.Windows.Interactivity.dll</HintPath>
@@ -86,6 +87,9 @@
     <Reference Include="Utils, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\Imouto Library\Source code\bin\Release\Utils.dll</HintPath>
+    </Reference>
+    <Reference Include="WCFExchageLibrary">
+      <HintPath>..\..\..\Imouto Library\Source code\bin\Release\WCFExchageLibrary.dll</HintPath>
     </Reference>
     <Reference Include="WindowsBase" />
     <Reference Include="PresentationCore" />
@@ -114,10 +118,15 @@
     <Compile Include="ViewModel\ImageEntryVM.cs" />
     <Compile Include="ViewModel\MainWindowVM.cs" />
     <Compile Include="ViewModel\SourceVM.cs" />
+    <Compile Include="ViewModel\TagSearchVM.cs" />
     <Compile Include="ViewModel\VMBase.cs" />
     <Compile Include="View\CollectionsView.xaml.cs">
       <DependentUpon>CollectionsView.xaml</DependentUpon>
     </Compile>
+    <Compile Include="View\TagsSearchView.xaml.cs">
+      <DependentUpon>TagsSearchView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="WCF\Service.cs" />
     <Page Include="DebugWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -147,6 +156,10 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="View\CollectionsView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="View\TagsSearchView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

@@ -117,27 +117,22 @@
         </Button>
     </DataTemplate>
 
-    <DataTemplate x:Key="SearchTagElementDataTemplate">
+    <DataTemplate x:Key="SelectedTagsElementDataTemplate">
         <Button Background="LightGreen"
                 HorizontalAlignment="Stretch"
                 HorizontalContentAlignment="Stretch"
                 FontWeight="Normal"
                 Template="{StaticResource TagElementControlTemplate}">
             <Button.Content>
-                <TextBlock>
-                    <TextBlock.Text>
-                        <MultiBinding StringFormat="{}{0} ({1})">
-                            <Binding Path="Key.Name" />
-                            <Binding Path="Value" />
-                        </MultiBinding>
-                    </TextBlock.Text>
-                </TextBlock>
+                <TextBlock Text="{Binding Title}"
+                           FontSize="15"
+                           TextWrapping="Wrap" />
             </Button.Content>
 
             <Button.InputBindings>
                 <MouseBinding  Gesture="LeftClick"
-                               Command="{Binding Path=DataContext.RemoveTagFromSearch, 
-                                                 RelativeSource={RelativeSource AncestorType={x:Type imoutoNavigator:MainWindow}}}"
+                               Command="{Binding Path=DataContext.UnselectTagCommand, 
+                                                 RelativeSource={RelativeSource AncestorType={x:Type UserControl}}}"
                                CommandParameter="{Binding}" />
             </Button.InputBindings>
         </Button>

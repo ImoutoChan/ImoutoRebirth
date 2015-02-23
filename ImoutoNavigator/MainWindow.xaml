@@ -73,7 +73,6 @@
                 <ColumnDefinition Width="3*" />
             </Grid.ColumnDefinitions>
 
-
             <metroControl:ProgressRing IsActive="{Binding Path=IsLoading, Mode=OneWay}"
                                        Grid.Column="1"
                                        Visibility="{Binding Path=IsLoading, Converter={StaticResource VisibilityConverter}, Mode=OneWay}" />
@@ -268,87 +267,8 @@
                           ShowsPreview="True"
                           Background="{DynamicResource AccentColorBrush}" />
 
-            <Border Grid.Column="0"
-                    BorderThickness="0,0,3,0"
-                    BorderBrush="{DynamicResource AccentColorBrush}">
-                <Grid>
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="Auto" />
-                        <RowDefinition Height="Auto" />
-                        <RowDefinition Height="Auto" />
-                        <RowDefinition Height="Auto" />
-                        <RowDefinition Height="*" />
-                    </Grid.RowDefinitions>
-
-
-                    <TextBox Grid.Row="0"
-                             Margin="5"
-                             metroControl:TextboxHelper.Watermark="Search tag"
-                             Style="{DynamicResource SearchMetroTextBox}"
-                             FontSize="14"
-                             Text="{Binding Path=SearchString, UpdateSourceTrigger=PropertyChanged}" />
-
-                    <!--<ComboBox Grid.Row="0" 
-                              Margin="5"
-                              metroControl:TextboxHelper.Watermark="Search tag"
-                              FontSize="14"
-                              DisplayMemberPath="Name"
-                              IsEditable="True"
-                              ItemsSource="{Binding SearchTags}"
-                              MaxDropDownHeight="125"
-                              Text="{Binding Path=SearchString}" />-->
-
-                    <Border Grid.Row="1"
-                            BorderThickness="1"
-                            BorderBrush="{DynamicResource AccentColorBrush}">
-
-                    </Border>
-
-                    <ItemsControl x:Name="SearchListBox"
-                                  Grid.Row="2"
-                                  ItemsSource="{Binding Path=TagListCurrent, UpdateSourceTrigger=PropertyChanged}"
-                                  ItemTemplate="{StaticResource SearchTagElementDataTemplate}" />
-
-                    <Border Grid.Row="3"
-                            BorderThickness="1"
-                            BorderBrush="{DynamicResource AccentColorBrush}">
-
-                    </Border>
-
-                    <ItemsControl x:Name="CurrentTags"
-                                  Grid.Row="4"
-                                  ItemsSource="{Binding Path=TagListTop, UpdateSourceTrigger=PropertyChanged}"
-                                  ItemTemplate="{StaticResource CurrentTagElementDataTemplate}" />
-                </Grid>
-            </Border>
-
-            <Border Grid.Column="0"
-                    BorderThickness="0"
-                    BorderBrush="{DynamicResource GrayBrush7}"
-                    HorizontalAlignment="Stretch"
-                    VerticalAlignment="Top"
-                    Margin="5,32,9,0">
-                <ListBox ItemsSource="{Binding TagListHintBox}"
-                         MaxHeight="120"
-                         Padding="0"
-                         ItemContainerStyle="{StaticResource SearchHintListBoxItemContainerStyle}"
-                         ScrollViewer.CanContentScroll="False"
-                         VirtualizingPanel.ScrollUnit="Item">
-                    <ItemsControl.ItemTemplate>
-                        <DataTemplate>
-                            <Button Command="{Binding RelativeSource={RelativeSource FindAncestor,
-                                                      AncestorType={x:Type imoutoNavigator:MainWindow}},
-                                                      Path=DataContext.AddTagToSearch}"
-                                    CommandParameter="{Binding}"
-                                    Template="{StaticResource TagElementControlTemplate}"
-                                    HorizontalContentAlignment="Left">
-                                <TextBlock Text="{Binding Name}"
-                                           TextAlignment="Left" />
-                            </Button>
-                        </DataTemplate>
-                    </ItemsControl.ItemTemplate>
-                </ListBox>
-            </Border>
+            <view:TagsSearchView Grid.Column="0"
+                                 DataContext="{Binding TagSearchVM}" />
         </Grid>
     </Grid>
 </metroControl:MetroWindow>

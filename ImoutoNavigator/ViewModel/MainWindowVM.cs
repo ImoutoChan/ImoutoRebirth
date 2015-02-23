@@ -1,11 +1,9 @@
 ﻿using ImoutoNavigator.Commands;
 using ImoutoNavigator.Model;
+using ImoutoNavigator.WCF;
 using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.ComponentModel;
 using System.Diagnostics;
-using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -19,16 +17,13 @@ namespace ImoutoNavigator.ViewModel
     {
         #region Fields
 
-        private int                                             _previewSize        = 256;
-        private readonly MainWindow                             _view;
-        private ObservableCollection<ImageEntryVM>              _imageList;
-        private ICollectionView                                 _imageListView;
-        //private ObservableCollection<KeyValuePair<TagM, int>>   _tagListCurrent     = new ObservableCollection<KeyValuePair<TagM, int>>();
-        private string                                          _searchString;
-        //private ObservableCollection<TagM>                      _tagListHintBox     = new ObservableCollection<TagM>();
+        private int _previewSize = 256;
+        private readonly MainWindow _view;
+        private ObservableCollection<ImageEntryVM> _imageList = new ObservableCollection<ImageEntryVM>();
         //private CollectionManagerVM                             _collectionManager;
-        private bool                                            _isLoading;
-        private CancellationTokenSource                         _ctsImageLoading;
+        private bool _isLoading;
+        private CancellationTokenSource _ctsImageLoading;
+        private int _totalCount = 0;
 
         #endregion Fields
 
@@ -36,11 +31,14 @@ namespace ImoutoNavigator.ViewModel
 
         public MainWindowVM()
         {
-            GetImageList();
+            //GetImageList();
             //_collectionManager = new CollectionManagerVM();
             InitializeCommands();
 
-            _view = new MainWindow {DataContext = this};
+            TagSearchVM = new TagSearchVM(this);
+            TagSearchVM.SelectedTagsUpdated += TagSearchVM_SelectedTagsUpdated;
+
+            _view = new MainWindow { DataContext = this };
             _view.Loaded += _view_Loaded;
 
             _view.Show();
@@ -66,19 +64,6 @@ namespace ImoutoNavigator.ViewModel
             }
         }
 
-        //public ICollectionView ImageList
-        //{
-        //    get
-        //    {
-        //        if (_imageListView == null)
-        //        {
-        //            _imageListView = new ListCollectionView(_imageList);
-        //            _imageListView.Filter = o => (o as ImageEntryVM).ImageModel.ContainsTags(TagListCurrent.Select(x => x.Key));
-        //        }
-        //        _imageListView.Refresh();
-        //        return _imageListView;
-        //    }
-        //}
 
         public ObservableCollection<ImageEntryVM> ImageList
         {
@@ -92,67 +77,22 @@ namespace ImoutoNavigator.ViewModel
         {
             get
             {
+                if (TotalCount > 0)
+                {
+                    return String.Format("Imouto Navigator - {0}", TotalCount);
+                }
+
                 return String.Format("Imouto Navigator");
             }
         }
 
-        //public ObservableCollection<KeyValuePair<TagM, int>> TagListTop
-        //{
-        //    get
-        //    {
-        //        return new ObservableCollection<KeyValuePair<TagM, int>>(ImageList.Cast<ImageEntryVM>().Select(x => x.ImageModel).GetTopTags());
-        //    }
-        //}
-
-        //public ObservableCollection<KeyValuePair<TagM, int>> TagListCurrent
-        //{
-        //    get
-        //    {
-        //        return _tagListCurrent;
-        //    }
-        //    set
-        //    {
-        //        _tagListCurrent = value;
-        //    }
-        //}
-
-        //public ObservableCollection<TagM> TagListHintBox
-        //{
-        //    get { return _tagListHintBox; }
-        //    set { _tagListHintBox = value; }
-        //}
+        public TagSearchVM TagSearchVM { get; private set; }
 
         //public CollectionManagerVM CollectionManager
         //{
         //    get
         //    {
         //        return _collectionManager;
-        //    }
-        //}
-
-        //public string SearchString
-        //{
-        //    get
-        //    {
-        //        return _searchString;
-        //    }
-        //    set
-        //    {
-        //        //TODO Add find by first letters, add autocomplition
-        //        var newSearchString = value;
-        //        if (newSearchString == "")
-        //        {
-        //            TagListHintBox.Clear();
-        //        }
-        //        else
-        //        {
-        //            IEnumerable<TagM> tags = TagM.Tags.Where(x => x.Name.StartsWith(newSearchString));
-        //            TagListHintBox.Clear();
-        //            TagListHintBox = new ObservableCollection<TagM>(tags);
-        //            OnPropertyChanged("TagListHintBox");
-        //        }
-
-        //        _searchString = value;
         //    }
         //}
 
@@ -166,6 +106,19 @@ namespace ImoutoNavigator.ViewModel
             }
         }
 
+        public int TotalCount
+        {
+            get
+            {
+                return _totalCount;
+            }
+            set
+            {
+                OnPropertyChanged(ref _totalCount, value, () => this.TotalCount);
+                OnPropertyChanged(() => this.Title);
+            }
+        }
+
         #endregion Properties
 
         #region Commands
@@ -173,8 +126,6 @@ namespace ImoutoNavigator.ViewModel
         public ICommand ZoomInCommand { get; set; }
         public ICommand ZoomOutCommand { get; set; }
         public ICommand LoadPreviewsCommand { get; set; }
-        public ICommand AddTagToSearch { get; set; }
-        public ICommand RemoveTagFromSearch { get; set; }
 
         private void InitializeCommands()
         {
@@ -185,7 +136,7 @@ namespace ImoutoNavigator.ViewModel
 
                     _previewSize = Convert.ToInt32(Math.Floor(_previewSize * 1.1));
                     UpdatePreviews();
-                } 
+                }
             );
             ZoomOutCommand = new RelayCommand(x =>
                 {
@@ -196,9 +147,6 @@ namespace ImoutoNavigator.ViewModel
                 }
             );
             LoadPreviewsCommand = new RelayCommand(x => LoadPreviews());
-
-            AddTagToSearch = new RelayCommand(AddSearchTag);
-            RemoveTagFromSearch = new RelayCommand(RemoveSearchTag);
         }
 
         #endregion Commands
@@ -218,7 +166,7 @@ namespace ImoutoNavigator.ViewModel
         private void GetImageList()
         {
 
-
+            /*
             _imageList = new ObservableCollection<ImageEntryVM>(
                 Util
                     .GetDirectories(new DirectoryInfo(@"D:\!ArtCollection\"), true)
@@ -231,6 +179,8 @@ namespace ImoutoNavigator.ViewModel
                     })
                     .ToList()
                 );
+            */
+
 
             //CollectionM collection;
             //if (CollectionM.Collections.Count == 0)
@@ -320,7 +270,7 @@ namespace ImoutoNavigator.ViewModel
 
             //collection.Activate();
         }
-        
+
         private void Reload()
         {
             //if (CollectionM.ActivatedCollection != null)
@@ -337,11 +287,14 @@ namespace ImoutoNavigator.ViewModel
 
             //    GetImagesFromCollectionAsync(1000);                
             //}
+
+            _imageList.Clear();
+            GetImagesFromCollectionAsync(1000, 0, 500);
         }
 
         private void UpdatePreviews()
         {
-            OnPropertyChanged("PreviewSize");
+            //OnPropertyChanged("PreviewSize");
             OnPropertyChanged("SlotSize");
             foreach (var imageEntry in _imageList)
             {
@@ -361,143 +314,107 @@ namespace ImoutoNavigator.ViewModel
             }
         }
 
-        private void AddSearchTag(object param)
-        {
-            if (param == null)
-            {
-                return;
-            }
-            //try
-            //{
-            //    var tag = (KeyValuePair<TagM, int>)param;
-
-            //    if (TagListCurrent.All(x => x.Key != tag.Key))
-            //    {
-            //        TagListCurrent.Add(new KeyValuePair<TagM, int>(tag.Key, tag.Value));
-            //        OnPropertyChanged("ImageList");
-            //        OnPropertyChanged("TagListTop");
-            //    }
-            //}
-            //catch (Exception)
-            //{
-            //    try
-            //    {
-            //        var tag = (TagM) param;
-
-            //        if (TagListCurrent.All(x => x.Key != tag))
-            //        {
-            //            TagListCurrent.Add(new KeyValuePair<TagM, int>(tag, -1));
-            //            OnPropertyChanged("ImageList");
-            //            OnPropertyChanged("TagListTop");
-            //        }
-
-            //        SearchString = "";
-            //    }
-            //    catch { }
-            //}
-        }
-
-        private void RemoveSearchTag(object param)
-        {
-            if (param == null)
-            {
-                return;
-            }
-            //var tag = (KeyValuePair<TagM, int>)param;
-
-            //if (TagListCurrent.Select(x => x.Key).Contains(tag.Key))
-            //{
-            //    TagListCurrent.Remove(TagListCurrent.First(x => x.Key.Name == tag.Key.Name && x.Key.Type == tag.Key.Type));
-            //    OnPropertyChanged("ImageList");
-            //    OnPropertyChanged("TagListTop");
-            //}
-        }
-
+        private static SemaphoreSlim ReloadImagesAsyncSemaphore = new SemaphoreSlim(1, 1);
         private async void GetImagesFromCollectionAsync(int count, int skip = 0, int block = 10)
         {
             // TODO COUNT
 
-            //var total = await GetImagesCountFromCollectionAsyncTask() - skip;
-
-            //count = (count < total) ? count : total;
-            
-            //if (count == 0)
-            //{
-            //    return;
-            //    IsLoading = false;
-            //}          
-  
-            if (_ctsImageLoading != null)
-            {
-                _ctsImageLoading.Cancel();
-            }
-            var newCTS = new CancellationTokenSource();
-            _ctsImageLoading = newCTS;
-
             try
             {
-                //await LoadImages(count, skip, block, _ctsImageLoading.Token);
+                var total = await GetImagesCountFromCollectionAsyncTask() - skip;
 
-                LoadPreviews();
+                // skip ?
+                TotalCount = total + skip;
+
+                count = (count < total) ? count : total;
+
+                if (count == 0)
+                {
+                    IsLoading = false;
+                    return;
+                }
+
+                if (_ctsImageLoading != null)
+                {
+                    _ctsImageLoading.Cancel();
+                }
+
+                await ReloadImagesAsyncSemaphore.WaitAsync();
+
+                var newCTS = new CancellationTokenSource();
+                _ctsImageLoading = newCTS;
+
+                try
+                {
+                    await LoadImages(count, skip, block, _ctsImageLoading.Token);
+
+                    LoadPreviews();
+                }
+                catch (OperationCanceledException)
+                { }
+                finally
+                {
+                    ReloadImagesAsyncSemaphore.Release();
+                }
+
+                if (_ctsImageLoading == newCTS)
+                {
+                    _ctsImageLoading = null;
+                }
             }
-            catch (OperationCanceledException)
-            { }
-
-            if (_ctsImageLoading == newCTS)
+            catch (Exception ex)
             {
-                _ctsImageLoading = null;
+                Debug.WriteLine("Tags load error: " + ex.Message);
             }
         }
 
-        //private async Task LoadImages(int count, int skip, int block, CancellationToken ct)
-        //{
-        //    for (int i = count; i > 0; i -= block)
-        //    {
-        //        var sw = new Stopwatch();
-        //        sw.Start();
+        private async Task LoadImages(int count, int skip, int block, CancellationToken ct)
+        {
+            for (int i = count; i > 0; i -= block)
+            {
+                var sw = new Stopwatch();
+                sw.Start();
 
-        //        (await GetImagesFromCollectionAsyncTask(block, skip + count - i)).ForEach(x => _imageList.Add(x));
+                (await GetImagesFromCollectionAsyncTask(block, skip + count - i)).ForEach(x => _imageList.Add(x));
 
-        //        sw.Stop();
-        //        Debug.WriteLine("Loading {0} elemets, skip {1} elemets in ms: {2}", block, skip + count - i, sw.ElapsedMilliseconds);
+                sw.Stop();
+                Debug.WriteLine("Loading {0} elemets, skip {1} elemets in ms: {2}", block, skip + count - i, sw.ElapsedMilliseconds);
 
-        //        //OnPropertyChanged("ImageList");
+                ct.ThrowIfCancellationRequested();
 
-        //        ct.ThrowIfCancellationRequested();
+                if (i == count)
+                {
+                    IsLoading = false;
+                }
+            }
+        }
 
-        //        if (i == count)
-        //        {
-        //            OnPropertyChanged("ImageList");
-        //            IsLoading = false;
-        //        }
-        //    }
-        //}
+        private Task<ObservableCollection<ImageEntryVM>> GetImagesFromCollectionAsyncTask(int count, int skip)
+        {
+            return Task.Run(() =>
+            {
+                return new ObservableCollection<ImageEntryVM>(
+                    ImoutoService.Use(imoutoService =>
+                    {
+                        return imoutoService.SearchImage(TagSearchVM.SelectedBindedTags, count, skip);
+                    })
+                    .Select(x => new ImageEntryVM(x, PreviewSize))
+                    .SkipExceptions()
+                    );
+            });
+        }
 
-        //private Task<ObservableCollection<ImageEntryVM>> GetImagesFromCollectionAsyncTask(int count, int skip)
-        //{
-        //    return Task.Run<ObservableCollection<ImageEntryVM>>(() => 
-        //    { 
-        //        return new ObservableCollection<ImageEntryVM>(
-        //            CollectionM
-        //                .ActivatedCollection
-        //                .GetImages(count, 
-        //                            skip, 
-        //                            TagListCurrent.Select(x => x.Key).ToList())
-        //                .Select(x => new ImageEntryVM(x, PreviewSize))
-        //            );
-        //    });
-        //}
-
-        //private Task<int> GetImagesCountFromCollectionAsyncTask()
-        //{
-        //    return Task.Run<int>(() =>
-        //    {
-        //        return 
-        //            CollectionM
-        //                .ActivatedCollection
-        //                .CountImagesWithTags(TagListCurrent.Select(x => x.Key).ToList());
-        //    });
-        //}
+        private Task<int> GetImagesCountFromCollectionAsyncTask()
+        {
+            return Task.Run(() =>
+            {
+                return
+                    ImoutoService.Use(imoutoService =>
+                    {
+                        return imoutoService.CountSearchImage(TagSearchVM.SelectedBindedTags);
+                    });
+            });
+        }
 
         #endregion Methods
 
@@ -506,8 +423,12 @@ namespace ImoutoNavigator.ViewModel
         private void _view_Loaded(object sender, RoutedEventArgs e)
         {
             //InitializeCollections();
+            Reload();
+        }
 
-            LoadPreviews();
+        private void TagSearchVM_SelectedTagsUpdated(object sender, EventArgs e)
+        {
+            Reload();
         }
 
         #endregion Event handlers
