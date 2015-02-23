@@ -38,6 +38,8 @@ namespace ImoutoNavigator.ViewModel
             TagSearchVM = new TagSearchVM(this);
             TagSearchVM.SelectedTagsUpdated += TagSearchVM_SelectedTagsUpdated;
 
+            ImageList.CollectionChanged += (s, e) => OnPropertyChanged(() => this.LoadedCount);
+
             _view = new MainWindow { DataContext = this };
             _view.Loaded += _view_Loaded;
 
@@ -77,11 +79,6 @@ namespace ImoutoNavigator.ViewModel
         {
             get
             {
-                if (TotalCount > 0)
-                {
-                    return String.Format("Imouto Navigator - {0}", TotalCount);
-                }
-
                 return String.Format("Imouto Navigator");
             }
         }
@@ -115,7 +112,14 @@ namespace ImoutoNavigator.ViewModel
             set
             {
                 OnPropertyChanged(ref _totalCount, value, () => this.TotalCount);
-                OnPropertyChanged(() => this.Title);
+            }
+        }
+
+        public int LoadedCount
+        {
+            get
+            {
+                return ImageList.Count();
             }
         }
 
@@ -288,15 +292,15 @@ namespace ImoutoNavigator.ViewModel
             //    GetImagesFromCollectionAsync(1000);                
             //}
 
-            _imageList.Clear();
-            GetImagesFromCollectionAsync(1000, 0, 500);
+            ImageList.Clear();
+            GetImagesFromCollectionAsync(100000, 0, 500);
         }
 
         private void UpdatePreviews()
         {
             //OnPropertyChanged("PreviewSize");
             OnPropertyChanged("SlotSize");
-            foreach (var imageEntry in _imageList)
+            foreach (var imageEntry in ImageList)
             {
                 imageEntry.UpdatePreview(PreviewSize);
             }
@@ -375,7 +379,7 @@ namespace ImoutoNavigator.ViewModel
                 var sw = new Stopwatch();
                 sw.Start();
 
-                (await GetImagesFromCollectionAsyncTask(block, skip + count - i)).ForEach(x => _imageList.Add(x));
+                (await GetImagesFromCollectionAsyncTask(block, skip + count - i)).ForEach(x => ImageList.Add(x));
 
                 sw.Stop();
                 Debug.WriteLine("Loading {0} elemets, skip {1} elemets in ms: {2}", block, skip + count - i, sw.ElapsedMilliseconds);

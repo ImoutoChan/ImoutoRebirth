@@ -73,6 +73,11 @@
                 <ColumnDefinition Width="3*" />
             </Grid.ColumnDefinitions>
 
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*" />
+                <RowDefinition Height="Auto" />
+            </Grid.RowDefinitions>
+
             <metroControl:ProgressRing IsActive="{Binding Path=IsLoading, Mode=OneWay}"
                                        Grid.Column="1"
                                        Visibility="{Binding Path=IsLoading, Converter={StaticResource VisibilityConverter}, Mode=OneWay}" />
@@ -269,6 +274,9 @@
 
             <view:TagsSearchView Grid.Column="0"
                                  DataContext="{Binding TagSearchVM}" />
+
+            <view:StatusBarView Grid.Row="1"
+                                Grid.ColumnSpan="2" />
         </Grid>
     </Grid>
 </metroControl:MetroWindow>

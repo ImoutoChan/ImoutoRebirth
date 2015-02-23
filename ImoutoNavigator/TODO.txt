@@ -23,9 +23,9 @@ Collection/source check on exist
 
 
 ---
-Status bar
-	Loaded count
-	Total count
++Status bar
++	Loaded count
++	Total count
 
 arrows in hint
 tags color
