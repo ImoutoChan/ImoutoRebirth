@@ -8,12 +8,13 @@ Animuted on single select
 Animuted icon
 drag&drop
 
-Taaags
++Taaags
 
-scroll 1-2 lines only***
++scroll 1-2 lines only***
 tab in search result
 +searchresult kire
-tags template
++tags template
+
 tags screen
 	add tags
 	remove tags
@@ -30,3 +31,9 @@ Collection/source check on exist
 +tags color
 
 +tags with value
+
+---
+
+Imouto Viewer Integration
+	send context
+	2 window mode
