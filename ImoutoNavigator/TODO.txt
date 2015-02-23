@@ -27,6 +27,7 @@ Collection/source check on exist
 +	Loaded count
 +	Total count
 
-arrows in hint
++arrows in hint
+
 tags color
 tags with value

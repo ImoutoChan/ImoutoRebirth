@@ -54,6 +54,19 @@ namespace ImoutoNavigator.ViewModel
 
         public ObservableCollection<Tag> HintBoxTags { get; } = new ObservableCollection<Tag>();
 
+        private Tag _selectedHintBoxTag;
+        public Tag SelectedHintBoxTag
+        {
+            get
+            {
+                return _selectedHintBoxTag;
+            }
+            set
+            {
+                OnPropertyChanged(ref _selectedHintBoxTag, value, () => this.SelectedHintBoxTag);
+            }
+        }
+
         public ObservableCollection<Tag> SelectedTags { get; } = new ObservableCollection<Tag>();
 
         public List<BindedTag> SelectedBindedTags

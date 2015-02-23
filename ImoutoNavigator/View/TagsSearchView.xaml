@@ -22,29 +22,17 @@
                     <RowDefinition Height="*" />
                 </Grid.RowDefinitions>
 
-
                 <TextBox Grid.Row="0"
                          Margin="5"
                          metroControl:TextboxHelper.Watermark="Search tag"
                          Style="{DynamicResource SearchMetroTextBox}"
                          FontSize="14"
-                         Text="{Binding Path=SearchString, UpdateSourceTrigger=PropertyChanged}" />
-
-                <!--<ComboBox Grid.Row="0" 
-                              Margin="5"
-                              metroControl:TextboxHelper.Watermark="Search tag"
-                              FontSize="14"
-                              DisplayMemberPath="Name"
-                              IsEditable="True"
-                              ItemsSource="{Binding SearchTags}"
-                              MaxDropDownHeight="125"
-                              Text="{Binding Path=SearchString}" />-->
+                         Text="{Binding Path=SearchString, UpdateSourceTrigger=PropertyChanged}"
+                         PreviewKeyDown="TextBox_KeyDown" />
 
                 <Border Grid.Row="1"
                         BorderThickness="1"
-                        BorderBrush="{DynamicResource AccentColorBrush}">
-
-                </Border>
+                        BorderBrush="{DynamicResource AccentColorBrush}" />
 
                 <ItemsControl x:Name="SelectedTags"
                               Grid.Row="2"
@@ -68,7 +56,9 @@
                 HorizontalAlignment="Stretch"
                 VerticalAlignment="Top"
                 Margin="5,32,9,0">
-            <ListBox ItemsSource="{Binding HintBoxTags}"
+            <ListBox x:Name="HintListBox"
+                     ItemsSource="{Binding HintBoxTags}"
+                     SelectedItem="{Binding SelectedHintBoxTag}"
                      Padding="0"
                      ItemContainerStyle="{StaticResource SearchHintListBoxItemContainerStyle}"
                      ScrollViewer.CanContentScroll="False"
@@ -80,7 +70,7 @@
                                                                                  AncestorType={x:Type UserControl}},
                                                                                  Path=DataContext.SelectTagCommand}"
                                 CommandParameter="{Binding}"
-                                Template="{StaticResource TagElementControlTemplate}"
+                                Template="{StaticResource TransparentTagElementControlTemplate}"
                                 HorizontalContentAlignment="Left">
                             <TextBlock Text="{Binding Title}"
                                        TextAlignment="Left"

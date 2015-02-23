@@ -60,6 +60,20 @@
         </ControlTemplate.Triggers>
     </ControlTemplate>
 
+    <ControlTemplate TargetType="Button"
+                     x:Key="TransparentTagElementControlTemplate">
+        <Label Background="Transparent"
+               x:Name="label"
+               HorizontalContentAlignment="Stretch"
+               Padding="10,5,5,5">
+            <Label.Content>
+                <ContentPresenter HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                  VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
+                                  RecognizesAccessKey="True" />
+            </Label.Content>
+        </Label>
+    </ControlTemplate>
+
     <DataTemplate x:Key="CurrentTagElementDataTemplate">
         <Button HorizontalAlignment="Stretch"
                 HorizontalContentAlignment="Stretch"
@@ -153,8 +167,9 @@
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="ListBoxItem">
-                    <Grid Background="{TemplateBinding Background}">
-                        <!--<VisualStateManager.VisualStateGroups>
+                    <Grid Background="{TemplateBinding Background}"
+                          x:Name="Border">
+                        <VisualStateManager.VisualStateGroups>
                             <VisualStateGroup x:Name="CommonStates">
                                 <VisualState x:Name="Normal" />
                                 <VisualState x:Name="MouseOver">
@@ -201,7 +216,7 @@
                                 </VisualState>
                                 <VisualState x:Name="Unfocused" />
                             </VisualStateGroup>
-                        </VisualStateManager.VisualStateGroups>-->
+                        </VisualStateManager.VisualStateGroups>
                         <Rectangle x:Name="fillColor"
                                    Opacity="0"
                                    Fill="#FFBADDE9"
@@ -226,6 +241,21 @@
                                    RadiusX="1"
                                    RadiusY="1" />
                     </Grid>
+
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsSelected"
+                                 Value="true">
+                            <Setter TargetName="Border"
+                                    Property="Background"
+                                    Value="{DynamicResource AccentColorBrush2}" />
+                        </Trigger>
+                        <Trigger Property="IsMouseOver"
+                                 Value="True">
+                            <Setter TargetName="Border"
+                                    Property="Background"
+                                    Value="{DynamicResource AccentColorBrush3}" />
+                        </Trigger>
+                    </ControlTemplate.Triggers>
                 </ControlTemplate>
             </Setter.Value>
         </Setter>
