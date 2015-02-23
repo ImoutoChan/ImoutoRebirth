@@ -25,6 +25,7 @@
                     <RowDefinition Height="Auto" />
                     <RowDefinition Height="Auto" />
                     <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
                     <RowDefinition Height="*" />
                 </Grid.RowDefinitions>
 
@@ -36,21 +37,40 @@
                          Text="{Binding Path=SearchString, UpdateSourceTrigger=PropertyChanged}"
                          PreviewKeyDown="TextBox_KeyDown" />
 
-                <Border Grid.Row="1"
+                <DockPanel Grid.Row="1"
+                           Margin="5"
+                           Visibility="{Binding ValueEnterMode, Converter={StaticResource ConditionVisibilityConverter}, ConverterParameter=true}">
+                    <ComboBox DockPanel.Dock="Left"
+                              Width="60"
+                              ItemsSource="{Binding Comparators}"
+                              SelectedItem="{Binding SelectedComparator}" />
+
+                    <Button DockPanel.Dock="Right"
+                            Width="60"
+                            Content="Ok"
+                            Command="{Binding EnterValueOkCommand}" />
+
+                    <TextBox Margin="5,0"
+                             Style="{DynamicResource MetroTextBox}"
+                             metroControl:TextboxHelper.Watermark="Value"
+                             Text="{Binding EnteredValue}" />
+                </DockPanel>
+
+                <Border Grid.Row="2"
                         BorderThickness="1"
                         BorderBrush="{DynamicResource AccentColorBrush}" />
 
                 <ItemsControl x:Name="SelectedTags"
-                              Grid.Row="2"
-                              ItemsSource="{Binding Path=SelectedTags, UpdateSourceTrigger=PropertyChanged}"
-                              ItemTemplate="{StaticResource SelectedTagsElementDataTemplate}" />
+                              Grid.Row="3"
+                              ItemsSource="{Binding Path=SelectedBindedTags, UpdateSourceTrigger=PropertyChanged}"
+                              ItemTemplate="{StaticResource SelectedBindedTagsElementDataTemplate}" />
 
-                <Border Grid.Row="3"
+                <Border Grid.Row="4"
                         BorderThickness="1"
                         BorderBrush="{DynamicResource AccentColorBrush}" />
 
                 <ItemsControl x:Name="CurrentTags"
-                              Grid.Row="4"
+                              Grid.Row="5"
                               ItemsSource="{Binding Path=TopTags, UpdateSourceTrigger=PropertyChanged}"
                               ItemTemplate="{StaticResource CurrentTagElementDataTemplate}" />
             </Grid>

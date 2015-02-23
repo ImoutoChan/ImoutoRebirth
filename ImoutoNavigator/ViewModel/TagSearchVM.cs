@@ -18,6 +18,11 @@ namespace ImoutoNavigator.ViewModel
         private MainWindowVM _mainWindowVM;
         private string _searchString;
         //private ObservableCollection<KeyValuePair<TagM, int>>   _tagListCurrent     = new ObservableCollection<KeyValuePair<TagM, int>>();
+        private Tag _selectedHintBoxTag;
+        private bool _isValueEnterMode;
+        private string _enteredValue;
+        private List<string> _comparators;
+        private string _selectedComparator;
 
         #endregion Fields
 
@@ -26,6 +31,7 @@ namespace ImoutoNavigator.ViewModel
         public TagSearchVM(MainWindowVM mainWindowVM)
         {
             this._mainWindowVM = mainWindowVM;
+            ResetValueEnter();
         }
 
         #endregion Constructors
@@ -54,7 +60,6 @@ namespace ImoutoNavigator.ViewModel
 
         public ObservableCollection<Tag> HintBoxTags { get; } = new ObservableCollection<Tag>();
 
-        private Tag _selectedHintBoxTag;
         public Tag SelectedHintBoxTag
         {
             get
@@ -67,15 +72,7 @@ namespace ImoutoNavigator.ViewModel
             }
         }
 
-        public ObservableCollection<Tag> SelectedTags { get; } = new ObservableCollection<Tag>();
-
-        public List<BindedTag> SelectedBindedTags
-        {
-            get
-            {
-                return this.SelectedTags.Select(x => new BindedTag { Tag = x }).ToList();
-            }
-        }
+        public ObservableCollection<BindedTag> SelectedBindedTags { get; } = new ObservableCollection<BindedTag>();
 
         public string SearchString
         {
@@ -85,8 +82,12 @@ namespace ImoutoNavigator.ViewModel
             }
             set
             {
-                //TODO Add find by first letters, add autocomplition
-                if (String.IsNullOrWhiteSpace(value))
+                if (ValueEnterMode && value != _searchString)
+                {
+                    ResetValueEnter();
+                }
+
+                if (String.IsNullOrWhiteSpace(value) || ValueEnterMode)
                 {
                     HintBoxTags.Clear();
                 }
@@ -98,6 +99,52 @@ namespace ImoutoNavigator.ViewModel
                 OnPropertyChanged(ref _searchString, value, () => this.SearchString);
             }
         }
+
+        public bool ValueEnterMode
+        {
+            get
+            {
+                return _isValueEnterMode;
+            }
+            set
+            {
+                OnPropertyChanged(ref _isValueEnterMode, value, () => this.ValueEnterMode);
+            }
+        }
+
+        public List<string> Comparators
+        {
+            get
+            {
+                return _comparators ?? (_comparators = ComparatorExtensions.GetValues<Comparator>().Select(x => x.ToFriendlyString()).ToList());
+            }
+        }
+
+        public string SelectedComparator
+        {
+            get
+            {
+                return _selectedComparator;
+            }
+            set
+            {
+                OnPropertyChanged(ref _selectedComparator, value, () => this.SelectedComparator);
+            }
+        }
+
+        public string EnteredValue
+        {
+            get
+            {
+                return _enteredValue;
+            }
+            set
+            {
+                OnPropertyChanged(ref _enteredValue, value, () => this.EnteredValue);
+            }
+        }
+
+        private Tag EditedTag { get; set; }
 
         #endregion Properties
 
@@ -121,6 +168,15 @@ namespace ImoutoNavigator.ViewModel
             }
         }
 
+        private ICommand _enterValueOkCommand;
+        public ICommand EnterValueOkCommand
+        {
+            get
+            {
+                return _enterValueOkCommand ?? (_enterValueOkCommand = new RelayCommand(EnterValueOk));
+            }
+        }
+
         #endregion Commands
 
         #region Methods
@@ -131,7 +187,10 @@ namespace ImoutoNavigator.ViewModel
 
             var tags = await SearchTagsAsyncTask(searchString);
 
-            Sorts.SortList(HintBoxTags, tags);
+            if (!ValueEnterMode)
+            {
+                Sorts.SortList(HintBoxTags, tags);
+            }
         }
 
         private Task<List<Tag>> SearchTagsAsyncTask(string searchString)
@@ -160,9 +219,17 @@ namespace ImoutoNavigator.ViewModel
                 return;
             }
 
-            if (SelectedTags.All(x => x.Id != tag.Id))
+            if (tag.HasValue && !ValueEnterMode)
             {
-                SelectedTags.Add(tag);
+                SearchString = tag.Title;
+                ValueEnterMode = true;
+                EditedTag = tag;
+                return;
+            }
+
+            if (SelectedBindedTags.All(x => x.Tag.Id != tag.Id || x.Value != EnteredValue))
+            {
+                SelectedBindedTags.Add(new BindedTag { Tag = tag, Value = (tag.HasValue && !String.IsNullOrWhiteSpace(EnteredValue)) ? SelectedComparator + EnteredValue : null });
             }
 
             SearchString = String.Empty;
@@ -176,22 +243,34 @@ namespace ImoutoNavigator.ViewModel
                 return;
             }
 
-            var tag = param as Tag;
+            var tag = param as BindedTag;
 
             if (tag == null)
             {
                 return;
             }
 
-            var tagInList = SelectedTags.FirstOrDefault(x => x.Id == tag.Id);
+            var tagInList = SelectedBindedTags.FirstOrDefault(x => x.Tag.Id == tag.Tag.Id && x.Value == tag.Value);
             if (tagInList != null)
             {
-                SelectedTags.Remove(tagInList);
+                SelectedBindedTags.Remove(tagInList);
             }
 
             OnSelectedTagsUpdated();
         }
 
+        private void ResetValueEnter()
+        {
+            EditedTag = null;
+            ValueEnterMode = false;
+            SelectedComparator = Comparators.First();
+            EnteredValue = String.Empty;
+        }
+
+        private void EnterValueOk(object obj)
+        {
+            SelectTag(EditedTag);
+        }
         #endregion Methods
 
         #region Events
@@ -208,5 +287,63 @@ namespace ImoutoNavigator.ViewModel
         }
 
         #endregion Events
+    }
+
+    enum Comparator
+    {
+        Equal,
+        NotEqual,
+        //MoreOrEqual,
+        //More,
+        //LessOrEqual,
+        //Less
+    }
+
+    static class ComparatorExtensions
+    {
+        public static string ToFriendlyString(this Comparator me)
+        {
+            switch (me)
+            {
+                default:
+                case Comparator.Equal:
+                    return "=";
+                case Comparator.NotEqual:
+                    return "!=";
+                    //case Comparator.MoreOrEqual:
+                    //    return ">=";
+                    //case Comparator.More:
+                    //    return ">";
+                    //case Comparator.LessOrEqual:
+                    //    return "<=";
+                    //case Comparator.Less:
+                    //    return "<";
+            }
+        }
+
+        public static Comparator GetEnumFromFriendlyName(this string me)
+        {
+            switch (me)
+            {
+                default:
+                case "=":
+                    return Comparator.Equal;
+                case "!=":
+                    return Comparator.NotEqual;
+                    //case ">=":
+                    //    return Comparator.MoreOrEqual;
+                    //case ">":
+                    //    return Comparator.More;
+                    //case "<=":
+                    //    return Comparator.LessOrEqual;
+                    //case "<":
+                    //    return Comparator.Less;
+            }
+        }
+
+        public static IEnumerable<T> GetValues<T>()
+        {
+            return Enum.GetValues(typeof(T)).Cast<T>();
+        }
     }
 }

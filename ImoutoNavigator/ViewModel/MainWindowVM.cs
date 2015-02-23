@@ -400,7 +400,7 @@ namespace ImoutoNavigator.ViewModel
                 return new ObservableCollection<ImageEntryVM>(
                     ImoutoService.Use(imoutoService =>
                     {
-                        return imoutoService.SearchImage(TagSearchVM.SelectedBindedTags, count, skip);
+                        return imoutoService.SearchImage(TagSearchVM.SelectedBindedTags.ToList(), count, skip);
                     })
                     .Select(x => new ImageEntryVM(x, PreviewSize))
                     .SkipExceptions()
@@ -415,7 +415,7 @@ namespace ImoutoNavigator.ViewModel
                 return
                     ImoutoService.Use(imoutoService =>
                     {
-                        return imoutoService.CountSearchImage(TagSearchVM.SelectedBindedTags);
+                        return imoutoService.CountSearchImage(TagSearchVM.SelectedBindedTags.ToList());
                     });
             });
         }

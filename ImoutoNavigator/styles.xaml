@@ -2,8 +2,11 @@
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                     xmlns:Themes="clr-namespace:Microsoft.Windows.Themes;assembly=PresentationFramework.Aero"
                     xmlns:imoutoNavigator="clr-namespace:ImoutoNavigator"
-                    xmlns:converters="clr-namespace:ImoutoNavigator.Converters">
+                    xmlns:converters="clr-namespace:ImoutoNavigator.Converters"
+                    xmlns:wpfHelpers="clr-namespace:Utils.WPFHelpers;assembly=Utils">
     <converters:IntToColorConverter x:Key="IntToColorConverter" />
+    <converters:ConditionVisibilityConverter x:Key="ConditionVisibilityConverter" />
+    <converters:BooleanResultConverter x:Key="BooleanResultConverter" />
 
     <!-- Resource dictionary entries should be defined here. -->
 
@@ -55,6 +58,37 @@
                            FontWeight="Bold"
                            VerticalAlignment="Center"
                            ToolTip="{Binding Title}" />
+            </Label.Content>
+        </Label>
+
+        <ControlTemplate.Triggers>
+            <Trigger Property="IsMouseOver"
+                     Value="True">
+                <Setter TargetName="label"
+                        Property="Background"
+                        Value="{DynamicResource AccentColorBrush3}" />
+            </Trigger>
+        </ControlTemplate.Triggers>
+    </ControlTemplate>
+
+    <ControlTemplate TargetType="Button"
+                     x:Key="SelectableBindedTagElementControlTemplate">
+        <Label Background="{TemplateBinding Background}"
+               x:Name="label"
+               HorizontalContentAlignment="Stretch"
+               Padding="10,4,5,2">
+            <Label.Content>
+                <TextBlock TextAlignment="Left"
+                           VerticalAlignment="Center"
+                           ToolTip="{Binding Tag.Title}">
+                    <Run Text="{Binding Tag.Title}"
+                         Foreground="{Binding Tag.Type.Color, Converter={StaticResource IntToColorConverter}}"
+                         FontFamily="Comic Sans MS"
+                         FontSize="13"
+                         FontWeight="Bold" />
+                    <Run Text="{Binding Value}"
+                         wpfHelpers:RunVisibility.Visible="{Binding Value, Converter={StaticResource BooleanResultConverter}, ConverterParameter=!null}" />
+                </TextBlock>
             </Label.Content>
         </Label>
 
@@ -141,6 +175,19 @@
                 <MouseBinding  Gesture="LeftClick"
                                Command="{Binding Path=DataContext.UnselectTagCommand, 
                                                  RelativeSource={RelativeSource AncestorType={x:Type UserControl}}}"
+                               CommandParameter="{Binding}" />
+            </Button.InputBindings>
+        </Button>
+    </DataTemplate>
+
+    <DataTemplate x:Key="SelectedBindedTagsElementDataTemplate">
+        <Button HorizontalAlignment="Stretch"
+                HorizontalContentAlignment="Stretch"
+                Template="{StaticResource SelectableBindedTagElementControlTemplate}">
+            <Button.InputBindings>
+                <MouseBinding  Gesture="LeftClick"
+                               Command="{Binding Path=DataContext.UnselectTagCommand, 
+                                                     RelativeSource={RelativeSource AncestorType={x:Type UserControl}}}"
                                CommandParameter="{Binding}" />
             </Button.InputBindings>
         </Button>
