@@ -23,10 +23,7 @@
                           Title="{Binding Title}"
                           WindowState="Maximized">
     <metroControl:MetroWindow.Resources>
-        <converter:VisibilityConverter x:Key="VisibilityConverter" />
-
-        <converter:VisibilityConverter x:Key="VisibilityInvertConverter"
-                                       IsInvert="True" />
+        <converter:ConditionVisibilityConverter x:Key="ConditionVisibilityConverter" />
 
         <Dialog:SimpleDialog x:Key="SuccessCreateCollectionDialog"
                              Title="Create collection"
@@ -80,14 +77,14 @@
 
             <metroControl:ProgressRing IsActive="{Binding Path=IsLoading, Mode=OneWay}"
                                        Grid.Column="1"
-                                       Visibility="{Binding Path=IsLoading, Converter={StaticResource VisibilityConverter}, Mode=OneWay}" />
+                                       Visibility="{Binding Path=IsLoading, Converter={StaticResource ConditionVisibilityConverter}, ConverterParameter=true, Mode=OneWay}" />
 
             <ListBox x:Name="ListBoxElement"
                      Grid.Column="1"
                      ScrollViewer.HorizontalScrollBarVisibility="Disabled"
                      ItemsSource="{Binding Path=ImageList, UpdateSourceTrigger=PropertyChanged}"
                      SelectionMode="Extended"
-                     Visibility="{Binding Path=IsLoading, Converter={StaticResource VisibilityInvertConverter}, Mode=OneWay}">
+                     Visibility="{Binding Path=IsLoading, Converter={StaticResource ConditionVisibilityConverter}, ConverterParameter=false, Mode=OneWay}">
                 <ListBox.InputBindings>
                     <MouseBinding Command="{Binding Path=ZoomOutCommand}"
                                   Gesture="{x:Static userControl:MouseWheelGesture.CtrlDown}" />
@@ -254,13 +251,15 @@
                                   Height="{Binding Path=ViewPortSize.Height}">
                                 <Image Source="{Binding Path=Image}"
                                        Visibility="{Binding Path=IsLoading, 
-                                                            Converter={StaticResource VisibilityInvertConverter}}" />
+                                                            Converter={StaticResource ConditionVisibilityConverter},
+                                                            ConverterParameter=false}" />
 
                                 <Ellipse Width="10"
                                          Height="10"
                                          Fill="{DynamicResource GrayBrush10}"
                                          Visibility="{Binding Path=IsLoading, 
-                                                              Converter={StaticResource VisibilityConverter}}" />
+                                                              Converter={StaticResource ConditionVisibilityConverter},
+                                                              ConverterParameter=true}" />
                             </Grid>
                         </Border>
                     </DataTemplate>

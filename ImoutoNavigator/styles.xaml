@@ -1,7 +1,10 @@
 ﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                     xmlns:Themes="clr-namespace:Microsoft.Windows.Themes;assembly=PresentationFramework.Aero"
-                    xmlns:imoutoNavigator="clr-namespace:ImoutoNavigator">
+                    xmlns:imoutoNavigator="clr-namespace:ImoutoNavigator"
+                    xmlns:converters="clr-namespace:ImoutoNavigator.Converters">
+    <converters:IntToColorConverter x:Key="IntToColorConverter" />
+
     <!-- Resource dictionary entries should be defined here. -->
 
     <!--<Style x:Key="ButtonStyle1" TargetType="{x:Type Button}">
@@ -38,15 +41,20 @@
 	</Style>-->
 
     <ControlTemplate TargetType="Button"
-                     x:Key="TagElementControlTemplate">
+                     x:Key="SelectableTagElementControlTemplate">
         <Label Background="{TemplateBinding Background}"
                x:Name="label"
                HorizontalContentAlignment="Stretch"
-               Padding="10,5,5,5">
+               Padding="10,4,5,2">
             <Label.Content>
-                <ContentPresenter HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
-                                  VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
-                                  RecognizesAccessKey="True" />
+                <TextBlock Text="{Binding Title}"
+                           TextAlignment="Left"
+                           Foreground="{Binding Type.Color, Converter={StaticResource IntToColorConverter}}"
+                           FontFamily="Comic Sans MS"
+                           FontSize="13"
+                           FontWeight="Bold"
+                           VerticalAlignment="Center"
+                           ToolTip="{Binding Title}" />
             </Label.Content>
         </Label>
 
@@ -61,15 +69,20 @@
     </ControlTemplate>
 
     <ControlTemplate TargetType="Button"
-                     x:Key="TransparentTagElementControlTemplate">
+                     x:Key="TagElementControlTemplate">
         <Label Background="Transparent"
                x:Name="label"
                HorizontalContentAlignment="Stretch"
-               Padding="10,5,5,5">
+               Padding="10,4,5,2">
             <Label.Content>
-                <ContentPresenter HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
-                                  VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
-                                  RecognizesAccessKey="True" />
+                <TextBlock Text="{Binding Title}"
+                           TextAlignment="Left"
+                           Foreground="{Binding Type.Color, Converter={StaticResource IntToColorConverter}}"
+                           FontFamily="Comic Sans MS"
+                           FontSize="13"
+                           FontWeight="Bold"
+                           VerticalAlignment="Center"
+                           ToolTip="{Binding Title}" />
             </Label.Content>
         </Label>
     </ControlTemplate>
@@ -78,18 +91,7 @@
         <Button HorizontalAlignment="Stretch"
                 HorizontalContentAlignment="Stretch"
                 FontWeight="Normal"
-                Template="{StaticResource TagElementControlTemplate}">
-            <Button.Content>
-                <TextBlock>
-                    <TextBlock.Text>
-                        <MultiBinding StringFormat="{}{0} ({1})">
-                            <Binding Path="Key.Name" />
-                            <Binding Path="Value" />
-                        </MultiBinding>
-                    </TextBlock.Text>
-                </TextBlock>
-            </Button.Content>
-
+                Template="{StaticResource SelectableTagElementControlTemplate}">
             <Button.InputBindings>
                 <MouseBinding  Gesture="LeftClick"
                                Command="{Binding Path=DataContext.AddTagToSearch, 
@@ -132,17 +134,9 @@
     </DataTemplate>
 
     <DataTemplate x:Key="SelectedTagsElementDataTemplate">
-        <Button Background="LightGreen"
-                HorizontalAlignment="Stretch"
+        <Button HorizontalAlignment="Stretch"
                 HorizontalContentAlignment="Stretch"
-                FontWeight="Normal"
-                Template="{StaticResource TagElementControlTemplate}">
-            <Button.Content>
-                <TextBlock Text="{Binding Title}"
-                           FontSize="15"
-                           TextWrapping="Wrap" />
-            </Button.Content>
-
+                Template="{StaticResource SelectableTagElementControlTemplate}">
             <Button.InputBindings>
                 <MouseBinding  Gesture="LeftClick"
                                Command="{Binding Path=DataContext.UnselectTagCommand, 

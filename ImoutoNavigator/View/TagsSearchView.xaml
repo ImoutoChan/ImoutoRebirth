@@ -6,9 +6,15 @@
              xmlns:local="clr-namespace:ImoutoNavigator.View"
              xmlns:metroControl="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
              xmlns:imoutoNavigator="clr-namespace:ImoutoNavigator"
+             xmlns:converters="clr-namespace:ImoutoNavigator.Converters"
              mc:Ignorable="d"
              d:DesignHeight="300"
              d:DesignWidth="300">
+    <UserControl.Resources>
+        <converters:IntToColorConverter x:Key="IntToColorConverter" />
+        <converters:ConditionVisibilityConverter x:Key="ConditionVisibilityConverter" />
+    </UserControl.Resources>
+
     <Grid>
         <Border Grid.Column="0"
                 BorderThickness="0,0,3,0"
@@ -51,11 +57,12 @@
         </Border>
 
         <Border Grid.Column="0"
-                BorderThickness="0"
-                BorderBrush="{DynamicResource GrayBrush7}"
+                BorderThickness="1"
+                BorderBrush="{DynamicResource AccentColorBrush}"
                 HorizontalAlignment="Stretch"
                 VerticalAlignment="Top"
-                Margin="5,32,9,0">
+                Margin="5,32,8,0"
+                Visibility="{Binding HintBoxTags.Count, Converter={StaticResource ConditionVisibilityConverter}, ConverterParameter=!0}">
             <ListBox x:Name="HintListBox"
                      ItemsSource="{Binding HintBoxTags}"
                      SelectedItem="{Binding SelectedHintBoxTag}"
@@ -70,11 +77,8 @@
                                                                                  AncestorType={x:Type UserControl}},
                                                                                  Path=DataContext.SelectTagCommand}"
                                 CommandParameter="{Binding}"
-                                Template="{StaticResource TransparentTagElementControlTemplate}"
+                                Template="{StaticResource TagElementControlTemplate}"
                                 HorizontalContentAlignment="Left">
-                            <TextBlock Text="{Binding Title}"
-                                       TextAlignment="Left"
-                                       TextWrapping="Wrap" />
                         </Button>
                     </DataTemplate>
                 </ItemsControl.ItemTemplate>
