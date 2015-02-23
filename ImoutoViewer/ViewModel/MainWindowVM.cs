@@ -167,7 +167,7 @@ namespace ImoutoViewer.ViewModel
                     return null;
                 }
 
-                int i = (int)Math.Log10(_imageList.DirectoriesCount) + 1;
+                int i = (int)Math.Log10(_imageList.DirectoriesCount + 1) + 1;
                 return String.Format("{0," + i + "} / {1," + i + "}",
                     _imageList.CurrentDirectoryIndex + 1,
                     _imageList.DirectoriesCount);
@@ -183,7 +183,7 @@ namespace ImoutoViewer.ViewModel
                     return null;
                 }
 
-                return _imageList.CurrentDirectory.Name;
+                return _imageList.CurrentDirectory?.Name;
             }
         }
 
