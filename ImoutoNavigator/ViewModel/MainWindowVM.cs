@@ -292,7 +292,16 @@ namespace ImoutoNavigator.ViewModel
             //    GetImagesFromCollectionAsync(1000);                
             //}
 
-            ImageList.Clear();
+            lock (ImageList)
+            {
+                if (_ctsImageLoading != null)
+                {
+                    _ctsImageLoading.Cancel();
+                }
+
+                ImageList.Clear();
+            }
+
             GetImagesFromCollectionAsync(100000, 0, 500);
         }
 
@@ -300,9 +309,15 @@ namespace ImoutoNavigator.ViewModel
         {
             //OnPropertyChanged("PreviewSize");
             OnPropertyChanged("SlotSize");
-            foreach (var imageEntry in ImageList)
+
+
+            //Performance ?
+            lock (ImageList)
             {
-                imageEntry.UpdatePreview(PreviewSize);
+                foreach (var imageEntry in ImageList)
+                {
+                    imageEntry.UpdatePreview(PreviewSize);
+                }
             }
 
             LoadPreviews();
@@ -325,7 +340,13 @@ namespace ImoutoNavigator.ViewModel
 
             try
             {
+                var sw = new Stopwatch();
+                sw.Start();
+
                 var total = await GetImagesCountFromCollectionAsyncTask() - skip;
+
+                sw.Stop();
+                Debug.WriteLine($"Counted in {sw.ElapsedMilliseconds}ms.");
 
                 // skip ?
                 TotalCount = total + skip;
@@ -350,7 +371,14 @@ namespace ImoutoNavigator.ViewModel
 
                 try
                 {
+
+                    sw = new Stopwatch();
+                    sw.Start();
+
                     await LoadImages(count, skip, block, _ctsImageLoading.Token);
+
+                    sw.Stop();
+                    Debug.WriteLine($"Loaded in {sw.ElapsedMilliseconds}ms.");
 
                     LoadPreviews();
                 }
@@ -379,12 +407,17 @@ namespace ImoutoNavigator.ViewModel
                 var sw = new Stopwatch();
                 sw.Start();
 
-                (await GetImagesFromCollectionAsyncTask(block, skip + count - i)).ForEach(x => ImageList.Add(x));
+                var result = await GetImagesFromCollectionAsyncTask(block, skip + count - i);
+            
+                lock (ImageList)
+                {
+                    ct.ThrowIfCancellationRequested();
+                    result.ForEach(x => ImageList.Add(x));
+                }
 
                 sw.Stop();
                 Debug.WriteLine("Loading {0} elemets, skip {1} elemets in ms: {2}", block, skip + count - i, sw.ElapsedMilliseconds);
 
-                ct.ThrowIfCancellationRequested();
 
                 if (i == count)
                 {
