@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Globalization;
 using System.Windows.Data;
 using System.Windows.Media;
 using Utils;
@@ -8,7 +9,7 @@ namespace ImoutoNavigator.Converters
     [ValueConversion(typeof(Color), typeof(Int32))]
     class IntToColorConverter : IValueConverter
     {
-        public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
             if (!(value is Int32))
             {
@@ -18,7 +19,7 @@ namespace ImoutoNavigator.Converters
             return new SolidColorBrush(((int)value).ToColor());
         }
 
-        public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {
             throw new NotImplementedException();
         }

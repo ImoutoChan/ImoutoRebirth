@@ -1,13 +1,12 @@
-﻿using ImoutoNavigator.ViewModel;
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Input;
 using System.Windows.Media;
+using ImoutoNavigator.ViewModel;
 using MahApps.Metro.Controls;
-using System.Threading.Tasks;
-using MahApps.Metro.Controls.Dialogs;
 
 namespace ImoutoNavigator
 {
@@ -113,7 +112,7 @@ namespace ImoutoNavigator
             CollectionsFlyOut.IsOpen = !CollectionsFlyOut.IsOpen;
         }
 
-        private void Grid_MouseLeftButtonUp(object sender, System.Windows.Input.MouseButtonEventArgs e)
+        private void Grid_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
         {
             foreach (Flyout item in Flyouts.Items)
             {

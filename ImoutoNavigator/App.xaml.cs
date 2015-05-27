@@ -1,5 +1,4 @@
-﻿using System.Linq;
-using System.Windows;
+﻿using System.Windows;
 using ImoutoNavigator.ViewModel;
 
 namespace ImoutoNavigator
@@ -9,12 +8,12 @@ namespace ImoutoNavigator
     /// </summary>
     public partial class App : Application
     {
-        private MainWindowVM _mainWindowVM;
+        internal static MainWindowVM MainWindowVM { get; private set; }
 
         protected override void OnStartup(StartupEventArgs e)
         {
             //Start the main window
-            _mainWindowVM = new MainWindowVM();
+            MainWindowVM = new MainWindowVM();
 
             base.OnStartup(e);
         }

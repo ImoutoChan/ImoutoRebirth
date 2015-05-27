@@ -2,9 +2,9 @@
 using System.Diagnostics;
 using System.Windows;
 using System.Windows.Input;
+using System.Windows.Media.Imaging;
 using ImoutoNavigator.Commands;
 using ImoutoNavigator.Model;
-using System.Windows.Media.Imaging;
 
 namespace ImoutoNavigator.ViewModel
 {
@@ -97,7 +97,7 @@ namespace ImoutoNavigator.ViewModel
 
         private void Open(object obj)
         {
-            System.Diagnostics.Process.Start(_imageEntry.FullName);
+            Process.Start(_imageEntry.FullName);
         }
 
         #endregion //Commands

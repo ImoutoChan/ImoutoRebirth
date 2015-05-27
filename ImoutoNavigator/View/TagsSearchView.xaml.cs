@@ -1,6 +1,6 @@
-﻿using ImoutoNavigator.ViewModel;
-using System.Windows.Controls;
+﻿using System.Windows.Controls;
 using System.Windows.Input;
+using ImoutoNavigator.ViewModel;
 
 namespace ImoutoNavigator.View
 {

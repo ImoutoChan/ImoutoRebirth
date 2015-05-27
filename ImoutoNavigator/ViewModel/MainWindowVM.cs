@@ -1,7 +1,4 @@
-﻿using ImoutoNavigator.Commands;
-using ImoutoNavigator.Model;
-using ImoutoNavigator.WCF;
-using System;
+﻿using System;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Linq;
@@ -9,6 +6,9 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
+using ImoutoNavigator.Commands;
+using ImoutoNavigator.Model;
+using ImoutoNavigator.WCF;
 using Utils;
 
 namespace ImoutoNavigator.ViewModel
@@ -17,13 +17,13 @@ namespace ImoutoNavigator.ViewModel
     {
         #region Fields
 
-        private int _previewSize = 256;
         private readonly MainWindow _view;
-        private ObservableCollection<ImageEntryVM> _imageList = new ObservableCollection<ImageEntryVM>();
-        //private CollectionManagerVM                             _collectionManager;
-        private bool _isLoading;
         private CancellationTokenSource _ctsImageLoading;
+        private int _previewSize = 256;
         private int _totalCount = 0;
+        private bool _isLoading;
+        private string _status;
+        private string _statusToolTip;
 
         #endregion Fields
 
@@ -31,14 +31,14 @@ namespace ImoutoNavigator.ViewModel
 
         public MainWindowVM()
         {
-            //GetImageList();
-            //_collectionManager = new CollectionManagerVM();
             InitializeCommands();
 
             TagSearchVM = new TagSearchVM(this);
             TagSearchVM.SelectedTagsUpdated += TagSearchVM_SelectedTagsUpdated;
 
             ImageList.CollectionChanged += (s, e) => OnPropertyChanged(() => this.LoadedCount);
+
+            CollectionManager.ReloadCollections();
 
             _view = new MainWindow { DataContext = this };
             _view.Loaded += _view_Loaded;
@@ -50,48 +50,18 @@ namespace ImoutoNavigator.ViewModel
 
         #region Properties
 
-        public Size SlotSize
-        {
-            get
-            {
-                return new Size(_previewSize + 30, _previewSize + 30);
-            }
-        }
+        public Size SlotSize => new Size(_previewSize + 30, _previewSize + 30);
 
-        private Size PreviewSize
-        {
-            get
-            {
-                return new Size(_previewSize, _previewSize);
-            }
-        }
+        private Size PreviewSize => new Size(_previewSize, _previewSize);
 
 
-        public ObservableCollection<ImageEntryVM> ImageList
-        {
-            get
-            {
-                return _imageList;
-            }
-        }
+        public ObservableCollection<ImageEntryVM> ImageList { get; } = new ObservableCollection<ImageEntryVM>();
 
-        public string Title
-        {
-            get
-            {
-                return String.Format("Imouto Navigator");
-            }
-        }
+        public string Title => "Imouto Navigator";
 
-        public TagSearchVM TagSearchVM { get; private set; }
+        public TagSearchVM TagSearchVM { get; }
 
-        //public CollectionManagerVM CollectionManager
-        //{
-        //    get
-        //    {
-        //        return _collectionManager;
-        //    }
-        //}
+        public CollectionManagerVM CollectionManager { get; } = new CollectionManagerVM();
 
         public bool IsLoading
         {
@@ -115,12 +85,18 @@ namespace ImoutoNavigator.ViewModel
             }
         }
 
-        public int LoadedCount
+        public int LoadedCount => ImageList.Count();
+
+        public string Status
         {
-            get
-            {
-                return ImageList.Count();
-            }
+            get { return _status; }
+            set { OnPropertyChanged(ref _status, value, () => this.Status); }
+        }
+
+        public string StatusToolTip
+        {
+            get { return _statusToolTip; }
+            set { OnPropertyChanged(ref _statusToolTip, value, () => this.StatusToolTip); }
         }
 
         #endregion Properties
@@ -156,6 +132,11 @@ namespace ImoutoNavigator.ViewModel
         #endregion Commands
 
         #region Methods
+        public void SetStatusError(string error, string message)
+        {
+            Status = error;
+            StatusToolTip = message;
+        }
 
         //public void InitializeCollections()
         //{
@@ -294,10 +275,7 @@ namespace ImoutoNavigator.ViewModel
 
             lock (ImageList)
             {
-                if (_ctsImageLoading != null)
-                {
-                    _ctsImageLoading.Cancel();
-                }
+                _ctsImageLoading?.Cancel();
 
                 ImageList.Clear();
             }
@@ -333,7 +311,8 @@ namespace ImoutoNavigator.ViewModel
             }
         }
 
-        private static SemaphoreSlim ReloadImagesAsyncSemaphore = new SemaphoreSlim(1, 1);
+        private static readonly SemaphoreSlim ReloadImagesAsyncSemaphore = new SemaphoreSlim(1, 1);
+
         private async void GetImagesFromCollectionAsync(int count, int skip = 0, int block = 10)
         {
             // TODO COUNT
@@ -359,10 +338,7 @@ namespace ImoutoNavigator.ViewModel
                     return;
                 }
 
-                if (_ctsImageLoading != null)
-                {
-                    _ctsImageLoading.Cancel();
-                }
+                _ctsImageLoading?.Cancel();
 
                 await ReloadImagesAsyncSemaphore.WaitAsync();
 
@@ -396,13 +372,14 @@ namespace ImoutoNavigator.ViewModel
             }
             catch (Exception ex)
             {
-                Debug.WriteLine("Tags load error: " + ex.Message);
+                Debug.WriteLine("Can't load images from collection: " + ex.Message);
+                SetStatusError("Can't load images from collection", ex.Message);
             }
         }
 
         private async Task LoadImages(int count, int skip, int block, CancellationToken ct)
         {
-            for (int i = count; i > 0; i -= block)
+            for (var i = count; i > 0; i -= block)
             {
                 var sw = new Stopwatch();
                 sw.Start();

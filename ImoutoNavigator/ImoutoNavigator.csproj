@@ -104,7 +104,7 @@
     <Compile Include="Converters\BooleanResultConverter.cs" />
     <Compile Include="Converters\IntToColorConverter.cs" />
     <Compile Include="Converters\BooleanToVisibilityConverter.cs" />
-    <Compile Include="Converters\VisibilityConverter.cs" />
+    <Compile Include="Converters\ConditionVisibilityConverter.cs" />
     <Compile Include="DebugWindow.xaml.cs">
       <DependentUpon>DebugWindow.xaml</DependentUpon>
     </Compile>
@@ -118,9 +118,11 @@
     </Compile>
     <Compile Include="ViewModel\CollectionManagerVM.cs" />
     <Compile Include="ViewModel\CollectionVM.cs" />
+    <Compile Include="ViewModel\DestinationFolderVM.cs" />
     <Compile Include="ViewModel\ImageEntryVM.cs" />
     <Compile Include="ViewModel\MainWindowVM.cs" />
-    <Compile Include="ViewModel\SourceVM.cs" />
+    <Compile Include="ViewModel\FolderVM.cs" />
+    <Compile Include="ViewModel\SourceFolderVM.cs" />
     <Compile Include="ViewModel\TagSearchVM.cs" />
     <Compile Include="ViewModel\VMBase.cs" />
     <Compile Include="View\CollectionsView.xaml.cs">
@@ -132,7 +134,9 @@
     <Compile Include="View\TagsSearchView.xaml.cs">
       <DependentUpon>TagsSearchView.xaml</DependentUpon>
     </Compile>
+    <Compile Include="WCF\CollectionService.cs" />
     <Compile Include="WCF\Service.cs" />
+    <Compile Include="WCF\WCFMapper.cs" />
     <Page Include="DebugWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>

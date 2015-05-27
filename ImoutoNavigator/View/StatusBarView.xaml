@@ -21,6 +21,7 @@
                     <Grid>
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="*" />
                             <ColumnDefinition Width="100" />
                             <ColumnDefinition Width="100" />
                         </Grid.ColumnDefinitions>
@@ -28,7 +29,16 @@
                 </ItemsPanelTemplate>
             </StatusBar.ItemsPanel>
 
-            <StatusBarItem Grid.Column="1">
+            <StatusBarItem Grid.Column="0">
+                <StackPanel Orientation="Horizontal">
+
+                    <TextBlock Text="{Binding Path=Status}"
+                               ToolTip="{Binding Path=StatusToolTip}"
+                               Foreground="{StaticResource StatusBarForeground}" />
+                </StackPanel>
+            </StatusBarItem>
+
+            <StatusBarItem Grid.Column="2">
                 <StackPanel Orientation="Horizontal">
 
                     <TextBlock Text="Total: "
@@ -39,7 +49,7 @@
                 </StackPanel>
             </StatusBarItem>
 
-            <StatusBarItem Grid.Column="2">
+            <StatusBarItem Grid.Column="3">
                 <StackPanel Orientation="Horizontal">
 
                     <TextBlock Text="Loaded: "

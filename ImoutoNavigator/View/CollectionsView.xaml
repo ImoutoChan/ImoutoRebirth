@@ -5,75 +5,201 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:viewModel="clr-namespace:ImoutoNavigator.ViewModel"
              xmlns:Controls="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
+             xmlns:converters="clr-namespace:ImoutoNavigator.Converters"
              mc:Ignorable="d"
              d:DesignHeight="700"
              d:DesignWidth="300">
     <UserControl.Resources>
         <Style TargetType="{x:Type Button}"
                BasedOn="{StaticResource ButtonStyleDefault}" />
+
+        <converters:ConditionVisibilityConverter x:Key="ConditionVisibilityConverter" />
+        <converters:BooleanResultConverter x:Key="BooleanResultConverter" />
     </UserControl.Resources>
-    <Grid Margin="20">
-        <StackPanel Orientation="Vertical">
-            <TextBlock Text="Collection"
-                       Margin="0,0,0,5" />
-            <ComboBox ItemsSource="{Binding Collections}"
-                      SelectedItem="{Binding SelectedCollection}"
-                      Name="Collectons"
-                      DisplayMemberPath="Name" />
+    <Grid Margin="15,15,5,15">
+        <ScrollViewer HorizontalScrollBarVisibility="Disabled"
+                      VerticalScrollBarVisibility="Auto"
+                      Padding="0,0,5,0">
+            <StackPanel Orientation="Vertical">
+                <TextBlock Text="Collection"
+                           Margin="0,0,0,5"
+                           FontSize="17"
+                           FontWeight="Bold" />
+                <ComboBox ItemsSource="{Binding Collections}"
+                          SelectedItem="{Binding SelectedCollection}"
+                          Name="Collectons"
+                          DisplayMemberPath="Name"
+                          Margin="10,0,0,0"/>
 
-            <StackPanel HorizontalAlignment="Right"
-                        Orientation="Horizontal"
-                        Margin="0,5,0,0">
-                <Button Content="Delete" 
-                        Command="{Binding RemoveCommand}" />
+                <StackPanel HorizontalAlignment="Right"
+                            Orientation="Horizontal"
+                            Margin="0,5,0,0">
+                    <Button Content="Rename"
+                            Click="RenameButton_Click"
+                            Margin="10,0,0,0"
+                            IsEnabled="{Binding ElementName=Collectons, Path=SelectedItem, Converter={StaticResource BooleanResultConverter}, ConverterParameter=!null}"/>
 
-                <!--<Button Content="Rename"
-                        Command="{Binding CreateCommand}"
-                        Click="Button_Click"
-                        Margin="10,0,0,0" />-->
+                    <Button Content="Delete" 
+                            Command="{Binding RemoveCommand}"
+                            Margin="10,0,0,0"/>
                 
-                <Button Content="Create"
-                        Command="{Binding CreateCommand}"
-                        Click="Button_Click"
-                        Margin="10,0,0,0"/>
-                
-                <Button Content="Activate"
-                        Command="{Binding Path=ActivateCommand}"
-                        Margin="10,0,0,0" />
+                    <Button Content="Create"
+                            Click="CreateButton_Click"
+                            Margin="10,0,0,0"/>
+                </StackPanel>
+
+                <StackPanel Visibility="{Binding ElementName=Collectons, Path=SelectedItem, Converter={StaticResource ConditionVisibilityConverter}, ConverterParameter=!null}">
+                    <TextBlock Text="Sources"
+                               Margin="0,10,0,0"
+                               FontSize="17"
+                               FontWeight="Bold" />
+
+                    <ListBox ItemsSource="{Binding ElementName=Collectons, Path=SelectedItem.Sources}"
+                             Height="100"
+                             SelectedItem="{Binding ElementName=Collectons, Path=SelectedItem.SelectedSource}"
+                             Name="Sources"
+                             Margin="10,0,0,0">
+                        <ListBox.ItemTemplate>
+                            <DataTemplate>
+                                <DockPanel>
+                                    <TextBlock DockPanel.Dock="Left"
+                                               Margin="0,4"
+                                               Text="{Binding Path=Path, Mode=OneWay}" />
+                                </DockPanel>
+                            </DataTemplate>
+                        </ListBox.ItemTemplate>
+                    </ListBox>
+
+                    <StackPanel HorizontalAlignment="Right"
+                                Orientation="Horizontal"
+                                Margin="0,5,0,0">
+                        <Button Content="Remove"
+                                Command="{Binding ElementName=Collectons, Path=SelectedItem.RemoveSourceCommand}" />
+
+                        <Button Content="Add"
+                                Command="{Binding ElementName=Collectons, Path=SelectedItem.AddSourceCommand}"
+                                Margin="10,0,0,0" />
+                    </StackPanel>
+
+                    <StackPanel Margin="10,20,0,0"
+                                DataContext="{Binding ElementName=Sources, Path=SelectedItem}"
+                                Visibility="{Binding ElementName=Sources, Path=SelectedItem, Converter={StaticResource ConditionVisibilityConverter}, ConverterParameter=!null, FallbackValue=Visible}">
+                        <TextBlock Text="Source edit"
+                                   FontSize="17"
+                                   FontWeight="Bold"
+                                   Margin="-10,0,0,0" />
+
+
+                        <TextBlock Text="Path"
+                                   Margin="0,10,0,0" />
+
+                        <TextBox Text="{Binding Path, ValidatesOnDataErrors=True, UpdateSourceTrigger=PropertyChanged}" />
+
+
+                        <Controls:ToggleSwitch IsChecked="{Binding CheckNameHash}"
+                                               Content="Check hash in name"
+                                               Margin="0,10,0,0" />
+
+                        <Controls:ToggleSwitch IsChecked="{Binding CheckFormat}"
+                                               Content="Check format before save"
+                                               Margin="0,10,0,0"
+                                               Name="CheckFormatSwitch" />
+
+                        <StackPanel Margin="0,10,0,0">
+                            <TextBlock TextWrapping="Wrap">
+                                <Run Text="Supported formats extensions" />
+
+                                <LineBreak />
+
+                                <Run Text="; - splitter, empty for all"
+                                     FontSize="9" />
+                            </TextBlock>
+
+                            <TextBox Text="{Binding SupportedExtensions, UpdateSourceTrigger=LostFocus}" />
+                        </StackPanel>
+
+                        <StackPanel HorizontalAlignment="Right"
+                                    Orientation="Horizontal"
+                                    Margin="0,5,0,0">
+                            <Button Content="Reset"
+                                    Command="{Binding ResetCommand}" />
+
+                            <Button Content="Save"
+                                    Command="{Binding SaveCommand}"
+                                    Margin="10,0,0,0" />
+                        </StackPanel>
+                    </StackPanel>
+
+                    <StackPanel Margin="10,20,0,0"
+                                DataContext="{Binding ElementName=Collectons, Path=SelectedItem.Destination}"
+                                Visibility="{Binding ElementName=Collectons, Path=SelectedItem.Destination, Converter={StaticResource ConditionVisibilityConverter}, ConverterParameter=!null}">
+                        <TextBlock Text="Destination folder"
+                                   FontSize="17"
+                                   FontWeight="Bold"
+                                   Margin="-10,0,0,0" />
+
+
+                        <TextBlock Text="Path"
+                                   Margin="0,10,0,0" />
+
+                        <TextBox Text="{Binding Path, ValidatesOnDataErrors=True, UpdateSourceTrigger=PropertyChanged}" />
+
+
+                        <Controls:ToggleSwitch IsChecked="{Binding NeedDevideImagesByHash}"
+                                               Content="Create subfolders"
+                                               Margin="0,10,0,0" />
+
+                        <Controls:ToggleSwitch IsChecked="{Binding NeedRename}"
+                                               Content="Change image name to hash"
+                                               Margin="0,10,0,0" />
+
+                        <TextBlock Text="Subfolder for images with incorrect format"
+                                   Margin="0,10,0,0" />
+                        <TextBox
+                            Text="{Binding IncorrectFormatSubpath, ValidatesOnDataErrors=True, UpdateSourceTrigger=PropertyChanged}" />
+
+                        <TextBlock Text="Subfolder for images with incorrect hash"
+                                   Margin="0,10,0,0" />
+                        <TextBox
+                            Text="{Binding IncorrectHashSubpath, ValidatesOnDataErrors=True, UpdateSourceTrigger=PropertyChanged}" />
+
+                        <TextBlock Text="Subfolder for images without hash"
+                                   Margin="0,10,0,0" />
+                        <TextBox
+                            Text="{Binding NonHashSubpath, ValidatesOnDataErrors=True, UpdateSourceTrigger=PropertyChanged}" />
+
+                        <StackPanel HorizontalAlignment="Right"
+                                    Orientation="Horizontal"
+                                    Margin="0,5,0,0">
+                            <Button Content="Reset"
+                                    Command="{Binding ResetCommand}" />
+
+                            <Button Content="Save"
+                                    Command="{Binding SaveCommand}"
+                                    Margin="10,0,0,0" />
+
+                            <Button Content="Remove"
+                                    Command="{Binding RemoveCommand}"
+                                    Margin="10,0,0,0" />
+                        </StackPanel>
+                    </StackPanel>
+
+                    <StackPanel Margin="10,20,0,0"
+                                Visibility="{Binding ElementName=Collectons, Path=SelectedItem.Destination, Converter={StaticResource ConditionVisibilityConverter}, ConverterParameter=null}">
+                        <TextBlock Text="Destination folder"
+                                   FontSize="17"
+                                   FontWeight="Bold"
+                                   Margin="-10,0,0,0" />
+
+                        <StackPanel HorizontalAlignment="Right"
+                                    Orientation="Horizontal"
+                                    Margin="0,5,0,0"
+                                    DataContext="{Binding ElementName=Collectons, Path=SelectedItem}">
+                            <Button Content="Create"
+                                    Command="{Binding CreateDestinationFolderCommand}" />
+                        </StackPanel>
+                    </StackPanel></StackPanel>
             </StackPanel>
-
-            <TextBlock Text="Sources"
-                       Margin="0,10,0,0" />
-
-            <ListBox ItemsSource="{Binding ElementName=Collectons, Path=SelectedItem.Sources}"
-                     Height="300"
-                     SelectedItem="{Binding ElementName=Collectons, Path=SelectedItem.SelectedSource}">
-                <ListBox.ItemTemplate>
-                    <DataTemplate>
-                        <DockPanel>
-                            <Controls:ProgressRing DockPanel.Dock="Left"
-                                                   Margin="2,2,10,2"
-                                                   Width="10"
-                                                   Height="10"
-                                                   IsActive="{Binding Path=IsLoading, Mode=OneWay}" />                           
-                            <TextBlock DockPanel.Dock="Left"
-                                       Margin="0,4"
-                                       Text="{Binding Path=Path, Mode=OneWay}" />
-                        </DockPanel>
-                    </DataTemplate>
-                </ListBox.ItemTemplate>
-            </ListBox>
-
-            <StackPanel HorizontalAlignment="Right"
-                        Orientation="Horizontal"
-                        Margin="0,5,0,0">
-                <Button Content="Remove"
-                        Command="{Binding ElementName=Collectons, Path=SelectedItem.RemoveSourceCommand}" />
-
-                <Button Content="Add"
-                        Command="{Binding ElementName=Collectons, Path=SelectedItem.AddSourceCommand}"
-                        Margin="10,0,0,0" />
-            </StackPanel>
-        </StackPanel>
+        </ScrollViewer>
     </Grid>
 </UserControl>

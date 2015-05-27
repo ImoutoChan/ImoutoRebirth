@@ -37,3 +37,5 @@ Collection/source check on exist
 Imouto Viewer Integration
 	send context
 	2 window mode
+
+notes

@@ -1,11 +1,12 @@
-﻿using ImoutoNavigator.Commands;
-using ImoutoNavigator.WCF;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Input;
+using ImoutoNavigator.Commands;
+using ImoutoNavigator.WCF;
 using Utils;
 using WCFExchageLibrary.Data;
 
@@ -185,11 +186,19 @@ namespace ImoutoNavigator.ViewModel
         {
             HintBoxTags.Clear();
 
-            var tags = await SearchTagsAsyncTask(searchString);
-
-            if (!ValueEnterMode)
+            try
             {
-                Sorts.SortList(HintBoxTags, tags);
+                var tags = await SearchTagsAsyncTask(searchString);
+
+                if (!ValueEnterMode)
+                {
+                    Sorts.SortList(HintBoxTags, tags);
+                }
+            }
+            catch (Exception ex)
+            {
+                App.MainWindowVM?.SetStatusError("Error while searching tags", ex.Message);
+                Debug.WriteLine("Error while searching tags: " + ex.Message);
             }
         }
 

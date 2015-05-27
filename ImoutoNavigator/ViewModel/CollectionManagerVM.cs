@@ -1,130 +1,137 @@
-﻿//using System;
-//using System.Collections.Generic;
-//using System.Linq;
-//using System.Text;
-//using System.Threading.Tasks;
-//using System.Windows.Input;
-//using ImoutoNavigator.Commands;
-//using System.Collections.ObjectModel;
+﻿using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Diagnostics;
+using System.Linq;
+using System.Windows.Input;
+using ImoutoNavigator.Commands;
+using ImoutoNavigator.WCF;
+using Utils;
+using WCFExchageLibrary.Data;
 
-//namespace ImoutoNavigator.ViewModel
-//{
-//    class CollectionManagerVM : VMBase
-//    {
-//        #region Fields
+namespace ImoutoNavigator.ViewModel
+{
+    class CollectionManagerVM : VMBase
+    {
+        #region Fields
 
-//        private ICommand _renameCommand;
-//        private ICommand _removeCommand;
-//        private ICommand _createCommand;
-//        private ICommand _activateCommand;
+        private ICommand _removeCommand;
+        private CollectionVM _selectedCollection;
 
-//        #endregion Fields
+        #endregion Fields
 
-//        #region Constructors
+        #region Constructors
 
-//        public CollectionManagerVM()
-//        {
-//            Reload();
-//        }
+        public CollectionManagerVM() { }
 
-//        #endregion Constructors
+        public void ReloadCollections()
+        {
+            try
+            {
+                var sw = new Stopwatch();
+                sw.Start();
 
-//        #region Properties
+                List<Collection> collections = ImoutoCollectionService.Use(imoutoService =>
+                {
+                    var res = imoutoService.GetCollections();
+                    return res;
+                });
 
-//        //public ObservableCollection<CollectionVM> Collections { get; set; }
+                sw.Stop();
+                Debug.WriteLine($"Collections reloaded in {sw.ElapsedMilliseconds}ms.");
 
-//        //public CollectionVM SelectedCollection { get; set; }
+                Collections.Clear();
+                collections.ForEach(x => Collections.Add(new CollectionVM(x.Id, x.Name)));
 
-//        #endregion Properties
+                Collections.ForEach(x => x.LoadFolders());
 
-//        #region Methods
+                SelectedCollection = Collections.FirstOrDefault();
+            }
+            catch (Exception ex)
+            {
+                App.MainWindowVM?.SetStatusError("Can't reload collections", ex.Message);
+                Debug.WriteLine("Collections reload error: " + ex.Message);
+            }
+        }
 
-//        public void Reload()
-//        {
-//            //Collections = new ObservableCollection<CollectionVM>(CollectionM.Collections.Select(x => new CollectionVM(x)));
-//            SelectedCollection = Collections.FirstOrDefault(x => x.IsActive);
-//            OnPropertyChanged("Collections");
-//            OnPropertyChanged("SelectedCollection");
+        #endregion Constructors
 
-//        }
+        #region Properties
 
-//        #endregion Methods
+        public ObservableCollection<CollectionVM> Collections { get; } = new ObservableCollection<CollectionVM>();
 
-//        #region Commands
+        public CollectionVM SelectedCollection
+        {
+            get { return _selectedCollection; }
+            set { OnPropertyChanged(ref _selectedCollection, value, () => this.SelectedCollection); }
+        }
 
-//        public ICommand RenameCommand
-//        {
-//            get
-//            {
-//                return _renameCommand ?? (_renameCommand = new RelayCommand(Rename, CanDoCollectionCommand));
-//            }
-//        }
+        #endregion Properties
 
-//        public ICommand RemoveCommand
-//        {
-//            get
-//            {
-//                return _removeCommand ?? (_removeCommand = new RelayCommand(Remove, CanDoCollectionCommand));
-//            }
-//        }
+        #region Methods
+        public string Rename(object param)
+        {
+            try
+            {
+                SelectedCollection?.Rename(param as string);
+                return null;
+            }
+            catch (Exception ex)
+            {
+                return ex.Message;
+            }
+        }
 
-//        public ICommand ActivateCommand
-//        {
-//            get
-//            {
-//                return _activateCommand ?? (_activateCommand = new RelayCommand(Activate, CanDoCollectionCommand));
-//            }
-//        }
+        public string CreateCollection(string name)
+        {
+            try
+            {
+                ImoutoCollectionService.Use(imoutoService =>
+                {
+                    imoutoService.CreateCollection(new Collection {Name = name});
+                });
 
-//        #endregion Commands
+                ReloadCollections();
+                return null;
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine("Cannot create collection: " + ex.Message);
+                return ex.Message;
+            }
+        }
 
-//        #region Command Handlers
+        #endregion Methods
 
-//        private void Activate(object obj)
-//        {
-//            if (SelectedCollection != null)
-//            {
-//                SelectedCollection.Activate();
-//            }
-//        }
+        #region Commands
 
-//        private void Rename(object param)
-//        {
-//            if (SelectedCollection != null)
-//            {
-//                SelectedCollection.Rename(param as string);
-//                Reload();
-//            }
-//        }
+        public ICommand RemoveCommand
+        {
+            get
+            {
+                return _removeCommand ?? (_removeCommand = new RelayCommand(Remove, CanDoCollectionCommand));
+            }
+        }
 
-//        private void Remove(object param)
-//        {
-//            if (SelectedCollection != null)
-//            {
-//                SelectedCollection.Remove();
-//                Reload();
-//            }
-//        }
+        #endregion Commands
 
-//        private bool CanDoCollectionCommand(object param)
-//        {
-//            return SelectedCollection != null;
-//        }
+        #region Command Handlers
+        
 
-//        public string CreateCollection(string name)
-//        {
-//            try
-//            {
-//                //CollectionM.Create(name);
-//                Reload();
-//                return null;
-//            }
-//            catch (Exception ex)
-//            {
-//                return ex.Message;
-//            }            
-//        }
+        private void Remove(object param)
+        {
+            if (SelectedCollection != null)
+            {
+                SelectedCollection.Remove();
+                ReloadCollections();
+            }
+        }
 
-//        #endregion Command Handlers
-//    }
-//}
+        private bool CanDoCollectionCommand(object param)
+        {
+            return SelectedCollection != null;
+        }
+
+        #endregion Command Handlers
+    }
+}
