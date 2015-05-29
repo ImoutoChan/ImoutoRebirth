@@ -5,6 +5,7 @@ using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
+using ImoutoViewer.Model;
 using Utils;
 using WCFExchageLibrary.Data;
 
@@ -37,6 +38,8 @@ namespace ImoutoViewer.ViewModel
         public ObservableCollection<SourceVM> SourcesCollection { get; } = new ObservableCollection<SourceVM>();
 
         public ObservableCollection<BindedTagVM> TagsCollection { get; } = new ObservableCollection<BindedTagVM>();
+
+        public ObservableCollection<NoteM> NotesCollection { get; } = new ObservableCollection<NoteM>();
 
         public bool ShowTags
         {
@@ -78,18 +81,19 @@ namespace ImoutoViewer.ViewModel
                     }
                 }
 
-                List<BindedTag> tags = new List<BindedTag>();
+                Tuple<List<BindedTag>, List<NoteM>> tagsAndNotes;
 
                 if (needReload || fullReload)
                 {
-                    tags = await LoadTagsTask(path);
+                    tagsAndNotes = await LoadTagsTask(path);
                     _isLastSuccessConnected = true;
 
                     lock (_currentPath)
                     {
                         if (_currentPath == path)
                         {
-                            TagsReload(tags);
+                            NotesReload(tagsAndNotes.Item2);
+                            TagsReload(tagsAndNotes.Item1);
                         }
                     }
                 }
@@ -195,7 +199,7 @@ namespace ImoutoViewer.ViewModel
             });
         }
 
-        private Task<List<BindedTag>> LoadTagsTask(string path)
+        private Task<Tuple<List<BindedTag>, List<NoteM>>> LoadTagsTask(string path)
         {
             return Task.Run(() =>
             {
@@ -206,17 +210,23 @@ namespace ImoutoViewer.ViewModel
                 _currentId = id;
 
                 var tags = new List<BindedTag>();
+                var notes = new List<NoteM>();
                 if (_currentId.HasValue)
                 {
                     tags = ImoutoService.Use(imoutoService =>
                     {
                         return imoutoService.GetImageTags(_currentId.Value);
                     });
+                    notes = ImoutoService.Use(imoutoService =>
+                    {
+                        return imoutoService.GetImageNotes(_currentId.Value).Select(WcfMapper.MapNote).ToList();
+                    });
                 }
 
-                return tags;
+                return new Tuple<List<BindedTag>, List<NoteM>>(tags, notes);
             });
         }
+
 
         private void TagsReload(List<BindedTag> tags)
         {
@@ -231,6 +241,16 @@ namespace ImoutoViewer.ViewModel
 
             OnPropertyChanged(() => ShowTags);
             OnTagsLoaded();
+        }
+
+        private  void NotesReload(List<NoteM> notes)
+        {
+            NotesCollection.Clear();
+
+            foreach (var note in notes)
+            {
+                NotesCollection.Add(note);
+            }
         }
 
         private void UpdateSources()

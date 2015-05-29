@@ -4,11 +4,13 @@ using ImoutoViewer.Commands;
 using ImoutoViewer.Model;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media.Imaging;
 using System.Windows.Threading;
+using ImoutoViewer.WCF;
 
 namespace ImoutoViewer.ViewModel
 {
@@ -48,6 +50,8 @@ namespace ImoutoViewer.ViewModel
             _mainWindowView.Show();
 
             InitializeImageListAsync();
+
+            View.ViewPort.SizeChanged += (sender, args) => UpdateView();
         }
 
         #endregion Constructors
@@ -203,7 +207,7 @@ namespace ImoutoViewer.ViewModel
             }
         }
 
-        public string Zoom
+        public string ZoomString
         {
             get
             {
@@ -212,6 +216,8 @@ namespace ImoutoViewer.ViewModel
                     : "100 %";
             }
         }
+
+        public double Zoom => CurrentLocalImage?.Zoom ?? 1;
 
         public BitmapSource Image
         {
@@ -369,8 +375,9 @@ namespace ImoutoViewer.ViewModel
                 OnPropertyChanged("DirStatusToolTip");
                 OnPropertyChanged("Status");
                 OnPropertyChanged("IsLoading");
-                OnPropertyChanged("Zoom");
+                OnPropertyChanged("ZoomString");
                 OnPropertyChanged("ImagePath");
+                OnPropertyChanged("Zoom");
 
                 if (_mainWindowView.ScrollViewerObject.IsNeedScrollHome)
                 {

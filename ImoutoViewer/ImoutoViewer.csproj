@@ -70,6 +70,7 @@
     <Reference Include="System.Drawing" />
     <Reference Include="System.Net" />
     <Reference Include="System.ServiceModel" />
+    <Reference Include="System.Windows" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Windows.Interactivity, Version=4.5.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\MahApps.Metro.1.0.0.0\lib\net45\System.Windows.Interactivity.dll</HintPath>
@@ -101,6 +102,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Behavior\FrameworkElementCustomToolTipBehavior.cs" />
     <Compile Include="Behavior\FrameworkElementDragBehavior.cs" />
     <Compile Include="Behavior\FrameworkElementDropBehavior.cs" />
     <Compile Include="Behavior\IDragable.cs" />
@@ -108,16 +110,22 @@
     <Compile Include="Commands\RelayCommand.cs" />
     <Compile Include="Converters\BooleanResultConverter.cs" />
     <Compile Include="Converters\BooleanToVisibilityConverter.cs" />
+    <Compile Include="Converters\NoteToHeightResizedConverter.cs" />
+    <Compile Include="Converters\NoteToWidthResizedConverter.cs" />
+    <Compile Include="Converters\NoteToMarginResizedConverter.cs" />
+    <Compile Include="Converters\StringToInlineCollectionConverter.cs" />
     <Compile Include="Converters\VisibilityConverter.cs" />
     <Compile Include="Model\Extentions.cs" />
     <Compile Include="Model\DirectorySearchFlags.cs" />
     <Compile Include="Model\SortMethod.cs" />
+    <Compile Include="UserControls\BindableTextBlock.cs" />
     <Compile Include="UserControls\ExtScrollViewer.cs" />
     <Compile Include="UserControls\MouseWheelGesture.cs" />
     <Compile Include="ViewModel\AddTagVM.cs" />
     <Compile Include="ViewModel\BindedTagVM.cs" />
     <Compile Include="ViewModel\CreateTagVM.cs" />
     <Compile Include="ViewModel\MainWindowVM.cs" />
+    <Compile Include="Model\NoteM.cs" />
     <Compile Include="ViewModel\OpenWithVM.cs" />
     <Compile Include="ViewModel\SettingsVM.cs" />
     <Compile Include="ViewModel\SourceVM.cs" />
@@ -130,6 +138,7 @@
       <DependentUpon>AddTagV.xaml</DependentUpon>
     </Compile>
     <Compile Include="WCF\Service.cs" />
+    <Compile Include="WCF\WcfMapper.cs" />
     <Page Include="AppResourceDictionary.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>

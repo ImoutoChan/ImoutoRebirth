@@ -373,7 +373,7 @@
                                          ScrollChanged="ScrollViewerObject_ScrollChanged"
                                          Focusable="False"
                                          Grid.Row="0">
-                <Grid>
+                <Grid x:Name="GridParent">
                     <Image VerticalAlignment="Center"
                            HorizontalAlignment="Center"
                            Height="{Binding ViewportHeight}"
@@ -405,6 +405,80 @@
                            VerticalContentAlignment="Center"
                            Content="{Binding ErrorMessage}"
                            Visibility="{Binding IsError, Converter={StaticResource VisibilityConverter}}" />
+
+                    <ItemsControl ItemsSource="{Binding Tags.NotesCollection}"
+                                  VerticalAlignment="Top"
+                                  HorizontalAlignment="Left"
+                                  
+                                  >
+                        <ItemsControl.Resources>
+                            <converter:NoteToMarginResizedConverter x:Key="NoteToMarginResizedConverter" />
+                            
+                            <converter:NoteToHeightResizedConverter x:Key="NoteToHeightResizedConverter" />
+                            
+                            <converter:NoteToWidthResizedConverter x:Key="NoteToWidthResizedConverter" />
+
+                            <converter:StringToInlineCollectionConverter x:Key="StringToInlineCollectionConverter"/>
+                        </ItemsControl.Resources>
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <Border BorderBrush="{DynamicResource AccentColorBrush4}" 
+                                        BorderThickness="2"
+                                        Background="{DynamicResource AccentColorBrush2}"
+                                        Name="NoteItemsControl">
+                                    <i:Interaction.Behaviors>
+                                        <behavior:FrameworkElementCustomToolTipBehavior InlineList="{Binding NoteString, Converter={StaticResource StringToInlineCollectionConverter}}"/>
+                                    </i:Interaction.Behaviors>
+                                    
+                                    <Border.Width>
+                                        <MultiBinding Converter="{StaticResource NoteToWidthResizedConverter}">
+                                            <Binding Path="DataContext.Zoom" RelativeSource="{RelativeSource AncestorType={x:Type metroControl:MetroWindow}}" />
+                                            
+                                            <Binding />
+                                        </MultiBinding>
+                                    </Border.Width>
+
+                                    <Border.Height>
+                                        <MultiBinding Converter="{StaticResource NoteToHeightResizedConverter}">
+                                            <Binding Path="DataContext.Zoom" RelativeSource="{RelativeSource AncestorType={x:Type metroControl:MetroWindow}}" />
+                                            
+                                            <Binding />
+                                        </MultiBinding>
+                                    </Border.Height>
+
+                                    <Border.Margin>
+                                        <MultiBinding Converter="{StaticResource NoteToMarginResizedConverter}">
+                                            <Binding Path="DataContext.Zoom" RelativeSource="{RelativeSource AncestorType={x:Type metroControl:MetroWindow}}" />
+                                            
+                                            <Binding />
+                                            
+                                            <Binding ElementName="GridParent" />
+                                            
+                                            <Binding ElementName="ViewPort" />
+                                        </MultiBinding>
+                                    </Border.Margin>
+                                </Border>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+
+
+                    <!--<Border Background="White"
+                            Name="ToolTipBorder"
+                            Visibility="Collapsed"
+                            VerticalAlignment="Top"
+                            HorizontalAlignment="Left">
+                        <Border BorderThickness="1"
+                                BorderBrush="Black"
+                                Background="{DynamicResource AccentColorBrush3}"
+                                Opacity="1"
+                                Padding="5">
+                            <TextBlock HorizontalAlignment="Stretch"
+                                       VerticalAlignment="Stretch"
+                                       TextWrapping="Wrap"
+                                       Name="ToolTipTextBlock"/>
+                        </Border>
+                    </Border>-->
                 </Grid>
             </userControl:ExtScrollViewer>
         </Grid>
@@ -544,7 +618,7 @@
                                Visibility="{Binding IsZoomFixed, 
                                                     Converter={StaticResource VisibilityConverter}}" />
 
-                    <TextBlock Text="{Binding Path=Zoom}"
+                    <TextBlock Text="{Binding Path=ZoomString}"
                                Foreground="{StaticResource StatusBarForeground}" />
                 </StackPanel>
             </StatusBarItem>
