@@ -3,12 +3,13 @@ using System.Diagnostics;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media.Imaging;
+using ImoutoNavigator.Behavior;
 using ImoutoNavigator.Commands;
 using ImoutoNavigator.Model;
 
 namespace ImoutoNavigator.ViewModel
 {
-    class ImageEntryVM : VMBase
+    class ImageEntryVM : VMBase, IDragable
     {
         #region Fields
 
@@ -138,5 +139,27 @@ namespace ImoutoNavigator.ViewModel
         #region Event handlers
 
         #endregion //Event handlers
+
+        #region IDragable members
+
+        public object Data
+        {
+            get
+            {
+                var data = new DataObject(DataFormats.FileDrop, new[] { ImageEntry.FullName });
+                //data.SetData("DragSource", _appGuid);
+                return data;
+            }
+        }
+
+        public DragDropEffects AllowDragDropEffects
+        {
+            get
+            {
+                return DragDropEffects.Copy;
+            }
+        }
+
+        #endregion IDragable members
     }
 }
