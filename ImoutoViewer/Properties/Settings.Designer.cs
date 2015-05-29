@@ -8,6 +8,8 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
+using Imouto;
+
 namespace ImoutoViewer.Properties {
     
     
@@ -26,9 +28,9 @@ namespace ImoutoViewer.Properties {
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("DownscaleToViewPort")]
-        public global::Imouto.ResizeType ResizeType {
+        public ResizeType ResizeType {
             get {
-                return ((global::Imouto.ResizeType)(this["ResizeType"]));
+                return ((ResizeType)(this["ResizeType"]));
             }
             set {
                 this["ResizeType"] = value;
@@ -140,6 +142,18 @@ namespace ImoutoViewer.Properties {
             }
             set {
                 this["ShowTags"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        public bool ShowNotes {
+            get {
+                return ((bool)(this["ShowNotes"]));
+            }
+            set {
+                this["ShowNotes"] = value;
             }
         }
     }

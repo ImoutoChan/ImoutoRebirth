@@ -21,6 +21,7 @@ namespace ImoutoViewer.ViewModel
         private string _currentPath = "";
         private bool _showTags;
         private bool _isLastSuccessConnected = false;
+        private bool _showNotes;
 
         #endregion Fields
 
@@ -50,6 +51,18 @@ namespace ImoutoViewer.ViewModel
             set
             {
                 OnPropertyChanged(ref _showTags, value, () => ShowTags);
+            }
+        }
+
+        public bool ShowNotes
+        {
+            get
+            {
+                return _showNotes;
+            }
+            set
+            {
+                OnPropertyChanged(ref _showNotes, value, () => ShowNotes);
             }
         }
 

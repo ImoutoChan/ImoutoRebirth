@@ -25,6 +25,7 @@ namespace ImoutoViewer.ViewModel
         private AccentColorMenuData _selectedAccentColor;
         private int _selectedTheme;
         private bool _showTags;
+        private bool _showNotes;
 
         #endregion Fileds
 
@@ -211,6 +212,20 @@ namespace ImoutoViewer.ViewModel
             }
         }
 
+        public bool ShowNotes
+        {
+            get
+            {
+                return _showNotes;
+            }
+            set
+            {
+                OnPropertyChanged(ref _showNotes, value, () => ShowNotes);
+                Settings.Default.ShowNotes = _showNotes;
+                OnSelectedNotesModeChanged();
+            }
+        }
+
         #endregion Properties
 
         #region Commands
@@ -279,6 +294,15 @@ namespace ImoutoViewer.ViewModel
                 SelectedTagsModeChanged(this, null);
             }
         }
+
+        public event EventHandler SelectedNotesModeChanged;
+        private void OnSelectedNotesModeChanged()
+        {
+            var handler = SelectedNotesModeChanged;
+            handler?.Invoke(this, null);
+        }
+
+        
         #endregion Events
     }
 

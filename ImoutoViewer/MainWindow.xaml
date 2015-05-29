@@ -65,6 +65,9 @@
 
         <KeyBinding Command="{Binding ToggleTagsCommand}"
                     Key="T" />
+
+        <KeyBinding Command="{Binding ToggleNotesCommand}"
+                    Key="N" />
     </metroControl:MetroWindow.InputBindings>
 
     <i:Interaction.Triggers>
@@ -269,10 +272,13 @@
                                     x:Name="Slider"
                                     Value="{Binding SlideshowDelay}" />
 
-
                             <CheckBox Margin="0,25,0,0"
                                       Content="Show tags"
                                       IsChecked="{Binding ShowTags}" />
+
+                            <CheckBox Margin="0,25,0,0"
+                                      Content="Show notes"
+                                      IsChecked="{Binding ShowNotes}" />
                         </StackPanel>
                     </ScrollViewer>
                 </Grid>
@@ -373,7 +379,7 @@
                                          ScrollChanged="ScrollViewerObject_ScrollChanged"
                                          Focusable="False"
                                          Grid.Row="0">
-                <Grid x:Name="GridParent">
+                <Grid Name="GridParent">
                     <Image VerticalAlignment="Center"
                            HorizontalAlignment="Center"
                            Height="{Binding ViewportHeight}"
@@ -399,61 +405,59 @@
 
                     <metroControl:ProgressRing IsActive="{Binding IsLoading}" />
 
-                    <Label HorizontalAlignment="Stretch"
-                           VerticalAlignment="Stretch"
-                           HorizontalContentAlignment="Center"
-                           VerticalContentAlignment="Center"
-                           Content="{Binding ErrorMessage}"
-                           Visibility="{Binding IsError, Converter={StaticResource VisibilityConverter}}" />
 
                     <ItemsControl ItemsSource="{Binding Tags.NotesCollection}"
-                                  VerticalAlignment="Top"
-                                  HorizontalAlignment="Left"
-                                  
-                                  >
+                                  Visibility="{Binding Path=Tags.ShowNotes, Converter={StaticResource ConditionVisibilityConverter}, ConverterParameter=true}">
+                        <ItemsControl.ItemsPanel>
+                            <ItemsPanelTemplate>
+                                <Canvas />
+                            </ItemsPanelTemplate>
+                        </ItemsControl.ItemsPanel>
                         <ItemsControl.Resources>
                             <converter:NoteToMarginResizedConverter x:Key="NoteToMarginResizedConverter" />
-                            
+
                             <converter:NoteToHeightResizedConverter x:Key="NoteToHeightResizedConverter" />
-                            
+
                             <converter:NoteToWidthResizedConverter x:Key="NoteToWidthResizedConverter" />
 
-                            <converter:StringToInlineCollectionConverter x:Key="StringToInlineCollectionConverter"/>
+                            <converter:StringToInlineCollectionConverter x:Key="StringToInlineCollectionConverter" />
                         </ItemsControl.Resources>
                         <ItemsControl.ItemTemplate>
                             <DataTemplate>
-                                <Border BorderBrush="{DynamicResource AccentColorBrush4}" 
+                                <Border BorderBrush="{DynamicResource AccentColorBrush4}"
                                         BorderThickness="2"
                                         Background="{DynamicResource AccentColorBrush2}"
-                                        Name="NoteItemsControl">
+                                        Name="NoteItemsControl"
+                                        HorizontalAlignment="Left"
+                                        VerticalAlignment="Top"
+                                        Opacity="0.5">
                                     <i:Interaction.Behaviors>
-                                        <behavior:FrameworkElementCustomToolTipBehavior InlineList="{Binding NoteString, Converter={StaticResource StringToInlineCollectionConverter}}"/>
+                                        <behavior:FrameworkElementCustomToolTipBehavior
+                                            InlineList="{Binding NoteString, Converter={StaticResource StringToInlineCollectionConverter}}" />
                                     </i:Interaction.Behaviors>
-                                    
+
                                     <Border.Width>
                                         <MultiBinding Converter="{StaticResource NoteToWidthResizedConverter}">
-                                            <Binding Path="DataContext.Zoom" RelativeSource="{RelativeSource AncestorType={x:Type metroControl:MetroWindow}}" />
-                                            
+                                            <Binding Path="DataContext.Zoom"
+                                                     RelativeSource="{RelativeSource AncestorType={x:Type metroControl:MetroWindow}}" />
                                             <Binding />
                                         </MultiBinding>
                                     </Border.Width>
 
                                     <Border.Height>
                                         <MultiBinding Converter="{StaticResource NoteToHeightResizedConverter}">
-                                            <Binding Path="DataContext.Zoom" RelativeSource="{RelativeSource AncestorType={x:Type metroControl:MetroWindow}}" />
-                                            
+                                            <Binding Path="DataContext.Zoom"
+                                                     RelativeSource="{RelativeSource AncestorType={x:Type metroControl:MetroWindow}}" />
                                             <Binding />
                                         </MultiBinding>
                                     </Border.Height>
 
                                     <Border.Margin>
                                         <MultiBinding Converter="{StaticResource NoteToMarginResizedConverter}">
-                                            <Binding Path="DataContext.Zoom" RelativeSource="{RelativeSource AncestorType={x:Type metroControl:MetroWindow}}" />
-                                            
+                                            <Binding Path="DataContext.Zoom"
+                                                     RelativeSource="{RelativeSource AncestorType={x:Type metroControl:MetroWindow}}" />
                                             <Binding />
-                                            
                                             <Binding ElementName="GridParent" />
-                                            
                                             <Binding ElementName="ViewPort" />
                                         </MultiBinding>
                                     </Border.Margin>
@@ -462,12 +466,11 @@
                         </ItemsControl.ItemTemplate>
                     </ItemsControl>
 
-
-                    <!--<Border Background="White"
+                    <Border Background="White"
                             Name="ToolTipBorder"
-                            Visibility="Collapsed"
                             VerticalAlignment="Top"
-                            HorizontalAlignment="Left">
+                            HorizontalAlignment="Left"
+                            Visibility="Collapsed">
                         <Border BorderThickness="1"
                                 BorderBrush="Black"
                                 Background="{DynamicResource AccentColorBrush3}"
@@ -476,9 +479,9 @@
                             <TextBlock HorizontalAlignment="Stretch"
                                        VerticalAlignment="Stretch"
                                        TextWrapping="Wrap"
-                                       Name="ToolTipTextBlock"/>
+                                       Name="ToolTipTextBlock" />
                         </Border>
-                    </Border>-->
+                    </Border>
                 </Grid>
             </userControl:ExtScrollViewer>
         </Grid>

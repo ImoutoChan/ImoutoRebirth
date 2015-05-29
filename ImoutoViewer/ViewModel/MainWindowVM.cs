@@ -314,6 +314,7 @@ namespace ImoutoViewer.ViewModel
             Settings.SelectedFilesSortingChanged += Settings_SelectedFilesSortingChanged;
             Settings.SelectedFoldersSortingChanged += Settings_SelectedFoldersSortingChanged;
             Settings.SelectedTagsModeChanged += Settings_SelectedTagsModeChanged;
+            Settings.SelectedNotesModeChanged += Settings_SelectedNotesModeChanged;
 
             LocalImageList.FilesGettingMethods = Settings.DirectorySearchFlags;
             LocalImageList.FilesSortMethod = Settings.SelectedFilesSorting.Method;
@@ -321,6 +322,11 @@ namespace ImoutoViewer.ViewModel
             LocalImageList.FoldersSortMethod = Settings.SelectedFoldersSorting.Method;
             LocalImageList.IsFoldersSortMethodDescending = Settings.IsSelectedFoldersSortingDescending;
             Tags.ShowTags = Settings.ShowTags;
+        }
+
+        private void Settings_SelectedNotesModeChanged(object sender, EventArgs e)
+        {
+            Tags.ShowNotes = Settings.ShowNotes;
         }
 
         private void Settings_SelectedTagsModeChanged(object sender, EventArgs e)
@@ -434,6 +440,7 @@ namespace ImoutoViewer.ViewModel
         /// </summary>
         public ICommand RotateCommand { get; private set; }
         public ICommand ToggleTagsCommand { get; private set; }
+        public ICommand ToggleNotesCommand { get; private set; }
 
         private void InitializeCommands()
         {
@@ -467,11 +474,18 @@ namespace ImoutoViewer.ViewModel
             FixZoomCommand = new RelayCommand(param => FixZoom());
             ToggleSlideshowCommand = new RelayCommand(param => ToggleSlideshow(param));
             ToggleTagsCommand = new RelayCommand(param => ToggleTags());
+            ToggleNotesCommand = new RelayCommand(param => ToggleNotes());
         }
 
         #endregion Commands
 
         #region Command handlers
+
+        private void ToggleNotes()
+        {
+            Settings.ShowNotes = !Settings.ShowNotes;
+            Settings.SaveCommand.Execute(new object());
+        }
 
         private void ToggleTags()
         {

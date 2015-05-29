@@ -15,8 +15,7 @@ namespace ImoutoViewer.Converters
             var rootVisual = values[2] as FrameworkElement;
             var myVisual = values[3] as FrameworkElement;
 
-            Point relativePoint = myVisual.TransformToAncestor(rootVisual)
-                              .Transform(new Point(0, 0));
+            Point relativePoint = myVisual.TransformToAncestor(rootVisual).Transform(new Point(0, 0));
 
             return new Thickness(noteM.PositionX * zoom + relativePoint.X, noteM.PositionY * zoom + relativePoint.Y, 0, 0);
         }

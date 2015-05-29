@@ -300,7 +300,7 @@ namespace ImoutoViewer.Model
 
                     _image = bi;
                 }
-                catch (ArgumentException e)
+                catch (ArgumentException)
                 {
                     //Process fail in color reading exception.
                     var bi = new BitmapImage();
