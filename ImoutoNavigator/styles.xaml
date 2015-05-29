@@ -103,6 +103,33 @@
     </ControlTemplate>
 
     <ControlTemplate TargetType="Button"
+                     x:Key="InvertSelectedTagControlTemplate">
+        <Label Background="{TemplateBinding Background}"
+               x:Name="label"
+               HorizontalContentAlignment="Stretch"
+               Padding="10,4,5,2">
+            <Label.Content>
+                <Rectangle Width="10"
+                           Height="10">
+                    <Rectangle.OpacityMask>
+                        <VisualBrush Stretch="Fill"
+                                     Visual="{DynamicResource appbar_check}" />
+                    </Rectangle.OpacityMask>
+                </Rectangle>
+            </Label.Content>
+        </Label>
+
+        <ControlTemplate.Triggers>
+            <Trigger Property="IsMouseOver"
+                     Value="True">
+                <Setter TargetName="label"
+                        Property="Background"
+                        Value="{DynamicResource AccentColorBrush3}" />
+            </Trigger>
+        </ControlTemplate.Triggers>
+    </ControlTemplate>
+
+    <ControlTemplate TargetType="Button"
                      x:Key="TagElementControlTemplate">
         <Label Background="Transparent"
                x:Name="label"
@@ -181,16 +208,31 @@
     </DataTemplate>
 
     <DataTemplate x:Key="SelectedBindedTagsElementDataTemplate">
-        <Button HorizontalAlignment="Stretch"
-                HorizontalContentAlignment="Stretch"
-                Template="{StaticResource SelectableBindedTagElementControlTemplate}">
-            <Button.InputBindings>
-                <MouseBinding  Gesture="LeftClick"
-                               Command="{Binding Path=DataContext.UnselectTagCommand, 
+        <DockPanel>
+            <Button HorizontalAlignment="Stretch"
+                    HorizontalContentAlignment="Stretch"
+                    Template="{StaticResource InvertSelectedTagControlTemplate}"
+                    DockPanel.Dock="Right"
+                    Width="30">
+                <Button.InputBindings>
+                    <MouseBinding Gesture="LeftClick"
+                                  Command="{Binding Path=DataContext.UnselectTagCommand, 
                                                      RelativeSource={RelativeSource AncestorType={x:Type UserControl}}}"
-                               CommandParameter="{Binding}" />
-            </Button.InputBindings>
-        </Button>
+                                  CommandParameter="{Binding}" />
+                </Button.InputBindings>
+            </Button>
+            
+            <Button HorizontalAlignment="Stretch"
+                    HorizontalContentAlignment="Stretch"
+                    Template="{StaticResource SelectableBindedTagElementControlTemplate}">
+                <Button.InputBindings>
+                    <MouseBinding Gesture="LeftClick"
+                                  Command="{Binding Path=DataContext.UnselectTagCommand, 
+                                                     RelativeSource={RelativeSource AncestorType={x:Type UserControl}}}"
+                                  CommandParameter="{Binding}" />
+                </Button.InputBindings>
+            </Button>
+        </DockPanel>
     </DataTemplate>
 
     <Style TargetType="ListBoxItem"
