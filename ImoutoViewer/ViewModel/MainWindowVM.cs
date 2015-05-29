@@ -322,6 +322,7 @@ namespace ImoutoViewer.ViewModel
             LocalImageList.FoldersSortMethod = Settings.SelectedFoldersSorting.Method;
             LocalImageList.IsFoldersSortMethodDescending = Settings.IsSelectedFoldersSortingDescending;
             Tags.ShowTags = Settings.ShowTags;
+            Tags.ShowNotes = Settings.ShowNotes;
         }
 
         private void Settings_SelectedNotesModeChanged(object sender, EventArgs e)
