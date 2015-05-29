@@ -31,7 +31,7 @@
 
                 <TextBox Grid.Row="0"
                          Margin="5"
-                         metroControl:TextboxHelper.Watermark="Search tag"
+                         metroControl:TextBoxHelper.Watermark="Search tag"
                          Style="{DynamicResource SearchMetroTextBox}"
                          FontSize="14"
                          Text="{Binding Path=SearchString, UpdateSourceTrigger=PropertyChanged}"
@@ -52,7 +52,7 @@
 
                     <TextBox Margin="5,0"
                              Style="{DynamicResource MetroTextBox}"
-                             metroControl:TextboxHelper.Watermark="Value"
+                             metroControl:TextBoxHelper.Watermark="Value"
                              Text="{Binding EnteredValue}" />
                 </DockPanel>
 
