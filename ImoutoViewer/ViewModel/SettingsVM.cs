@@ -65,6 +65,8 @@ namespace ImoutoViewer.ViewModel
             SaveCommand = new RelayCommand(x => Save());
 
             ShowTags = Settings.Default.ShowTags;
+
+            ShowNotes = Settings.Default.ShowNotes;
         }
 
         #endregion Constructors
