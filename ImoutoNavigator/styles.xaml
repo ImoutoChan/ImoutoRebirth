@@ -237,7 +237,7 @@
                     Width="30">
                 <Button.InputBindings>
                     <MouseBinding Gesture="LeftClick"
-                                  Command="{Binding Path=DataContext.UnselectTagCommand, 
+                                  Command="{Binding Path=DataContext.InvertSearchTypeCommand, 
                                                      RelativeSource={RelativeSource AncestorType={x:Type UserControl}}}"
                                   CommandParameter="{Binding}" />
                 </Button.InputBindings>
