@@ -127,6 +127,7 @@
     <Compile Include="ViewModel\FolderVM.cs" />
     <Compile Include="ViewModel\SourceFolderVM.cs" />
     <Compile Include="ViewModel\TagSearchVM.cs" />
+    <Compile Include="ViewModel\TagVM.cs" />
     <Compile Include="ViewModel\VMBase.cs" />
     <Compile Include="View\CollectionsView.xaml.cs">
       <DependentUpon>CollectionsView.xaml</DependentUpon>

@@ -12,7 +12,7 @@ using WCFExchageLibrary.Data;
 
 namespace ImoutoNavigator.ViewModel
 {
-    class TagSearchVM : VMBase
+    internal class TagSearchVM : VMBase
     {
         #region Fields
 
@@ -31,7 +31,7 @@ namespace ImoutoNavigator.ViewModel
 
         public TagSearchVM(MainWindowVM mainWindowVM)
         {
-            this._mainWindowVM = mainWindowVM;
+            _mainWindowVM = mainWindowVM;
             ResetValueEnter();
         }
 
@@ -69,11 +69,11 @@ namespace ImoutoNavigator.ViewModel
             }
             set
             {
-                OnPropertyChanged(ref _selectedHintBoxTag, value, () => this.SelectedHintBoxTag);
+                OnPropertyChanged(ref _selectedHintBoxTag, value, () => SelectedHintBoxTag);
             }
         }
 
-        public ObservableCollection<BindedTag> SelectedBindedTags { get; } = new ObservableCollection<BindedTag>();
+        public ObservableCollection<BindedTagVM> SelectedBindedTags { get; } = new ObservableCollection<BindedTagVM>();
 
         public string SearchString
         {
@@ -97,7 +97,7 @@ namespace ImoutoNavigator.ViewModel
                     SearchTagsAsync(value);
                 }
 
-                OnPropertyChanged(ref _searchString, value, () => this.SearchString);
+                OnPropertyChanged(ref _searchString, value, () => SearchString);
             }
         }
 
@@ -109,7 +109,7 @@ namespace ImoutoNavigator.ViewModel
             }
             set
             {
-                OnPropertyChanged(ref _isValueEnterMode, value, () => this.ValueEnterMode);
+                OnPropertyChanged(ref _isValueEnterMode, value, () => ValueEnterMode);
             }
         }
 
@@ -117,7 +117,9 @@ namespace ImoutoNavigator.ViewModel
         {
             get
             {
-                return _comparators ?? (_comparators = ComparatorExtensions.GetValues<Comparator>().Select(x => x.ToFriendlyString()).ToList());
+                return _comparators
+                       ?? (_comparators =
+                           ComparatorExtensions.GetValues<Comparator>().Select(x => x.ToFriendlyString()).ToList());
             }
         }
 
@@ -129,7 +131,7 @@ namespace ImoutoNavigator.ViewModel
             }
             set
             {
-                OnPropertyChanged(ref _selectedComparator, value, () => this.SelectedComparator);
+                OnPropertyChanged(ref _selectedComparator, value, () => SelectedComparator);
             }
         }
 
@@ -141,7 +143,7 @@ namespace ImoutoNavigator.ViewModel
             }
             set
             {
-                OnPropertyChanged(ref _enteredValue, value, () => this.EnteredValue);
+                OnPropertyChanged(ref _enteredValue, value, () => EnteredValue);
             }
         }
 
@@ -150,6 +152,15 @@ namespace ImoutoNavigator.ViewModel
         #endregion Properties
 
         #region Commands
+
+        private ICommand _invertSearchTypeCommand;
+        public ICommand InvertSearchTypeCommand
+        {
+            get
+            {
+                return _invertSearchTypeCommand ?? (_invertSearchTypeCommand = new RelayCommand(InvertSearchType));
+            }
+        }
 
         private ICommand _selectTagCommand;
         public ICommand SelectTagCommand
@@ -192,7 +203,7 @@ namespace ImoutoNavigator.ViewModel
 
                 if (!ValueEnterMode)
                 {
-                    Sorts.SortList(HintBoxTags, tags);
+                    HintBoxTags.SortList(tags);
                 }
             }
             catch (Exception ex)
@@ -202,25 +213,19 @@ namespace ImoutoNavigator.ViewModel
             }
         }
 
-        private Task<List<Tag>> SearchTagsAsyncTask(string searchString)
+        private static Task<List<Tag>> SearchTagsAsyncTask(string searchString)
         {
             return Task.Run(() =>
-            {
-                return
-                    ImoutoService.Use(imoutoService =>
-                    {
-                        return imoutoService.SearchTags(searchString);
-                    });
-            });
+                            {
+                                return ImoutoService.Use(imoutoService =>
+                                                         {
+                                                             return imoutoService.SearchTags(searchString);
+                                                         });
+                            });
         }
 
         private void SelectTag(object param)
         {
-            if (param == null)
-            {
-                return;
-            }
-
             var tag = param as Tag;
 
             if (tag == null)
@@ -228,7 +233,8 @@ namespace ImoutoNavigator.ViewModel
                 return;
             }
 
-            if (tag.HasValue && !ValueEnterMode)
+            if (tag.HasValue
+                && !ValueEnterMode)
             {
                 SearchString = tag.Title;
                 ValueEnterMode = true;
@@ -238,21 +244,24 @@ namespace ImoutoNavigator.ViewModel
 
             if (SelectedBindedTags.All(x => x.Tag.Id != tag.Id || x.Value != EnteredValue))
             {
-                SelectedBindedTags.Add(new BindedTag { Tag = tag, Value = (tag.HasValue && !String.IsNullOrWhiteSpace(EnteredValue)) ? SelectedComparator + EnteredValue : null });
+                SelectedBindedTags.Add(new BindedTagVM(new BindedTag
+                                                       {
+                                                           Tag = tag,
+                                                           Value =
+                                                               (tag.HasValue && !string.IsNullOrWhiteSpace(EnteredValue))
+                                                                   ? SelectedComparator + EnteredValue
+                                                                   : null,
+                                                           SearchType = SearchType.Include
+                                                       }));
             }
 
-            SearchString = String.Empty;
+            SearchString = string.Empty;
             OnSelectedTagsUpdated();
         }
 
         private void UnselectTag(object param)
         {
-            if (param == null)
-            {
-                return;
-            }
-
-            var tag = param as BindedTag;
+            var tag = param as BindedTagVM;
 
             if (tag == null)
             {
@@ -280,6 +289,27 @@ namespace ImoutoNavigator.ViewModel
         {
             SelectTag(EditedTag);
         }
+
+        private void InvertSearchType(object param)
+        {
+            var tag = param as BindedTagVM;
+
+            if (tag == null)
+            {
+                return;
+            }
+
+            var tagInList = SelectedBindedTags.FirstOrDefault(x => x.Tag.Id == tag.Tag.Id && x.Value == tag.Value);
+            if (tagInList != null)
+            {
+                tagInList.SearchType = tagInList.SearchType == SearchType.Include
+                                           ? SearchType.Exclude
+                                           : SearchType.Include;
+            }
+
+            OnSelectedTagsUpdated();
+        }
+
         #endregion Methods
 
         #region Events
@@ -289,26 +319,23 @@ namespace ImoutoNavigator.ViewModel
         private void OnSelectedTagsUpdated()
         {
             var handler = SelectedTagsUpdated;
-            if (handler != null)
-            {
-                handler(this, new EventArgs());
-            }
+            handler?.Invoke(this, new EventArgs());
         }
 
         #endregion Events
     }
 
-    enum Comparator
+    internal enum Comparator
     {
         Equal,
-        NotEqual,
+        NotEqual
         //MoreOrEqual,
         //More,
         //LessOrEqual,
         //Less
     }
 
-    static class ComparatorExtensions
+    internal static class ComparatorExtensions
     {
         public static string ToFriendlyString(this Comparator me)
         {
@@ -319,14 +346,14 @@ namespace ImoutoNavigator.ViewModel
                     return "=";
                 case Comparator.NotEqual:
                     return "!=";
-                    //case Comparator.MoreOrEqual:
-                    //    return ">=";
-                    //case Comparator.More:
-                    //    return ">";
-                    //case Comparator.LessOrEqual:
-                    //    return "<=";
-                    //case Comparator.Less:
-                    //    return "<";
+                //case Comparator.MoreOrEqual:
+                //    return ">=";
+                //case Comparator.More:
+                //    return ">";
+                //case Comparator.LessOrEqual:
+                //    return "<=";
+                //case Comparator.Less:
+                //    return "<";
             }
         }
 
@@ -339,20 +366,20 @@ namespace ImoutoNavigator.ViewModel
                     return Comparator.Equal;
                 case "!=":
                     return Comparator.NotEqual;
-                    //case ">=":
-                    //    return Comparator.MoreOrEqual;
-                    //case ">":
-                    //    return Comparator.More;
-                    //case "<=":
-                    //    return Comparator.LessOrEqual;
-                    //case "<":
-                    //    return Comparator.Less;
+                //case ">=":
+                //    return Comparator.MoreOrEqual;
+                //case ">":
+                //    return Comparator.More;
+                //case "<=":
+                //    return Comparator.LessOrEqual;
+                //case "<":
+                //    return Comparator.Less;
             }
         }
 
         public static IEnumerable<T> GetValues<T>()
         {
-            return Enum.GetValues(typeof(T)).Cast<T>();
+            return Enum.GetValues(typeof (T)).Cast<T>();
         }
     }
 }
