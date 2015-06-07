@@ -6,7 +6,7 @@
 2window mode
 Animuted on single select
 Animuted icon
-drag&drop
++drag&drop
 
 +Taaags
 
@@ -19,8 +19,8 @@ tags screen
 	add tags
 	remove tags
 	edit tag
-Collection screen
-Collection/source check on exist
++Collection screen
++Collection/source check on exist
 
 
 ---
@@ -38,4 +38,4 @@ Imouto Viewer Integration
 	send context
 	2 window mode
 
-notes
++notes
