@@ -245,7 +245,7 @@ namespace ImoutoViewer.ViewModel
         {
             TagsCollection.Clear();
 
-            foreach (var tag in tags.Where(x => x.Source != Source.System))
+            foreach (var tag in tags.Where(x => x.Tag.Type.Title != "LocalMeta"))
             {
                 TagsCollection.Add(new BindedTagVM(tag, this));
             }
@@ -270,11 +270,59 @@ namespace ImoutoViewer.ViewModel
         {
             SourcesCollection.Clear();
 
+            var ParsedSources = TagsCollection.Select(x => x.Source).Where(x => x != "User").Distinct();
+            if (ParsedSources.Count() > 1)
+            {
+
+                SourcesCollection.Add(new SourceVM
+                                      {
+                                          Title = "Common"
+                                      });
+
+
+                var commonBindedTagVms = SourcesCollection.Last().TagsCollection;
+
+                TagsCollection.Where(
+                                     tag =>
+                                     ParsedSources.All(
+                                                       x =>
+                                                       TagsCollection.Any(
+                                                                          tagg =>
+                                                                          tagg.Source == x && tagg.Title == tag.Title)))
+                              .ForEach(x => commonBindedTagVms.Add(x));
+
+                for (int i = 0; i < commonBindedTagVms.Count;)
+                {
+                    if (
+                        commonBindedTagVms.Any(
+                                               y =>
+                                               y.Title == commonBindedTagVms[i].Title
+                                               && commonBindedTagVms.IndexOf(y) != i))
+                    {
+                        commonBindedTagVms.Remove(commonBindedTagVms[i]);
+                    }
+                    else
+                    {
+                        i++;
+                    }
+                }
+
+                if (!commonBindedTagVms.Any())
+                {
+                    SourcesCollection.Clear();
+                }
+            }
+
             foreach (var source in TagsCollection.Select(x => x.Source).Distinct())
             {
                 SourcesCollection.Add(new SourceVM { Title = source });
 
-                TagsCollection.Where(x => x.Source == source).ForEach(x => SourcesCollection.Last().TagsCollection.Add(x));
+                TagsCollection.Where(x => x.Source == source 
+                                            && (SourcesCollection
+                                            .FirstOrDefault()
+                                            ?.TagsCollection
+                                            ?.All(y => y.Title != x.Title) ?? false))
+                              .ForEach(x => SourcesCollection.Last().TagsCollection.Add(x));
             }
         }
 

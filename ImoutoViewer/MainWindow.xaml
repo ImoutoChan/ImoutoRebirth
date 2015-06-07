@@ -405,7 +405,6 @@
 
                     <metroControl:ProgressRing IsActive="{Binding IsLoading}" />
 
-
                     <ItemsControl ItemsSource="{Binding Tags.NotesCollection}"
                                   Visibility="{Binding Path=Tags.ShowNotes, Converter={StaticResource ConditionVisibilityConverter}, ConverterParameter=true}">
                         <ItemsControl.ItemsPanel>
