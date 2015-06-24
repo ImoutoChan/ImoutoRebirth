@@ -15,49 +15,46 @@ namespace ImoutoNavigator.ViewModel
     internal class TagSearchVM : VMBase
     {
         #region Fields
-
-        private MainWindowVM _mainWindowVM;
+        
         private string _searchString;
-        //private ObservableCollection<KeyValuePair<TagM, int>>   _tagListCurrent     = new ObservableCollection<KeyValuePair<TagM, int>>();
         private Tag _selectedHintBoxTag;
         private bool _isValueEnterMode;
         private string _enteredValue;
         private List<string> _comparators;
         private string _selectedComparator;
+        private KeyValuePair<string, int?> _selectedColleciton;
 
         #endregion Fields
 
         #region Constructors
 
-        public TagSearchVM(MainWindowVM mainWindowVM)
+        public TagSearchVM(ObservableCollection<CollectionVM> collections)
         {
-            _mainWindowVM = mainWindowVM;
+            Collections.Add(new KeyValuePair<string, int?>("All", null));
+            collections.ForEach(x => Collections.Add(new KeyValuePair<string, int?>(x.Name, x.Id)));
+            SelectedColleciton = Collections.FirstOrDefault();
+
             ResetValueEnter();
         }
 
         #endregion Constructors
 
         #region Properties
+        
+        public ObservableCollection<KeyValuePair<string, int?>> Collections { get; } = new ObservableCollection<KeyValuePair<string, int?>>();
 
-        //public ObservableCollection<KeyValuePair<TagM, int>> TagListTop
-        //{
-        //    get
-        //    {
-        //        return new ObservableCollection<KeyValuePair<TagM, int>>(ImageList.Cast<ImageEntryVM>().Select(x => x.ImageModel).GetTopTags());
-        //    }
-        //}
-
-        //public ObservableCollection<KeyValuePair<TagM, int>> TagListCurrent
-        //{
-        //    get
-        //    {
-        //        return _tagListCurrent;
-        //    }
-        //    set
-        //    {
-        //        _tagListCurrent = value;
-        //    }
-        //}
+        public KeyValuePair<string, int?> SelectedColleciton
+        {
+            get
+            {
+                return _selectedColleciton;
+            }
+            set
+            {
+                OnPropertyChanged(ref _selectedColleciton, value, () => SelectedColleciton);
+                OnSelectedCollectionCahnged();
+            }
+        }
 
         public ObservableCollection<Tag> HintBoxTags { get; } = new ObservableCollection<Tag>();
 
@@ -181,6 +178,7 @@ namespace ImoutoNavigator.ViewModel
         }
 
         private ICommand _enterValueOkCommand;
+
         public ICommand EnterValueOkCommand
         {
             get
@@ -321,7 +319,14 @@ namespace ImoutoNavigator.ViewModel
             var handler = SelectedTagsUpdated;
             handler?.Invoke(this, new EventArgs());
         }
+        
+        public event EventHandler SelectedCollectionCahnged;
 
+        private void OnSelectedCollectionCahnged()
+        {
+            var handler = SelectedCollectionCahnged;
+            handler?.Invoke(this, new EventArgs());
+        }
         #endregion Events
     }
 

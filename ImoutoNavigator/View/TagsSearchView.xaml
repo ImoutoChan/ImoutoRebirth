@@ -26,10 +26,16 @@
                     <RowDefinition Height="Auto" />
                     <RowDefinition Height="Auto" />
                     <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
                     <RowDefinition Height="*" />
                 </Grid.RowDefinitions>
-
-                <TextBox Grid.Row="0"
+                
+                <ComboBox Margin="5"
+                          ItemsSource="{Binding Collections}"
+                          SelectedItem="{Binding SelectedColleciton}"
+                          DisplayMemberPath="Key"/>
+                
+                <TextBox Grid.Row="1"
                          Margin="5"
                          metroControl:TextBoxHelper.Watermark="Search tag"
                          Style="{DynamicResource SearchMetroTextBox}"
@@ -37,7 +43,7 @@
                          Text="{Binding Path=SearchString, UpdateSourceTrigger=PropertyChanged}"
                          PreviewKeyDown="TextBox_KeyDown" />
 
-                <DockPanel Grid.Row="1"
+                <DockPanel Grid.Row="2"
                            Margin="5"
                            Visibility="{Binding ValueEnterMode, Converter={StaticResource ConditionVisibilityConverter}, ConverterParameter=true}">
                     <ComboBox DockPanel.Dock="Left"
@@ -56,7 +62,7 @@
                              Text="{Binding EnteredValue}" />
                 </DockPanel>
 
-                <Border Grid.Row="2"
+                <Border Grid.Row="3"
                         BorderThickness="1"
                         BorderBrush="{DynamicResource AccentColorBrush}" />
 
@@ -65,12 +71,12 @@
                               ItemsSource="{Binding Path=SelectedBindedTags, UpdateSourceTrigger=PropertyChanged}"
                               ItemTemplate="{StaticResource SelectedBindedTagsElementDataTemplate}" />
 
-                <Border Grid.Row="4"
+                <Border Grid.Row="5"
                         BorderThickness="1"
                         BorderBrush="{DynamicResource AccentColorBrush}" />
 
                 <ItemsControl x:Name="CurrentTags"
-                              Grid.Row="5"
+                              Grid.Row="6"
                               ItemsSource="{Binding Path=TopTags, UpdateSourceTrigger=PropertyChanged}"
                               ItemTemplate="{StaticResource CurrentTagElementDataTemplate}" />
             </Grid>
@@ -81,7 +87,7 @@
                 BorderBrush="{DynamicResource AccentColorBrush}"
                 HorizontalAlignment="Stretch"
                 VerticalAlignment="Top"
-                Margin="5,32,8,0"
+                Margin="5,68,8,0"
                 Visibility="{Binding HintBoxTags.Count, Converter={StaticResource ConditionVisibilityConverter}, ConverterParameter=!0}">
             <ListBox x:Name="HintListBox"
                      ItemsSource="{Binding HintBoxTags}"

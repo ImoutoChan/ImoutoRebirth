@@ -33,12 +33,14 @@ namespace ImoutoNavigator.ViewModel
         {
             InitializeCommands();
 
-            TagSearchVM = new TagSearchVM(this);
-            TagSearchVM.SelectedTagsUpdated += TagSearchVM_SelectedTagsUpdated;
 
             ImageList.CollectionChanged += (s, e) => OnPropertyChanged(() => this.LoadedCount);
 
             CollectionManager.ReloadCollections();
+
+            TagSearchVM = new TagSearchVM(CollectionManager.Collections);
+            TagSearchVM.SelectedTagsUpdated += TagSearchVM_SelectedTagsUpdated;
+            TagSearchVM.SelectedCollectionCahnged += TagSearchVMOnSelectedCollectionCahnged;
 
             _view = new MainWindow { DataContext = this };
             _view.Loaded += _view_Loaded;
@@ -410,7 +412,8 @@ namespace ImoutoNavigator.ViewModel
                 return new ObservableCollection<ImageEntryVM>(
                     ImoutoService.Use(imoutoService =>
                     {
-                        return imoutoService.SearchImage(TagSearchVM.SelectedBindedTags.Select(x => x.Model).ToList(), count, skip);
+                        return imoutoService.SearchImage(TagSearchVM.SelectedColleciton.Value, 
+                                                            TagSearchVM.SelectedBindedTags.Select(x => x.Model).ToList(), count, skip);
                     })
                     .Select(x => new ImageEntryVM(x, PreviewSize))
                     .SkipExceptions()
@@ -425,7 +428,8 @@ namespace ImoutoNavigator.ViewModel
                 return
                     ImoutoService.Use(imoutoService =>
                     {
-                        return imoutoService.CountSearchImage(TagSearchVM.SelectedBindedTags.Select(x => x.Model).ToList());
+                        return imoutoService.CountSearchImage(TagSearchVM.SelectedColleciton.Value, 
+                                                                TagSearchVM.SelectedBindedTags.Select(x => x.Model).ToList());
                     });
             });
         }
@@ -441,6 +445,11 @@ namespace ImoutoNavigator.ViewModel
         }
 
         private void TagSearchVM_SelectedTagsUpdated(object sender, EventArgs e)
+        {
+            Reload();
+        }
+
+        private void TagSearchVMOnSelectedCollectionCahnged(object sender, EventArgs eventArgs)
         {
             Reload();
         }
