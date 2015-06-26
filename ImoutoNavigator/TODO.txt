@@ -4,8 +4,8 @@
 ++opening
 
 2window mode
-Animuted on single select
-Animuted icon
+++Animuted on single select
+++Animuted icon
 +drag&drop
 
 +Taaags

@@ -149,9 +149,13 @@
     <Compile Include="ViewModel\CollectionManagerVM.cs" />
     <Compile Include="ViewModel\CollectionVM.cs" />
     <Compile Include="ViewModel\DestinationFolderVM.cs" />
+    <Compile Include="ViewModel\EntryVM.cs" />
     <Compile Include="ViewModel\ImageEntryVM.cs" />
+    <Compile Include="ViewModel\INavigatorListEntry.cs" />
+    <Compile Include="ViewModel\ListEntryType.cs" />
     <Compile Include="ViewModel\MainWindowVM.cs" />
     <Compile Include="ViewModel\FolderVM.cs" />
+    <Compile Include="ViewModel\SettingsVM.cs" />
     <Compile Include="ViewModel\SourceFolderVM.cs" />
     <Compile Include="ViewModel\TagSearchVM.cs" />
     <Compile Include="ViewModel\TagVM.cs" />
@@ -160,8 +164,8 @@
     <Compile Include="View\CollectionsView.xaml.cs">
       <DependentUpon>CollectionsView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="View\ListEntryView.xaml.cs">
-      <DependentUpon>ListEntryView.xaml</DependentUpon>
+    <Compile Include="View\Flyouts\SettingsView.xaml.cs">
+      <DependentUpon>SettingsView.xaml</DependentUpon>
     </Compile>
     <Compile Include="View\StatusBarView.xaml.cs">
       <DependentUpon>StatusBarView.xaml</DependentUpon>
@@ -204,7 +208,7 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="View\ListEntryView.xaml">
+    <Page Include="View\Flyouts\SettingsView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

@@ -104,12 +104,14 @@ namespace ImoutoNavigator
 
         private void Button_Click(object sender, RoutedEventArgs e)
         {
+            var button = sender as Button;
+            var flyout = button.Tag as Flyout;
 
             foreach (Flyout item in Flyouts.Items)
             {
                 item.IsOpen = false;
             }
-            CollectionsFlyOut.IsOpen = !CollectionsFlyOut.IsOpen;
+            flyout.IsOpen = !flyout.IsOpen;
         }
 
         private void Grid_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)

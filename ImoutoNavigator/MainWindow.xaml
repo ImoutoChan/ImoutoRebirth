@@ -13,6 +13,7 @@
                           xmlns:behavior="clr-namespace:ImoutoNavigator.Behavior"
                           xmlns:webMPlayerControlLibrary="clr-namespace:WebMPlayerControlLibrary;assembly=WebMPlayerControlLibrary"
                           xmlns:gif="http://wpfanimatedgif.codeplex.com"
+                          xmlns:flyouts="clr-namespace:ImoutoNavigator.View.Flyouts"
                           d:DataContext="{d:DesignInstance viewModel:MainWindowVM, IsDesignTimeCreatable=False}"
                           mc:Ignorable="d"
                           WindowStartupLocation="CenterScreen"
@@ -44,21 +45,34 @@
                                  Position="Right"
                                  DataContext="{Binding Path=CollectionManager}"
                                  Theme="Inverse">
+                <flyouts:CollectionsView />
+            </metroControl:Flyout>
+
+            <metroControl:Flyout x:Name="SettingFlyout"
+                                 Width="250"
+                                 Header="Settings"
+                                 Position="Right"
+                                 DataContext="{Binding Path=Settings}"
+                                 Theme="Inverse">
                 <i:Interaction.Triggers>
                     <i:EventTrigger EventName="IsOpenChanged">
                         <i:InvokeCommandAction Command="{Binding SaveCommand}" />
                     </i:EventTrigger>
                 </i:Interaction.Triggers>
 
-                <view:CollectionsView />
+                <flyouts:SettingsView />
             </metroControl:Flyout>
         </metroControl:FlyoutsControl>
     </metroControl:MetroWindow.Flyouts>
 
     <metroControl:MetroWindow.RightWindowCommands>
         <metroControl:WindowCommands>
-            <Button Content="Collections..."
-                    Click="Button_Click" />
+            <Button Content="Collections"
+                    Click="Button_Click"
+                    Tag="{Binding ElementName=CollectionsFlyOut}" />
+            <Button Content="Settings"
+                    Click="Button_Click"
+                    Tag="{Binding ElementName=SettingFlyout}" />
         </metroControl:WindowCommands>
     </metroControl:MetroWindow.RightWindowCommands>
 
@@ -151,8 +165,8 @@
                                            Template="{StaticResource VideoOverlayIcon}"
                                            Visibility="{Binding Path=Type, Converter={StaticResource ConditionVisibilityConverter}, ConverterParameter=Video}">
                                         <Label.Effect>
-                                            <DropShadowEffect Color="White"
-                                                              BlurRadius="10"
+                                            <DropShadowEffect Color="{Binding Source={StaticResource WhiteBrush}, Path=Color, Mode=OneTime}"
+                                                              BlurRadius="5"
                                                               Opacity="0.9"
                                                               Direction="315"
                                                               ShadowDepth="3" />
@@ -165,8 +179,8 @@
                                            Template="{StaticResource GifOverlayIcon}"
                                            Visibility="{Binding Path=Type, Converter={StaticResource ConditionVisibilityConverter}, ConverterParameter=Gif}">
                                         <Label.Effect>
-                                            <DropShadowEffect Color="White"
-                                                              BlurRadius="10"
+                                            <DropShadowEffect Color="{Binding Source={StaticResource WhiteBrush}, Path=Color, Mode=OneTime}"
+                                                              BlurRadius="5"
                                                               Opacity="0.9"
                                                               Direction="315"
                                                               ShadowDepth="3" />
@@ -249,6 +263,8 @@
 
                                     <ControlTemplate.Triggers>
                                         <!-- Data template selection -->
+
+                                        <!-- !Selected -->
                                         <Trigger Property="IsSelected"
                                                  Value="False">
                                             <Setter Property="ContentTemplate"
@@ -256,12 +272,33 @@
                                                     TargetName="ContentControl" />
                                         </Trigger>
 
+                                        <!-- Selected && !ShowPreview -->
                                         <MultiDataTrigger>
                                             <MultiDataTrigger.Conditions>
                                                 <Condition Binding="{Binding RelativeSource={RelativeSource Self}, Path=IsSelected}"
                                                            Value="True" />
 
-                                                <Condition Binding="{Binding Type, Converter={StaticResource BooleanResultConverter}, ConverterParameter=Gif}"
+                                                <Condition Binding="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type Window}}, Path=DataContext.ShowPreview}"
+                                                           Value="False" />
+                                            </MultiDataTrigger.Conditions>
+
+                                            <MultiDataTrigger.Setters>
+                                                <Setter Property="ContentTemplate"
+                                                        Value="{StaticResource PreviewListBoxItemTemplate}"
+                                                        TargetName="ContentControl" />
+                                            </MultiDataTrigger.Setters>
+                                        </MultiDataTrigger>
+
+                                        <!-- Selected && Gif && ShowPreview -->
+                                        <MultiDataTrigger>
+                                            <MultiDataTrigger.Conditions>
+                                                <Condition Binding="{Binding RelativeSource={RelativeSource Self}, Path=IsSelected}"
+                                                           Value="True" />
+
+                                                <Condition Binding="{Binding Type}"
+                                                           Value="{x:Static viewModel:ListEntryType.Gif}" />
+
+                                                <Condition Binding="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type Window}}, Path=DataContext.ShowPreview}"
                                                            Value="True" />
                                             </MultiDataTrigger.Conditions>
 
@@ -272,6 +309,7 @@
                                             </MultiDataTrigger.Setters>
                                         </MultiDataTrigger>
 
+                                        <!-- Selected && Video && ShowPreview -->
                                         <MultiDataTrigger>
                                             <MultiDataTrigger.Conditions>
                                                 <Condition Binding="{Binding RelativeSource={RelativeSource Self}, Path=IsSelected}"
@@ -279,6 +317,9 @@
 
                                                 <Condition Binding="{Binding Type}"
                                                            Value="{x:Static viewModel:ListEntryType.Video}" />
+
+                                                <Condition Binding="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type Window}}, Path=DataContext.ShowPreview}"
+                                                           Value="True" />
                                             </MultiDataTrigger.Conditions>
 
                                             <MultiDataTrigger.Setters>
@@ -288,6 +329,7 @@
                                             </MultiDataTrigger.Setters>
                                         </MultiDataTrigger>
 
+                                        <!-- Selected && Image && ShowPreview -->
                                         <MultiDataTrigger>
                                             <MultiDataTrigger.Conditions>
                                                 <Condition Binding="{Binding RelativeSource={RelativeSource Self}, Path=IsSelected}"
@@ -295,6 +337,9 @@
 
                                                 <Condition Binding="{Binding Type}"
                                                            Value="{x:Static viewModel:ListEntryType.Image}" />
+
+                                                <Condition Binding="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type Window}}, Path=DataContext.ShowPreview}"
+                                                           Value="True" />
                                             </MultiDataTrigger.Conditions>
 
                                             <MultiDataTrigger.Setters>
@@ -303,7 +348,8 @@
                                                         TargetName="ContentControl" />
                                             </MultiDataTrigger.Setters>
                                         </MultiDataTrigger>
-                                        <!-- Data template selection -->
+
+                                        <!-- /Data template selection -->
 
 
                                         <!-- Visual -->

@@ -151,3 +151,4 @@ $RECYCLE.BIN/
 packages/
 ImoutoViewer.sln.ide/*
 /Imouto Navigator.sln.ide
+*.DotSettings

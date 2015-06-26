@@ -1,9 +1,8 @@
-﻿<UserControl x:Class="ImoutoNavigator.View.CollectionsView"
+﻿<UserControl x:Class="ImoutoNavigator.View.Flyouts.CollectionsView"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-             xmlns:viewModel="clr-namespace:ImoutoNavigator.ViewModel"
              xmlns:Controls="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
              xmlns:converters="clr-namespace:ImoutoNavigator.Converters"
              mc:Ignorable="d"
@@ -14,6 +13,7 @@
                BasedOn="{StaticResource ButtonStyleDefault}" />
 
         <converters:ConditionVisibilityConverter x:Key="ConditionVisibilityConverter" />
+
         <converters:BooleanResultConverter x:Key="BooleanResultConverter" />
     </UserControl.Resources>
     <Grid Margin="15,15,5,15">
@@ -29,7 +29,7 @@
                           SelectedItem="{Binding SelectedCollection}"
                           Name="Collectons"
                           DisplayMemberPath="Name"
-                          Margin="10,0,0,0"/>
+                          Margin="10,0,0,0" />
 
                 <StackPanel HorizontalAlignment="Right"
                             Orientation="Horizontal"
@@ -37,15 +37,15 @@
                     <Button Content="Rename"
                             Click="RenameButton_Click"
                             Margin="10,0,0,0"
-                            IsEnabled="{Binding ElementName=Collectons, Path=SelectedItem, Converter={StaticResource BooleanResultConverter}, ConverterParameter=!null}"/>
+                            IsEnabled="{Binding ElementName=Collectons, Path=SelectedItem, Converter={StaticResource BooleanResultConverter}, ConverterParameter=!null}" />
 
-                    <Button Content="Delete" 
+                    <Button Content="Delete"
                             Command="{Binding RemoveCommand}"
-                            Margin="10,0,0,0"/>
-                
+                            Margin="10,0,0,0" />
+
                     <Button Content="Create"
                             Click="CreateButton_Click"
-                            Margin="10,0,0,0"/>
+                            Margin="10,0,0,0" />
                 </StackPanel>
 
                 <StackPanel Visibility="{Binding ElementName=Collectons, Path=SelectedItem, Converter={StaticResource ConditionVisibilityConverter}, ConverterParameter=!null}">
@@ -155,18 +155,15 @@
 
                         <TextBlock Text="Subfolder for images with incorrect format"
                                    Margin="0,10,0,0" />
-                        <TextBox
-                            Text="{Binding IncorrectFormatSubpath, ValidatesOnDataErrors=True, UpdateSourceTrigger=PropertyChanged}" />
+                        <TextBox Text="{Binding IncorrectFormatSubpath, ValidatesOnDataErrors=True, UpdateSourceTrigger=PropertyChanged}" />
 
                         <TextBlock Text="Subfolder for images with incorrect hash"
                                    Margin="0,10,0,0" />
-                        <TextBox
-                            Text="{Binding IncorrectHashSubpath, ValidatesOnDataErrors=True, UpdateSourceTrigger=PropertyChanged}" />
+                        <TextBox Text="{Binding IncorrectHashSubpath, ValidatesOnDataErrors=True, UpdateSourceTrigger=PropertyChanged}" />
 
                         <TextBlock Text="Subfolder for images without hash"
                                    Margin="0,10,0,0" />
-                        <TextBox
-                            Text="{Binding NonHashSubpath, ValidatesOnDataErrors=True, UpdateSourceTrigger=PropertyChanged}" />
+                        <TextBox Text="{Binding NonHashSubpath, ValidatesOnDataErrors=True, UpdateSourceTrigger=PropertyChanged}" />
 
                         <StackPanel HorizontalAlignment="Right"
                                     Orientation="Horizontal"
@@ -198,7 +195,8 @@
                             <Button Content="Create"
                                     Command="{Binding CreateDestinationFolderCommand}" />
                         </StackPanel>
-                    </StackPanel></StackPanel>
+                    </StackPanel>
+                </StackPanel>
             </StackPanel>
         </ScrollViewer>
     </Grid>

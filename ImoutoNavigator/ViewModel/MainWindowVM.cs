@@ -41,6 +41,8 @@ namespace ImoutoNavigator.ViewModel
             TagSearchVM.SelectedTagsUpdated += TagSearchVM_SelectedTagsUpdated;
             TagSearchVM.SelectedCollectionCahnged += TagSearchVMOnSelectedCollectionCahnged;
 
+            Settings.ShowPreviewOnSelectChanged += Settings_ShowPreviewOnSelectChanged;
+
             _view = new MainWindow { DataContext = this };
             _view.Loaded += _view_Loaded;
             _view.Show();
@@ -54,7 +56,6 @@ namespace ImoutoNavigator.ViewModel
 
         private Size PreviewSize => new Size(_previewSize, _previewSize);
 
-
         public ObservableCollection<INavigatorListEntry> NavigatorList { get; } = new ObservableCollection<INavigatorListEntry>();
 
         public string Title => "Imouto Navigator";
@@ -62,6 +63,8 @@ namespace ImoutoNavigator.ViewModel
         public TagSearchVM TagSearchVM { get; }
 
         public CollectionManagerVM CollectionManager { get; } = new CollectionManagerVM();
+
+        public SettingsVM Settings { get; } = new SettingsVM();
 
         public bool IsLoading
         {
@@ -98,6 +101,8 @@ namespace ImoutoNavigator.ViewModel
             get { return _statusToolTip; }
             set { OnPropertyChanged(ref _statusToolTip, value, () => this.StatusToolTip); }
         }
+
+        public bool ShowPreview => Settings.ShowPreviewOnSelect;
 
         #endregion Properties
 
@@ -450,6 +455,11 @@ namespace ImoutoNavigator.ViewModel
         private void TagSearchVMOnSelectedCollectionCahnged(object sender, EventArgs eventArgs)
         {
             Reload();
+        }
+
+        private void Settings_ShowPreviewOnSelectChanged(object sender, EventArgs e)
+        {
+            OnPropertyChanged(() => ShowPreview);
         }
 
         #endregion Event handlers

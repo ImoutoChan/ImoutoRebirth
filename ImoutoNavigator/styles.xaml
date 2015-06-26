@@ -366,8 +366,8 @@
 
     <ControlTemplate x:Key="VideoOverlayIcon"
                      TargetType="{x:Type Label}">
-        <Rectangle Width="20"
-                   Height="20"
+        <Rectangle Width="30"
+                   Height="30"
                    Fill="{StaticResource BlackBrush}">
             <Rectangle.OpacityMask>
                 <VisualBrush Stretch="Fill"
@@ -378,8 +378,8 @@
 
     <ControlTemplate x:Key="GifOverlayIcon"
                      TargetType="{x:Type Label}">
-        <Rectangle Width="20"
-                   Height="20"
+        <Rectangle Width="30"
+                   Height="30"
                    Fill="{StaticResource BlackBrush}">
             <Rectangle.OpacityMask>
                 <VisualBrush Stretch="Fill"

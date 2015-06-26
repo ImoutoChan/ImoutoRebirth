@@ -4,7 +4,7 @@ using System.Windows.Controls;
 using ImoutoNavigator.ViewModel;
 using MahApps.Metro.Controls.Dialogs;
 
-namespace ImoutoNavigator.View
+namespace ImoutoNavigator.View.Flyouts
 {
     /// <summary>
     /// Interaction logic for CollectionsView.xaml
