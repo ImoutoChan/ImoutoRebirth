@@ -89,17 +89,17 @@ namespace ImoutoNavigator.Model
             {
                 switch (_imageFileInfo.Extension.ToLower())
                 {
-                    case "jpeg":
+                    case ".jpeg":
                         return ImageFormat.JPEG;
-                    case "jpg":
+                    case ".jpg":
                         return ImageFormat.JPG;
-                    case "gif":
+                    case ".gif":
                         return ImageFormat.GIF;
-                    case "bmp":
+                    case ".bmp":
                         return ImageFormat.BMP;
-                    case "tiff":
+                    case ".tiff":
                         return ImageFormat.TIFF;
-                    case "png":
+                    case ".png":
                         return ImageFormat.PNG;
                     default:
                         return ImageFormat.JPG;
@@ -165,6 +165,7 @@ namespace ImoutoNavigator.Model
         private async void LoadAsyns()
         {
             _isLoading = true;
+            OnImageChanged();
 
             PreviewLoadingThreadQueue.Add(Load);
 

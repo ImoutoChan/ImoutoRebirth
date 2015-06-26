@@ -9,9 +9,10 @@
                           xmlns:userControl="clr-namespace:ImoutoNavigator.UserControls"
                           xmlns:converter="clr-namespace:ImoutoNavigator.Converters"
                           xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
-                          xmlns:imoutoNavigator="clr-namespace:ImoutoNavigator"
                           xmlns:view="clr-namespace:ImoutoNavigator.View"
                           xmlns:behavior="clr-namespace:ImoutoNavigator.Behavior"
+                          xmlns:webMPlayerControlLibrary="clr-namespace:WebMPlayerControlLibrary;assembly=WebMPlayerControlLibrary"
+                          xmlns:gif="http://wpfanimatedgif.codeplex.com"
                           d:DataContext="{d:DesignInstance viewModel:MainWindowVM, IsDesignTimeCreatable=False}"
                           mc:Ignorable="d"
                           WindowStartupLocation="CenterScreen"
@@ -83,9 +84,10 @@
             <ListBox x:Name="ListBoxElement"
                      Grid.Column="1"
                      ScrollViewer.HorizontalScrollBarVisibility="Disabled"
-                     ItemsSource="{Binding Path=ImageList, UpdateSourceTrigger=PropertyChanged}"
+                     ItemsSource="{Binding Path=NavigatorList, UpdateSourceTrigger=PropertyChanged}"
                      SelectionMode="Extended"
-                     Visibility="{Binding Path=IsLoading, Converter={StaticResource ConditionVisibilityConverter}, ConverterParameter=false, Mode=OneWay}">
+                     Visibility="{Binding Path=IsLoading, Converter={StaticResource ConditionVisibilityConverter}, ConverterParameter=false, Mode=OneWay}"
+                     ItemContainerStyle="{DynamicResource ListBoxItemStyle}">
                 <ListBox.InputBindings>
                     <MouseBinding Command="{Binding Path=ZoomOutCommand}"
                                   Gesture="{x:Static userControl:MouseWheelGesture.CtrlDown}" />
@@ -107,51 +109,130 @@
                     </ControlTemplate>
                 </ListBox.Template>
 
-                <ListBox.ItemContainerStyle>
-                    <Style TargetType="{x:Type ListBoxItem}">
-                        <Setter Property="SnapsToDevicePixels"
-                                Value="True" />
-                        <Setter Property="Padding"
-                                Value="4,4" />
-                        <Setter Property="HorizontalContentAlignment"
-                                Value="Center" />
-                        <Setter Property="VerticalContentAlignment"
-                                Value="Center" />
-                        <Setter Property="Background"
-                                Value="Transparent" />
-                        <Setter Property="BorderBrush"
-                                Value="Transparent" />
-                        <Setter Property="BorderThickness"
-                                Value="1" />
-                        <Setter Property="FontSize"
-                                Value="16" />
-                        <Setter Property="Foreground"
-                                Value="#999999" />
-                        <Setter Property="FocusVisualStyle">
-                            <Setter.Value>
-                                <Style>
-                                    <Setter Property="Control.Template">
-                                        <Setter.Value>
-                                            <ControlTemplate>
-                                                <Rectangle Margin="2"
-                                                           SnapsToDevicePixels="True"
-                                                           Stroke="{DynamicResource {x:Static SystemColors.ControlTextBrushKey}}"
-                                                           StrokeDashArray="1 2"
-                                                           StrokeThickness="1" />
-                                            </ControlTemplate>
-                                        </Setter.Value>
-                                    </Setter>
-                                </Style>
-                            </Setter.Value>
-                        </Setter>
+                <ListBox.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <userControl:VirtualizingWrapPanel IsItemsHost="True"
+                                                           Orientation="Horizontal"
+                                                           ItemWidth="{Binding SlotSize.Width}"
+                                                           ItemHeight="{Binding SlotSize.Height}" />
+                    </ItemsPanelTemplate>
+                </ListBox.ItemsPanel>
+
+                <ListBox.Resources>
+                    <DataTemplate x:Key="PreviewListBoxItemTemplate"
+                                  DataType="{x:Type ContentControl}">
+                        <Border Margin="0,11,0,11">
+                            <i:Interaction.Behaviors>
+                                <behavior:FrameworkElementDragBehavior />
+                            </i:Interaction.Behaviors>
+
+                            <Border.Effect>
+                                <DropShadowEffect />
+                            </Border.Effect>
+
+                            <Grid Width="{Binding Path=ViewPortSize.Width}"
+                                  Height="{Binding Path=ViewPortSize.Height}">
+                                <Grid>
+                                    <Ellipse Width="10"
+                                             Height="10"
+                                             Fill="{DynamicResource GrayBrush10}"
+                                             Visibility="{Binding Path=IsLoading, 
+                                                                  Converter={StaticResource ConditionVisibilityConverter},
+                                                                  ConverterParameter=true}" />
+
+                                    <Image Source="{Binding Path=Image}"
+                                           Visibility="{Binding Path=IsLoading, 
+                                                                Converter={StaticResource ConditionVisibilityConverter},
+                                                                ConverterParameter=false}" />
+
+                                    <Label HorizontalAlignment="Left"
+                                           VerticalAlignment="Top"
+                                           Margin="5,5,5,5"
+                                           Template="{StaticResource VideoOverlayIcon}"
+                                           Visibility="{Binding Path=Type, Converter={StaticResource ConditionVisibilityConverter}, ConverterParameter=Video}">
+                                        <Label.Effect>
+                                            <DropShadowEffect Color="White"
+                                                              BlurRadius="10"
+                                                              Opacity="0.9"
+                                                              Direction="315"
+                                                              ShadowDepth="3" />
+                                        </Label.Effect>
+                                    </Label>
+
+                                    <Label HorizontalAlignment="Left"
+                                           VerticalAlignment="Top"
+                                           Margin="5,5,5,5"
+                                           Template="{StaticResource GifOverlayIcon}"
+                                           Visibility="{Binding Path=Type, Converter={StaticResource ConditionVisibilityConverter}, ConverterParameter=Gif}">
+                                        <Label.Effect>
+                                            <DropShadowEffect Color="White"
+                                                              BlurRadius="10"
+                                                              Opacity="0.9"
+                                                              Direction="315"
+                                                              ShadowDepth="3" />
+                                        </Label.Effect>
+                                    </Label>
+                                </Grid>
+                            </Grid>
+                        </Border>
+                    </DataTemplate>
+
+                    <DataTemplate x:Key="GifListBoxItemTemplate"
+                                  DataType="{x:Type ContentControl}">
+                        <Border Margin="0,11,0,11">
+                            <i:Interaction.Behaviors>
+                                <behavior:FrameworkElementDragBehavior />
+                            </i:Interaction.Behaviors>
+
+                            <Border.Effect>
+                                <DropShadowEffect />
+                            </Border.Effect>
+
+                            <Grid Width="{Binding Path=ViewPortSize.Width}"
+                                  Height="{Binding Path=ViewPortSize.Height}">
+                                <Ellipse Width="10"
+                                         Height="10"
+                                         Fill="{DynamicResource GrayBrush10}"
+                                         Visibility="{Binding Path=IsLoading, 
+                                                            Converter={StaticResource ConditionVisibilityConverter},
+                                                            ConverterParameter=true}" />
+
+                                <Image gif:ImageBehavior.AnimatedSource="{Binding Image}"
+                                       Visibility="{Binding Path=IsLoading, 
+                                                            Converter={StaticResource ConditionVisibilityConverter},
+                                                            ConverterParameter=false}" />
+                            </Grid>
+                        </Border>
+                    </DataTemplate>
+
+                    <DataTemplate x:Key="VideoListBoxItemTemplate"
+                                  DataType="{x:Type ContentControl}">
+                        <Border Margin="0,11,0,11">
+                            <i:Interaction.Behaviors>
+                                <behavior:FrameworkElementDragBehavior />
+                            </i:Interaction.Behaviors>
+
+                            <Border.Effect>
+                                <DropShadowEffect />
+                            </Border.Effect>
+
+                            <Grid Width="{Binding Path=ViewPortSize.Width}"
+                                  Height="{Binding Path=ViewPortSize.Height}">
+                                <webMPlayerControlLibrary:WebMPlayer Source="{Binding Path}" />
+                            </Grid>
+                        </Border>
+                    </DataTemplate>
+
+                    <Style x:Key="ListBoxItemStyle"
+                           TargetType="{x:Type ListBoxItem}">
                         <Setter Property="Template">
                             <Setter.Value>
                                 <ControlTemplate TargetType="{x:Type ListBoxItem}">
                                     <Border x:Name="Bd"
-                                            Background="{TemplateBinding Background}"
-                                            BorderBrush="{TemplateBinding BorderBrush}"
-                                            BorderThickness="{TemplateBinding BorderThickness}"
-                                            Padding="{TemplateBinding Padding}"
+                                            Background="Transparent"
+                                            BorderBrush="Transparent"
+                                            BorderThickness="1"
+                                            Padding="4"
                                             SnapsToDevicePixels="True"
                                             Margin="2">
                                         <Border.InputBindings>
@@ -159,15 +240,73 @@
                                                           Gesture="LeftDoubleClick" />
                                         </Border.InputBindings>
 
-                                        <ContentPresenter HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
-                                                          VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
-                                                          Content="{TemplateBinding Content}"
-                                                          ContentStringFormat="{TemplateBinding ContentStringFormat}"
-                                                          ContentTemplate="{TemplateBinding ContentTemplate}"
-                                                          SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" />
+                                        <ContentControl Name="ContentControl"
+                                                        Content="{Binding}"
+                                                        HorizontalAlignment="Center"
+                                                        VerticalAlignment="Center"
+                                                        SnapsToDevicePixels="True" />
                                     </Border>
 
                                     <ControlTemplate.Triggers>
+                                        <!-- Data template selection -->
+                                        <Trigger Property="IsSelected"
+                                                 Value="False">
+                                            <Setter Property="ContentTemplate"
+                                                    Value="{StaticResource PreviewListBoxItemTemplate}"
+                                                    TargetName="ContentControl" />
+                                        </Trigger>
+
+                                        <MultiDataTrigger>
+                                            <MultiDataTrigger.Conditions>
+                                                <Condition Binding="{Binding RelativeSource={RelativeSource Self}, Path=IsSelected}"
+                                                           Value="True" />
+
+                                                <Condition Binding="{Binding Type, Converter={StaticResource BooleanResultConverter}, ConverterParameter=Gif}"
+                                                           Value="True" />
+                                            </MultiDataTrigger.Conditions>
+
+                                            <MultiDataTrigger.Setters>
+                                                <Setter Property="ContentTemplate"
+                                                        Value="{StaticResource GifListBoxItemTemplate}"
+                                                        TargetName="ContentControl" />
+                                            </MultiDataTrigger.Setters>
+                                        </MultiDataTrigger>
+
+                                        <MultiDataTrigger>
+                                            <MultiDataTrigger.Conditions>
+                                                <Condition Binding="{Binding RelativeSource={RelativeSource Self}, Path=IsSelected}"
+                                                           Value="True" />
+
+                                                <Condition Binding="{Binding Type}"
+                                                           Value="{x:Static viewModel:ListEntryType.Video}" />
+                                            </MultiDataTrigger.Conditions>
+
+                                            <MultiDataTrigger.Setters>
+                                                <Setter Property="ContentTemplate"
+                                                        Value="{StaticResource VideoListBoxItemTemplate}"
+                                                        TargetName="ContentControl" />
+                                            </MultiDataTrigger.Setters>
+                                        </MultiDataTrigger>
+
+                                        <MultiDataTrigger>
+                                            <MultiDataTrigger.Conditions>
+                                                <Condition Binding="{Binding RelativeSource={RelativeSource Self}, Path=IsSelected}"
+                                                           Value="True" />
+
+                                                <Condition Binding="{Binding Type}"
+                                                           Value="{x:Static viewModel:ListEntryType.Image}" />
+                                            </MultiDataTrigger.Conditions>
+
+                                            <MultiDataTrigger.Setters>
+                                                <Setter Property="ContentTemplate"
+                                                        Value="{StaticResource PreviewListBoxItemTemplate}"
+                                                        TargetName="ContentControl" />
+                                            </MultiDataTrigger.Setters>
+                                        </MultiDataTrigger>
+                                        <!-- Data template selection -->
+
+
+                                        <!-- Visual -->
                                         <MultiTrigger>
                                             <MultiTrigger.Conditions>
                                                 <Condition Property="IsMouseOver"
@@ -225,50 +364,13 @@
                                                     Property="TextElement.Foreground"
                                                     Value="{DynamicResource {x:Static SystemColors.GrayTextBrushKey}}" />
                                         </Trigger>
+                                        <!-- Visual -->
                                     </ControlTemplate.Triggers>
                                 </ControlTemplate>
                             </Setter.Value>
                         </Setter>
                     </Style>
-                </ListBox.ItemContainerStyle>
-
-                <ListBox.ItemsPanel>
-                    <ItemsPanelTemplate>
-                        <userControl:VirtualizingWrapPanel IsItemsHost="True"
-                                                           Orientation="Horizontal"
-                                                           ItemWidth="{Binding SlotSize.Width}"
-                                                           ItemHeight="{Binding SlotSize.Height}" />
-                    </ItemsPanelTemplate>
-                </ListBox.ItemsPanel>
-
-                <ListBox.ItemTemplate>
-                    <DataTemplate>
-                        <Border Margin="0,11,0,11">
-                            <i:Interaction.Behaviors>
-                                <behavior:FrameworkElementDragBehavior />
-                            </i:Interaction.Behaviors>
-                            
-                            <Border.Effect>
-                                <DropShadowEffect />
-                            </Border.Effect>
-
-                            <Grid Width="{Binding Path=ViewPortSize.Width}"
-                                  Height="{Binding Path=ViewPortSize.Height}">
-                                <Image Source="{Binding Path=Image}"
-                                       Visibility="{Binding Path=IsLoading, 
-                                                            Converter={StaticResource ConditionVisibilityConverter},
-                                                            ConverterParameter=false}" />
-
-                                <Ellipse Width="10"
-                                         Height="10"
-                                         Fill="{DynamicResource GrayBrush10}"
-                                         Visibility="{Binding Path=IsLoading, 
-                                                              Converter={StaticResource ConditionVisibilityConverter},
-                                                              ConverterParameter=true}" />
-                            </Grid>
-                        </Border>
-                    </DataTemplate>
-                </ListBox.ItemTemplate>
+                </ListBox.Resources>
             </ListBox>
 
             <GridSplitter Grid.Column="0"

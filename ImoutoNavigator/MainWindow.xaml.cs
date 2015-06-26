@@ -42,10 +42,10 @@ namespace ImoutoNavigator
                     return null;
                 }
                 
-                var result = new List<ImageEntryVM>();
+                var result = new List<INavigatorListEntry>();
 
                 result.AddRange(
-                                from ImageEntryVM item in ListBoxElement.Items
+                                from INavigatorListEntry item in ListBoxElement.Items
                                 let listBoxItem =
                                     (FrameworkElement) ListBoxElement.ItemContainerGenerator.ContainerFromItem(item)
                                 where IsFullyOrPartiallyVisible(listBoxItem, ScrollViewerElement)

@@ -1,6 +1,5 @@
 ﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-                    xmlns:Themes="clr-namespace:Microsoft.Windows.Themes;assembly=PresentationFramework.Aero"
                     xmlns:imoutoNavigator="clr-namespace:ImoutoNavigator"
                     xmlns:converters="clr-namespace:ImoutoNavigator.Converters"
                     xmlns:wpfHelpers="clr-namespace:Utils.WPFHelpers;assembly=Utils">
@@ -365,4 +364,27 @@
         </Setter>
     </Style>
 
+    <ControlTemplate x:Key="VideoOverlayIcon"
+                     TargetType="{x:Type Label}">
+        <Rectangle Width="20"
+                   Height="20"
+                   Fill="{StaticResource BlackBrush}">
+            <Rectangle.OpacityMask>
+                <VisualBrush Stretch="Fill"
+                             Visual="{DynamicResource appbar_movie_clapper}" />
+            </Rectangle.OpacityMask>
+        </Rectangle>
+    </ControlTemplate>
+
+    <ControlTemplate x:Key="GifOverlayIcon"
+                     TargetType="{x:Type Label}">
+        <Rectangle Width="20"
+                   Height="20"
+                   Fill="{StaticResource BlackBrush}">
+            <Rectangle.OpacityMask>
+                <VisualBrush Stretch="Fill"
+                             Visual="{DynamicResource appbar_image_export}" />
+            </Rectangle.OpacityMask>
+        </Rectangle>
+    </ControlTemplate>
 </ResourceDictionary>

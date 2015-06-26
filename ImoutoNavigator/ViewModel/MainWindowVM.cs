@@ -13,7 +13,7 @@ using Utils;
 
 namespace ImoutoNavigator.ViewModel
 {
-    internal class MainWindowVM : VMBase
+    class MainWindowVM : VMBase
     {
         #region Fields
 
@@ -33,8 +33,7 @@ namespace ImoutoNavigator.ViewModel
         {
             InitializeCommands();
 
-
-            ImageList.CollectionChanged += (s, e) => OnPropertyChanged(() => this.LoadedCount);
+            NavigatorList.CollectionChanged += (s, e) => OnPropertyChanged(() => this.LoadedCount);
 
             CollectionManager.ReloadCollections();
 
@@ -44,7 +43,6 @@ namespace ImoutoNavigator.ViewModel
 
             _view = new MainWindow { DataContext = this };
             _view.Loaded += _view_Loaded;
-
             _view.Show();
         }
 
@@ -57,7 +55,7 @@ namespace ImoutoNavigator.ViewModel
         private Size PreviewSize => new Size(_previewSize, _previewSize);
 
 
-        public ObservableCollection<ImageEntryVM> ImageList { get; } = new ObservableCollection<ImageEntryVM>();
+        public ObservableCollection<INavigatorListEntry> NavigatorList { get; } = new ObservableCollection<INavigatorListEntry>();
 
         public string Title => "Imouto Navigator";
 
@@ -87,7 +85,7 @@ namespace ImoutoNavigator.ViewModel
             }
         }
 
-        public int LoadedCount => ImageList.Count();
+        public int LoadedCount => NavigatorList.Count();
 
         public string Status
         {
@@ -275,11 +273,11 @@ namespace ImoutoNavigator.ViewModel
             //    GetImagesFromCollectionAsync(1000);                
             //}
 
-            lock (ImageList)
+            lock (NavigatorList)
             {
                 _ctsImageLoading?.Cancel();
 
-                ImageList.Clear();
+                NavigatorList.Clear();
             }
 
             GetImagesFromCollectionAsync(100000, 0, 500);
@@ -292,9 +290,9 @@ namespace ImoutoNavigator.ViewModel
 
 
             //Performance ?
-            lock (ImageList)
+            lock (NavigatorList)
             {
-                foreach (var imageEntry in ImageList)
+                foreach (var imageEntry in NavigatorList)
                 {
                     imageEntry.UpdatePreview(PreviewSize);
                 }
@@ -307,9 +305,9 @@ namespace ImoutoNavigator.ViewModel
         {
             ImageEntry.PreviewLoadingThreadQueue.ClearQueue();
 
-            foreach (ImageEntryVM imageEntry in _view.VisibleItems)
+            foreach (INavigatorListEntry listEntry in _view.VisibleItems)
             {
-                imageEntry.Load();
+                listEntry.Load();
             }
         }
 
@@ -388,10 +386,10 @@ namespace ImoutoNavigator.ViewModel
 
                 var result = await GetImagesFromCollectionAsyncTask(block, skip + count - i);
             
-                lock (ImageList)
+                lock (NavigatorList)
                 {
                     ct.ThrowIfCancellationRequested();
-                    result.ForEach(x => ImageList.Add(x));
+                    result.ForEach(x => NavigatorList.Add(x));
                 }
 
                 sw.Stop();
@@ -405,17 +403,17 @@ namespace ImoutoNavigator.ViewModel
             }
         }
 
-        private Task<ObservableCollection<ImageEntryVM>> GetImagesFromCollectionAsyncTask(int count, int skip)
+        private Task<ObservableCollection<INavigatorListEntry>> GetImagesFromCollectionAsyncTask(int count, int skip)
         {
             return Task.Run(() =>
             {
-                return new ObservableCollection<ImageEntryVM>(
+                return new ObservableCollection<INavigatorListEntry>(
                     ImoutoService.Use(imoutoService =>
                     {
                         return imoutoService.SearchImage(TagSearchVM.SelectedColleciton.Value, 
                                                             TagSearchVM.SelectedBindedTags.Select(x => x.Model).ToList(), count, skip);
                     })
-                    .Select(x => new ImageEntryVM(x, PreviewSize))
+                    .Select(x => EntryVM.GetListEntry(x, PreviewSize))
                     .SkipExceptions()
                     );
             });

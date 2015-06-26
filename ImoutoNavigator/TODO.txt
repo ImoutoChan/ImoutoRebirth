@@ -39,3 +39,6 @@ Imouto Viewer Integration
 	2 window mode
 
 +notes
+
++overlays type
++selection
