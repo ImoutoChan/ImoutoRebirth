@@ -161,7 +161,7 @@
     <Compile Include="ViewModel\TagVM.cs" />
     <Compile Include="ViewModel\VideoEntryVM.cs" />
     <Compile Include="ViewModel\VMBase.cs" />
-    <Compile Include="View\CollectionsView.xaml.cs">
+    <Compile Include="View\Flyouts\CollectionsView.xaml.cs">
       <DependentUpon>CollectionsView.xaml</DependentUpon>
     </Compile>
     <Compile Include="View\Flyouts\SettingsView.xaml.cs">
@@ -204,7 +204,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="View\CollectionsView.xaml">
+    <Page Include="View\Flyouts\CollectionsView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
