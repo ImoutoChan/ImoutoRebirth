@@ -18,7 +18,7 @@ namespace ImoutoNavigator.ViewModel
 
         #region Constructors
 
-        public ImageEntryVM(string imagePath, Size initPreviewSize = new Size())
+        public ImageEntryVM(string imagePath, Size initPreviewSize = new Size(), int? dbId = null)
         {
             ImageEntry = new ImageEntry(imagePath, initPreviewSize);
             ImageEntry.ImageChanged += (s, e) =>
@@ -28,6 +28,7 @@ namespace ImoutoNavigator.ViewModel
                                        };
 
             Type = (ImageEntry.ImageFormat == ImageFormat.GIF) ? ListEntryType.Gif : ListEntryType.Image;
+            DbId = dbId;
         }
 
         #endregion Constructors
@@ -43,6 +44,8 @@ namespace ImoutoNavigator.ViewModel
         public ListEntryType Type { get; }
 
         private ImageEntry ImageEntry { get; }
+
+        public int? DbId { get; }
 
         #endregion Properties
 

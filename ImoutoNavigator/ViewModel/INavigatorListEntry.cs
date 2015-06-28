@@ -15,5 +15,7 @@ namespace ImoutoNavigator.ViewModel
         ListEntryType Type { get; }
 
         Size ViewPortSize { get; }
+
+        int? DbId { get; }
     }
 }

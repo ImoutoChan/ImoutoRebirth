@@ -55,7 +55,7 @@
                                FontWeight="Bold" />
 
                     <ListBox ItemsSource="{Binding ElementName=Collectons, Path=SelectedItem.Sources}"
-                             Height="100"
+                             Height="150"
                              SelectedItem="{Binding ElementName=Collectons, Path=SelectedItem.SelectedSource}"
                              Name="Sources"
                              Margin="10,0,0,0">

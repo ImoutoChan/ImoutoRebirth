@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Linq;
@@ -43,8 +44,11 @@ namespace ImoutoNavigator.ViewModel
 
             Settings.ShowPreviewOnSelectChanged += Settings_ShowPreviewOnSelectChanged;
 
+            TagsEdit = new TagsEditVM(this);
+
             _view = new MainWindow { DataContext = this };
             _view.Loaded += _view_Loaded;
+            _view.SelectedItemsChanged += (sender, args) => OnPropertyChanged(() => SelectedItems);
             _view.Show();
         }
 
@@ -65,6 +69,8 @@ namespace ImoutoNavigator.ViewModel
         public CollectionManagerVM CollectionManager { get; } = new CollectionManagerVM();
 
         public SettingsVM Settings { get; } = new SettingsVM();
+
+        public TagsEditVM TagsEdit { get; }
 
         public bool IsLoading
         {
@@ -103,6 +109,14 @@ namespace ImoutoNavigator.ViewModel
         }
 
         public bool ShowPreview => Settings.ShowPreviewOnSelect;
+
+        public IEnumerable<INavigatorListEntry> SelectedItems
+        {
+            get
+            {
+                return _view.SelectedItems;
+            }
+        }
 
         #endregion Properties
 
@@ -418,7 +432,7 @@ namespace ImoutoNavigator.ViewModel
                         return imoutoService.SearchImage(TagSearchVM.SelectedColleciton.Value, 
                                                             TagSearchVM.SelectedBindedTags.Select(x => x.Model).ToList(), count, skip);
                     })
-                    .Select(x => EntryVM.GetListEntry(x, PreviewSize))
+                    .Select(x => EntryVM.GetListEntry(x.Item1, PreviewSize, x.Item2))
                     .SkipExceptions()
                     );
             });

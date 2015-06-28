@@ -129,7 +129,11 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="Behavior\FrameworkElementDragBehavior.cs" />
+    <Compile Include="Behavior\FrameworkElementDropBehavior.cs" />
+    <Compile Include="Behavior\IDropable.cs" />
     <Compile Include="Behavior\IDragable.cs" />
+    <Compile Include="Behavior\MultiSelectListBoxDragBehavior.cs" />
+    <Compile Include="Behavior\MultiSelectListBoxDropBehavior.cs" />
     <Compile Include="Commands\RelayCommand.cs" />
     <Compile Include="Converters\BooleanResultConverter.cs" />
     <Compile Include="Converters\IntToColorConverter.cs" />
@@ -148,6 +152,7 @@
     </Compile>
     <Compile Include="ViewModel\CollectionManagerVM.cs" />
     <Compile Include="ViewModel\CollectionVM.cs" />
+    <Compile Include="ViewModel\CreateTagVM.cs" />
     <Compile Include="ViewModel\DestinationFolderVM.cs" />
     <Compile Include="ViewModel\EntryVM.cs" />
     <Compile Include="ViewModel\ImageEntryVM.cs" />
@@ -158,14 +163,21 @@
     <Compile Include="ViewModel\SettingsVM.cs" />
     <Compile Include="ViewModel\SourceFolderVM.cs" />
     <Compile Include="ViewModel\TagSearchVM.cs" />
+    <Compile Include="ViewModel\TagsEditVM.cs" />
     <Compile Include="ViewModel\TagVM.cs" />
     <Compile Include="ViewModel\VideoEntryVM.cs" />
     <Compile Include="ViewModel\VMBase.cs" />
+    <Compile Include="View\CreateTagView.xaml.cs">
+      <DependentUpon>CreateTagView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="View\Flyouts\CollectionsView.xaml.cs">
       <DependentUpon>CollectionsView.xaml</DependentUpon>
     </Compile>
     <Compile Include="View\Flyouts\SettingsView.xaml.cs">
       <DependentUpon>SettingsView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\Flyouts\TagsEditView.xaml.cs">
+      <DependentUpon>TagsEditView.xaml</DependentUpon>
     </Compile>
     <Compile Include="View\StatusBarView.xaml.cs">
       <DependentUpon>StatusBarView.xaml</DependentUpon>
@@ -204,11 +216,19 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
+    <Page Include="View\CreateTagView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="View\Flyouts\CollectionsView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="View\Flyouts\SettingsView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="View\Flyouts\TagsEditView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

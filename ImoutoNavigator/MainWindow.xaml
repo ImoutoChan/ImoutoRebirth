@@ -1,4 +1,5 @@
 ﻿<metroControl:MetroWindow x:Class="ImoutoNavigator.MainWindow"
+                          x:ClassModifier="internal"
                           xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                           xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                           xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
@@ -62,6 +63,15 @@
 
                 <flyouts:SettingsView />
             </metroControl:Flyout>
+
+            <metroControl:Flyout x:Name="TagsEditFlyout"
+                                 Height="350"
+                                 Header="Add tags"
+                                 Position="Bottom"
+                                 DataContext="{Binding Path=TagsEdit}"
+                                 Theme="Inverse">
+                <flyouts:TagsEditView />
+            </metroControl:Flyout>
         </metroControl:FlyoutsControl>
     </metroControl:MetroWindow.Flyouts>
 
@@ -101,7 +111,8 @@
                      ItemsSource="{Binding Path=NavigatorList, UpdateSourceTrigger=PropertyChanged}"
                      SelectionMode="Extended"
                      Visibility="{Binding Path=IsLoading, Converter={StaticResource ConditionVisibilityConverter}, ConverterParameter=false, Mode=OneWay}"
-                     ItemContainerStyle="{DynamicResource ListBoxItemStyle}">
+                     ItemContainerStyle="{DynamicResource ListBoxItemStyle}"
+                     KeyUp="UIElement_OnKeyUp">
                 <ListBox.InputBindings>
                     <MouseBinding Command="{Binding Path=ZoomOutCommand}"
                                   Gesture="{x:Static userControl:MouseWheelGesture.CtrlDown}" />

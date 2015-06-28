@@ -6,29 +6,29 @@ namespace ImoutoNavigator.Behavior
 {
     class FrameworkElementDragBehavior : Behavior<FrameworkElement>
     {
-        private bool _isMouseClicked;
+        protected bool IsMouseClicked { get; set; }
 
         protected override void OnAttached()
         {
             base.OnAttached();
-            AssociatedObject.MouseLeftButtonDown += AssociatedObject_MouseLeftButtonDown;
+            AssociatedObject.PreviewMouseLeftButtonDown += AssociatedObject_MouseLeftButtonDown;
             AssociatedObject.MouseLeftButtonUp += AssociatedObject_MouseLeftButtonUp;
             AssociatedObject.MouseLeave += AssociatedObject_MouseLeave;
         }
 
         void AssociatedObject_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
-            _isMouseClicked = true;
+            IsMouseClicked = true;
         }
 
         void AssociatedObject_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
         {
-            _isMouseClicked = false;
+            IsMouseClicked = false;
         }
 
-        void AssociatedObject_MouseLeave(object sender, MouseEventArgs e)
+        protected virtual void AssociatedObject_MouseLeave(object sender, MouseEventArgs e)
         {
-            if (_isMouseClicked)
+            if (IsMouseClicked)
             {
                 // Set the item's DataContext as the data to be transferred
                 var dragObject = AssociatedObject.DataContext as IDragable;
@@ -37,7 +37,7 @@ namespace ImoutoNavigator.Behavior
                     DragDrop.DoDragDrop(AssociatedObject, dragObject.Data, dragObject.AllowDragDropEffects);
                 }
             }
-            _isMouseClicked = false;
+            IsMouseClicked = false;
         }
     }
 }

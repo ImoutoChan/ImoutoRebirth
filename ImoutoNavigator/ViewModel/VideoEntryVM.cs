@@ -23,7 +23,7 @@ namespace ImoutoNavigator.ViewModel
 
         #region Constructors
 
-        public VideoEntryVM(string path, Size initPreviewSize = new Size())
+        public VideoEntryVM(string path, Size initPreviewSize = new Size(), int? dbId = null)
         {
             if (path.ToLower().EndsWith(".webm"))
             {
@@ -35,6 +35,7 @@ namespace ImoutoNavigator.ViewModel
             {
                 throw new ArgumentException("Unsupported video format.");
             }
+            DbId = dbId;
         }
 
         #endregion Constructors
@@ -71,6 +72,8 @@ namespace ImoutoNavigator.ViewModel
         public string Path { get; }
 
         public ListEntryType Type { get; }
+
+        public int? DbId { get; }
 
         #endregion Properties
 

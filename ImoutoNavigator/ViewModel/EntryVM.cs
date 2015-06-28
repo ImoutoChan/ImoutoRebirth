@@ -5,17 +5,17 @@ namespace ImoutoNavigator.ViewModel
 {
     static class EntryVM
     {
-        public static INavigatorListEntry GetListEntry(string path, Size initPreviewSize)
+        public static INavigatorListEntry GetListEntry(string path, Size initPreviewSize, int? dbId = null)
         {
             try
             {
-                return new ImageEntryVM(path, initPreviewSize);
+                return new ImageEntryVM(path, initPreviewSize, dbId);
             }
             catch (ArgumentException)
             {
                 try
                 {
-                    return new VideoEntryVM(path, initPreviewSize);
+                    return new VideoEntryVM(path, initPreviewSize, dbId);
                 }
                 catch
                 {

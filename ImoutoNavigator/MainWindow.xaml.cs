@@ -1,6 +1,8 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.Remoting.Messaging;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -13,7 +15,7 @@ namespace ImoutoNavigator
     /// <summary>
     /// Interaction logic for MainWindow.xaml
     /// </summary>
-    public partial class MainWindow
+    partial class MainWindow
     {
         public MainWindow()
         {
@@ -30,8 +32,12 @@ namespace ImoutoNavigator
                         viewModel.LoadPreviewsCommand.Execute(null);
                     }
                 };
+
+                ListBoxElement.SelectionChanged += (o, eventArgs) => OnSelectedItemsChanged();
             };
         }
+        
+        #region Properties
 
         public IEnumerable VisibleItems
         {
@@ -55,10 +61,16 @@ namespace ImoutoNavigator
             }
         }
 
+        public IEnumerable<INavigatorListEntry> SelectedItems => ListBoxElement.SelectedItems.Cast<INavigatorListEntry>();
+
         private ScrollViewer ScrollViewerElement
         {
             get { return FindFirstVisualChildOfType<ScrollViewer>(ListBoxElement); }
         }
+
+        #endregion Properties
+
+        #region Methods
 
         private static T FindFirstVisualChildOfType<T>(DependencyObject parent)
             where T : class
@@ -102,29 +114,83 @@ namespace ImoutoNavigator
             return ownerRectangle.IntersectsWith(childRectangle);
         }
 
+        #endregion Methods
+
+        #region Event handlers
+
+        /// <summary>
+        /// Open (sender.Tag) flyout.
+        /// </summary>
         private void Button_Click(object sender, RoutedEventArgs e)
         {
-            var button = sender as Button;
-            var flyout = button.Tag as Flyout;
+            var flyout = sender as Flyout ?? (sender as FrameworkElement)?.Tag as Flyout;
+            if (flyout == null)
+            {
+                return;
+            }
 
+            ToggleFlyout(flyout);
+        }
+
+        /// <summary>
+        /// Change flyout IsOpen state.
+        /// </summary>
+        /// <param name="flyout">Flyout to change.</param>
+        private void ToggleFlyout(Flyout flyout)
+        {
             foreach (Flyout item in Flyouts.Items)
             {
                 item.IsOpen = false;
             }
+
             flyout.IsOpen = !flyout.IsOpen;
         }
 
+        /// <summary>
+        ///     Close all flyouts.
+        /// </summary>
         private void Grid_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
         {
             foreach (Flyout item in Flyouts.Items)
             {
+                if (Equals(item, TagsEditFlyout))
+                {
+                    continue;
+                }
+
                 if (item.IsOpen)
                 {
                     e.Handled = true;
                 }
                 item.IsOpen = false;
             }
-            Client.Focus();
+            if (e.Handled)
+            {
+                Client.Focus();
+            }
         }
+
+        private void UIElement_OnKeyUp(object sender, KeyEventArgs e)
+        {
+            // Open TagsEdit flyout.
+            if (e.Key == Key.T)
+            {
+                ToggleFlyout(TagsEditFlyout);
+            }
+        }
+
+        #endregion Event handlers
+
+        #region Events
+
+        public event EventHandler SelectedItemsChanged;
+
+        private void OnSelectedItemsChanged()
+        {
+            var handler = SelectedItemsChanged;
+            handler?.Invoke(this, new EventArgs());
+        }
+
+        #endregion Events
     }
 }

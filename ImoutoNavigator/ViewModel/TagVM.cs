@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Media;
+using Utils;
 using WCFExchageLibrary.Data;
 
 namespace ImoutoNavigator.ViewModel
@@ -30,6 +32,10 @@ namespace ImoutoNavigator.ViewModel
         }
 
         public Tag Tag => this._bindedTagM.Tag;
+
+        public Brush TypeBrush => new SolidColorBrush(Tag.Type.Color.ToColor());
+
+        public string Synonyms => String.Join(", ", Tag.SynonymsCollection);
 
         public string Value
         {
