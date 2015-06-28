@@ -2,7 +2,7 @@
 using System.Windows.Input;
 using System.Windows.Interactivity;
 
-namespace ImoutoViewer.Behavior
+namespace Imouto.Viewer.Behavior
 {
     class FrameworkElementDragBehavior : Behavior<FrameworkElement>
     {

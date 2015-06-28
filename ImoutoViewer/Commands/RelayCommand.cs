@@ -2,7 +2,7 @@
 using System.Diagnostics;
 using System.Windows.Input;
 
-namespace ImoutoViewer.Commands
+namespace Imouto.Viewer.Commands
 {
     class RelayCommand : ICommand
     {

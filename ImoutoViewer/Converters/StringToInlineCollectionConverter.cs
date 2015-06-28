@@ -8,7 +8,7 @@ using System.Windows;
 using System.Windows.Data;
 using System.Windows.Documents;
 
-namespace ImoutoViewer.Converters
+namespace Imouto.Viewer.Converters
 {
     internal class StringToInlineCollectionConverter : IValueConverter
     {

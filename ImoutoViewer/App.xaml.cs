@@ -1,8 +1,8 @@
-﻿using ImoutoViewer.ViewModel;
+﻿using Imouto.Viewer.ViewModel;
 using System.Linq;
 using System.Windows;
 
-namespace ImoutoViewer
+namespace Imouto.Viewer
 {
     /// <summary>
     /// Interaction logic for App.xaml

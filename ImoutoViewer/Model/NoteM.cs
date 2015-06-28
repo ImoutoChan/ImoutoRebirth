@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ImoutoViewer.Model
+namespace Imouto.Viewer.Model
 {
     class NoteM
     {

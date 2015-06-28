@@ -2,7 +2,7 @@
 using System.Windows.Data;
 using Imouto.Utils;
 
-namespace ImoutoViewer.Converters
+namespace Imouto.Viewer.Converters
 {
     class BooleanResultConverter : IValueConverter
     {

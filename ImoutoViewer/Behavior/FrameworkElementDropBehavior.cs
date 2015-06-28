@@ -3,7 +3,7 @@ using System.Linq;
 using System.Windows;
 using System.Windows.Interactivity;
 
-namespace ImoutoViewer.Behavior
+namespace Imouto.Viewer.Behavior
 {
     class FrameworkElementDropBehavior : Behavior<FrameworkElement>
     {

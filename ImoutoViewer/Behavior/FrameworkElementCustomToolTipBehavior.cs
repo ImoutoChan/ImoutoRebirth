@@ -8,7 +8,7 @@ using System.Windows.Input;
 using System.Windows.Interactivity;
 using Imouto.Utils.WPFHelpers;
 
-namespace ImoutoViewer.Behavior
+namespace Imouto.Viewer.Behavior
 {
     internal class FrameworkElementCustomToolTipBehavior : Behavior<FrameworkElement>
     {

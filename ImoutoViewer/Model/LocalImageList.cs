@@ -5,7 +5,7 @@ using System.IO;
 using System.Linq;
 using Imouto.Utils;
 
-namespace ImoutoViewer.Model
+namespace Imouto.Viewer.Model
 {
     class LocalImageList : IEnumerable
     {

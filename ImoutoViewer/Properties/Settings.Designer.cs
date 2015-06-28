@@ -8,9 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-using Imouto;
-
-namespace ImoutoViewer.Properties {
+namespace Imouto.Viewer.Properties {
     
     
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
@@ -40,9 +38,9 @@ namespace ImoutoViewer.Properties {
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("Folder, Subfolders")]
-        public global::ImoutoViewer.Model.DirectorySearchFlags DirectorySearchFlags {
+        public global::Imouto.Viewer.Model.DirectorySearchFlags DirectorySearchFlags {
             get {
-                return ((global::ImoutoViewer.Model.DirectorySearchFlags)(this["DirectorySearchFlags"]));
+                return ((global::Imouto.Viewer.Model.DirectorySearchFlags)(this["DirectorySearchFlags"]));
             }
             set {
                 this["DirectorySearchFlags"] = value;
@@ -52,9 +50,9 @@ namespace ImoutoViewer.Properties {
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("ByName")]
-        public global::ImoutoViewer.Model.SortMethod FilesSorting {
+        public global::Imouto.Viewer.Model.SortMethod FilesSorting {
             get {
-                return ((global::ImoutoViewer.Model.SortMethod)(this["FilesSorting"]));
+                return ((global::Imouto.Viewer.Model.SortMethod)(this["FilesSorting"]));
             }
             set {
                 this["FilesSorting"] = value;
@@ -64,9 +62,9 @@ namespace ImoutoViewer.Properties {
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("ByName")]
-        public global::ImoutoViewer.Model.SortMethod FoldersSorting {
+        public global::Imouto.Viewer.Model.SortMethod FoldersSorting {
             get {
-                return ((global::ImoutoViewer.Model.SortMethod)(this["FoldersSorting"]));
+                return ((global::Imouto.Viewer.Model.SortMethod)(this["FoldersSorting"]));
             }
             set {
                 this["FoldersSorting"] = value;

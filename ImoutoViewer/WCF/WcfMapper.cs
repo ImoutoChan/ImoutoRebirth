@@ -3,10 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using ImoutoViewer.Model;
+using Imouto.Viewer.Model;
 using Imouto.WCFExchageLibrary.Data;
 
-namespace ImoutoViewer.WCF
+namespace Imouto.Viewer.WCF
 {
     static class WcfMapper
     {

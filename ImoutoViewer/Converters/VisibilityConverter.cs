@@ -4,7 +4,7 @@ using System.Windows;
 using System.Windows.Data;
 using Imouto.Utils;
 
-namespace ImoutoViewer.Converters
+namespace Imouto.Viewer.Converters
 {
     class ConditionVisibilityConverter : IValueConverter
     {

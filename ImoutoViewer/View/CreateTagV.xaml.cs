@@ -1,7 +1,7 @@
 ﻿using System.Windows.Controls;
 using System.Windows.Input;
 
-namespace ImoutoViewer.View
+namespace Imouto.Viewer.View
 {
     /// <summary>
     /// Interaction logic for AddTagV.xaml

@@ -1,7 +1,7 @@
 ﻿using Imouto;
-using ImoutoViewer.Behavior;
-using ImoutoViewer.Commands;
-using ImoutoViewer.Model;
+using Imouto.Viewer.Behavior;
+using Imouto.Viewer.Commands;
+using Imouto.Viewer.Model;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -10,9 +10,9 @@ using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media.Imaging;
 using System.Windows.Threading;
-using ImoutoViewer.WCF;
+using Imouto.Viewer.WCF;
 
-namespace ImoutoViewer.ViewModel
+namespace Imouto.Viewer.ViewModel
 {
     class MainWindowVM : VMBase, IDragable, IDropable
     {

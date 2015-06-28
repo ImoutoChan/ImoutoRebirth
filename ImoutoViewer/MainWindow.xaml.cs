@@ -1,4 +1,4 @@
-﻿using ImoutoViewer.ViewModel;
+﻿using Imouto.Viewer.ViewModel;
 using MahApps.Metro.Controls;
 using MahApps.Metro.Controls.Dialogs;
 using System.Windows;
@@ -6,7 +6,7 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
 
-namespace ImoutoViewer
+namespace Imouto.Viewer
 {
     /// <summary>
     /// Interaction logic for MainWindow.xaml

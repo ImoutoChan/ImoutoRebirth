@@ -2,11 +2,11 @@
 using System.Linq;
 using System.Windows;
 using System.Windows.Data;
-using ImoutoViewer.Model;
-using ImoutoViewer.ViewModel;
+using Imouto.Viewer.Model;
+using Imouto.Viewer.ViewModel;
 using Imouto.Utils;
 
-namespace ImoutoViewer.Converters
+namespace Imouto.Viewer.Converters
 {
     class NoteToWidthResizedConverter : IMultiValueConverter
     {

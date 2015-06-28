@@ -1,7 +1,7 @@
 ﻿using Imouto;
-using ImoutoViewer.Commands;
-using ImoutoViewer.Model;
-using ImoutoViewer.Properties;
+using Imouto.Viewer.Commands;
+using Imouto.Viewer.Model;
+using Imouto.Viewer.Properties;
 using MahApps.Metro;
 using System;
 using System.Collections.Generic;
@@ -11,7 +11,7 @@ using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media;
 
-namespace ImoutoViewer.ViewModel
+namespace Imouto.Viewer.ViewModel
 {
     class SettingsVM : VMBase
     {

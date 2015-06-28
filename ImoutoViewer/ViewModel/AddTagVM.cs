@@ -1,5 +1,5 @@
-﻿using ImoutoViewer.Commands;
-using ImoutoViewer.WCF;
+﻿using Imouto.Viewer.Commands;
+using Imouto.Viewer.WCF;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 using System.Windows.Input;
 using Imouto.WCFExchageLibrary.Data;
 
-namespace ImoutoViewer.ViewModel
+namespace Imouto.Viewer.ViewModel
 {
     class AddTagVM : VMBase
     {

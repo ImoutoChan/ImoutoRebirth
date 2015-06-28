@@ -2,7 +2,7 @@
 using System.Windows;
 using System.Windows.Data;
 
-namespace ImoutoViewer.Converters
+namespace Imouto.Viewer.Converters
 {
     [ValueConversion(typeof(Visibility), typeof(Boolean))]
     class BooleanToVisibilityConverter : IValueConverter

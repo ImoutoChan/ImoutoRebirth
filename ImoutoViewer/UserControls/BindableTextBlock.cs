@@ -6,7 +6,7 @@ using System.Windows.Controls;
 using System.Windows.Documents;
 using Imouto.Utils;
 
-namespace ImoutoViewer.UserControls
+namespace Imouto.Viewer.UserControls
 {
     public class BindableTextBlock : TextBlock
     {
