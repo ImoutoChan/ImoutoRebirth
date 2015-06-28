@@ -83,11 +83,8 @@ namespace Imouto.Navigator.ViewModel
         {
             get
             {
-                return _synonyms.Split(new[]
-                {
-                    ":.:"
-                },
-                                       StringSplitOptions.RemoveEmptyEntries).ToList();
+                return _synonyms?.Split(new[] { ":.:" },
+                                        StringSplitOptions.RemoveEmptyEntries).ToList() ?? new List<string>();
             }
         }
 
