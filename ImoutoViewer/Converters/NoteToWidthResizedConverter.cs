@@ -4,7 +4,7 @@ using System.Windows;
 using System.Windows.Data;
 using ImoutoViewer.Model;
 using ImoutoViewer.ViewModel;
-using Utils;
+using Imouto.Utils;
 
 namespace ImoutoViewer.Converters
 {

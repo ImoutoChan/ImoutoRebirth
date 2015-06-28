@@ -2,7 +2,7 @@
 using System.Linq;
 using System.Windows;
 using System.Windows.Data;
-using Utils;
+using Imouto.Utils;
 
 namespace ImoutoViewer.Converters
 {

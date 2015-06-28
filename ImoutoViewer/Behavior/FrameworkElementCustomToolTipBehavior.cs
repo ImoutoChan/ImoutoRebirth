@@ -6,7 +6,7 @@ using System.Windows.Controls;
 using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Interactivity;
-using Utils.WPFHelpers;
+using Imouto.Utils.WPFHelpers;
 
 namespace ImoutoViewer.Behavior
 {

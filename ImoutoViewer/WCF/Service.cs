@@ -1,6 +1,6 @@
 ﻿using System;
 using System.ServiceModel;
-using WCFExchageLibrary.Operations;
+using Imouto.WCFExchageLibrary.Operations;
 
 namespace ImoutoViewer.WCF
 {

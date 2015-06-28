@@ -6,8 +6,8 @@ using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using ImoutoViewer.Model;
-using Utils;
-using WCFExchageLibrary.Data;
+using Imouto.Utils;
+using Imouto.WCFExchageLibrary.Data;
 
 namespace ImoutoViewer.ViewModel
 {

@@ -1,8 +1,8 @@
 ﻿using ImoutoViewer.Commands;
 using System.Windows.Input;
 using System.Windows.Media;
-using Utils;
-using WCFExchageLibrary.Data;
+using Imouto.Utils;
+using Imouto.WCFExchageLibrary.Data;
 
 namespace ImoutoViewer.ViewModel
 {

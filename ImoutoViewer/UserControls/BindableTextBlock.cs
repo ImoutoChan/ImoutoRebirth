@@ -4,7 +4,7 @@ using System.Runtime.CompilerServices;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Documents;
-using Utils;
+using Imouto.Utils;
 
 namespace ImoutoViewer.UserControls
 {

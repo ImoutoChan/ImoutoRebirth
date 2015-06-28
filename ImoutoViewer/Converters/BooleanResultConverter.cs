@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Windows.Data;
-using Utils;
+using Imouto.Utils;
 
 namespace ImoutoViewer.Converters
 {
