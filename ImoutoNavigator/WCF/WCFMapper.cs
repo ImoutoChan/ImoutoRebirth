@@ -1,7 +1,7 @@
 ﻿using System.Linq;
 using System.Runtime.InteropServices;
 using ImoutoNavigator.ViewModel;
-using WCFExchageLibrary.Data;
+using Imouto.WCFExchageLibrary.Data;
 
 namespace ImoutoNavigator.WCF
 {

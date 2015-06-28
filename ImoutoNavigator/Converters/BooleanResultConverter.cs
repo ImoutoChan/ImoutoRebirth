@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Globalization;
 using System.Windows.Data;
-using Utils;
+using Imouto.Utils;
 
 namespace ImoutoNavigator.Converters
 {

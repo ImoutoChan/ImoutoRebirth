@@ -6,8 +6,8 @@ using System.Linq;
 using System.Windows.Input;
 using ImoutoNavigator.Commands;
 using ImoutoNavigator.WCF;
-using Utils;
-using WCFExchageLibrary.Data;
+using Imouto.Utils;
+using Imouto.WCFExchageLibrary.Data;
 
 namespace ImoutoNavigator.ViewModel
 {

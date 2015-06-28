@@ -4,8 +4,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Media;
-using Utils;
-using WCFExchageLibrary.Data;
+using Imouto.Utils;
+using Imouto.WCFExchageLibrary.Data;
 
 namespace ImoutoNavigator.ViewModel
 {

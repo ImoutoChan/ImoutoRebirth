@@ -10,7 +10,7 @@ using System.Windows.Input;
 using ImoutoNavigator.Commands;
 using ImoutoNavigator.Model;
 using ImoutoNavigator.WCF;
-using Utils;
+using Imouto.Utils;
 
 namespace ImoutoNavigator.ViewModel
 {

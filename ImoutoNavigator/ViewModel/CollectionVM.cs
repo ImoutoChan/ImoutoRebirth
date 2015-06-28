@@ -4,7 +4,7 @@ using System.Diagnostics;
 using System.Windows.Input;
 using ImoutoNavigator.Commands;
 using ImoutoNavigator.WCF;
-using WCFExchageLibrary.Data;
+using Imouto.WCFExchageLibrary.Data;
 
 namespace ImoutoNavigator.ViewModel
 {

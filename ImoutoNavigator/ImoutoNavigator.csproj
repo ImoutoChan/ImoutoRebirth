@@ -74,6 +74,15 @@
     <Prefer32Bit>true</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Imouto.SharedModelLibrary">
+      <HintPath>..\..\..\Imouto Library\Source code\bin\Release\Imouto.SharedModelLibrary.dll</HintPath>
+    </Reference>
+    <Reference Include="Imouto.Utils">
+      <HintPath>..\..\..\Imouto Library\Source code\bin\Release\Imouto.Utils.dll</HintPath>
+    </Reference>
+    <Reference Include="Imouto.WCFExchageLibrary">
+      <HintPath>..\..\..\Imouto Library\Source code\bin\Release\Imouto.WCFExchageLibrary.dll</HintPath>
+    </Reference>
     <Reference Include="MahApps.Metro, Version=1.1.2.0, Culture=neutral, PublicKeyToken=f4fb5a3c4d1e5b4f, processorArchitecture=MSIL">
       <HintPath>..\packages\MahApps.Metro.1.1.2.0\lib\net45\MahApps.Metro.dll</HintPath>
       <Private>True</Private>
@@ -87,9 +96,6 @@
       <Private>True</Private>
     </Reference>
     <Reference Include="PresentationFramework.Aero" />
-    <Reference Include="SharedModelLibrary">
-      <HintPath>..\..\..\Imouto Library\Source code\bin\Release\SharedModelLibrary.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Data" />
@@ -107,13 +113,6 @@
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="System.Xaml">
       <RequiredTargetFramework>4.0</RequiredTargetFramework>
-    </Reference>
-    <Reference Include="Utils, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\Imouto Library\Source code\bin\Release\Utils.dll</HintPath>
-    </Reference>
-    <Reference Include="WCFExchageLibrary">
-      <HintPath>..\..\..\Imouto Library\Source code\bin\Release\WCFExchageLibrary.dll</HintPath>
     </Reference>
     <Reference Include="WindowsBase" />
     <Reference Include="PresentationCore" />
@@ -167,7 +166,7 @@
     <Compile Include="ViewModel\TagVM.cs" />
     <Compile Include="ViewModel\VideoEntryVM.cs" />
     <Compile Include="ViewModel\VMBase.cs" />
-    <Compile Include="View\CreateTagView.xaml.cs">
+    <Compile Include="View\Flyouts\CreateTagView.xaml.cs">
       <DependentUpon>CreateTagView.xaml</DependentUpon>
     </Compile>
     <Compile Include="View\Flyouts\CollectionsView.xaml.cs">
@@ -216,7 +215,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="View\CreateTagView.xaml">
+    <Page Include="View\Flyouts\CreateTagView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
