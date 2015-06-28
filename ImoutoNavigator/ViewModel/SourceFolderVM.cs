@@ -5,9 +5,9 @@ using System.ComponentModel;
 using System.IO;
 using System.Linq;
 using System.Windows.Input;
-using ImoutoNavigator.Commands;
+using Imouto.Navigator.Commands;
 
-namespace ImoutoNavigator.ViewModel
+namespace Imouto.Navigator.ViewModel
 {
     class SourceFolderVM : FolderVM, IDataErrorInfo
     {

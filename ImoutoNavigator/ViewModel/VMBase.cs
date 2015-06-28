@@ -4,7 +4,7 @@ using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq.Expressions;
 
-namespace ImoutoNavigator.ViewModel
+namespace Imouto.Navigator.ViewModel
 {
     class VMBase : INotifyPropertyChanged
     {

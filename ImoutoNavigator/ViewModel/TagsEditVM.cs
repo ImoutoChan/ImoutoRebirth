@@ -6,12 +6,12 @@ using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Input;
-using ImoutoNavigator.Behavior;
-using ImoutoNavigator.Commands;
-using ImoutoNavigator.WCF;
+using Imouto.Navigator.Behavior;
+using Imouto.Navigator.Commands;
+using Imouto.Navigator.WCF;
 using Imouto.WCFExchageLibrary.Data;
 
-namespace ImoutoNavigator.ViewModel
+namespace Imouto.Navigator.ViewModel
 {
     class TagsEditVM : VMBase, IDropable
     {

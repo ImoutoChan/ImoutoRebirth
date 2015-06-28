@@ -1,10 +1,10 @@
 ﻿using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using ImoutoNavigator.ViewModel;
+using Imouto.Navigator.ViewModel;
 using MahApps.Metro.Controls.Dialogs;
 
-namespace ImoutoNavigator.View.Flyouts
+namespace Imouto.Navigator.View.Flyouts
 {
     /// <summary>
     /// Interaction logic for CollectionsView.xaml

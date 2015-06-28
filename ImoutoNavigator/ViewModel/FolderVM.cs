@@ -2,9 +2,9 @@
 using System.ComponentModel;
 using System.IO;
 using System.Windows.Input;
-using ImoutoNavigator.Commands;
+using Imouto.Navigator.Commands;
 
-namespace ImoutoNavigator.ViewModel
+namespace Imouto.Navigator.ViewModel
 {
     internal abstract class FolderVM : VMBase
     {

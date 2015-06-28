@@ -2,9 +2,9 @@
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
-using ImoutoNavigator.ViewModel;
+using Imouto.Navigator.ViewModel;
 
-namespace ImoutoNavigator.Behavior
+namespace Imouto.Navigator.Behavior
 {
     class MultiSelectListBoxDragBehavior : FrameworkElementDragBehavior
     {

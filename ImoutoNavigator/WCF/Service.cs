@@ -2,7 +2,7 @@
 using System.ServiceModel;
 using Imouto.WCFExchageLibrary.Operations;
 
-namespace ImoutoNavigator.WCF
+namespace Imouto.Navigator.WCF
 {
     delegate TResult UseServiceDelegate<TResult>(IImoutoWCFService proxy);
     delegate void UseServiceDelegate(IImoutoWCFService proxy);

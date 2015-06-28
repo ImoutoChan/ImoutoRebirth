@@ -1,6 +1,6 @@
 ﻿using System.Windows.Controls;
 
-namespace ImoutoNavigator.UserControls
+namespace Imouto.Navigator.UserControls
 {
     /// <summary>
     /// Interaction logic for TagView.xaml

@@ -3,10 +3,10 @@ using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media.Imaging;
 using Imouto;
-using ImoutoNavigator.Commands;
-using ImoutoNavigator.Model;
+using Imouto.Navigator.Commands;
+using Imouto.Navigator.Model;
 
-namespace ImoutoNavigator.ViewModel
+namespace Imouto.Navigator.ViewModel
 {
     class ImageEntryVM : VMBase, INavigatorListEntry
     {

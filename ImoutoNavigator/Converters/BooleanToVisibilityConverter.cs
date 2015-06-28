@@ -3,7 +3,7 @@ using System.Globalization;
 using System.Windows;
 using System.Windows.Data;
 
-namespace ImoutoNavigator.Converters
+namespace Imouto.Navigator.Converters
 {
     [ValueConversion(typeof(Visibility), typeof(Boolean))]
     class BooleanToVisibilityConverter : IValueConverter

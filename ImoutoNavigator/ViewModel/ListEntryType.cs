@@ -1,4 +1,4 @@
-﻿namespace ImoutoNavigator.ViewModel
+﻿namespace Imouto.Navigator.ViewModel
 {
     enum ListEntryType
     {

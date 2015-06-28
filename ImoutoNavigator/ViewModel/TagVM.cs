@@ -7,7 +7,7 @@ using System.Windows.Media;
 using Imouto.Utils;
 using Imouto.WCFExchageLibrary.Data;
 
-namespace ImoutoNavigator.ViewModel
+namespace Imouto.Navigator.ViewModel
 {
     class BindedTagVM : VMBase
     {

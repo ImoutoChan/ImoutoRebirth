@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Windows;
 
-namespace ImoutoNavigator.ViewModel
+namespace Imouto.Navigator.ViewModel
 {
     static class EntryVM
     {

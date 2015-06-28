@@ -4,7 +4,7 @@ using System.Windows.Data;
 using System.Windows.Media;
 using Imouto.Utils;
 
-namespace ImoutoNavigator.Converters
+namespace Imouto.Navigator.Converters
 {
     [ValueConversion(typeof(Color), typeof(Int32))]
     class IntToColorConverter : IValueConverter

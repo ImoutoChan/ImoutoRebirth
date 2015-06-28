@@ -1,6 +1,6 @@
 ﻿using System.Windows.Controls;
 
-namespace ImoutoNavigator.View
+namespace Imouto.Navigator.View
 {
     /// <summary>
     /// Interaction logic for StatusBarView.xaml

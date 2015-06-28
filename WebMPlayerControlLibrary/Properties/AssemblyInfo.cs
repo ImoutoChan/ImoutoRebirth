@@ -7,11 +7,11 @@ using System.Windows;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("WebMPlayer ControlLibrary")]
+[assembly: AssemblyTitle("Imouto WebMPlayer ControlLibrary")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Imouto Corporation")]
-[assembly: AssemblyProduct("WebMPlayer ControlLibrary")]
+[assembly: AssemblyProduct("Imouto WebMPlayer ControlLibrary")]
 [assembly: AssemblyCopyright("Copyright ©  2015")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]

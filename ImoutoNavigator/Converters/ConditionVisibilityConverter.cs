@@ -5,7 +5,7 @@ using System.Windows;
 using System.Windows.Data;
 using Imouto.Utils;
 
-namespace ImoutoNavigator.Converters
+namespace Imouto.Navigator.Converters
 {
     class ConditionVisibilityConverter : IValueConverter
     {

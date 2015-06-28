@@ -1,8 +1,8 @@
 ﻿using System.Windows;
 using System.Windows.Input;
-using ImoutoNavigator.Behavior;
+using Imouto.Navigator.Behavior;
 
-namespace ImoutoNavigator.ViewModel
+namespace Imouto.Navigator.ViewModel
 {
     interface INavigatorListEntry : IDragable
     {

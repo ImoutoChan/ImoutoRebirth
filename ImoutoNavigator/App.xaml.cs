@@ -1,7 +1,7 @@
 ﻿using System.Windows;
-using ImoutoNavigator.ViewModel;
+using Imouto.Navigator.ViewModel;
 
-namespace ImoutoNavigator
+namespace Imouto.Navigator
 {
     /// <summary>
     /// Interaction logic for App.xaml

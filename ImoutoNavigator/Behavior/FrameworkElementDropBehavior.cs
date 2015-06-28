@@ -2,7 +2,7 @@
 using System.Windows;
 using System.Windows.Interactivity;
 
-namespace ImoutoNavigator.Behavior
+namespace Imouto.Navigator.Behavior
 {
     class FrameworkElementDropBehavior : Behavior<FrameworkElement>
     {

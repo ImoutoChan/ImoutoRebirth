@@ -1,6 +1,6 @@
 ﻿using System.Windows.Controls;
 
-namespace ImoutoNavigator.View.Flyouts
+namespace Imouto.Navigator.View.Flyouts
 {
     /// <summary>
     /// Interaction logic for TagsEditView.xaml

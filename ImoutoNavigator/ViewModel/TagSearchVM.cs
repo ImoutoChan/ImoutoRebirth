@@ -5,12 +5,12 @@ using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Input;
-using ImoutoNavigator.Commands;
-using ImoutoNavigator.WCF;
+using Imouto.Navigator.Commands;
+using Imouto.Navigator.WCF;
 using Imouto.Utils;
 using Imouto.WCFExchageLibrary.Data;
 
-namespace ImoutoNavigator.ViewModel
+namespace Imouto.Navigator.ViewModel
 {
     internal class TagSearchVM : VMBase
     {

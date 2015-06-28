@@ -1,9 +1,9 @@
 ﻿using System.Linq;
 using System.Runtime.InteropServices;
-using ImoutoNavigator.ViewModel;
+using Imouto.Navigator.ViewModel;
 using Imouto.WCFExchageLibrary.Data;
 
-namespace ImoutoNavigator.WCF
+namespace Imouto.Navigator.WCF
 {
     static class WCFMapper
     {

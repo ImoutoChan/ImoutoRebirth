@@ -1,7 +1,7 @@
 using System.Windows.Controls;
 using System.Windows.Input;
 
-namespace ImoutoNavigator.UserControls
+namespace Imouto.Navigator.UserControls
 {
     public class ExtScrollViewer : ScrollViewer
     {

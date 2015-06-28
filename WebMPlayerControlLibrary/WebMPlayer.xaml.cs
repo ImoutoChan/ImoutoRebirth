@@ -3,7 +3,7 @@ using System.Windows.Controls;
 using CefSharp;
 using CefSharp.Wpf;
 
-namespace WebMPlayerControlLibrary
+namespace Imouto.WebMPlayerControlLibrary
 {
     /// <summary>
     /// Interaction logic for WebMPlayer.xaml

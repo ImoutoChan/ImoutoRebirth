@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace ImoutoNavigator.Behavior
+namespace Imouto.Navigator.Behavior
 {
     interface IDropable
     {

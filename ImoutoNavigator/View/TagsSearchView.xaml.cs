@@ -1,8 +1,8 @@
 ﻿using System.Windows.Controls;
 using System.Windows.Input;
-using ImoutoNavigator.ViewModel;
+using Imouto.Navigator.ViewModel;
 
-namespace ImoutoNavigator.View
+namespace Imouto.Navigator.View
 {
     /// <summary>
     /// Interaction logic for TagsSearchView.xaml

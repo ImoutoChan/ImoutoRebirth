@@ -4,10 +4,10 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media.Imaging;
-using ImoutoNavigator.Commands;
+using Imouto.Navigator.Commands;
 using Microsoft.WindowsAPICodePack.Shell;
 
-namespace ImoutoNavigator.ViewModel
+namespace Imouto.Navigator.ViewModel
 {
     class VideoEntryVM : VMBase, INavigatorListEntry
     {

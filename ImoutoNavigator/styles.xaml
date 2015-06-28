@@ -1,7 +1,7 @@
 ﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-                    xmlns:imoutoNavigator="clr-namespace:ImoutoNavigator"
-                    xmlns:converters="clr-namespace:ImoutoNavigator.Converters"
+                    xmlns:Imouto.Navigator="clr-namespace:Imouto.Navigator"
+                    xmlns:converters="clr-namespace:Imouto.Navigator.Converters"
                     xmlns:wpfHelpers="clr-namespace:Imouto.Utils.WPFHelpers;assembly=Imouto.Utils">
     <ResourceDictionary.MergedDictionaries>
         <ResourceDictionary Source="Resources/Icons.xaml" />
@@ -176,7 +176,7 @@
             <Button.InputBindings>
                 <MouseBinding Gesture="LeftClick"
                               Command="{Binding Path=DataContext.AddTagToSearch, 
-                                                                 RelativeSource={RelativeSource AncestorType={x:Type imoutoNavigator:MainWindow}}}"
+                                                                 RelativeSource={RelativeSource AncestorType={x:Type Imouto.Navigator:MainWindow}}}"
                               CommandParameter="{Binding}" />
             </Button.InputBindings>
         </Button>
@@ -192,7 +192,7 @@
                     <Button DockPanel.Dock="Right"
                             Style="{DynamicResource ChromelessButtonStyle}"
                             Command="{Binding Path=DataContext.RemoveTagFromSearch, 
-                                                RelativeSource={RelativeSource AncestorType={x:Type imoutoNavigator:MainWindow}}}"
+                                                RelativeSource={RelativeSource AncestorType={x:Type Imouto.Navigator:MainWindow}}}"
                             CommandParameter="{Binding}">
                         <Button.Content>
                             <TextBlock Text="X"

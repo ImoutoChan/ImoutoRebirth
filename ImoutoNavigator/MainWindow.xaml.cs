@@ -7,15 +7,15 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
-using ImoutoNavigator.ViewModel;
+using Imouto.Navigator.ViewModel;
 using MahApps.Metro.Controls;
 
-namespace ImoutoNavigator
+namespace Imouto.Navigator
 {
     /// <summary>
     /// Interaction logic for MainWindow.xaml
     /// </summary>
-    partial class MainWindow
+    partial class MainWindow : MetroWindow
     {
         public MainWindow()
         {

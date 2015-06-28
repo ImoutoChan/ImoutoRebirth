@@ -1,6 +1,6 @@
 ﻿using System.Windows.Input;
 
-namespace ImoutoNavigator.UserControls
+namespace Imouto.Navigator.UserControls
 {
     public class MouseWheelGesture : MouseGesture
     {

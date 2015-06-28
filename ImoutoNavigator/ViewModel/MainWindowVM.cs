@@ -7,12 +7,12 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
-using ImoutoNavigator.Commands;
-using ImoutoNavigator.Model;
-using ImoutoNavigator.WCF;
+using Imouto.Navigator.Commands;
+using Imouto.Navigator.Model;
+using Imouto.Navigator.WCF;
 using Imouto.Utils;
 
-namespace ImoutoNavigator.ViewModel
+namespace Imouto.Navigator.ViewModel
 {
     class MainWindowVM : VMBase
     {

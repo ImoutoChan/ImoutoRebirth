@@ -4,12 +4,12 @@ using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Linq;
 using System.Windows.Input;
-using ImoutoNavigator.Commands;
-using ImoutoNavigator.WCF;
+using Imouto.Navigator.Commands;
+using Imouto.Navigator.WCF;
 using Imouto.Utils;
 using Imouto.WCFExchageLibrary.Data;
 
-namespace ImoutoNavigator.ViewModel
+namespace Imouto.Navigator.ViewModel
 {
     class CollectionManagerVM : VMBase
     {

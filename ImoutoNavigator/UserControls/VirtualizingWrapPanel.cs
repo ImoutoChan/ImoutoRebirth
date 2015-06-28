@@ -7,7 +7,7 @@ using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using System.Windows.Media;
 
-namespace ImoutoNavigator.UserControls
+namespace Imouto.Navigator.UserControls
 {
     public class VirtualizingWrapPanel : VirtualizingPanel, IScrollInfo
     {

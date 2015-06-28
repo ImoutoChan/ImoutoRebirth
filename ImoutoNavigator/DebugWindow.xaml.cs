@@ -1,6 +1,6 @@
 ﻿using System.Windows;
 
-namespace ImoutoNavigator
+namespace Imouto.Navigator
 {
     /// <summary>
     /// Interaction logic for DebugWindow.xaml

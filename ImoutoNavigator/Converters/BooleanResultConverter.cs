@@ -3,7 +3,7 @@ using System.Globalization;
 using System.Windows.Data;
 using Imouto.Utils;
 
-namespace ImoutoNavigator.Converters
+namespace Imouto.Navigator.Converters
 {
     class BooleanResultConverter : IValueConverter
     {

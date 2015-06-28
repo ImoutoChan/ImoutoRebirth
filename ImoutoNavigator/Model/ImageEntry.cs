@@ -7,7 +7,7 @@ using System.Windows.Media.Imaging;
 using Imouto;
 using Imouto.Utils;
 
-namespace ImoutoNavigator.Model
+namespace Imouto.Navigator.Model
 {
     class ImageEntry
     {

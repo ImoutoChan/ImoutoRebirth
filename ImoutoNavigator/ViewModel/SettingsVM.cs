@@ -4,11 +4,11 @@ using System.Linq;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media;
-using ImoutoNavigator.Commands;
-using ImoutoNavigator.Properties;
+using Imouto.Navigator.Commands;
+using Imouto.Navigator.Properties;
 using MahApps.Metro;
 
-namespace ImoutoNavigator.ViewModel
+namespace Imouto.Navigator.ViewModel
 {
     class SettingsVM : VMBase
     {
