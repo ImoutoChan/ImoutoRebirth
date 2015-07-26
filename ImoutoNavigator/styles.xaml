@@ -1,5 +1,6 @@
 ﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:Imouto.Navigator="clr-namespace:Imouto.Navigator"
                     xmlns:converters="clr-namespace:Imouto.Navigator.Converters"
                     xmlns:wpfHelpers="clr-namespace:Imouto.Utils.WPFHelpers;assembly=Imouto.Utils"
                     xmlns:viewModel="clr-namespace:Imouto.Navigator.ViewModel">
