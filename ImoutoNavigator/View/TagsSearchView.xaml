@@ -3,18 +3,12 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-             xmlns:local="clr-namespace:Imouto.Navigator.View"
              xmlns:metroControl="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
-             xmlns:Imouto.Navigator="clr-namespace:Imouto.Navigator"
-             xmlns:converters="clr-namespace:Imouto.Navigator.Converters"
+             xmlns:viewModel="clr-namespace:Imouto.Navigator.ViewModel"
              mc:Ignorable="d"
+             d:DataContext="{d:DesignInstance viewModel:TagSearchVM, IsDesignTimeCreatable=False}"
              d:DesignHeight="300"
              d:DesignWidth="300">
-    <UserControl.Resources>
-        <converters:IntToColorConverter x:Key="IntToColorConverter" />
-        <converters:ConditionVisibilityConverter x:Key="ConditionVisibilityConverter" />
-    </UserControl.Resources>
-
     <Grid>
         <Border Grid.Column="0"
                 BorderThickness="0,0,3,0"
@@ -29,12 +23,12 @@
                     <RowDefinition Height="Auto" />
                     <RowDefinition Height="*" />
                 </Grid.RowDefinitions>
-                
+
                 <ComboBox Margin="5"
                           ItemsSource="{Binding Collections}"
                           SelectedItem="{Binding SelectedColleciton}"
-                          DisplayMemberPath="Key"/>
-                
+                          DisplayMemberPath="Key" />
+
                 <TextBox Grid.Row="1"
                          Margin="5"
                          metroControl:TextBoxHelper.Watermark="Search tag"
@@ -75,10 +69,15 @@
                         BorderThickness="1"
                         BorderBrush="{DynamicResource AccentColorBrush}" />
 
-                <ItemsControl x:Name="CurrentTags"
-                              Grid.Row="6"
-                              ItemsSource="{Binding Path=TopTags, UpdateSourceTrigger=PropertyChanged}"
-                              ItemTemplate="{StaticResource CurrentTagElementDataTemplate}" />
+                <ScrollViewer Grid.Row="6"
+                              HorizontalScrollBarVisibility="Disabled"
+                              VerticalScrollBarVisibility="Auto">
+                    <ItemsControl x:Name="CurrentTags"
+                                  Margin="10"
+                                  ItemsSource="{Binding Path=CurrentTagsSources}"
+                                  ItemTemplate="{StaticResource CurrentTagsSourceDataTemplate}" />
+                </ScrollViewer>
+
             </Grid>
         </Border>
 
@@ -104,8 +103,7 @@
                                                                                  Path=DataContext.SelectTagCommand}"
                                 CommandParameter="{Binding}"
                                 Template="{StaticResource TagElementControlTemplate}"
-                                HorizontalContentAlignment="Left">
-                        </Button>
+                                HorizontalContentAlignment="Left" />
                     </DataTemplate>
                 </ItemsControl.ItemTemplate>
             </ListBox>

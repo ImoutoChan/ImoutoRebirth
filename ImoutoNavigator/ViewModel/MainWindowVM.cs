@@ -21,7 +21,7 @@ namespace Imouto.Navigator.ViewModel
         private readonly MainWindow _view;
         private CancellationTokenSource _ctsImageLoading;
         private int _previewSize = 256;
-        private int _totalCount = 0;
+        private int _totalCount;
         private bool _isLoading;
         private string _status;
         private string _statusToolTip;
@@ -34,7 +34,7 @@ namespace Imouto.Navigator.ViewModel
         {
             InitializeCommands();
 
-            NavigatorList.CollectionChanged += (s, e) => OnPropertyChanged(() => this.LoadedCount);
+            NavigatorList.CollectionChanged += (s, e) => OnPropertyChanged(() => LoadedCount);
 
             CollectionManager.ReloadCollections();
 
@@ -46,10 +46,19 @@ namespace Imouto.Navigator.ViewModel
 
             TagsEdit = new TagsEditVM(this);
 
-            _view = new MainWindow { DataContext = this };
+            _view = new MainWindow
+            {
+                DataContext = this
+            };
             _view.Loaded += _view_Loaded;
-            _view.SelectedItemsChanged += (sender, args) => OnPropertyChanged(() => SelectedItems);
+            _view.SelectedItemsChanged += OnViewOnSelectedItemsChanged;
             _view.Show();
+        }
+
+        private void OnViewOnSelectedItemsChanged(object sender, EventArgs args)
+        {
+            OnPropertyChanged(() => SelectedItems);
+            TagSearchVM.UpdateCurrentTags(_view.ListBoxElement.SelectedItem as INavigatorListEntry);
         }
 
         #endregion Constructors
@@ -60,7 +69,8 @@ namespace Imouto.Navigator.ViewModel
 
         private Size PreviewSize => new Size(_previewSize, _previewSize);
 
-        public ObservableCollection<INavigatorListEntry> NavigatorList { get; } = new ObservableCollection<INavigatorListEntry>();
+        public ObservableCollection<INavigatorListEntry> NavigatorList { get; } =
+            new ObservableCollection<INavigatorListEntry>();
 
         public string Title => "Imouto Navigator";
 
@@ -74,7 +84,10 @@ namespace Imouto.Navigator.ViewModel
 
         public bool IsLoading
         {
-            get { return _isLoading; }
+            get
+            {
+                return _isLoading;
+            }
             private set
             {
                 _isLoading = value;
@@ -90,7 +103,7 @@ namespace Imouto.Navigator.ViewModel
             }
             set
             {
-                OnPropertyChanged(ref _totalCount, value, () => this.TotalCount);
+                OnPropertyChanged(ref _totalCount, value, () => TotalCount);
             }
         }
 
@@ -98,14 +111,26 @@ namespace Imouto.Navigator.ViewModel
 
         public string Status
         {
-            get { return _status; }
-            set { OnPropertyChanged(ref _status, value, () => this.Status); }
+            get
+            {
+                return _status;
+            }
+            set
+            {
+                OnPropertyChanged(ref _status, value, () => Status);
+            }
         }
 
         public string StatusToolTip
         {
-            get { return _statusToolTip; }
-            set { OnPropertyChanged(ref _statusToolTip, value, () => this.StatusToolTip); }
+            get
+            {
+                return _statusToolTip;
+            }
+            set
+            {
+                OnPropertyChanged(ref _statusToolTip, value, () => StatusToolTip);
+            }
         }
 
         public bool ShowPreview => Settings.ShowPreviewOnSelect;
@@ -123,34 +148,39 @@ namespace Imouto.Navigator.ViewModel
         #region Commands
 
         public ICommand ZoomInCommand { get; set; }
+
         public ICommand ZoomOutCommand { get; set; }
+
         public ICommand LoadPreviewsCommand { get; set; }
 
         private void InitializeCommands()
         {
             ZoomInCommand = new RelayCommand(x =>
+            {
+                if (_previewSize > 1024)
                 {
-                    if (_previewSize > 1024)
-                        return;
+                    return;
+                }
 
-                    _previewSize = Convert.ToInt32(Math.Floor(_previewSize * 1.1));
-                    UpdatePreviews();
-                }
-            );
+                _previewSize = Convert.ToInt32(Math.Floor(_previewSize * 1.1));
+                UpdatePreviews();
+            });
             ZoomOutCommand = new RelayCommand(x =>
+            {
+                if (_previewSize < 64)
                 {
-                    if (_previewSize < 64)
-                        return;
-                    _previewSize = Convert.ToInt32(Math.Floor(_previewSize * 0.9));
-                    UpdatePreviews();
+                    return;
                 }
-            );
+                _previewSize = Convert.ToInt32(Math.Floor(_previewSize * 0.9));
+                UpdatePreviews();
+            });
             LoadPreviewsCommand = new RelayCommand(x => LoadPreviews());
         }
 
         #endregion Commands
 
         #region Methods
+
         public void SetStatusError(string error, string message)
         {
             Status = error;
@@ -169,7 +199,6 @@ namespace Imouto.Navigator.ViewModel
 
         private void GetImageList()
         {
-
             /*
             _imageList = new ObservableCollection<ImageEntryVM>(
                 Util
@@ -366,7 +395,6 @@ namespace Imouto.Navigator.ViewModel
 
                 try
                 {
-
                     sw = new Stopwatch();
                     sw.Start();
 
@@ -378,7 +406,8 @@ namespace Imouto.Navigator.ViewModel
                     LoadPreviews();
                 }
                 catch (OperationCanceledException)
-                { }
+                {
+                }
                 finally
                 {
                     ReloadImagesAsyncSemaphore.Release();
@@ -404,7 +433,7 @@ namespace Imouto.Navigator.ViewModel
                 sw.Start();
 
                 var result = await GetImagesFromCollectionAsyncTask(block, skip + count - i);
-            
+
                 lock (NavigatorList)
                 {
                     ct.ThrowIfCancellationRequested();
@@ -412,7 +441,10 @@ namespace Imouto.Navigator.ViewModel
                 }
 
                 sw.Stop();
-                Debug.WriteLine("Loading {0} elemets, skip {1} elemets in ms: {2}", block, skip + count - i, sw.ElapsedMilliseconds);
+                Debug.WriteLine("Loading {0} elemets, skip {1} elemets in ms: {2}",
+                                block,
+                                skip + count - i,
+                                sw.ElapsedMilliseconds);
 
 
                 if (i == count)
@@ -426,15 +458,13 @@ namespace Imouto.Navigator.ViewModel
         {
             return Task.Run(() =>
             {
-                return new ObservableCollection<INavigatorListEntry>(
-                    ImoutoService.Use(imoutoService =>
-                    {
-                        return imoutoService.SearchImage(TagSearchVM.SelectedColleciton.Value, 
-                                                            TagSearchVM.SelectedBindedTags.Select(x => x.Model).ToList(), count, skip);
-                    })
-                    .Select(x => EntryVM.GetListEntry(x.Item1, PreviewSize, x.Item2))
-                    .SkipExceptions()
-                    );
+                return new ObservableCollection<INavigatorListEntry>(ImoutoService.Use(imoutoService =>
+                {
+                    return imoutoService.SearchImage(TagSearchVM.SelectedColleciton.Value,
+                                                     TagSearchVM.SelectedBindedTags.Select(x => x.Model).ToList(),
+                                                     count,
+                                                     skip);
+                }).Select(x => EntryVM.GetListEntry(x.Item1, PreviewSize, x.Item2)).SkipExceptions());
             });
         }
 
@@ -442,12 +472,11 @@ namespace Imouto.Navigator.ViewModel
         {
             return Task.Run(() =>
             {
-                return
-                    ImoutoService.Use(imoutoService =>
-                    {
-                        return imoutoService.CountSearchImage(TagSearchVM.SelectedColleciton.Value, 
-                                                                TagSearchVM.SelectedBindedTags.Select(x => x.Model).ToList());
-                    });
+                return ImoutoService.Use(imoutoService =>
+                {
+                    return imoutoService.CountSearchImage(TagSearchVM.SelectedColleciton.Value,
+                                                          TagSearchVM.SelectedBindedTags.Select(x => x.Model).ToList());
+                });
             });
         }
 

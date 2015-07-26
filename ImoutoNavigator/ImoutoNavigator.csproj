@@ -163,7 +163,8 @@
     <Compile Include="ViewModel\SourceFolderVM.cs" />
     <Compile Include="ViewModel\TagSearchVM.cs" />
     <Compile Include="ViewModel\TagsEditVM.cs" />
-    <Compile Include="ViewModel\TagVM.cs" />
+    <Compile Include="ViewModel\TagSourceVM.cs" />
+    <Compile Include="ViewModel\BindedTagVM.cs" />
     <Compile Include="ViewModel\VideoEntryVM.cs" />
     <Compile Include="ViewModel\VMBase.cs" />
     <Compile Include="View\Flyouts\CreateTagView.xaml.cs">

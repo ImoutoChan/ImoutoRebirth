@@ -12,10 +12,10 @@ using Imouto.WCFExchageLibrary.Data;
 
 namespace Imouto.Navigator.ViewModel
 {
-    internal class TagSearchVM : VMBase
+    class TagSearchVM : VMBase
     {
         #region Fields
-        
+
         private string _searchString;
         private Tag _selectedHintBoxTag;
         private bool _isValueEnterMode;
@@ -23,6 +23,12 @@ namespace Imouto.Navigator.ViewModel
         private List<string> _comparators;
         private string _selectedComparator;
         private KeyValuePair<string, int?> _selectedColleciton;
+
+        private ICommand _enterValueOkCommand;
+        private ICommand _unselectTagCommand;
+        private ICommand _selectTagCommand;
+        private ICommand _invertSearchTypeCommand;
+        private ICommand _selectBindedTag;
 
         #endregion Fields
 
@@ -40,8 +46,11 @@ namespace Imouto.Navigator.ViewModel
         #endregion Constructors
 
         #region Properties
-        
-        public ObservableCollection<KeyValuePair<string, int?>> Collections { get; } = new ObservableCollection<KeyValuePair<string, int?>>();
+
+        public ObservableCollection<TagSourceVM> CurrentTagsSources { get; } = new ObservableCollection<TagSourceVM>();
+
+        public ObservableCollection<KeyValuePair<string, int?>> Collections { get; } =
+            new ObservableCollection<KeyValuePair<string, int?>>();
 
         public KeyValuePair<string, int?> SelectedColleciton
         {
@@ -85,7 +94,7 @@ namespace Imouto.Navigator.ViewModel
                     ResetValueEnter();
                 }
 
-                if (String.IsNullOrWhiteSpace(value) || ValueEnterMode)
+                if (string.IsNullOrWhiteSpace(value) || ValueEnterMode)
                 {
                     HintBoxTags.Clear();
                 }
@@ -150,7 +159,6 @@ namespace Imouto.Navigator.ViewModel
 
         #region Commands
 
-        private ICommand _invertSearchTypeCommand;
         public ICommand InvertSearchTypeCommand
         {
             get
@@ -159,7 +167,6 @@ namespace Imouto.Navigator.ViewModel
             }
         }
 
-        private ICommand _selectTagCommand;
         public ICommand SelectTagCommand
         {
             get
@@ -168,7 +175,6 @@ namespace Imouto.Navigator.ViewModel
             }
         }
 
-        private ICommand _unselectTagCommand;
         public ICommand UnselectTagCommand
         {
             get
@@ -176,8 +182,6 @@ namespace Imouto.Navigator.ViewModel
                 return _unselectTagCommand ?? (_unselectTagCommand = new RelayCommand(UnselectTag));
             }
         }
-
-        private ICommand _enterValueOkCommand;
 
         public ICommand EnterValueOkCommand
         {
@@ -187,9 +191,69 @@ namespace Imouto.Navigator.ViewModel
             }
         }
 
+        public ICommand SelectBindedTagCommand
+        {
+            get
+            {
+                return _selectBindedTag ?? (_selectBindedTag = new RelayCommand(SelectBindedTag));
+            }
+        }
+
         #endregion Commands
 
-        #region Methods
+        #region Public methods
+
+        public async void UpdateCurrentTags(INavigatorListEntry listEntry)
+        {
+            if (listEntry?.DbId == null)
+            {
+                return;
+            }
+
+            var id = listEntry.DbId.Value;
+
+            var tags = await Task.Run(() =>
+            {
+                return ImoutoService.Use(imoutoService =>
+                {
+                    return imoutoService.GetImageTags(id);
+                });
+            });
+
+            var tagVmsCollection =
+                tags.Where(x => x.Tag.Type.Title != "LocalMeta").Select(x => new BindedTagVM(x)).ToList();
+
+            CurrentTagsSources.Clear();
+
+            var userTags = tagVmsCollection.Where(x => x.Model.Source == Source.User).ToList();
+            if (userTags.Any())
+            {
+                CurrentTagsSources.Add(new TagSourceVM
+                {
+                    Title = "User",
+                    Tags = new ObservableCollection<BindedTagVM>(userTags)
+                });
+            }
+
+            var parsedSources = tagVmsCollection.Select(x => x.Model.Source).Where(x => x != Source.User).Distinct();
+
+            foreach (var parsedSource in parsedSources)
+            {
+                CurrentTagsSources.Add(new TagSourceVM
+                {
+                    Title = parsedSource.ToString(),
+                    Tags =
+                        new ObservableCollection<BindedTagVM>(
+                                           tagVmsCollection.Where(x => x.Model.Source == parsedSource)
+                                                           .OrderBy(x => x.TypePriority)
+                                                           .ThenBy(x => x.Tag.Title))
+                });
+            }
+        }
+
+        #endregion Public methods
+
+        #region Private Methods
 
         private async void SearchTagsAsync(string searchString)
         {
@@ -214,12 +278,12 @@ namespace Imouto.Navigator.ViewModel
         private static Task<List<Tag>> SearchTagsAsyncTask(string searchString)
         {
             return Task.Run(() =>
-                            {
-                                return ImoutoService.Use(imoutoService =>
-                                                         {
-                                                             return imoutoService.SearchTags(searchString);
-                                                         });
-                            });
+            {
+                return ImoutoService.Use(imoutoService =>
+                {
+                    return imoutoService.SearchTags(searchString);
+                });
+            });
         }
 
         private void SelectTag(object param)
@@ -243,14 +307,14 @@ namespace Imouto.Navigator.ViewModel
             if (SelectedBindedTags.All(x => x.Tag.Id != tag.Id || x.Value != EnteredValue))
             {
                 SelectedBindedTags.Add(new BindedTagVM(new BindedTag
-                                                       {
-                                                           Tag = tag,
-                                                           Value =
-                                                               (tag.HasValue && !string.IsNullOrWhiteSpace(EnteredValue))
-                                                                   ? SelectedComparator + EnteredValue
-                                                                   : null,
-                                                           SearchType = SearchType.Include
-                                                       }));
+                {
+                    Tag = tag,
+                    Value =
+                        (tag.HasValue && !string.IsNullOrWhiteSpace(EnteredValue))
+                            ? SelectedComparator + EnteredValue
+                            : null,
+                    SearchType = SearchType.Include
+                }));
             }
 
             SearchString = string.Empty;
@@ -280,7 +344,7 @@ namespace Imouto.Navigator.ViewModel
             EditedTag = null;
             ValueEnterMode = false;
             SelectedComparator = Comparators.First();
-            EnteredValue = String.Empty;
+            EnteredValue = string.Empty;
         }
 
         private void EnterValueOk(object obj)
@@ -308,7 +372,29 @@ namespace Imouto.Navigator.ViewModel
             OnSelectedTagsUpdated();
         }
 
-        #endregion Methods
+        private void SelectBindedTag(object param)
+        {
+            var tag = param as BindedTagVM;
+
+            if (tag == null)
+            {
+                return;
+            }
+
+            if (SelectedBindedTags.All(x => x.Tag.Id != tag.Tag.Id || x.Value != tag.Value))
+            {
+                SelectedBindedTags.Add(new BindedTagVM(new BindedTag
+                {
+                    Tag = tag.Tag,
+                    Value = tag.Value,
+                    SearchType = SearchType.Include
+                }));
+            }
+
+            OnSelectedTagsUpdated();
+        }
+
+        #endregion Private Methods
 
         #region Events
 
@@ -319,7 +405,7 @@ namespace Imouto.Navigator.ViewModel
             var handler = SelectedTagsUpdated;
             handler?.Invoke(this, new EventArgs());
         }
-        
+
         public event EventHandler SelectedCollectionCahnged;
 
         private void OnSelectedCollectionCahnged()
@@ -327,10 +413,11 @@ namespace Imouto.Navigator.ViewModel
             var handler = SelectedCollectionCahnged;
             handler?.Invoke(this, new EventArgs());
         }
+
         #endregion Events
     }
 
-    internal enum Comparator
+    enum Comparator
     {
         Equal,
         NotEqual
@@ -340,7 +427,7 @@ namespace Imouto.Navigator.ViewModel
         //Less
     }
 
-    internal static class ComparatorExtensions
+    static class ComparatorExtensions
     {
         public static string ToFriendlyString(this Comparator me)
         {

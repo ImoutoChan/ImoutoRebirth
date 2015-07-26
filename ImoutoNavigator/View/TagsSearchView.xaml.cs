@@ -5,7 +5,7 @@ using Imouto.Navigator.ViewModel;
 namespace Imouto.Navigator.View
 {
     /// <summary>
-    /// Interaction logic for TagsSearchView.xaml
+    ///     Interaction logic for TagsSearchView.xaml
     /// </summary>
     public partial class TagsSearchView : UserControl
     {
@@ -44,7 +44,7 @@ namespace Imouto.Navigator.View
             }
             else if (e.Key == Key.Enter)
             {
-                (this.DataContext as TagSearchVM).SelectTagCommand.Execute(HintListBox.SelectedItem);
+                (DataContext as TagSearchVM).SelectTagCommand.Execute(HintListBox.SelectedItem);
                 e.Handled = true;
             }
         }
