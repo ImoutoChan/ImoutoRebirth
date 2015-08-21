@@ -1,12 +1,13 @@
-﻿using Imouto.Viewer.WCF;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Linq;
+using System.ServiceModel;
 using System.Threading.Tasks;
-using Imouto.Viewer.Model;
 using Imouto.Utils;
+using Imouto.Viewer.Model;
+using Imouto.Viewer.WCF;
 using Imouto.WCFExchageLibrary.Data;
 
 namespace Imouto.Viewer.ViewModel
@@ -15,12 +16,11 @@ namespace Imouto.Viewer.ViewModel
     {
         #region Fields
 
-        private MainWindowVM _parent;
+        private readonly MainWindowVM _parent;
 
-        private int? _currentId;
         private string _currentPath = "";
         private bool _showTags;
-        private bool _isLastSuccessConnected = false;
+        private bool _isLastSuccessConnected;
         private bool _showNotes;
 
         #endregion Fields
@@ -66,13 +66,7 @@ namespace Imouto.Viewer.ViewModel
             }
         }
 
-        public int? CurrentId
-        {
-            get
-            {
-                return _currentId;
-            }
-        }
+        public int? CurrentId { get; private set; }
 
         #endregion Properties
 
@@ -94,11 +88,9 @@ namespace Imouto.Viewer.ViewModel
                     }
                 }
 
-                Tuple<List<BindedTag>, List<NoteM>> tagsAndNotes;
-
                 if (needReload || fullReload)
                 {
-                    tagsAndNotes = await LoadTagsTask(path);
+                    var tagsAndNotes = await LoadTagsTask(path);
                     _isLastSuccessConnected = true;
 
                     lock (_currentPath)
@@ -111,7 +103,7 @@ namespace Imouto.Viewer.ViewModel
                     }
                 }
             }
-            catch (System.ServiceModel.EndpointNotFoundException)
+            catch (EndpointNotFoundException)
             {
                 _isLastSuccessConnected = false;
                 OnPropertyChanged(() => ShowTags);
@@ -130,7 +122,6 @@ namespace Imouto.Viewer.ViewModel
                 await CreateTagTask(createTagVM);
 
                 _parent.View.ShowMessageDialog("Tag creating", "Tag succsessfully created");
-
             }
             catch (Exception ex)
             {
@@ -153,7 +144,6 @@ namespace Imouto.Viewer.ViewModel
                 await UnbindTagTask(CurrentId.Value, bindedTagVM.Id);
 
                 _parent.View.ShowMessageDialog("Removing tag from current image", "Tag succsessfully removed");
-
             }
             catch (Exception ex)
             {
@@ -162,7 +152,6 @@ namespace Imouto.Viewer.ViewModel
 
             ReloadAsync(true);
         }
-
 
         public async void BindTagAsync(AddTagVM addTagVM)
         {
@@ -218,21 +207,23 @@ namespace Imouto.Viewer.ViewModel
             {
                 var id = ImoutoService.Use(imoutoService =>
                 {
-                    return imoutoService.GetImageId(path: path);
+                    return imoutoService.GetImageId(path);
                 });
-                _currentId = id;
+                CurrentId = id;
 
                 var tags = new List<BindedTag>();
                 var notes = new List<NoteM>();
-                if (_currentId.HasValue)
+                if (CurrentId.HasValue)
                 {
                     tags = ImoutoService.Use(imoutoService =>
                     {
-                        return imoutoService.GetImageTags(_currentId.Value);
+                        return imoutoService.GetImageTags(CurrentId.Value);
                     });
                     notes = ImoutoService.Use(imoutoService =>
                     {
-                        return imoutoService.GetImageNotes(_currentId.Value).Select(WcfMapper.MapNote).ToList();
+                        return imoutoService.GetImageNotes(CurrentId.Value)
+                                            .Select(WcfMapper.MapNote)
+                                            .ToList();
                     });
                 }
 
@@ -256,7 +247,7 @@ namespace Imouto.Viewer.ViewModel
             OnTagsLoaded();
         }
 
-        private  void NotesReload(List<NoteM> notes)
+        private void NotesReload(List<NoteM> notes)
         {
             NotesCollection.Clear();
 
@@ -270,34 +261,26 @@ namespace Imouto.Viewer.ViewModel
         {
             SourcesCollection.Clear();
 
-            var ParsedSources = TagsCollection.Select(x => x.Source).Where(x => x != "User").Distinct();
-            if (ParsedSources.Count() > 1)
+            var parsedSources = TagsCollection.Select(x => x.Source)
+                                              .Where(x => x != "User")
+                                              .Distinct().ToList();
+            if (parsedSources.Count() > 1)
             {
-
                 SourcesCollection.Add(new SourceVM
-                                      {
-                                          Title = "Common"
-                                      });
+                {
+                    Title = "Common"
+                });
 
 
-                var commonBindedTagVms = SourcesCollection.Last().TagsCollection;
+                var commonBindedTagVms = SourcesCollection.Last()
+                                                          .TagsCollection;
 
-                TagsCollection.Where(
-                                     tag =>
-                                     ParsedSources.All(
-                                                       x =>
-                                                       TagsCollection.Any(
-                                                                          tagg =>
-                                                                          tagg.Source == x && tagg.Title == tag.Title)))
+                TagsCollection.Where(tag => parsedSources.All(x => TagsCollection.Any(tagg => tagg.Source == x && tagg.Title == tag.Title)))
                               .ForEach(x => commonBindedTagVms.Add(x));
 
-                for (int i = 0; i < commonBindedTagVms.Count;)
+                for (var i = 0; i < commonBindedTagVms.Count;)
                 {
-                    if (
-                        commonBindedTagVms.Any(
-                                               y =>
-                                               y.Title == commonBindedTagVms[i].Title
-                                               && commonBindedTagVms.IndexOf(y) != i))
+                    if (commonBindedTagVms.Any(y => y.Title == commonBindedTagVms[i].Title && commonBindedTagVms.IndexOf(y) != i))
                     {
                         commonBindedTagVms.Remove(commonBindedTagVms[i]);
                     }
@@ -313,16 +296,19 @@ namespace Imouto.Viewer.ViewModel
                 }
             }
 
-            foreach (var source in TagsCollection.Select(x => x.Source).Distinct())
+            foreach (var source in TagsCollection.Select(x => x.Source)
+                                                 .Distinct())
             {
-                SourcesCollection.Add(new SourceVM { Title = source });
+                SourcesCollection.Add(new SourceVM
+                {
+                    Title = source
+                });
 
-                TagsCollection.Where(x => x.Source == source 
-                                            && (SourcesCollection
-                                            .FirstOrDefault()
-                                            ?.TagsCollection
-                                            ?.All(y => y.Title != x.Title) ?? false))
-                              .ForEach(x => SourcesCollection.Last().TagsCollection.Add(x));
+                TagsCollection.Where(x => x.Source == source && (SourcesCollection.FirstOrDefault()
+                                                                                  ?.TagsCollection
+                                                                                  ?.All(y => y.Title != x.Title) ?? false))
+                              .ForEach(x => SourcesCollection.Last()
+                                                             .TagsCollection.Add(x));
             }
         }
 
@@ -343,15 +329,15 @@ namespace Imouto.Viewer.ViewModel
             {
                 ImoutoService.Use(imoutoService =>
                 {
-                    imoutoService.BindTag(
-                        CurrentId.Value,
-                        new BindedTag
-                        {
-                            Tag = addTagVM.SelectedTag,
-                            DateAdded = DateTime.Now,
-                            Source = Source.User,
-                            Value = (addTagVM.SelectedTag.HasValue) ? addTagVM.Value : null
-                        });
+                    imoutoService.BindTag(CurrentId.Value, new BindedTag
+                    {
+                        Tag = addTagVM.SelectedTag,
+                        DateAdded = DateTime.Now,
+                        Source = Source.User,
+                        Value = (addTagVM.SelectedTag.HasValue)
+                                ? addTagVM.Value
+                                : null
+                    });
                 });
             });
         }
@@ -361,13 +347,11 @@ namespace Imouto.Viewer.ViewModel
         #region Events
 
         public event EventHandler TagsLoaded;
+
         private void OnTagsLoaded()
         {
             var handler = TagsLoaded;
-            if (handler != null)
-            {
-                handler(this, new EventArgs());
-            }
+            handler?.Invoke(this, new EventArgs());
         }
 
         #endregion Events
