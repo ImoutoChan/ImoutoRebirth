@@ -3,12 +3,14 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.Remoting.Messaging;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
 using Imouto.Navigator.ViewModel;
 using MahApps.Metro.Controls;
+using MahApps.Metro.Controls.Dialogs;
 
 namespace Imouto.Navigator
 {
@@ -112,6 +114,13 @@ namespace Imouto.Navigator
             var childRectangle = childTransform.TransformBounds(new Rect(new Point(0, 0), child.RenderSize));
             var ownerRectangle = new Rect(new Point(0, 0), scrollViewer.RenderSize);
             return ownerRectangle.IntersectsWith(childRectangle);
+        }
+
+        public async Task<MessageDialogResult> ShowMessageDialog(string title, string message, MessageDialogStyle style, MetroDialogSettings settings)
+        {
+            MetroDialogOptions.ColorScheme = MetroDialogColorScheme.Accented;
+
+            return await this.ShowMessageAsync(title, message, style, settings);
         }
 
         #endregion Methods

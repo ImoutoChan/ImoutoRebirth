@@ -15,6 +15,7 @@
                           xmlns:webMPlayerControlLibrary="clr-namespace:Imouto.WebMPlayerControlLibrary;assembly=Imouto.WebMPlayerControlLibrary"
                           xmlns:gif="http://wpfanimatedgif.codeplex.com"
                           xmlns:flyouts="clr-namespace:Imouto.Navigator.View.Flyouts"
+                          xmlns:wpfHelpers="clr-namespace:Imouto.Utils.WPFHelpers;assembly=Imouto.Utils"
                           d:DataContext="{d:DesignInstance viewModel:MainWindowVM, IsDesignTimeCreatable=False}"
                           mc:Ignorable="d"
                           WindowStartupLocation="CenterScreen"
@@ -36,6 +37,9 @@
                        Text="Collection has been successfully created!"
                        Foreground="{DynamicResource AccentColorBrush}" />
         </Dialog:CustomDialog>
+        
+        <wpfHelpers:BindingProxy x:Key="DataContextProxy"
+                                 Data="{Binding}" />
     </metroControl:MetroWindow.Resources>
 
     <metroControl:MetroWindow.Flyouts>
@@ -424,6 +428,17 @@
                                         <!-- Visual -->
                                     </ControlTemplate.Triggers>
                                 </ControlTemplate>
+                            </Setter.Value>
+                        </Setter>
+                        
+                        <Setter Property="ContextMenu">
+                            <Setter.Value>
+                                <ContextMenu DataContext="{Binding Source={StaticResource DataContextProxy}}"
+                                             Tag="{Binding RelativeSource={RelativeSource Mode=Self}, Path=PlacementTarget}">
+                                    <MenuItem Header="Remove element"
+                                              Command="{Binding Data.RemoveImageCommand}"
+                                              CommandParameter="{Binding Path=Tag.DataContext, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type ContextMenu}}}" />
+                                </ContextMenu>
                             </Setter.Value>
                         </Setter>
                     </Style>

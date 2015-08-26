@@ -11,6 +11,7 @@ using Imouto.Navigator.Commands;
 using Imouto.Navigator.Model;
 using Imouto.Navigator.WCF;
 using Imouto.Utils;
+using MahApps.Metro.Controls.Dialogs;
 
 namespace Imouto.Navigator.ViewModel
 {
@@ -153,6 +154,8 @@ namespace Imouto.Navigator.ViewModel
 
         public ICommand LoadPreviewsCommand { get; set; }
 
+        public ICommand RemoveImageCommand { get; set; }
+
         private void InitializeCommands()
         {
             ZoomInCommand = new RelayCommand(x =>
@@ -175,6 +178,7 @@ namespace Imouto.Navigator.ViewModel
                 UpdatePreviews();
             });
             LoadPreviewsCommand = new RelayCommand(x => LoadPreviews());
+            RemoveImageCommand = new RelayCommand(RemoveImage);
         }
 
         #endregion Commands
@@ -478,6 +482,43 @@ namespace Imouto.Navigator.ViewModel
                                                           TagSearchVM.SelectedBindedTags.Select(x => x.Model).ToList());
                 });
             });
+        }
+        
+        private async void RemoveImage(object o)
+        {
+            var selectedItem = o as INavigatorListEntry;
+
+            if (!selectedItem.DbId.HasValue)
+            {
+                return;
+            }
+
+            var mySettings = new MetroDialogSettings()
+            {
+                AffirmativeButtonText = "Yes",
+                NegativeButtonText = "No",
+                ColorScheme = MetroDialogColorScheme.Accented
+            };
+            var result = await _view.ShowMessageDialog("Remove Element", $"Are you sure you want to remove this element from database?", MessageDialogStyle.AffirmativeAndNegative, mySettings);
+
+            if (result == MessageDialogResult.Affirmative)
+            {
+                await Task.Run(() =>
+                {
+                    ImoutoService.Use(imoutoService =>
+                    {
+                        imoutoService.RemoveImage(selectedItem.DbId.Value);
+                    });
+                });
+
+                NavigatorList.Remove(selectedItem);
+
+                await _view.ShowMessageDialog("Remove Element", "Element successfully removed.", MessageDialogStyle.Affirmative, new MetroDialogSettings
+                {
+                    ColorScheme = MetroDialogColorScheme.Accented
+                });
+            }
+
         }
 
         #endregion Methods
