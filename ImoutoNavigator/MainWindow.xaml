@@ -37,7 +37,7 @@
                        Text="Collection has been successfully created!"
                        Foreground="{DynamicResource AccentColorBrush}" />
         </Dialog:CustomDialog>
-        
+
         <wpfHelpers:BindingProxy x:Key="DataContextProxy"
                                  Data="{Binding}" />
     </metroControl:MetroWindow.Resources>
@@ -69,7 +69,7 @@
             </metroControl:Flyout>
 
             <metroControl:Flyout x:Name="TagsEditFlyout"
-                                 Height="350"
+                                 Height="360"
                                  Header="Add tags"
                                  Position="Bottom"
                                  DataContext="{Binding Path=TagsEdit}"
@@ -103,14 +103,17 @@
             <Grid.RowDefinitions>
                 <RowDefinition Height="*" />
                 <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
             </Grid.RowDefinitions>
 
             <metroControl:ProgressRing IsActive="{Binding Path=IsLoading, Mode=OneWay}"
                                        Grid.Column="1"
+                                       Grid.RowSpan="2"
                                        Visibility="{Binding Path=IsLoading, Converter={StaticResource ConditionVisibilityConverter}, ConverterParameter=true, Mode=OneWay}" />
 
             <ListBox x:Name="ListBoxElement"
                      Grid.Column="1"
+                     Grid.RowSpan="2"
                      ScrollViewer.HorizontalScrollBarVisibility="Disabled"
                      ItemsSource="{Binding Path=NavigatorList, UpdateSourceTrigger=PropertyChanged}"
                      SelectionMode="Extended"
@@ -430,7 +433,7 @@
                                 </ControlTemplate>
                             </Setter.Value>
                         </Setter>
-                        
+
                         <Setter Property="ContextMenu">
                             <Setter.Value>
                                 <ContextMenu DataContext="{Binding Source={StaticResource DataContextProxy}}"
@@ -446,6 +449,7 @@
             </ListBox>
 
             <GridSplitter Grid.Column="0"
+                          Grid.RowSpan="2"
                           Width="0"
                           ShowsPreview="True"
                           Background="{DynamicResource AccentColorBrush}" />
@@ -453,7 +457,11 @@
             <view:TagsSearchView Grid.Column="0"
                                  DataContext="{Binding TagSearchVM}" />
 
-            <view:StatusBarView Grid.Row="1"
+            <view:FileInfoView Grid.Column="0"
+                               Grid.Row="1"
+                               DataContext="{Binding FileInfoVM}" />
+
+            <view:StatusBarView Grid.Row="2"
                                 Grid.ColumnSpan="2" />
         </Grid>
     </Grid>

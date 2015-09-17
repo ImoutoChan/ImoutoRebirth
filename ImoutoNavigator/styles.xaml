@@ -169,6 +169,43 @@
         </Label>
     </ControlTemplate>
 
+    <ControlTemplate x:Key="BindedTagVMElementControlTemplate"
+                     TargetType="Button">
+        <Label Background="Transparent"
+               x:Name="label"
+               HorizontalContentAlignment="Stretch"
+               Padding="10,4,5,2">
+            <Label.Content>
+                <TextBlock Text="{Binding Tag.Title}"
+                           TextAlignment="Left"
+                           Foreground="{Binding Tag.Type.Color, Converter={StaticResource IntToColorConverter}}"
+                           FontFamily="Comic Sans MS"
+                           FontSize="13"
+                           FontWeight="Bold"
+                           VerticalAlignment="Center"
+                           ToolTip="{Binding Tag.Title}" />
+            </Label.Content>
+        </Label>
+    </ControlTemplate>
+
+    <DataTemplate x:Key="BindedTagVMElementContentTemplate">
+        <Label Background="Transparent"
+               x:Name="label"
+               HorizontalContentAlignment="Stretch"
+               Padding="10,4,5,2">
+            <Label.Content>
+                <TextBlock Text="{Binding Tag.Title}"
+                           TextAlignment="Left"
+                           Foreground="{Binding Tag.Type.Color, Converter={StaticResource IntToColorConverter}}"
+                           FontFamily="Comic Sans MS"
+                           FontSize="13"
+                           FontWeight="Bold"
+                           VerticalAlignment="Center"
+                           ToolTip="{Binding Tag.Title}" />
+            </Label.Content>
+        </Label>
+    </DataTemplate>
+
     <DataTemplate x:Key="CurrentTagsSourceDataTemplate"
                   DataType="{x:Type viewModel:TagSourceVM}">
         <StackPanel>

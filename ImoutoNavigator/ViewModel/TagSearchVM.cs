@@ -49,8 +49,7 @@ namespace Imouto.Navigator.ViewModel
 
         public ObservableCollection<TagSourceVM> CurrentTagsSources { get; } = new ObservableCollection<TagSourceVM>();
 
-        public ObservableCollection<KeyValuePair<string, int?>> Collections { get; } =
-            new ObservableCollection<KeyValuePair<string, int?>>();
+        public ObservableCollection<KeyValuePair<string, int?>> Collections { get; } = new ObservableCollection<KeyValuePair<string, int?>>();
 
         public KeyValuePair<string, int?> SelectedColleciton
         {
@@ -123,9 +122,9 @@ namespace Imouto.Navigator.ViewModel
         {
             get
             {
-                return _comparators
-                       ?? (_comparators =
-                           ComparatorExtensions.GetValues<Comparator>().Select(x => x.ToFriendlyString()).ToList());
+                return _comparators ?? (_comparators = ComparatorExtensions.GetValues<Comparator>()
+                                                                           .Select(x => x.ToFriendlyString())
+                                                                           .ToList());
             }
         }
 
@@ -220,12 +219,14 @@ namespace Imouto.Navigator.ViewModel
                 });
             });
 
-            var tagVmsCollection =
-                tags.Where(x => x.Tag.Type.Title != "LocalMeta").Select(x => new BindedTagVM(x)).ToList();
+            var tagVmsCollection = tags.Where(x => x.Tag.Type.Title != "LocalMeta")
+                                       .Select(x => new BindedTagVM(x, listEntry.DbId))
+                                       .ToList();
 
             CurrentTagsSources.Clear();
 
-            var userTags = tagVmsCollection.Where(x => x.Model.Source == Source.User).ToList();
+            var userTags = tagVmsCollection.Where(x => x.Model.Source == Source.User)
+                                           .ToList();
             if (userTags.Any())
             {
                 CurrentTagsSources.Add(new TagSourceVM
@@ -235,18 +236,18 @@ namespace Imouto.Navigator.ViewModel
                 });
             }
 
-            var parsedSources = tagVmsCollection.Select(x => x.Model.Source).Where(x => x != Source.User).Distinct();
+            var parsedSources = tagVmsCollection.Select(x => x.Model.Source)
+                                                .Where(x => x != Source.User)
+                                                .Distinct();
 
             foreach (var parsedSource in parsedSources)
             {
                 CurrentTagsSources.Add(new TagSourceVM
                 {
                     Title = parsedSource.ToString(),
-                    Tags =
-                        new ObservableCollection<BindedTagVM>(
-                                           tagVmsCollection.Where(x => x.Model.Source == parsedSource)
-                                                           .OrderBy(x => x.TypePriority)
-                                                           .ThenBy(x => x.Tag.Title))
+                    Tags = new ObservableCollection<BindedTagVM>(tagVmsCollection.Where(x => x.Model.Source == parsedSource)
+                                                                                 .OrderBy(x => x.TypePriority)
+                                                                                 .ThenBy(x => x.Tag.Title))
                 });
             }
         }
@@ -309,8 +310,7 @@ namespace Imouto.Navigator.ViewModel
                 SelectedBindedTags.Add(new BindedTagVM(new BindedTag
                 {
                     Tag = tag,
-                    Value =
-                        (tag.HasValue && !string.IsNullOrWhiteSpace(EnteredValue))
+                    Value = (tag.HasValue && !string.IsNullOrWhiteSpace(EnteredValue))
                             ? SelectedComparator + EnteredValue
                             : null,
                     SearchType = SearchType.Include
@@ -365,8 +365,8 @@ namespace Imouto.Navigator.ViewModel
             if (tagInList != null)
             {
                 tagInList.SearchType = tagInList.SearchType == SearchType.Include
-                                           ? SearchType.Exclude
-                                           : SearchType.Include;
+                                       ? SearchType.Exclude
+                                       : SearchType.Include;
             }
 
             OnSelectedTagsUpdated();
@@ -471,7 +471,8 @@ namespace Imouto.Navigator.ViewModel
 
         public static IEnumerable<T> GetValues<T>()
         {
-            return Enum.GetValues(typeof (T)).Cast<T>();
+            return Enum.GetValues(typeof (T))
+                       .Cast<T>();
         }
     }
 }

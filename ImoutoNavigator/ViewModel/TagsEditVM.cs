@@ -26,6 +26,8 @@ namespace Imouto.Navigator.ViewModel
         private CreateTagVM _createTagVM;
         private bool _isSavind;
         private bool _isSuccess;
+        private ICommand _setTagInfoContextCommand;
+        private BindedTagVM _tagInfoContext;
 
         #endregion Fields
 
@@ -53,6 +55,8 @@ namespace Imouto.Navigator.ViewModel
 
         public ObservableCollection<BindedTagVM> SelectedTags { get; } = new ObservableCollection<BindedTagVM>();
 
+        public ObservableCollection<BindedTagVM> RecentlyTags { get; } = new ObservableCollection<BindedTagVM>();
+
         #endregion Collections
 
         public string SearchText
@@ -65,6 +69,18 @@ namespace Imouto.Navigator.ViewModel
             {
                 OnPropertyChanged(ref _searchText, value, () => SearchText);
                 SearchTagsAsync();
+            }
+        }
+
+        public BindedTagVM TagInfoContext
+        {
+            get
+            {
+                return _tagInfoContext;
+            }
+            set
+            {
+                OnPropertyChanged(ref _tagInfoContext, value, () => TagInfoContext);
             }
         }
 
@@ -127,19 +143,36 @@ namespace Imouto.Navigator.ViewModel
 
         private bool CanAddTags(object obj)
         {
-            return (obj as IList)?.Cast<BindedTagVM>().Any() ?? false;
+            return (obj as IList)?.Cast<BindedTagVM>()
+                                  .Any() ?? obj is BindedTagVM;
         }
 
         private void AddTags(object obj)
         {
             var bindedTags = (obj as IList)?.Cast<BindedTagVM>();
-            if (bindedTags == null
-                || !bindedTags.Any())
+
+            if (bindedTags == null)
+            {
+                var bindedTag = obj as BindedTagVM;
+
+                if (bindedTag == null)
+                {
+                    return;
+                }
+
+                bindedTags = new List<BindedTagVM>
+                {
+                    bindedTag
+                };
+            }
+
+            var bindedTagVms = bindedTags as IList<BindedTagVM> ?? bindedTags.ToList();
+            if (!bindedTagVms.Any())
             {
                 return;
             }
 
-            foreach (var bindedTag in bindedTags)
+            foreach (var bindedTag in bindedTagVms)
             {
                 if (SelectedTags.Any(x => x.Tag.Id == bindedTag.Tag.Id && x.Value == bindedTag.Value))
                 {
@@ -150,27 +183,38 @@ namespace Imouto.Navigator.ViewModel
             }
         }
 
-        public ICommand RemoveTagsCommand
-            => _removeTagsCommand ?? (_removeTagsCommand = new RelayCommand(RemoveTags, CanRemoveTags));
+        public ICommand RemoveTagsCommand => _removeTagsCommand ?? (_removeTagsCommand = new RelayCommand(RemoveTags, CanRemoveTags));
 
         private bool CanRemoveTags(object obj)
         {
-            return (obj as IList)?.Cast<BindedTagVM>().Any() ?? false;
+            return (obj as IList)?.Cast<BindedTagVM>()
+                                  .Any() ?? obj is BindedTagVM;
         }
 
         private void RemoveTags(object obj)
         {
-            var bindedTags = (obj as IList)?.Cast<BindedTagVM>().ToList();
-            if (bindedTags == null
-                || !bindedTags.Any())
+            var bindedTags = (obj as IList)?.Cast<BindedTagVM>();
+
+            if (bindedTags == null)
             {
-                return;
+                var bindedTag = obj as BindedTagVM;
+
+                if (bindedTag == null)
+                {
+                    return;
+                }
+
+                bindedTags = new List<BindedTagVM>
+                {
+                    bindedTag
+                };
             }
 
-            foreach (var bindedTag in bindedTags)
+            var bindedTagVms = bindedTags as IList<BindedTagVM> ?? bindedTags.ToList();
+
+            foreach (var bindedTag in bindedTagVms)
             {
-                var tagToRemove =
-                    SelectedTags.FirstOrDefault(x => x.Tag.Id == bindedTag.Tag.Id && x.Value == bindedTag.Value);
+                var tagToRemove = SelectedTags.FirstOrDefault(x => x.Tag.Id == bindedTag.Tag.Id && x.Value == bindedTag.Value);
                 if (tagToRemove != null)
                 {
                     SelectedTags.Remove(tagToRemove);
@@ -198,18 +242,23 @@ namespace Imouto.Navigator.ViewModel
                 {
                     ImoutoService.Use(imoutoService =>
                     {
-                        imoutoService.BatchBindTag(
-                                                   images.Where(x => x.DbId.HasValue).Select(x => x.DbId.Value).ToList(),
-                                                   tags.Select(x => new BindedTag
-                                                   {
-                                                       Tag = x.Tag,
-                                                       DateAdded = DateTime.Now,
-                                                       Source = Source.User,
-                                                       Value = (x.Tag.HasValue) ? x.Value : null
-                                                   }).ToList());
+                        imoutoService.BatchBindTag(images.Where(x => x.DbId.HasValue)
+                                                         .Select(x => x.DbId.Value)
+                                                         .ToList(), tags.Select(x => new BindedTag
+                                                         {
+                                                             Tag = x.Tag,
+                                                             DateAdded = DateTime.Now,
+                                                             Source = Source.User,
+                                                             Value = (x.Tag.HasValue)
+                                                                     ? x.Value
+                                                                     : null
+                                                         })
+                                                                        .ToList());
                     });
                 });
                 IsSavind = false;
+
+                UpdateRecentlyTags(SelectedTags);
 
                 IsSuccess = true;
                 await Task.Delay(500);
@@ -219,6 +268,37 @@ namespace Imouto.Navigator.ViewModel
             {
                 IsSavind = false;
             }
+        }
+
+        private void UpdateRecentlyTags(IEnumerable<BindedTagVM> selectedTags)
+        {
+            foreach (var selectedTag in selectedTags)
+            {
+                if (!RecentlyTags.Any(x => x.Tag.Id == selectedTag.Tag.Id && x.Value == selectedTag.Value))
+                {
+                    RecentlyTags.Insert(0, selectedTag);
+                }
+
+                if (RecentlyTags.Count > 10)
+                {
+                    RecentlyTags.Remove(RecentlyTags.Last());
+                }
+            }
+        }
+
+        public ICommand SetTagInfoContextCommand => _setTagInfoContextCommand ?? (_setTagInfoContextCommand = new RelayCommand(SetTagInfoContext));
+
+        private void SetTagInfoContext(object obj)
+        {
+            var bindedTag = obj as BindedTagVM;
+
+            if (bindedTag == null)
+            {
+                TagInfoContext = null;
+                return;
+            }
+
+            TagInfoContext = bindedTag;
         }
 
         #endregion Commands

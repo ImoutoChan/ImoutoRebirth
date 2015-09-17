@@ -2,7 +2,6 @@
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media.Imaging;
-using Imouto;
 using Imouto.Navigator.Commands;
 using Imouto.Navigator.Model;
 
@@ -22,12 +21,14 @@ namespace Imouto.Navigator.ViewModel
         {
             ImageEntry = new ImageEntry(imagePath, initPreviewSize);
             ImageEntry.ImageChanged += (s, e) =>
-                                       {
-                                           OnPropertyChanged("IsLoading");
-                                           OnPropertyChanged("Image");
-                                       };
+            {
+                OnPropertyChanged("IsLoading");
+                OnPropertyChanged("Image");
+            };
 
-            Type = (ImageEntry.ImageFormat == ImageFormat.GIF) ? ListEntryType.Gif : ListEntryType.Image;
+            Type = (ImageEntry.ImageFormat == ImageFormat.GIF)
+                   ? ListEntryType.Gif
+                   : ListEntryType.Image;
             DbId = dbId;
         }
 
@@ -46,6 +47,8 @@ namespace Imouto.Navigator.ViewModel
         private ImageEntry ImageEntry { get; }
 
         public int? DbId { get; }
+
+        public string Path => ImageEntry.FullName;
 
         #endregion Properties
 
@@ -77,7 +80,10 @@ namespace Imouto.Navigator.ViewModel
 
         #region IDragable members
 
-        public object Data => new DataObject(DataFormats.FileDrop, new[] { ImageEntry.FullName });
+        public object Data => new DataObject(DataFormats.FileDrop, new[]
+        {
+            ImageEntry.FullName
+        });
 
         public DragDropEffects AllowDragDropEffects => DragDropEffects.Copy;
 

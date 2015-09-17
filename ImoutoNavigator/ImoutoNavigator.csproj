@@ -135,6 +135,7 @@
     <Compile Include="Behavior\MultiSelectListBoxDropBehavior.cs" />
     <Compile Include="Commands\RelayCommand.cs" />
     <Compile Include="Converters\BooleanResultConverter.cs" />
+    <Compile Include="Converters\HumanReadableSizeConverter.cs" />
     <Compile Include="Converters\IntToColorConverter.cs" />
     <Compile Include="Converters\BooleanToVisibilityConverter.cs" />
     <Compile Include="Converters\ConditionVisibilityConverter.cs" />
@@ -154,6 +155,7 @@
     <Compile Include="ViewModel\CreateTagVM.cs" />
     <Compile Include="ViewModel\DestinationFolderVM.cs" />
     <Compile Include="ViewModel\EntryVM.cs" />
+    <Compile Include="ViewModel\FileInfoVM.cs" />
     <Compile Include="ViewModel\ImageEntryVM.cs" />
     <Compile Include="ViewModel\INavigatorListEntry.cs" />
     <Compile Include="ViewModel\ListEntryType.cs" />
@@ -167,6 +169,9 @@
     <Compile Include="ViewModel\BindedTagVM.cs" />
     <Compile Include="ViewModel\VideoEntryVM.cs" />
     <Compile Include="ViewModel\VMBase.cs" />
+    <Compile Include="View\FileInfoView.xaml.cs">
+      <DependentUpon>FileInfoView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="View\Flyouts\CreateTagView.xaml.cs">
       <DependentUpon>CreateTagView.xaml</DependentUpon>
     </Compile>
@@ -215,6 +220,10 @@
     <Page Include="UserControls\TagView.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
+    </Page>
+    <Page Include="View\FileInfoView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="View\Flyouts\CreateTagView.xaml">
       <SubType>Designer</SubType>

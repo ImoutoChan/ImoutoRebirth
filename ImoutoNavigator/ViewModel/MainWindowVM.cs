@@ -60,6 +60,7 @@ namespace Imouto.Navigator.ViewModel
         {
             OnPropertyChanged(() => SelectedItems);
             TagSearchVM.UpdateCurrentTags(_view.ListBoxElement.SelectedItem as INavigatorListEntry);
+            FileInfoVM.UpdateCurrentInfo(_view.ListBoxElement.SelectedItem as INavigatorListEntry);
         }
 
         #endregion Constructors
@@ -70,8 +71,7 @@ namespace Imouto.Navigator.ViewModel
 
         private Size PreviewSize => new Size(_previewSize, _previewSize);
 
-        public ObservableCollection<INavigatorListEntry> NavigatorList { get; } =
-            new ObservableCollection<INavigatorListEntry>();
+        public ObservableCollection<INavigatorListEntry> NavigatorList { get; } = new ObservableCollection<INavigatorListEntry>();
 
         public string Title => "Imouto Navigator";
 
@@ -143,6 +143,8 @@ namespace Imouto.Navigator.ViewModel
                 return _view.SelectedItems;
             }
         }
+
+        public FileInfoVM FileInfoVM { get; } = new FileInfoVM();
 
         #endregion Properties
 
@@ -382,7 +384,9 @@ namespace Imouto.Navigator.ViewModel
                 // skip ?
                 TotalCount = total + skip;
 
-                count = (count < total) ? count : total;
+                count = (count < total)
+                        ? count
+                        : total;
 
                 if (count == 0)
                 {
@@ -445,10 +449,7 @@ namespace Imouto.Navigator.ViewModel
                 }
 
                 sw.Stop();
-                Debug.WriteLine("Loading {0} elemets, skip {1} elemets in ms: {2}",
-                                block,
-                                skip + count - i,
-                                sw.ElapsedMilliseconds);
+                Debug.WriteLine("Loading {0} elemets, skip {1} elemets in ms: {2}", block, skip + count - i, sw.ElapsedMilliseconds);
 
 
                 if (i == count)
@@ -464,11 +465,11 @@ namespace Imouto.Navigator.ViewModel
             {
                 return new ObservableCollection<INavigatorListEntry>(ImoutoService.Use(imoutoService =>
                 {
-                    return imoutoService.SearchImage(TagSearchVM.SelectedColleciton.Value,
-                                                     TagSearchVM.SelectedBindedTags.Select(x => x.Model).ToList(),
-                                                     count,
-                                                     skip);
-                }).Select(x => EntryVM.GetListEntry(x.Item1, PreviewSize, x.Item2)).SkipExceptions());
+                    return imoutoService.SearchImage(TagSearchVM.SelectedColleciton.Value, TagSearchVM.SelectedBindedTags.Select(x => x.Model)
+                                                                                                      .ToList(), count, skip);
+                })
+                                                                                  .Select(x => EntryVM.GetListEntry(x.Item1, PreviewSize, x.Item2))
+                                                                                  .SkipExceptions());
             });
         }
 
@@ -478,12 +479,12 @@ namespace Imouto.Navigator.ViewModel
             {
                 return ImoutoService.Use(imoutoService =>
                 {
-                    return imoutoService.CountSearchImage(TagSearchVM.SelectedColleciton.Value,
-                                                          TagSearchVM.SelectedBindedTags.Select(x => x.Model).ToList());
+                    return imoutoService.CountSearchImage(TagSearchVM.SelectedColleciton.Value, TagSearchVM.SelectedBindedTags.Select(x => x.Model)
+                                                                                                           .ToList());
                 });
             });
         }
-        
+
         private async void RemoveImage(object o)
         {
             var selectedItem = o as INavigatorListEntry;
@@ -493,7 +494,7 @@ namespace Imouto.Navigator.ViewModel
                 return;
             }
 
-            var mySettings = new MetroDialogSettings()
+            var mySettings = new MetroDialogSettings
             {
                 AffirmativeButtonText = "Yes",
                 NegativeButtonText = "No",
@@ -511,14 +512,13 @@ namespace Imouto.Navigator.ViewModel
                     });
                 });
 
-                NavigatorList.Remove(selectedItem);
+                // NavigatorList.Remove(selectedItem);
 
                 await _view.ShowMessageDialog("Remove Element", "Element successfully removed.", MessageDialogStyle.Affirmative, new MetroDialogSettings
                 {
                     ColorScheme = MetroDialogColorScheme.Accented
                 });
             }
-
         }
 
         #endregion Methods

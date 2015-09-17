@@ -4,37 +4,22 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:controls="http://metro.mahapps.com/winfx/xaml/controls"
-             xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
-             xmlns:behavior="clr-namespace:Imouto.Navigator.Behavior"
              xmlns:viewModel="clr-namespace:Imouto.Navigator.ViewModel"
              xmlns:flyouts="clr-namespace:Imouto.Navigator.View.Flyouts"
              mc:Ignorable="d"
              d:DataContext="{d:DesignInstance viewModel:TagsEditVM, IsDesignTimeCreatable=False}"
              d:DesignHeight="300"
              d:DesignWidth="800">
-    <UserControl.Resources>
-        <DataTemplate x:Key="TextEntryTemplate"
-                      DataType="{x:Type viewModel:BindedTagVM}">
-            <TextBlock Text="{Binding Tag.Title}"
-                       TextWrapping="Wrap"
-                       Tag="{Binding ElementName=SearchListBox}">
-                <i:Interaction.Behaviors>
-                    <behavior:MultiSelectListBoxDragBehavior />
-                </i:Interaction.Behaviors>
-            </TextBlock>
-        </DataTemplate>
-    </UserControl.Resources>
 
     <Grid Margin="15,15,15,15">
         <Grid.ColumnDefinitions>
-            <!-- 0 --><ColumnDefinition Width="Auto" />
-            <!-- 1 --><ColumnDefinition Width="*" />
+            <!-- 0 --><ColumnDefinition Width="200" />
+            <!-- 1 --><ColumnDefinition Width="*"
+                                        MinWidth="15" />
             <!-- 2 --><ColumnDefinition Width="Auto" />
             <!-- 3 --><ColumnDefinition Width="15" />
             <!-- 4 --><ColumnDefinition Width="200" />
-            <!-- 5 --><ColumnDefinition Width="5" />
-            <!-- 6 --><ColumnDefinition Width="Auto" />
-            <!-- 7 --><ColumnDefinition Width="5" />
+            <!-- 5 --><ColumnDefinition Width="15" />
             <!-- 8 --><ColumnDefinition Width="200" />
             <!-- 9 --><ColumnDefinition Width="15" />
             <!-- 10 --><ColumnDefinition Width="Auto"
@@ -50,6 +35,70 @@
 
         <TextBlock Grid.Column="0"
                    Text="{Binding SelectedItems.Count, StringFormat='{}Selected {0} items.'}" />
+
+        <Border Grid.Column="0"
+                Grid.Row="1"
+                BorderThickness="1"
+                BorderBrush="{StaticResource WhiteBrush}"
+                Visibility="{Binding RecentlyTags.Count, Converter={StaticResource ConditionVisibilityConverter}, ConverterParameter=!0}">
+            <ScrollViewer HorizontalScrollBarVisibility="Disabled"
+                          VerticalScrollBarVisibility="Auto">
+                <ItemsControl ItemsSource="{Binding RecentlyTags}">
+                    <ItemsControl.ItemContainerStyle>
+                        <Style TargetType="ContentPresenter">
+                            <Setter Property="HorizontalAlignment"
+                                    Value="Stretch" />
+                        </Style>
+                    </ItemsControl.ItemContainerStyle>
+
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <Label Name="Label"
+                                   HorizontalContentAlignment="Stretch"
+                                   Padding="10,4,5,2">
+                                <Label.Style>
+                                    <Style TargetType="Label">
+                                        <Setter Property="Background"
+                                                Value="Transparent" />
+                                        <Style.Triggers>
+                                            <Trigger Property="IsMouseOver"
+                                                     Value="True">
+                                                <Setter Property="Background"
+                                                        Value="{StaticResource AccentColorBrush3}" />
+                                            </Trigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </Label.Style>
+
+                                <Label.InputBindings>
+                                    <MouseBinding Gesture="LeftClick"
+                                                  Command="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}}, Path=DataContext.AddTagsCommand}"
+                                                  CommandParameter="{Binding}" />
+                                </Label.InputBindings>
+
+                                <Label.Content>
+                                    <TextBlock Text="{Binding Tag.Title}"
+                                               TextAlignment="Left"
+                                               Foreground="{Binding Tag.Type.Color, Converter={StaticResource IntToColorConverter}}"
+                                               FontFamily="Comic Sans MS"
+                                               FontSize="13"
+                                               FontWeight="Bold"
+                                               VerticalAlignment="Center">
+                                        <TextBlock.ToolTip>
+                                            <MultiBinding StringFormat="{}{0} : {1}">
+                                                <Binding Path="Tag.Title" />
+                                                <Binding Path="Value"
+                                                         FallbackValue="null" />
+                                            </MultiBinding>
+                                        </TextBlock.ToolTip>
+                                    </TextBlock>
+                                </Label.Content>
+                            </Label>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+            </ScrollViewer>
+        </Border>
 
         <TextBlock Grid.Column="2"
                    Grid.Row="0"
@@ -77,11 +126,56 @@
                 Grid.Row="1"
                 BorderThickness="1"
                 BorderBrush="{StaticResource WhiteBrush}">
-            <ListBox Name="SearchListBox"
-                     ItemsSource="{Binding FoundTags}"
-                     Height="280"
-                     SelectionMode="Extended"
-                     ItemTemplate="{StaticResource TextEntryTemplate}" />
+            <ScrollViewer HorizontalScrollBarVisibility="Disabled"
+                          VerticalScrollBarVisibility="Auto">
+                <ItemsControl ItemsSource="{Binding FoundTags}">
+                    <ItemsControl.ItemContainerStyle>
+                        <Style TargetType="ContentPresenter">
+                            <Setter Property="HorizontalAlignment"
+                                    Value="Stretch" />
+                        </Style>
+                    </ItemsControl.ItemContainerStyle>
+
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <Label Name="Label"
+                                   HorizontalContentAlignment="Stretch"
+                                   Padding="10,4,5,2">
+                                <Label.Style>
+                                    <Style TargetType="Label">
+                                        <Setter Property="Background"
+                                                Value="Transparent" />
+                                        <Style.Triggers>
+                                            <Trigger Property="IsMouseOver"
+                                                     Value="True">
+                                                <Setter Property="Background"
+                                                        Value="{StaticResource AccentColorBrush3}" />
+                                            </Trigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </Label.Style>
+
+                                <Label.InputBindings>
+                                    <MouseBinding Gesture="LeftClick"
+                                                  Command="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}}, Path=DataContext.AddTagsCommand}"
+                                                  CommandParameter="{Binding}" />
+                                </Label.InputBindings>
+
+                                <Label.Content>
+                                    <TextBlock Text="{Binding Tag.Title}"
+                                               TextAlignment="Left"
+                                               Foreground="{Binding Tag.Type.Color, Converter={StaticResource IntToColorConverter}}"
+                                               FontFamily="Comic Sans MS"
+                                               FontSize="13"
+                                               FontWeight="Bold"
+                                               VerticalAlignment="Center"
+                                               ToolTip="{Binding Tag.Title}" />
+                                </Label.Content>
+                            </Label>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+            </ScrollViewer>
         </Border>
 
         <Grid Grid.Column="4"
@@ -93,55 +187,79 @@
                     Command="{Binding CreateTagCommand}" />
         </Grid>
 
-        <StackPanel Grid.Column="6"
-                    Grid.RowSpan="3"
-                    Orientation="Vertical"
-                    VerticalAlignment="Center">
-            <Button Content=">>"
-                    HorizontalAlignment="Center"
-                    Width="25"
-                    Height="75"
-                    Margin="0,5,0,15"
-                    Command="{Binding AddTagsCommand}"
-                    CommandParameter="{Binding ElementName=SearchListBox, Path=SelectedItems, Mode=OneWay}" />
-
-            <Button Content="&lt;&lt;"
-                    HorizontalAlignment="Center"
-                    Width="25"
-                    Height="75"
-                    Margin="0,15,0,0"
-                    Command="{Binding RemoveTagsCommand}"
-                    CommandParameter="{Binding ElementName=SelectedListBox, Path=SelectedItems, Mode=OneWay}" />
-        </StackPanel>
-
-        <TextBlock Grid.Column="8"
+        <TextBlock Grid.Column="6"
                    Grid.Row="0"
                    Text="Selected tags"
                    Margin="0,0,0,5"
                    FontSize="16" />
 
-        <Border Grid.Column="8"
+        <Border Grid.Column="6"
                 Grid.Row="1"
                 BorderThickness="1"
                 BorderBrush="{StaticResource WhiteBrush}">
-            <ListBox Name="SelectedListBox"
-                     ItemsSource="{Binding SelectedTags}"
-                     Height="280"
-                     SelectionMode="Extended"
-                     ItemTemplate="{StaticResource TextEntryTemplate}">
-                <ListBox.InputBindings>
-                    <KeyBinding Key="Delete"
-                                Command="{Binding RemoveTagsCommand}"
-                                CommandParameter="{Binding ElementName=SelectedListBox, Path=SelectedItems}" />
-                </ListBox.InputBindings>
+            <ScrollViewer HorizontalScrollBarVisibility="Disabled"
+                          VerticalScrollBarVisibility="Auto">
+                <ItemsControl ItemsSource="{Binding SelectedTags}">
+                    <ItemsControl.ItemContainerStyle>
+                        <Style TargetType="ContentPresenter">
+                            <Setter Property="HorizontalAlignment"
+                                    Value="Stretch" />
+                        </Style>
+                    </ItemsControl.ItemContainerStyle>
 
-                <i:Interaction.Behaviors>
-                    <behavior:MultiSelectListBoxDropBehavior />
-                </i:Interaction.Behaviors>
-            </ListBox>
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <Label Name="Label"
+                                   HorizontalContentAlignment="Stretch"
+                                   Padding="10,4,5,2">
+                                <Label.Style>
+                                    <Style TargetType="Label">
+                                        <Setter Property="Background"
+                                                Value="Transparent" />
+                                        <Style.Triggers>
+                                            <Trigger Property="IsMouseOver"
+                                                     Value="True">
+                                                <Setter Property="Background"
+                                                        Value="{StaticResource AccentColorBrush3}" />
+                                            </Trigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </Label.Style>
+
+                                <Label.InputBindings>
+                                    <MouseBinding Gesture="LeftClick"
+                                                  Command="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}}, Path=DataContext.RemoveTagsCommand}"
+                                                  CommandParameter="{Binding}" />
+
+                                    <MouseBinding Gesture="RightClick"
+                                                  Command="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}}, Path=DataContext.SetTagInfoContextCommand}"
+                                                  CommandParameter="{Binding}" />
+                                </Label.InputBindings>
+
+                                <Label.Content>
+                                    <TextBlock Text="{Binding Tag.Title}"
+                                               TextAlignment="Left"
+                                               Foreground="{Binding Tag.Type.Color, Converter={StaticResource IntToColorConverter}}"
+                                               FontFamily="Comic Sans MS"
+                                               FontSize="13"
+                                               FontWeight="Bold"
+                                               VerticalAlignment="Center">
+                                        <TextBlock.ToolTip>
+                                            <MultiBinding StringFormat="{}{0} : {1}">
+                                                <Binding Path="Tag.Title" />
+                                                <Binding Path="Value" />
+                                            </MultiBinding>
+                                        </TextBlock.ToolTip>
+                                    </TextBlock>
+                                </Label.Content>
+                            </Label>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+            </ScrollViewer>
         </Border>
 
-        <Grid Grid.Column="8"
+        <Grid Grid.Column="6"
               Grid.Row="2"
               Height="25"
               Margin="0,5,0,0">
@@ -168,23 +286,23 @@
                     Command="{Binding SaveCommand}" />
         </Grid>
 
-        <TextBlock Grid.Column="10"
+        <TextBlock Grid.Column="8"
                    Grid.Row="0"
                    FontSize="16"
                    TextTrimming="CharacterEllipsis"
-                   ToolTip="{Binding ElementName=SelectedListBox, Path=SelectedItem.Tag.Title}"
-                   Visibility="{Binding ElementName=SelectedListBox, Path=SelectedItem, Converter={StaticResource ConditionVisibilityConverter}, ConverterParameter=!null}">
+                   ToolTip="{Binding TagInfoContext.Tag.Title}"
+                   Visibility="{Binding Path=TagInfoContext, Converter={StaticResource ConditionVisibilityConverter}, ConverterParameter=!null}">
             <Run Text="Tag: " />
 
             <Run Text="{Binding ElementName=SelectedListBox, Path=SelectedItem.Tag.Title}"
                  Foreground="{Binding ElementName=SelectedListBox, Path=SelectedItem.TypeBrush, Mode=OneWay}" />
         </TextBlock>
 
-        <Grid Grid.Column="10"
+        <Grid Grid.Column="8"
               Grid.Row="1"
               Width="200"
               HorizontalAlignment="Stretch"
-              Visibility="{Binding ElementName=SelectedListBox, Path=SelectedItem, Converter={StaticResource ConditionVisibilityConverter}, ConverterParameter=!null}">
+              Visibility="{Binding Path=TagInfoContext, Converter={StaticResource ConditionVisibilityConverter}, ConverterParameter=!null}">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="Auto" />
                 <ColumnDefinition Width="7" />
@@ -204,8 +322,8 @@
             <TextBlock Grid.Column="2"
                        Grid.Row="0"
                        Margin="5,0,5,0"
-                       Foreground="{Binding ElementName=SelectedListBox, Path=SelectedItem.TypeBrush, Mode=OneWay}"
-                       Text="{Binding ElementName=SelectedListBox, Path=SelectedItem.Tag.Type.Title, Mode=OneWay}"
+                       Foreground="{Binding TagInfoContext.TypeBrush, Mode=OneWay}"
+                       Text="{Binding TagInfoContext.Tag.Type.Title, Mode=OneWay}"
                        TextTrimming="CharacterEllipsis" />
 
             <TextBlock Grid.Column="0"
@@ -217,19 +335,19 @@
                        Grid.Row="1"
                        Margin="5"
                        TextWrapping="Wrap"
-                       Text="{Binding ElementName=SelectedListBox, Path=SelectedItem.Synonyms, Mode=OneWay}" />
+                       Text="{Binding TagInfoContext.Synonyms, Mode=OneWay}" />
 
             <TextBlock Grid.Column="0"
                        Grid.Row="2"
                        Text="Value"
                        Margin="0,5,0,0"
                        FontSize="14"
-                       Visibility="{Binding ElementName=SelectedListBox, Path=SelectedItem.Tag.HasValue, Converter={StaticResource ConditionVisibilityConverter}, ConverterParameter=true, Mode=OneWay}" />
+                       Visibility="{Binding TagInfoContext.Tag.HasValue, Converter={StaticResource ConditionVisibilityConverter}, ConverterParameter=true, Mode=OneWay}" />
             <TextBox Grid.Column="2"
                      Grid.Row="2"
                      Margin="5"
-                     Text="{Binding ElementName=SelectedListBox, Path=SelectedItem.Value, Mode=TwoWay}"
-                     Visibility="{Binding ElementName=SelectedListBox, Path=SelectedItem.Tag.HasValue, Converter={StaticResource ConditionVisibilityConverter}, ConverterParameter=true, Mode=OneWay}" />
+                     Text="{Binding TagInfoContext.Value, Mode=TwoWay}"
+                     Visibility="{Binding TagInfoContext.Tag.HasValue, Converter={StaticResource ConditionVisibilityConverter}, ConverterParameter=true, Mode=OneWay}" />
         </Grid>
     </Grid>
 </UserControl>

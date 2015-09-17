@@ -17,5 +17,7 @@ namespace Imouto.Navigator.ViewModel
         Size ViewPortSize { get; }
 
         int? DbId { get; }
+
+        string Path { get; }
     }
 }
