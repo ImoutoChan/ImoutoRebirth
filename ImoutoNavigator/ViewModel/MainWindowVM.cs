@@ -60,7 +60,7 @@ namespace Imouto.Navigator.ViewModel
         {
             OnPropertyChanged(() => SelectedItems);
             TagSearchVM.UpdateCurrentTags(_view.ListBoxElement.SelectedItem as INavigatorListEntry);
-            FileInfoVM.UpdateCurrentInfo(_view.ListBoxElement.SelectedItem as INavigatorListEntry);
+            FileInfoVM.UpdateCurrentInfo(_view.ListBoxElement.SelectedItem as INavigatorListEntry, NavigatorList.IndexOf(_view.ListBoxElement.SelectedItem as INavigatorListEntry));
         }
 
         #endregion Constructors

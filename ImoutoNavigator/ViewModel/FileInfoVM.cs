@@ -8,6 +8,8 @@ namespace Imouto.Navigator.ViewModel
         private string _name;
         private string _hash;
         private long? _size;
+        private int _orderNumber;
+        private bool _hasValue;
 
         public string Name
         {
@@ -45,10 +47,37 @@ namespace Imouto.Navigator.ViewModel
             }
         }
 
-        public void UpdateCurrentInfo(INavigatorListEntry navigatorListEntry)
+        public int OrderNumber
         {
+            get
+            {
+                return _orderNumber;
+            }
+            set
+            {
+                OnPropertyChanged(ref _orderNumber, value, () => OrderNumber);
+            }
+        }
+
+        public bool HasValue
+        {
+            get
+            {
+                return _hasValue;
+            }
+            set
+            {
+                OnPropertyChanged(ref _hasValue, value, () => HasValue);
+            }
+        }
+
+        public void UpdateCurrentInfo(INavigatorListEntry navigatorListEntry, int number)
+        {
+            OrderNumber = number;
+
             if (navigatorListEntry == null)
             {
+                HasValue = false;
                 Name = null;
                 Size = null;
                 Hash = null;
@@ -61,6 +90,7 @@ namespace Imouto.Navigator.ViewModel
                 return;
             }
 
+            HasValue = true;
             Name = fi.Name;
             Size = fi.Length;
             Hash = fi.GetMd5Checksum();

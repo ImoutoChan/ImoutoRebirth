@@ -459,7 +459,8 @@
 
             <view:FileInfoView Grid.Column="0"
                                Grid.Row="1"
-                               DataContext="{Binding FileInfoVM}" />
+                               DataContext="{Binding FileInfoVM}"
+                               Visibility="{Binding HasValue, Converter={StaticResource ConditionVisibilityConverter}, ConverterParameter=true}"/>
 
             <view:StatusBarView Grid.Row="2"
                                 Grid.ColumnSpan="2" />
