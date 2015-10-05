@@ -274,9 +274,14 @@ namespace Imouto.Navigator.ViewModel
         {
             foreach (var selectedTag in selectedTags)
             {
-                if (!RecentlyTags.Any(x => x.Tag.Id == selectedTag.Tag.Id && x.Value == selectedTag.Value))
+                var element = RecentlyTags.FirstOrDefault(x => x.Tag.Id == selectedTag.Tag.Id && x.Value == selectedTag.Value);
+                if (element == null)
                 {
                     RecentlyTags.Insert(0, selectedTag);
+                }
+                else
+                {
+                    RecentlyTags.Move(RecentlyTags.IndexOf(element), 0);
                 }
 
                 if (RecentlyTags.Count > 10)
