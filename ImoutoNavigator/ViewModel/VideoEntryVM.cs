@@ -116,12 +116,18 @@ namespace Imouto.Navigator.ViewModel
                 IsLoading = true;
             }
 
-            await Task.Run(() =>
-                           {
-                               var shellFile = ShellFile.FromFilePath(Path);
-                               Image = shellFile.Thumbnail.BitmapSource;
-                               Image.Freeze();
-                           });
+            var thumbNail = await Task.Run(() =>
+            {
+                BitmapSource result;
+                using (var shellFile = ShellFile.FromFilePath(Path))
+                {
+                    result = shellFile.Thumbnail.BitmapSource;
+                    result.Freeze();
+                }
+                return result;
+            });
+            Image = thumbNail;
+
 
             _isPreviewLoaded = true;
             IsLoading = false;
