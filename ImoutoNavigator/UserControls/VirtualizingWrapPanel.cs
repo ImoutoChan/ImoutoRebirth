@@ -142,94 +142,126 @@ namespace Imouto.Navigator.UserControls
         /// <returns>レイアウト時にこのパネルが必要とするサイズ。</returns>
         protected override Size MeasureOverride(Size availableSize)
         {
-            this.containerLayouts.Clear();
-
-            var isAutoWidth = double.IsNaN(this.ItemWidth);
-            var isAutoHeight = double.IsNaN(this.ItemHeight);
-            var childAvailable = new Size(isAutoWidth ? double.PositiveInfinity : this.ItemWidth, isAutoHeight ? double.PositiveInfinity : this.ItemHeight);
-            var isHorizontal = this.Orientation == Orientation.Horizontal;
-
-            var childrenCount = this.InternalChildren.Count;
-
-            var itemsControl = ItemsControl.GetItemsOwner(this);
-            if (itemsControl != null)
-                childrenCount = itemsControl.Items.Count;
-
-            var generator = new ChildGenerator(this);
-
-            var x = 0.0;
-            var y = 0.0;
-            var lineSize = default(Size);
             var maxSize = default(Size);
-
-            for (int i = 0; i < childrenCount; i++)
+            try
             {
-                var childSize = this.ContainerSizeForIndex(i);
+                this.containerLayouts.Clear();
 
-                // ビューポートとの交差判定用に仮サイズで x, y を調整
-                var isWrapped = isHorizontal ?
-                    lineSize.Width + childSize.Width > availableSize.Width :
-                    lineSize.Height + childSize.Height > availableSize.Height;
-                if (isWrapped)
+                var isAutoWidth = double.IsNaN(this.ItemWidth);
+                var isAutoHeight = double.IsNaN(this.ItemHeight);
+                var childAvailable = new Size(isAutoWidth
+                                              ? double.PositiveInfinity
+                                              : this.ItemWidth, isAutoHeight
+                                                                ? double.PositiveInfinity
+                                                                : this.ItemHeight);
+                var isHorizontal = this.Orientation == Orientation.Horizontal;
+
+                var childrenCount = this.InternalChildren.Count;
+
+                var itemsControl = ItemsControl.GetItemsOwner(this);
+                if (itemsControl != null)
+                    childrenCount = itemsControl.Items.Count;
+
+                var generator = new ChildGenerator(this);
+
+                var x = 0.0;
+                var y = 0.0;
+                var lineSize = default(Size);
+
+                for (int i = 0; i < childrenCount; i++)
                 {
-                    x = isHorizontal ? 0 : x + lineSize.Width;
-                    y = isHorizontal ? y + lineSize.Height : 0;
-                }
+                    var childSize = this.ContainerSizeForIndex(i);
 
-                // 子要素がビューポート内であれば子要素を生成しサイズを再計測
-                var itemRect = new Rect(x, y, childSize.Width, childSize.Height);
-                var viewportRect = new Rect(this.offset, availableSize);
-                if (itemRect.IntersectsWith(viewportRect))
-                {
-                    var child = generator.GetOrCreateChild(i);
-                    child.Measure(childAvailable);
-                    childSize = this.ContainerSizeForIndex(i);
-                }
-
-                // 確定したサイズを記憶
-                this.containerLayouts[i] = new Rect(x, y, childSize.Width, childSize.Height);
-
-                // lineSize, maxSize を計算
-                isWrapped = isHorizontal ?
-                    lineSize.Width + childSize.Width > availableSize.Width :
-                    lineSize.Height + childSize.Height > availableSize.Height;
-                if (isWrapped)
-                {
-                    maxSize.Width = isHorizontal ? Math.Max(lineSize.Width, maxSize.Width) : maxSize.Width + lineSize.Width;
-                    maxSize.Height = isHorizontal ? maxSize.Height + lineSize.Height : Math.Max(lineSize.Height, maxSize.Height);
-                    lineSize = childSize;
-
-                    isWrapped = isHorizontal ?
-                        childSize.Width > availableSize.Width :
-                        childSize.Height > availableSize.Height;
+                    // ビューポートとの交差判定用に仮サイズで x, y を調整
+                    var isWrapped = isHorizontal
+                                    ? lineSize.Width + childSize.Width > availableSize.Width
+                                    : lineSize.Height + childSize.Height > availableSize.Height;
                     if (isWrapped)
                     {
-                        maxSize.Width = isHorizontal ? Math.Max(childSize.Width, maxSize.Width) : maxSize.Width + childSize.Width;
-                        maxSize.Height = isHorizontal ? maxSize.Height + childSize.Height : Math.Max(childSize.Height, maxSize.Height);
-                        lineSize = default(Size);
+                        x = isHorizontal
+                            ? 0
+                            : x + lineSize.Width;
+                        y = isHorizontal
+                            ? y + lineSize.Height
+                            : 0;
                     }
-                }
-                else
-                {
-                    lineSize.Width = isHorizontal ? lineSize.Width + childSize.Width : Math.Max(childSize.Width, lineSize.Width);
-                    lineSize.Height = isHorizontal ? Math.Max(childSize.Height, lineSize.Height) : lineSize.Height + childSize.Height;
+
+                    // 子要素がビューポート内であれば子要素を生成しサイズを再計測
+                    var itemRect = new Rect(x, y, childSize.Width, childSize.Height);
+                    var viewportRect = new Rect(this.offset, availableSize);
+                    if (itemRect.IntersectsWith(viewportRect))
+                    {
+                        var child = generator.GetOrCreateChild(i);
+                        child.Measure(childAvailable);
+                        childSize = this.ContainerSizeForIndex(i);
+                    }
+
+                    // 確定したサイズを記憶
+                    this.containerLayouts[i] = new Rect(x, y, childSize.Width, childSize.Height);
+
+                    // lineSize, maxSize を計算
+                    isWrapped = isHorizontal
+                                ? lineSize.Width + childSize.Width > availableSize.Width
+                                : lineSize.Height + childSize.Height > availableSize.Height;
+                    if (isWrapped)
+                    {
+                        maxSize.Width = isHorizontal
+                                        ? Math.Max(lineSize.Width, maxSize.Width)
+                                        : maxSize.Width + lineSize.Width;
+                        maxSize.Height = isHorizontal
+                                         ? maxSize.Height + lineSize.Height
+                                         : Math.Max(lineSize.Height, maxSize.Height);
+                        lineSize = childSize;
+
+                        isWrapped = isHorizontal
+                                    ? childSize.Width > availableSize.Width
+                                    : childSize.Height > availableSize.Height;
+                        if (isWrapped)
+                        {
+                            maxSize.Width = isHorizontal
+                                            ? Math.Max(childSize.Width, maxSize.Width)
+                                            : maxSize.Width + childSize.Width;
+                            maxSize.Height = isHorizontal
+                                             ? maxSize.Height + childSize.Height
+                                             : Math.Max(childSize.Height, maxSize.Height);
+                            lineSize = default(Size);
+                        }
+                    }
+                    else
+                    {
+                        lineSize.Width = isHorizontal
+                                         ? lineSize.Width + childSize.Width
+                                         : Math.Max(childSize.Width, lineSize.Width);
+                        lineSize.Height = isHorizontal
+                                          ? Math.Max(childSize.Height, lineSize.Height)
+                                          : lineSize.Height + childSize.Height;
+                    }
+
+                    x = isHorizontal
+                        ? lineSize.Width
+                        : maxSize.Width;
+                    y = isHorizontal
+                        ? maxSize.Height
+                        : lineSize.Height;
                 }
 
-                x = isHorizontal ? lineSize.Width : maxSize.Width;
-                y = isHorizontal ? maxSize.Height : lineSize.Height;
+                maxSize.Width = isHorizontal
+                                ? Math.Max(lineSize.Width, maxSize.Width)
+                                : maxSize.Width + lineSize.Width;
+                maxSize.Height = isHorizontal
+                                 ? maxSize.Height + lineSize.Height
+                                 : Math.Max(lineSize.Height, maxSize.Height);
+
+                this.extent = maxSize;
+                this.viewport = availableSize;
+
+                generator.CleanupChildren();
+                generator?.Dispose();
+
+                if (this.ScrollOwner != null)
+                    this.ScrollOwner.InvalidateScrollInfo();
             }
-
-            maxSize.Width = isHorizontal ? Math.Max(lineSize.Width, maxSize.Width) : maxSize.Width + lineSize.Width;
-            maxSize.Height = isHorizontal ? maxSize.Height + lineSize.Height : Math.Max(lineSize.Height, maxSize.Height);
-
-            this.extent = maxSize;
-            this.viewport = availableSize;
-
-            generator.CleanupChildren();
-            generator.Dispose();
-
-            if (this.ScrollOwner != null)
-                this.ScrollOwner.InvalidateScrollInfo();
+            catch { }
 
             return maxSize;
         }
