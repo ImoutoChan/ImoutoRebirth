@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 14
-VisualStudioVersion = 14.0.22823.1
+VisualStudioVersion = 14.0.23107.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ImoutoNavigator", "ImoutoNavigator\ImoutoNavigator.csproj", "{6BE0B3DE-7FB8-4542-8D88-14A0FD0AC406}"
 EndProject
@@ -10,17 +10,27 @@ EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
+		Debug|x86 = Debug|x86
 		Release|x64 = Release|x64
+		Release|x86 = Release|x86
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{6BE0B3DE-7FB8-4542-8D88-14A0FD0AC406}.Debug|x64.ActiveCfg = Debug|x64
 		{6BE0B3DE-7FB8-4542-8D88-14A0FD0AC406}.Debug|x64.Build.0 = Debug|x64
-		{6BE0B3DE-7FB8-4542-8D88-14A0FD0AC406}.Release|x64.ActiveCfg = Release|x64
-		{6BE0B3DE-7FB8-4542-8D88-14A0FD0AC406}.Release|x64.Build.0 = Release|x64
+		{6BE0B3DE-7FB8-4542-8D88-14A0FD0AC406}.Debug|x86.ActiveCfg = Debug|x86
+		{6BE0B3DE-7FB8-4542-8D88-14A0FD0AC406}.Debug|x86.Build.0 = Debug|x86
+		{6BE0B3DE-7FB8-4542-8D88-14A0FD0AC406}.Release|x64.ActiveCfg = Release|x86
+		{6BE0B3DE-7FB8-4542-8D88-14A0FD0AC406}.Release|x64.Build.0 = Release|x86
+		{6BE0B3DE-7FB8-4542-8D88-14A0FD0AC406}.Release|x86.ActiveCfg = Release|x86
+		{6BE0B3DE-7FB8-4542-8D88-14A0FD0AC406}.Release|x86.Build.0 = Release|x86
 		{D4D5D21D-205E-4218-AC06-490F5DA629E9}.Debug|x64.ActiveCfg = Debug|x64
 		{D4D5D21D-205E-4218-AC06-490F5DA629E9}.Debug|x64.Build.0 = Debug|x64
-		{D4D5D21D-205E-4218-AC06-490F5DA629E9}.Release|x64.ActiveCfg = Release|x64
-		{D4D5D21D-205E-4218-AC06-490F5DA629E9}.Release|x64.Build.0 = Release|x64
+		{D4D5D21D-205E-4218-AC06-490F5DA629E9}.Debug|x86.ActiveCfg = Debug|x86
+		{D4D5D21D-205E-4218-AC06-490F5DA629E9}.Debug|x86.Build.0 = Debug|x86
+		{D4D5D21D-205E-4218-AC06-490F5DA629E9}.Release|x64.ActiveCfg = Release|x86
+		{D4D5D21D-205E-4218-AC06-490F5DA629E9}.Release|x64.Build.0 = Release|x86
+		{D4D5D21D-205E-4218-AC06-490F5DA629E9}.Release|x86.ActiveCfg = Release|x86
+		{D4D5D21D-205E-4218-AC06-490F5DA629E9}.Release|x86.Build.0 = Release|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
