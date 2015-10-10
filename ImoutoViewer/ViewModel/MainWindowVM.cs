@@ -138,7 +138,7 @@ namespace Imouto.Viewer.ViewModel
                     title += CurrentLocalImage.Name + " - ";
                 }
 
-                title += System.Reflection.Assembly.GetExecutingAssembly().GetName().Name;
+                title += System.Reflection.Assembly.GetExecutingAssembly().GetName().Name.Replace('.', ' ');
 
                 return title;
             }
