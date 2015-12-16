@@ -90,6 +90,12 @@
         </metroControl:WindowCommands>
     </metroControl:MetroWindow.RightWindowCommands>
 
+    <metroControl:MetroWindow.InputBindings>
+        <KeyBinding Modifiers="Control"
+                    Key="C"
+                    Command="{Binding CopyCommand}" />
+    </metroControl:MetroWindow.InputBindings>
+    
     <Grid MouseLeftButtonUp="Grid_MouseLeftButtonUp"
           x:Name="Client">
         <Grid>

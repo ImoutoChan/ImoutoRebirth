@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Collections.Specialized;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading;
@@ -158,6 +159,12 @@ namespace Imouto.Navigator.ViewModel
 
         public ICommand RemoveImageCommand { get; set; }
 
+        public ICommand CopyCommand { get; set; }
+
+        #endregion Commands
+
+        #region Methods
+
         private void InitializeCommands()
         {
             ZoomInCommand = new RelayCommand(x =>
@@ -181,11 +188,9 @@ namespace Imouto.Navigator.ViewModel
             });
             LoadPreviewsCommand = new RelayCommand(x => LoadPreviews());
             RemoveImageCommand = new RelayCommand(RemoveImage);
+
+            CopyCommand = new RelayCommand(CopySelected);
         }
-
-        #endregion Commands
-
-        #region Methods
 
         public void SetStatusError(string error, string message)
         {
@@ -519,6 +524,19 @@ namespace Imouto.Navigator.ViewModel
                     ColorScheme = MetroDialogColorScheme.Accented
                 });
             }
+        }
+        
+        private async void CopySelected(object o)
+        {
+            var lastItems = SelectedItems.Select(x => x.Path).ToArray();
+            if (!lastItems.Any())
+            {
+                return;
+            }
+
+            var fileCollection = new StringCollection();
+            fileCollection.AddRange(lastItems);
+            Clipboard.SetFileDropList(fileCollection);
         }
 
         #endregion Methods
