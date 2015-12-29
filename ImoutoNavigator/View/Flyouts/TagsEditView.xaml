@@ -162,14 +162,18 @@
                                 </Label.InputBindings>
 
                                 <Label.Content>
-                                    <TextBlock Text="{Binding Tag.Title}"
-                                               TextAlignment="Left"
-                                               Foreground="{Binding Tag.Type.Color, Converter={StaticResource IntToColorConverter}}"
-                                               FontFamily="Comic Sans MS"
-                                               FontSize="13"
-                                               FontWeight="Bold"
-                                               VerticalAlignment="Center"
-                                               ToolTip="{Binding Tag.Title}" />
+                                    <TextBlock TextWrapping="Wrap"
+                                               ToolTip="{Binding Tag.Title}"
+                                               VerticalAlignment="Center">
+                                        <Run Text="{Binding Title, Mode=OneWay}"
+                                             Foreground="{Binding TypeBrush}"
+                                             FontFamily="Comic Sans MS"
+                                             FontSize="13"
+                                             FontWeight="Bold" />
+
+                                        <Run Text="{Binding Tag.Count, StringFormat=' ({0})', Mode=OneWay}"
+                                             Foreground="{StaticResource GrayBrush3}" />
+                                    </TextBlock>
                                 </Label.Content>
                             </Label>
                         </DataTemplate>
@@ -313,6 +317,7 @@
                 <RowDefinition Height="Auto" />
                 <RowDefinition Height="Auto" />
                 <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
             </Grid.RowDefinitions>
 
             <TextBlock Grid.Column="0"
@@ -339,12 +344,23 @@
 
             <TextBlock Grid.Column="0"
                        Grid.Row="2"
+                       Text="Count"
+                       Margin="0,5,0,0"
+                       FontSize="14" />
+            <TextBlock Grid.Column="2"
+                       Grid.Row="2"
+                       Margin="5"
+                       TextWrapping="Wrap"
+                       Text="{Binding TagInfoContext.Tag.Count, Mode=OneWay}" />
+
+            <TextBlock Grid.Column="0"
+                       Grid.Row="3"
                        Text="Value"
                        Margin="0,5,0,0"
                        FontSize="14"
                        Visibility="{Binding TagInfoContext.Tag.HasValue, Converter={StaticResource ConditionVisibilityConverter}, ConverterParameter=true, Mode=OneWay}" />
             <TextBox Grid.Column="2"
-                     Grid.Row="2"
+                     Grid.Row="3"
                      Margin="5"
                      Text="{Binding TagInfoContext.Value, Mode=TwoWay}"
                      Visibility="{Binding TagInfoContext.Tag.HasValue, Converter={StaticResource ConditionVisibilityConverter}, ConverterParameter=true, Mode=OneWay}" />

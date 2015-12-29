@@ -57,6 +57,8 @@
                          FontFamily="Comic Sans MS"
                          FontSize="13"
                          FontWeight="Bold" />
+                    <Run Text="{Binding Tag.Count, StringFormat=' ({0})'}"
+                         Foreground="{StaticResource GrayBrush3}"/>
                     <Run Text="{Binding Value}"
                          wpfHelpers:RunVisibility.Visible="{Binding Value, Converter={StaticResource BooleanResultConverter}, ConverterParameter=!null}" />
                 </TextBlock>
@@ -152,21 +154,37 @@
 
     <ControlTemplate x:Key="TagElementControlTemplate"
                      TargetType="Button">
-        <Label Background="Transparent"
-               x:Name="label"
-               HorizontalContentAlignment="Stretch"
-               Padding="10,4,5,2">
-            <Label.Content>
-                <TextBlock Text="{Binding Title}"
-                           TextAlignment="Left"
-                           Foreground="{Binding Type.Color, Converter={StaticResource IntToColorConverter}}"
-                           FontFamily="Comic Sans MS"
-                           FontSize="13"
-                           FontWeight="Bold"
-                           VerticalAlignment="Center"
-                           ToolTip="{Binding Title}" />
-            </Label.Content>
-        </Label>
+        <DockPanel LastChildFill="True">
+            <Label DockPanel.Dock="Right"
+                   Background="Transparent"
+                   HorizontalContentAlignment="Stretch"
+                   Padding="10,4,5,2">
+                <Label.Content>
+                    <TextBlock TextAlignment="Left"
+                               VerticalAlignment="Center">
+                        <Run Text="{Binding Count, StringFormat='({0})'}"
+                             Foreground="{StaticResource GrayBrush3}" />
+                    </TextBlock>
+                </Label.Content>
+            </Label>
+
+            <Label Background="Transparent"
+                   x:Name="label"
+                   HorizontalContentAlignment="Stretch"
+                   Padding="10,4,5,2">
+                <Label.Content>
+                    <TextBlock TextAlignment="Left"
+                               VerticalAlignment="Center">
+                        <Run Text="{Binding Title}"
+                             Foreground="{Binding Type.Color, Converter={StaticResource IntToColorConverter}}"
+                             FontFamily="Comic Sans MS"
+                             FontSize="13"
+                             FontWeight="Bold"
+                             ToolTip="{Binding Title}" />
+                    </TextBlock>
+                </Label.Content>
+            </Label>
+        </DockPanel>
     </ControlTemplate>
 
     <ControlTemplate x:Key="BindedTagVMElementControlTemplate"
@@ -229,14 +247,18 @@
                                                                                             AncestorType={x:Type UserControl}},
                                                              Path=DataContext.SelectBindedTagCommand}"
                                            CommandParameter="{Binding}">
-                                    <TextBlock Text="{Binding Title}"
-                                               Foreground="{Binding TypeBrush}"
-                                               FontFamily="Comic Sans MS"
-                                               FontSize="13"
-                                               FontWeight="Bold"
-                                               TextWrapping="Wrap"
+                                    <TextBlock TextWrapping="Wrap"
                                                ToolTip="{Binding Title}"
-                                               VerticalAlignment="Center" />
+                                               VerticalAlignment="Center">
+                                        <Run Text="{Binding Title, Mode=OneWay}"
+                                             Foreground="{Binding TypeBrush}"
+                                             FontFamily="Comic Sans MS"
+                                             FontSize="13"
+                                             FontWeight="Bold" />
+
+                                        <Run Text="{Binding Tag.Count, StringFormat=' ({0})', Mode=OneWay}"
+                                             Foreground="{StaticResource GrayBrush3}" />
+                                    </TextBlock>
                                 </Hyperlink>
                             </TextBlock>
 
