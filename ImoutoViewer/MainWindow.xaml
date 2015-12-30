@@ -517,15 +517,19 @@
                                                     </Grid.ColumnDefinitions>
 
                                                     <TextBlock Grid.Column="0"
-                                                               Text="{Binding Title}"
-                                                               Foreground="{Binding TypeBrush}"
-                                                               FontFamily="Comic Sans MS"
                                                                Margin="5,0,0,2"
-                                                               FontSize="13"
-                                                               FontWeight="Bold"
                                                                TextWrapping="Wrap"
                                                                ToolTip="{Binding Title}"
-                                                               VerticalAlignment="Center" />
+                                                               VerticalAlignment="Center" >
+                                                        <Run Text="{Binding Title, Mode=OneWay}"
+                                                             Foreground="{Binding TypeBrush}"
+                                                             FontFamily="Comic Sans MS"
+                                                             FontSize="13"
+                                                             FontWeight="Bold" />
+
+                                                        <Run Text="{Binding Count, StringFormat=' ({0})', Mode=OneWay}"
+                                                             Foreground="{StaticResource GrayBrush3}" />
+                                                    </TextBlock>
 
                                                     <Button Grid.Column="1"
                                                             Width="20"

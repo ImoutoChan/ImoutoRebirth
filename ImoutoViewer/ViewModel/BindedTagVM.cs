@@ -10,6 +10,8 @@ namespace Imouto.Viewer.ViewModel
     {
         private TagsVM _parantVM;
         private BindedTag _modelTag;
+        private Brush _typeBrush;
+        private ICommand _unbindCommand;
 
         public BindedTagVM(BindedTag tag, TagsVM tagsVM)
         {
@@ -42,7 +44,6 @@ namespace Imouto.Viewer.ViewModel
             }
         }
 
-        public Brush _typeBrush;
         public Brush TypeBrush
         {
             get
@@ -67,7 +68,14 @@ namespace Imouto.Viewer.ViewModel
             }
         }
 
-        private ICommand _unbindCommand;
+        public int Count
+        {
+            get
+            {
+                return _modelTag.Tag.Count;
+            }
+        }
+
         public ICommand UnbindCommand
         {
             get

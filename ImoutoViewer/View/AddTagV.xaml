@@ -39,7 +39,10 @@
                              SelectedItem="{Binding SelectedTag}">
                         <ListBox.ItemTemplate>
                             <DataTemplate>
-                                <TextBlock Text="{Binding Title}" />
+                                <TextBlock>
+                                    <Run Text="{Binding Title}" />
+                                    <Run Text="{Binding Count, StringFormat=' ({0})'}" />
+                                </TextBlock>
                             </DataTemplate>
                         </ListBox.ItemTemplate>
                     </ListBox>
