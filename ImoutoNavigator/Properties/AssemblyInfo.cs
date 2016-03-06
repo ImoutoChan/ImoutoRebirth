@@ -50,8 +50,8 @@ using xZune.Vlc;
 // You can specify all the values or you can default the Build and Revision Numbers 
 // by using the '*' as shown below:
 // [assembly: AssemblyVersion("1.0.*")]
-[assembly: AssemblyVersion("0.3.5.0")]
-[assembly: AssemblyFileVersion("0.3.5.0")]
+[assembly: AssemblyVersion("0.4.0.0")]
+[assembly: AssemblyFileVersion("0.4.0.0")]
 
 
 [assembly: VlcSettings(@"LibVlc", "-I", "--dummy-quiet", "--ignore-config", "--no-video-title", "--no-sub-autodetect-file")]
