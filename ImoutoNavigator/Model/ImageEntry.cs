@@ -34,7 +34,7 @@ namespace Imouto.Navigator.Model
             {
                 throw new ArgumentException("File does not exist.");
             }
-            if (!ImageFormats.GetSupportedFormatsList().Contains(imageFileInfo.Extension.ToLower()))
+            if (!imageFileInfo.FullName.IsImage())
             {
                 throw new ArgumentException("File format is not supported.");
             }

@@ -25,7 +25,7 @@ namespace Imouto.Navigator.ViewModel
 
         public VideoEntryVM(string path, Size initPreviewSize = new Size(), int? dbId = null)
         {
-            if (path.ToLower().EndsWith(".webm"))
+            if (path.IsVideo())
             {
                 Path = path;
                 Type = ListEntryType.Video;

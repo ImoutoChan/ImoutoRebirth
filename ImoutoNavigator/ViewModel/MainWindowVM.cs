@@ -470,11 +470,14 @@ namespace Imouto.Navigator.ViewModel
             {
                 return new ObservableCollection<INavigatorListEntry>(ImoutoService.Use(imoutoService =>
                 {
-                    return imoutoService.SearchImage(TagSearchVM.SelectedColleciton.Value, TagSearchVM.SelectedBindedTags.Select(x => x.Model)
-                                                                                                      .ToList(), count, skip);
-                })
-                                                                                  .Select(x => EntryVM.GetListEntry(x.Item1, PreviewSize, x.Item2))
-                                                                                  .SkipExceptions());
+                    return imoutoService.SearchImage(TagSearchVM.SelectedColleciton.Value, 
+                                                     TagSearchVM
+                                                        .SelectedBindedTags
+                                                        .Select(x => x.Model)
+                                                        .ToList(), count, skip);
+                }).Select(x => EntryVM.GetListEntry(x.Item1, PreviewSize, x.Item2))
+                  .SkipExceptions()
+                );
             });
         }
 
