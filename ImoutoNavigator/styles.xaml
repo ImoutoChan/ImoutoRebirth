@@ -496,4 +496,28 @@
             </Rectangle.OpacityMask>
         </Rectangle>
     </ControlTemplate>
+
+    <ControlTemplate x:Key="VideoPlayOverlayIcon"
+                     TargetType="{x:Type Button}">
+        <Rectangle Width="20"
+                   Height="20"
+                   Fill="{StaticResource BlackBrush}">
+            <Rectangle.OpacityMask>
+                <VisualBrush Stretch="Fill"
+                             Visual="{DynamicResource appbar_control_play}" />
+            </Rectangle.OpacityMask>
+        </Rectangle>
+    </ControlTemplate>
+
+    <ControlTemplate x:Key="VideoPauseOverlayIcon"
+                     TargetType="{x:Type Button}">
+        <Rectangle Width="20"
+                   Height="20"
+                   Fill="{StaticResource BlackBrush}">
+            <Rectangle.OpacityMask>
+                <VisualBrush Stretch="Fill"
+                             Visual="{DynamicResource appbar_control_pause}" />
+            </Rectangle.OpacityMask>
+        </Rectangle>
+    </ControlTemplate>
 </ResourceDictionary>

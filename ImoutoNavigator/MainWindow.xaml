@@ -12,7 +12,6 @@
                           xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
                           xmlns:view="clr-namespace:Imouto.Navigator.View"
                           xmlns:behavior="clr-namespace:Imouto.Navigator.Behavior"
-                          xmlns:webMPlayerControlLibrary="clr-namespace:Imouto.WebMPlayerControlLibrary;assembly=Imouto.WebMPlayerControlLibrary"
                           xmlns:gif="http://wpfanimatedgif.codeplex.com"
                           xmlns:flyouts="clr-namespace:Imouto.Navigator.View.Flyouts"
                           xmlns:wpfHelpers="clr-namespace:Imouto.Utils.WPFHelpers;assembly=Imouto.Utils"
@@ -256,7 +255,7 @@
 
                             <Grid Width="{Binding Path=ViewPortSize.Width}"
                                   Height="{Binding Path=ViewPortSize.Height}">
-                                <webMPlayerControlLibrary:WebMPlayer Source="{Binding Path}" />
+                                <userControl:PlayerControl Source="{Binding Path}" />
                             </Grid>
                         </Border>
                     </DataTemplate>
