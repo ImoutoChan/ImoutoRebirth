@@ -168,6 +168,9 @@
     <Compile Include="UserControls\PlayerControl.xaml.cs">
       <DependentUpon>PlayerControl.xaml</DependentUpon>
     </Compile>
+    <Compile Include="UserControls\RatingControl.xaml.cs">
+      <DependentUpon>RatingControl.xaml</DependentUpon>
+    </Compile>
     <Compile Include="UserControls\VirtualizingWrapPanel.cs" />
     <Compile Include="UserControls\ExtScrollViewer.cs" />
     <Compile Include="UserControls\MouseWheelGesture.cs" />
@@ -242,6 +245,10 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="UserControls\PlayerControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="UserControls\RatingControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -660,6 +667,8 @@
     <Content Include="LibVlc\plugins\visualization\libgoom_plugin.dll" />
     <Content Include="LibVlc\plugins\visualization\libprojectm_plugin.dll" />
     <Content Include="LibVlc\plugins\visualization\libvisual_plugin.dll" />
+    <Resource Include="Resources\Icon\MinusRate.png" />
+    <Resource Include="Resources\Icon\PlusRate.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

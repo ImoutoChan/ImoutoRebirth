@@ -5,6 +5,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:metroControl="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
              xmlns:viewModel="clr-namespace:Imouto.Navigator.ViewModel"
+             xmlns:userControls="clr-namespace:Imouto.Navigator.UserControls"
              mc:Ignorable="d"
              d:DataContext="{d:DesignInstance viewModel:TagSearchVM, IsDesignTimeCreatable=False}"
              d:DesignHeight="300"
@@ -22,6 +23,9 @@
                     <RowDefinition Height="Auto" />
                     <RowDefinition Height="Auto" />
                     <RowDefinition Height="*" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
                 </Grid.RowDefinitions>
 
                 <ComboBox Margin="5"
@@ -78,6 +82,17 @@
                                   ItemTemplate="{StaticResource CurrentTagsSourceDataTemplate}" />
                 </ScrollViewer>
 
+                <Border Grid.Row="7"
+                        BorderThickness="1"
+                        BorderBrush="{DynamicResource AccentColorBrush}" />
+
+                <!-- Rating Control -->
+
+                <userControls:RatingControl Grid.Row="8"
+                                            Value="{Binding Rate, Mode=TwoWay}"
+                                            Visibility="{Binding IsRateSetted, Converter={StaticResource ConditionVisibilityConverter}, ConverterParameter=true}"/>
+
+                <!-- Fav -->
             </Grid>
         </Border>
 

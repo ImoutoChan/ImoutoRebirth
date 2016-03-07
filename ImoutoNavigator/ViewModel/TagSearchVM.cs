@@ -29,6 +29,9 @@ namespace Imouto.Navigator.ViewModel
         private ICommand _selectTagCommand;
         private ICommand _invertSearchTypeCommand;
         private ICommand _selectBindedTag;
+        private int _rate;
+        private int? _lastListEntryId = null;
+        private bool _isRateSetted;
 
         #endregion Fields
 
@@ -154,6 +157,35 @@ namespace Imouto.Navigator.ViewModel
 
         private Tag EditedTag { get; set; }
 
+        public int Rate
+        {
+            get
+            {
+                return _rate;
+            }
+            set
+            {
+                OnPropertyChanged(ref _rate, value, () => Rate);
+
+                if (_lastListEntryId != null)
+                {
+                    SetRate(value, _lastListEntryId.Value);
+                }
+            }
+        }
+
+        public bool IsRateSetted
+        {
+            get
+            {
+                return _isRateSetted;
+            }
+            set
+            {
+                OnPropertyChanged(ref _isRateSetted, value, () => IsRateSetted);
+            }
+        }
+
         #endregion Properties
 
         #region Commands
@@ -206,6 +238,8 @@ namespace Imouto.Navigator.ViewModel
         {
             if (listEntry?.DbId == null)
             {
+                IsRateSetted = false;
+
                 return;
             }
 
@@ -218,6 +252,7 @@ namespace Imouto.Navigator.ViewModel
                     return imoutoService.GetImageTags(id);
                 });
             });
+            _lastListEntryId = id;
 
             var tagVmsCollection = tags.Where(x => x.Tag.Type.Title != "LocalMeta")
                                        .Select(x => new BindedTagVM(x, listEntry.DbId))
@@ -250,6 +285,8 @@ namespace Imouto.Navigator.ViewModel
                                                                                  .ThenBy(x => x.Tag.Title))
                 });
             }
+
+            GetRate(tags);
         }
 
         #endregion Public methods
@@ -392,6 +429,68 @@ namespace Imouto.Navigator.ViewModel
             }
 
             OnSelectedTagsUpdated();
+        }
+        
+        private void GetRate(List<BindedTag> tags)
+        {
+            var rateTag = tags.FirstOrDefault(x => x.Tag.Title == "Rate" && x.Tag.HasValue);
+            if (rateTag != null)
+            {
+                try
+                {
+                    _rate = Int32.Parse(rateTag.Value);
+                }
+                catch (Exception)
+                {
+                    _rate = 0;
+                }
+            }
+            else
+            {
+                _rate = 0;
+            }
+
+            IsRateSetted = true;
+            OnPropertyChanged(() => Rate);
+        }
+
+        private async Task SetRate(int value, int? target)
+        {
+            var rateTag = await Task.Run(() =>
+            {
+                return ImoutoService.Use(imoutoService =>
+                {
+                    return imoutoService.SearchTags("Rate", 1)
+                                        .FirstOrDefault();
+                });
+            });
+
+            if (rateTag == null)
+            {
+                await Task.Run(() =>
+                {
+                    ImoutoService.Use(imoutoService =>
+                    {
+                        var types = imoutoService.GetTagTypes();
+                        var type = types.First(x => x.Title == "LocalMeta");
+
+                        imoutoService.CreateTag(new Tag { Title = "Rate", HasValue = true, Type = type });
+                    });
+                });
+
+                rateTag = await Task.Run(() =>
+                {
+                    return ImoutoService.Use(imoutoService =>
+                    {
+                        return imoutoService.SearchTags("Rate", 1).FirstOrDefault();
+                    });
+                });
+            }
+
+            ImoutoService.Use(imoutoService =>
+            {
+                imoutoService.BindTag(target.Value, new BindedTag() { Source = Source.User, Tag = rateTag, DateAdded = DateTime.Now, Value = value.ToString() });
+            });
         }
 
         #endregion Private Methods
