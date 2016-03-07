@@ -40,7 +40,20 @@
             </TextBlock>
 
             <TextBlock Grid.Row="4"
-                       Text="{Binding Hash, StringFormat='Hash: {0}'}" />
+                       Visibility="{Binding Hash, Converter={StaticResource ConditionVisibilityConverter}, ConverterParameter=null}">
+                <Run Text="Hash: " />
+                
+                <Hyperlink Command="{Binding CalculateHashCommand}">
+                    <Run Text="Calculate" />
+                </Hyperlink>
+            </TextBlock>
+
+            <TextBlock Grid.Row="4"
+                       Visibility="{Binding Hash, Converter={StaticResource ConditionVisibilityConverter}, ConverterParameter=!null}">
+                <Run Text="Hash: " />
+                
+                <Run Text="{Binding Hash}" />
+            </TextBlock>
 
             <TextBlock Grid.Row="6"
                        Text="{Binding OrderNumber, StringFormat='Order # {0}', FallbackValue=''}" />

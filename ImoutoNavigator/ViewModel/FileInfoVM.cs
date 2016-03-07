@@ -1,15 +1,26 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
+using System.Windows.Input;
+using Imouto.Navigator.Commands;
 using Imouto.Utils;
 
 namespace Imouto.Navigator.ViewModel
 {
     class FileInfoVM : VMBase
     {
+        #region Fields
+
         private string _name;
         private string _hash;
         private long? _size;
         private int _orderNumber;
         private bool _hasValue;
+        private ICommand _calculateHashCommand;
+        private FileInfo _fileInfo;
+
+        #endregion Fields
+
+        #region Properties
 
         public string Name
         {
@@ -71,6 +82,30 @@ namespace Imouto.Navigator.ViewModel
             }
         }
 
+        #endregion Properties
+
+        #region Commands
+
+        public ICommand CalculateHashCommand
+        {
+            get
+            {
+                return _calculateHashCommand ??
+                       (_calculateHashCommand = new RelayCommand((s) => CalculateHash(), (s) => Hash == null));
+            }
+        }
+
+        #endregion Commands
+
+        #region Methods
+
+        private async void CalculateHash()
+        {
+            Hash = "Calculating...";
+
+            Hash = await _fileInfo.GetMd5ChecksumAsync();
+        }
+
         public void UpdateCurrentInfo(INavigatorListEntry navigatorListEntry, int number)
         {
             OrderNumber = number;
@@ -81,6 +116,7 @@ namespace Imouto.Navigator.ViewModel
                 Name = null;
                 Size = null;
                 Hash = null;
+                _fileInfo = null;
                 return;
             }
 
@@ -93,7 +129,10 @@ namespace Imouto.Navigator.ViewModel
             HasValue = true;
             Name = fi.Name;
             Size = fi.Length;
-            Hash = fi.GetMd5Checksum();
+            Hash = null;
+            _fileInfo = fi;
         }
+
+        #endregion Methods
     }
 }
