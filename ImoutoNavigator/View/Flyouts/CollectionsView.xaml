@@ -105,6 +105,10 @@
                                                Margin="0,10,0,0"
                                                Name="CheckFormatSwitch" />
 
+                        <Controls:ToggleSwitch IsChecked="{Binding TagsFromSubfolder}"
+                                               Content="Add subfolders names as tags"
+                                               Margin="0,10,0,0" />
+
                         <StackPanel Margin="0,10,0,0">
                             <TextBlock TextWrapping="Wrap">
                                 <Run Text="Supported formats extensions" />

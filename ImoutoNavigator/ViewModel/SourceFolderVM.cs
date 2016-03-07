@@ -15,15 +15,17 @@ namespace Imouto.Navigator.ViewModel
 
         private bool _checkFormat;
         private bool _checkNameHash;
+        private bool _tagsFromSubfolder;
 
         #endregion Fields
 
         #region Constructors
 
-        public SourceFolderVM(int? id, string path, bool checkFormat, bool checkNameHash, List<string> extensions) : base(id, path)
+        public SourceFolderVM(int? id, string path, bool checkFormat, bool checkNameHash, List<string> extensions, bool tagsFromSubfoder) : base(id, path)
         {
             CheckFormat = checkFormat;
             CheckNameHash = checkNameHash;
+            TagsFromSubfolder = tagsFromSubfoder;
 
             SupportedExtensionsRaw = (extensions != null) ? new ObservableCollection<string>(extensions) : new ObservableCollection<string>();
         }
@@ -75,6 +77,18 @@ namespace Imouto.Navigator.ViewModel
         }
 
         public ObservableCollection<string> SupportedExtensionsRaw { get; }
+
+        public bool TagsFromSubfolder
+        {
+            get
+            {
+                return _tagsFromSubfolder;
+            }
+            set
+            {
+                OnPropertyChanged(ref _tagsFromSubfolder, value, () => this.TagsFromSubfolder);
+            }
+        }
 
         #endregion Properties
 

@@ -30,6 +30,7 @@ namespace Imouto.Navigator.WCF
                 result.NeedCheckFormat = sourceFolderVM.CheckFormat;
                 result.NeedCheckNameHash = sourceFolderVM.CheckNameHash;
                 result.Extensions = sourceFolderVM.SupportedExtensionsRaw.ToList();
+                result.TagsFromSubfoder = sourceFolderVM.TagsFromSubfolder;
             }
             return result;
         }
