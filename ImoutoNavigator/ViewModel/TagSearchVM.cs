@@ -32,6 +32,7 @@ namespace Imouto.Navigator.ViewModel
         private int _rate;
         private int? _lastListEntryId = null;
         private bool _isRateSetted;
+        private bool _isFavorite;
 
         #endregion Fields
 
@@ -174,6 +175,23 @@ namespace Imouto.Navigator.ViewModel
             }
         }
 
+        public bool IsFavorite
+        {
+            get
+            {
+                return _isFavorite;
+            }
+            set
+            {
+                OnPropertyChanged(ref _isFavorite, value, () => IsFavorite);
+
+                if (_lastListEntryId != null)
+                {
+                    SetFavorite(value, _lastListEntryId.Value);
+                }
+            }
+        }
+
         public bool IsRateSetted
         {
             get
@@ -286,7 +304,9 @@ namespace Imouto.Navigator.ViewModel
                 });
             }
 
+            GetFavorite(tags);
             GetRate(tags);
+            IsRateSetted = true;
         }
 
         #endregion Public methods
@@ -450,47 +470,94 @@ namespace Imouto.Navigator.ViewModel
                 _rate = 0;
             }
 
-            IsRateSetted = true;
             OnPropertyChanged(() => Rate);
         }
 
-        private async Task SetRate(int value, int? target)
+        private async Task SetRate(int value, int target)
         {
-            var rateTag = await Task.Run(() =>
+            var rateTag = await ImoutoService.UseAsync(imoutoService =>
             {
-                return ImoutoService.Use(imoutoService =>
-                {
-                    return imoutoService.SearchTags("Rate", 1)
-                                        .FirstOrDefault();
-                });
+                return imoutoService.SearchTags("Rate", 1)
+                                    .FirstOrDefault();
             });
 
             if (rateTag == null)
             {
-                await Task.Run(() =>
+                await ImoutoService.UseAsync(imoutoService =>
                 {
-                    ImoutoService.Use(imoutoService =>
-                    {
-                        var types = imoutoService.GetTagTypes();
-                        var type = types.First(x => x.Title == "LocalMeta");
+                    var types = imoutoService.GetTagTypes();
+                    var type = types.First(x => x.Title == "LocalMeta");
 
-                        imoutoService.CreateTag(new Tag { Title = "Rate", HasValue = true, Type = type });
+                    imoutoService.CreateTag(new Tag
+                    {
+                        Title = "Rate",
+                        HasValue = true,
+                        Type = type
                     });
                 });
 
-                rateTag = await Task.Run(() =>
+                rateTag = await ImoutoService.UseAsync(imoutoService =>
                 {
-                    return ImoutoService.Use(imoutoService =>
-                    {
-                        return imoutoService.SearchTags("Rate", 1).FirstOrDefault();
-                    });
+                    return imoutoService.SearchTags("Rate", 1)
+                                        .FirstOrDefault();
                 });
             }
 
-            ImoutoService.Use(imoutoService =>
+            await ImoutoService.UseAsync(imoutoService =>
             {
-                imoutoService.BindTag(target.Value, new BindedTag() { Source = Source.User, Tag = rateTag, DateAdded = DateTime.Now, Value = value.ToString() });
+                imoutoService.BindTag(target, new BindedTag() { Source = Source.User, Tag = rateTag, DateAdded = DateTime.Now, Value = value.ToString() });
             });
+        }
+
+        private void GetFavorite(List<BindedTag> tags)
+        {
+            var favTag = tags.FirstOrDefault(x => x.Tag.Title == "favorite");
+            _isFavorite = favTag != null;
+            OnPropertyChanged(() => IsFavorite);
+        }
+
+        private async Task SetFavorite(bool value, int target)
+        {
+            var favTag = await ImoutoService.UseAsync(imoutoService =>
+            {
+                return imoutoService.SearchTags("favorite", 1)
+                                    .FirstOrDefault();
+            });
+
+            if (favTag == null)
+            {
+                await ImoutoService.UseAsync(imoutoService =>
+                {
+                    var types = imoutoService.GetTagTypes();
+                    var type = types.First(x => x.Title == "LocalMeta");
+
+                    imoutoService.CreateTag(new Tag { Title = "favorite", HasValue = false, Type = type });
+                });
+
+                favTag = await ImoutoService.UseAsync(imoutoService =>
+                {
+                    return imoutoService.SearchTags("favorite", 1).FirstOrDefault();
+                });
+            }
+
+            var tags = await ImoutoService.UseAsync(imoutoService => imoutoService.GetImageTags(target));
+
+            var favBindedTag = tags.FirstOrDefault(x => x.Tag.Id == favTag.Id);
+
+            if (favBindedTag != null && !value)
+            {
+                await ImoutoService.UseAsync(imoutoService =>
+                {
+                    imoutoService.UnbindTag(target, favTag.Id.Value);
+                });
+            }
+            else if (favBindedTag == null && value)
+            {
+                await ImoutoService.UseAsync(imoutoService =>
+                {
+                    imoutoService.BindTag(target, new BindedTag { Source = Source.User, Tag = favTag, DateAdded = DateTime.Now });
+                });
+            }
         }
 
         #endregion Private Methods

@@ -86,13 +86,17 @@
                         BorderThickness="1"
                         BorderBrush="{DynamicResource AccentColorBrush}" />
 
-                <!-- Rating Control -->
+                <!-- Rating/fav Control -->
 
-                <userControls:RatingControl Grid.Row="8"
-                                            Value="{Binding Rate, Mode=TwoWay}"
-                                            Visibility="{Binding IsRateSetted, Converter={StaticResource ConditionVisibilityConverter}, ConverterParameter=true}"/>
+                <DockPanel Grid.Row="8"
+                           LastChildFill="False">
+                    <userControls:FavoriteControl IsChecked="{Binding IsFavorite, Mode=TwoWay}"
+                                                  Visibility="{Binding IsRateSetted, Converter={StaticResource ConditionVisibilityConverter}, ConverterParameter=true}" />
 
-                <!-- Fav -->
+                    <userControls:RatingControl DockPanel.Dock="Right"
+                                                Value="{Binding Rate, Mode=TwoWay}"
+                                                Visibility="{Binding IsRateSetted, Converter={StaticResource ConditionVisibilityConverter}, ConverterParameter=true}" />
+                </DockPanel>
             </Grid>
         </Border>
 

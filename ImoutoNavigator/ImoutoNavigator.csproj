@@ -168,6 +168,9 @@
     <Compile Include="UserControls\PlayerControl.xaml.cs">
       <DependentUpon>PlayerControl.xaml</DependentUpon>
     </Compile>
+    <Compile Include="UserControls\FavoriteControl.xaml.cs">
+      <DependentUpon>FavoriteControl.xaml</DependentUpon>
+    </Compile>
     <Compile Include="UserControls\RatingControl.xaml.cs">
       <DependentUpon>RatingControl.xaml</DependentUpon>
     </Compile>
@@ -247,6 +250,10 @@
     <Page Include="UserControls\PlayerControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="UserControls\FavoriteControl.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
     <Page Include="UserControls\RatingControl.xaml">
       <SubType>Designer</SubType>

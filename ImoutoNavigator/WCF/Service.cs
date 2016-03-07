@@ -1,5 +1,6 @@
 ﻿using System;
 using System.ServiceModel;
+using System.Threading.Tasks;
 using Imouto.WCFExchageLibrary.Operations;
 
 namespace Imouto.Navigator.WCF
@@ -90,6 +91,94 @@ namespace Imouto.Navigator.WCF
                     proxy.Abort();
                 }
             }
+        }
+
+        public static async Task<TResult> UseAsync<TResult>(UseServiceDelegate<TResult> codeBlock)
+        {
+            return await Task.Run(() =>
+            {
+                IClientChannel proxy = (IClientChannel) _channelFactory.CreateChannel();
+                bool success = false;
+                bool getResultSuccess = false;
+                TResult result = default(TResult);
+
+                try
+                {
+
+                    result = codeBlock((IImoutoWCFService) proxy);
+                    getResultSuccess = true;
+
+                    proxy.Close();
+                    success = true;
+                }
+                catch (Exception ex)
+                {
+                    try
+                    {
+                        proxy.Close();
+                        success = true;
+                    }
+                    catch
+                    {
+                    }
+
+                    if (!getResultSuccess)
+                    {
+                        throw ex;
+                    }
+                }
+                finally
+                {
+                    if (!success)
+                    {
+                        proxy.Abort();
+                    }
+                }
+
+                return result;
+            });
+        }
+
+        public static async Task UseAsync(UseServiceDelegate codeBlock)
+        {
+            await Task.Run(() =>
+            {
+                IClientChannel proxy = (IClientChannel) _channelFactory.CreateChannel();
+                bool success = false;
+                bool getResultSuccess = false;
+
+                try
+                {
+                    codeBlock((IImoutoWCFService) proxy);
+                    getResultSuccess = true;
+
+                    proxy.Close();
+                    success = true;
+                }
+                catch (Exception ex)
+                {
+                    try
+                    {
+                        proxy.Close();
+                        success = true;
+                    }
+                    catch
+                    {
+                    }
+
+                    if (!getResultSuccess)
+                    {
+                        throw ex;
+                    }
+                }
+                finally
+                {
+                    if (!success)
+                    {
+                        proxy.Abort();
+                    }
+                }
+            });
         }
     }
 }
