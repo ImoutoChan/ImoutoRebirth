@@ -6,6 +6,7 @@ using System.Windows.Input;
 using System.Windows.Media.Imaging;
 using Imouto.Navigator.Commands;
 using Microsoft.WindowsAPICodePack.Shell;
+using System.IO;
 
 namespace Imouto.Navigator.ViewModel
 {
@@ -25,15 +26,19 @@ namespace Imouto.Navigator.ViewModel
 
         public VideoEntryVM(string path, Size initPreviewSize = new Size(), int? dbId = null)
         {
-            if (path.IsVideo())
+            if (!path.IsVideo())
+            {
+                throw new ArgumentException("Unsupported video format.");
+            }
+            else if (!(new FileInfo(path)).Exists)
+            {
+                throw new ArgumentException($"File {path} doesn't exist.");
+            }
+            else
             {
                 Path = path;
                 Type = ListEntryType.Video;
                 ViewPortSize = initPreviewSize;
-            }
-            else
-            {
-                throw new ArgumentException("Unsupported video format.");
             }
             DbId = dbId;
         }
