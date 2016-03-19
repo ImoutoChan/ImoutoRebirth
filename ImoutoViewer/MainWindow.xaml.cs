@@ -33,17 +33,16 @@ namespace Imouto.Viewer
 
         #region Event handlers
 
-        //Disable speciale handling for ALT (menu button, change focus)
+        //Fullscreen on f11, alt+enter doesn't work
         protected override void OnPreviewKeyDown(KeyEventArgs e)
         {
-            if (Keyboard.Modifiers == ModifierKeys.Alt)
+            if (e.Key == Key.F11)
             {
+                ToggleFullscreen();
                 e.Handled = true;
             }
-            else
-            {
-                base.OnPreviewKeyDown(e);
-            }
+
+            base.OnPreviewKeyDown(e);
         }
 
         private void ScrollViewerObject_ScrollChanged(object sender, ScrollChangedEventArgs e)
@@ -93,13 +92,7 @@ namespace Imouto.Viewer
         //Full screen
         private void MainWindow_OnKeyUp(object sender, KeyEventArgs e)
         {
-            if (e.Key == Key.F11
-                || (e.Key == Key.Enter
-                && e.Key == Key.LeftAlt || e.Key == Key.RightAlt))
-            {
-                ToggleFullscreen();
-            }
-            else if (e.Key == Key.S)
+            if (e.Key == Key.S)
             {
                 Button_Click(null, null);
             }
@@ -133,7 +126,7 @@ namespace Imouto.Viewer
         }
 
         #endregion Event handlers
-
+    
         #region Methods
 
         private void DeactivateFullscreen()
