@@ -209,6 +209,16 @@ namespace Imouto.Viewer.ViewModel
                 {
                     return imoutoService.GetImageId(path);
                 });
+
+                if (!id.HasValue)
+                {
+                    var md5 = Util.GetMd5Checksum(new System.IO.FileInfo(path));
+                    id = ImoutoService.Use(imoutoService =>
+                    {
+                        return imoutoService.GetImageId(md5: md5);
+                    });
+                }
+
                 CurrentId = id;
 
                 var tags = new List<BindedTag>();
