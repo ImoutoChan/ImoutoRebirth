@@ -210,19 +210,30 @@ namespace Imouto.Viewer.ViewModel
                     return imoutoService.GetImageId(path);
                 });
 
+                string md5;
+                ContainsType containsType = ContainsType.None;
                 if (!id.HasValue)
                 {
-                    var md5 = Util.GetMd5Checksum(new System.IO.FileInfo(path));
+                    md5 = Util.GetMd5Checksum(new System.IO.FileInfo(path));
                     id = ImoutoService.Use(imoutoService =>
                     {
                         return imoutoService.GetImageId(md5: md5);
                     });
-                }
+
+                    if (!id.HasValue)
+                    {
+
+                        containsType = ImoutoService.Use(imoutoService =>
+                        {
+                            return imoutoService.GetContainsType(md5);
+                        });
+                    }
+                }                
 
                 CurrentId = id;
-
                 var tags = new List<BindedTag>();
                 var notes = new List<NoteM>();
+
                 if (CurrentId.HasValue)
                 {
                     tags = ImoutoService.Use(imoutoService =>
@@ -236,6 +247,11 @@ namespace Imouto.Viewer.ViewModel
                                             .ToList();
                     });
                 }
+                else if (containsType == ContainsType.Relative)
+                {
+                    tags.Add(new BindedTag { Source = Source.Virtual, Tag = new Tag { Type = new TagType { Color = 0, Title = "Virtual" }, Title = "HasRelative" } });
+                }
+                
 
                 return new Tuple<List<BindedTag>, List<NoteM>>(tags, notes);
             });
