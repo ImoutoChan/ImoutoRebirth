@@ -86,6 +86,8 @@
             <Button Content="Settings"
                     Click="Button_Click"
                     Tag="{Binding ElementName=SettingFlyout}" />
+            <Button Content="Shuffle" 
+                    Command="{Binding ShuffleCommand}"/>
         </metroControl:WindowCommands>
     </metroControl:MetroWindow.RightWindowCommands>
 

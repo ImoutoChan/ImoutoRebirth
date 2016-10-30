@@ -151,6 +151,8 @@ namespace Imouto.Navigator.ViewModel
 
         #region Commands
 
+        public ICommand ShuffleCommand { get; set; }
+
         public ICommand ZoomInCommand { get; set; }
 
         public ICommand ZoomOutCommand { get; set; }
@@ -167,6 +169,11 @@ namespace Imouto.Navigator.ViewModel
 
         private void InitializeCommands()
         {
+            ShuffleCommand = new RelayCommand(x =>
+            {
+                ShuffleNavigatorList();
+            });
+
             ZoomInCommand = new RelayCommand(x =>
             {
                 if (_previewSize > 1024)
@@ -190,6 +197,26 @@ namespace Imouto.Navigator.ViewModel
             RemoveImageCommand = new RelayCommand(RemoveImage);
 
             CopyCommand = new RelayCommand(CopySelected);
+        }
+
+        private void ShuffleNavigatorList()
+        {
+            var randomGenerator = new Random();
+
+            lock (NavigatorList)
+            {
+                var newCollection = NavigatorList.ToList();
+                var count = NavigatorList.Count;
+
+                foreach (var navigatorListEntry in newCollection)
+                {
+                    NavigatorList.Remove(navigatorListEntry);
+
+                    var newIndex = randomGenerator.Next(0, count - 2);
+
+                    NavigatorList.Insert(newIndex, navigatorListEntry);
+                }
+            }
         }
 
         public void SetStatusError(string error, string message)
