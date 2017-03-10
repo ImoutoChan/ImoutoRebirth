@@ -63,7 +63,7 @@ namespace Imouto.Navigator.UserControls
             if (newPropertyValue == null)
             {
                 control.IsPlayed = false;
-                player.BeginStop();
+                player.Stop();
                 player.Dispose();
             }
             else

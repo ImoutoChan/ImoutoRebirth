@@ -921,7 +921,7 @@
         </member>
         <member name="M:xZune.Vlc.Wpf.VlcPlayer.BeginStop(System.Action)">
             <summary>
-                Easy async call stop method.
+                Easy aync call stop method.
             </summary>
             <param name="callback"></param>
         </member>
