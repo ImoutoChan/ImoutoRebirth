@@ -224,140 +224,9 @@ namespace Imouto.Navigator.ViewModel
             Status = error;
             StatusToolTip = message;
         }
-
-        //public void InitializeCollections()
-        //{
-        //    CollectionM.ActivatedCollectionChanged += (s, e) => Reload();
-        //    if (CollectionM.Collections.Count != 0)
-        //    {
-        //        // TODO save last activated
-        //        CollectionM.Collections.First().Activate();
-        //    }
-        //}
-
-        private void GetImageList()
-        {
-            /*
-            _imageList = new ObservableCollection<ImageEntryVM>(
-                Util
-                    .GetDirectories(new DirectoryInfo(@"D:\!ArtCollection\"), true)
-                    .SelectMany(x => x.GetFiles().Select(y => y.FullName))
-                    .Where(ImageEntry.IsImage)
-                    .Select(x =>
-                    {
-                        var im = new ImageEntryVM(x, PreviewSize);
-                        return im;
-                    })
-                    .ToList()
-                );
-            */
-
-
-            //CollectionM collection;
-            //if (CollectionM.Collections.Count == 0)
-            //{
-            //    var namedType = TagTypeM.Create("FromName");
-
-            //    collection = CollectionM.Create("MainColleciton");
-            //    //CollectionM.Create("SubColleciton").AddSource(@"C:\Users\Владимир\Downloads\Обои\Test");
-            //    //collection.AddSource(@"C:\Users\Владимир\Downloads\Обои\Test");
-            //    collection.AddSource(@"C:\Users\Владимир\Downloads\Обои\Обои\Замки");
-            //    collection.AddSource(@"C:\Users\oniii-chan\Downloads\temp\source_named");
-            //    collection.AddSource(@"C:\Users\oniii-chan\Downloads\DLS\art");
-            //    collection.AddSource(@"T:\art");
-            //    collection.Activate();
-
-            //    int i = 0;
-            //    int all = collection.CountImagesWithTags(null);
-            //    var st = DateTime.Now;
-
-            //    foreach (var image in collection.GetImages())
-            //    {
-            //        var tags = image
-            //                    .Path
-            //                    .Split(new[] { "\\" }, StringSplitOptions.RemoveEmptyEntries)
-            //                    .Last()
-            //                    .Split(new[]
-            //                                    {
-            //                                        " ",
-            //                                        "."
-            //                                    },
-            //                                    StringSplitOptions.RemoveEmptyEntries);
-
-            //        var existingTags = tags
-            //            .Where(x => TagM
-            //                            .Tags
-            //                            .Select(y => y.Name.ToLower())
-            //                            .Contains(x.ToLower()))
-            //            .Select(x => TagM
-            //                             .Tags
-            //                             .First(y => y.Name == x));
-
-            //        try
-            //        {
-            //            var nonExistingTags = tags
-            //                .Where(x => !TagM
-            //                                 .Tags
-            //                                 .Select(y => y.Name.ToLower())
-            //                                 .Contains(x.ToLower()))
-            //                .Select(tag => TagM.Create(tag, namedType));
-
-
-            //            var allTags = existingTags.Concat(nonExistingTags).ToList();
-            //            image.AddTags(allTags);
-            //        }
-            //        catch (Exception e)
-            //        {
-            //            //StringBuilder db = new StringBuilder();
-            //            //foreach (var tag in tags.OrderBy(x=>x))
-            //            //{
-            //            //    db.Append(tag);
-            //            //    db.Append(" " + TagM
-            //            //                        .Tags
-            //            //                        .Select(y => y.Name)
-            //            //                        .Contains(tag));
-            //            //}
-            //            //MessageBox.Show(String.Format("{0}\n {1}\n\n {2}\n\n", image.Path, image.Md5, db));
-            //        }
-
-
-            //        //var allTags = existingTags.Concat(nonExistingTags).ToList();
-            //        //image.AddTags(allTags);
-
-            //        //foreach (var ntag in allTags)
-            //        //{
-            //        //    image.AddTag(ntag);
-            //        //}
-
-
-            //        //var win = new DebugWindow();
-            //        //win.TextBlock.Text = "Progress: " + ++i + "/" + all + " Time passed: " + (DateTime.Now - st).TotalMilliseconds;
-            //        //win.Show();
-            //    }
-            //}
-            //else
-            //{
-            //}
-
-            //collection.Activate();
-        }
-
+        
         private void Reload()
         {
-            //if (CollectionM.ActivatedCollection != null)
-            //{
-            //    if (_imageList != null)
-            //    {
-            //        _imageList.Clear();
-            //    }
-            //    else
-            //    {
-            //        _imageList = new ObservableCollection<ImageEntryVM>();
-            //    }
-            //    IsLoading = true;
-
-            //    GetImagesFromCollectionAsync(1000);                
-            //}
 
             lock (NavigatorList)
             {
@@ -366,12 +235,11 @@ namespace Imouto.Navigator.ViewModel
                 NavigatorList.Clear();
             }
 
-            GetImagesFromCollectionAsync(100000, 0, 500);
+            GetImagesFromCollectionAsync(0, 500);
         }
 
         private void UpdatePreviews()
         {
-            //OnPropertyChanged("PreviewSize");
             OnPropertyChanged("SlotSize");
 
 
@@ -399,7 +267,7 @@ namespace Imouto.Navigator.ViewModel
 
         private static readonly SemaphoreSlim ReloadImagesAsyncSemaphore = new SemaphoreSlim(1, 1);
 
-        private async void GetImagesFromCollectionAsync(int count, int skip = 0, int block = 10)
+        private async void GetImagesFromCollectionAsync(int skip = 0, int block = 10)
         {
             // TODO COUNT
 
@@ -416,9 +284,7 @@ namespace Imouto.Navigator.ViewModel
                 // skip ?
                 TotalCount = total + skip;
 
-                count = (count < total)
-                        ? count
-                        : total;
+                var count = total;
 
                 if (count == 0)
                 {
@@ -456,7 +322,7 @@ namespace Imouto.Navigator.ViewModel
                 if (_ctsImageLoading == newCTS)
                 {
                     _ctsImageLoading = null;
-                }
+                }                
             }
             catch (Exception ex)
             {
@@ -473,7 +339,7 @@ namespace Imouto.Navigator.ViewModel
                 sw.Start();
 
                 var result = await GetImagesFromCollectionAsyncTask(block, skip + count - i);
-
+                
                 lock (NavigatorList)
                 {
                     ct.ThrowIfCancellationRequested();
@@ -514,8 +380,8 @@ namespace Imouto.Navigator.ViewModel
             {
                 return ImoutoService.Use(imoutoService =>
                 {
-                    return imoutoService.CountSearchImage(TagSearchVM.SelectedColleciton.Value, TagSearchVM.SelectedBindedTags.Select(x => x.Model)
-                                                                                                           .ToList());
+                    return imoutoService.CountSearchImage(TagSearchVM.SelectedColleciton.Value, 
+                        TagSearchVM.SelectedBindedTags.Select(x => x.Model).ToList());
                 });
             });
         }
