@@ -59,13 +59,13 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Imouto.SharedModelLibrary">
-      <HintPath>..\..\..\Imouto Library\Source code\bin\Release\Imouto.SharedModelLibrary.dll</HintPath>
+      <HintPath>..\..\imouto-library\bin\Release\Imouto.SharedModelLibrary.dll</HintPath>
     </Reference>
     <Reference Include="Imouto.Utils">
-      <HintPath>..\..\..\Imouto Library\Source code\bin\Release\Imouto.Utils.dll</HintPath>
+      <HintPath>..\..\imouto-library\bin\Release\Imouto.Utils.dll</HintPath>
     </Reference>
     <Reference Include="Imouto.WCFExchageLibrary">
-      <HintPath>..\..\..\Imouto Library\Source code\bin\Release\Imouto.WCFExchageLibrary.dll</HintPath>
+      <HintPath>..\..\imouto-library\bin\Release\Imouto.WCFExchageLibrary.dll</HintPath>
     </Reference>
     <Reference Include="MahApps.Metro, Version=1.0.0.0, Culture=neutral, PublicKeyToken=f4fb5a3c4d1e5b4f, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
