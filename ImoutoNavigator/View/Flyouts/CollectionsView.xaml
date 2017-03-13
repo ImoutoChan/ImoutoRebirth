@@ -109,6 +109,10 @@
                                                Content="Add subfolders names as tags"
                                                Margin="0,10,0,0" />
 
+                        <Controls:ToggleSwitch IsChecked="{Binding AddTagFromFileName}"
+                                               Content="Add file name as tag"
+                                               Margin="0,10,0,0" />
+
                         <StackPanel Margin="0,10,0,0">
                             <TextBlock TextWrapping="Wrap">
                                 <Run Text="Supported formats extensions" />

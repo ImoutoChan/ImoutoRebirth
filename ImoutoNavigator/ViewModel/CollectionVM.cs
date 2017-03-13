@@ -94,7 +94,8 @@ namespace Imouto.Navigator.ViewModel
                                 folder.NeedCheckFormat,
                                 folder.NeedCheckNameHash,
                                 folder.Extensions,
-                                folder.TagsFromSubfoder
+                                folder.TagsFromSubfoder,
+                                folder.AddTagFromFileName
                                 );
                             sourceFolderVM.ResetRequest += FolderVM_ResetRequest;
                             sourceFolderVM.SaveRequest += FolderVM_SaveRequest;
@@ -248,7 +249,7 @@ namespace Imouto.Navigator.ViewModel
 
         private void AddSource(object param)
         {
-            var newSource = new SourceFolderVM(null, String.Empty, false, false, null, false);
+            var newSource = new SourceFolderVM(null, String.Empty, false, false, null, false, false);
             newSource.ResetRequest += FolderVM_ResetRequest;
             newSource.SaveRequest += FolderVM_SaveRequest;
             Sources.Add(newSource);
