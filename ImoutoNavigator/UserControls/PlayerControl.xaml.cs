@@ -1,6 +1,6 @@
 ﻿using System.Windows;
 using System.Windows.Controls;
-using xZune.Vlc.Wpf;
+using Meta.Vlc.Wpf;
 
 namespace Imouto.Navigator.UserControls
 {
