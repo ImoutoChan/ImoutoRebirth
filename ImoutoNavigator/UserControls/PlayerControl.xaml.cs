@@ -1,4 +1,5 @@
-﻿using System.Windows;
+﻿using System;
+using System.Windows;
 using System.Windows.Controls;
 using Meta.Vlc.Wpf;
 
@@ -60,19 +61,23 @@ namespace Imouto.Navigator.UserControls
             var control = ((PlayerControl) d);
             var player = control.vlcPlayer;
 
-            if (newPropertyValue == null)
+            player.Dispatcher.BeginInvoke((Action)(() =>
             {
-                control.IsPlayed = false;
-                player.Stop();
-                player.Dispose();
-            }
-            else
-            {
-                player.LoadMedia(newPropertyValue);
-                player.EndBehavior = EndBehavior.Repeat;
-                player.Play();
-                control.IsPlayed = true;
-            }
+                if (newPropertyValue == null)
+                {
+                    control.IsPlayed = false;
+                    player.Stop();
+                    //player.Dispose();
+                }
+                else
+                {
+                    player.RebuildPlayer();
+                    player.LoadMedia(newPropertyValue);
+                    player.EndBehavior = EndBehavior.Repeat;
+                    player.Play();
+                    control.IsPlayed = true;
+                }
+            }));
         }
 
         private void PlayButton_OnClick(object sender, RoutedEventArgs e)

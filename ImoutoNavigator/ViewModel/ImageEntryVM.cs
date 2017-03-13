@@ -1,9 +1,12 @@
-﻿using System.Diagnostics;
+﻿using System;
+using System.Diagnostics;
+using System.Linq;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media.Imaging;
 using Imouto.Navigator.Commands;
 using Imouto.Navigator.Model;
+using Imouto.Utils;
 
 namespace Imouto.Navigator.ViewModel
 {
@@ -58,7 +61,23 @@ namespace Imouto.Navigator.ViewModel
 
         private void Open(object obj)
         {
-            Process.Start(ImageEntry.FullName);
+            try
+            {
+                var myProcess = new Process
+                {
+                    StartInfo =
+                    {
+                        FileName = Associations.AssocQueryString(Associations.AssocStr.ASSOCSTR_EXECUTABLE,
+                            "." + ImageEntry.FullName.Split('.').Last()),
+                        Arguments = ImageEntry.FullName + $" -nav-guid={App.AppGuid}"
+                    }
+                };
+                myProcess.Start();
+            }
+            catch (Exception e)
+            {
+                Process.Start(ImageEntry.FullName);
+            }
         }
 
         #endregion Commands

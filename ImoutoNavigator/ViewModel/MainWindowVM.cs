@@ -367,7 +367,10 @@ namespace Imouto.Navigator.ViewModel
                                                      TagSearchVM
                                                         .SelectedBindedTags
                                                         .Select(x => x.Model)
-                                                        .ToList(), count, skip);
+                                                        .ToList(), 
+                                                     count, 
+                                                     skip,
+                                                     App.AppGuid);
                 }).Select(x => EntryVM.GetListEntry(x.Item1, PreviewSize, x.Item2))
                   .SkipExceptions()
                 );

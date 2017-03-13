@@ -3,7 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-             xmlns:metro="clr-namespace:MahApps.Metro;assembly=MahApps.Metro"
+             xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
              mc:Ignorable="d"
              d:DesignHeight="50"
              d:DesignWidth="300">
@@ -23,7 +23,7 @@
             <Setter Property="Visibility" Value="Hidden" />
         </Style>
 
-        <Style TargetType="metro:PackIconMaterial"
+        <Style TargetType="iconPacks:PackIconMaterial"
                x:Key="UnselectedItemStyle">
             <Setter Property="Kind" Value="StarOutline" />
             <Setter Property="Height" Value="35" />
@@ -31,7 +31,7 @@
             <Setter Property="Foreground" Value="{DynamicResource AccentColorBrush}" />
         </Style>
 
-        <Style TargetType="metro:PackIconMaterial"
+        <Style TargetType="iconPacks:PackIconMaterial"
                x:Key="SelectedItemStyle">
             <Setter Property="Kind" Value="Star" />
             <Setter Property="Height" Value="35" />
@@ -47,58 +47,58 @@
         <WrapPanel Name="pnlMinus">
             <Border Name="imgRate1"
                     Style="{StaticResource UnselectedItemBorderStyle}">
-                <metro:PackIconMaterial Style="{StaticResource UnselectedItemStyle}" />
+                <iconPacks:PackIconMaterial Style="{StaticResource UnselectedItemStyle}" />
             </Border>
             
             <Border Name="imgRate2"
                     Style="{StaticResource UnselectedItemBorderStyle}">
-                <metro:PackIconMaterial Style="{StaticResource UnselectedItemStyle}" />
+                <iconPacks:PackIconMaterial Style="{StaticResource UnselectedItemStyle}" />
             </Border>
             
             <Border Name="imgRate3"
                     Style="{StaticResource UnselectedItemBorderStyle}">
-                <metro:PackIconMaterial Style="{StaticResource UnselectedItemStyle}" />
+                <iconPacks:PackIconMaterial Style="{StaticResource UnselectedItemStyle}" />
             </Border>
             
             <Border Name="imgRate4"
                     Style="{StaticResource UnselectedItemBorderStyle}">
-                <metro:PackIconMaterial Style="{StaticResource UnselectedItemStyle}" />
+                <iconPacks:PackIconMaterial Style="{StaticResource UnselectedItemStyle}" />
             </Border>
             
             <Border Name="imgRate5"
                     Style="{StaticResource UnselectedItemBorderStyle}">
-                <metro:PackIconMaterial Style="{StaticResource UnselectedItemStyle}" />
+                <iconPacks:PackIconMaterial Style="{StaticResource UnselectedItemStyle}" />
             </Border>
         </WrapPanel>
         <WrapPanel Name="pnlPlus">
             <Border Name="imgRate11"
                     Style="{StaticResource SelectedItemBorderStyle}"
                     ToolTip="Rate 1/5">
-                <metro:PackIconMaterial Style="{StaticResource SelectedItemStyle}" />
+                <iconPacks:PackIconMaterial Style="{StaticResource SelectedItemStyle}" />
             </Border>
             
             <Border Name="imgRate22"
                     Style="{StaticResource SelectedItemBorderStyle}"
                     ToolTip="Rate 2/5">
-                <metro:PackIconMaterial Style="{StaticResource SelectedItemStyle}" />
+                <iconPacks:PackIconMaterial Style="{StaticResource SelectedItemStyle}" />
             </Border>
             
             <Border Name="imgRate33"
                     Style="{StaticResource SelectedItemBorderStyle}"
                     ToolTip="Rate 3/5">
-                <metro:PackIconMaterial Style="{StaticResource SelectedItemStyle}" />
+                <iconPacks:PackIconMaterial Style="{StaticResource SelectedItemStyle}" />
             </Border>
             
             <Border Name="imgRate44"
                     Style="{StaticResource SelectedItemBorderStyle}"
                     ToolTip="Rate 4/5">
-                <metro:PackIconMaterial Style="{StaticResource SelectedItemStyle}" />
+                <iconPacks:PackIconMaterial Style="{StaticResource SelectedItemStyle}" />
             </Border>
             
             <Border Name="imgRate55"
                     Style="{StaticResource SelectedItemBorderStyle}"
                     ToolTip="Rate 5/5">
-                <metro:PackIconMaterial Style="{StaticResource SelectedItemStyle}" />
+                <iconPacks:PackIconMaterial Style="{StaticResource SelectedItemStyle}" />
             </Border>
         </WrapPanel>
     </Grid>
