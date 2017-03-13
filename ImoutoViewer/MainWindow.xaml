@@ -403,7 +403,7 @@
                         </i:Interaction.Behaviors>
                     </Image>
 
-                    <metroControl:ProgressRing IsActive="{Binding IsLoading}" />
+                    <metroControl:ProgressRing IsActive="{Binding IsLoading, Mode=OneWay}" />
 
                     <ItemsControl ItemsSource="{Binding Tags.NotesCollection}"
                                   Visibility="{Binding Path=Tags.ShowNotes, Converter={StaticResource ConditionVisibilityConverter}, ConverterParameter=true}">

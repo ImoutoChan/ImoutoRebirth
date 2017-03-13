@@ -1,5 +1,6 @@
 ﻿using System;
 using System.ServiceModel;
+using System.Threading.Tasks;
 using Imouto.WCFExchageLibrary.Operations;
 
 namespace Imouto.Viewer.WCF
@@ -11,8 +12,18 @@ namespace Imouto.Viewer.WCF
     {
         public static ChannelFactory<IImoutoWCFService> _channelFactory
             = new ChannelFactory<IImoutoWCFService>(
-                new NetNamedPipeBinding(),
+                new NetNamedPipeBinding
+                {
+                    MaxReceivedMessageSize = Int32.MaxValue,
+                    MaxBufferSize = Int32.MaxValue
+                },
                 new EndpointAddress("net.pipe://localhost/ImoutoServiceWcf"));
+
+
+        public static async Task<TResult> UseAsync<TResult>(UseServiceDelegate<TResult> codeBlock)
+        {
+            return await Task.Run(() => Use(codeBlock));
+        }
 
         public static TResult Use<TResult>(UseServiceDelegate<TResult> codeBlock)
         {
@@ -53,6 +64,11 @@ namespace Imouto.Viewer.WCF
             }
 
             return result;
+        }
+
+        public static async Task UseAsync(UseServiceDelegate codeBlock)
+        {
+            await Task.Run(() => Use(codeBlock));
         }
 
         public static void Use(UseServiceDelegate codeBlock)

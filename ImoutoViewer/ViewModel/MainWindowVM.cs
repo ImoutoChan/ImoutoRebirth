@@ -5,12 +5,14 @@ using Imouto.Viewer.Model;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media.Imaging;
 using System.Windows.Threading;
 using Imouto.Viewer.WCF;
+using Imouto.WCFExchageLibrary.Data;
 
 namespace Imouto.Viewer.ViewModel
 {
@@ -335,11 +337,28 @@ namespace Imouto.Viewer.ViewModel
             Tags.ShowTags = Settings.ShowTags;
         }
 
-        private void InitializeImageList(IEnumerable<string> images)
+        private async Task InitializeImageList(IEnumerable<string> images)
         {
+            Application.Current.Properties["Binded"] = false;
+
             if (images != null)
             {
                 _imageList = new LocalImageList(images);
+            }
+            else if (Application.Current.Properties["NavigatorGuid"] != null)
+            {
+                Application.Current.Properties["Binded"] = true;
+
+                var guid = (Guid) Application.Current.Properties["NavigatorGuid"];
+
+                
+                var files = await ImoutoService.UseAsync(imoutoService => imoutoService.GetCachedSearch(guid));
+
+
+                var el = default((string, int));
+                var (path, id) = el = files.FirstOrDefault(x => x.path == Application.Current.Properties["ArbitraryArgName"].ToString());
+
+                _imageList = new LocalImageList(files.Select(x => x.path), path == null ? 0 : files.IndexOf(el));
             }
             else if (Application.Current.Properties["ArbitraryArgName"] != null)
             {
@@ -348,17 +367,10 @@ namespace Imouto.Viewer.ViewModel
 
                 _imageList = new LocalImageList(fname);
             }
-#if DEBUG
-            else
-            {
-                _imageList = new LocalImageList(@"D:\!Download\DLS\мясо");
-            }
-#else
             else
             {
                 _imageList = new LocalImageList();
-            }            
-#endif
+            }
 
             _imageList.CurrentImageChanged += _imageList_CurrentImageChanged;
         }

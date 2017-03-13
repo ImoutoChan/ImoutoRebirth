@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Windows;
 using Imouto.Utils;
 
 namespace Imouto.Viewer.Model
@@ -132,28 +133,26 @@ namespace Imouto.Viewer.Model
 
         public LocalImageList(string imagePath) : this(new[] { imagePath }) { }
 
-        public LocalImageList(IEnumerable<string> imagePaths)
+        private bool CheckExist(string path) => Path.GetExtension(path) == String.Empty;
+
+        public LocalImageList(IEnumerable<string> imagePaths, int selectedElementId = -1)
         {
             _imageList = new List<LocalImage>();
             _directoriesList = new List<DirectoryInfo>();
             var paths = imagePaths as IList<string> ?? imagePaths.ToList();
-
-            //Try process directories
-            var dirs =
-                from dir in paths
-                where Directory.Exists(dir)
-                select dir;
-            var dirsList = dirs as IList<string> ?? dirs.ToList();
-
+            
+            var dirsList = paths.Where(CheckExist).ToList();
+            
             if (dirsList.Any())
             {
                 foreach (var dir in dirsList)
                 {
                     LoadDirectories(new DirectoryInfo(dir), DirectorySearchFlags.Folder);
                 }
+
                 _currentDirectory = _directoriesList.First();
                 LoadImages(_currentDirectory);
-                CurrentImage = _imageList.First();
+                CurrentImage = _imageList.SelectByIndexOrFirst(selectedElementId);
 
                 IsDirectoryActive = true;
                 return;
@@ -171,7 +170,7 @@ namespace Imouto.Viewer.Model
             if (imagesCount > 1)
             {
                 LoadImages(imagesList);
-                CurrentImage = _imageList.First();
+                CurrentImage = _imageList.SelectByIndexOrFirst(selectedElementId);
                 _directoriesList.Add((new FileInfo(CurrentImage.Path)).Directory);
                 _currentDirectory = _directoriesList.First();
                 IsDirectoryActive = false;
@@ -347,12 +346,13 @@ namespace Imouto.Viewer.Model
         private void LoadImages(IEnumerable<string> imagePaths)
         {
 
-            var images =
-                imagePaths.Where(x => x.IsImage())
-                    .OrderByWithDirection(GetFilesOrderProperty, IsFilesSortMethodDescending)
-                    .Select(x => new LocalImage(x));
+            var images = imagePaths.Where(x => x.IsImage());
+            if ((bool)Application.Current.Properties["Binded"] == false)
+            {
+                images = images.OrderByWithDirection(GetFilesOrderProperty, IsFilesSortMethodDescending);
+            }
 
-            _imageList.AddRange(images);
+            _imageList.AddRange(images.Select(x => new LocalImage(x)));
         }
 
         private void LoadImages(DirectoryInfo sourceFolder)
