@@ -4,6 +4,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:metro="clr-namespace:MahApps.Metro;assembly=MahApps.Metro"
+             xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
              mc:Ignorable="d"
              d:DesignHeight="50"
              d:DesignWidth="300">
@@ -26,7 +27,7 @@
             <Setter Property="ToolTip" Value="Favorite" />
         </Style>
 
-        <Style TargetType="metro:PackIconMaterial"
+        <Style TargetType="iconPacks:PackIconMaterial"
                x:Key="UnselectedItemStyle">
             <Setter Property="Kind" Value="HeartOutline" />
             <Setter Property="Height" Value="35" />
@@ -34,7 +35,7 @@
             <Setter Property="Foreground" Value="{DynamicResource AccentColorBrush}" />
         </Style>
 
-        <Style TargetType="metro:PackIconMaterial"
+        <Style TargetType="iconPacks:PackIconMaterial"
                x:Key="SelectedItemStyle">
             <Setter Property="Kind" Value="Heart" />
             <Setter Property="Height" Value="35" />
@@ -50,13 +51,13 @@
         <WrapPanel Name="pnlMinus">
             <Border Name="imgRate1"
                     Style="{StaticResource UnselectedItemBorderStyle}">
-                <metro:PackIconMaterial Style="{StaticResource UnselectedItemStyle}" />
+                <iconPacks:PackIconMaterial Style="{StaticResource UnselectedItemStyle}" />
             </Border>
         </WrapPanel>
         <WrapPanel Name="pnlPlus">
             <Border Name="imgRate11"
                     Style="{StaticResource SelectedItemBorderStyle}">
-                <metro:PackIconMaterial Style="{StaticResource SelectedItemStyle}" />
+                <iconPacks:PackIconMaterial Style="{StaticResource SelectedItemStyle}" />
             </Border>
         </WrapPanel>
     </Grid>

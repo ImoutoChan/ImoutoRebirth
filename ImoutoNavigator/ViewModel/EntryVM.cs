@@ -11,6 +11,7 @@ namespace Imouto.Navigator.ViewModel
             {
                 return new ImageEntryVM(path, initPreviewSize, dbId);
             }
+            // TODO Rewrite this shit
             catch (ArgumentException)
             {
                 try
