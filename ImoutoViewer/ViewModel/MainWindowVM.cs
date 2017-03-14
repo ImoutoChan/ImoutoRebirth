@@ -48,6 +48,8 @@ namespace Imouto.Viewer.ViewModel
 
             _mainWindowView.Show();
 
+            OnPropertyChanged(() => Settings);
+
             InitializeImageListAsync();
 
             View.ViewPort.SizeChanged += (sender, args) => UpdateView();
