@@ -481,6 +481,11 @@ namespace Imouto.Navigator.ViewModel
                                     .FirstOrDefault();
             });
 
+            if (rateTag.Title != "Rate")
+            {
+                rateTag = null;
+            }
+
             if (rateTag == null)
             {
                 await ImoutoService.UseAsync(imoutoService =>
