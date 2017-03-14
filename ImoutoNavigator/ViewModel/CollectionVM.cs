@@ -167,7 +167,7 @@ namespace Imouto.Navigator.ViewModel
                     App.MainWindowVM?.SetStatusError("Can't remove folder", ex.Message);
                     Debug.WriteLine("Can't remove folder: " + ex.Message);
                 }
-
+                LoadFolders();
             }
             else
             {
