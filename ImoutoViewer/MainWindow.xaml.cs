@@ -1,4 +1,5 @@
-﻿using Imouto.Viewer.ViewModel;
+﻿using System.ComponentModel;
+using Imouto.Viewer.ViewModel;
 using MahApps.Metro.Controls;
 using MahApps.Metro.Controls.Dialogs;
 using System.Windows;
@@ -13,6 +14,8 @@ namespace Imouto.Viewer
     /// </summary>
     partial class MainWindow
     {
+        public static MetroWindow CurrentWindow { get; private set; }
+
         #region Fields
 
         private bool _isFullscreen;
@@ -27,6 +30,8 @@ namespace Imouto.Viewer
             InitializeComponent();
 
             RenderOptions.SetBitmapScalingMode(ViewPort, BitmapScalingMode.Fant);
+
+            CurrentWindow = this;
         }
 
         #endregion Constructors

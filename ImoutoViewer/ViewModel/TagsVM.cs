@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.ServiceModel;
 using System.Threading.Tasks;
@@ -214,7 +215,7 @@ namespace Imouto.Viewer.ViewModel
                 ContainsType containsType = ContainsType.None;
                 if (!id.HasValue)
                 {
-                    md5 = Util.GetMd5Checksum(new System.IO.FileInfo(path));
+                    md5 = new FileInfo(path).GetMd5Checksum();
                     id = ImoutoService.Use(imoutoService =>
                     {
                         return imoutoService.GetImageId(md5: md5);

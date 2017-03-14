@@ -1,18 +1,15 @@
-﻿using Imouto;
-using Imouto.Viewer.Behavior;
+﻿using Imouto.Viewer.Behavior;
 using Imouto.Viewer.Commands;
 using Imouto.Viewer.Model;
+using Imouto.Viewer.WCF;
 using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media.Imaging;
 using System.Windows.Threading;
-using Imouto.Viewer.WCF;
-using Imouto.WCFExchageLibrary.Data;
 
 namespace Imouto.Viewer.ViewModel
 {
@@ -493,7 +490,7 @@ namespace Imouto.Viewer.ViewModel
         #endregion Commands
 
         #region Command handlers
-
+        
         private void ToggleNotes()
         {
             Settings.ShowNotes = !Settings.ShowNotes;

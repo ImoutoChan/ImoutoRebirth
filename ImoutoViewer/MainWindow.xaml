@@ -279,6 +279,11 @@
                             <CheckBox Margin="0,25,0,0"
                                       Content="Show notes"
                                       IsChecked="{Binding ShowNotes}" />
+
+                            <Button Margin="0,25,0,0"
+                                    Content="Set file associations"
+                                    Command="{Binding SetFileAssociationsCommand}" />
+                            
                         </StackPanel>
                     </ScrollViewer>
                 </Grid>

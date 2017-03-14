@@ -1,4 +1,4 @@
-﻿using Imouto;
+﻿using AssociationManager;
 using Imouto.Viewer.Commands;
 using Imouto.Viewer.Model;
 using Imouto.Viewer.Properties;
@@ -6,10 +6,14 @@ using MahApps.Metro;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
 using System.Linq;
+using System.Reflection;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media;
+using MahApps.Metro.Controls.Dialogs;
 
 namespace Imouto.Viewer.ViewModel
 {
@@ -67,6 +71,8 @@ namespace Imouto.Viewer.ViewModel
             ShowTags = Settings.Default.ShowTags;
 
             ShowNotes = Settings.Default.ShowNotes;
+
+            SetFileAssociationsCommand = new RelayCommand(param => SetFileAssociations());
         }
 
         #endregion Constructors
@@ -239,7 +245,79 @@ namespace Imouto.Viewer.ViewModel
             Settings.Default.Save();
         }
 
+        public ICommand SetFileAssociationsCommand { get; private set; }
+
         #endregion Commands
+
+        #region Methods
+
+        private async Task SetFileAssociations()
+        {
+            try
+            {
+                using (var mgr = new FileAssociationManager())
+                {
+                    foreach (
+                        var ext in Extensions.GetSupportedFormatsList(typeof(ImageFormat)).Select(x => x.Substring(1)))
+                    {
+                        Associate(mgr, ext);
+                    }
+                }
+
+                await MainWindow.CurrentWindow.ShowMessageAsync("File association",
+                    "Associations are successfully set.",
+                    MessageDialogStyle.AffirmativeAndNegative);
+            }
+            catch (UnauthorizedAccessException e)
+            {
+                var result = await MainWindow.CurrentWindow.ShowMessageAsync("File association", 
+                    "You need administrative rigths to set assotiations. Application will be restarted with admistrative rights.",
+                    MessageDialogStyle.AffirmativeAndNegative);
+
+                if (result == MessageDialogResult.Affirmative)
+                {
+                    // Launch itself as administrator 
+                    var proc = new ProcessStartInfo
+                    {
+                        UseShellExecute = true,
+                        WorkingDirectory = Environment.CurrentDirectory,
+                        FileName = Assembly.GetExecutingAssembly().Location,
+                        Verb = "runas"
+                    };
+
+
+                    try
+                    {
+                        Process.Start(proc);
+                    }
+                    catch
+                    {
+                        return;
+                    }
+
+
+                    Application.Current.Shutdown();
+                }
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+            }
+        }
+
+        private static void Associate(FileAssociationManager mgr, string extension)
+        {
+            string executablePath = Assembly.GetExecutingAssembly().Location;
+
+            using (var ext = mgr.RegisterFileAssociation(extension))
+            {
+                ext.DefaultIcon = new ApplicationIcon(executablePath);
+                ext.ShellOpenCommand = executablePath;
+                ext.Associated = true;
+            }
+        }
+
+        #endregion Methods
 
         #region Event handlers
 

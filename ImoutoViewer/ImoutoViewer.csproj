@@ -59,6 +59,9 @@
     <StartupObject>Imouto.Viewer.App</StartupObject>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="AssociationManager, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\rfc1459.AssociationManager.1.0.1.0\lib\net40\AssociationManager.dll</HintPath>
+    </Reference>
     <Reference Include="Imouto.SharedModelLibrary">
       <HintPath>..\..\imouto-library\bin\Release\Imouto.SharedModelLibrary.dll</HintPath>
     </Reference>
@@ -97,7 +100,6 @@
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
     <Reference Include="WpfAnimatedGif, Version=1.4.12.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\WpfAnimatedGif.1.4.12\lib\net\WpfAnimatedGif.dll</HintPath>
     </Reference>
   </ItemGroup>
