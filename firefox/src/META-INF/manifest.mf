@@ -1,0 +1,132 @@
+Manifest-Version: 1.0
+
+Name: install.rdf
+Digest-Algorithms: MD5 SHA1
+MD5-Digest: R1t7zhA+4yfKpNdPDBE7ew==
+SHA1-Digest: j9PSn9LkZbSRI9TQ1JGEk6DStCU=
+
+Name: bootstrap.js
+Digest-Algorithms: MD5 SHA1
+MD5-Digest: 7bXGjs354WXP08z1LJmaUQ==
+SHA1-Digest: hBvzrYsRacNpTOCOH+GOhYBn2mE=
+
+Name: package.json
+Digest-Algorithms: MD5 SHA1
+MD5-Digest: xaMyDioN6CAoOxQ6r0L6Rw==
+SHA1-Digest: L8oel7gTJXjdeHD4hX1LeL4y+vw=
+
+Name: data/content.js
+Digest-Algorithms: MD5 SHA1
+MD5-Digest: SAi/6uLxJuGMVo7GEmlRag==
+SHA1-Digest: SfEcXG307v65vyi5GV5cRuFGH7s=
+
+Name: data/jquery.min.js
+Digest-Algorithms: MD5 SHA1
+MD5-Digest: MgFd1C6VgqgKhHNvXZpE1w==
+SHA1-Digest: QbS/uqlr5tFEDbbngASt4cE04nY=
+
+Name: data/grayscale/icon128g.png
+Digest-Algorithms: MD5 SHA1
+MD5-Digest: DJ0+dkVOpmYPzPvao3hxyg==
+SHA1-Digest: Bsr7FKLQq3bVXevvDKTr0Ba3Bbw=
+
+Name: data/grayscale/icon16g.png
+Digest-Algorithms: MD5 SHA1
+MD5-Digest: cey/dvnCXmUp9imF4yRUOA==
+SHA1-Digest: 9VvK26tlzv8Bxtpxrcw11/XOcZk=
+
+Name: data/grayscale/icon18g.png
+Digest-Algorithms: MD5 SHA1
+MD5-Digest: Ad/sSTbwPyPkaHBv/Aa6lQ==
+SHA1-Digest: +GpbPExTS4L5Iek4nf/aRQYuDus=
+
+Name: data/grayscale/icon19g.png
+Digest-Algorithms: MD5 SHA1
+MD5-Digest: 2rzikV1vnFcS3Y4yZuB/5A==
+SHA1-Digest: xvX/lZmcgZsD49RbWjkIPEALJ/U=
+
+Name: data/grayscale/icon250g.png
+Digest-Algorithms: MD5 SHA1
+MD5-Digest: kxEKYHa7guuSCGamI7RPjQ==
+SHA1-Digest: CeqQANhlNacxL96wGY0D5SyoUqY=
+
+Name: data/grayscale/icon32g.png
+Digest-Algorithms: MD5 SHA1
+MD5-Digest: PozLque1OgE06tNB88Zfmg==
+SHA1-Digest: fJqrP2r7GpGvgzLE4sTvTfWAcqM=
+
+Name: data/grayscale/icon36g.png
+Digest-Algorithms: MD5 SHA1
+MD5-Digest: TLwXE48SRDjqrRSdVWurKQ==
+SHA1-Digest: GlUSnWuV8bSXa0DpK1wE85Oi8iE=
+
+Name: data/grayscale/icon38g.png
+Digest-Algorithms: MD5 SHA1
+MD5-Digest: X2FZb7oJS0iBOcnAenErwA==
+SHA1-Digest: osjfXI66XqeudrvNAy40ANwSalI=
+
+Name: data/grayscale/icon48g.png
+Digest-Algorithms: MD5 SHA1
+MD5-Digest: 3aeFRC2sbfkk9F8wKglabQ==
+SHA1-Digest: foTjhN4aQV7aDD9+sRvJS9976LQ=
+
+Name: data/grayscale/icon64g.png
+Digest-Algorithms: MD5 SHA1
+MD5-Digest: THJHHHSxCDi5ImpeegPEjg==
+SHA1-Digest: WWKLmjaA71T/diBp3cobEkTrnZc=
+
+Name: data/normal/icon128.png
+Digest-Algorithms: MD5 SHA1
+MD5-Digest: rXzdtir35DFW2QCAeLk0zg==
+SHA1-Digest: 2FmVVallW4lUfaoYrKMdbFmNO8I=
+
+Name: data/normal/icon16.png
+Digest-Algorithms: MD5 SHA1
+MD5-Digest: o4/wNXmqyIk0Jn1dqwWnmQ==
+SHA1-Digest: GGrNyeZjMK3TrR0Ai8SqLh1w5e4=
+
+Name: data/normal/icon18.png
+Digest-Algorithms: MD5 SHA1
+MD5-Digest: 2bU/AlEfXZWnWfjqL6p8IQ==
+SHA1-Digest: flvGGjaZhD6oYrw0H85oJviulV0=
+
+Name: data/normal/icon19.png
+Digest-Algorithms: MD5 SHA1
+MD5-Digest: 7lnsYkRCrYc7zQaJjvjDCg==
+SHA1-Digest: Sb3YTtmVf6NPtoKLCxnLKdWbTas=
+
+Name: data/normal/icon250.png
+Digest-Algorithms: MD5 SHA1
+MD5-Digest: 4Tg9Vt4riHYxJoCD2MwaSw==
+SHA1-Digest: ddoCAJs8qtxLYTM2en9gssO7LeM=
+
+Name: data/normal/icon32.png
+Digest-Algorithms: MD5 SHA1
+MD5-Digest: GaydN5sUqRzrzFjo4PvNLQ==
+SHA1-Digest: BuJK/naiDLQdo+HXx8cFY3kZ5ak=
+
+Name: data/normal/icon36.png
+Digest-Algorithms: MD5 SHA1
+MD5-Digest: 5bZq+ctCkcTDnTeA/8ru7g==
+SHA1-Digest: PVR1Rl92E0+68Fn4swkSHnp411Y=
+
+Name: data/normal/icon38.png
+Digest-Algorithms: MD5 SHA1
+MD5-Digest: KsH9Xy7Z1msoaIEGEE+6VQ==
+SHA1-Digest: 1C6ZWpBmDNwJrr1sNFr9E9Hd8f0=
+
+Name: data/normal/icon48.png
+Digest-Algorithms: MD5 SHA1
+MD5-Digest: XTKCGNroiuAGgGh8bVPZjQ==
+SHA1-Digest: d5/zpgfWLXjKfQA0EV9GZ687QQs=
+
+Name: data/normal/icon64.png
+Digest-Algorithms: MD5 SHA1
+MD5-Digest: RB56/DEMtvAQj1c3CWJJww==
+SHA1-Digest: 7Gr3OhkxYM/RTdM0YqXYlw1LAmc=
+
+Name: lib/main.js
+Digest-Algorithms: MD5 SHA1
+MD5-Digest: pUMASAFSWq9O4X6Dac3rsg==
+SHA1-Digest: zaaoiNTDEM2v+kGVwRKF2wkcQpU=
+

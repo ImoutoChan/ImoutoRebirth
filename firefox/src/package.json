@@ -1,0 +1,13 @@
+{
+  "title": "ImoutoAddon",
+  "name": "imoutoaddon",
+  "version": "2.0.1",
+  "description": "Imouto Collection Extension",
+  "main": "lib/main.js",
+  "author": "Oniii-chan",
+  "engines": {
+    "firefox": ">=38.0a1",
+    "fennec": ">=38.0a1"
+  },
+  "license": "MIT"
+}
