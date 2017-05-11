@@ -1,6 +1,6 @@
 ﻿var hashesResult = {};
 var hideEnabled = true;
-$("<style type='text/css'> .imoutoExtHide{ opacity: 0.6; border: 4px solid red !important; } .imoutoExtHide:Hover{ opacity: 1; border: 4px solid transparent;} .imoutoExtRelativeHide{ opacity: 0.6; border: 4px solid green !important; } .imoutoExtRelativeHide:Hover{ opacity: 1; border: 4px solid transparent;}</style>").appendTo("head");
+$("<style type='text/css'> .imoutoExtHide{ opacity: 0.6; outline: 3px solid red; outline-offset: -3px; } .imoutoExtHide:Hover{ opacity: 1; outline: 3px solid transparent; outline-offset: -3px;} .imoutoExtRelativeHide{ opacity: 0.6; outline: 3px solid green; outline-offset: -3px; } .imoutoExtRelativeHide:Hover{ opacity: 1; outline: 3px solid transparent; outline-offset: -3px;}</style>").appendTo("head");
 
 chrome.runtime.onMessage.addListener(function (msg, sender, sendResponse) {
     if (msg.idCheck && (msg.idCheck == "meSystem" || msg.idCheck == "me"))
