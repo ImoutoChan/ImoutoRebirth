@@ -1,5 +1,5 @@
 ﻿var hoverElem = null;
-var forceDisableHttps = true;
+var forceDisableHttps = false;
 
 function rebindImages() {
     $('img').mousemove(function (event) { hoverElem = this });
