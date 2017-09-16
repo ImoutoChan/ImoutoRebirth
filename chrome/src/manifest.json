@@ -2,8 +2,8 @@
 "update_url": "https://clients2.google.com/service/update2/crx",
 
     "manifest_version": 2,
-    "name":    "Imouto Collection Service",
-    "version": "0.0.4.0",
+    "name":    "Imouto Extension",
+    "version": "1.0.0",
 
 	"icons": { "16": "img/normal/icon16.png",
 			   "18": "img/normal/icon18.png",
