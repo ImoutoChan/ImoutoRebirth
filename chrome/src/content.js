@@ -1,31 +1,35 @@
-﻿var hashesResult = {};
-var hideEnabled = true;
-$("<style type='text/css'> .imoutoExtHide{ opacity: 0.6; outline: 3px solid red; outline-offset: -3px; } .imoutoExtHide:Hover{ opacity: 1; outline: 3px solid transparent; outline-offset: -3px;} .imoutoExtRelativeHide{ opacity: 0.6; outline: 3px solid green; outline-offset: -3px; } .imoutoExtRelativeHide:Hover{ opacity: 1; outline: 3px solid transparent; outline-offset: -3px;}</style>").appendTo("head");
+var hashesResult = {};
+var disableApp = false;
 
-chrome.runtime.onMessage.addListener(function (msg, sender, sendResponse) {
-    if (msg.idCheck && (msg.idCheck == "meSystem" || msg.idCheck == "me"))
-    {
-        if (msg.force == "enabled")
-        {
-            hideEnabled = true;
-        }
-        else
-        {
-            hideEnabled = false;
+function requestInfo() {
+    var imgs = document.getElementsByTagName("img");
+
+    var result = new Array();
+
+    for (var x = 0; x < imgs.length; x++) {
+        var isMatched = /\/[^\s"]*[a-zA-Z0-9]{32}(\.[a-zA-Z0-9]*|\/)/ig.test(imgs[x].src);
+        
+        if (isMatched) {
+            result.push(imgs[x]);
         }
     }
+    var toSend = result.map(function (element) {
+        return element.src.match(/[a-zA-Z0-9]{32}/i)[0];
+    });
 
-    if (msg.idCheck && (msg.idCheck == "me")) {
-        var hashesProcessed = msg.md5array;
+    var filteredToSend = toSend.filter(function(el) {
+        return !Object.getOwnPropertyNames(hashesResult).some(function(e) { return e === el; });
+    });
 
-        saveResults(hashesProcessed);
+    if (filteredToSend.length > 0) {
+        chrome.runtime.sendMessage({ action: "md5Try", hashes: filteredToSend });
     }
-    updateView();
-});
+}
 
 function saveResults(array) {
     for (var i = 0; i < array.length; i++) {
         hashesResult[array[i].md5] = array[i].result;
+        console.log(array[i].md5 + " " + array[i].result);
     }
 };
 
@@ -36,63 +40,51 @@ function updateView() {
 
     var imgs = document.getElementsByTagName("img");
 
-    
     for (var p in hashesResult) {
         var regexp = new RegExp(p, "i");
 
         for (var x = 0; x < imgs.length; x++) {
             if (regexp.test(imgs[x].src)) {
-                if (hashesResult[p] == "True" && hideEnabled)
-                {                    
+                if (hashesResult[p] === "True" && !disableApp) {
                     result.push(imgs[x]);
                 }
-                else if (hashesResult[p] == "Relative" && hideEnabled)
-                {
+                else if (hashesResult[p] === "Relative" && !disableApp) {
                     relativeResults.push(imgs[x]);
                 }
-                else
-                {
+                else {
                     antiresult.push(imgs[x]);
                 }
-            }            
+            }
         }
     }
-    
+
     for (i = 0; i < result.length; i++) {
-        $(result[i]).removeClass("imoutoExtNoHide").addClass("imoutoExtHide");
+        result[i].classList.remove("imoutoExtNoHide");
+        result[i].classList.add("imoutoExtHide");
     }
 
     for (i = 0; i < relativeResults.length; i++) {
-        $(relativeResults[i]).removeClass("imoutoExtNoHide").addClass("imoutoExtRelativeHide");
+        relativeResults[i].classList.remove("imoutoExtNoHide");
+        relativeResults[i].classList.add("imoutoExtRelativeHide");
     }
 
     for (i = 0; i < antiresult.length; i++) {
-        $(antiresult[i]).removeClass("imoutoExtHide").removeClass("imoutoExtRelativeHide").addClass("imoutoExtNoHide");
+        antiresult[i].classList.remove("imoutoExtHide");
+        antiresult[i].classList.remove("imoutoExtRelativeHide");
+        antiresult[i].classList.add("imoutoExtNoHide");
     }
 };
 
-function requestInfo()
-{
-    var imgs = document.getElementsByTagName("img");
-    var result = new Array();
-    for (var x = 0; x < imgs.length; x++) {
-        if (/\/[^\s"]*[a-zA-Z0-9]{32}(\.[a-zA-Z]*|\/)/ig.test(imgs[x].src)) {
-            result.push(imgs[x]);
+chrome.runtime.onMessage.addListener(
+    function (request, sender, sendResponse) {
+        if (request.action === "md5TryResponse") {
+            saveResults(request.response);
+        } else if (request.action === "disableApp") {
+            disableApp = request.state;
         }
-    }
-    var toSend = result.map(function (element) { return element.src.match(/[a-zA-Z0-9]{32}/i)[0]; })
-
-    var filteredToSend = toSend.filter(function (el) {
-        return !Object.getOwnPropertyNames(hashesResult).some(function (e) { return e == el; });
+        updateView();
     });
 
-    if (filteredToSend.length > 0) {
-        chrome.runtime.sendMessage({ idCheck: "me", md5sToProcess: filteredToSend });
-    }
-}
-
-$(document).bind("DOMSubtreeModified", function () {
-    requestInfo();
-})
-
+var observer = new MutationObserver(requestInfo);
+observer.observe(document.body, {childList: true, subtree: true });
 requestInfo();
