@@ -1,4 +1,4 @@
-﻿namespace ImoutoRebirth.Room.Database.Tools
+﻿namespace ImoutoRebirth.Room.Database
 {
     public static class DefaultValues
     {

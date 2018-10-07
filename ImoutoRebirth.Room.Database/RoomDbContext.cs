@@ -6,7 +6,6 @@ using System.Threading;
 using System.Threading.Tasks;
 using ImoutoRebirth.Room.Database.Entities;
 using ImoutoRebirth.Room.Database.Entities.Abstract;
-using ImoutoRebirth.Room.Database.Tools;
 using Microsoft.EntityFrameworkCore;
 
 namespace ImoutoRebirth.Room.Database
