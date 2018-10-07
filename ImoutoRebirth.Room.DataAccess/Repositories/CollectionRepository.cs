@@ -6,23 +6,29 @@ using ImoutoRebirth.Room.DataAccess.Models;
 using ImoutoRebirth.Room.Database;
 using Microsoft.EntityFrameworkCore;
 
-namespace ImoutoRebirth.Room.DataAccess
+namespace ImoutoRebirth.Room.DataAccess.Repositories
 {
     public class CollectionRepository : ICollectionRepository
     {
         private readonly RoomDbContext _roomDbContext;
         private readonly IMapper _mapper;
+        private readonly ICollectionsCacheStorage _collectionsCacheStorage;
 
         public CollectionRepository(
             RoomDbContext roomDbContext,
-            IMapper mapper)
+            IMapper mapper,
+            ICollectionsCacheStorage collectionsCacheStorage)
         {
             _roomDbContext = roomDbContext;
             _mapper = mapper;
+            _collectionsCacheStorage = collectionsCacheStorage;
         }
 
         public async Task<IReadOnlyCollection<OverseedColleciton>> GetAllOverseedCollecitons()
         {
+            if (_collectionsCacheStorage.Filled)
+                return _collectionsCacheStorage.Collections;
+
             var collections 
                 = await _roomDbContext
                    .Collections
@@ -30,7 +36,7 @@ namespace ImoutoRebirth.Room.DataAccess
                    .Include(x => x.SourceFolders)
                    .Include(x => x.Files)
                    .ToListAsync();
-
+            
             var result = collections
                         .Select(x => new OverseedColleciton(
                             _mapper.Map<Collection>(x),
@@ -39,7 +45,9 @@ namespace ImoutoRebirth.Room.DataAccess
                             _mapper.Map<DestinationFolder>(x.DestinationFolder)))
                         .ToArray();
 
-            return result;
+            _collectionsCacheStorage.Fill(result);
+
+            return _collectionsCacheStorage.Collections;
         }
     }
 }

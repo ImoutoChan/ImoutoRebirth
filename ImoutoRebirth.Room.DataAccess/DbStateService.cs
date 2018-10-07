@@ -5,7 +5,6 @@ namespace ImoutoRebirth.Room.DataAccess
 {
     public class DbStateService : IDbStateService
     {
-
         private readonly RoomDbContext _roomDbContext;
 
         public DbStateService(RoomDbContext roomDbContext)
