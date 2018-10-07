@@ -1,5 +1,8 @@
-﻿using ImoutoRebirth.Room.Database;
+﻿using ImoutoRebirth.Room.Core.Services;
+using ImoutoRebirth.Room.Core.Services.Abstract;
+using ImoutoRebirth.Room.Database;
 using ImoutoRebirth.Room.Host.Environment;
+using ImoutoRebirth.Room.Infrastructure.Service;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -30,6 +33,12 @@ namespace ImoutoRebirth.Room.Host
         {
             services.AddDbContext<RoomDbContext>(builder
                 => builder.UseNpgsql(_configuration.GetConnectionString("RoomDatabase")));
+
+            services.AddTransient<IFileService, FileService>();
+            services.AddTransient<IImageService, ImageService>();
+
+            services.AddTransient<IDestinationFolderService, DestinationFolderService>();
+            services.AddTransient<ISourceFolderService, SourceFolderService>();
         }
     }
 }

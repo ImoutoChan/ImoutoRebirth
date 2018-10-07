@@ -14,13 +14,11 @@ namespace ImoutoRebirth.Room.Infrastructure.Service
             IReadOnlyCollection<string> supportedExtensions,
             SearchOption searchOption = SearchOption.TopDirectoryOnly)
         {
-            if (supportedExtensions?.Any() != true)
-                return directoryInfo.GetFiles("*.*", searchOption);
-
-            return supportedExtensions
-                  .Select(x => "*." + x)
-                  .SelectMany(x => directoryInfo.EnumerateFiles(x, searchOption))
-                  .ToArray();
+            return supportedExtensions?.Any() != true
+                ? directoryInfo.GetFiles("*.*", searchOption)
+                : supportedExtensions.Select(x => "*." + x)
+                                     .SelectMany(x => directoryInfo.EnumerateFiles(x, searchOption))
+                                     .ToArray();
         }
 
         /// <summary>

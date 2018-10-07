@@ -109,18 +109,15 @@ namespace ImoutoRebirth.Room.Database
         {
             modelBuilder
                .Entity<DestinationFolderEntity>()
-               .Property(x => x.FormatErrorSubfolder)
-               .HasDefaultValue(DefaultValues.DestinationFolderEntityFormatErrorSubfolder);
+               .Property(x => x.FormatErrorSubfolder);
 
             modelBuilder
                .Entity<DestinationFolderEntity>()
-               .Property(x => x.HashErrorSubfolder)
-               .HasDefaultValue(DefaultValues.DestinationFolderEntityHashErrorSubfolder);
+               .Property(x => x.HashErrorSubfolder);
 
             modelBuilder
                .Entity<DestinationFolderEntity>()
-               .Property(x => x.WithoutHashErrorSubfolder)
-               .HasDefaultValue(DefaultValues.DestinationFolderEntityWithoutHashErrorSubfolder);
+               .Property(x => x.WithoutHashErrorSubfolder);
         }
 
         private static void BuildSourceFolderEntity(ModelBuilder modelBuilder)

@@ -17,6 +17,8 @@
 
   <ItemGroup>
     <ProjectReference Include="..\ImoutoRebirth.Room.Database\ImoutoRebirth.Room.Database.csproj" />
+    <ProjectReference Include="..\ImoutoRebirth.Room.Infrastructure\ImoutoRebirth.Room.Infrastructure.csproj" />
+    <ProjectReference Include="..\ImoutoRebirth.Room.Services\ImoutoRebirth.Room.Core.csproj" />
   </ItemGroup>
 
   <ItemGroup>
