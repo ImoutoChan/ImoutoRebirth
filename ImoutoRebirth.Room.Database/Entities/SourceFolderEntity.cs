@@ -26,7 +26,7 @@ namespace ImoutoRebirth.Room.Database.Entities
         public bool ShouldAddTagFromFilename { get; set; }
 
         [NotMapped]
-        public IReadOnlyCollection<string> SupportedExtensions
+        public IReadOnlyCollection<string> SupportedExtensionCollection
         {
             get => _supportedExtensions.Split(new [] {_separator}, StringSplitOptions.RemoveEmptyEntries);
             set => _supportedExtensions = string.Join(_separator, value);

@@ -127,7 +127,7 @@ namespace ImoutoRebirth.Room.Database
         private static void BuildSourceFolderEntity(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<SourceFolderEntity>()
-                        .Property("SupportedExtensions")
+                        .Property<string>("SupportedExtensions")
                         .HasField("_supportedExtensions");
         }
     }
