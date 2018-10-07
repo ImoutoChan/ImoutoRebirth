@@ -1,8 +1,8 @@
 ﻿using System;
 using System.IO;
-using ImoutoRebirth.Room.Core.Models.Abstract;
+using ImoutoRebirth.Room.DataAccess.Models.Abstract;
 
-namespace ImoutoRebirth.Room.Core.Models
+namespace ImoutoRebirth.Room.DataAccess.Models
 {
     public abstract class DestinationFolder : ModelBase
     {

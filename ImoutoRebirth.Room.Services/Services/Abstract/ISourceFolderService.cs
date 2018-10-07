@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 using ImoutoRebirth.Room.Core.Models;
-using SourceFolder = ImoutoRebirth.Room.Core.Models.SourceFolder;
+using ImoutoRebirth.Room.DataAccess.Models;
 
 namespace ImoutoRebirth.Room.Core.Services.Abstract
 {

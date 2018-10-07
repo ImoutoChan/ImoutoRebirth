@@ -1,26 +1,31 @@
 ﻿using System.Linq;
+using System.Threading.Tasks;
 using ImoutoRebirth.Room.Core.Models;
 using ImoutoRebirth.Room.Core.Services.Abstract;
+using ImoutoRebirth.Room.DataAccess;
 
 namespace ImoutoRebirth.Room.Core.Services
 {
-    /// <summary>
-    /// Collection monitoring
-    /// </summary>
     public class OverseeService
     {
         private readonly ISourceFolderService _sourceFolderService;
         private readonly IDestinationFolderService _destinationFolderService;
+        private readonly ICollectionFileService _collectionFileService;
+        private readonly IDbStateService _dbStateService;
 
         public OverseeService(
             ISourceFolderService sourceFolderService,
-            IDestinationFolderService destinationFolderService)
+            IDestinationFolderService destinationFolderService,
+            ICollectionFileService collectionFileService,
+            IDbStateService dbStateService)
         {
             _sourceFolderService = sourceFolderService;
             _destinationFolderService = destinationFolderService;
+            _collectionFileService = collectionFileService;
+            _dbStateService = dbStateService;
         }
 
-        public void PryColleciton(OverseedColleciton overseedColleciton)
+        public async Task PryColleciton(OverseedColleciton overseedColleciton)
         {
             foreach (var overseedCollecitonSourceFolder in overseedColleciton.SourceFolders)
             {
@@ -31,8 +36,13 @@ namespace ImoutoRebirth.Room.Core.Services
                 var moved = newFiles
                    .Select(x => _destinationFolderService.Move(overseedColleciton.DestinationFolder, x));
 
-                //foreach (var movedInformation in moved.Where(x => x.RequireSave))
-                //    _collectionFileService.SaveNew(movedInformation);
+
+                var tasks = moved.Where(x => x.RequireSave)
+                                 .Select(x => _collectionFileService.SaveNew(x, overseedColleciton.Collection.Id));
+
+                await Task.WhenAll(tasks);
+
+                await _dbStateService.SaveChanges();
             }
         }
     }

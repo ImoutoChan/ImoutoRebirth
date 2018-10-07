@@ -5,8 +5,8 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using ImoutoRebirth.Room.Core.Models;
 using ImoutoRebirth.Room.Core.Services.Abstract;
+using ImoutoRebirth.Room.DataAccess.Models;
 using Microsoft.Extensions.Logging;
-using SourceFolder = ImoutoRebirth.Room.Core.Models.SourceFolder;
 
 namespace ImoutoRebirth.Room.Core.Services
 {

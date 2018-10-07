@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using ImoutoRebirth.Room.Core.Models.Abstract;
+using ImoutoRebirth.Room.DataAccess.Models.Abstract;
 
-namespace ImoutoRebirth.Room.Core.Models
+namespace ImoutoRebirth.Room.DataAccess.Models
 {
     public class SourceFolder : ModelBase
     {

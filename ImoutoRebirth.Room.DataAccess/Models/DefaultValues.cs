@@ -1,4 +1,4 @@
-﻿namespace ImoutoRebirth.Room.Core.Models
+﻿namespace ImoutoRebirth.Room.DataAccess.Models
 {
     public static class DefaultValues
     {

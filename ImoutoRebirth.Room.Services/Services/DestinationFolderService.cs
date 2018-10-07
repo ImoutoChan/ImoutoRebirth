@@ -3,8 +3,8 @@ using System.Collections.Generic;
 using System.IO;
 using ImoutoRebirth.Room.Core.Models;
 using ImoutoRebirth.Room.Core.Services.Abstract;
+using ImoutoRebirth.Room.DataAccess.Models;
 using Microsoft.Extensions.Logging;
-using DestinationFolder = ImoutoRebirth.Room.Core.Models.DestinationFolder;
 
 namespace ImoutoRebirth.Room.Core.Services
 {
@@ -35,7 +35,8 @@ namespace ImoutoRebirth.Room.Core.Services
 
             return new MovedInformation(
                 moveInformation, 
-                wasANewFile && moveInformation.MoveProblem == MoveProblem.None);
+                wasANewFile && moveInformation.MoveProblem == MoveProblem.None,
+                newFile);
         }
 
         /// <summary>

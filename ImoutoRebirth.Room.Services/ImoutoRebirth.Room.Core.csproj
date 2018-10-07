@@ -5,11 +5,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="AutoMapper" Version="7.0.1" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <ProjectReference Include="..\ImoutoRebirth.Room.Database\ImoutoRebirth.Room.Database.csproj" />
+    <ProjectReference Include="..\ImoutoRebirth.Room.DataAccess\ImoutoRebirth.Room.DataAccess.csproj" />
   </ItemGroup>
 
 </Project>

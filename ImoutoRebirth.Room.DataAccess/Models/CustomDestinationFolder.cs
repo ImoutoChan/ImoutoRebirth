@@ -1,7 +1,7 @@
 ﻿using System;
 using System.IO;
 
-namespace ImoutoRebirth.Room.Core.Models
+namespace ImoutoRebirth.Room.DataAccess.Models
 {
     public abstract class CustomDestinationFolder : DestinationFolder
     {

@@ -2,7 +2,7 @@
 using ImoutoRebirth.Room.DataAccess.Models;
 using ImoutoRebirth.Room.Database.Entities;
 
-namespace ImoutoRebirth.Room.Core
+namespace ImoutoRebirth.Room.DataAccess
 {
     public class ModelAutoMapperProfile : Profile
     {

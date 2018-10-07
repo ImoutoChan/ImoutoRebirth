@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace ImoutoRebirth.Room.Core.Models.Abstract
+namespace ImoutoRebirth.Room.DataAccess.Models.Abstract
 {
     public class ModelBase
     {
