@@ -1,6 +1,5 @@
 ﻿using System;
 using Microsoft.EntityFrameworkCore.Migrations;
-using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 namespace ImoutoRebirth.Room.Database.Migrations
 {
@@ -12,8 +11,7 @@ namespace ImoutoRebirth.Room.Database.Migrations
                 name: "Collections",
                 columns: table => new
                 {
-                    Id = table.Column<long>(nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.SerialColumn),
+                    Id = table.Column<Guid>(nullable: false),
                     AddedOn = table.Column<DateTimeOffset>(nullable: false),
                     ModifiedOn = table.Column<DateTimeOffset>(nullable: false),
                     Name = table.Column<string>(nullable: false),
@@ -28,11 +26,10 @@ namespace ImoutoRebirth.Room.Database.Migrations
                 name: "CollectionFiles",
                 columns: table => new
                 {
-                    Id = table.Column<long>(nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.SerialColumn),
+                    Id = table.Column<Guid>(nullable: false),
                     AddedOn = table.Column<DateTimeOffset>(nullable: false),
                     ModifiedOn = table.Column<DateTimeOffset>(nullable: false),
-                    CollectionId = table.Column<long>(nullable: false),
+                    CollectionId = table.Column<Guid>(nullable: false),
                     Path = table.Column<string>(nullable: false),
                     Md5 = table.Column<string>(maxLength: 32, nullable: false),
                     Size = table.Column<long>(nullable: false),
@@ -54,11 +51,10 @@ namespace ImoutoRebirth.Room.Database.Migrations
                 name: "DestinationFolders",
                 columns: table => new
                 {
-                    Id = table.Column<long>(nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.SerialColumn),
+                    Id = table.Column<Guid>(nullable: false),
                     AddedOn = table.Column<DateTimeOffset>(nullable: false),
                     ModifiedOn = table.Column<DateTimeOffset>(nullable: false),
-                    CollectionId = table.Column<long>(nullable: false),
+                    CollectionId = table.Column<Guid>(nullable: false),
                     Path = table.Column<string>(nullable: false),
                     ShouldCreateSubfoldersByHash = table.Column<bool>(nullable: false),
                     ShouldRenameByHash = table.Column<bool>(nullable: false),
@@ -82,11 +78,10 @@ namespace ImoutoRebirth.Room.Database.Migrations
                 name: "SourceFolders",
                 columns: table => new
                 {
-                    Id = table.Column<long>(nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.SerialColumn),
+                    Id = table.Column<Guid>(nullable: false),
                     AddedOn = table.Column<DateTimeOffset>(nullable: false),
                     ModifiedOn = table.Column<DateTimeOffset>(nullable: false),
-                    CollectionId = table.Column<long>(nullable: false),
+                    CollectionId = table.Column<Guid>(nullable: false),
                     Path = table.Column<string>(nullable: false),
                     ShouldCheckFormat = table.Column<bool>(nullable: false),
                     ShouldCheckHashFromName = table.Column<bool>(nullable: false),

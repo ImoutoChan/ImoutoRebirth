@@ -1,10 +1,12 @@
 ﻿using System;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace ImoutoRebirth.Room.Database.Entities.Abstract
 {
     public class EntityBase
     {
-        public long Id { get; set; }
+        [DatabaseGenerated(DatabaseGeneratedOption.None)]
+        public Guid Id { get; set; }
 
         public DateTimeOffset AddedOn { get; set; }
 

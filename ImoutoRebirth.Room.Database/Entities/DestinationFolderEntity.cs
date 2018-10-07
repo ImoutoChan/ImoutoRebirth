@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using ImoutoRebirth.Room.Database.Entities.Abstract;
 
@@ -7,7 +8,7 @@ namespace ImoutoRebirth.Room.Database.Entities
     public class DestinationFolderEntity : EntityBase
     {
         [ForeignKey(nameof(Collection))]
-        public long CollectionId { get; set; }
+        public Guid CollectionId { get; set; }
 
         [Required]
         public string Path { get; set; }

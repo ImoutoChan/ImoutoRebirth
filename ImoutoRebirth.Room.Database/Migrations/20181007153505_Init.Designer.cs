@@ -10,7 +10,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace ImoutoRebirth.Room.Database.Migrations
 {
     [DbContext(typeof(RoomDbContext))]
-    [Migration("20181007091916_Init")]
+    [Migration("20181007153505_Init")]
     partial class Init
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -23,8 +23,7 @@ namespace ImoutoRebirth.Room.Database.Migrations
 
             modelBuilder.Entity("ImoutoRebirth.Room.Database.Entities.CollectionEntity", b =>
                 {
-                    b.Property<long>("Id")
-                        .ValueGeneratedOnAdd();
+                    b.Property<Guid>("Id");
 
                     b.Property<DateTimeOffset>("AddedOn");
 
@@ -45,12 +44,11 @@ namespace ImoutoRebirth.Room.Database.Migrations
 
             modelBuilder.Entity("ImoutoRebirth.Room.Database.Entities.CollectionFileEntity", b =>
                 {
-                    b.Property<long>("Id")
-                        .ValueGeneratedOnAdd();
+                    b.Property<Guid>("Id");
 
                     b.Property<DateTimeOffset>("AddedOn");
 
-                    b.Property<long>("CollectionId");
+                    b.Property<Guid>("CollectionId");
 
                     b.Property<bool>("IsDeleted");
 
@@ -79,12 +77,11 @@ namespace ImoutoRebirth.Room.Database.Migrations
 
             modelBuilder.Entity("ImoutoRebirth.Room.Database.Entities.DestinationFolderEntity", b =>
                 {
-                    b.Property<long>("Id")
-                        .ValueGeneratedOnAdd();
+                    b.Property<Guid>("Id");
 
                     b.Property<DateTimeOffset>("AddedOn");
 
-                    b.Property<long>("CollectionId");
+                    b.Property<Guid>("CollectionId");
 
                     b.Property<string>("FormatErrorSubfolder")
                         .IsRequired()
@@ -125,12 +122,11 @@ namespace ImoutoRebirth.Room.Database.Migrations
 
             modelBuilder.Entity("ImoutoRebirth.Room.Database.Entities.SourceFolderEntity", b =>
                 {
-                    b.Property<long>("Id")
-                        .ValueGeneratedOnAdd();
+                    b.Property<Guid>("Id");
 
                     b.Property<DateTimeOffset>("AddedOn");
 
-                    b.Property<long>("CollectionId");
+                    b.Property<Guid>("CollectionId");
 
                     b.Property<bool>("IsDeleted");
 

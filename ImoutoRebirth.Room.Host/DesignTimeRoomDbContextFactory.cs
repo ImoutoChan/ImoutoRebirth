@@ -1,5 +1,4 @@
-﻿using System;
-using ImoutoRebirth.Room.Database;
+﻿using ImoutoRebirth.Room.Database;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Design;
 using Microsoft.Extensions.Configuration;

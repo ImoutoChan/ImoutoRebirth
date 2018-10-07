@@ -1,0 +1,15 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="SixLabors.ImageSharp" Version="1.0.0-beta0004" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\ImoutoRebirth.Room.Services\ImoutoRebirth.Room.Core.csproj" />
+  </ItemGroup>
+
+</Project>

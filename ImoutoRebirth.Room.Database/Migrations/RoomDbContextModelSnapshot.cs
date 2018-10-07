@@ -21,8 +21,7 @@ namespace ImoutoRebirth.Room.Database.Migrations
 
             modelBuilder.Entity("ImoutoRebirth.Room.Database.Entities.CollectionEntity", b =>
                 {
-                    b.Property<long>("Id")
-                        .ValueGeneratedOnAdd();
+                    b.Property<Guid>("Id");
 
                     b.Property<DateTimeOffset>("AddedOn");
 
@@ -43,12 +42,11 @@ namespace ImoutoRebirth.Room.Database.Migrations
 
             modelBuilder.Entity("ImoutoRebirth.Room.Database.Entities.CollectionFileEntity", b =>
                 {
-                    b.Property<long>("Id")
-                        .ValueGeneratedOnAdd();
+                    b.Property<Guid>("Id");
 
                     b.Property<DateTimeOffset>("AddedOn");
 
-                    b.Property<long>("CollectionId");
+                    b.Property<Guid>("CollectionId");
 
                     b.Property<bool>("IsDeleted");
 
@@ -77,12 +75,11 @@ namespace ImoutoRebirth.Room.Database.Migrations
 
             modelBuilder.Entity("ImoutoRebirth.Room.Database.Entities.DestinationFolderEntity", b =>
                 {
-                    b.Property<long>("Id")
-                        .ValueGeneratedOnAdd();
+                    b.Property<Guid>("Id");
 
                     b.Property<DateTimeOffset>("AddedOn");
 
-                    b.Property<long>("CollectionId");
+                    b.Property<Guid>("CollectionId");
 
                     b.Property<string>("FormatErrorSubfolder")
                         .IsRequired()
@@ -123,12 +120,11 @@ namespace ImoutoRebirth.Room.Database.Migrations
 
             modelBuilder.Entity("ImoutoRebirth.Room.Database.Entities.SourceFolderEntity", b =>
                 {
-                    b.Property<long>("Id")
-                        .ValueGeneratedOnAdd();
+                    b.Property<Guid>("Id");
 
                     b.Property<DateTimeOffset>("AddedOn");
 
-                    b.Property<long>("CollectionId");
+                    b.Property<Guid>("CollectionId");
 
                     b.Property<bool>("IsDeleted");
 

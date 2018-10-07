@@ -12,7 +12,7 @@ namespace ImoutoRebirth.Room.Database.Entities
         private string _supportedExtensions;
 
         [ForeignKey(nameof(Collection))]
-        public long CollectionId { get; set; }
+        public Guid CollectionId { get; set; }
 
         [Required]
         public string Path { get; set; }
@@ -28,8 +28,8 @@ namespace ImoutoRebirth.Room.Database.Entities
         [NotMapped]
         public IReadOnlyCollection<string> SupportedExtensionCollection
         {
-            get => _supportedExtensions.Split(new [] {_separator}, StringSplitOptions.RemoveEmptyEntries);
-            set => _supportedExtensions = string.Join(_separator, value);
+            get => _supportedExtensions?.Split(new [] {_separator}, StringSplitOptions.RemoveEmptyEntries);
+            set => _supportedExtensions = value != null ? string.Join(_separator, value) : null;
         }
 
         public CollectionEntity Collection { get; set; }
