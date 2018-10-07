@@ -112,12 +112,12 @@ namespace ImoutoRebirth.Room.Database.Migrations
                 column: "CollectionId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_IsDeleted",
+                name: "IX_CollectionFileEntity_IsDeleted",
                 table: "CollectionFiles",
                 column: "IsDeleted");
 
             migrationBuilder.CreateIndex(
-                name: "IX_IsDeleted",
+                name: "IX_CollectionEntity_IsDeleted",
                 table: "Collections",
                 column: "IsDeleted");
 
@@ -128,7 +128,7 @@ namespace ImoutoRebirth.Room.Database.Migrations
                 unique: true);
 
             migrationBuilder.CreateIndex(
-                name: "IX_IsDeleted",
+                name: "IX_DestinationFolderEntity_IsDeleted",
                 table: "DestinationFolders",
                 column: "IsDeleted");
 
@@ -138,7 +138,7 @@ namespace ImoutoRebirth.Room.Database.Migrations
                 column: "CollectionId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_IsDeleted",
+                name: "IX_SourceFolderEntity_IsDeleted",
                 table: "SourceFolders",
                 column: "IsDeleted");
         }

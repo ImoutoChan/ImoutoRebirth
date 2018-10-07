@@ -36,7 +36,7 @@ namespace ImoutoRebirth.Room.Database.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("IsDeleted")
-                        .HasName("IX_IsDeleted");
+                        .HasName("IX_CollectionEntity_IsDeleted");
 
                     b.ToTable("Collections");
                 });
@@ -70,7 +70,7 @@ namespace ImoutoRebirth.Room.Database.Migrations
                     b.HasIndex("CollectionId");
 
                     b.HasIndex("IsDeleted")
-                        .HasName("IX_IsDeleted");
+                        .HasName("IX_CollectionFileEntity_IsDeleted");
 
                     b.ToTable("CollectionFiles");
                 });
@@ -116,7 +116,7 @@ namespace ImoutoRebirth.Room.Database.Migrations
                         .IsUnique();
 
                     b.HasIndex("IsDeleted")
-                        .HasName("IX_IsDeleted");
+                        .HasName("IX_DestinationFolderEntity_IsDeleted");
 
                     b.ToTable("DestinationFolders");
                 });
@@ -152,7 +152,7 @@ namespace ImoutoRebirth.Room.Database.Migrations
                     b.HasIndex("CollectionId");
 
                     b.HasIndex("IsDeleted")
-                        .HasName("IX_IsDeleted");
+                        .HasName("IX_SourceFolderEntity_IsDeleted");
 
                     b.ToTable("SourceFolders");
                 });

@@ -65,7 +65,7 @@ namespace ImoutoRebirth.Room.Database
                    .Entity(entity.ClrType)
                    .HasQueryFilter(GetIsDeletedRestriction(entity.ClrType))
                    .HasIndex(_isDeletedProperty)
-                   .HasName($"IX_{_isDeletedProperty}");
+                   .HasName($"IX_{entity.ClrType.Name}_{_isDeletedProperty}");
             }
         }
         
