@@ -1,49 +1,35 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using ImoutoRebirth.Room.Core.Models;
-using ImoutoRebirth.Room.Core.Services.Abstract;
 using ImoutoRebirth.Room.DataAccess;
+using ImoutoRebirth.Room.DataAccess.Models;
 
 namespace ImoutoRebirth.Room.Core.Services
 {
     public class OverseeService
     {
-        private readonly ISourceFolderService _sourceFolderService;
-        private readonly IDestinationFolderService _destinationFolderService;
-        private readonly ICollectionFileService _collectionFileService;
-        private readonly IDbStateService _dbStateService;
+        private readonly IFileSystemActualizationService _fileSystemActualizationService;
+        private readonly ICollectionRepository _collectionRepository;
 
         public OverseeService(
-            ISourceFolderService sourceFolderService,
-            IDestinationFolderService destinationFolderService,
-            ICollectionFileService collectionFileService,
-            IDbStateService dbStateService)
+            IFileSystemActualizationService fileSystemActualizationService,
+            ICollectionRepository collectionRepository)
         {
-            _sourceFolderService = sourceFolderService;
-            _destinationFolderService = destinationFolderService;
-            _collectionFileService = collectionFileService;
-            _dbStateService = dbStateService;
+            _fileSystemActualizationService = fileSystemActualizationService;
+            _collectionRepository = collectionRepository;
         }
 
-        public async Task PryColleciton(OverseedColleciton overseedColleciton)
+        public async Task Oversee()
         {
-            foreach (var overseedCollecitonSourceFolder in overseedColleciton.SourceFolders)
-            {
-                var newFiles = _sourceFolderService.GetNewFiles(
-                    overseedCollecitonSourceFolder, 
-                    overseedColleciton.ExistedFiles);
+            var collections = await LoadCollections();
 
-                var moved = newFiles
-                   .Select(x => _destinationFolderService.Move(overseedColleciton.DestinationFolder, x));
+            foreach (var overseedColleciton in collections)
+                await _fileSystemActualizationService.PryColleciton(overseedColleciton);
+        }
 
-
-                var tasks = moved.Where(x => x.RequireSave)
-                                 .Select(x => _collectionFileService.SaveNew(x, overseedColleciton.Collection.Id));
-
-                await Task.WhenAll(tasks);
-
-                await _dbStateService.SaveChanges();
-            }
+        private async Task<IReadOnlyCollection<OverseedColleciton>> LoadCollections()
+        {
+           return await _collectionRepository.GetAllOverseedCollecitons();
         }
     }
 }

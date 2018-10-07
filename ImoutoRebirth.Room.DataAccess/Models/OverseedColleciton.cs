@@ -1,8 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using ImoutoRebirth.Room.DataAccess.Models;
 
-namespace ImoutoRebirth.Room.Core.Models
+namespace ImoutoRebirth.Room.DataAccess.Models
 {
     public class OverseedColleciton
     {
