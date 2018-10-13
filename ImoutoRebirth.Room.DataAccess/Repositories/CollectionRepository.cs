@@ -32,11 +32,18 @@ namespace ImoutoRebirth.Room.DataAccess.Repositories
                    .ToListAsync();
             
             return collections
-                        .Select(x => new OversawCollection(
-                            _mapper.Map<Collection>(x),
-                            _mapper.Map<IReadOnlyCollection<SourceFolder>>(x.SourceFolders),
-                            _mapper.Map<DestinationFolder>(x.DestinationFolder)))
-                        .ToArray();
+                    .Select(x => new OversawCollection(
+                        _mapper.Map<Collection>(x),
+                        _mapper.Map<IReadOnlyCollection<SourceFolder>>(x.SourceFolders),
+                        _mapper.Map<DestinationFolder>(x.DestinationFolder)))
+                    .ToArray();
+        }
+
+        public async Task<IReadOnlyCollection<Collection>> GetCollections()
+        {
+            var collections = await _roomDbContext.Collections.ToListAsync();
+
+            return _mapper.Map<IReadOnlyCollection<Collection>>(collections);
         }
     }
 }

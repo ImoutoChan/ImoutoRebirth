@@ -28,6 +28,7 @@
   <ItemGroup>
     <ProjectReference Include="..\ImoutoRebirth.Room.Infrastructure\ImoutoRebirth.Room.Infrastructure.csproj" />
     <ProjectReference Include="..\ImoutoRebirth.Room.Services\ImoutoRebirth.Room.Core.csproj" />
+    <ProjectReference Include="..\ImoutoRebirth.Room.WebApi\ImoutoRebirth.Room.WebApi.csproj" />
   </ItemGroup>
 
 </Project>

@@ -7,5 +7,7 @@ namespace ImoutoRebirth.Room.DataAccess.Repositories.Abstract
     public interface ICollectionRepository
     {
         Task<IReadOnlyCollection<OversawCollection>> GetAllOversawCollections();
+
+        Task<IReadOnlyCollection<Collection>> GetCollections();
     }
 }

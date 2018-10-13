@@ -12,6 +12,8 @@ using ImoutoRebirth.Room.DataAccess.Repositories;
 using ImoutoRebirth.Room.DataAccess.Repositories.Abstract;
 using ImoutoRebirth.Room.Database;
 using ImoutoRebirth.Room.Infrastructure.Service;
+using ImoutoRebirth.Room.WebApi;
+using ImoutoRebirth.Room.WebApi.Controllers;
 using ImoutoRebirth.Room.Webhost.Hangfire;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -34,7 +36,9 @@ namespace ImoutoRebirth.Room.Webhost
         public void ConfigureServices(
             IServiceCollection services)
         {
-            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
+            services.AddMvc()
+                    .SetCompatibilityVersion(CompatibilityVersion.Version_2_1)
+                    .AddApplicationPart(typeof(CollectionsController).Assembly);
 
             ConfigureDatabaseServices(services);
             ConfigureInfrastructureServices(services);
@@ -103,7 +107,8 @@ namespace ImoutoRebirth.Room.Webhost
         public void ConfigureAutoMapperServices(
             IServiceCollection services)
         {
-            services.AddAutoMapper(expression => expression.AddProfile(typeof(ModelAutoMapperProfile)));
+            services.AddAutoMapper(expression 
+                => expression.AddProfiles(typeof(ModelAutoMapperProfile), typeof(DtoAutoMapperProfile)));
         }
 
         public void Configure(
