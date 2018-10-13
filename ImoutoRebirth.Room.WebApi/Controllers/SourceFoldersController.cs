@@ -2,11 +2,15 @@
 using System.Threading.Tasks;
 using AutoMapper;
 using ImoutoRebirth.Room.DataAccess.Exceptions;
+using ImoutoRebirth.Room.DataAccess.Models;
+using ImoutoRebirth.Room.DataAccess.Repositories.Abstract;
+using ImoutoRebirth.Room.WebApi.Requests;
+using ImoutoRebirth.Room.WebApi.Responses;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ImoutoRebirth.Room.WebApi.Controllers
 {
-    [Route("api/collections/{collectionGuid}/[controller]")]
+    [Route("api/Collections/{collectionGuid}/[controller]")]
     [ApiController]
     public class SourceFoldersController : ControllerBase
     {
@@ -33,7 +37,7 @@ namespace ImoutoRebirth.Room.WebApi.Controllers
             Guid collectionGuid, 
             [FromBody] SourceFolderCreateRequest request)
         {
-            var createData = _mapper.Map<SourceFolderCreateData>(request);
+            var createData = _mapper.Map<SourceFolderCreateData>((collectionGuid, request));
 
             var sourceFolder =  await _sourceFolderRepository.Add(createData);
 

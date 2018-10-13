@@ -17,11 +17,16 @@ namespace ImoutoRebirth.Room.DataAccess
 
             CreateMap<Collection, CollectionEntity>();
             CreateMap<CollectionFile, CollectionFileEntity>();
-            CreateMap<CustomDestinationFolder, DestinationFolderEntity>();
-            CreateMap<SourceFolder, SourceFolderEntity>();
+            CreateMap<CustomDestinationFolder, DestinationFolderEntity>()
+               .ForMember(x => x.Path, o => o.MapFrom(x => x.GetDestinationDirectory()));
+            CreateMap<SourceFolder, SourceFolderEntity>()
+               .ForMember(x => x.SupportedExtensionCollection, o => o.MapFrom(x => x.SupportedExtensions));
 
             CreateMap<CollectionCreateData, Collection>()
                .ConstructUsing(x => new Collection(Guid.NewGuid(), x.Name));
+
+            CreateMap<SourceFolderCreateData, SourceFolder>()
+               .ForCtorParam("id", o => o.MapFrom(x => Guid.NewGuid()));
         }
     }
 }

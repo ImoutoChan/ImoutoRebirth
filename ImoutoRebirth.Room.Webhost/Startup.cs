@@ -86,6 +86,7 @@ namespace ImoutoRebirth.Room.Webhost
             services.AddTransient<ICollectionFileRepository, CollectionFileRepository>();
             services.AddTransient<IDbStateService, DbStateService>();
             services.AddTransient<ICollectionRepository, CollectionRepository>();
+            services.AddTransient<ISourceFolderRepository, SourceFolderRepository>();
             services.AddTransient<ICollectionFileCacheService, CollectionFileCacheService>();
         }
 
@@ -115,14 +116,16 @@ namespace ImoutoRebirth.Room.Webhost
         public void ConfigureAutoMapperServices(
             IServiceCollection services)
         {
-            services.AddAutoMapper(expression 
-                => expression.AddProfiles(typeof(ModelAutoMapperProfile), typeof(DtoAutoMapperProfile)));
+            services.AddAutoMapper();
         }
 
         public void Configure(
             IApplicationBuilder app,
-            IHostingEnvironment env)
+            IHostingEnvironment env,
+            IMapper mapper)
         {
+            //mapper.ConfigurationProvider.AssertConfigurationIsValid();
+
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
