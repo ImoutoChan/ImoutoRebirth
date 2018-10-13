@@ -2,10 +2,10 @@
 using System.Threading.Tasks;
 using ImoutoRebirth.Room.DataAccess.Models;
 
-namespace ImoutoRebirth.Room.DataAccess
+namespace ImoutoRebirth.Room.DataAccess.Repositories.Abstract
 {
     public interface ICollectionRepository
     {
-        Task<IReadOnlyCollection<OverseedColleciton>> GetAllOverseedCollecitons();
+        Task<IReadOnlyCollection<OversawCollection>> GetAllOversawCollections();
     }
 }

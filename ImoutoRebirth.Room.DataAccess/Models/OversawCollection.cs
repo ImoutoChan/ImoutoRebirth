@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace ImoutoRebirth.Room.DataAccess.Models
 {
-    public class OverseedColleciton
+    public class OversawCollection
     {
         public Collection Collection { get; }
 
@@ -11,17 +11,13 @@ namespace ImoutoRebirth.Room.DataAccess.Models
 
         public DestinationFolder DestinationFolder { get; }
 
-        public HashSet<string> ExistedFiles { get; }
-
-        public OverseedColleciton(
+        public OversawCollection(
             Collection collection,
             IReadOnlyCollection<SourceFolder> sourceFolders,
-            HashSet<string> existedFiles,
             DestinationFolder destinationFolder)
         {
             Collection = collection ?? throw new ArgumentNullException(nameof(collection));
             SourceFolders = sourceFolders ?? throw new ArgumentNullException(nameof(sourceFolders));
-            ExistedFiles = existedFiles ?? throw new ArgumentNullException(nameof(sourceFolders));
             DestinationFolder = destinationFolder;
         }
     }

@@ -35,6 +35,7 @@ namespace ImoutoRebirth.Room.Database
         {
             BuildSourceFolderEntity(modelBuilder);
             BuildDestinationFolderEntity(modelBuilder);
+            BuildCollectionFileEntity(modelBuilder);
 
             SetupSoftDelete(modelBuilder);
 
@@ -125,6 +126,12 @@ namespace ImoutoRebirth.Room.Database
             modelBuilder.Entity<SourceFolderEntity>()
                         .Property<string>("SupportedExtensions")
                         .HasField("_supportedExtensions");
+        }
+
+        private static void BuildCollectionFileEntity(ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<CollectionFileEntity>()
+                        .HasIndex(entity => entity.Path);
         }
     }
 }

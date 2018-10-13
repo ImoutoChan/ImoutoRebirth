@@ -3,6 +3,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
 using ImoutoRebirth.Room.DataAccess.Models;
+using ImoutoRebirth.Room.DataAccess.Repositories.Abstract;
 using ImoutoRebirth.Room.Database;
 using Microsoft.EntityFrameworkCore;
 
@@ -12,42 +13,30 @@ namespace ImoutoRebirth.Room.DataAccess.Repositories
     {
         private readonly RoomDbContext _roomDbContext;
         private readonly IMapper _mapper;
-        private readonly ICollectionsCacheStorage _collectionsCacheStorage;
 
         public CollectionRepository(
             RoomDbContext roomDbContext,
-            IMapper mapper,
-            ICollectionsCacheStorage collectionsCacheStorage)
+            IMapper mapper)
         {
             _roomDbContext = roomDbContext;
             _mapper = mapper;
-            _collectionsCacheStorage = collectionsCacheStorage;
         }
 
-        public async Task<IReadOnlyCollection<OverseedColleciton>> GetAllOverseedCollecitons()
+        public async Task<IReadOnlyCollection<OversawCollection>> GetAllOversawCollections()
         {
-            if (_collectionsCacheStorage.Filled)
-                return _collectionsCacheStorage.Collections;
-
             var collections 
                 = await _roomDbContext
                    .Collections
                    .Include(x => x.DestinationFolder)
                    .Include(x => x.SourceFolders)
-                   .Include(x => x.Files)
                    .ToListAsync();
             
-            var result = collections
-                        .Select(x => new OverseedColleciton(
+            return collections
+                        .Select(x => new OversawCollection(
                             _mapper.Map<Collection>(x),
                             _mapper.Map<IReadOnlyCollection<SourceFolder>>(x.SourceFolders),
-                            new HashSet<string>(x.Files.Select(y => y.Path)),
                             _mapper.Map<DestinationFolder>(x.DestinationFolder)))
                         .ToArray();
-
-            _collectionsCacheStorage.Fill(result);
-
-            return _collectionsCacheStorage.Collections;
         }
     }
 }

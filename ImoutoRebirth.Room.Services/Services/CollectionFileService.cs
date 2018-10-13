@@ -1,8 +1,9 @@
 ﻿using System;
 using System.Threading.Tasks;
 using ImoutoRebirth.Room.Core.Models;
-using ImoutoRebirth.Room.DataAccess;
+using ImoutoRebirth.Room.Core.Services.Abstract;
 using ImoutoRebirth.Room.DataAccess.Models;
+using ImoutoRebirth.Room.DataAccess.Repositories.Abstract;
 
 namespace ImoutoRebirth.Room.Core.Services
 {

@@ -1,8 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
-using ImoutoRebirth.Room.Core.Models;
-using ImoutoRebirth.Room.DataAccess;
 using ImoutoRebirth.Room.DataAccess.Models;
+using ImoutoRebirth.Room.DataAccess.Repositories.Abstract;
 
 namespace ImoutoRebirth.Room.Core.Services
 {
@@ -23,13 +22,13 @@ namespace ImoutoRebirth.Room.Core.Services
         {
             var collections = await LoadCollections();
 
-            foreach (var overseedColleciton in collections)
-                await _fileSystemActualizationService.PryColleciton(overseedColleciton);
+            foreach (var oversawCollection in collections)
+                await _fileSystemActualizationService.PryCollection(oversawCollection);
         }
 
-        private async Task<IReadOnlyCollection<OverseedColleciton>> LoadCollections()
+        private async Task<IReadOnlyCollection<OversawCollection>> LoadCollections()
         {
-           return await _collectionRepository.GetAllOverseedCollecitons();
+           return await _collectionRepository.GetAllOversawCollections();
         }
     }
 }

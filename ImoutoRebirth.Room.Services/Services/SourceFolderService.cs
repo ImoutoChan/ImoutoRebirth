@@ -3,9 +3,11 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
+using System.Threading.Tasks;
 using ImoutoRebirth.Room.Core.Models;
 using ImoutoRebirth.Room.Core.Services.Abstract;
 using ImoutoRebirth.Room.DataAccess.Models;
+using ImoutoRebirth.Room.DataAccess.Repositories.Abstract;
 using Microsoft.Extensions.Logging;
 
 namespace ImoutoRebirth.Room.Core.Services
@@ -15,20 +17,21 @@ namespace ImoutoRebirth.Room.Core.Services
         private readonly ILogger<SourceFolderService> _logger;
         private readonly IFileService _fileService;
         private readonly IImageService _imageService;
+        private readonly ICollectionFileRepository _collectionFileRepository;
 
         public SourceFolderService(
             ILogger<SourceFolderService> logger,
             IFileService fileService,
-            IImageService imageService)
+            IImageService imageService,
+            ICollectionFileRepository collectionFileRepository)
         {
             _logger = logger;
             _fileService = fileService;
             _imageService = imageService;
+            _collectionFileRepository = collectionFileRepository;
         }
 
-        public IReadOnlyCollection<MoveInformation> GetNewFiles(
-            SourceFolder forSourceFolder,
-            HashSet<string> except)
+        public async Task<IReadOnlyCollection<MoveInformation>> GetNewFiles(SourceFolder forSourceFolder)
         {
             if (forSourceFolder == null)
                 throw new ArgumentNullException(nameof(forSourceFolder));
@@ -38,11 +41,31 @@ namespace ImoutoRebirth.Room.Core.Services
 
             var files = _fileService.GetFiles(directoryInfo, extensions);
 
-            return files.Where(x => except.Contains(x.FullName) != true)
+            var newFiles = await FilterExistingFiles(forSourceFolder, files);
+
+            return newFiles
                         .Select(CreateSystemFile)
                         .Select(x => PrepareMove(forSourceFolder, x))
                         .Where(x => x != null)
                         .ToArray();
+        }
+
+        private async Task<List<FileInfo>> FilterExistingFiles(
+            SourceFolder forSourceFolder,
+            IReadOnlyCollection<FileInfo> files)
+        {
+            var newFiles = new List<FileInfo>();
+            foreach (var fileInfo in files)
+            {
+                var exists = await _collectionFileRepository.HasFile(forSourceFolder.CollectionId, fileInfo.FullName);
+
+                if (exists)
+                    continue;
+
+                newFiles.Add(fileInfo);
+            }
+
+            return newFiles;
         }
 
         private MoveInformation PrepareMove(SourceFolder sourceFolder, SystemFile systemFile)

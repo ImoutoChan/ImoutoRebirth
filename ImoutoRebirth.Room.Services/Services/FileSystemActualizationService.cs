@@ -1,6 +1,5 @@
 ﻿using System.Linq;
 using System.Threading.Tasks;
-using ImoutoRebirth.Room.Core.Models;
 using ImoutoRebirth.Room.Core.Services.Abstract;
 using ImoutoRebirth.Room.DataAccess;
 using ImoutoRebirth.Room.DataAccess.Models;
@@ -26,20 +25,18 @@ namespace ImoutoRebirth.Room.Core.Services
             _dbStateService = dbStateService;
         }
 
-        public async Task PryColleciton(OverseedColleciton overseedColleciton)
+        public async Task PryCollection(OversawCollection oversawCollection)
         {
-            foreach (var overseedCollecitonSourceFolder in overseedColleciton.SourceFolders)
+            foreach (var collectionSourceFolder in oversawCollection.SourceFolders)
             {
-                var newFiles = _sourceFolderService.GetNewFiles(
-                    overseedCollecitonSourceFolder, 
-                    overseedColleciton.ExistedFiles);
+                var newFiles = await _sourceFolderService.GetNewFiles(collectionSourceFolder);
 
                 var moved = newFiles
-                   .Select(x => _destinationFolderService.Move(overseedColleciton.DestinationFolder, x));
+                   .Select(x => _destinationFolderService.Move(oversawCollection.DestinationFolder, x));
 
 
                 var tasks = moved.Where(x => x.RequireSave)
-                                 .Select(x => _collectionFileService.SaveNew(x, overseedColleciton.Collection.Id));
+                                 .Select(x => _collectionFileService.SaveNew(x, oversawCollection.Collection.Id));
 
                 await Task.WhenAll(tasks);
 
