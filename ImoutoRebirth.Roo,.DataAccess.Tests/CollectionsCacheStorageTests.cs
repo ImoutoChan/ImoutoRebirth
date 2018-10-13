@@ -31,7 +31,7 @@ namespace ImoutoRebirth.Roo_.DataAccess.Tests
             //var colleciton = new OversawCollection(new Collection(Guid.Empty, "Test"),
             //    new[] {new SourceFolder(default, default, default, default, default, default, default, default)},
             //    new HashSet<string>(),
-            //    new DefaultDestinationDirectory());
+            //    new DefaultDestinationFolder());
 
             //Assert.NotNull(colleciton);
         }

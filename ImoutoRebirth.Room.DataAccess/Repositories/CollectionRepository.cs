@@ -1,10 +1,13 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
+using ImoutoRebirth.Room.DataAccess.Exceptions;
 using ImoutoRebirth.Room.DataAccess.Models;
 using ImoutoRebirth.Room.DataAccess.Repositories.Abstract;
 using ImoutoRebirth.Room.Database;
+using ImoutoRebirth.Room.Database.Entities;
 using Microsoft.EntityFrameworkCore;
 
 namespace ImoutoRebirth.Room.DataAccess.Repositories
@@ -22,7 +25,7 @@ namespace ImoutoRebirth.Room.DataAccess.Repositories
             _mapper = mapper;
         }
 
-        public async Task<IReadOnlyCollection<OversawCollection>> GetAllOversawCollections()
+        public async Task<IReadOnlyCollection<OversawCollection>> GetAllOversaw()
         {
             var collections 
                 = await _roomDbContext
@@ -35,15 +38,40 @@ namespace ImoutoRebirth.Room.DataAccess.Repositories
                     .Select(x => new OversawCollection(
                         _mapper.Map<Collection>(x),
                         _mapper.Map<IReadOnlyCollection<SourceFolder>>(x.SourceFolders),
-                        _mapper.Map<DestinationFolder>(x.DestinationFolder)))
+                        x.DestinationFolder is null 
+                            ? (DestinationFolder) new DefaultDestinationFolder() 
+                            : _mapper.Map<CustomDestinationFolder>(x.DestinationFolder)))
                     .ToArray();
         }
 
-        public async Task<IReadOnlyCollection<Collection>> GetCollections()
+        public async Task<IReadOnlyCollection<Collection>> GetAll()
         {
             var collections = await _roomDbContext.Collections.ToListAsync();
 
             return _mapper.Map<IReadOnlyCollection<Collection>>(collections);
+        }
+
+        public async Task<Collection> Add(CollectionCreateData collectionCreateData)
+        {
+            var newCollection = _mapper.Map<Collection>(collectionCreateData);
+
+            var newCollectionEntity = _mapper.Map<CollectionEntity>(newCollection);
+            await _roomDbContext.Collections.AddAsync(newCollectionEntity);
+            await _roomDbContext.SaveChangesAsync();
+
+            return newCollection;
+        }
+
+        public async Task Remove(Guid id)
+        {
+            var collection = await _roomDbContext.Collections.FirstOrDefaultAsync(x => x.Id == id);
+
+            if (collection == null)
+                throw new EntityNotFoundException<CollectionEntity>(id);
+
+            _roomDbContext.Remove(collection);
+
+            await _roomDbContext.SaveChangesAsync();
         }
     }
 }

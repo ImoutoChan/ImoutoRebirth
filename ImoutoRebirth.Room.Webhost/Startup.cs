@@ -21,6 +21,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Swashbuckle.AspNetCore.Swagger;
 
 namespace ImoutoRebirth.Room.Webhost
 {
@@ -47,6 +48,7 @@ namespace ImoutoRebirth.Room.Webhost
             ConfigureHangfireServices(services);
             ConfigureDataAccessServices(services);
             ConfigureAutoMapperServices(services);
+            ConfigureSwaggerServices(services);
         }
 
         private void ConfigureDatabaseServices(
@@ -54,6 +56,12 @@ namespace ImoutoRebirth.Room.Webhost
         {
             services.AddDbContext<RoomDbContext>(builder
                 => builder.UseNpgsql(Configuration.GetConnectionString("RoomDatabase")));
+        }
+        private void ConfigureSwaggerServices(
+            IServiceCollection services)
+        {
+            services.AddSwaggerGen(c 
+                => c.SwaggerDoc("v1", new Info { Title = "ImoutoRebirth.Room API", Version = "v1" }));
         }
 
         public void ConfigureInfrastructureServices(
@@ -130,6 +138,8 @@ namespace ImoutoRebirth.Room.Webhost
             app.UseHangfireDashboard();
             app.UseHangfireServer();
             app.UseHangfireJobs();
+            app.UseSwagger();
+            app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "ImoutoRebirth.Room API V1"));
         }
     }
 }

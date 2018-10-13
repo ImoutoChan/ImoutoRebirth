@@ -1,4 +1,5 @@
-﻿using AutoMapper;
+﻿using System;
+using AutoMapper;
 using ImoutoRebirth.Room.DataAccess.Models;
 using ImoutoRebirth.Room.Database.Entities;
 
@@ -10,13 +11,17 @@ namespace ImoutoRebirth.Room.DataAccess
         {
             CreateMap<CollectionEntity, Collection>();
             CreateMap<CollectionFileEntity, CollectionFile>();
-            CreateMap<DestinationFolderEntity, DestinationFolder>();
-            CreateMap<SourceFolderEntity, SourceFolder>();
+            CreateMap<DestinationFolderEntity, CustomDestinationFolder>();
+            CreateMap<SourceFolderEntity, SourceFolder>()
+               .ForCtorParam("supportedExtensions", o => o.MapFrom(x => x.SupportedExtensionCollection));
 
             CreateMap<Collection, CollectionEntity>();
             CreateMap<CollectionFile, CollectionFileEntity>();
-            CreateMap<DestinationFolder, DestinationFolderEntity>();
+            CreateMap<CustomDestinationFolder, DestinationFolderEntity>();
             CreateMap<SourceFolder, SourceFolderEntity>();
+
+            CreateMap<CollectionCreateData, Collection>()
+               .ConstructUsing(x => new Collection(Guid.NewGuid(), x.Name));
         }
     }
 }

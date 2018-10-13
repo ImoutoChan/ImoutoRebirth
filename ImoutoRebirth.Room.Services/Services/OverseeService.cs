@@ -51,7 +51,7 @@ namespace ImoutoRebirth.Room.Core.Services
 
         private async Task<IReadOnlyCollection<OversawCollection>> LoadCollections()
         {
-           return await _collectionRepository.GetAllOversawCollections();
+           return await _collectionRepository.GetAllOversaw();
         }
     }
 }

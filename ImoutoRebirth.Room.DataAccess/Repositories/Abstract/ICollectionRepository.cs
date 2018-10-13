@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using ImoutoRebirth.Room.DataAccess.Models;
 
@@ -6,8 +7,12 @@ namespace ImoutoRebirth.Room.DataAccess.Repositories.Abstract
 {
     public interface ICollectionRepository
     {
-        Task<IReadOnlyCollection<OversawCollection>> GetAllOversawCollections();
+        Task<IReadOnlyCollection<OversawCollection>> GetAllOversaw();
 
-        Task<IReadOnlyCollection<Collection>> GetCollections();
+        Task<IReadOnlyCollection<Collection>> GetAll();
+
+        Task<Collection> Add(CollectionCreateData collection);
+
+        Task Remove(Guid id);
     }
 }

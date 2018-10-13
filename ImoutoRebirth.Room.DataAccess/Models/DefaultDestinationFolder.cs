@@ -3,9 +3,9 @@ using System.IO;
 
 namespace ImoutoRebirth.Room.DataAccess.Models
 {
-    public class DefaultDestinationDirectory : DestinationFolder
+    public class DefaultDestinationFolder : DestinationFolder
     {
-        public DefaultDestinationDirectory()
+        public DefaultDestinationFolder()
             : base(
                 Guid.Empty, 
                 Guid.Empty, 

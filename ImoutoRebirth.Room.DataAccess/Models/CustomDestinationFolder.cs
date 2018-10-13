@@ -3,7 +3,7 @@ using System.IO;
 
 namespace ImoutoRebirth.Room.DataAccess.Models
 {
-    public abstract class CustomDestinationFolder : DestinationFolder
+    public class CustomDestinationFolder : DestinationFolder
     {
         private readonly DirectoryInfo _directoryInfo;
 
