@@ -1,4 +1,4 @@
-﻿namespace ImoutoRebirth.Room.Host
+﻿namespace ImoutoRebirth.Room.Webhost
 {
     public class RoomAppSettings
     {

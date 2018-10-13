@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Design;
 using Microsoft.Extensions.Configuration;
 
-namespace ImoutoRebirth.Room.Host
+namespace ImoutoRebirth.Room.Webhost
 {
     public class DesignTimeRoomDbContextFactory : IDesignTimeDbContextFactory<RoomDbContext>
     {

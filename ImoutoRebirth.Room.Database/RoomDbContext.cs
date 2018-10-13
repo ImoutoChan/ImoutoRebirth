@@ -4,9 +4,12 @@ using System.Linq.Expressions;
 using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
+using EFSecondLevelCache.Core;
+using EFSecondLevelCache.Core.Contracts;
 using ImoutoRebirth.Room.Database.Entities;
 using ImoutoRebirth.Room.Database.Entities.Abstract;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Infrastructure;
 
 namespace ImoutoRebirth.Room.Database
 {
@@ -49,7 +52,24 @@ namespace ImoutoRebirth.Room.Database
             FillUpdateDates();
             SoftDelete();
 
-            return base.SaveChangesAsync(acceptAllChangesOnSuccess, cancellationToken);
+            var changedEntityNames = GetChangedNames();
+
+            var result = base.SaveChangesAsync(acceptAllChangesOnSuccess, cancellationToken);
+
+            InvalidateSecondLevelCache(changedEntityNames);
+
+            return result;
+        }
+
+        private void InvalidateSecondLevelCache(string[] changedEntityNames)
+        {
+            this.GetService<IEFCacheServiceProvider>().InvalidateCacheDependencies(changedEntityNames);
+        }
+
+        private string[] GetChangedNames()
+        {
+            ChangeTracker.DetectChanges();
+            return this.GetChangedEntityNames();
         }
 
         private void SetupSoftDelete(ModelBuilder modelBuilder)
