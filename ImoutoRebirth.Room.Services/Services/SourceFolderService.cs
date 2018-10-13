@@ -103,7 +103,7 @@ namespace ImoutoRebirth.Room.Core.Services
             return new SystemFile(file, md5, file.Length);
         }
         
-        private IReadOnlyCollection<string> GetTags(SourceFolder sourceDirectory, FileInfo fileInfo)
+        private static IReadOnlyCollection<string> GetTags(SourceFolder sourceDirectory, FileInfo fileInfo)
         {
             string[] GetPathParts(string path)
                 => path.Split(new[]
@@ -115,10 +115,10 @@ namespace ImoutoRebirth.Room.Core.Services
                               },
                               StringSplitOptions.RemoveEmptyEntries);
 
-            var sourcePathEnries = GetPathParts(sourceDirectory.Path);
+            var sourcePathEntries = GetPathParts(sourceDirectory.Path);
             var filePathEntries = GetPathParts(fileInfo.Directory.FullName);
 
-            return filePathEntries.Except(sourcePathEnries).ToArray();
+            return filePathEntries.Except(sourcePathEntries).ToArray();
         }
 
         private MoveProblem FindProblems(SourceFolder sourceDirectory, SystemFile systemFile)
