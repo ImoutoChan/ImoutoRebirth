@@ -5,11 +5,12 @@ using System.Threading.Tasks;
 using AutoMapper;
 using ImoutoRebirth.Room.DataAccess.Exceptions;
 using ImoutoRebirth.Room.DataAccess.Models;
+using ImoutoRebirth.Room.DataAccess.Repositories.Abstract;
 using ImoutoRebirth.Room.Database;
 using ImoutoRebirth.Room.Database.Entities;
 using Microsoft.EntityFrameworkCore;
 
-namespace ImoutoRebirth.Room.DataAccess.Repositories.Abstract
+namespace ImoutoRebirth.Room.DataAccess.Repositories
 {
     public class SourceFolderRepository : ISourceFolderRepository
     {

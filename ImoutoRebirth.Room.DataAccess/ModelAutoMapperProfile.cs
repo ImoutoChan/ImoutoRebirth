@@ -27,6 +27,9 @@ namespace ImoutoRebirth.Room.DataAccess
 
             CreateMap<SourceFolderCreateData, SourceFolder>()
                .ForCtorParam("id", o => o.MapFrom(x => Guid.NewGuid()));
+
+            CreateMap<DestinationFolderCreateData, CustomDestinationFolder>()
+               .ForCtorParam("id", o => o.MapFrom(x => Guid.NewGuid()));
         }
     }
 }

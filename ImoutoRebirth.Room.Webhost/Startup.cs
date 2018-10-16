@@ -1,6 +1,8 @@
 ﻿using System;
+using System.Threading.Tasks;
 using AutoMapper;
 using CacheManager.Core;
+using CacheManager.Core.Logging;
 using EFSecondLevelCache.Core;
 using Hangfire;
 using Hangfire.PostgreSql;
@@ -21,6 +23,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using Swashbuckle.AspNetCore.Swagger;
 
 namespace ImoutoRebirth.Room.Webhost
@@ -34,8 +37,7 @@ namespace ImoutoRebirth.Room.Webhost
 
         public IConfiguration Configuration { get; }
 
-        public void ConfigureServices(
-            IServiceCollection services)
+        public void ConfigureServices(IServiceCollection services)
         {
             services.AddMvc()
                     .SetCompatibilityVersion(CompatibilityVersion.Version_2_1)
@@ -51,8 +53,7 @@ namespace ImoutoRebirth.Room.Webhost
             ConfigureSwaggerServices(services);
         }
 
-        private void ConfigureDatabaseServices(
-            IServiceCollection services)
+        private void ConfigureDatabaseServices(IServiceCollection services)
         {
             services.AddDbContext<RoomDbContext>(builder
                 => builder.UseNpgsql(Configuration.GetConnectionString("RoomDatabase")));
@@ -64,15 +65,13 @@ namespace ImoutoRebirth.Room.Webhost
                 => c.SwaggerDoc("v1", new Info { Title = "ImoutoRebirth.Room API", Version = "v1" }));
         }
 
-        public void ConfigureInfrastructureServices(
-            IServiceCollection services)
+        public void ConfigureInfrastructureServices(IServiceCollection services)
         {
             services.AddTransient<IFileService, FileService>();
             services.AddTransient<IImageService, ImageService>();
         }
 
-        public void ConfigureCoreServices(
-            IServiceCollection services)
+        public void ConfigureCoreServices(IServiceCollection services)
         {
             services.AddTransient<IDestinationFolderService, DestinationFolderService>();
             services.AddTransient<ISourceFolderService, SourceFolderService>();
@@ -80,8 +79,7 @@ namespace ImoutoRebirth.Room.Webhost
             services.AddTransient<IFileSystemActualizationService, FileSystemActualizationService>();
         }
 
-        public void ConfigureDataAccessServices(
-            IServiceCollection services)
+        public void ConfigureDataAccessServices(IServiceCollection services)
         {
             services.AddTransient<ICollectionFileRepository, CollectionFileRepository>();
             services.AddTransient<IDbStateService, DbStateService>();
@@ -90,8 +88,7 @@ namespace ImoutoRebirth.Room.Webhost
             services.AddTransient<ICollectionFileCacheService, CollectionFileCacheService>();
         }
 
-        public void ConfigureCacheServices(
-            IServiceCollection services)
+        public void ConfigureCacheServices(IServiceCollection services)
         {
             services.AddEFSecondLevelCache();
 
@@ -105,16 +102,14 @@ namespace ImoutoRebirth.Room.Webhost
                    .Build());
         }
 
-        public void ConfigureHangfireServices(
-            IServiceCollection services)
+        public void ConfigureHangfireServices(IServiceCollection services)
         {
             services.AddHangfire(configuration
                 => configuration.UsePostgreSqlStorage(Configuration.GetConnectionString("RoomDatabase")));
             services.AddTransient<IHangfireStartup, HangfireStartup>();
         }
 
-        public void ConfigureAutoMapperServices(
-            IServiceCollection services)
+        public void ConfigureAutoMapperServices(IServiceCollection services)
         {
             services.AddAutoMapper();
         }
@@ -125,6 +120,7 @@ namespace ImoutoRebirth.Room.Webhost
             IMapper mapper)
         {
             //mapper.ConfigurationProvider.AssertConfigurationIsValid();
+            MigrateIfNecessary(app).Wait();
 
             if (env.IsDevelopment())
             {
@@ -143,6 +139,25 @@ namespace ImoutoRebirth.Room.Webhost
             app.UseHangfireJobs();
             app.UseSwagger();
             app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "ImoutoRebirth.Room API V1"));
+        }
+
+        private static async Task MigrateIfNecessary(IApplicationBuilder app)
+        {
+
+            using (var scope = app.ApplicationServices.CreateScope())
+            {
+                var services = scope.ServiceProvider;
+
+                var logger = services.GetRequiredService<ILogger<Startup>>();
+                var context = services.GetRequiredService<RoomDbContext>();
+                
+                await context.Database.EnsureCreatedAsync();
+                await context.Database.MigrateAsync();
+
+                var migrations = await context.Database.GetAppliedMigrationsAsync();
+                foreach (var migration in migrations)
+                    logger.LogInformation($"Migrated to {migration}");
+            }
         }
     }
 }
