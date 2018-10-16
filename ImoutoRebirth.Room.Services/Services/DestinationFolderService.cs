@@ -115,16 +115,16 @@ namespace ImoutoRebirth.Room.Core.Services
         {
             var newPathParts = new List<string>();
 
-            AddDestDirectory(destinationFolder, moveInformation, newPathParts);
+            AddDestinationFolder(destinationFolder, moveInformation, newPathParts);
 
-            var problemSubdirectory = GetProblemSubdirectory(destinationFolder,
+            var problemSubfolder = GetProblemSubfolder(destinationFolder,
                 moveInformation.MoveProblem);
 
             var renamed = false;
 
-            if (problemSubdirectory != null)
+            if (problemSubfolder != null)
             {
-                newPathParts.Add(problemSubdirectory);
+                newPathParts.Add(problemSubfolder);
             }
             else
             {
@@ -160,7 +160,7 @@ namespace ImoutoRebirth.Room.Core.Services
             newPathParts.Add(md5SubSub);
         }
 
-        private static void AddDestDirectory(
+        private static void AddDestinationFolder(
             DestinationFolder destinationFolder,
             MoveInformation moveInformation,
             List<string> newPathParts)
@@ -177,7 +177,7 @@ namespace ImoutoRebirth.Room.Core.Services
             }
         }
 
-        private string GetProblemSubdirectory(DestinationFolder destinationDirectory,
+        private string GetProblemSubfolder(DestinationFolder destinationDirectory,
             MoveProblem moveProblem)
         {
             switch (moveProblem)

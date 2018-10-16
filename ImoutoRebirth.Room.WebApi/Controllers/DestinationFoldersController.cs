@@ -29,6 +29,10 @@ namespace ImoutoRebirth.Room.WebApi.Controllers
         public async Task<ActionResult<DestinationFolderResponse>> Get(Guid collectionGuid)
         {
             var destinationFolder = await _destinationFolderRepository.Get(collectionGuid);
+
+            if (destinationFolder == null)
+                return NotFound();
+
             return _mapper.Map<DestinationFolderResponse>(destinationFolder);
         }
 

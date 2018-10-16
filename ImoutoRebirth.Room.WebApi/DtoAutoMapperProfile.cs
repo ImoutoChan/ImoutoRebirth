@@ -12,17 +12,30 @@ namespace ImoutoRebirth.Room.WebApi
         {
             CreateMap<Collection, CollectionResponse>();
             CreateMap<SourceFolder, SourceFolderResponse>();
+            CreateMap<CustomDestinationFolder, DestinationFolderResponse>()
+               .ForCtorParam("path", o => o.MapFrom(x => x.GetDestinationDirectory().FullName));
 
             CreateMap<(Guid collectionId, SourceFolderCreateRequest createRequest), SourceFolderCreateData>()
-               .ConvertUsing(x 
+               .ConvertUsing(mappingFunction: x 
                     => new SourceFolderCreateData(
-                        x.collectionId, 
-                        x.createRequest.Path,
-                        x.createRequest.ShouldCheckFormat,
-                        x.createRequest.ShouldCheckHashFromName,
-                        x.createRequest.ShouldCreateTagsFromSubfolders,
-                        x.createRequest.ShouldAddTagFromFilename,
-                        x.createRequest.SupportedExtensions));
+                        collectionId: x.collectionId, 
+                        path: x.createRequest.Path,
+                        shouldCheckFormat: x.createRequest.ShouldCheckFormat,
+                        shouldCheckHashFromName: x.createRequest.ShouldCheckHashFromName,
+                        shouldCreateTagsFromSubfolders: x.createRequest.ShouldCreateTagsFromSubfolders,
+                        shouldAddTagFromFilename: x.createRequest.ShouldAddTagFromFilename,
+                        supportedExtensions: x.createRequest.SupportedExtensions));
+
+            CreateMap<(Guid collectionId, DestinationFolderCreateRequest createRequest), DestinationFolderCreateData>()
+               .ConvertUsing(mappingFunction: x 
+                    => new DestinationFolderCreateData(
+                        collectionId: x.collectionId, 
+                        path: x.createRequest.Path,
+                        shouldCreateSubfoldersByHash: x.createRequest.ShouldCreateSubfoldersByHash,
+                        shouldRenameByHash: x.createRequest.ShouldRenameByHash,
+                        formatErrorSubfolder: x.createRequest.FormatErrorSubfolder,
+                        hashErrorSubfolder: x.createRequest.HashErrorSubfolder,
+                        withoutHashErrorSubfolder: x.createRequest.WithoutHashErrorSubfolder));
         }
     }
 }

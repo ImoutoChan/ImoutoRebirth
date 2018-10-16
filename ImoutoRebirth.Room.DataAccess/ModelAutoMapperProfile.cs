@@ -18,7 +18,8 @@ namespace ImoutoRebirth.Room.DataAccess
             CreateMap<Collection, CollectionEntity>();
             CreateMap<CollectionFile, CollectionFileEntity>();
             CreateMap<CustomDestinationFolder, DestinationFolderEntity>()
-               .ForMember(x => x.Path, o => o.MapFrom(x => x.GetDestinationDirectory()));
+               .ForMember(x => x.Path, o => o.MapFrom(x => x.GetDestinationDirectory().FullName));
+
             CreateMap<SourceFolder, SourceFolderEntity>()
                .ForMember(x => x.SupportedExtensionCollection, o => o.MapFrom(x => x.SupportedExtensions));
 

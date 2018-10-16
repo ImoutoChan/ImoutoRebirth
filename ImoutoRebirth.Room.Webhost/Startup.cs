@@ -2,7 +2,6 @@
 using System.Threading.Tasks;
 using AutoMapper;
 using CacheManager.Core;
-using CacheManager.Core.Logging;
 using EFSecondLevelCache.Core;
 using Hangfire;
 using Hangfire.PostgreSql;
@@ -14,7 +13,6 @@ using ImoutoRebirth.Room.DataAccess.Repositories;
 using ImoutoRebirth.Room.DataAccess.Repositories.Abstract;
 using ImoutoRebirth.Room.Database;
 using ImoutoRebirth.Room.Infrastructure.Service;
-using ImoutoRebirth.Room.WebApi;
 using ImoutoRebirth.Room.WebApi.Controllers;
 using ImoutoRebirth.Room.Webhost.Hangfire;
 using Microsoft.AspNetCore.Builder;
@@ -85,6 +83,7 @@ namespace ImoutoRebirth.Room.Webhost
             services.AddTransient<IDbStateService, DbStateService>();
             services.AddTransient<ICollectionRepository, CollectionRepository>();
             services.AddTransient<ISourceFolderRepository, SourceFolderRepository>();
+            services.AddTransient<IDestinationFolderRepository, DestinationFolderRepository>();
             services.AddTransient<ICollectionFileCacheService, CollectionFileCacheService>();
         }
 
@@ -120,6 +119,7 @@ namespace ImoutoRebirth.Room.Webhost
             IMapper mapper)
         {
             //mapper.ConfigurationProvider.AssertConfigurationIsValid();
+
             MigrateIfNecessary(app).Wait();
 
             if (env.IsDevelopment())
@@ -151,7 +151,6 @@ namespace ImoutoRebirth.Room.Webhost
                 var logger = services.GetRequiredService<ILogger<Startup>>();
                 var context = services.GetRequiredService<RoomDbContext>();
                 
-                await context.Database.EnsureCreatedAsync();
                 await context.Database.MigrateAsync();
 
                 var migrations = await context.Database.GetAppliedMigrationsAsync();

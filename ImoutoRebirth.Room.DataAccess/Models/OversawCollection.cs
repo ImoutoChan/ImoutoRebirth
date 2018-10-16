@@ -18,7 +18,7 @@ namespace ImoutoRebirth.Room.DataAccess.Models
         {
             Collection = collection ?? throw new ArgumentNullException(nameof(collection));
             SourceFolders = sourceFolders ?? throw new ArgumentNullException(nameof(sourceFolders));
-            DestinationFolder = destinationFolder;
+            DestinationFolder = destinationFolder ?? throw new ArgumentNullException(nameof(sourceFolders));
         }
     }
 }

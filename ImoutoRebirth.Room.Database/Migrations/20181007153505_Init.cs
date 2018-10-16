@@ -8,7 +8,7 @@ namespace ImoutoRebirth.Room.Database.Migrations
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
-                name: "Collections1",
+                name: "Collections",
                 columns: table => new
                 {
                     Id = table.Column<Guid>(nullable: false),
@@ -19,7 +19,7 @@ namespace ImoutoRebirth.Room.Database.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Collections1", x => x.Id);
+                    table.PrimaryKey("PK_Collections", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
