@@ -13,11 +13,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ImoutoRebirth.Room.DataAcce
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{6F1BAB82-464B-461F-99B5-021DD1CE16AB}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ImoutoRebirth.Roo,.DataAccess.Tests", "ImoutoRebirth.Roo,.DataAccess.Tests\ImoutoRebirth.Roo,.DataAccess.Tests.csproj", "{75DADAA6-A03A-4487-99D2-C06609E712EF}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ImoutoRebirth.Room.Webhost", "ImoutoRebirth.Room.Webhost\ImoutoRebirth.Room.Webhost.csproj", "{3B1C86BC-B180-4588-93E2-1D43A0A5B09A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ImoutoRebirth.Room.Webhost", "ImoutoRebirth.Room.Webhost\ImoutoRebirth.Room.Webhost.csproj", "{3B1C86BC-B180-4588-93E2-1D43A0A5B09A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ImoutoRebirth.Room.WebApi", "ImoutoRebirth.Room.WebApi\ImoutoRebirth.Room.WebApi.csproj", "{4B4A7E83-FC07-4341-B02F-4B9ACB3421E9}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ImoutoRebirth.Room.WebApi", "ImoutoRebirth.Room.WebApi\ImoutoRebirth.Room.WebApi.csproj", "{4B4A7E83-FC07-4341-B02F-4B9ACB3421E9}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ImoutoRebirth.Room.DataAccess.Tests", "ImoutoRebirth.Room.DataAccess.Tests\ImoutoRebirth.Room.DataAccess.Tests.csproj", "{6E4ED239-3D3D-4DF0-B451-EB45461ED2DE}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -41,10 +41,6 @@ Global
 		{6DD2577A-AA41-42B9-AC40-E16626A90321}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6DD2577A-AA41-42B9-AC40-E16626A90321}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{6DD2577A-AA41-42B9-AC40-E16626A90321}.Release|Any CPU.Build.0 = Release|Any CPU
-		{75DADAA6-A03A-4487-99D2-C06609E712EF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{75DADAA6-A03A-4487-99D2-C06609E712EF}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{75DADAA6-A03A-4487-99D2-C06609E712EF}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{75DADAA6-A03A-4487-99D2-C06609E712EF}.Release|Any CPU.Build.0 = Release|Any CPU
 		{3B1C86BC-B180-4588-93E2-1D43A0A5B09A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{3B1C86BC-B180-4588-93E2-1D43A0A5B09A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{3B1C86BC-B180-4588-93E2-1D43A0A5B09A}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -53,12 +49,16 @@ Global
 		{4B4A7E83-FC07-4341-B02F-4B9ACB3421E9}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{4B4A7E83-FC07-4341-B02F-4B9ACB3421E9}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{4B4A7E83-FC07-4341-B02F-4B9ACB3421E9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6E4ED239-3D3D-4DF0-B451-EB45461ED2DE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6E4ED239-3D3D-4DF0-B451-EB45461ED2DE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6E4ED239-3D3D-4DF0-B451-EB45461ED2DE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6E4ED239-3D3D-4DF0-B451-EB45461ED2DE}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
-		{75DADAA6-A03A-4487-99D2-C06609E712EF} = {6F1BAB82-464B-461F-99B5-021DD1CE16AB}
+		{6E4ED239-3D3D-4DF0-B451-EB45461ED2DE} = {6F1BAB82-464B-461F-99B5-021DD1CE16AB}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {5DF9BBEB-D2ED-417A-B12C-A72B1AD77DA3}
