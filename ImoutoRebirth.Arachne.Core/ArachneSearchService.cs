@@ -10,11 +10,11 @@ namespace ImoutoRebirth.Arachne.Core
     /// <summary>
     ///     Arachne service performs search for meta information in specified source.
     /// </summary>
-    public class Arachne
+    public class ArachneSearchService : IArachneSearchService
     {
         private readonly ISearchEngineProvider _searchEngineProvider;
 
-        public Arachne(ISearchEngineProvider searchEngineProvider)
+        public ArachneSearchService(ISearchEngineProvider searchEngineProvider)
         {
             _searchEngineProvider = searchEngineProvider;
         }
@@ -25,7 +25,7 @@ namespace ImoutoRebirth.Arachne.Core
                     .Select(x => x.Search(searchFor))
                     .ToArrayAsync();
 
-        public Task<SearchResult> Search(Image searchFor, SearchEngineType searchEngineType) 
+        public Task<SearchResult> Search(Image searchFor, SearchEngineType searchEngineType)
             => _searchEngineProvider.Get(searchEngineType).Search(searchFor);
     }
 }
