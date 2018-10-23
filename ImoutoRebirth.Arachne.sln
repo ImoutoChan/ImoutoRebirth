@@ -9,6 +9,12 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ImoutoRebirth.Common", "Imo
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ImoutoRebirth.Arachne.Infrastructure", "ImoutoRebirth.Arachne.Infrastructure\ImoutoRebirth.Arachne.Infrastructure.csproj", "{FACA09A4-D24A-4F5A-8632-88321B85BA56}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ImoutoRebirth.Arachne.Service", "ImoutoRebirth.Arachne.Service\ImoutoRebirth.Arachne.Service.csproj", "{4720F005-E323-4CD0-945E-827BF9D16FAB}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ImoutoRebirth.Arachne.MessageContracts", "ImoutoRebirth.Arachne.MessageContracts\ImoutoRebirth.Arachne.MessageContracts.csproj", "{7AF8CE42-0EFF-42D6-9322-00F261D8A180}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ImoutoRebirth.Arachne.Host", "ImoutoRebirth.Arachne.Host\ImoutoRebirth.Arachne.Host.csproj", "{2A6DBE19-39F0-4B5F-B0CD-3442A7165B98}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,6 +33,18 @@ Global
 		{FACA09A4-D24A-4F5A-8632-88321B85BA56}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{FACA09A4-D24A-4F5A-8632-88321B85BA56}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{FACA09A4-D24A-4F5A-8632-88321B85BA56}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4720F005-E323-4CD0-945E-827BF9D16FAB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4720F005-E323-4CD0-945E-827BF9D16FAB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4720F005-E323-4CD0-945E-827BF9D16FAB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4720F005-E323-4CD0-945E-827BF9D16FAB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7AF8CE42-0EFF-42D6-9322-00F261D8A180}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7AF8CE42-0EFF-42D6-9322-00F261D8A180}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7AF8CE42-0EFF-42D6-9322-00F261D8A180}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7AF8CE42-0EFF-42D6-9322-00F261D8A180}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2A6DBE19-39F0-4B5F-B0CD-3442A7165B98}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2A6DBE19-39F0-4B5F-B0CD-3442A7165B98}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2A6DBE19-39F0-4B5F-B0CD-3442A7165B98}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2A6DBE19-39F0-4B5F-B0CD-3442A7165B98}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
