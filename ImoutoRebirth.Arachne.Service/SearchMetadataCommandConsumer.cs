@@ -6,11 +6,11 @@ using MassTransit;
 
 namespace ImoutoRebirth.Arachne.Service
 {
-    public class SearchMetadataCommandHandler : IConsumer<ISearchMetadataCommand>
+    public class SearchMetadataCommandConsumer : IConsumer<ISearchMetadataCommand>
     {
         private readonly IArachneSearchService _arachneSearchService;
 
-        public SearchMetadataCommandHandler(IArachneSearchService arachneSearchService)
+        public SearchMetadataCommandConsumer(IArachneSearchService arachneSearchService)
         {
             _arachneSearchService = arachneSearchService;
         }

@@ -1,12 +1,20 @@
-﻿using System;
+﻿using System.Threading.Tasks;
+using Microsoft.Extensions.Hosting;
 
 namespace ImoutoRebirth.Arachne.Host
 {
-    class Program
+    internal class Program
     {
-        static void Main(string[] args)
+        private static async Task Main(string[] args)
         {
-            Console.WriteLine("Hello World!");
+            await CreateConsoleHost(args).RunAsync();
         }
+
+        public static IHost CreateConsoleHost(string[] args)
+            => new HostBuilder()
+              .UseConsoleLifetime()
+              .UseConfiguration()
+              .UseStartup()
+              .Build();
     }
 }
