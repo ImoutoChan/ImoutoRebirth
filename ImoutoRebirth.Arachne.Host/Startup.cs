@@ -27,8 +27,8 @@ namespace ImoutoRebirth.Arachne.Host
                     .AddArachneInfrastructure(ArachneSettings.DanbooruSettings, ArachneSettings.SankakuSettings);
 
             services.AddMassTransitRabbitMqHostedService(
-                         nameof(ImoutoRebirth.Arachne),
-                         ArachneSettings.RabbitSettings.ToOptions())
+                        nameof(ImoutoRebirth.Arachne),
+                        ArachneSettings.RabbitSettings.ToOptions())
                     .AddSearchMetadataCommandConsumer();
 
         }
