@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using System.Threading.Tasks;
 using Imouto.BooruParser.Loaders;
 using Imouto.BooruParser.Model.Base;
@@ -29,11 +30,18 @@ namespace ImoutoRebirth.Arachne.Infrastructure
 
         public async Task<SearchResult> Search(Image image)
         {
-            var post = await FindPost(image.Md5);
+            try
+            {
+                var post = await FindPost(image.Md5);
 
-            return post.SelectOrElse(
-                x => _postConverter.Convert(x, image, SearchEngineType),
-                () => Metadata.NotFound(image, SearchEngineType));
+                return post.SelectOrElse(
+                    x => _postConverter.Convert(x, image, SearchEngineType),
+                    () => Metadata.NotFound(image, SearchEngineType));
+            }
+            catch (Exception e)
+            {
+                return new SearchError(image, SearchEngineType, e.ToString());
+            }
         }
 
         private async Task<Maybe<Post>> FindPost(string md5)

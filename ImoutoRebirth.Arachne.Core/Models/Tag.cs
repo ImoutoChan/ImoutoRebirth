@@ -1,8 +1,11 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Diagnostics;
 using ImoutoRebirth.Common;
 
 namespace ImoutoRebirth.Arachne.Core.Models
 {
+    [DebuggerDisplay("[{Type}] {Name} : {Value}")]
     public class Tag
     {
         public string Type { get; }
@@ -13,14 +16,14 @@ namespace ImoutoRebirth.Arachne.Core.Models
 
         public IReadOnlyCollection<string> Synonyms { get; }
 
-        public Tag(string type, string name, string value, IReadOnlyCollection<string> synonyms)
+        public Tag(string type, string name, string value = null, IReadOnlyCollection<string> synonyms = null)
         {
-            ArgumentValidator.NotNull(() => type, () => name, () => value, () => synonyms);
+            ArgumentValidator.NotNull(() => type, () => name);
 
             Type = type;
             Name = name;
             Value = value;
-            Synonyms = synonyms;
+            Synonyms = synonyms ?? Array.Empty<string>();
         }
     }
 }

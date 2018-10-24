@@ -1,6 +1,7 @@
 ﻿using ImoutoRebirth.Arachne.Core;
 using ImoutoRebirth.Arachne.Host.Settings;
 using ImoutoRebirth.Arachne.Infrastructure;
+using ImoutoRebirth.Arachne.MessageContracts;
 using ImoutoRebirth.Arachne.Service;
 using MassTransit.RabbitMq.Extensions.Hosting.Extensions;
 using Microsoft.Extensions.Configuration;
@@ -26,11 +27,8 @@ namespace ImoutoRebirth.Arachne.Host
             services.AddArachneCore()
                     .AddArachneInfrastructure(ArachneSettings.DanbooruSettings, ArachneSettings.SankakuSettings);
 
-            services.AddMassTransitRabbitMqHostedService(
-                        nameof(ImoutoRebirth.Arachne),
-                        ArachneSettings.RabbitSettings.ToOptions())
+            services.AddMassTransitRabbitMqHostedService(ReceiverApp.Name, ArachneSettings.RabbitSettings.ToOptions())
                     .AddSearchMetadataCommandConsumer();
-
         }
     }
 }

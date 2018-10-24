@@ -1,5 +1,4 @@
-﻿using System;
-using System.Linq;
+﻿using System.Linq;
 using Imouto.BooruParser.Model.Base;
 using ImoutoRebirth.Arachne.Core.Models;
 using ImoutoRebirth.Arachne.Infrastructure.Abstract;
@@ -22,7 +21,7 @@ namespace ImoutoRebirth.Arachne.Infrastructure
 
             var metaTags = metadataParsingDto
                           .GetMetaTags()
-                          .Select(x => new Tag(x.TagType, x.Tag, x.Value, Array.Empty<string>()));
+                          .Select(x => new Tag(x.TagType, x.Tag, x.Value));
             var postTags = metadataParsingDto
                           .Tags
                           .Select(x => new Tag(x.TagType, x.Tag, null, x.Synonyms));

@@ -1,4 +1,5 @@
 ﻿using System.Net.Http;
+using AspNetCoreInjection.TypedFactories;
 using ImoutoRebirth.Arachne.Core.InfrastructureContracts;
 using ImoutoRebirth.Arachne.Infrastructure.Abstract;
 using ImoutoRebirth.Arachne.Infrastructure.LoaderFabrics;
@@ -20,7 +21,7 @@ namespace ImoutoRebirth.Arachne.Infrastructure
             services.AddTransient<IBooruLoaderFabric, SankakuLoaderFabric>();
 
             // todo
-            services.AddTransient<BooruSearchEngine.IFactory>();
+            services.RegisterTypedFactory<BooruSearchEngine.IFactory>().ForConcreteType<BooruSearchEngine>();
 
             services.AddSingleton<HttpClient>();
             services.AddTransient<DanbooruSettings>(x => danbooruSettings);
