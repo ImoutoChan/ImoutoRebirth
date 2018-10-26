@@ -1,0 +1,10 @@
+{
+  "profiles": {
+    "ImoutoRebirth.Arachne.Host": {
+      "commandName": "Project",
+      "environmentVariables": {
+        "ARACHNE_ENVIRONMENT": "Development"
+      }
+    }
+  }
+}

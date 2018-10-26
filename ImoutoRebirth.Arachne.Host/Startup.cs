@@ -25,10 +25,11 @@ namespace ImoutoRebirth.Arachne.Host
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddArachneCore()
+                    .AddArachneServices()
                     .AddArachneInfrastructure(ArachneSettings.DanbooruSettings, ArachneSettings.SankakuSettings);
 
             services.AddMassTransitRabbitMqHostedService(ReceiverApp.Name, ArachneSettings.RabbitSettings.ToOptions())
-                    .AddSearchMetadataCommandConsumer();
+                    .AddArachneServicesForRabbit();
         }
     }
 }

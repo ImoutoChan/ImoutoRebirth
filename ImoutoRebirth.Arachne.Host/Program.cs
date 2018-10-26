@@ -13,6 +13,7 @@ namespace ImoutoRebirth.Arachne.Host
         public static IHost CreateConsoleHost(string[] args)
             => new HostBuilder()
               .UseConsoleLifetime()
+              .UseEnvironmentFromEnvironmentVariable()
               .UseConfiguration()
               .UseStartup()
               .Build();
