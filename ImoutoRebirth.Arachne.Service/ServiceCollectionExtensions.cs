@@ -29,18 +29,15 @@ namespace ImoutoRebirth.Arachne.Service
 
         private static IMassTransitRabbitMqHostingBuilder AddDefaultConsumer<TConsumer, TCommand>(
             this IMassTransitRabbitMqHostingBuilder builder)
-            where TCommand : class 
-            where TConsumer : class, IConsumer<TCommand>
-            => builder.ConsumeByConvention<TConsumer, TCommand>(GetRetryPolicy)
-                      .Configure(GetConfigurator);
+            where TCommand : class where TConsumer : class, IConsumer<TCommand>
+            => builder.ConsumeByConvention<TConsumer, TCommand>(GetRetryPolicy, GetReceiveEndpointConfigurator);
+
+        private static void GetReceiveEndpointConfigurator(IRabbitMqReceiveEndpointConfigurator configurator)
+        {
+            configurator.PrefetchCount = 1;
+        }
 
         private static void GetRetryPolicy(IRetryConfigurator retryConfigurator)
             => retryConfigurator.Intervals(TimeSpan.FromSeconds(30), TimeSpan.FromSeconds(60));
-
-        private static void GetConfigurator(IRabbitMqBusFactoryConfigurator configurator)
-        {
-            configurator.UseConcurrencyLimit(1);
-            configurator.PrefetchCount = 1;
-        }
     }
 }
