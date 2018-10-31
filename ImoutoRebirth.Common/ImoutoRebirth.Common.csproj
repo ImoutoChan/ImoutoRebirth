@@ -3,6 +3,9 @@
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <Description>A common libraries that are used across ImoutoRebirth solution</Description>
+    <Company>ImoutoRebirth</Company>
+    <Authors>ImoutoChan</Authors>
   </PropertyGroup>
 
 </Project>
