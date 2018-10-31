@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.28010.2048
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ImoutoRebirth.Common", "ImoutoRebirth.Common\ImoutoRebirth.Common.csproj", "{78C6FE75-D989-4F64-96CA-EDBFAC352F5A}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ImoutoRebirth.Common.Host", "ImoutoRebirth.Common.Host\ImoutoRebirth.Common.Host.csproj", "{D7A5BC18-13A7-4628-8095-FDE2E59E4CAD}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{78C6FE75-D989-4F64-96CA-EDBFAC352F5A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{78C6FE75-D989-4F64-96CA-EDBFAC352F5A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{78C6FE75-D989-4F64-96CA-EDBFAC352F5A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{78C6FE75-D989-4F64-96CA-EDBFAC352F5A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D7A5BC18-13A7-4628-8095-FDE2E59E4CAD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D7A5BC18-13A7-4628-8095-FDE2E59E4CAD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D7A5BC18-13A7-4628-8095-FDE2E59E4CAD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D7A5BC18-13A7-4628-8095-FDE2E59E4CAD}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {BF560E27-01B8-4F6F-8218-ED5EB69A52A4}
+	EndGlobalSection
+EndGlobal
