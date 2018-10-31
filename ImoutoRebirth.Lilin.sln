@@ -1,0 +1,43 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.28010.2048
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ImoutoRebirth.Lilin.Core", "ImoutoRebirth.Lilin.Core\ImoutoRebirth.Lilin.Core.csproj", "{EA8A49D3-3B4C-4EC8-B839-382B2D2D5031}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ImoutoRebirth.Lilin.Services", "ImoutoRebirth.Lilin.Services\ImoutoRebirth.Lilin.Services.csproj", "{06AA7BAE-2C57-436D-8159-7210F0986555}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ImoutoRebirth.Lilin.DataAccess", "ImoutoRebirth.Lilin.DataAccess\ImoutoRebirth.Lilin.DataAccess.csproj", "{E4924BD0-6919-4F95-BA03-7CCF910AA702}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ImoutoRebirth.Lilin.Host", "ImoutoRebirth.Lilin.Host\ImoutoRebirth.Lilin.Host.csproj", "{BC89FE30-2F9E-42C4-972F-18979A12880E}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{EA8A49D3-3B4C-4EC8-B839-382B2D2D5031}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EA8A49D3-3B4C-4EC8-B839-382B2D2D5031}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EA8A49D3-3B4C-4EC8-B839-382B2D2D5031}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EA8A49D3-3B4C-4EC8-B839-382B2D2D5031}.Release|Any CPU.Build.0 = Release|Any CPU
+		{06AA7BAE-2C57-436D-8159-7210F0986555}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{06AA7BAE-2C57-436D-8159-7210F0986555}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{06AA7BAE-2C57-436D-8159-7210F0986555}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{06AA7BAE-2C57-436D-8159-7210F0986555}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E4924BD0-6919-4F95-BA03-7CCF910AA702}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E4924BD0-6919-4F95-BA03-7CCF910AA702}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E4924BD0-6919-4F95-BA03-7CCF910AA702}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E4924BD0-6919-4F95-BA03-7CCF910AA702}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BC89FE30-2F9E-42C4-972F-18979A12880E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BC89FE30-2F9E-42C4-972F-18979A12880E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BC89FE30-2F9E-42C4-972F-18979A12880E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BC89FE30-2F9E-42C4-972F-18979A12880E}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {773F3E56-C06B-4C6D-A257-764C24607B2C}
+	EndGlobalSection
+EndGlobal
