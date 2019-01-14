@@ -14,7 +14,7 @@ namespace ImoutoRebirth.Lilin.Services.CQRS.Queries
             _fileTagRepository = fileTagRepository;
         }
 
-        public Task<uint> Handle(FilesSearchQueryCount request, CancellationToken cancellationToken) 
+        public Task<uint> Handle(FilesSearchQueryCount request, CancellationToken cancellationToken)
             => _fileTagRepository.SearchFilesCount(request.TagSearchEntries);
     }
 }

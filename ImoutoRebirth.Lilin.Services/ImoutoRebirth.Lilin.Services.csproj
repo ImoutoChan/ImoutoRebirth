@@ -5,11 +5,15 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="MediatR" Version="5.1.0" />
+    <PackageReference Include="MassTransit.RabbitMq.Extensions.Hosting" Version="1.0.24" />
+    <PackageReference Include="MediatR" Version="6.0.0" />
+    <PackageReference Include="MediatR.Extensions.Microsoft.DependencyInjection" Version="6.0.1" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="2.2.0" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\ImoutoRebirth.Lilin.Core\ImoutoRebirth.Lilin.Core.csproj" />
+    <ProjectReference Include="..\ImoutoRebirth.Lilin.MessageContracts\ImoutoRebirth.Lilin.MessageContracts.csproj" />
   </ItemGroup>
 
 </Project>

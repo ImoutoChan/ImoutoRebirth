@@ -24,9 +24,9 @@ namespace ImoutoRebirth.Lilin.Infrastructure
 
         public IUnitOfWork UnitOfWork => _lilinDbContext;
         
-        public async Task Add(FileTag fileTag)
+        public async Task Add(FileTagBind fileTag)
         {
-            var tag = await _lilinDbContext.Tags.FirstAsync(x => x.Id == fileTag.Tag.Id);
+            var tag = await _lilinDbContext.Tags.FirstAsync(x => x.Id == fileTag.TagId);
             await _lilinDbContext.FileTags.AddAsync(fileTag.ToEntity());
             tag.Count++;
         }

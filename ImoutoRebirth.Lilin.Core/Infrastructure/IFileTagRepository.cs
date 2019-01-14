@@ -7,7 +7,7 @@ namespace ImoutoRebirth.Lilin.Core.Infrastructure
 {
     public interface IFileTagRepository : IRepository
     {
-        Task Add(FileTag fileTag);
+        Task Add(FileTagBind fileTag);
 
         Task<Guid[]> SearchFiles(
             IReadOnlyCollection<TagSearchEntry> tagSearchEntries,

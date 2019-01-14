@@ -9,11 +9,11 @@ namespace ImoutoRebirth.Lilin.Core.Models
     {
         public Guid FileId { get; }
 
-        public IReadOnlyCollection<FileTag> Tags { get; }
+        public IReadOnlyCollection<FileTagBind> Tags { get; }
 
         public IReadOnlyCollection<FileNote> Notes { get; }
 
-        public MetadataUpdate(Guid fileId, IReadOnlyCollection<FileTag> tags, IReadOnlyCollection<FileNote> notes)
+        public MetadataUpdate(Guid fileId, IReadOnlyCollection<FileTagBind> tags, IReadOnlyCollection<FileNote> notes)
         {
             ArgumentValidator.NotNull(() => tags, () => notes);
             ArgumentValidator.Requires(() => tags.All(t => t.FileId == fileId), nameof(tags));

@@ -5,6 +5,11 @@ namespace ImoutoRebirth.Lilin.Services.CQRS.Commands
 {
     public class SaveMetadataCommand : ICommand
     {
-        public MetadataUpdate Update { get; set; }
+        public MetadataUpdate Update { get; }
+
+        public SaveMetadataCommand(MetadataUpdate update)
+        {
+            Update = update;
+        }
     }
 }

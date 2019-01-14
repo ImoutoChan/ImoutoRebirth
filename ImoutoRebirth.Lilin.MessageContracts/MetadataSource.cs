@@ -1,6 +1,5 @@
-﻿namespace ImoutoRebirth.Lilin.Core.Models
+﻿namespace ImoutoRebirth.Lilin.MessageContracts
 {
-    // todo compare with old ids
     public enum MetadataSource
     {
         Yandere = 0,
