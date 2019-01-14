@@ -1,9 +1,12 @@
-﻿using ImoutoRebirth.Lilin.DataAccess.Entities;
+﻿using System.Threading;
+using System.Threading.Tasks;
+using ImoutoRebirth.Lilin.Core.Infrastructure;
+using ImoutoRebirth.Lilin.DataAccess.Entities;
 using Microsoft.EntityFrameworkCore;
 
 namespace ImoutoRebirth.Lilin.DataAccess
 {
-    public class LilinDbContext : DbContext
+    public class LilinDbContext : DbContext, IUnitOfWork
     {
         public DbSet<TagTypeEntity> TagTypes { get; set; }
 
@@ -37,6 +40,12 @@ namespace ImoutoRebirth.Lilin.DataAccess
                  .IsRequired()
                  .OnDelete(DeleteBehavior.Restrict);
             });
+        }
+
+        public async Task<bool> SaveEntitiesAsync(CancellationToken cancellationToken = default(CancellationToken))
+        {
+            await SaveChangesAsync(cancellationToken);
+            return true;
         }
     }
 }

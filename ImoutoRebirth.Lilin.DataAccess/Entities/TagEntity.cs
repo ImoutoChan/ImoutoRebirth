@@ -7,6 +7,8 @@ namespace ImoutoRebirth.Lilin.DataAccess.Entities
 {
     public class TagEntity
     {
+        private static readonly string _synonymsSeparator = ":.:";
+
         [DatabaseGenerated(DatabaseGeneratedOption.None)]
         public Guid Id { get; set; }
 
@@ -17,7 +19,17 @@ namespace ImoutoRebirth.Lilin.DataAccess.Entities
 
         public bool HasValue { get; set; }
 
+        /// <summary>
+        /// Separator: :.:
+        /// </summary>
         public string Synonyms { get; set; }
+
+        [NotMapped]
+        public string[] SynonymsArray
+        {
+            get => Synonyms.Split(new [] {_synonymsSeparator}, StringSplitOptions.RemoveEmptyEntries);
+            set => Synonyms = string.Join(_synonymsSeparator, value);
+        }
 
         public int Count { get; set; }
 
