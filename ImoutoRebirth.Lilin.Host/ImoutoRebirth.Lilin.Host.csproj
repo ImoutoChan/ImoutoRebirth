@@ -9,11 +9,14 @@
   <ItemGroup>
     <PackageReference Include="ImoutoRebirth.Common.Host" Version="1.0.0-CI00000" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="2.1.4" />
-    <PackageReference Include="MediatR.Extensions.Microsoft.DependencyInjection" Version="5.1.0" />
+    <PackageReference Include="MediatR.Extensions.Microsoft.DependencyInjection" Version="6.0.1" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\ImoutoRebirth.Lilin.DataAccess\ImoutoRebirth.Lilin.DataAccess.csproj" />
+    <ProjectReference Include="..\ImoutoRebirth.Lilin.Infrastructure\ImoutoRebirth.Lilin.Infrastructure.csproj" />
+    <ProjectReference Include="..\ImoutoRebirth.Lilin.MessageContracts\ImoutoRebirth.Lilin.MessageContracts.csproj" />
+    <ProjectReference Include="..\ImoutoRebirth.Lilin.Services\ImoutoRebirth.Lilin.Services.csproj" />
   </ItemGroup>
 
   <ItemGroup>
