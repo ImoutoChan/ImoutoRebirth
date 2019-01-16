@@ -4,8 +4,12 @@ namespace ImoutoRebirth.Lilin.MessageContracts
 {
     public interface IFileTag
     {
-        Guid TagId { get; }
+        string Type { get; }
+
+        string Name { get; }
 
         string Value { get; }
+
+        string[] Synonyms { get; }
     }
 }

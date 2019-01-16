@@ -26,9 +26,71 @@ namespace ImoutoRebirth.Lilin.Infrastructure
         
         public async Task Add(FileTagBind fileTag)
         {
-            var tag = await _lilinDbContext.Tags.FirstAsync(x => x.Id == fileTag.TagId);
-            await _lilinDbContext.FileTags.AddAsync(fileTag.ToEntity());
+            var type = await GetOrCreateTagType(fileTag.Type);
+            var tag = await GetOrCreateTag(
+                type, 
+                fileTag.Name, 
+                fileTag.Synonyms, 
+                fileTag.Value != null);
+
+            if (!tag.HasValue && fileTag.Value != null)
+                throw new Exception("Trying to assign value for non-value tag.");
+
+            await _lilinDbContext.FileTags.AddAsync(fileTag.ToEntity(tag));
             tag.Count++;
+        }
+
+        private async Task<TagEntity> GetOrCreateTag(
+            TagTypeEntity type, 
+            string fileTagName, 
+            string[] fileTagSynonyms, 
+            bool hasValue)
+        {
+            var tag =
+                await _lilinDbContext.Tags.SingleOrDefaultAsync(
+                    x => x.TypeId  == type.Id
+                         && x.Name == fileTagName);
+
+            if (tag != null)
+            {
+                tag.SynonymsArray
+                    = tag
+                     .SynonymsArray
+                     .Union(fileTagSynonyms)
+                     .ToArray();
+
+                return tag;
+            }
+
+            tag = new TagEntity
+            {
+                Id = Guid.NewGuid(),
+                Name = fileTagName,
+                Type = type,
+                SynonymsArray = fileTagSynonyms,
+                HasValue = hasValue
+            };
+            return tag;
+        }
+
+        private async Task<TagTypeEntity> GetOrCreateTagType(string typeName)
+        {
+            var type
+                = await _lilinDbContext
+                       .TagTypes
+                       .SingleOrDefaultAsync(x => x.Name == typeName);
+
+            if (type != null)
+                return type;
+
+            type = new TagTypeEntity
+            {
+                Id = Guid.NewGuid(),
+                Name = typeName
+            };
+            await _lilinDbContext.AddAsync(type);
+
+            return type;
         }
 
         public async Task<Guid[]> SearchFiles(

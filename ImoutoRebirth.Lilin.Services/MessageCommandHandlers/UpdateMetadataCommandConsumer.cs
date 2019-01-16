@@ -32,9 +32,11 @@ namespace ImoutoRebirth.Lilin.Services.MessageCommandHandlers
             var tags = message.FileTags.Select(
                                    x => new FileTagBind(
                                        message.FileId,
-                                       x.TagId,
+                                       (MetadataSource)(int)message.MetadataSource,
+                                       x.Type,
+                                       x.Name,
                                        x.Value,
-                                       (MetadataSource) (int) message.MetadataSource))
+                                       x.Synonyms))
                               .ToArray();
 
             var notes = message.FileNotes.Select(

@@ -1,4 +1,5 @@
-﻿using ImoutoRebirth.Lilin.Core.Models;
+﻿using System;
+using ImoutoRebirth.Lilin.Core.Models;
 using ImoutoRebirth.Lilin.DataAccess.Entities;
 
 namespace ImoutoRebirth.Lilin.Infrastructure.Mappers
@@ -14,11 +15,11 @@ namespace ImoutoRebirth.Lilin.Infrastructure.Mappers
                 Value = fileTagModel.Value
             };
 
-        public static FileTagEntity ToEntity(this FileTagBind model) 
+        public static FileTagEntity ToEntity(this FileTagBind model, TagEntity tag) 
             => new FileTagEntity
             {
                 FileId = model.FileId,
-                TagId = model.TagId,
+                Tag = tag,
                 Source = model.Source,
                 Value = model.Value
             };
