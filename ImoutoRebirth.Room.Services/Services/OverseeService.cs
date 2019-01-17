@@ -9,7 +9,7 @@ using Microsoft.Extensions.Logging;
 
 namespace ImoutoRebirth.Room.Core.Services
 {
-    public class OverseeService
+    public class OverseeService : IOverseeService
     {
         private readonly IFileSystemActualizationService _fileSystemActualizationService;
         private readonly ICollectionRepository _collectionRepository;

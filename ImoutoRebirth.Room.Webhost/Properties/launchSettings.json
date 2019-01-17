@@ -19,8 +19,8 @@
     },
     "ImoutoRebirth.Room.Webhost": {
       "commandName": "Project",
-      "launchBrowser": true,
-      "launchUrl": "hangfire",
+      "launchBrowser": false,
+      "launchUrl": "",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
       },

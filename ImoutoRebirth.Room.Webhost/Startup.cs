@@ -5,8 +5,8 @@ using CacheManager.Core;
 using EFSecondLevelCache.Core;
 using ImoutoRebirth.Arachne.MessageContracts;
 using ImoutoRebirth.Common.MassTransit;
-using ImoutoRebirth.Room.Core.Services;
-using ImoutoRebirth.Room.Core.Services.Abstract;
+using ImoutoRebirth.Common.Quartz.Extensions;
+using ImoutoRebirth.Room.Core;
 using ImoutoRebirth.Room.DataAccess;
 using ImoutoRebirth.Room.DataAccess.Cache;
 using ImoutoRebirth.Room.DataAccess.Repositories;
@@ -14,6 +14,7 @@ using ImoutoRebirth.Room.DataAccess.Repositories.Abstract;
 using ImoutoRebirth.Room.Database;
 using ImoutoRebirth.Room.Infrastructure;
 using ImoutoRebirth.Room.WebApi.Controllers;
+using ImoutoRebirth.Room.Webhost.Quartz;
 using ImoutoRebirth.Room.Webhost.Settings;
 using MassTransit.RabbitMq.Extensions.Hosting.Extensions;
 using Microsoft.AspNetCore.Builder;
@@ -53,7 +54,12 @@ namespace ImoutoRebirth.Room.Webhost
                         RoomSettings.RabbitSettings.ToOptions())
                     .AddRoomServicesForRabbit();
 
-            ConfigureCoreServices(services);
+            services.AddQuartz()
+                    .AddQuartzJob<OverseeJob, OverseeJob.Description>();
+
+            services.AddRoomCore();
+
+
             ConfigureCacheServices(services);
             ConfigureDataAccessServices(services);
             ConfigureAutoMapperServices(services);
@@ -70,14 +76,6 @@ namespace ImoutoRebirth.Room.Webhost
         {
             services.AddSwaggerGen(c 
                 => c.SwaggerDoc("v1", new Info { Title = "ImoutoRebirth.Room API", Version = "v1" }));
-        }
-        
-        public void ConfigureCoreServices(IServiceCollection services)
-        {
-            services.AddTransient<IDestinationFolderService, DestinationFolderService>();
-            services.AddTransient<ISourceFolderService, SourceFolderService>();
-            services.AddTransient<ICollectionFileService, CollectionFileService>();
-            services.AddTransient<IFileSystemActualizationService, FileSystemActualizationService>();
         }
 
         public void ConfigureDataAccessServices(IServiceCollection services)
@@ -132,6 +130,7 @@ namespace ImoutoRebirth.Room.Webhost
             app.UseEFSecondLevelCache();
             app.UseSwagger();
             app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "ImoutoRebirth.Room API V1"));
+            app.UseQuartz();
         }
 
         private static async Task MigrateIfNecessary(IApplicationBuilder app)
