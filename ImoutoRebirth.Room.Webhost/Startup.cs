@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Threading.Tasks;
 using AutoMapper;
 using CacheManager.Core;
 using EFSecondLevelCache.Core;
@@ -23,7 +22,6 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
 using Swashbuckle.AspNetCore.Swagger;
 
 namespace ImoutoRebirth.Room.Webhost
@@ -113,9 +111,7 @@ namespace ImoutoRebirth.Room.Webhost
             IMapper mapper)
         {
             //mapper.ConfigurationProvider.AssertConfigurationIsValid();
-
-            MigrateIfNecessary(app).Wait();
-
+            
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
