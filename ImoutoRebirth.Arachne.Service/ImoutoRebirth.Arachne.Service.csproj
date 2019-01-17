@@ -2,9 +2,11 @@
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
+    <LangVersion>7.1</LangVersion>
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="ImoutoRebirth.Lilin.MessageContracts" Version="1.0.0-CI00001" />
     <PackageReference Include="MassTransit.RabbitMq.Extensions.Hosting" Version="1.0.24" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="2.1.1" />
   </ItemGroup>

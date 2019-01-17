@@ -3,13 +3,14 @@ using GreenPipes;
 using GreenPipes.Configurators;
 using ImoutoRebirth.Arachne.MessageContracts.Commands;
 using ImoutoRebirth.Arachne.Service.Consumers;
+using ImoutoRebirth.Lilin.MessageContracts;
 using MassTransit;
 using MassTransit.RabbitMq.Extensions.Hosting.Contracts;
 using MassTransit.RabbitMq.Extensions.Hosting.Extensions;
 using MassTransit.RabbitMqTransport;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace ImoutoRebirth.Arachne.Service
+namespace ImoutoRebirth.Arachne.Service.Extensions
 {
     public static class ServiceCollectionExtensions
     {
@@ -25,7 +26,8 @@ namespace ImoutoRebirth.Arachne.Service
             => builder.AddDefaultConsumer<EverywhereSearchMetadataCommandConsumer, IEverywhereSearchMetadataCommand>()
                       .AddDefaultConsumer<YandereSearchMetadataCommandConsumer, IYandereSearchMetadataCommand>()
                       .AddDefaultConsumer<DanbooruSearchMetadataCommandConsumer, IDanbooruSearchMetadataCommand>()
-                      .AddDefaultConsumer<SankakuSearchMetadataCommandConsumer, ISankakuSearchMetadataCommand>();
+                      .AddDefaultConsumer<SankakuSearchMetadataCommandConsumer, ISankakuSearchMetadataCommand>()
+                      .WithFireAndForgetSendEndpointByConvention<IUpdateMetadataCommand>(ReceiverApp.Name);
 
         private static IMassTransitRabbitMqHostingBuilder AddDefaultConsumer<TConsumer, TCommand>(
             this IMassTransitRabbitMqHostingBuilder builder)

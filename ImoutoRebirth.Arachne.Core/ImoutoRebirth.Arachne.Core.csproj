@@ -6,12 +6,9 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="ImoutoRebirth.Common" Version="1.0.0-CI00001" />
     <PackageReference Include="Mackiovello.Maybe" Version="1.0.0" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="2.1.1" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <ProjectReference Include="..\ImoutoRebirth.Common\ImoutoRebirth.Common.csproj" />
   </ItemGroup>
 
 </Project>

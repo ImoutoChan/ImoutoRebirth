@@ -81,6 +81,7 @@ namespace ImoutoRebirth.Arachne.Infrastructure
                     note.NotePoint.Top, 
                     note.NotePoint.Left, 
                     note.NoteSize.Width, 
-                    note.NoteSize.Height));
+                    note.NoteSize.Height),
+                note.Id);
     }
 }

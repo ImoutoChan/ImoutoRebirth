@@ -2,27 +2,25 @@
 using ImoutoRebirth.Arachne.Host.Settings;
 using ImoutoRebirth.Arachne.Infrastructure;
 using ImoutoRebirth.Arachne.MessageContracts;
-using ImoutoRebirth.Arachne.Service;
+using ImoutoRebirth.Arachne.Service.Extensions;
+using ImoutoRebirth.Common.Host;
 using MassTransit.RabbitMq.Extensions.Hosting.Extensions;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace ImoutoRebirth.Arachne.Host
 {
-    public class Startup
+    public class Startup : BaseStartup
     {
-        public IConfiguration Configuration { get; }
-
         public ArachneSettings ArachneSettings { get; }
 
-        public Startup(IConfiguration configuration)
+        public Startup(IConfiguration configuration) 
+            : base(configuration)
         {
-            Configuration = configuration;
-
             ArachneSettings = configuration.Get<ArachneSettings>();
         }
 
-        public void ConfigureServices(IServiceCollection services)
+        public override void ConfigureServices(IServiceCollection services)
         {
             services.AddArachneCore()
                     .AddArachneServices()
