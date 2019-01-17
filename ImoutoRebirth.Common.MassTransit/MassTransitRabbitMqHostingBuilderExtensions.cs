@@ -10,7 +10,7 @@ namespace ImoutoRebirth.Common.MassTransit
 {
     public static class MassTransitRabbitMqHostingBuilderExtensions
     {
-        private static IMassTransitRabbitMqHostingBuilder AddDefaultConsumer<TConsumer, TCommand>(
+        public static IMassTransitRabbitMqHostingBuilder AddDefaultConsumer<TConsumer, TCommand>(
             this IMassTransitRabbitMqHostingBuilder builder)
             where TCommand : class where TConsumer : class, IConsumer<TCommand>
             => builder.ConsumeByConvention<TConsumer, TCommand>(GetRetryPolicy, GetReceiveEndpointConfigurator);
