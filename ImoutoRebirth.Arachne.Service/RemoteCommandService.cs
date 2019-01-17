@@ -1,6 +1,5 @@
 ﻿using System.Threading;
 using System.Threading.Tasks;
-using ImoutoRebirth.Arachne.Service.Commands;
 using MassTransit.RabbitMq.Extensions.Hosting.Contracts;
 
 namespace ImoutoRebirth.Arachne.Service
@@ -14,7 +13,8 @@ namespace ImoutoRebirth.Arachne.Service
             _configuredSendEndpointProvider = configuredSendEndpointProvider;
         }
 
-        public async Task SendCommand<T>(UpdateMetadataCommand command, CancellationToken cancellationToken = default)
+        public async Task SendCommand<T>(T command, CancellationToken cancellationToken = default)
+            where T : class
         {
             var requestClient = await _configuredSendEndpointProvider.GetSendEndpoint<T>();
             await requestClient.Send(command, cancellationToken);
