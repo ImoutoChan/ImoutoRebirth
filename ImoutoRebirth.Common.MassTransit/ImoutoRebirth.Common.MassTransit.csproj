@@ -6,6 +6,7 @@
     <Company>ImoutoRebirth</Company>
     <Description>A common libraries that are used across ImoutoRebirth solution</Description>
     <PackageProjectUrl>https://github.com/ImoutoRebirth/ImoutoRebirth.Common</PackageProjectUrl>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
   </PropertyGroup>
 
   <ItemGroup>
