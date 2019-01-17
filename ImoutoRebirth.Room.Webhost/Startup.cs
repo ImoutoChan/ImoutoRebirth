@@ -5,6 +5,8 @@ using CacheManager.Core;
 using EFSecondLevelCache.Core;
 using Hangfire;
 using Hangfire.PostgreSql;
+using ImoutoRebirth.Arachne.MessageContracts;
+using ImoutoRebirth.Common.MassTransit;
 using ImoutoRebirth.Room.Core.Services;
 using ImoutoRebirth.Room.Core.Services.Abstract;
 using ImoutoRebirth.Room.DataAccess;
@@ -12,9 +14,12 @@ using ImoutoRebirth.Room.DataAccess.Cache;
 using ImoutoRebirth.Room.DataAccess.Repositories;
 using ImoutoRebirth.Room.DataAccess.Repositories.Abstract;
 using ImoutoRebirth.Room.Database;
+using ImoutoRebirth.Room.Infrastructure;
 using ImoutoRebirth.Room.Infrastructure.Service;
 using ImoutoRebirth.Room.WebApi.Controllers;
 using ImoutoRebirth.Room.Webhost.Hangfire;
+using ImoutoRebirth.Room.Webhost.Settings;
+using MassTransit.RabbitMq.Extensions.Hosting.Extensions;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
@@ -28,9 +33,12 @@ namespace ImoutoRebirth.Room.Webhost
 {
     public class Startup
     {
+        public RoomAppSettings RoomSettings { get; }
+
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
+            RoomSettings = configuration.Get<RoomAppSettings>();
         }
 
         public IConfiguration Configuration { get; }
@@ -42,7 +50,13 @@ namespace ImoutoRebirth.Room.Webhost
                     .AddApplicationPart(typeof(CollectionsController).Assembly);
 
             ConfigureDatabaseServices(services);
-            ConfigureInfrastructureServices(services);
+
+            services.AddRoomServices();
+            services.AddMassTransitRabbitMqHostedService(
+                        ReceiverApp.Name,
+                        RoomSettings.RabbitSettings.ToOptions())
+                    .AddRoomServicesForRabbit();
+
             ConfigureCoreServices(services);
             ConfigureCacheServices(services);
             ConfigureHangfireServices(services);
@@ -62,13 +76,7 @@ namespace ImoutoRebirth.Room.Webhost
             services.AddSwaggerGen(c 
                 => c.SwaggerDoc("v1", new Info { Title = "ImoutoRebirth.Room API", Version = "v1" }));
         }
-
-        public void ConfigureInfrastructureServices(IServiceCollection services)
-        {
-            services.AddTransient<IFileService, FileService>();
-            services.AddTransient<IImageService, ImageService>();
-        }
-
+        
         public void ConfigureCoreServices(IServiceCollection services)
         {
             services.AddTransient<IDestinationFolderService, DestinationFolderService>();

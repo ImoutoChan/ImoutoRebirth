@@ -12,20 +12,20 @@ namespace ImoutoRebirth.Room.Core.Services
         private readonly IDestinationFolderService _destinationFolderService;
         private readonly ICollectionFileService    _collectionFileService;
         private readonly IDbStateService           _dbStateService;
-        private readonly ISignalSender             _signalSender;
+        private readonly IRemoteCommandService             _remoteCommandService;
 
         public FileSystemActualizationService(
             ISourceFolderService sourceFolderService,
             IDestinationFolderService destinationFolderService,
             ICollectionFileService collectionFileService,
             IDbStateService dbStateService, 
-            ISignalSender signalSender)
+            IRemoteCommandService remoteCommandService)
         {
             _sourceFolderService = sourceFolderService;
             _destinationFolderService = destinationFolderService;
             _collectionFileService = collectionFileService;
             _dbStateService = dbStateService;
-            _signalSender = signalSender;
+            _remoteCommandService = remoteCommandService;
         }
 
         public async Task PryCollection(OversawCollection oversawCollection)
@@ -47,7 +47,7 @@ namespace ImoutoRebirth.Room.Core.Services
                 await _dbStateService.SaveChanges();
 
                 await Task.WhenAll(
-                    tasks.Select(x => _signalSender.UpdateMetadataRequest(x.GuidTask.Result, x.Md5))
+                    tasks.Select(x => _remoteCommandService.UpdateMetadataRequest(x.GuidTask.Result, x.Md5))
                 );
             }
         }
