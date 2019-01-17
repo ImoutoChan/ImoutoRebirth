@@ -3,8 +3,6 @@ using System.Threading.Tasks;
 using AutoMapper;
 using CacheManager.Core;
 using EFSecondLevelCache.Core;
-using Hangfire;
-using Hangfire.PostgreSql;
 using ImoutoRebirth.Arachne.MessageContracts;
 using ImoutoRebirth.Common.MassTransit;
 using ImoutoRebirth.Room.Core.Services;
@@ -15,9 +13,7 @@ using ImoutoRebirth.Room.DataAccess.Repositories;
 using ImoutoRebirth.Room.DataAccess.Repositories.Abstract;
 using ImoutoRebirth.Room.Database;
 using ImoutoRebirth.Room.Infrastructure;
-using ImoutoRebirth.Room.Infrastructure.Service;
 using ImoutoRebirth.Room.WebApi.Controllers;
-using ImoutoRebirth.Room.Webhost.Hangfire;
 using ImoutoRebirth.Room.Webhost.Settings;
 using MassTransit.RabbitMq.Extensions.Hosting.Extensions;
 using Microsoft.AspNetCore.Builder;
@@ -59,7 +55,6 @@ namespace ImoutoRebirth.Room.Webhost
 
             ConfigureCoreServices(services);
             ConfigureCacheServices(services);
-            ConfigureHangfireServices(services);
             ConfigureDataAccessServices(services);
             ConfigureAutoMapperServices(services);
             ConfigureSwaggerServices(services);
@@ -109,13 +104,6 @@ namespace ImoutoRebirth.Room.Webhost
                    .Build());
         }
 
-        public void ConfigureHangfireServices(IServiceCollection services)
-        {
-            services.AddHangfire(configuration
-                => configuration.UsePostgreSqlStorage(Configuration.GetConnectionString("RoomDatabase")));
-            services.AddTransient<IHangfireStartup, HangfireStartup>();
-        }
-
         public void ConfigureAutoMapperServices(IServiceCollection services)
         {
             services.AddAutoMapper();
@@ -142,9 +130,6 @@ namespace ImoutoRebirth.Room.Webhost
             app.UseHttpsRedirection();
             app.UseMvc();
             app.UseEFSecondLevelCache();
-            app.UseHangfireDashboard();
-            app.UseHangfireServer();
-            app.UseHangfireJobs();
             app.UseSwagger();
             app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "ImoutoRebirth.Room API V1"));
         }

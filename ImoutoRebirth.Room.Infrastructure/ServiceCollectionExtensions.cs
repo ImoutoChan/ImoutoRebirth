@@ -3,6 +3,7 @@ using ImoutoRebirth.Arachne.MessageContracts.Commands;
 using ImoutoRebirth.Room.Core.Services.Abstract;
 using ImoutoRebirth.Room.Infrastructure.Service;
 using MassTransit.RabbitMq.Extensions.Hosting.Contracts;
+using MassTransit.RabbitMq.Extensions.Hosting.Extensions;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace ImoutoRebirth.Room.Infrastructure
@@ -20,6 +21,6 @@ namespace ImoutoRebirth.Room.Infrastructure
 
         public static IMassTransitRabbitMqHostingBuilder AddRoomServicesForRabbit(
             this IMassTransitRabbitMqHostingBuilder builder)
-            => builder.WithFireAndForgetSendEndpoint<IEverywhereSearchMetadataCommand>(ReceiverApp.Name);
+            => builder.WithFireAndForgetSendEndpointByConvention<IEverywhereSearchMetadataCommand>(ReceiverApp.Name);
     }
 }

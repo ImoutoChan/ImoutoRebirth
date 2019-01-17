@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Threading.Tasks;
-using ImoutoRebirth.Arachne.MessageContracts;
+using ImoutoRebirth.Arachne.MessageContracts.Commands;
 using ImoutoRebirth.Room.Core.Services.Abstract;
 using MassTransit.RabbitMq.Extensions.Hosting.Contracts;
 
-namespace ImoutoRebirth.Room.Infrastructure
+namespace ImoutoRebirth.Room.Infrastructure.Service
 {
     internal class RemoteCommandService : IRemoteCommandService
     {
@@ -23,8 +23,10 @@ namespace ImoutoRebirth.Room.Infrastructure
                 FileId = fileId
             };
 
-            var requestClient = await _configuredSendEndpointProvider.GetSendEndpoint<ISearchMetadataCommand>();
-            await requestClient.Send(command);
+            var requestClient 
+                = await _configuredSendEndpointProvider
+                   .GetSendEndpoint<IEverywhereSearchMetadataCommand>();
+            await requestClient.Send<IEverywhereSearchMetadataCommand>(command);
         }
     }
 }
