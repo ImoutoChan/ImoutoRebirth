@@ -15,7 +15,7 @@ namespace ImoutoRebirth.Common.EntityFrameworkCore
             {
                 var services = scope.ServiceProvider;
 
-                var logger = services.GetRequiredService<ILogger>();
+                var logger = services.GetRequiredService<ILogger<TDbContext>>();
                 var context = services.GetRequiredService<TDbContext>();
 
                 context.Database.Migrate();
@@ -35,7 +35,7 @@ namespace ImoutoRebirth.Common.EntityFrameworkCore
             {
                 var services = scope.ServiceProvider;
 
-                var logger = services.GetRequiredService<ILogger>();
+                var logger = services.GetRequiredService<ILogger<TDbContext>>();
                 var context = services.GetRequiredService<TDbContext>();
 
                 context.Database.Migrate();
