@@ -39,7 +39,7 @@ namespace ImoutoRebirth.Lilin.Infrastructure
             await _lilinDbContext.FileTags.AddAsync(fileTag.ToEntity(tag));
             tag.Count++;
         }
-
+        
         private async Task<TagEntity> GetOrCreateTag(
             TagTypeEntity type, 
             string fileTagName, 
@@ -70,9 +70,11 @@ namespace ImoutoRebirth.Lilin.Infrastructure
                 SynonymsArray = fileTagSynonyms,
                 HasValue = hasValue
             };
+            await _lilinDbContext.Tags.AddAsync(tag);
+
             return tag;
         }
-
+        
         private async Task<TagTypeEntity> GetOrCreateTagType(string typeName)
         {
             var type

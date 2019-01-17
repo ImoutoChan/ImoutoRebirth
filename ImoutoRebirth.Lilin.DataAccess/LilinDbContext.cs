@@ -30,6 +30,11 @@ namespace ImoutoRebirth.Lilin.DataAccess
                  .WithMany(x => x.FileTags)
                  .IsRequired()
                  .OnDelete(DeleteBehavior.Restrict);
+
+                b.HasIndex(x => new {x.FileId});
+                b.HasIndex(x => new {x.TagId});
+                b.HasIndex(x => new {x.TagId, x.Value});
+                b.HasIndex(x => new {x.Source, x.TagId});
             });
 
 
@@ -39,6 +44,15 @@ namespace ImoutoRebirth.Lilin.DataAccess
                  .WithMany(x => x.Tags)
                  .IsRequired()
                  .OnDelete(DeleteBehavior.Restrict);
+
+                b.HasIndex(x => new {x.TypeId, x.Name});
+                b.HasIndex(x => new {x.Name});
+                b.Property(x => x.Count).HasDefaultValue(0);
+            });
+
+            modelBuilder.Entity<NoteEntity>(b =>
+            {
+                b.HasIndex(x => x.FileId);
             });
         }
 

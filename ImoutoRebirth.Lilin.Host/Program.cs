@@ -1,5 +1,7 @@
 ﻿using System.Threading.Tasks;
+using ImoutoRebirth.Common.EntityFrameworkCore;
 using ImoutoRebirth.Common.Host;
+using ImoutoRebirth.Lilin.DataAccess;
 using Microsoft.Extensions.Hosting;
 
 namespace ImoutoRebirth.Lilin.Host
@@ -10,7 +12,9 @@ namespace ImoutoRebirth.Lilin.Host
 
         private static async Task Main(string[] args)
         {
-            await CreateConsoleHost(args).RunAsync();
+            await CreateConsoleHost(args)
+                 .MigrateIfNecessary<LilinDbContext>()
+                 .RunAsync();
         }
 
         public static IHost CreateConsoleHost(string[] args)

@@ -27,7 +27,7 @@ namespace ImoutoRebirth.Lilin.Services.MessageCommandHandlers
             await _mediator.Send(command);
         }
 
-        private MetadataUpdate ToMetadataUpdate(IUpdateMetadataCommand message)
+        private static MetadataUpdate ToMetadataUpdate(IUpdateMetadataCommand message)
         {
             var tags = message.FileTags.Select(
                                    x => new FileTagBind(

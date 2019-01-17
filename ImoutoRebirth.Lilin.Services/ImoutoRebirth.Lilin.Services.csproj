@@ -5,6 +5,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="ImoutoRebirth.Common.MassTransit" Version="1.0.0-CI00006" />
     <PackageReference Include="MassTransit.RabbitMq.Extensions.Hosting" Version="1.0.24" />
     <PackageReference Include="MediatR" Version="6.0.0" />
     <PackageReference Include="MediatR.Extensions.Microsoft.DependencyInjection" Version="6.0.1" />

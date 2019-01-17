@@ -1,5 +1,4 @@
-﻿using System.Linq;
-using System.Threading;
+﻿using System.Threading;
 using System.Threading.Tasks;
 using ImoutoRebirth.Lilin.Core.Infrastructure;
 using ImoutoRebirth.Lilin.Services.CQRS.Abstract;
@@ -22,10 +21,15 @@ namespace ImoutoRebirth.Lilin.Services.CQRS.Commands
         {
             var metadata = request.Update;
 
-            var addTagTasks = metadata.Tags.Select(x => _fileTagRepository.Add(x));
-            var addNoteTasks = metadata.Notes.Select(x => _fileNoteRepository.Add(x));
+            foreach (var tag in metadata.Tags)
+            {
+                await _fileTagRepository.Add(tag);
+            }
 
-            await Task.WhenAll(addTagTasks.Union(addNoteTasks));
+            foreach (var note in metadata.Notes)
+            {
+                await _fileNoteRepository.Add(note);
+            }
 
             await _fileTagRepository.UnitOfWork.SaveEntitiesAsync(cancellationToken);
             await _fileNoteRepository.UnitOfWork.SaveEntitiesAsync(cancellationToken);

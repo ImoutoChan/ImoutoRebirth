@@ -23,8 +23,8 @@ namespace ImoutoRebirth.Lilin.Host
 
         public override void ConfigureServices(IServiceCollection services)
         {
-            services.AddDbContext<LilinDbContext>(o 
-                => o.UseNpgsql(Configuration.GetConnectionString("LilinDatabase")));
+            services.AddDbContext<LilinDbContext>(
+                o => o.UseNpgsql(Configuration.GetConnectionString("LilinDatabase")));
 
             services.AddLilinInfrastructure()
                     .AddLilinServices();
