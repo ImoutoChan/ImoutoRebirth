@@ -10,18 +10,21 @@ namespace ImoutoRebirth.Common.EntityFrameworkCore
         public static IHost MigrateIfNecessary<TDbContext>(this IHost host) 
             where TDbContext : DbContext
         {
-            var services = host.Services;
+            using (var scope = host.Services.CreateScope())
+            {
+                var services = scope.ServiceProvider;
 
-            var logger = services.GetRequiredService<ILogger>();
-            var context = services.GetRequiredService<TDbContext>();
+                var logger = services.GetRequiredService<ILogger>();
+                var context = services.GetRequiredService<TDbContext>();
 
-            context.Database.Migrate();
+                context.Database.Migrate();
 
-            var migrations = context.Database.GetAppliedMigrations();
-            foreach (var migration in migrations)
-                logger.LogInformation($"Migrated to {migration}");
+                var migrations = context.Database.GetAppliedMigrations();
+                foreach (var migration in migrations)
+                    logger.LogInformation($"Migrated to {migration}");
 
-            return host;
+                return host;
+            }
         }
     }
 }
