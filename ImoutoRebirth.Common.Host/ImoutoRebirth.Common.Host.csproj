@@ -9,6 +9,7 @@
     <PackageProjectUrl>https://github.com/ImoutoRebirth/ImoutoRebirth.Common</PackageProjectUrl>
     <RepositoryUrl></RepositoryUrl>
     <Company>ImoutoRebirth</Company>
+    <PackageId>ImoutoRebirth.Common.Host</PackageId>
   </PropertyGroup>
 
   <ItemGroup>

@@ -1,11 +1,13 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
-VisualStudioVersion = 15.0.28010.2048
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.28407.52
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ImoutoRebirth.Common", "ImoutoRebirth.Common\ImoutoRebirth.Common.csproj", "{78C6FE75-D989-4F64-96CA-EDBFAC352F5A}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ImoutoRebirth.Common.Host", "ImoutoRebirth.Common.Host\ImoutoRebirth.Common.Host.csproj", "{D7A5BC18-13A7-4628-8095-FDE2E59E4CAD}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ImoutoRebirth.Common.MassTransit", "ImoutoRebirth.Common.MassTransit\ImoutoRebirth.Common.MassTransit.csproj", "{97F1318A-3E7B-47B1-B37D-B7B82A65DF4F}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -21,6 +23,10 @@ Global
 		{D7A5BC18-13A7-4628-8095-FDE2E59E4CAD}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D7A5BC18-13A7-4628-8095-FDE2E59E4CAD}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D7A5BC18-13A7-4628-8095-FDE2E59E4CAD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{97F1318A-3E7B-47B1-B37D-B7B82A65DF4F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{97F1318A-3E7B-47B1-B37D-B7B82A65DF4F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{97F1318A-3E7B-47B1-B37D-B7B82A65DF4F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{97F1318A-3E7B-47B1-B37D-B7B82A65DF4F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
