@@ -16,7 +16,7 @@ namespace ImoutoRebirth.Room.Core.Services
             _collectionFileRepository = collectionFileRepository;
         }
 
-        public async Task SaveNew(
+        public async Task<Guid> SaveNew(
             MovedInformation movedInformation,
             Guid collectionId)
         {
@@ -28,6 +28,8 @@ namespace ImoutoRebirth.Room.Core.Services
                 movedInformation.SystemFile.File.FullName);
 
             await _collectionFileRepository.Add(newFile);
+
+            return newFile.Id;
         }
     }
 }

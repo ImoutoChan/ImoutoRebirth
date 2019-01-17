@@ -6,7 +6,7 @@ namespace ImoutoRebirth.Room.Core.Services.Abstract
 {
     public interface ICollectionFileService
     {
-        Task SaveNew(
+        Task<Guid> SaveNew(
             MovedInformation movedInformation,
             Guid collectionId);
     }
