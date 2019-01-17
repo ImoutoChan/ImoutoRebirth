@@ -132,23 +132,5 @@ namespace ImoutoRebirth.Room.Webhost
             app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "ImoutoRebirth.Room API V1"));
             app.UseQuartz();
         }
-
-        private static async Task MigrateIfNecessary(IApplicationBuilder app)
-        {
-
-            using (var scope = app.ApplicationServices.CreateScope())
-            {
-                var services = scope.ServiceProvider;
-
-                var logger = services.GetRequiredService<ILogger<Startup>>();
-                var context = services.GetRequiredService<RoomDbContext>();
-                
-                await context.Database.MigrateAsync();
-
-                var migrations = await context.Database.GetAppliedMigrationsAsync();
-                foreach (var migration in migrations)
-                    logger.LogInformation($"Migrated to {migration}");
-            }
-        }
     }
 }

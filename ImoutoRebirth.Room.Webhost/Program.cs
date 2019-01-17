@@ -1,15 +1,19 @@
-﻿using Microsoft.AspNetCore;
+﻿using System.Threading.Tasks;
+using ImoutoRebirth.Common.EntityFrameworkCore;
+using ImoutoRebirth.Room.Database;
+using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
 
 namespace ImoutoRebirth.Room.Webhost
 {
     public class Program
     {
-        public static void Main(string[] args)
+        public static async Task Main(string[] args)
         {
-            CreateWebHostBuilder(args)
+            await CreateWebHostBuilder(args)
                .Build()
-               .Run();
+               .MigrateIfNecessary<RoomDbContext>()
+               .RunAsync();
         }
 
         public static IWebHostBuilder CreateWebHostBuilder(string[] args) =>
