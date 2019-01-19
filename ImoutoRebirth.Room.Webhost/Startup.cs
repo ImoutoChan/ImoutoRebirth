@@ -7,9 +7,6 @@ using ImoutoRebirth.Common.MassTransit;
 using ImoutoRebirth.Common.Quartz.Extensions;
 using ImoutoRebirth.Room.Core;
 using ImoutoRebirth.Room.DataAccess;
-using ImoutoRebirth.Room.DataAccess.Cache;
-using ImoutoRebirth.Room.DataAccess.Repositories;
-using ImoutoRebirth.Room.DataAccess.Repositories.Abstract;
 using ImoutoRebirth.Room.Database;
 using ImoutoRebirth.Room.Infrastructure;
 using ImoutoRebirth.Room.WebApi.Controllers;
@@ -43,23 +40,21 @@ namespace ImoutoRebirth.Room.Webhost
             services.AddMvc()
                     .SetCompatibilityVersion(CompatibilityVersion.Version_2_1)
                     .AddApplicationPart(typeof(CollectionsController).Assembly);
-
-            ConfigureDatabaseServices(services);
-
+            
             services.AddRoomServices();
             services.AddMassTransitRabbitMqHostedService(
                         ReceiverApp.Name,
                         RoomSettings.RabbitSettings.ToOptions())
                     .AddRoomServicesForRabbit();
 
+            services.AddRoomCore();
+            services.AddRoomDataAccess();
+
             services.AddQuartz()
                     .AddQuartzJob<OverseeJob, OverseeJob.Description>();
 
-            services.AddRoomCore();
-
-
+            ConfigureDatabaseServices(services);
             ConfigureCacheServices(services);
-            ConfigureDataAccessServices(services);
             ConfigureAutoMapperServices(services);
             ConfigureSwaggerServices(services);
         }
@@ -69,21 +64,16 @@ namespace ImoutoRebirth.Room.Webhost
             services.AddDbContext<RoomDbContext>(builder
                 => builder.UseNpgsql(Configuration.GetConnectionString("RoomDatabase")));
         }
-        private void ConfigureSwaggerServices(
-            IServiceCollection services)
+
+        private void ConfigureSwaggerServices(IServiceCollection services)
         {
             services.AddSwaggerGen(c 
-                => c.SwaggerDoc("v1", new Info { Title = "ImoutoRebirth.Room API", Version = "v1" }));
-        }
-
-        public void ConfigureDataAccessServices(IServiceCollection services)
-        {
-            services.AddTransient<ICollectionFileRepository, CollectionFileRepository>();
-            services.AddTransient<IDbStateService, DbStateService>();
-            services.AddTransient<ICollectionRepository, CollectionRepository>();
-            services.AddTransient<ISourceFolderRepository, SourceFolderRepository>();
-            services.AddTransient<IDestinationFolderRepository, DestinationFolderRepository>();
-            services.AddTransient<ICollectionFileCacheService, CollectionFileCacheService>();
+                => c.SwaggerDoc("v1", 
+                                new Info
+                                {
+                                    Title = "ImoutoRebirth.Room API",
+                                    Version = "v1"
+                                }));
         }
 
         public void ConfigureCacheServices(IServiceCollection services)
@@ -123,9 +113,12 @@ namespace ImoutoRebirth.Room.Webhost
 
             app.UseHttpsRedirection();
             app.UseMvc();
+
             app.UseEFSecondLevelCache();
+
             app.UseSwagger();
             app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "ImoutoRebirth.Room API V1"));
+
             app.UseQuartz();
         }
     }
