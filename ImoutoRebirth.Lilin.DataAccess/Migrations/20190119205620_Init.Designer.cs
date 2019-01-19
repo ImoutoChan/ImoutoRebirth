@@ -10,7 +10,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace ImoutoRebirth.Lilin.DataAccess.Migrations
 {
     [DbContext(typeof(LilinDbContext))]
-    [Migration("20190117233754_Init")]
+    [Migration("20190119205620_Init")]
     partial class Init
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -31,7 +31,7 @@ namespace ImoutoRebirth.Lilin.DataAccess.Migrations
 
                     b.Property<string>("Value");
 
-                    b.HasKey("FileId", "TagId");
+                    b.HasKey("FileId", "TagId", "Source");
 
                     b.HasIndex("FileId");
 
@@ -93,7 +93,8 @@ namespace ImoutoRebirth.Lilin.DataAccess.Migrations
 
                     b.HasIndex("Name");
 
-                    b.HasIndex("TypeId", "Name");
+                    b.HasIndex("TypeId", "Name")
+                        .IsUnique();
 
                     b.ToTable("Tags");
                 });
@@ -108,6 +109,9 @@ namespace ImoutoRebirth.Lilin.DataAccess.Migrations
                         .IsRequired();
 
                     b.HasKey("Id");
+
+                    b.HasIndex("Name")
+                        .IsUnique();
 
                     b.ToTable("TagTypes");
                 });

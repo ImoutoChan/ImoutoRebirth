@@ -8,7 +8,7 @@ using ImoutoRebirth.Lilin.DataAccess;
 using ImoutoRebirth.Lilin.Infrastructure.Mappers;
 using Microsoft.EntityFrameworkCore;
 
-namespace ImoutoRebirth.Lilin.Infrastructure
+namespace ImoutoRebirth.Lilin.Infrastructure.Repositories
 {
     public class FileNoteRepository : IFileNoteRepository
     {

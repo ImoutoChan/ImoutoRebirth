@@ -11,88 +11,37 @@ using ImoutoRebirth.Lilin.Infrastructure.ExpressionHelpers;
 using ImoutoRebirth.Lilin.Infrastructure.Mappers;
 using Microsoft.EntityFrameworkCore;
 
-namespace ImoutoRebirth.Lilin.Infrastructure
+namespace ImoutoRebirth.Lilin.Infrastructure.Repositories
 {
     public class FileTagRepository : IFileTagRepository
     {
         private readonly LilinDbContext _lilinDbContext;
+        private readonly ITagTypeRepository _tagTypeRepository;
+        private readonly ITagRepository _tagRepository;
 
-        public FileTagRepository(LilinDbContext lilinDbContext)
+        public FileTagRepository(
+            LilinDbContext lilinDbContext, 
+            ITagTypeRepository tagTypeRepository,
+            ITagRepository tagRepository)
         {
             _lilinDbContext = lilinDbContext;
+            _tagTypeRepository = tagTypeRepository;
+            _tagRepository = tagRepository;
         }
 
         public IUnitOfWork UnitOfWork => _lilinDbContext;
         
         public async Task Add(FileTagBind fileTag)
         {
-            var type = await GetOrCreateTagType(fileTag.Type);
-            var tag = await GetOrCreateTag(
-                type, 
+            var type = await _tagTypeRepository.GetOrCreate(fileTag.Type);
+            var tag = await _tagRepository.GetOrCreate(
                 fileTag.Name, 
-                fileTag.Synonyms, 
-                fileTag.Value != null);
-
-            if (!tag.HasValue && fileTag.Value != null)
-                throw new Exception("Trying to assign value for non-value tag.");
+                type.Id, 
+                fileTag.Value != null, 
+                fileTag.Synonyms);
 
             await _lilinDbContext.FileTags.AddAsync(fileTag.ToEntity(tag));
-            tag.Count++;
-        }
-        
-        private async Task<TagEntity> GetOrCreateTag(
-            TagTypeEntity type, 
-            string fileTagName, 
-            string[] fileTagSynonyms, 
-            bool hasValue)
-        {
-            var tag =
-                await _lilinDbContext.Tags.SingleOrDefaultAsync(
-                    x => x.TypeId  == type.Id
-                         && x.Name == fileTagName);
-
-            if (tag != null)
-            {
-                tag.SynonymsArray
-                    = tag
-                     .SynonymsArray
-                     .Union(fileTagSynonyms)
-                     .ToArray();
-
-                return tag;
-            }
-
-            tag = new TagEntity
-            {
-                Id = Guid.NewGuid(),
-                Name = fileTagName,
-                Type = type,
-                SynonymsArray = fileTagSynonyms,
-                HasValue = hasValue
-            };
-            await _lilinDbContext.Tags.AddAsync(tag);
-
-            return tag;
-        }
-        
-        private async Task<TagTypeEntity> GetOrCreateTagType(string typeName)
-        {
-            var type
-                = await _lilinDbContext
-                       .TagTypes
-                       .SingleOrDefaultAsync(x => x.Name == typeName);
-
-            if (type != null)
-                return type;
-
-            type = new TagTypeEntity
-            {
-                Id = Guid.NewGuid(),
-                Name = typeName
-            };
-            await _lilinDbContext.AddAsync(type);
-
-            return type;
+            await _tagRepository.IncrementTagCounter(tag.Id);
         }
 
         public async Task<Guid[]> SearchFiles(

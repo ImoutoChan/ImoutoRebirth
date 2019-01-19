@@ -1,4 +1,6 @@
-﻿using System.Threading;
+﻿using System;
+using System.Data;
+using System.Threading;
 using System.Threading.Tasks;
 using ImoutoRebirth.Lilin.Core.Infrastructure;
 using ImoutoRebirth.Lilin.DataAccess.Entities;
@@ -25,7 +27,7 @@ namespace ImoutoRebirth.Lilin.DataAccess
         {
             modelBuilder.Entity<FileTagEntity>(b =>
             {
-                b.HasKey(x => new {x.FileId, x.TagId});
+                b.HasKey(x => new {x.FileId, x.TagId, x.Source});
                 b.HasOne(x => x.Tag)
                  .WithMany(x => x.FileTags)
                  .IsRequired()
@@ -54,12 +56,37 @@ namespace ImoutoRebirth.Lilin.DataAccess
             {
                 b.HasIndex(x => x.FileId);
             });
+
+            modelBuilder.Entity<TagTypeEntity>(b =>
+            {
+                b.HasIndex(x => x.Name).IsUnique();
+            });
+
+            modelBuilder.Entity<TagEntity>(b =>
+            {
+                b.HasIndex(x => new {x.TypeId, x.Name}).IsUnique();
+            });
         }
 
         public async Task<bool> SaveEntitiesAsync(CancellationToken cancellationToken = default(CancellationToken))
         {
             await SaveChangesAsync(cancellationToken);
             return true;
+        }
+
+        public async Task<IDisposable> CreateTransaction(IsolationLevel isolationLevel)
+        {
+            return await Database.BeginTransactionAsync(isolationLevel);
+        }
+
+        public void CommitTransaction()
+        {
+            var currentTransaction = Database.CurrentTransaction;
+
+            if (currentTransaction == null)
+                throw new Exception("Can't commit empty transaction.");
+
+            currentTransaction.Commit();
         }
     }
 }

@@ -67,12 +67,12 @@ namespace ImoutoRebirth.Lilin.DataAccess.Migrations
                 {
                     FileId = table.Column<Guid>(nullable: false),
                     TagId = table.Column<Guid>(nullable: false),
-                    Value = table.Column<string>(nullable: true),
-                    Source = table.Column<int>(nullable: false)
+                    Source = table.Column<int>(nullable: false),
+                    Value = table.Column<string>(nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_FileTags", x => new { x.FileId, x.TagId });
+                    table.PrimaryKey("PK_FileTags", x => new { x.FileId, x.TagId, x.Source });
                     table.ForeignKey(
                         name: "FK_FileTags_Tags_TagId",
                         column: x => x.TagId,
@@ -114,7 +114,14 @@ namespace ImoutoRebirth.Lilin.DataAccess.Migrations
             migrationBuilder.CreateIndex(
                 name: "IX_Tags_TypeId_Name",
                 table: "Tags",
-                columns: new[] { "TypeId", "Name" });
+                columns: new[] { "TypeId", "Name" },
+                unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_TagTypes_Name",
+                table: "TagTypes",
+                column: "Name",
+                unique: true);
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)

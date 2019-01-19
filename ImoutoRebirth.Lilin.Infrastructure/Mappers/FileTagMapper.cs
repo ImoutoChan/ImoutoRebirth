@@ -15,11 +15,11 @@ namespace ImoutoRebirth.Lilin.Infrastructure.Mappers
                 Value = fileTagModel.Value
             };
 
-        public static FileTagEntity ToEntity(this FileTagBind model, TagEntity tag) 
+        public static FileTagEntity ToEntity(this FileTagBind model, Tag tag) 
             => new FileTagEntity
             {
                 FileId = model.FileId,
-                Tag = tag,
+                TagId = tag.Id,
                 Source = model.Source,
                 Value = model.Value
             };

@@ -25,7 +25,7 @@ namespace ImoutoRebirth.Lilin.DataAccess.Entities
         public string Synonyms { get; set; }
 
         [NotMapped]
-        public string[] SynonymsArray
+        public IReadOnlyCollection<string> SynonymsArray
         {
             get => Synonyms.Split(new [] {_synonymsSeparator}, StringSplitOptions.RemoveEmptyEntries);
             set => Synonyms = string.Join(_synonymsSeparator, value);

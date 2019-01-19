@@ -1,5 +1,6 @@
 ﻿using ImoutoRebirth.Common.MassTransit;
 using ImoutoRebirth.Lilin.MessageContracts;
+using ImoutoRebirth.Lilin.Services.Behaviors;
 using ImoutoRebirth.Lilin.Services.MessageCommandHandlers;
 using MassTransit.RabbitMq.Extensions.Hosting.Contracts;
 using MediatR;
@@ -12,6 +13,8 @@ namespace ImoutoRebirth.Lilin.Services
         public static IServiceCollection AddLilinServices(this IServiceCollection services)
         {
             services.AddMediatR();
+            services.AddTransient(typeof(IPipelineBehavior<,>), typeof(LoggingBehavior<,>));
+            services.AddTransient(typeof(IPipelineBehavior<,>), typeof(TransactionBehavior<,>));
 
             return services;
         }
@@ -19,5 +22,6 @@ namespace ImoutoRebirth.Lilin.Services
         public static IMassTransitRabbitMqHostingBuilder AddLilinServicesForRabbit(
             this IMassTransitRabbitMqHostingBuilder builder)
             => builder.AddDefaultConsumer<UpdateMetadataCommandConsumer, IUpdateMetadataCommand>();
+                    //.ConsumeByConvention<UpdateMetadataCommandConsumer, IUpdateMetadataCommand>(receiveEndpointConfigurator: configurator => configurator.PrefetchCount = 2);
     }
 }

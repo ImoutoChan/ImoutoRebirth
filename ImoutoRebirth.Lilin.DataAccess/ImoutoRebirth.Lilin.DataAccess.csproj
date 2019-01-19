@@ -1,15 +1,8 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
   </PropertyGroup>
-
-  <ItemGroup>
-    <Compile Remove="Migrations\20190117232545_Init.cs" />
-    <Compile Remove="Migrations\20190117232545_Init.Designer.cs" />
-    <Compile Remove="Migrations\20190117232803_Init.cs" />
-    <Compile Remove="Migrations\20190117232803_Init.Designer.cs" />
-  </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="2.2.1" />
@@ -25,7 +18,9 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Migrations\" />
+    <Compile Update="Migrations\20190119205620_Init.Designer.cs">
+      <DependentUpon>20190119205620_Init.cs</DependentUpon>
+    </Compile>
   </ItemGroup>
 
 </Project>

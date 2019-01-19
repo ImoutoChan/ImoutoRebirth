@@ -25,7 +25,7 @@ namespace ImoutoRebirth.Lilin.Host
         {
             services.AddDbContext<LilinDbContext>(
                 o => o.UseNpgsql(Configuration.GetConnectionString("LilinDatabase")));
-
+            
             services.AddLilinInfrastructure()
                     .AddLilinServices();
 

@@ -1,4 +1,6 @@
 ﻿using ImoutoRebirth.Lilin.Core.Infrastructure;
+using ImoutoRebirth.Lilin.DataAccess;
+using ImoutoRebirth.Lilin.Infrastructure.Repositories;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace ImoutoRebirth.Lilin.Infrastructure
@@ -9,6 +11,10 @@ namespace ImoutoRebirth.Lilin.Infrastructure
         {
             services.AddTransient<IFileTagRepository, FileTagRepository>();
             services.AddTransient<IFileNoteRepository, FileNoteRepository>();
+            services.AddTransient<ITagTypeRepository, TagTypeRepository>();
+            services.AddTransient<ITagRepository, TagRepository>();
+
+            services.AddTransient<IUnitOfWork>(provider => provider.GetRequiredService<LilinDbContext>());
 
             return services;
         }
