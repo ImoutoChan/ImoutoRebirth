@@ -29,7 +29,7 @@ namespace ImoutoRebirth.Room.Webhost.Quartz
             public ITrigger GetJobTrigger()
                 => TriggerBuilder.Create()
                                  .WithIdentity("Oversee trigger")
-                                 .WithSchedule(SimpleScheduleBuilder.RepeatSecondlyForever(5))
+                                 .WithSchedule(SimpleScheduleBuilder.RepeatSecondlyForever(15))
                                  .Build();
         }
     }
