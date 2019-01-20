@@ -27,11 +27,11 @@ namespace ImoutoRebirth.Room.Core.Services
         {
             var newPath = GetNewPath(destinationFolder, moveInformation);
 
-            _logger.LogInformation($"Destination path is calculated: {newPath}.");
+            _logger.LogInformation("Destination path is calculated: {NewPath}.", newPath);
 
             var newFile = new FileInfo(newPath);
             var wasANewFile = MoveFile(moveInformation.SystemFile, ref newFile);
-            _logger.LogInformation($"Saved to: {newFile.FullName}.");
+            _logger.LogInformation("Saved to: {NewPath}.", newFile.FullName);
 
             return new MovedInformation(
                 moveInformation, 
@@ -58,14 +58,14 @@ namespace ImoutoRebirth.Room.Core.Services
 
             if (!newFile.Directory.Exists)
             {
-                _logger.LogInformation($"Creating target directory {newFile.Directory}");
+                _logger.LogInformation("Creating target directory {NewDirectory}", newFile.Directory);
                 newFile.Directory.Create();
             }
 
             if (newFile.Exists)
                 return MoveToExisted(oldFile, ref newFile);
 
-            _logger.LogInformation($"Moving to {newFile.FullName}.");
+            _logger.LogInformation("Moving to {NewPath}.", newFile.FullName);
             oldFile.File.MoveTo(newFile.FullName);
 
             return true;
@@ -101,7 +101,7 @@ namespace ImoutoRebirth.Room.Core.Services
             }
             while (countedFile.Exists);
 
-            _logger.LogInformation($"Moving to {countedFile.FullName}.");
+            _logger.LogInformation("Moving to {ChangeNewPath}.", countedFile.FullName);
             oldFile.File.MoveTo(countedFile.FullName);
 
             newFile = countedFile;
