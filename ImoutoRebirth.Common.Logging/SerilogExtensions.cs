@@ -2,7 +2,7 @@
 using Serilog;
 using Serilog.Events;
 
-namespace ImoutoRebirth.Logging
+namespace ImoutoRebirth.Common.Logging
 {
     public static class SerilogExtensions
     {

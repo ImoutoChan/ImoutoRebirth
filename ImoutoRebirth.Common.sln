@@ -13,7 +13,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ImoutoRebirth.Common.Quartz
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ImoutoRebirth.Common.EntityFrameworkCore", "ImoutoRebirth.Common.EntityFrameworkCore\ImoutoRebirth.Common.EntityFrameworkCore.csproj", "{DE321452-F727-45DB-9ED8-D55544D833BD}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ImoutoRebirth.Logging", "ImoutoRebirth.Logging\ImoutoRebirth.Logging.csproj", "{5104AEED-883B-4456-A3C5-4A5CCF367ADE}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ImoutoRebirth.Common.Logging", "ImoutoRebirth.Common.Logging\ImoutoRebirth.Common.Logging.csproj", "{5104AEED-883B-4456-A3C5-4A5CCF367ADE}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

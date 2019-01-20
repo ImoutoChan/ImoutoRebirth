@@ -5,7 +5,7 @@ using Microsoft.Extensions.Logging;
 using Serilog;
 using Serilog.Core;
 
-namespace ImoutoRebirth.Logging
+namespace ImoutoRebirth.Common.Logging
 {
     public static class WebHostBuilderExtensions
     {
