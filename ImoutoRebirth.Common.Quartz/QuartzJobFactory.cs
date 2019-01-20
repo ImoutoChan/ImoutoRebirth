@@ -25,8 +25,9 @@ namespace ImoutoRebirth.Common.Quartz
             var scope = _serviceScopeFactory.CreateScope();
             try
             {
-                _logger.LogTrace($"Producing instance of Job '{bundle.JobDetail.Key}', " +
-                                 $"class={bundle.JobDetail.JobType.FullName}");
+                _logger.LogTrace("Producing instance of Job '{JobKey}', class={JobClass}", 
+                                 bundle.JobDetail.Key, 
+                                 bundle.JobDetail.JobType.FullName);
 
                 var job = (IJob)scope.ServiceProvider.GetRequiredService(bundle.JobDetail.JobType);
 

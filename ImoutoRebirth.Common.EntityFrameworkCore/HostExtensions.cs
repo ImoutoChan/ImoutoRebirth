@@ -22,7 +22,7 @@ namespace ImoutoRebirth.Common.EntityFrameworkCore
 
                 var migrations = context.Database.GetAppliedMigrations();
                 foreach (var migration in migrations)
-                    logger.LogInformation($"Migrated to {migration}");
+                    logger.LogInformation("Migrated to {Migration}", migration);
 
                 return host;
             }
@@ -42,7 +42,7 @@ namespace ImoutoRebirth.Common.EntityFrameworkCore
 
                 var migrations = context.Database.GetAppliedMigrations();
                 foreach (var migration in migrations)
-                    logger.LogInformation($"Migrated to {migration}");
+                    logger.LogInformation("Migrated to {Migration}", migration);
 
                 return host;
             }
