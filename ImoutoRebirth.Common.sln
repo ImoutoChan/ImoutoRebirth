@@ -9,9 +9,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ImoutoRebirth.Common.Host",
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ImoutoRebirth.Common.MassTransit", "ImoutoRebirth.Common.MassTransit\ImoutoRebirth.Common.MassTransit.csproj", "{97F1318A-3E7B-47B1-B37D-B7B82A65DF4F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ImoutoRebirth.Common.Quartz", "ImoutoRebirth.Common.Quartz\ImoutoRebirth.Common.Quartz.csproj", "{D11B67C1-EDB2-4410-BF8C-3D988FA36D02}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ImoutoRebirth.Common.Quartz", "ImoutoRebirth.Common.Quartz\ImoutoRebirth.Common.Quartz.csproj", "{D11B67C1-EDB2-4410-BF8C-3D988FA36D02}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ImoutoRebirth.Common.EntityFrameworkCore", "ImoutoRebirth.Common.EntityFrameworkCore\ImoutoRebirth.Common.EntityFrameworkCore.csproj", "{DE321452-F727-45DB-9ED8-D55544D833BD}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ImoutoRebirth.Common.EntityFrameworkCore", "ImoutoRebirth.Common.EntityFrameworkCore\ImoutoRebirth.Common.EntityFrameworkCore.csproj", "{DE321452-F727-45DB-9ED8-D55544D833BD}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ImoutoRebirth.Logging", "ImoutoRebirth.Logging\ImoutoRebirth.Logging.csproj", "{5104AEED-883B-4456-A3C5-4A5CCF367ADE}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -39,6 +41,10 @@ Global
 		{DE321452-F727-45DB-9ED8-D55544D833BD}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{DE321452-F727-45DB-9ED8-D55544D833BD}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{DE321452-F727-45DB-9ED8-D55544D833BD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5104AEED-883B-4456-A3C5-4A5CCF367ADE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5104AEED-883B-4456-A3C5-4A5CCF367ADE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5104AEED-883B-4456-A3C5-4A5CCF367ADE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5104AEED-883B-4456-A3C5-4A5CCF367ADE}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
