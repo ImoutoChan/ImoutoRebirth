@@ -6,7 +6,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="ImoutoRebirth.Common" Version="1.0.0-CI00011" />
+    <PackageReference Include="ImoutoRebirth.Common" Version="1.0.0-CI00015" />
   </ItemGroup>
 
   <ItemGroup>

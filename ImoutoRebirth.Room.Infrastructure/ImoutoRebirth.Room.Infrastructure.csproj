@@ -5,8 +5,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="ImoutoRebirth.Arachne.MessageContracts" Version="1.0.0-CI00001" />
-    <PackageReference Include="ImoutoRebirth.Common.MassTransit" Version="1.0.0-CI00004" />
+    <PackageReference Include="ImoutoRebirth.Arachne.MessageContracts" Version="1.0.0-CI00002" />
+    <PackageReference Include="ImoutoRebirth.Common.MassTransit" Version="1.0.0-CI00015" />
     <PackageReference Include="SixLabors.ImageSharp" Version="1.0.0-beta0004" />
   </ItemGroup>
 

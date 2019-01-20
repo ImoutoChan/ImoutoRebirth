@@ -6,6 +6,7 @@ using ImoutoRebirth.Room.Core.Services.Abstract;
 using ImoutoRebirth.Room.DataAccess;
 using ImoutoRebirth.Room.DataAccess.Models;
 using Microsoft.Extensions.Logging;
+using TaskExtensions = ImoutoRebirth.Common.TaskExtensions;
 
 namespace ImoutoRebirth.Room.Core.Services
 {
@@ -57,24 +58,22 @@ namespace ImoutoRebirth.Room.Core.Services
 
             _logger.LogInformation("{NewFilesCount} new files found", newFiles.Count);
 
-            var movedTasks = newFiles.Select(x => MoveFile(oversawCollection, x))
-                                     .Where(x => x.RequireSave)
-                                     .Select(
-                                          x => (SaveTask: _collectionFileService
-                                                   .SaveNew(x, oversawCollection.Collection.Id),
-                                                Md5: x.SystemFile.Md5))
-                                     .ToList();
-
-            await movedTasks.Select(x => x.SaveTask).WhenAll();
+            var movedTasks = await newFiles.Select(x => MoveFile(oversawCollection, x))
+                                           .Where(x => x.RequireSave)
+                                           .Select(
+                                                x => _collectionFileService
+                                                    .SaveNew(x, oversawCollection.Collection.Id)
+                                                    .With(x.SystemFile.Md5))
+                                           .WhenAll();
 
             await _dbStateService.SaveChanges();
 
-            _logger.LogInformation("{NewFilesSavedCount} files saved", movedTasks.Count);
+            _logger.LogInformation("{NewFilesSavedCount} files saved", movedTasks.Length);
 
-            await movedTasks.Select(x => _remoteCommandService.UpdateMetadataRequest(x.SaveTask.Result, x.Md5))
+            await movedTasks.Select(x => _remoteCommandService.UpdateMetadataRequest(x.Result, x.With))
                             .WhenAll();
 
-            _logger.LogDebug("Update metadata requests are sent ");
+            _logger.LogDebug("Update metadata requests are sent");
         }
 
         private MovedInformation MoveFile(OversawCollection oversawCollection, MoveInformation moveInformation)
