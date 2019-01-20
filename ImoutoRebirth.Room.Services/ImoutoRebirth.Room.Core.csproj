@@ -6,6 +6,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="ImoutoRebirth.Common" Version="1.0.0-CI00011" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\ImoutoRebirth.Room.DataAccess\ImoutoRebirth.Room.DataAccess.csproj" />
   </ItemGroup>
 

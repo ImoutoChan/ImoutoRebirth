@@ -1,54 +1,91 @@
 ﻿using System.Linq;
 using System.Threading.Tasks;
+using ImoutoRebirth.Common;
+using ImoutoRebirth.Room.Core.Models;
 using ImoutoRebirth.Room.Core.Services.Abstract;
 using ImoutoRebirth.Room.DataAccess;
 using ImoutoRebirth.Room.DataAccess.Models;
+using Microsoft.Extensions.Logging;
 
 namespace ImoutoRebirth.Room.Core.Services
 {
     public class FileSystemActualizationService : IFileSystemActualizationService
     {
-        private readonly ISourceFolderService      _sourceFolderService;
+        private readonly ISourceFolderService _sourceFolderService;
         private readonly IDestinationFolderService _destinationFolderService;
-        private readonly ICollectionFileService    _collectionFileService;
-        private readonly IDbStateService           _dbStateService;
-        private readonly IRemoteCommandService             _remoteCommandService;
+        private readonly ICollectionFileService _collectionFileService;
+        private readonly IDbStateService _dbStateService;
+        private readonly IRemoteCommandService _remoteCommandService;
+        private readonly ILogger<FileSystemActualizationService> _logger;
 
         public FileSystemActualizationService(
             ISourceFolderService sourceFolderService,
             IDestinationFolderService destinationFolderService,
             ICollectionFileService collectionFileService,
-            IDbStateService dbStateService, 
-            IRemoteCommandService remoteCommandService)
+            IDbStateService dbStateService,
+            IRemoteCommandService remoteCommandService,
+            ILogger<FileSystemActualizationService> logger)
         {
             _sourceFolderService = sourceFolderService;
             _destinationFolderService = destinationFolderService;
             _collectionFileService = collectionFileService;
             _dbStateService = dbStateService;
             _remoteCommandService = remoteCommandService;
+            _logger = logger;
         }
 
         public async Task PryCollection(OversawCollection oversawCollection)
         {
+            _logger.LogTrace("Prying collection {CollectionName}", oversawCollection.Collection.Name);
+
             foreach (var collectionSourceFolder in oversawCollection.SourceFolders)
             {
-                var newFiles = await _sourceFolderService.GetNewFiles(collectionSourceFolder);
+                await ProcessSourceFolder(oversawCollection, collectionSourceFolder);
+            }
+        }
 
-                var moved = newFiles
-                   .Select(x => _destinationFolderService.Move(oversawCollection.DestinationFolder, x));
-                
+        private async Task ProcessSourceFolder(OversawCollection oversawCollection, SourceFolder collectionSourceFolder)
+        {
+            _logger.LogTrace("Looking at {SourceFolderPath}...", collectionSourceFolder.Path);
 
-                var tasks = moved.Where(x => x.RequireSave)
-                                 .Select(x => (GuidTask: _collectionFileService.SaveNew(x, oversawCollection.Collection.Id), x.SystemFile.Md5))
-                                 .ToList();
+            var newFiles = await _sourceFolderService.GetNewFiles(collectionSourceFolder);
 
-                await Task.WhenAll(tasks.Select(x => x.GuidTask));
+            if (!newFiles.Any())
+            {
+                return;
+            }
 
-                await _dbStateService.SaveChanges();
+            _logger.LogInformation("{NewFilesCount} new files found", newFiles.Count);
 
-                await Task.WhenAll(
-                    tasks.Select(x => _remoteCommandService.UpdateMetadataRequest(x.GuidTask.Result, x.Md5))
-                );
+            var movedTasks = newFiles.Select(x => MoveFile(oversawCollection, x))
+                                     .Where(x => x.RequireSave)
+                                     .Select(
+                                          x => (SaveTask: _collectionFileService
+                                                   .SaveNew(x, oversawCollection.Collection.Id),
+                                                Md5: x.SystemFile.Md5))
+                                     .ToList();
+
+            await movedTasks.Select(x => x.SaveTask).WhenAll();
+
+            await _dbStateService.SaveChanges();
+
+            _logger.LogInformation("{NewFilesSavedCount} files saved", movedTasks.Count);
+
+            await movedTasks.Select(x => _remoteCommandService.UpdateMetadataRequest(x.SaveTask.Result, x.Md5))
+                            .WhenAll();
+
+            _logger.LogDebug("Update metadata requests are sent ");
+        }
+
+        private MovedInformation MoveFile(OversawCollection oversawCollection, MoveInformation moveInformation)
+        {
+            using (_logger.BeginScope(
+                "Processing new file in source: {NewFile}, {MoveProblem}, {@SourceTags}",
+                moveInformation.SystemFile.File.FullName,
+                moveInformation.MoveProblem,
+                moveInformation.SourceTags))
+            {
+                return _destinationFolderService.Move(oversawCollection.DestinationFolder, moveInformation);
             }
         }
     }
