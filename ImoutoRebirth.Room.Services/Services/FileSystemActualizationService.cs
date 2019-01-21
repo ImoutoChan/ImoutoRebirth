@@ -6,7 +6,6 @@ using ImoutoRebirth.Room.Core.Services.Abstract;
 using ImoutoRebirth.Room.DataAccess;
 using ImoutoRebirth.Room.DataAccess.Models;
 using Microsoft.Extensions.Logging;
-using TaskExtensions = ImoutoRebirth.Common.TaskExtensions;
 
 namespace ImoutoRebirth.Room.Core.Services
 {
