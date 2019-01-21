@@ -17,17 +17,20 @@ namespace ImoutoRebirth.Lilin.Services.Behaviors
 
         public async Task<TResponse> Handle(TRequest request, CancellationToken cancellationToken, RequestHandlerDelegate<TResponse> next)
         {
-            _logger.LogTrace($"Handling {typeof(TRequest).Name}");
+            _logger.LogTrace("Handling {RequestName}", typeof(TRequest).Name);
             try
             {
                 var response = await next();
 
-                _logger.LogTrace($"Handled {typeof(TResponse).Name}");
+                _logger.LogTrace(
+                    "Handled {RequestName} with response {ResponseName}", 
+                    typeof(TRequest).Name, 
+                    typeof(TResponse).Name);
                 return response;
             }
             catch (Exception e)
             {
-                _logger.LogError(e, $"Error in handling {typeof(TRequest).Name}");
+                _logger.LogError(e, "Error in handling {RequestName}", typeof(TRequest).Name);
                 throw;
             }
         }
