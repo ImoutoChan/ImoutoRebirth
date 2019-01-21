@@ -1,6 +1,7 @@
 ﻿using System.Threading.Tasks;
 using ImoutoRebirth.Common.EntityFrameworkCore;
 using ImoutoRebirth.Common.Host;
+using ImoutoRebirth.Common.Logging;
 using ImoutoRebirth.Lilin.DataAccess;
 using Microsoft.Extensions.Hosting;
 
@@ -22,6 +23,14 @@ namespace ImoutoRebirth.Lilin.Host
               .UseConsoleLifetime()
               .UseEnvironmentFromEnvironmentVariable(ServicePrefix)
               .UseConfiguration(ServicePrefix)
+              .ConfigureSerilog(
+                   (loggerBuilder, appConfiguration) 
+                       => loggerBuilder
+                           .WithoutDefaultLoggers()
+                           .WithConsole()
+                           .WithAllRollingFile()
+                           .WithInformationRollingFile()
+                           .PatchWithConfiguration(appConfiguration))
               .UseStartup(x => new Startup(x))
               .Build();
 
