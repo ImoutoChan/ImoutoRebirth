@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore.ChangeTracking;
 
 namespace ImoutoRebirth.Common.EntityFrameworkCore.TimeTrack
 {
-    public class FillTimeTrackDbContextHelper
+    public class TimeTrackDbContextHelper
     {
         public void OnBeforeSaveChanges(ChangeTracker tracker)
         {
