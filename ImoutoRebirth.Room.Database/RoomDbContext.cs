@@ -1,11 +1,9 @@
-﻿using System;
-using System.Linq;
-using System.Linq.Expressions;
-using System.Reflection;
-using System.Threading;
+﻿using System.Threading;
 using System.Threading.Tasks;
 using EFSecondLevelCache.Core;
 using EFSecondLevelCache.Core.Contracts;
+using ImoutoRebirth.Common.EntityFrameworkCore;
+using ImoutoRebirth.Common.EntityFrameworkCore.TimeTrack;
 using ImoutoRebirth.Room.Database.Entities;
 using ImoutoRebirth.Room.Database.Entities.Abstract;
 using Microsoft.EntityFrameworkCore;
@@ -15,11 +13,8 @@ namespace ImoutoRebirth.Room.Database
 {
     public class RoomDbContext : DbContext
     {
-        private const string _isDeletedProperty = "IsDeleted";
-        private static readonly MethodInfo _propertyMethod = 
-            typeof(EF)
-               .GetMethod(nameof(EF.Property), BindingFlags.Static | BindingFlags.Public)
-              ?.MakeGenericMethod(typeof(bool));
+        private readonly SoftDeleteDbContextHelper<EntityBase> _softDeleteDbContextHelper;
+        private readonly TimeTrackDbContextHelper _timeTrackDbContextHelper;
 
         public DbSet<CollectionEntity> Collections { get; set; }
 
@@ -29,9 +24,11 @@ namespace ImoutoRebirth.Room.Database
 
         public DbSet<CollectionFileEntity> CollectionFiles { get; set; }
 
-        public RoomDbContext(DbContextOptions options)
+        public RoomDbContext(DbContextOptions options, SoftDeleteDbContextHelper<EntityBase> softDeleteDbContextHelper, TimeTrackDbContextHelper timeTrackDbContextHelper)
             : base(options)
         {
+            _softDeleteDbContextHelper = softDeleteDbContextHelper;
+            _timeTrackDbContextHelper = timeTrackDbContextHelper;
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -40,7 +37,7 @@ namespace ImoutoRebirth.Room.Database
             BuildDestinationFolderEntity(modelBuilder);
             BuildCollectionFileEntity(modelBuilder);
 
-            SetupSoftDelete(modelBuilder);
+            _softDeleteDbContextHelper.OnModelCreating(modelBuilder);
 
             base.OnModelCreating(modelBuilder);
         }
@@ -49,8 +46,8 @@ namespace ImoutoRebirth.Room.Database
             bool acceptAllChangesOnSuccess,
             CancellationToken cancellationToken = new CancellationToken())
         {
-            FillUpdateDates();
-            SoftDelete();
+            _softDeleteDbContextHelper.OnBeforeSaveChanges(ChangeTracker);
+            _timeTrackDbContextHelper.OnBeforeSaveChanges(ChangeTracker);
 
             var changedEntityNames = GetChangedNames();
 
@@ -70,60 +67,6 @@ namespace ImoutoRebirth.Room.Database
         {
             ChangeTracker.DetectChanges();
             return this.GetChangedEntityNames();
-        }
-
-        private void SetupSoftDelete(ModelBuilder modelBuilder)
-        {
-            foreach (var entity in modelBuilder.Model.GetEntityTypes())
-            {
-                if (!typeof(EntityBase).IsAssignableFrom(entity.ClrType))
-                    continue;
-
-                entity.AddProperty(_isDeletedProperty, typeof(bool));
-
-                modelBuilder
-                   .Entity(entity.ClrType)
-                   .HasQueryFilter(GetIsDeletedRestriction(entity.ClrType))
-                   .HasIndex(_isDeletedProperty)
-                   .HasName($"IX_{entity.ClrType.Name}_{_isDeletedProperty}");
-            }
-        }
-        
-        private static LambdaExpression GetIsDeletedRestriction(Type type)
-        {
-            var parm = Expression.Parameter(type, "it");
-            var prop = Expression.Call(_propertyMethod, parm, Expression.Constant(_isDeletedProperty));
-            var condition = Expression.MakeBinary(ExpressionType.Equal, prop, Expression.Constant(false));
-            var lambda = Expression.Lambda(condition, parm);
-            return lambda;
-        }
-
-        private void SoftDelete()
-        {
-            foreach (var entry in ChangeTracker
-                                 .Entries<EntityBase>()
-                                 .Where(e => e.State == EntityState.Deleted))
-            {
-                entry.Property(_isDeletedProperty).CurrentValue = true;
-                entry.State = EntityState.Modified;
-            }
-        }
-
-        private void FillUpdateDates()
-        {
-            foreach (var entityEntry in ChangeTracker.Entries<EntityBase>())
-            {
-                switch (entityEntry.State)
-                {
-                    case EntityState.Added:
-                        entityEntry.Entity.AddedOn = DateTimeOffset.Now;
-                        entityEntry.Entity.ModifiedOn = DateTimeOffset.Now;
-                        break;
-                    case EntityState.Modified:
-                        entityEntry.Entity.ModifiedOn = DateTimeOffset.Now;
-                        break;
-                }
-            }
         }
 
         private static void BuildDestinationFolderEntity(ModelBuilder modelBuilder)

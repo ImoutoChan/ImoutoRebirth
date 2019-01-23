@@ -6,6 +6,7 @@
 
   <ItemGroup>
     <PackageReference Include="EFSecondLevelCache.Core" Version="1.7.1" />
+    <PackageReference Include="ImoutoRebirth.Common.EntityFrameworkCore" Version="1.0.0-CI00019" />
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="2.2.1" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="2.2.1" />
     <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="2.2.0" />

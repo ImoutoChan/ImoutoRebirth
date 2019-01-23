@@ -1,9 +1,10 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations.Schema;
+using ImoutoRebirth.Common.EntityFrameworkCore.TimeTrack;
 
 namespace ImoutoRebirth.Room.Database.Entities.Abstract
 {
-    public class EntityBase
+    public class EntityBase : ITimeTrackableEntity
     {
         [DatabaseGenerated(DatabaseGeneratedOption.None)]
         public Guid Id { get; set; }

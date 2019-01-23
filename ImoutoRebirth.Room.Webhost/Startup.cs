@@ -49,6 +49,7 @@ namespace ImoutoRebirth.Room.Webhost
 
             services.AddRoomCore();
             services.AddRoomDataAccess();
+            services.AddRoomDatabase();
 
             services.AddQuartz()
                     .AddQuartzJob<OverseeJob, OverseeJob.Description>();
