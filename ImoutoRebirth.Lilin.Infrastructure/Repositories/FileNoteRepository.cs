@@ -28,8 +28,25 @@ namespace ImoutoRebirth.Lilin.Infrastructure.Repositories
 
         public async Task<IReadOnlyCollection<FileNote>> GetForFile(Guid fileId)
         {
-            var results = await _lilinDbContext.Notes.Where(x => x.FileId == fileId).ToArrayAsync();
+            var results = await _lilinDbContext.Notes
+                                               .Where(x => x.FileId == fileId)
+                                               .AsNoTracking()
+                                               .ToArrayAsync();
+
             return results.Select(x => x.ToModel()).ToArray();
+        }
+
+        public async Task ClearForSource(Guid fileId, MetadataSource source)
+        {
+            var notesForDelete = await _lilinDbContext
+                                      .Notes
+                                      .Where(x => x.FileId == fileId && x.Source == source)
+                                      .AsNoTracking()
+                                      .ToArrayAsync();
+
+            _lilinDbContext.Notes.RemoveRange(notesForDelete);
+
+            await _lilinDbContext.SaveChangesAsync();
         }
     }
 }

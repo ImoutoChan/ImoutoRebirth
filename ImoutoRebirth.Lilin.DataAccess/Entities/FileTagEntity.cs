@@ -3,7 +3,7 @@ using ImoutoRebirth.Lilin.Core.Models;
 
 namespace ImoutoRebirth.Lilin.DataAccess.Entities
 {
-    public class FileTagEntity
+    public class FileTagEntity : EntityBase
     {
         public Guid FileId { get; set; }
 

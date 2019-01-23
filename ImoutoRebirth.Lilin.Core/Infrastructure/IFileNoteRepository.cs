@@ -10,5 +10,7 @@ namespace ImoutoRebirth.Lilin.Core.Infrastructure
         Task Add(FileNote fileNote);
 
         Task<IReadOnlyCollection<FileNote>> GetForFile(Guid fileId);
+
+        Task ClearForSource(Guid fileId, MetadataSource source);
     }
 }

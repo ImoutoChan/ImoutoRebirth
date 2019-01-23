@@ -2,6 +2,7 @@
 using System.Data;
 using System.Threading;
 using System.Threading.Tasks;
+using ImoutoRebirth.Common.EntityFrameworkCore;
 using ImoutoRebirth.Lilin.Core.Infrastructure;
 using ImoutoRebirth.Lilin.DataAccess.Entities;
 using Microsoft.EntityFrameworkCore;
@@ -10,6 +11,8 @@ namespace ImoutoRebirth.Lilin.DataAccess
 {
     public class LilinDbContext : DbContext, IUnitOfWork
     {
+        private readonly SoftDeleteDbContextHelper<EntityBase> _softDeleteDbContextHelper;
+
         public DbSet<TagTypeEntity> TagTypes { get; set; }
 
         public DbSet<TagEntity> Tags { get; set; }
@@ -18,9 +21,10 @@ namespace ImoutoRebirth.Lilin.DataAccess
 
         public DbSet<FileTagEntity> FileTags { get; set; }
 
-        public LilinDbContext(DbContextOptions<LilinDbContext> options) 
+        public LilinDbContext(DbContextOptions<LilinDbContext> options, SoftDeleteDbContextHelper<EntityBase> softDeleteDbContextHelper) 
             : base(options)
         {
+            _softDeleteDbContextHelper = softDeleteDbContextHelper;
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -66,12 +70,21 @@ namespace ImoutoRebirth.Lilin.DataAccess
             {
                 b.HasIndex(x => new {x.TypeId, x.Name}).IsUnique();
             });
+
+            _softDeleteDbContextHelper.OnModelCreating(modelBuilder);
         }
 
         public async Task<bool> SaveEntitiesAsync(CancellationToken cancellationToken = default(CancellationToken))
         {
             await SaveChangesAsync(cancellationToken);
             return true;
+        }
+
+        public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = new CancellationToken())
+        {
+            _softDeleteDbContextHelper.OnBeforeSaveChanges(ChangeTracker);
+
+            return base.SaveChangesAsync(cancellationToken);
         }
 
         public async Task<IDisposable> CreateTransaction(IsolationLevel isolationLevel)

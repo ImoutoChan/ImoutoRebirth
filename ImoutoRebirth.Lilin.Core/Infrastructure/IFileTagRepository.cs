@@ -17,5 +17,7 @@ namespace ImoutoRebirth.Lilin.Core.Infrastructure
         Task<uint> SearchFilesCount(IReadOnlyCollection<TagSearchEntry> tagSearchEntries);
 
         Task<IReadOnlyCollection<FileTag>> GetForFile(Guid fileId);
+
+        Task ClearForSource(Guid fileId, MetadataSource source);
     }
 }

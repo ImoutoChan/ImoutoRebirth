@@ -4,9 +4,9 @@ using System.Threading.Tasks;
 using ImoutoRebirth.Lilin.Core.Models;
 using ImoutoRebirth.Lilin.MessageContracts;
 using ImoutoRebirth.Lilin.Services.CQRS.Commands;
+using ImoutoRebirth.Lilin.Services.Extensions;
 using MassTransit;
 using MediatR;
-using MetadataSource = ImoutoRebirth.Lilin.Core.Models.MetadataSource;
 
 namespace ImoutoRebirth.Lilin.Services.MessageCommandHandlers
 {
@@ -27,21 +27,21 @@ namespace ImoutoRebirth.Lilin.Services.MessageCommandHandlers
             await _mediator.Send(command);
         }
 
-        private static MetadataUpdate ToMetadataUpdate(IUpdateMetadataCommand message)
+        private static MetadataUpdate ToMetadataUpdate(IUpdateMetadataCommand command)
         {
-            var tags = message.FileTags.Select(
+            var tags = command.FileTags.Select(
                                    x => new FileTagBind(
-                                       message.FileId,
-                                       (MetadataSource)(int)message.MetadataSource,
+                                       command.FileId,
+                                       command.MetadataSource.Convert(),
                                        x.Type,
                                        x.Name,
                                        x.Value,
                                        x.Synonyms))
                               .ToArray();
 
-            var notes = message.FileNotes.Select(
+            var notes = command.FileNotes.Select(
                                     x => new FileNote(
-                                        message.FileId,
+                                        command.FileId,
                                         new Note(
                                             Guid.NewGuid(),
                                             x.Label,
@@ -49,11 +49,11 @@ namespace ImoutoRebirth.Lilin.Services.MessageCommandHandlers
                                             x.PositionFromTop,
                                             x.Width,
                                             x.Height),
-                                        (MetadataSource) (int) message.MetadataSource,
+                                        command.MetadataSource.Convert(),
                                         x.SourceId))
                                .ToArray();
 
-            return new MetadataUpdate(message.FileId, tags, notes);
+            return new MetadataUpdate(command.FileId, tags, notes, command.MetadataSource.Convert());
         }
     }
 }

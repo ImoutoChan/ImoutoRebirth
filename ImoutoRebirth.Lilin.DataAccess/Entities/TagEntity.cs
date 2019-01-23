@@ -5,7 +5,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace ImoutoRebirth.Lilin.DataAccess.Entities
 {
-    public class TagEntity
+    public class TagEntity : EntityBase
     {
         private static readonly string _synonymsSeparator = ":.:";
 

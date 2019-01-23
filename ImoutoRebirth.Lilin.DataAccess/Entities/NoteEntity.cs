@@ -5,7 +5,7 @@ using ImoutoRebirth.Lilin.Core.Models;
 
 namespace ImoutoRebirth.Lilin.DataAccess.Entities
 {
-    public class NoteEntity
+    public class NoteEntity : EntityBase
     {
         [DatabaseGenerated(DatabaseGeneratedOption.None)]
         public Guid Id { get; set; }

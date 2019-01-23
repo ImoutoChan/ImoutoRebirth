@@ -1,4 +1,5 @@
 ﻿using ImoutoRebirth.Common.Host;
+using ImoutoRebirth.Lilin.Core;
 using ImoutoRebirth.Lilin.DataAccess;
 using ImoutoRebirth.Lilin.Host.Settings;
 using ImoutoRebirth.Lilin.Infrastructure;
@@ -27,7 +28,9 @@ namespace ImoutoRebirth.Lilin.Host
                 o => o.UseNpgsql(Configuration.GetConnectionString("LilinDatabase")));
             
             services.AddLilinInfrastructure()
-                    .AddLilinServices();
+                    .AddLilinServices()
+                    .AddLilinDataAccess()
+                    .AddLilinCore();
 
             services.AddMassTransitRabbitMqHostedService(ReceiverApp.Name, LilinSettings.RabbitSettings.ToOptions())
                     .AddLilinServicesForRabbit();

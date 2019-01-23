@@ -77,6 +77,23 @@ namespace ImoutoRebirth.Lilin.Infrastructure.Repositories
             return results.Select(x => x.ToModel()).ToArray();
         }
 
+        public async Task ClearForSource(Guid fileId, MetadataSource source)
+        {
+            var fileTagsForRemove = await _lilinDbContext.FileTags
+                                                         .Include(x => x.Tag)
+                                                         .Where(x => x.FileId == fileId && x.Source == source)
+                                                         .ToArrayAsync();
+
+            _lilinDbContext.FileTags.RemoveRange(fileTagsForRemove);
+
+            foreach (var tagGroup in fileTagsForRemove.GroupBy(x => x.Tag))
+            {
+                tagGroup.Key.Count -= tagGroup.Count();
+            }
+
+            await _lilinDbContext.SaveChangesAsync();
+        }
+
         private IQueryable<Guid> GetSearchFilesQueryable(IReadOnlyCollection<TagSearchEntry> tagSearchEntries)
         {
             var fileTags = _lilinDbContext.FileTags;

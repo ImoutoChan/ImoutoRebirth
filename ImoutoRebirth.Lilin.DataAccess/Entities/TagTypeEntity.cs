@@ -5,7 +5,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace ImoutoRebirth.Lilin.DataAccess.Entities
 {
-    public class TagTypeEntity
+    public class TagTypeEntity : EntityBase
     {
         [DatabaseGenerated(DatabaseGeneratedOption.None)]
         public Guid Id { get; set; }

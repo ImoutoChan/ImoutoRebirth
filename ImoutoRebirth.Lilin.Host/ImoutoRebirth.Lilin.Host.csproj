@@ -7,9 +7,9 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="ImoutoRebirth.Common.EntityFrameworkCore" Version="1.0.0-CI00016" />
-    <PackageReference Include="ImoutoRebirth.Common.Host" Version="1.0.0-CI00016" />
-    <PackageReference Include="ImoutoRebirth.Common.Logging" Version="1.0.0-CI00016" />
+    <PackageReference Include="ImoutoRebirth.Common.EntityFrameworkCore" Version="1.0.0-CI00017" />
+    <PackageReference Include="ImoutoRebirth.Common.Host" Version="1.0.0-CI00017" />
+    <PackageReference Include="ImoutoRebirth.Common.Logging" Version="1.0.0-CI00017" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="2.2.1" />
     <PackageReference Include="MediatR.Extensions.Microsoft.DependencyInjection" Version="6.0.1" />
   </ItemGroup>
