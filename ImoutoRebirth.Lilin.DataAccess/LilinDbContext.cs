@@ -3,6 +3,7 @@ using System.Data;
 using System.Threading;
 using System.Threading.Tasks;
 using ImoutoRebirth.Common.EntityFrameworkCore;
+using ImoutoRebirth.Common.EntityFrameworkCore.TimeTrack;
 using ImoutoRebirth.Lilin.Core.Infrastructure;
 using ImoutoRebirth.Lilin.DataAccess.Entities;
 using Microsoft.EntityFrameworkCore;
@@ -12,6 +13,7 @@ namespace ImoutoRebirth.Lilin.DataAccess
     public class LilinDbContext : DbContext, IUnitOfWork
     {
         private readonly SoftDeleteDbContextHelper<EntityBase> _softDeleteDbContextHelper;
+        private readonly TimeTrackDbContextHelper _timeTrackDbContextHelper;
 
         public DbSet<TagTypeEntity> TagTypes { get; set; }
 
@@ -21,10 +23,14 @@ namespace ImoutoRebirth.Lilin.DataAccess
 
         public DbSet<FileTagEntity> FileTags { get; set; }
 
-        public LilinDbContext(DbContextOptions<LilinDbContext> options, SoftDeleteDbContextHelper<EntityBase> softDeleteDbContextHelper) 
+        public LilinDbContext(
+            DbContextOptions<LilinDbContext> options,
+            SoftDeleteDbContextHelper<EntityBase> softDeleteDbContextHelper,
+            TimeTrackDbContextHelper timeTrackDbContextHelper) 
             : base(options)
         {
             _softDeleteDbContextHelper = softDeleteDbContextHelper;
+            _timeTrackDbContextHelper = timeTrackDbContextHelper;
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -83,6 +89,7 @@ namespace ImoutoRebirth.Lilin.DataAccess
         public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = new CancellationToken())
         {
             _softDeleteDbContextHelper.OnBeforeSaveChanges(ChangeTracker);
+            _timeTrackDbContextHelper.OnBeforeSaveChanges(ChangeTracker);
 
             return base.SaveChangesAsync(cancellationToken);
         }
