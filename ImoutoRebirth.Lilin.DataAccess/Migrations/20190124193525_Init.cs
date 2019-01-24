@@ -12,6 +12,8 @@ namespace ImoutoRebirth.Lilin.DataAccess.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(nullable: false),
+                    AddedOn = table.Column<DateTimeOffset>(nullable: false),
+                    ModifiedOn = table.Column<DateTimeOffset>(nullable: false),
                     FileId = table.Column<Guid>(nullable: false),
                     Source = table.Column<int>(nullable: false),
                     SourceId = table.Column<int>(nullable: true),
@@ -31,6 +33,8 @@ namespace ImoutoRebirth.Lilin.DataAccess.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(nullable: false),
+                    AddedOn = table.Column<DateTimeOffset>(nullable: false),
+                    ModifiedOn = table.Column<DateTimeOffset>(nullable: false),
                     Name = table.Column<string>(nullable: false),
                     Color = table.Column<int>(nullable: false)
                 },
@@ -44,6 +48,8 @@ namespace ImoutoRebirth.Lilin.DataAccess.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(nullable: false),
+                    AddedOn = table.Column<DateTimeOffset>(nullable: false),
+                    ModifiedOn = table.Column<DateTimeOffset>(nullable: false),
                     TypeId = table.Column<Guid>(nullable: false),
                     Name = table.Column<string>(nullable: false),
                     HasValue = table.Column<bool>(nullable: false),
@@ -65,14 +71,17 @@ namespace ImoutoRebirth.Lilin.DataAccess.Migrations
                 name: "FileTags",
                 columns: table => new
                 {
+                    Id = table.Column<Guid>(nullable: false),
+                    AddedOn = table.Column<DateTimeOffset>(nullable: false),
+                    ModifiedOn = table.Column<DateTimeOffset>(nullable: false),
                     FileId = table.Column<Guid>(nullable: false),
                     TagId = table.Column<Guid>(nullable: false),
-                    Source = table.Column<int>(nullable: false),
-                    Value = table.Column<string>(nullable: true)
+                    Value = table.Column<string>(nullable: true),
+                    Source = table.Column<int>(nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_FileTags", x => new { x.FileId, x.TagId, x.Source });
+                    table.PrimaryKey("PK_FileTags", x => x.Id);
                     table.ForeignKey(
                         name: "FK_FileTags_Tags_TagId",
                         column: x => x.TagId,
@@ -100,6 +109,11 @@ namespace ImoutoRebirth.Lilin.DataAccess.Migrations
                 name: "IX_FileTags_TagId_Value",
                 table: "FileTags",
                 columns: new[] { "TagId", "Value" });
+
+            migrationBuilder.CreateIndex(
+                name: "IX_FileTags_FileId_TagId_Source",
+                table: "FileTags",
+                columns: new[] { "FileId", "TagId", "Source" });
 
             migrationBuilder.CreateIndex(
                 name: "IX_Notes_FileId",

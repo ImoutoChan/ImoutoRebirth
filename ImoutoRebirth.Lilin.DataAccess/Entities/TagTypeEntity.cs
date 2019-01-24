@@ -7,9 +7,6 @@ namespace ImoutoRebirth.Lilin.DataAccess.Entities
 {
     public class TagTypeEntity : EntityBase
     {
-        [DatabaseGenerated(DatabaseGeneratedOption.None)]
-        public Guid Id { get; set; }
-
         [Required]
         public string Name { get; set; }
 

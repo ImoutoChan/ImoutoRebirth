@@ -21,15 +21,21 @@ namespace ImoutoRebirth.Lilin.DataAccess.Migrations
 
             modelBuilder.Entity("ImoutoRebirth.Lilin.DataAccess.Entities.FileTagEntity", b =>
                 {
+                    b.Property<Guid>("Id");
+
+                    b.Property<DateTimeOffset>("AddedOn");
+
                     b.Property<Guid>("FileId");
 
-                    b.Property<Guid>("TagId");
+                    b.Property<DateTimeOffset>("ModifiedOn");
 
                     b.Property<int>("Source");
 
+                    b.Property<Guid>("TagId");
+
                     b.Property<string>("Value");
 
-                    b.HasKey("FileId", "TagId", "Source");
+                    b.HasKey("Id");
 
                     b.HasIndex("FileId");
 
@@ -39,6 +45,8 @@ namespace ImoutoRebirth.Lilin.DataAccess.Migrations
 
                     b.HasIndex("TagId", "Value");
 
+                    b.HasIndex("FileId", "TagId", "Source");
+
                     b.ToTable("FileTags");
                 });
 
@@ -46,12 +54,16 @@ namespace ImoutoRebirth.Lilin.DataAccess.Migrations
                 {
                     b.Property<Guid>("Id");
 
+                    b.Property<DateTimeOffset>("AddedOn");
+
                     b.Property<Guid>("FileId");
 
                     b.Property<int>("Height");
 
                     b.Property<string>("Label")
                         .IsRequired();
+
+                    b.Property<DateTimeOffset>("ModifiedOn");
 
                     b.Property<int>("PositionFromLeft");
 
@@ -74,11 +86,15 @@ namespace ImoutoRebirth.Lilin.DataAccess.Migrations
                 {
                     b.Property<Guid>("Id");
 
+                    b.Property<DateTimeOffset>("AddedOn");
+
                     b.Property<int>("Count")
                         .ValueGeneratedOnAdd()
                         .HasDefaultValue(0);
 
                     b.Property<bool>("HasValue");
+
+                    b.Property<DateTimeOffset>("ModifiedOn");
 
                     b.Property<string>("Name")
                         .IsRequired();
@@ -101,7 +117,11 @@ namespace ImoutoRebirth.Lilin.DataAccess.Migrations
                 {
                     b.Property<Guid>("Id");
 
+                    b.Property<DateTimeOffset>("AddedOn");
+
                     b.Property<int>("Color");
+
+                    b.Property<DateTimeOffset>("ModifiedOn");
 
                     b.Property<string>("Name")
                         .IsRequired();

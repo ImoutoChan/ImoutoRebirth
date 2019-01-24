@@ -8,10 +8,7 @@ namespace ImoutoRebirth.Lilin.DataAccess.Entities
     public class TagEntity : EntityBase
     {
         private static readonly string _synonymsSeparator = ":.:";
-
-        [DatabaseGenerated(DatabaseGeneratedOption.None)]
-        public Guid Id { get; set; }
-
+        
         public Guid TypeId { get; set; }
 
         [Required]

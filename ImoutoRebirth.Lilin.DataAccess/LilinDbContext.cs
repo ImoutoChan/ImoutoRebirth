@@ -12,7 +12,6 @@ namespace ImoutoRebirth.Lilin.DataAccess
 {
     public class LilinDbContext : DbContext, IUnitOfWork
     {
-        private readonly SoftDeleteDbContextHelper<EntityBase> _softDeleteDbContextHelper;
         private readonly TimeTrackDbContextHelper _timeTrackDbContextHelper;
 
         public DbSet<TagTypeEntity> TagTypes { get; set; }
@@ -29,7 +28,6 @@ namespace ImoutoRebirth.Lilin.DataAccess
             TimeTrackDbContextHelper timeTrackDbContextHelper) 
             : base(options)
         {
-            _softDeleteDbContextHelper = softDeleteDbContextHelper;
             _timeTrackDbContextHelper = timeTrackDbContextHelper;
         }
 
@@ -37,16 +35,16 @@ namespace ImoutoRebirth.Lilin.DataAccess
         {
             modelBuilder.Entity<FileTagEntity>(b =>
             {
-                b.HasKey(x => new {x.FileId, x.TagId, x.Source});
                 b.HasOne(x => x.Tag)
                  .WithMany(x => x.FileTags)
                  .IsRequired()
                  .OnDelete(DeleteBehavior.Restrict);
-
+                
                 b.HasIndex(x => new {x.FileId});
                 b.HasIndex(x => new {x.TagId});
                 b.HasIndex(x => new {x.TagId, x.Value});
                 b.HasIndex(x => new {x.Source, x.TagId});
+                b.HasIndex(x => new {x.FileId, x.TagId, x.Source});
             });
 
 
@@ -57,9 +55,10 @@ namespace ImoutoRebirth.Lilin.DataAccess
                  .IsRequired()
                  .OnDelete(DeleteBehavior.Restrict);
 
-                b.HasIndex(x => new {x.TypeId, x.Name});
                 b.HasIndex(x => new {x.Name});
                 b.Property(x => x.Count).HasDefaultValue(0);
+
+                b.HasIndex(x => new { x.TypeId, x.Name }).IsUnique();
             });
 
             modelBuilder.Entity<NoteEntity>(b =>
@@ -71,13 +70,6 @@ namespace ImoutoRebirth.Lilin.DataAccess
             {
                 b.HasIndex(x => x.Name).IsUnique();
             });
-
-            modelBuilder.Entity<TagEntity>(b =>
-            {
-                b.HasIndex(x => new {x.TypeId, x.Name}).IsUnique();
-            });
-
-            _softDeleteDbContextHelper.OnModelCreating(modelBuilder);
         }
 
         public async Task<bool> SaveEntitiesAsync(CancellationToken cancellationToken = default(CancellationToken))
@@ -88,7 +80,6 @@ namespace ImoutoRebirth.Lilin.DataAccess
 
         public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = new CancellationToken())
         {
-            _softDeleteDbContextHelper.OnBeforeSaveChanges(ChangeTracker);
             _timeTrackDbContextHelper.OnBeforeSaveChanges(ChangeTracker);
 
             return base.SaveChangesAsync(cancellationToken);

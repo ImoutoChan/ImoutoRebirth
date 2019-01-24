@@ -7,9 +7,6 @@ namespace ImoutoRebirth.Lilin.DataAccess.Entities
 {
     public class NoteEntity : EntityBase
     {
-        [DatabaseGenerated(DatabaseGeneratedOption.None)]
-        public Guid Id { get; set; }
-
         public Guid FileId { get; set; }
 
         public MetadataSource Source { get; set; }
