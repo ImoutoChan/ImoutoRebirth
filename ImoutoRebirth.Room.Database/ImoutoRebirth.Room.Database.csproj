@@ -12,4 +12,10 @@
     <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="2.2.0" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Compile Update="Migrations\20190124181825_Init.Designer.cs">
+      <DependentUpon>20190124181825_Init.cs</DependentUpon>
+    </Compile>
+  </ItemGroup>
+
 </Project>

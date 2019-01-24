@@ -14,8 +14,7 @@ namespace ImoutoRebirth.Room.Database.Migrations
                     Id = table.Column<Guid>(nullable: false),
                     AddedOn = table.Column<DateTimeOffset>(nullable: false),
                     ModifiedOn = table.Column<DateTimeOffset>(nullable: false),
-                    Name = table.Column<string>(nullable: false),
-                    IsDeleted = table.Column<bool>(nullable: false)
+                    Name = table.Column<string>(nullable: false)
                 },
                 constraints: table =>
                 {
@@ -33,8 +32,7 @@ namespace ImoutoRebirth.Room.Database.Migrations
                     Path = table.Column<string>(nullable: false),
                     Md5 = table.Column<string>(maxLength: 32, nullable: false),
                     Size = table.Column<long>(nullable: false),
-                    OriginalPath = table.Column<string>(nullable: true),
-                    IsDeleted = table.Column<bool>(nullable: false)
+                    OriginalPath = table.Column<string>(nullable: true)
                 },
                 constraints: table =>
                 {
@@ -60,8 +58,7 @@ namespace ImoutoRebirth.Room.Database.Migrations
                     ShouldRenameByHash = table.Column<bool>(nullable: false),
                     FormatErrorSubfolder = table.Column<string>(nullable: false, defaultValue: "!FormatError"),
                     HashErrorSubfolder = table.Column<string>(nullable: false, defaultValue: "!HashError"),
-                    WithoutHashErrorSubfolder = table.Column<string>(nullable: false, defaultValue: "!WithoutHashError"),
-                    IsDeleted = table.Column<bool>(nullable: false)
+                    WithoutHashErrorSubfolder = table.Column<string>(nullable: false, defaultValue: "!WithoutHashError")
                 },
                 constraints: table =>
                 {
@@ -87,7 +84,6 @@ namespace ImoutoRebirth.Room.Database.Migrations
                     ShouldCheckHashFromName = table.Column<bool>(nullable: false),
                     ShouldCreateTagsFromSubfolders = table.Column<bool>(nullable: false),
                     ShouldAddTagFromFilename = table.Column<bool>(nullable: false),
-                    IsDeleted = table.Column<bool>(nullable: false),
                     SupportedExtensions = table.Column<string>(nullable: true)
                 },
                 constraints: table =>
@@ -107,14 +103,9 @@ namespace ImoutoRebirth.Room.Database.Migrations
                 column: "CollectionId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_CollectionFileEntity_IsDeleted",
+                name: "IX_CollectionFiles_Path",
                 table: "CollectionFiles",
-                column: "IsDeleted");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_CollectionEntity_IsDeleted",
-                table: "Collections",
-                column: "IsDeleted");
+                column: "Path");
 
             migrationBuilder.CreateIndex(
                 name: "IX_DestinationFolders_CollectionId",
@@ -123,19 +114,9 @@ namespace ImoutoRebirth.Room.Database.Migrations
                 unique: true);
 
             migrationBuilder.CreateIndex(
-                name: "IX_DestinationFolderEntity_IsDeleted",
-                table: "DestinationFolders",
-                column: "IsDeleted");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_SourceFolders_CollectionId",
                 table: "SourceFolders",
                 column: "CollectionId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_SourceFolderEntity_IsDeleted",
-                table: "SourceFolders",
-                column: "IsDeleted");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)

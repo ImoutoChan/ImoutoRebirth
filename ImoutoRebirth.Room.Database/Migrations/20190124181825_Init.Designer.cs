@@ -10,7 +10,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace ImoutoRebirth.Room.Database.Migrations
 {
     [DbContext(typeof(RoomDbContext))]
-    [Migration("20181007153505_Init")]
+    [Migration("20190124181825_Init")]
     partial class Init
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -18,7 +18,7 @@ namespace ImoutoRebirth.Room.Database.Migrations
 #pragma warning disable 612, 618
             modelBuilder
                 .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.SerialColumn)
-                .HasAnnotation("ProductVersion", "2.1.4-rtm-31024")
+                .HasAnnotation("ProductVersion", "2.2.1-servicing-10028")
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
             modelBuilder.Entity("ImoutoRebirth.Room.Database.Entities.CollectionEntity", b =>
@@ -27,17 +27,12 @@ namespace ImoutoRebirth.Room.Database.Migrations
 
                     b.Property<DateTimeOffset>("AddedOn");
 
-                    b.Property<bool>("IsDeleted");
-
                     b.Property<DateTimeOffset>("ModifiedOn");
 
                     b.Property<string>("Name")
                         .IsRequired();
 
                     b.HasKey("Id");
-
-                    b.HasIndex("IsDeleted")
-                        .HasName("IX_CollectionEntity_IsDeleted");
 
                     b.ToTable("Collections");
                 });
@@ -49,8 +44,6 @@ namespace ImoutoRebirth.Room.Database.Migrations
                     b.Property<DateTimeOffset>("AddedOn");
 
                     b.Property<Guid>("CollectionId");
-
-                    b.Property<bool>("IsDeleted");
 
                     b.Property<string>("Md5")
                         .IsRequired()
@@ -69,8 +62,7 @@ namespace ImoutoRebirth.Room.Database.Migrations
 
                     b.HasIndex("CollectionId");
 
-                    b.HasIndex("IsDeleted")
-                        .HasName("IX_CollectionFileEntity_IsDeleted");
+                    b.HasIndex("Path");
 
                     b.ToTable("CollectionFiles");
                 });
@@ -93,8 +85,6 @@ namespace ImoutoRebirth.Room.Database.Migrations
                         .ValueGeneratedOnAdd()
                         .HasDefaultValue("!HashError");
 
-                    b.Property<bool>("IsDeleted");
-
                     b.Property<DateTimeOffset>("ModifiedOn");
 
                     b.Property<string>("Path")
@@ -114,9 +104,6 @@ namespace ImoutoRebirth.Room.Database.Migrations
                     b.HasIndex("CollectionId")
                         .IsUnique();
 
-                    b.HasIndex("IsDeleted")
-                        .HasName("IX_DestinationFolderEntity_IsDeleted");
-
                     b.ToTable("DestinationFolders");
                 });
 
@@ -127,8 +114,6 @@ namespace ImoutoRebirth.Room.Database.Migrations
                     b.Property<DateTimeOffset>("AddedOn");
 
                     b.Property<Guid>("CollectionId");
-
-                    b.Property<bool>("IsDeleted");
 
                     b.Property<DateTimeOffset>("ModifiedOn");
 
@@ -148,9 +133,6 @@ namespace ImoutoRebirth.Room.Database.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("CollectionId");
-
-                    b.HasIndex("IsDeleted")
-                        .HasName("IX_SourceFolderEntity_IsDeleted");
 
                     b.ToTable("SourceFolders");
                 });

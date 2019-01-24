@@ -2,10 +2,8 @@
 using System.Threading.Tasks;
 using EFSecondLevelCache.Core;
 using EFSecondLevelCache.Core.Contracts;
-using ImoutoRebirth.Common.EntityFrameworkCore;
 using ImoutoRebirth.Common.EntityFrameworkCore.TimeTrack;
 using ImoutoRebirth.Room.Database.Entities;
-using ImoutoRebirth.Room.Database.Entities.Abstract;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 
@@ -13,7 +11,6 @@ namespace ImoutoRebirth.Room.Database
 {
     public class RoomDbContext : DbContext
     {
-        private readonly SoftDeleteDbContextHelper<EntityBase> _softDeleteDbContextHelper;
         private readonly TimeTrackDbContextHelper _timeTrackDbContextHelper;
 
         public DbSet<CollectionEntity> Collections { get; set; }
@@ -24,10 +21,9 @@ namespace ImoutoRebirth.Room.Database
 
         public DbSet<CollectionFileEntity> CollectionFiles { get; set; }
 
-        public RoomDbContext(DbContextOptions options, SoftDeleteDbContextHelper<EntityBase> softDeleteDbContextHelper, TimeTrackDbContextHelper timeTrackDbContextHelper)
+        public RoomDbContext(DbContextOptions options, TimeTrackDbContextHelper timeTrackDbContextHelper)
             : base(options)
         {
-            _softDeleteDbContextHelper = softDeleteDbContextHelper;
             _timeTrackDbContextHelper = timeTrackDbContextHelper;
         }
 
@@ -37,8 +33,6 @@ namespace ImoutoRebirth.Room.Database
             BuildDestinationFolderEntity(modelBuilder);
             BuildCollectionFileEntity(modelBuilder);
 
-            _softDeleteDbContextHelper.OnModelCreating(modelBuilder);
-
             base.OnModelCreating(modelBuilder);
         }
 
@@ -46,7 +40,6 @@ namespace ImoutoRebirth.Room.Database
             bool acceptAllChangesOnSuccess,
             CancellationToken cancellationToken = new CancellationToken())
         {
-            _softDeleteDbContextHelper.OnBeforeSaveChanges(ChangeTracker);
             _timeTrackDbContextHelper.OnBeforeSaveChanges(ChangeTracker);
 
             var changedEntityNames = GetChangedNames();
@@ -73,15 +66,18 @@ namespace ImoutoRebirth.Room.Database
         {
             modelBuilder
                .Entity<DestinationFolderEntity>()
-               .Property(x => x.FormatErrorSubfolder);
+               .Property(x => x.FormatErrorSubfolder)
+               .HasDefaultValue("!FormatError");
 
             modelBuilder
                .Entity<DestinationFolderEntity>()
-               .Property(x => x.HashErrorSubfolder);
+               .Property(x => x.HashErrorSubfolder)
+               .HasDefaultValue("!HashError");
 
             modelBuilder
                .Entity<DestinationFolderEntity>()
-               .Property(x => x.WithoutHashErrorSubfolder);
+               .Property(x => x.WithoutHashErrorSubfolder)
+               .HasDefaultValue("!WithoutHashError");
         }
 
         private static void BuildSourceFolderEntity(ModelBuilder modelBuilder)
