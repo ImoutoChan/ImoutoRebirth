@@ -8,10 +8,11 @@
 
   <ItemGroup>
     <PackageReference Include="AspNetCoreInjection.TypedFactories" Version="1.2.0" />
-    <PackageReference Include="ImoutoRebirth.Common.Host" Version="1.0.0-CI00001" />
-    <PackageReference Include="Microsoft.Extensions.Configuration.EnvironmentVariables" Version="2.1.1" />
-    <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="2.1.1" />
-    <PackageReference Include="Microsoft.Extensions.Hosting" Version="2.1.1" />
+    <PackageReference Include="ImoutoRebirth.Common.Host" Version="1.0.0-CI00019" />
+    <PackageReference Include="ImoutoRebirth.Common.Logging" Version="1.0.0-CI00019" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.EnvironmentVariables" Version="2.2.0" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="2.2.0" />
+    <PackageReference Include="Microsoft.Extensions.Hosting" Version="2.2.0" />
   </ItemGroup>
 
   <ItemGroup>

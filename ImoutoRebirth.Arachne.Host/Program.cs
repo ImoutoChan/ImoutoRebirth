@@ -1,5 +1,6 @@
 ﻿using System.Threading.Tasks;
 using ImoutoRebirth.Common.Host;
+using ImoutoRebirth.Common.Logging;
 using Microsoft.Extensions.Hosting;
 
 namespace ImoutoRebirth.Arachne.Host
@@ -18,6 +19,14 @@ namespace ImoutoRebirth.Arachne.Host
               .UseConsoleLifetime()
               .UseEnvironmentFromEnvironmentVariable(ServicePrefix)
               .UseConfiguration(ServicePrefix)
+              .ConfigureSerilog(
+                   (loggerBuilder, appConfiguration)
+                       => loggerBuilder
+                         .WithoutDefaultLoggers()
+                         .WithConsole()
+                         .WithAllRollingFile()
+                         .WithInformationRollingFile()
+                         .PatchWithConfiguration(appConfiguration))
               .UseStartup(x => new Startup(x))
               .Build();
     }

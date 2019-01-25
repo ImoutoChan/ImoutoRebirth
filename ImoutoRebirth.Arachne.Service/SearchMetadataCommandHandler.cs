@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using ImoutoRebirth.Arachne.Core;
@@ -9,6 +10,7 @@ using ImoutoRebirth.Arachne.Service.Extensions;
 using ImoutoRebirth.Lilin.MessageContracts;
 using Mackiovello.Maybe;
 using MassTransit;
+using Microsoft.Extensions.Logging;
 
 namespace ImoutoRebirth.Arachne.Service
 {
@@ -16,30 +18,54 @@ namespace ImoutoRebirth.Arachne.Service
     {
         private readonly IArachneSearchService _arachneSearchService;
         private readonly IRemoteCommandService _remoteCommandService;
+        private readonly ILogger<SearchMetadataCommandHandler> _logger;
 
-        public SearchMetadataCommandHandler(IArachneSearchService arachneSearchService, IRemoteCommandService remoteCommandService)
+        public SearchMetadataCommandHandler(
+            IArachneSearchService arachneSearchService,
+            IRemoteCommandService remoteCommandService,
+            ILogger<SearchMetadataCommandHandler> logger)
         {
             _arachneSearchService = arachneSearchService;
             _remoteCommandService = remoteCommandService;
+            _logger = logger;
         }
 
         public async Task Search(ConsumeContext<ISearchMetadataCommand> context, SearchEngineType where)
         {
             var md5 = context.Message.Md5;
 
+            _logger.LogTrace("Searching for {Md5} in {SearchEngine}", md5, where);
+
+            var sw = new Stopwatch();
+            sw.Start();
             var searchResults = await _arachneSearchService.Search(new Image(md5), where);
+            sw.Stop();
+
+            if (searchResults is Metadata metadata)
+            {
+                _logger.LogInformation(
+                    "Search result {Md5} in {SearchEngine}: {IsFound} ({Ms} ms)",
+                    md5,
+                    where,
+                    metadata.IsFound.ToString(),
+                    sw.ElapsedMilliseconds);
+            }
+            else if (searchResults is SearchError error)
+            {
+                _logger.LogWarning(
+                    "Search result {Md5} in {SearchEngine}: {IsFound} {SearchErrorMessage} ({Ms} ms)",
+                    md5,
+                    where,
+                    "SearchError",
+                    error.Error,
+                    sw.ElapsedMilliseconds);
+            }
 
             var sendCommand = ConvertToCommand(searchResults, context.Message.FileId)
                 .Select(command => _remoteCommandService.SendCommand<IUpdateMetadataCommand>(command));
 
             if (sendCommand.HasValue)
                 await sendCommand.Value;
-
-            // todo debug only
-#if DEBUG
-            if (searchResults is Metadata searchResult)
-                Console.Out.WriteLine(searchResult.Source + " | " + searchResult.IsFound);
-#endif
         }
 
         private Maybe<UpdateMetadataCommand> ConvertToCommand(SearchResult searchResults, Guid fileId)
