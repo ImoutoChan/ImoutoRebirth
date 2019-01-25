@@ -9,6 +9,7 @@ namespace ImoutoRebirth.Lilin.Infrastructure.Mappers
         public static FileTagEntity ToEntity(this FileTag fileTagModel) 
             => new FileTagEntity
             {
+                Id = Guid.NewGuid(),
                 FileId = fileTagModel.FileId,
                 TagId = fileTagModel.Tag.Id,
                 Source = fileTagModel.Source,
@@ -18,6 +19,7 @@ namespace ImoutoRebirth.Lilin.Infrastructure.Mappers
         public static FileTagEntity ToEntity(this FileTagBind model, Tag tag) 
             => new FileTagEntity
             {
+                Id = Guid.NewGuid(),
                 FileId = model.FileId,
                 TagId = tag.Id,
                 Source = model.Source,

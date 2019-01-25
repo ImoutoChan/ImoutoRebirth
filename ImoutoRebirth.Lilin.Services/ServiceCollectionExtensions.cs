@@ -21,7 +21,6 @@ namespace ImoutoRebirth.Lilin.Services
 
         public static IMassTransitRabbitMqHostingBuilder AddLilinServicesForRabbit(
             this IMassTransitRabbitMqHostingBuilder builder)
-            => builder.AddDefaultConsumer<UpdateMetadataCommandConsumer, IUpdateMetadataCommand>();
-                    //.ConsumeByConvention<UpdateMetadataCommandConsumer, IUpdateMetadataCommand>(receiveEndpointConfigurator: configurator => configurator.PrefetchCount = 2);
+            => builder.AddDefaultConsumer<UpdateMetadataCommandConsumer, IUpdateMetadataCommand>();                    
     }
 }

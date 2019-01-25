@@ -2,7 +2,6 @@
 using System.Data;
 using System.Threading;
 using System.Threading.Tasks;
-using ImoutoRebirth.Common.EntityFrameworkCore;
 using ImoutoRebirth.Common.EntityFrameworkCore.TimeTrack;
 using ImoutoRebirth.Lilin.Core.Infrastructure;
 using ImoutoRebirth.Lilin.DataAccess.Entities;
@@ -24,7 +23,6 @@ namespace ImoutoRebirth.Lilin.DataAccess
 
         public LilinDbContext(
             DbContextOptions<LilinDbContext> options,
-            SoftDeleteDbContextHelper<EntityBase> softDeleteDbContextHelper,
             TimeTrackDbContextHelper timeTrackDbContextHelper) 
             : base(options)
         {

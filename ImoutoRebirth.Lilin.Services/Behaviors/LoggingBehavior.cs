@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Threading;
 using System.Threading.Tasks;
 using MediatR;
@@ -20,12 +21,16 @@ namespace ImoutoRebirth.Lilin.Services.Behaviors
             _logger.LogTrace("Handling {RequestName}", typeof(TRequest).Name);
             try
             {
+                var sw = new Stopwatch();
+                sw.Start();
                 var response = await next();
+                sw.Stop();
 
-                _logger.LogTrace(
-                    "Handled {RequestName} with response {ResponseName}", 
+                _logger.LogInformation(
+                    "Handled {RequestName} with response {ResponseName} by {HandleTime}", 
                     typeof(TRequest).Name, 
-                    typeof(TResponse).Name);
+                    typeof(TResponse).Name,
+                    sw.ElapsedMilliseconds);
                 return response;
             }
             catch (Exception e)

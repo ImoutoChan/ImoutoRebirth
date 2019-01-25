@@ -41,7 +41,8 @@ namespace ImoutoRebirth.Lilin.Infrastructure.Repositories
                 fileTag.Synonyms);
 
             await _lilinDbContext.FileTags.AddAsync(fileTag.ToEntity(tag));
-            await _tagRepository.IncrementTagCounter(tag.Id);
+            var tagEntity = await _lilinDbContext.Tags.FindAsync(tag.Id);
+            tagEntity.Count++;
         }
 
         public async Task<Guid[]> SearchFiles(

@@ -30,7 +30,7 @@ namespace ImoutoRebirth.Lilin.Infrastructure.Repositories
             if (result == null)
                 return null;
 
-            await UpdateValues(result, hasValue, synonyms);
+            UpdateValues(result, hasValue, synonyms);
               
             return result.ToModel();
         }
@@ -52,24 +52,13 @@ namespace ImoutoRebirth.Lilin.Infrastructure.Repositories
             return tag.ToModel();
         }
 
-        public async Task IncrementTagCounter(Guid tagId)
-        {
-            var tag = await _lilinDbContext.Tags.FindAsync(tagId);
-
-            tag.Count++;
-
-            await _lilinDbContext.SaveChangesAsync();
-        }
-
-        private Task UpdateValues(TagEntity tag, bool hasValue, string[] synonyms)
+        private void UpdateValues(TagEntity tag, bool hasValue, string[] synonyms)
         {
             if (!tag.HasValue && hasValue)
                 tag.HasValue = true;
 
             if (tag.SynonymsArray.Any(x => !tag.SynonymsArray.Contains(x)))
                 tag.SynonymsArray = tag.SynonymsArray.Union(synonyms).ToArray();
-
-            return _lilinDbContext.SaveChangesAsync();
         }
     }
 }
