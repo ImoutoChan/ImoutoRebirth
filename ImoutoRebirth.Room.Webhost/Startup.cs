@@ -12,7 +12,6 @@ using ImoutoRebirth.Room.Infrastructure;
 using ImoutoRebirth.Room.WebApi.Controllers;
 using ImoutoRebirth.Room.Webhost.Quartz;
 using ImoutoRebirth.Room.Webhost.Settings;
-using MassTransit.RabbitMq.Extensions.Hosting.Extensions;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
@@ -42,10 +41,11 @@ namespace ImoutoRebirth.Room.Webhost
                     .AddApplicationPart(typeof(CollectionsController).Assembly);
             
             services.AddRoomServices();
-            services.AddMassTransitRabbitMqHostedService(
-                        ReceiverApp.Name,
-                        RoomSettings.RabbitSettings.ToOptions())
-                    .AddRoomServicesForRabbit();
+
+            services.AddTrueMassTransit(
+                RoomSettings.RabbitSettings,
+                ReceiverApp.Name,
+                с => с.AddRoomServicesForRabbit());
 
             services.AddRoomCore();
             services.AddRoomDataAccess();

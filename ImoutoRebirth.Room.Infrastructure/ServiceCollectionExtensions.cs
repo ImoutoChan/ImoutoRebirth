@@ -1,9 +1,8 @@
 ﻿using ImoutoRebirth.Arachne.MessageContracts;
 using ImoutoRebirth.Arachne.MessageContracts.Commands;
+using ImoutoRebirth.Common.MassTransit;
 using ImoutoRebirth.Room.Core.Services.Abstract;
 using ImoutoRebirth.Room.Infrastructure.Service;
-using MassTransit.RabbitMq.Extensions.Hosting.Contracts;
-using MassTransit.RabbitMq.Extensions.Hosting.Extensions;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace ImoutoRebirth.Room.Infrastructure
@@ -19,8 +18,7 @@ namespace ImoutoRebirth.Room.Infrastructure
             return services;
         }
 
-        public static IMassTransitRabbitMqHostingBuilder AddRoomServicesForRabbit(
-            this IMassTransitRabbitMqHostingBuilder builder)
-            => builder.WithFireAndForgetSendEndpointByConvention<IEverywhereSearchMetadataCommand>(ReceiverApp.Name);
+        public static ITrueMassTransitConfigurator AddRoomServicesForRabbit(this ITrueMassTransitConfigurator builder) 
+            => builder.AddFireAndForget<IEverywhereSearchMetadataCommand>(ReceiverApp.Name);
     }
 }

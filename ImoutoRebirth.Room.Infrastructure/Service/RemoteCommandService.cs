@@ -2,17 +2,17 @@
 using System.Threading.Tasks;
 using ImoutoRebirth.Arachne.MessageContracts.Commands;
 using ImoutoRebirth.Room.Core.Services.Abstract;
-using MassTransit.RabbitMq.Extensions.Hosting.Contracts;
+using MassTransit;
 
 namespace ImoutoRebirth.Room.Infrastructure.Service
 {
     internal class RemoteCommandService : IRemoteCommandService
     {
-        private readonly IConfiguredSendEndpointProvider _configuredSendEndpointProvider;
+        private readonly IBus _bus;
 
-        public RemoteCommandService(IConfiguredSendEndpointProvider configuredSendEndpointProvider)
+        public RemoteCommandService(IBus bus)
         {
-            _configuredSendEndpointProvider = configuredSendEndpointProvider;
+            _bus = bus;
         }
         
         public async Task UpdateMetadataRequest(Guid fileId, string md5)
@@ -23,10 +23,7 @@ namespace ImoutoRebirth.Room.Infrastructure.Service
                 FileId = fileId
             };
 
-            var requestClient 
-                = await _configuredSendEndpointProvider
-                   .GetSendEndpoint<IEverywhereSearchMetadataCommand>();
-            await requestClient.Send<IEverywhereSearchMetadataCommand>(command);
+            await _bus.Send<IEverywhereSearchMetadataCommand>(command);
         }
     }
 }
