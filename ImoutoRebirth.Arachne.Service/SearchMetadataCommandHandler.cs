@@ -17,16 +17,13 @@ namespace ImoutoRebirth.Arachne.Service
     public class SearchMetadataCommandHandler : ISearchMetadataCommandHandler
     {
         private readonly IArachneSearchService _arachneSearchService;
-        private readonly IRemoteCommandService _remoteCommandService;
         private readonly ILogger<SearchMetadataCommandHandler> _logger;
 
         public SearchMetadataCommandHandler(
             IArachneSearchService arachneSearchService,
-            IRemoteCommandService remoteCommandService,
             ILogger<SearchMetadataCommandHandler> logger)
         {
             _arachneSearchService = arachneSearchService;
-            _remoteCommandService = remoteCommandService;
             _logger = logger;
         }
 
@@ -62,7 +59,7 @@ namespace ImoutoRebirth.Arachne.Service
             }
 
             var sendCommand = ConvertToCommand(searchResults, context.Message.FileId)
-                .Select(command => _remoteCommandService.SendCommand<IUpdateMetadataCommand>(command));
+               .Select(command => context.Send<IUpdateMetadataCommand>(command));
 
             if (sendCommand.HasValue)
                 await sendCommand.Value;
