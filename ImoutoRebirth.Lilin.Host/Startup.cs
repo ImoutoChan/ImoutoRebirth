@@ -1,11 +1,11 @@
 ﻿using ImoutoRebirth.Common.Host;
+using ImoutoRebirth.Common.MassTransit;
 using ImoutoRebirth.Lilin.Core;
 using ImoutoRebirth.Lilin.DataAccess;
 using ImoutoRebirth.Lilin.Host.Settings;
 using ImoutoRebirth.Lilin.Infrastructure;
 using ImoutoRebirth.Lilin.MessageContracts;
 using ImoutoRebirth.Lilin.Services;
-using MassTransit.RabbitMq.Extensions.Hosting.Extensions;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -32,8 +32,10 @@ namespace ImoutoRebirth.Lilin.Host
                     .AddLilinDataAccess()
                     .AddLilinCore();
 
-            services.AddMassTransitRabbitMqHostedService(ReceiverApp.Name, LilinSettings.RabbitSettings.ToOptions())
-                    .AddLilinServicesForRabbit();
+            services.AddTrueMassTransit(
+                LilinSettings.RabbitSettings,
+                ReceiverApp.Name,
+                с => с.AddLilinServicesForRabbit());
         }
     }
 }
