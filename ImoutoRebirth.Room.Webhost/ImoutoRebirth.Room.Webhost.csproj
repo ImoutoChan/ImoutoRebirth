@@ -11,9 +11,9 @@
     <PackageReference Include="CacheManager.Microsoft.Extensions.Caching.Memory" Version="1.2.0" />
     <PackageReference Include="CacheManager.Serialization.Json" Version="1.2.0" />
     <PackageReference Include="EFSecondLevelCache.Core" Version="1.7.1" />
-    <PackageReference Include="ImoutoRebirth.Common.EntityFrameworkCore" Version="1.0.0-CI00019" />
-    <PackageReference Include="ImoutoRebirth.Common.Quartz" Version="1.0.0-CI00019" />
-    <PackageReference Include="ImoutoRebirth.Common.Logging" Version="1.0.0-CI00019" />
+    <PackageReference Include="ImoutoRebirth.Common.EntityFrameworkCore" Version="1.0.0-CI00021" />
+    <PackageReference Include="ImoutoRebirth.Common.Quartz" Version="1.0.0-CI00021" />
+    <PackageReference Include="ImoutoRebirth.Common.Logging" Version="1.0.0-CI00021" />
     <PackageReference Include="Microsoft.AspNetCore.App" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="2.2.1">
       <PrivateAssets>all</PrivateAssets>
