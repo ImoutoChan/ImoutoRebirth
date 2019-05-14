@@ -23,6 +23,7 @@ namespace ImoutoProject.Common.Cqrs.Behaviors
             {
                 var response = await next();
 
+                await _unitOfWork.SaveChangesAsync(cancellationToken);
                 _unitOfWork.CommitTransaction();
                 return response;
             }
