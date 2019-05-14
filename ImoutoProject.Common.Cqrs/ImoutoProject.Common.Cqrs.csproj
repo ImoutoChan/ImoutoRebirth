@@ -6,7 +6,7 @@
     <Authors>ImoutoChan</Authors>
     <Description>A common libraries that are used across ImoutoRebirth solution</Description>
     <Company>ImoutoRebirth</Company>
-    <PackageProjectUrl>https://github.com/ImoutoRebirth/ImoutoRebirth.Common</PackageProjectUrl>
+    <PackageProjectUrl>https://github.com/ImoutoRebirth/ImoutoRebirth.Common</PackageProjectUrl>    <LangVersion>7.3</LangVersion>
   </PropertyGroup>
 
   <ItemGroup>
