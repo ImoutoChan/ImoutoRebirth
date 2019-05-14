@@ -10,7 +10,7 @@ namespace ImoutoRebirth.Meido.Core
 
         public MetadataSource Source { get; }
 
-        public int FileIdFromSource { get; private set; }
+        public int? FileIdFromSource { get; private set; }
 
         public DateTimeOffset UpdatedAt { get; private set; }
 

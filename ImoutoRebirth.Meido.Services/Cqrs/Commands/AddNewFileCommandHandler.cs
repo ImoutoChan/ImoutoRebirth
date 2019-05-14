@@ -3,6 +3,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using ImoutoProject.Common.Cqrs.Abstract;
 using ImoutoRebirth.Meido.Core;
+using ImoutoRebirth.Meido.DataAccess;
 using ImoutoRebirth.Meido.Services.MetadataRequest;
 using MediatR;
 
@@ -27,7 +28,7 @@ namespace ImoutoRebirth.Meido.Services.Cqrs.Commands
             {
                 var parsingStatus = ParsingStatus.Create(request.FileId, request.Md5, metadataSource);
 
-                await _context.AddAsync(parsingStatus);
+                await _context.AddAsync(parsingStatus, cancellationToken);
 
                 await _metadataRequesterProvider
                      .Get(metadataSource)

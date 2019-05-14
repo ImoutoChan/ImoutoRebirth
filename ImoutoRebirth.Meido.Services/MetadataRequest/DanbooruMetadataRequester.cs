@@ -15,7 +15,7 @@ namespace ImoutoRebirth.Meido.Services.MetadataRequest
             _bus = bus;
         }
 
-        public MetadataSource Source { get; }= MetadataSource.Danbooru;
+        public MetadataSource Source => MetadataSource.Danbooru;
 
         public async Task SendRequestCommand(Guid fileId, string md5)
         {

@@ -7,7 +7,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ImoutoRebirth.Meido.Core", 
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ImoutoRebirth.Meido.MessageContracts", "ImoutoRebirth.Meido.MessageContracts\ImoutoRebirth.Meido.MessageContracts.csproj", "{60EB308F-8FA0-4AE2-95A7-0D27845073CD}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ImoutoRebirth.Meido.Services", "ImoutoRebirth.Meido.Services\ImoutoRebirth.Meido.Services.csproj", "{2C55539A-6AA6-4BE2-A4D1-25104FE2D8C7}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ImoutoRebirth.Meido.Services", "ImoutoRebirth.Meido.Services\ImoutoRebirth.Meido.Services.csproj", "{2C55539A-6AA6-4BE2-A4D1-25104FE2D8C7}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ImoutoRebirth.Meido.DataAccess", "ImoutoRebirth.Meido.DataAccess\ImoutoRebirth.Meido.DataAccess.csproj", "{86CA6E3A-96DD-4B85-B816-1948C7C38352}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -27,6 +29,10 @@ Global
 		{2C55539A-6AA6-4BE2-A4D1-25104FE2D8C7}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2C55539A-6AA6-4BE2-A4D1-25104FE2D8C7}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{2C55539A-6AA6-4BE2-A4D1-25104FE2D8C7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{86CA6E3A-96DD-4B85-B816-1948C7C38352}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{86CA6E3A-96DD-4B85-B816-1948C7C38352}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{86CA6E3A-96DD-4B85-B816-1948C7C38352}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{86CA6E3A-96DD-4B85-B816-1948C7C38352}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
