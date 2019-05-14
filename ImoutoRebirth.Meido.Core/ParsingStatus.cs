@@ -8,7 +8,7 @@ namespace ImoutoRebirth.Meido.Core
 
         public string Md5 { get; }
 
-        public int SourceId { get; }
+        public MetadataSource Source { get; }
 
         public int FileIdFromSource { get; private set; }
 
@@ -21,7 +21,7 @@ namespace ImoutoRebirth.Meido.Core
         private ParsingStatus(
             Guid fileId,
             string md5,
-            int sourceId,
+            MetadataSource source,
             DateTimeOffset updatedAt,
             Status status)
         {
@@ -29,11 +29,11 @@ namespace ImoutoRebirth.Meido.Core
             Md5 = md5;
             UpdatedAt = updatedAt;
             Status = status;
-            SourceId = sourceId;
+            Source = source;
         }
 
-        public static ParsingStatus Create(Guid fileId, string md5, int sourceId) 
-            => new ParsingStatus(fileId, md5, sourceId, DateTimeOffset.Now, Status.SearchRequested);
+        public static ParsingStatus Create(Guid fileId, string md5, MetadataSource source) 
+            => new ParsingStatus(fileId, md5, source, DateTimeOffset.Now, Status.SearchRequested);
 
         public void SetSearchFound(int fileIdFromSource)
         {
