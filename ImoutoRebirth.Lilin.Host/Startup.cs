@@ -6,7 +6,6 @@ using ImoutoRebirth.Lilin.Host.Settings;
 using ImoutoRebirth.Lilin.Infrastructure;
 using ImoutoRebirth.Lilin.MessageContracts;
 using ImoutoRebirth.Lilin.Services;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -24,12 +23,9 @@ namespace ImoutoRebirth.Lilin.Host
 
         public override void ConfigureServices(IServiceCollection services)
         {
-            services.AddDbContext<LilinDbContext>(
-                o => o.UseNpgsql(Configuration.GetConnectionString("LilinDatabase")));
-            
             services.AddLilinInfrastructure()
                     .AddLilinServices()
-                    .AddLilinDataAccess()
+                    .AddLilinDataAccess(Configuration.GetConnectionString("LilinDatabase"))
                     .AddLilinCore();
 
             services.AddTrueMassTransit(
