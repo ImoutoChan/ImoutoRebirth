@@ -11,6 +11,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ImoutoRebirth.Meido.Service
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ImoutoRebirth.Meido.DataAccess", "ImoutoRebirth.Meido.DataAccess\ImoutoRebirth.Meido.DataAccess.csproj", "{86CA6E3A-96DD-4B85-B816-1948C7C38352}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ImoutoRebirth.Meido.Host", "ImoutoRebirth.Meido.Host\ImoutoRebirth.Meido.Host.csproj", "{37734070-4BF0-48E2-BA50-B06560D4783E}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -33,6 +35,10 @@ Global
 		{86CA6E3A-96DD-4B85-B816-1948C7C38352}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{86CA6E3A-96DD-4B85-B816-1948C7C38352}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{86CA6E3A-96DD-4B85-B816-1948C7C38352}.Release|Any CPU.Build.0 = Release|Any CPU
+		{37734070-4BF0-48E2-BA50-B06560D4783E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{37734070-4BF0-48E2-BA50-B06560D4783E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{37734070-4BF0-48E2-BA50-B06560D4783E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{37734070-4BF0-48E2-BA50-B06560D4783E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

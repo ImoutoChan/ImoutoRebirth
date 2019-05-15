@@ -2,6 +2,7 @@
 using ImoutoRebirth.Common.MassTransit;
 using ImoutoRebirth.Meido.MessageContracts;
 using ImoutoRebirth.Meido.Services.Consumers;
+using ImoutoRebirth.Meido.Services.Cqrs.Commands;
 using ImoutoRebirth.Meido.Services.MetadataRequest;
 using MediatR;
 using Microsoft.Extensions.DependencyInjection;
@@ -12,7 +13,7 @@ namespace ImoutoRebirth.Meido.Services
     {
         public static IServiceCollection AddMeidoServices(this IServiceCollection services)
         {
-            services.AddMediatR();
+            services.AddMediatR(typeof(AddNewFileCommand));
             services.AddTransient(typeof(IPipelineBehavior<,>), typeof(LoggingBehavior<,>));
             services.AddTransient(typeof(IPipelineBehavior<,>), typeof(TransactionBehavior<,>));
             services.AddTransient<NewFileCommandConsumer>();
