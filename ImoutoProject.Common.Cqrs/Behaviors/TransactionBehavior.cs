@@ -8,10 +8,17 @@ namespace ImoutoProject.Common.Cqrs.Behaviors
     public class TransactionBehavior<TRequest, TResponse> : IPipelineBehavior<TRequest, TResponse>
     {
         private readonly IUnitOfWork _unitOfWork;
+        private readonly IEventStorage _eventStorage;
+        private readonly IMediator _mediator;
 
-        public TransactionBehavior(IUnitOfWork unitOfWork)
+        public TransactionBehavior(
+            IUnitOfWork unitOfWork, 
+            IEventStorage eventStorage, 
+            IMediator mediator)
         {
             _unitOfWork = unitOfWork;
+            _eventStorage = eventStorage;
+            _mediator = mediator;
         }
 
         public async Task<TResponse> Handle(
@@ -19,14 +26,21 @@ namespace ImoutoProject.Common.Cqrs.Behaviors
             CancellationToken cancellationToken, 
             RequestHandlerDelegate<TResponse> next)
         {
+            TResponse response;
             using (await _unitOfWork.CreateTransaction(IsolationLevel.ReadCommitted))
             {
-                var response = await next();
+                response = await next();
 
-                await _unitOfWork.SaveChangesAsync(cancellationToken);
+                await _unitOfWork.SaveEntitiesAsync(cancellationToken);
                 _unitOfWork.CommitTransaction();
-                return response;
             }
+
+            foreach (var domainEvent in _eventStorage.GetAll())
+            {
+                await _mediator.Publish(domainEvent, cancellationToken);
+            }
+
+            return response;
         }
     }
 }

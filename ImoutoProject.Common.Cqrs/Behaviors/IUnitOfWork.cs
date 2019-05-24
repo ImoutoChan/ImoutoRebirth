@@ -9,6 +9,8 @@ namespace ImoutoProject.Common.Cqrs.Behaviors
     {
         Task<int> SaveChangesAsync(CancellationToken cancellationToken = default);
 
+        Task SaveEntitiesAsync(CancellationToken cancellationToken = default);
+
         Task<IDisposable> CreateTransaction(IsolationLevel isolationLevel);
 
         void CommitTransaction();
