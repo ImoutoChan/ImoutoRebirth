@@ -1,6 +1,7 @@
 ﻿using System.Data;
 using System.Threading;
 using System.Threading.Tasks;
+using ImoutoRebirth.Common.Domain;
 using MediatR;
 
 namespace ImoutoProject.Common.Cqrs.Behaviors

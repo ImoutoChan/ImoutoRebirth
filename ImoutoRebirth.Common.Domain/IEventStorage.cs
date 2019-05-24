@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace ImoutoProject.Common.Cqrs.Behaviors
+namespace ImoutoRebirth.Common.Domain
 {
     public interface IEventStorage
     {

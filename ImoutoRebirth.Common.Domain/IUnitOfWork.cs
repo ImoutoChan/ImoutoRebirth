@@ -3,7 +3,7 @@ using System.Data;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace ImoutoProject.Common.Cqrs.Behaviors
+namespace ImoutoRebirth.Common.Domain
 {
     public interface IUnitOfWork : IDisposable
     {
