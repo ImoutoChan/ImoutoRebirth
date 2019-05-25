@@ -1,6 +1,8 @@
-﻿using System.Data;
+﻿using System;
+using System.Data;
 using System.Threading;
 using System.Threading.Tasks;
+using ImoutoProject.Common.Cqrs.Events;
 using ImoutoRebirth.Common.Domain;
 using MediatR;
 
@@ -10,16 +12,16 @@ namespace ImoutoProject.Common.Cqrs.Behaviors
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly IEventStorage _eventStorage;
-        private readonly IMediator _mediator;
+        private readonly IEventPublisher _eventPublisher;
 
         public TransactionBehavior(
             IUnitOfWork unitOfWork, 
-            IEventStorage eventStorage, 
-            IMediator mediator)
+            IEventStorage eventStorage,
+            IEventPublisher eventPublisher)
         {
             _unitOfWork = unitOfWork;
             _eventStorage = eventStorage;
-            _mediator = mediator;
+            _eventPublisher = eventPublisher;
         }
 
         public async Task<TResponse> Handle(
@@ -38,7 +40,7 @@ namespace ImoutoProject.Common.Cqrs.Behaviors
 
             foreach (var domainEvent in _eventStorage.GetAll())
             {
-                await _mediator.Publish(domainEvent, cancellationToken);
+                await _eventPublisher.Publish(domainEvent, cancellationToken);
             }
 
             return response;
