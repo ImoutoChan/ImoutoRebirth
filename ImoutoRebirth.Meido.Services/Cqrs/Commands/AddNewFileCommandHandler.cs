@@ -1,41 +1,23 @@
-﻿using System.Linq;
-using System.Threading;
+﻿using System.Threading;
 using System.Threading.Tasks;
 using ImoutoProject.Common.Cqrs.Abstract;
-using ImoutoRebirth.Meido.Core;
 using ImoutoRebirth.Meido.Core.ParsingStatus;
-using ImoutoRebirth.Meido.DataAccess;
-using ImoutoRebirth.Meido.Services.MetadataRequest;
 using MediatR;
 
 namespace ImoutoRebirth.Meido.Services.Cqrs.Commands
 {
     internal class AddNewFileCommandHandler : ICommandHandler<AddNewFileCommand>
     {
-        private readonly IMetadataRequesterProvider _metadataRequesterProvider;
-        private readonly MeidoDbContext _context;
+        private readonly IParsingService _parsingService;
 
-        public AddNewFileCommandHandler(IMetadataRequesterProvider metadataRequesterProvider, MeidoDbContext context)
+        public AddNewFileCommandHandler(IParsingService parsingService)
         {
-            _metadataRequesterProvider = metadataRequesterProvider;
-            _context = context;
+            _parsingService = parsingService;
         }
 
         public async Task<Unit> Handle(AddNewFileCommand request, CancellationToken cancellationToken)
         {
-            var allMetadataSources = typeof(MetadataSource).GetEnumValues().Cast<MetadataSource>();
-
-            foreach (var metadataSource in allMetadataSources)
-            {
-                var parsingStatus = ParsingStatus.Create(request.FileId, request.Md5, metadataSource);
-
-                await _context.AddAsync(parsingStatus, cancellationToken);
-
-                await _metadataRequesterProvider
-                     .Get(metadataSource)
-                     .SendRequestCommand(request.FileId, request.Md5);
-            }
-
+            await _parsingService.CreateParsingStatusesForNewFile(request.FileId, request.Md5);
 
             return Unit.Value;
         }

@@ -41,7 +41,7 @@ namespace ImoutoRebirth.Meido.Core.ParsingStatus
             ArgumentValidator.IsEnumDefined(() => source);
 
             var created = new ParsingStatus(fileId, md5, source, DateTimeOffset.Now, Status.SearchRequested);
-            created.Add(new ParsingStatusCreated());
+            created.Add(new ParsingStatusCreated(created));
             return created;
         }
 

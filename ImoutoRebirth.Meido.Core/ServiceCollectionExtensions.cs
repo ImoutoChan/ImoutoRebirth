@@ -9,7 +9,7 @@ namespace ImoutoRebirth.Meido.Core
         public static IServiceCollection AddMeidoDomain(this IServiceCollection services)
         {
             services.AddTransient<IParsingService, ParsingService>();
-            services.AddTransient<IEventStorage, EventStorage>();
+            services.AddScoped<IEventStorage, EventStorage>();
 
             return services;
         }

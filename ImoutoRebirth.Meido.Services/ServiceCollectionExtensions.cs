@@ -1,4 +1,5 @@
 ﻿using ImoutoProject.Common.Cqrs.Behaviors;
+using ImoutoRebirth.Arachne.MessageContracts.Commands;
 using ImoutoRebirth.Common.MassTransit;
 using ImoutoRebirth.Meido.MessageContracts;
 using ImoutoRebirth.Meido.Services.Consumers;
@@ -6,6 +7,8 @@ using ImoutoRebirth.Meido.Services.Cqrs.Commands;
 using ImoutoRebirth.Meido.Services.MetadataRequest;
 using MediatR;
 using Microsoft.Extensions.DependencyInjection;
+using ImoutoProject.Common.Cqrs.Events;
+using ReceiverApp = ImoutoRebirth.Arachne.MessageContracts.ReceiverApp;
 
 namespace ImoutoRebirth.Meido.Services
 {
@@ -23,13 +26,18 @@ namespace ImoutoRebirth.Meido.Services
             services.AddTransient<IMetadataRequester, DanbooruMetadataRequester>();
             services.AddTransient<IMetadataRequester, SankakuMetadataRequester>();
 
+            services.AddTransient<IEventPublisher, EventPublisher>();
+
             return services;
         }
 
         public static ITrueMassTransitConfigurator AddMeidoServicesForRabbit(
             this ITrueMassTransitConfigurator builder)
         {
-            builder.AddConsumer<NewFileCommandConsumer, INewFileCommand>();
+            builder.AddConsumer<NewFileCommandConsumer, INewFileCommand>()
+                   .AddFireAndForget<IYandereSearchMetadataCommand>(ReceiverApp.Name)
+                   .AddFireAndForget<IDanbooruSearchMetadataCommand>(ReceiverApp.Name)
+                   .AddFireAndForget<ISankakuSearchMetadataCommand>(ReceiverApp.Name);
 
             return builder;
         }
