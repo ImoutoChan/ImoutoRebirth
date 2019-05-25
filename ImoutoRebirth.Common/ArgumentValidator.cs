@@ -14,6 +14,15 @@ namespace ImoutoRebirth.Common
             }
         }
 
+        public static void IsEnumDefined<T>(params Expression<Func<T>>[] callerArgs) where T : struct, IConvertible
+        {
+            foreach (var expression in callerArgs)
+            {
+                if (!GetParameterValue(expression).IsDefined())
+                    throw new ArgumentNullException(GetParameterName(expression));
+            }
+        }
+
         public static void NotNullOrWhiteSpace(params Expression<Func<string>>[] callerArgs)
         {
             foreach (var expression in callerArgs)
