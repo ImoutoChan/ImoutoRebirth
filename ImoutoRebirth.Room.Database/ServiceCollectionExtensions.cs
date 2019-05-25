@@ -9,7 +9,6 @@ namespace ImoutoRebirth.Room.Database
         public static IServiceCollection AddRoomDatabase(this IServiceCollection services)
         {
             services.AddTransient(typeof(SoftDeleteDbContextHelper<>));
-            services.AddTransient<TimeTrackDbContextHelper>();
 
             return services;
         }

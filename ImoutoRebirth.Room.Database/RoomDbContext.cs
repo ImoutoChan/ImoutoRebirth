@@ -11,7 +11,6 @@ namespace ImoutoRebirth.Room.Database
 {
     public class RoomDbContext : DbContext
     {
-        private readonly TimeTrackDbContextHelper _timeTrackDbContextHelper;
 
         public DbSet<CollectionEntity> Collections { get; set; }
 
@@ -21,10 +20,9 @@ namespace ImoutoRebirth.Room.Database
 
         public DbSet<CollectionFileEntity> CollectionFiles { get; set; }
 
-        public RoomDbContext(DbContextOptions options, TimeTrackDbContextHelper timeTrackDbContextHelper)
+        public RoomDbContext(DbContextOptions options)
             : base(options)
         {
-            _timeTrackDbContextHelper = timeTrackDbContextHelper;
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -40,7 +38,7 @@ namespace ImoutoRebirth.Room.Database
             bool acceptAllChangesOnSuccess,
             CancellationToken cancellationToken = new CancellationToken())
         {
-            _timeTrackDbContextHelper.OnBeforeSaveChanges(ChangeTracker);
+            ChangeTracker.TrackImplicitTimeBeforeSaveChanges();
 
             var changedEntityNames = GetChangedNames();
 
