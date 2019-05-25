@@ -1,6 +1,5 @@
-﻿using ImoutoRebirth.Arachne.MessageContracts;
-using ImoutoRebirth.Arachne.MessageContracts.Commands;
-using ImoutoRebirth.Common.MassTransit;
+﻿using ImoutoRebirth.Common.MassTransit;
+using ImoutoRebirth.Meido.MessageContracts;
 using ImoutoRebirth.Room.Core.Services.Abstract;
 using ImoutoRebirth.Room.Infrastructure.Service;
 using Microsoft.Extensions.DependencyInjection;
@@ -19,6 +18,6 @@ namespace ImoutoRebirth.Room.Infrastructure
         }
 
         public static ITrueMassTransitConfigurator AddRoomServicesForRabbit(this ITrueMassTransitConfigurator builder) 
-            => builder.AddFireAndForget<IEverywhereSearchMetadataCommand>(ReceiverApp.Name);
+            => builder.AddFireAndForget<INewFileCommand>(ReceiverApp.Name);
     }
 }

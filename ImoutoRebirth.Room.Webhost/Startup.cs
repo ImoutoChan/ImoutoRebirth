@@ -2,9 +2,9 @@
 using AutoMapper;
 using CacheManager.Core;
 using EFSecondLevelCache.Core;
-using ImoutoRebirth.Arachne.MessageContracts;
 using ImoutoRebirth.Common.MassTransit;
 using ImoutoRebirth.Common.Quartz.Extensions;
+using ImoutoRebirth.Meido.MessageContracts;
 using ImoutoRebirth.Room.Core;
 using ImoutoRebirth.Room.DataAccess;
 using ImoutoRebirth.Room.Database;

@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
-using ImoutoRebirth.Arachne.MessageContracts.Commands;
+using ImoutoRebirth.Meido.MessageContracts;
 using ImoutoRebirth.Room.Core.Services.Abstract;
 using MassTransit;
 
@@ -23,7 +23,7 @@ namespace ImoutoRebirth.Room.Infrastructure.Service
                 FileId = fileId
             };
 
-            await _bus.Send<IEverywhereSearchMetadataCommand>(command);
+            await _bus.Send<INewFileCommand>(command);
         }
     }
 }
