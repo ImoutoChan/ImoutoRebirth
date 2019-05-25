@@ -1,4 +1,4 @@
-﻿namespace ImoutoRebirth.Meido.Core
+﻿namespace ImoutoRebirth.Meido.Core.ParsingStatus
 {
     public enum Status
     {

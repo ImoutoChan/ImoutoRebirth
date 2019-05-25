@@ -1,8 +1,10 @@
 ﻿using System;
+using ImoutoRebirth.Common;
+using ImoutoRebirth.Common.Domain;
 
-namespace ImoutoRebirth.Meido.Core
+namespace ImoutoRebirth.Meido.Core.ParsingStatus
 {
-    public class ParsingStatus
+    public class ParsingStatus : Entity
     {
         public Guid FileId { get; }
 
@@ -32,8 +34,16 @@ namespace ImoutoRebirth.Meido.Core
             Source = source;
         }
 
-        public static ParsingStatus Create(Guid fileId, string md5, MetadataSource source) 
-            => new ParsingStatus(fileId, md5, source, DateTimeOffset.Now, Status.SearchRequested);
+        public static ParsingStatus Create(Guid fileId, string md5, MetadataSource source)
+        {
+            ArgumentValidator.Requires(() => fileId != default, nameof(fileId));
+            ArgumentValidator.NotNullOrWhiteSpace(() => md5);
+            ArgumentValidator.IsEnumDefined(() => source);
+
+            var created = new ParsingStatus(fileId, md5, source, DateTimeOffset.Now, Status.SearchRequested);
+            created.Add(new ParsingStatusCreated());
+            return created;
+        }
 
         public void SetSearchFound(int fileIdFromSource)
         {
@@ -50,6 +60,8 @@ namespace ImoutoRebirth.Meido.Core
 
         public void SetSearchFailed(string errorMessage)
         {
+            ArgumentValidator.NotNullOrWhiteSpace(() => errorMessage);
+
             Status = Status.SearchFailed;
             ErrorMessage = errorMessage;
             UpdatedAt = DateTimeOffset.Now;

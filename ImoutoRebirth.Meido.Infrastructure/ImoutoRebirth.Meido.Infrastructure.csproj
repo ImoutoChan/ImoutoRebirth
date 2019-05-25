@@ -1,0 +1,12 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\ImoutoRebirth.Meido.Core\ImoutoRebirth.Meido.Core.csproj" />
+    <ProjectReference Include="..\ImoutoRebirth.Meido.DataAccess\ImoutoRebirth.Meido.DataAccess.csproj" />
+  </ItemGroup>
+
+</Project>

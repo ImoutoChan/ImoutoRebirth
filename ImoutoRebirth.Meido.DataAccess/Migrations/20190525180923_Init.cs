@@ -13,13 +13,13 @@ namespace ImoutoRebirth.Meido.DataAccess.Migrations
                 {
                     FileId = table.Column<Guid>(nullable: false),
                     Source = table.Column<int>(nullable: false),
-                    AddedOn = table.Column<DateTimeOffset>(nullable: false),
-                    ModifiedOn = table.Column<DateTimeOffset>(nullable: false),
                     Md5 = table.Column<string>(nullable: false),
                     FileIdFromSource = table.Column<int>(nullable: true),
                     UpdatedAt = table.Column<DateTimeOffset>(nullable: false),
                     Status = table.Column<int>(nullable: false),
-                    ErrorMessage = table.Column<string>(nullable: true)
+                    ErrorMessage = table.Column<string>(nullable: true),
+                    AddedOn = table.Column<DateTimeOffset>(nullable: false),
+                    ModifiedOn = table.Column<DateTimeOffset>(nullable: false)
                 },
                 constraints: table =>
                 {
@@ -31,11 +31,11 @@ namespace ImoutoRebirth.Meido.DataAccess.Migrations
                 columns: table => new
                 {
                     Source = table.Column<int>(nullable: false),
-                    AddedOn = table.Column<DateTimeOffset>(nullable: false),
-                    ModifiedOn = table.Column<DateTimeOffset>(nullable: false),
                     LastProcessedTagHistoryId = table.Column<int>(nullable: false),
                     LastProcessedTagUpdateAt = table.Column<DateTimeOffset>(nullable: false),
-                    LastProcessedNoteUpdateAt = table.Column<DateTimeOffset>(nullable: false)
+                    LastProcessedNoteUpdateAt = table.Column<DateTimeOffset>(nullable: false),
+                    AddedOn = table.Column<DateTimeOffset>(nullable: false),
+                    ModifiedOn = table.Column<DateTimeOffset>(nullable: false)
                 },
                 constraints: table =>
                 {

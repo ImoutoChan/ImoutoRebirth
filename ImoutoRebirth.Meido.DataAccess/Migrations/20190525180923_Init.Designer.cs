@@ -10,7 +10,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace ImoutoRebirth.Meido.DataAccess.Migrations
 {
     [DbContext(typeof(MeidoDbContext))]
-    [Migration("20190515145610_Init")]
+    [Migration("20190525180923_Init")]
     partial class Init
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -21,7 +21,7 @@ namespace ImoutoRebirth.Meido.DataAccess.Migrations
                 .HasAnnotation("ProductVersion", "2.2.4-servicing-10062")
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
-            modelBuilder.Entity("ImoutoRebirth.Meido.DataAccess.Entities.ParsingStatusEntity", b =>
+            modelBuilder.Entity("ImoutoRebirth.Meido.Core.ParsingStatus.ParsingStatus", b =>
                 {
                     b.Property<Guid>("FileId");
 
@@ -47,7 +47,7 @@ namespace ImoutoRebirth.Meido.DataAccess.Migrations
                     b.ToTable("ParsingStatuses");
                 });
 
-            modelBuilder.Entity("ImoutoRebirth.Meido.DataAccess.Entities.SourceActualizingStateEntity", b =>
+            modelBuilder.Entity("ImoutoRebirth.Meido.Core.SourceActualizingState.SourceActualizingState", b =>
                 {
                     b.Property<int>("Source");
 

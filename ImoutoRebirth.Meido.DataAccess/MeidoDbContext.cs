@@ -1,51 +1,55 @@
 ﻿using System;
 using System.Data;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using ImoutoProject.Common.Cqrs.Behaviors;
+using ImoutoRebirth.Common.Domain;
 using ImoutoRebirth.Common.EntityFrameworkCore.TimeTrack;
-using ImoutoRebirth.Meido.DataAccess.Entities;
+using ImoutoRebirth.Meido.Core.ParsingStatus;
+using ImoutoRebirth.Meido.Core.SourceActualizingState;
 using Microsoft.EntityFrameworkCore;
 
 namespace ImoutoRebirth.Meido.DataAccess
 {
     public class MeidoDbContext : DbContext, IUnitOfWork
     {
-        private readonly TimeTrackDbContextHelper _timeTrackDbContextHelper;
+        private readonly IEventStorage _eventStorage;
 
-        public DbSet<ParsingStatusEntity> ParsingStatuses { get; set; }
+        public DbSet<ParsingStatus> ParsingStatuses { get; set; }
 
-        public DbSet<SourceActualizingStateEntity> SourceActualizingStates { get; set; }
-
+        public DbSet<SourceActualizingState> SourceActualizingStates { get; set; }
 
         public MeidoDbContext(
             DbContextOptions<MeidoDbContext> options,
-            TimeTrackDbContextHelper timeTrackDbContextHelper)
+            IEventStorage eventStorage)
             : base(options)
         {
-            _timeTrackDbContextHelper = timeTrackDbContextHelper;
+            _eventStorage = eventStorage;
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<ParsingStatusEntity>(b =>
-            {
-                b.HasKey(x => new {x.FileId, x.Source});
-
-                b.Property(x => x.Md5).IsRequired();
-            });
-            
-            modelBuilder.Entity<SourceActualizingStateEntity>(b =>
-            {
-                b.HasKey(x => x.Source);
-            });
+            modelBuilder.ApplyConfigurationsFromAssembly(typeof(MeidoDbContext).Assembly);
         }
 
         public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
         {
-            _timeTrackDbContextHelper.OnBeforeSaveChanges(ChangeTracker);
-
+            ChangeTracker.TrackShadowedTimeBeforeSaveChanges();
             return base.SaveChangesAsync(cancellationToken);
+        }
+
+        public async Task SaveEntitiesAsync(CancellationToken cancellationToken = default)
+        {
+            await SaveChangesAsync(cancellationToken);
+
+            foreach (var domainEvent in ChangeTracker
+                                        .Entries()
+                                        .Select(x => x.Entity)
+                                        .OfType<Entity>()
+                                        .SelectMany(x => x.Events))
+            {
+                _eventStorage.Add(domainEvent);
+            }
         }
 
         public async Task<IDisposable> CreateTransaction(IsolationLevel isolationLevel) 

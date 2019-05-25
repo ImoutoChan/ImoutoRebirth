@@ -1,7 +1,9 @@
 ﻿using ImoutoRebirth.Common.Host;
 using ImoutoRebirth.Common.MassTransit;
+using ImoutoRebirth.Meido.Core;
 using ImoutoRebirth.Meido.DataAccess;
 using ImoutoRebirth.Meido.Host.Settings;
+using ImoutoRebirth.Meido.Infrastructure;
 using ImoutoRebirth.Meido.MessageContracts;
 using ImoutoRebirth.Meido.Services;
 using Microsoft.Extensions.Configuration;
@@ -22,7 +24,9 @@ namespace ImoutoRebirth.Meido.Host
         public override void ConfigureServices(IServiceCollection services)
         {
             services.AddMeidoServices()
-                    .AddMeidoDataAccess(Configuration.GetConnectionString("MeidoDatabase"));
+                    .AddMeidoDataAccess(Configuration.GetConnectionString("MeidoDatabase"))
+                    .AddMeidoDomain()
+                    .AddMeidoInfrastructure();
 
             services.AddTrueMassTransit(
                 MeidoSettings.RabbitSettings,

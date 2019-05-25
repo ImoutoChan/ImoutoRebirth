@@ -1,8 +1,10 @@
 ﻿using System;
+using ImoutoRebirth.Common;
+using ImoutoRebirth.Common.Domain;
 
-namespace ImoutoRebirth.Meido.Core
+namespace ImoutoRebirth.Meido.Core.SourceActualizingState
 {
-    public class SourceActualizingState
+    public class SourceActualizingState : Entity
     {
         public MetadataSource Source { get; }
 
@@ -24,8 +26,12 @@ namespace ImoutoRebirth.Meido.Core
             LastProcessedNoteUpdateAt = lastProcessedNoteUpdateAt;
         }
 
-        public SourceActualizingState Create(MetadataSource source, int currentTagHistoryId) 
-            => new SourceActualizingState(source, currentTagHistoryId, DateTimeOffset.Now, DateTimeOffset.Now);
+        public SourceActualizingState Create(MetadataSource source, int currentTagHistoryId)
+        {
+            ArgumentValidator.IsEnumDefined(() => source);
+
+            return new SourceActualizingState(source, currentTagHistoryId, DateTimeOffset.Now, DateTimeOffset.Now);
+        }
 
         public void SetLastTagUpdate(int lastProcessedTagUpdateId)
         {
