@@ -14,15 +14,24 @@ namespace ImoutoRebirth.Common
             }
         }
 
+        public static void NotNullOrWhiteSpace(params Expression<Func<string>>[] callerArgs)
+        {
+            foreach (var expression in callerArgs)
+            {
+                if (string.IsNullOrWhiteSpace(GetParameterValue(expression)))
+                    throw new ArgumentNullException(GetParameterName(expression));
+            }
+        }
+
         public static void Requires(Func<bool> predicate, string name)
         {
             if (!predicate.Invoke())
                 throw new ArgumentException(name);
         }
+        
+        private static T GetParameterValue<T>(Expression<Func<T>> expr) => expr.Compile().Invoke();
 
-        private static object GetParameterValue(Expression<Func<object>> expr) => expr.Compile().Invoke();
-
-        private static string GetParameterName(Expression<Func<object>> expr)
+        private static string GetParameterName<T>(Expression<Func<T>> expr)
         {
             //First try to get a member expression directly.
             //If it fails we know there is a type conversion: parameter is not an object 
