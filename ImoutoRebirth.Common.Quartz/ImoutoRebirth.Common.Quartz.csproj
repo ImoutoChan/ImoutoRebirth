@@ -6,6 +6,7 @@
     <Authors>ImoutoChan</Authors>
     <Description>A common libraries that are used across ImoutoRebirth solution</Description>
     <PackageProjectUrl>https://github.com/ImoutoRebirth/ImoutoRebirth.Common</PackageProjectUrl>
+    <Version>1.0.0</Version>
   </PropertyGroup>
 
   <ItemGroup>
