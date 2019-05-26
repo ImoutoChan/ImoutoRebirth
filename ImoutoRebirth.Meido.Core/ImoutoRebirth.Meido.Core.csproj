@@ -6,8 +6,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="ImoutoRebirth.Common.Domain" Version="1.0.0-CI00041" />
-    <PackageReference Include="ImoutoRebirth.Common" Version="1.0.0-CI00041" />
+    <PackageReference Include="ImoutoRebirth.Common.Domain" Version="1.0.0-CI00043" />
+    <PackageReference Include="ImoutoRebirth.Common" Version="1.0.0-CI00043" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="2.2.0" />
   </ItemGroup>
 

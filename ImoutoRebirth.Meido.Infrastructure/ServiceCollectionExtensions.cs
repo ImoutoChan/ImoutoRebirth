@@ -11,6 +11,7 @@ namespace ImoutoRebirth.Meido.Infrastructure
         public static IServiceCollection AddMeidoInfrastructure(this IServiceCollection services)
         {
             services.AddTransient<IUnitOfWork>(provider => provider.GetRequiredService<MeidoDbContext>());
+            services.AddScoped<IEventStorage, EventStorage>();
 
             services.AddTransient<IParsingStatusRepository, ParsingStatusRepository>();
             services.AddTransient<ISourceActualizingStateRepository, SourceActualizingStateRepository>();

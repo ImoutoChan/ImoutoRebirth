@@ -6,9 +6,9 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="ImoutoProject.Common.Cqrs" Version="1.0.0-CI00041" />
+    <PackageReference Include="ImoutoProject.Common.Cqrs" Version="1.0.0-CI00043" />
     <PackageReference Include="ImoutoRebirth.Arachne.MessageContracts" Version="1.0.0-CI00003" />
-    <PackageReference Include="ImoutoRebirth.Common.MassTransit" Version="1.0.0-CI00041" />
+    <PackageReference Include="ImoutoRebirth.Common.MassTransit" Version="1.0.0-CI00043" />
     <PackageReference Include="MediatR" Version="7.0.0" />
     <PackageReference Include="MediatR.Extensions.Microsoft.DependencyInjection" Version="7.0.0" />
   </ItemGroup>

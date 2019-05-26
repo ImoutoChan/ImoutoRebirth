@@ -1,4 +1,4 @@
-﻿using ImoutoProject.Common.Cqrs.Behaviors;
+﻿using ImoutoProject.Common.Cqrs;
 using ImoutoRebirth.Arachne.MessageContracts.Commands;
 using ImoutoRebirth.Common.MassTransit;
 using ImoutoRebirth.Meido.MessageContracts;
@@ -7,7 +7,6 @@ using ImoutoRebirth.Meido.Services.Cqrs.Commands;
 using ImoutoRebirth.Meido.Services.MetadataRequest;
 using MediatR;
 using Microsoft.Extensions.DependencyInjection;
-using ImoutoProject.Common.Cqrs.Events;
 using ReceiverApp = ImoutoRebirth.Arachne.MessageContracts.ReceiverApp;
 
 namespace ImoutoRebirth.Meido.Services
@@ -17,8 +16,9 @@ namespace ImoutoRebirth.Meido.Services
         public static IServiceCollection AddMeidoServices(this IServiceCollection services)
         {
             services.AddMediatR(typeof(AddNewFileCommand));
-            services.AddTransient(typeof(IPipelineBehavior<,>), typeof(LoggingBehavior<,>));
-            services.AddTransient(typeof(IPipelineBehavior<,>), typeof(TransactionBehavior<,>));
+            services.AddLoggingBehavior();
+            services.AddTransactionBehavior();
+
             services.AddTransient<NewFileCommandConsumer>();
             services.AddTransient<SearchCompleteCommandConsumer>();
 
@@ -26,8 +26,6 @@ namespace ImoutoRebirth.Meido.Services
             services.AddTransient<IMetadataRequester, YandereMetadataRequester>();
             services.AddTransient<IMetadataRequester, DanbooruMetadataRequester>();
             services.AddTransient<IMetadataRequester, SankakuMetadataRequester>();
-
-            services.AddTransient<IEventPublisher, EventPublisher>();
 
             return services;
         }
