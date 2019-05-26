@@ -1,4 +1,6 @@
-﻿using System.Linq;
+﻿using System;
+using System.IO;
+using System.Linq;
 using System.Threading.Tasks;
 using ImoutoRebirth.Common;
 using ImoutoRebirth.Room.Core.Models;
@@ -83,7 +85,15 @@ namespace ImoutoRebirth.Room.Core.Services
                 moveInformation.MoveProblem,
                 moveInformation.SourceTags))
             {
-                return _destinationFolderService.Move(oversawCollection.DestinationFolder, moveInformation);
+                try
+                {
+                    return _destinationFolderService.Move(oversawCollection.DestinationFolder, moveInformation);
+                }
+                catch (Exception e)
+                {
+                    _logger.LogError(e, "Error occured while moving file");
+                    return new MovedInformation(moveInformation, false, moveInformation.SystemFile.File);
+                }
             }
         }
     }
