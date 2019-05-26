@@ -50,7 +50,8 @@ namespace ImoutoRebirth.Arachne.Infrastructure.Models
             IReadOnlyCollection<Note> notes)
         {
             Source = source;
-            BooruPostId = booruPostId;BooruLastUpdate = booruLastUpdate;
+            BooruPostId = booruPostId;
+            BooruLastUpdate = booruLastUpdate;
             Md5 = md5;
             PostedDateTime = postedDateTime;
             PostedById = postedById;

@@ -12,12 +12,15 @@ namespace ImoutoRebirth.Arachne.Core.Models
 
         public IReadOnlyCollection<Note> Notes { get; }
 
+        public int? FileIdFromSource { get; }
+
         public Metadata(
             Image image,
             SearchEngineType source,
             bool isFound,
             IReadOnlyCollection<Tag> tags,
-            IReadOnlyCollection<Note> notes) 
+            IReadOnlyCollection<Note> notes,
+            int? fileIdFromSource) 
             : base(image, source)
         {
             ArgumentValidator.NotNull(() => image, () => tags, () => notes);
@@ -25,9 +28,10 @@ namespace ImoutoRebirth.Arachne.Core.Models
             IsFound = isFound;
             Tags = tags;
             Notes = notes;
+            FileIdFromSource = fileIdFromSource;
         }
 
         public static Metadata NotFound(Image image, SearchEngineType source)
-            => new Metadata(image, source, false, Array.Empty<Tag>(), Array.Empty<Note>());
+            => new Metadata(image, source, false, Array.Empty<Tag>(), Array.Empty<Note>(), null);
     }
 }

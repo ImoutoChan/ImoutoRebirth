@@ -1,10 +1,13 @@
-﻿using System.Net.Http;
+﻿using System;
+using System.Net.Http;
 using AspNetCoreInjection.TypedFactories;
 using ImoutoRebirth.Arachne.Core.InfrastructureContracts;
 using ImoutoRebirth.Arachne.Infrastructure.Abstract;
 using ImoutoRebirth.Arachne.Infrastructure.LoaderFabrics;
 using ImoutoRebirth.Arachne.Infrastructure.Models.Settings;
 using Microsoft.Extensions.DependencyInjection;
+using Polly;
+using Polly.Extensions.Http;
 
 namespace ImoutoRebirth.Arachne.Infrastructure
 {
@@ -15,15 +18,24 @@ namespace ImoutoRebirth.Arachne.Infrastructure
             DanbooruSettings danbooruSettings, 
             SankakuSettings sankakuSettings)
         {
-            services.AddTransient<ISearchEngineProvider, SearchEngineProvider>();
-            services.AddTransient<IBooruLoaderFabric, DanbooruLoaderFabric>();
-            services.AddTransient<IBooruLoaderFabric, YandereLoaderFabric>();
-            services.AddTransient<IBooruLoaderFabric, SankakuLoaderFabric>();
+            // singleton: contains cache of loaders (ensure delays and such)
+            services.AddSingleton<ISearchEngineProvider, SearchEngineProvider>();
 
             // todo
             services.RegisterTypedFactory<BooruSearchEngine.IFactory>().ForConcreteType<BooruSearchEngine>();
 
-            services.AddSingleton<HttpClient>();
+            var policy 
+                = HttpPolicyExtensions.HandleTransientHttpError()
+                                      .WaitAndRetryAsync(2, i => TimeSpan.FromMilliseconds(100 * Math.Pow(10, i)));
+
+            services.AddHttpClient<IBooruLoaderFabric, YandereLoaderFabric>()
+                    .AddPolicyHandler(policy);
+            services.AddHttpClient<IBooruLoaderFabric, DanbooruLoaderFabric>()
+                    .AddPolicyHandler(policy);
+            services.AddHttpClient<IBooruLoaderFabric, SankakuLoaderFabric>()
+                    .AddPolicyHandler(policy);
+            
+
             services.AddTransient<DanbooruSettings>(x => danbooruSettings);
             services.AddTransient<SankakuSettings>(x => sankakuSettings);
 

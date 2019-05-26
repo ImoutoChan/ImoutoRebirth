@@ -31,7 +31,8 @@ namespace ImoutoRebirth.Arachne.Infrastructure
                 searchEngineType, 
                 true, 
                 metaTags.Union(postTags).ToArray(), 
-                metadataParsingDto.Notes);
+                metadataParsingDto.Notes,
+                post.PostId);
         }
 
         private static MetaParsingResults ToMetadataParsingResults(Post post)

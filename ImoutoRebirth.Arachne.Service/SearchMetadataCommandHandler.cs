@@ -18,13 +18,16 @@ namespace ImoutoRebirth.Arachne.Service
     {
         private readonly IArachneSearchService _arachneSearchService;
         private readonly ILogger<SearchMetadataCommandHandler> _logger;
+        private readonly IMeidoReporter _meidoReporter;
 
         public SearchMetadataCommandHandler(
             IArachneSearchService arachneSearchService,
-            ILogger<SearchMetadataCommandHandler> logger)
+            ILogger<SearchMetadataCommandHandler> logger,
+            IMeidoReporter meidoReporter)
         {
             _arachneSearchService = arachneSearchService;
             _logger = logger;
+            _meidoReporter = meidoReporter;
         }
 
         public async Task Search(ConsumeContext<ISearchMetadataCommand> context, SearchEngineType where)
@@ -37,32 +40,47 @@ namespace ImoutoRebirth.Arachne.Service
             sw.Start();
             var searchResults = await _arachneSearchService.Search(new Image(md5), where);
             sw.Stop();
+            
+            LogSearchResults(@where, searchResults, md5, sw);
 
-            if (searchResults is Metadata metadata)
-            {
-                _logger.LogInformation(
-                    "Search result {Md5} in {SearchEngine}: {IsFound} ({Ms} ms)",
-                    md5,
-                    where,
-                    metadata.IsFound.ToString(),
-                    sw.ElapsedMilliseconds);
-            }
-            else if (searchResults is SearchError error)
-            {
-                _logger.LogWarning(
-                    "Search result {Md5} in {SearchEngine}: {IsFound} {SearchErrorMessage} ({Ms} ms)",
-                    md5,
-                    where,
-                    "SearchError",
-                    error.Error,
-                    sw.ElapsedMilliseconds);
-            }
+            await SendUpdateMetadataCommand(context, searchResults);
 
+            await _meidoReporter.ReportSearchResultsToHeadMaid(context, searchResults);
+        }
+
+        private async Task SendUpdateMetadataCommand(
+            ConsumeContext<ISearchMetadataCommand> context, 
+            SearchResult searchResults)
+        {
             var sendCommand = ConvertToCommand(searchResults, context.Message.FileId)
                .Select(command => context.Send<IUpdateMetadataCommand>(command));
 
             if (sendCommand.HasValue)
                 await sendCommand.Value;
+        }
+
+        private void LogSearchResults(SearchEngineType @where, SearchResult searchResults, string md5, Stopwatch sw)
+        {
+            switch (searchResults)
+            {
+                case Metadata metadata:
+                    _logger.LogInformation(
+                        "Search result {Md5} in {SearchEngine}: {IsFound} ({Ms} ms)",
+                        md5,
+                        @where,
+                        metadata.IsFound.ToString(),
+                        sw.ElapsedMilliseconds);
+                    break;
+                case SearchError error:
+                    _logger.LogWarning(
+                        "Search result {Md5} in {SearchEngine}: {IsFound} {SearchErrorMessage} ({Ms} ms)",
+                        md5,
+                        @where,
+                        "SearchError",
+                        error.Error,
+                        sw.ElapsedMilliseconds);
+                    break;
+            }
         }
 
         private Maybe<UpdateMetadataCommand> ConvertToCommand(SearchResult searchResults, Guid fileId)
