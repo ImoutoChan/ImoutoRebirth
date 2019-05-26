@@ -12,6 +12,6 @@ namespace ImoutoRebirth.Meido.MessageContracts
 
         string ErrorText { get; }
 
-        int FileIdFromSource { get; }
+        int? FileIdFromSource { get; }
     }
 }

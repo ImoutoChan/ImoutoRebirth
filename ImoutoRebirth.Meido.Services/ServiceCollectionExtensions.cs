@@ -35,6 +35,7 @@ namespace ImoutoRebirth.Meido.Services
             this ITrueMassTransitConfigurator builder)
         {
             builder.AddConsumer<NewFileCommandConsumer, INewFileCommand>()
+                   .AddConsumer<SearchCompleteCommandConsumer, ISearchCompleteCommand>()
                    .AddFireAndForget<IYandereSearchMetadataCommand>(ReceiverApp.Name)
                    .AddFireAndForget<IDanbooruSearchMetadataCommand>(ReceiverApp.Name)
                    .AddFireAndForget<ISankakuSearchMetadataCommand>(ReceiverApp.Name);

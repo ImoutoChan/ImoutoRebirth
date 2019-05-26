@@ -2,9 +2,10 @@
 using System.Threading.Tasks;
 using ImoutoProject.Common.Cqrs.Events;
 using ImoutoRebirth.Meido.Core.ParsingStatus;
+using ImoutoRebirth.Meido.Core.ParsingStatus.Events;
 using ImoutoRebirth.Meido.Services.MetadataRequest;
 
-namespace ImoutoRebirth.Meido.Services
+namespace ImoutoRebirth.Meido.Services.DomainEventHandlers
 {
     public class ParsingStatusCreatedHandler : DomainEventNotificationHandler<ParsingStatusCreated>
     {

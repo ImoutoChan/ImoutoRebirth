@@ -1,6 +1,6 @@
 ﻿using ImoutoRebirth.Common.Domain;
 
-namespace ImoutoRebirth.Meido.Core.ParsingStatus
+namespace ImoutoRebirth.Meido.Core.ParsingStatus.Events
 {
     public class ParsingStatusCreated : IDomainEvent
     {

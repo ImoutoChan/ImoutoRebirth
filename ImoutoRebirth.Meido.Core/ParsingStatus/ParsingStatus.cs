@@ -1,6 +1,7 @@
 ﻿using System;
 using ImoutoRebirth.Common;
 using ImoutoRebirth.Common.Domain;
+using ImoutoRebirth.Meido.Core.ParsingStatus.Events;
 
 namespace ImoutoRebirth.Meido.Core.ParsingStatus
 {
@@ -56,6 +57,8 @@ namespace ImoutoRebirth.Meido.Core.ParsingStatus
         {
             Status = Status.SearchNotFound;
             UpdatedAt = DateTimeOffset.Now;
+
+            Add(new MetadataNotFound(this));
         }
 
         public void SetSearchFailed(string errorMessage)
