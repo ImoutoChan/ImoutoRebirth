@@ -20,6 +20,7 @@ namespace ImoutoRebirth.Meido.Services
             services.AddTransient(typeof(IPipelineBehavior<,>), typeof(LoggingBehavior<,>));
             services.AddTransient(typeof(IPipelineBehavior<,>), typeof(TransactionBehavior<,>));
             services.AddTransient<NewFileCommandConsumer>();
+            services.AddTransient<SearchCompleteCommandConsumer>();
 
             services.AddTransient<IMetadataRequesterProvider, MetadataRequesterProvider>();
             services.AddTransient<IMetadataRequester, YandereMetadataRequester>();

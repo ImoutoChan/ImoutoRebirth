@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
+using ImoutoRebirth.Meido.Core;
 using ImoutoRebirth.Meido.Core.ParsingStatus;
 using ImoutoRebirth.Meido.DataAccess;
 
@@ -18,6 +19,6 @@ namespace ImoutoRebirth.Meido.Infrastructure
             => _meidoDbContext.ParsingStatuses.AddAsync(parsingStatus);
 
         public Task<ParsingStatus> Get(Guid fileId, int sourceId)
-            => _meidoDbContext.ParsingStatuses.FindAsync(fileId, sourceId);
+            => _meidoDbContext.ParsingStatuses.FindAsync(fileId, (MetadataSource)sourceId);
     }
 }
