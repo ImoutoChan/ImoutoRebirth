@@ -1,8 +1,8 @@
 ﻿using System.Threading;
 using System.Threading.Tasks;
+using ImoutoProject.Common.Cqrs.Abstract;
 using ImoutoRebirth.Lilin.Core.Infrastructure;
 using ImoutoRebirth.Lilin.Core.Models;
-using ImoutoRebirth.Lilin.Services.CQRS.Abstract;
 
 namespace ImoutoRebirth.Lilin.Services.CQRS.Queries
 {

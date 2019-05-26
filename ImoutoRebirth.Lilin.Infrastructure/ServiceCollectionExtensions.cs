@@ -1,4 +1,5 @@
-﻿using ImoutoRebirth.Lilin.Core.Infrastructure;
+﻿using ImoutoRebirth.Common.Domain;
+using ImoutoRebirth.Lilin.Core.Infrastructure;
 using ImoutoRebirth.Lilin.DataAccess;
 using ImoutoRebirth.Lilin.Infrastructure.Repositories;
 using Microsoft.Extensions.DependencyInjection;
@@ -14,7 +15,8 @@ namespace ImoutoRebirth.Lilin.Infrastructure
             services.AddTransient<ITagTypeRepository, TagTypeRepository>();
             services.AddTransient<ITagRepository, TagRepository>();
 
-            services.AddScoped<IUnitOfWork>(provider => provider.GetRequiredService<LilinDbContext>());
+            services.AddScoped<Common.Domain.IUnitOfWork>(provider => provider.GetRequiredService<LilinDbContext>());
+            services.AddTransient<IEventStorage, EventStorage>();
 
             return services;
         }

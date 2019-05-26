@@ -1,7 +1,7 @@
 ﻿using System.Threading;
 using System.Threading.Tasks;
+using ImoutoProject.Common.Cqrs.Abstract;
 using ImoutoRebirth.Lilin.Core.Services;
-using ImoutoRebirth.Lilin.Services.CQRS.Abstract;
 using MediatR;
 
 namespace ImoutoRebirth.Lilin.Services.CQRS.Commands

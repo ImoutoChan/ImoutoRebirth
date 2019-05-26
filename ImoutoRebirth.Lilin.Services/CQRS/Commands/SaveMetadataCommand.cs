@@ -1,5 +1,5 @@
-﻿using ImoutoRebirth.Lilin.Core.Models;
-using ImoutoRebirth.Lilin.Services.CQRS.Abstract;
+﻿using ImoutoProject.Common.Cqrs.Abstract;
+using ImoutoRebirth.Lilin.Core.Models;
 
 namespace ImoutoRebirth.Lilin.Services.CQRS.Commands
 {

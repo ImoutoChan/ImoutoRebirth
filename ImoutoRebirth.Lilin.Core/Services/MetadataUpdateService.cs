@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
+using ImoutoRebirth.Common.Domain;
 using ImoutoRebirth.Lilin.Core.Infrastructure;
 using ImoutoRebirth.Lilin.Core.Models;
 

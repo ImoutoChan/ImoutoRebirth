@@ -8,7 +8,6 @@ namespace ImoutoRebirth.Lilin.DataAccess
     {
         public static IServiceCollection AddLilinDataAccess(this IServiceCollection services, string connectionString)
         {
-            services.AddTransient<TimeTrackDbContextHelper>();
             services.AddDbContext<LilinDbContext>(o => o.UseNpgsql(connectionString));
 
             return services;

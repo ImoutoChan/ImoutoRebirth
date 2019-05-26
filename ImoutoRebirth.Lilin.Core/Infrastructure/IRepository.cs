@@ -1,4 +1,6 @@
-﻿namespace ImoutoRebirth.Lilin.Core.Infrastructure
+﻿using ImoutoRebirth.Common.Domain;
+
+namespace ImoutoRebirth.Lilin.Core.Infrastructure
 {
     public interface IRepository
     {

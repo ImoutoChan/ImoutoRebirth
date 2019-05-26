@@ -1,9 +1,10 @@
 ﻿using System;
 using System.Data;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using ImoutoRebirth.Common.Domain;
 using ImoutoRebirth.Common.EntityFrameworkCore.TimeTrack;
-using ImoutoRebirth.Lilin.Core.Infrastructure;
 using ImoutoRebirth.Lilin.DataAccess.Entities;
 using Microsoft.EntityFrameworkCore;
 
@@ -11,7 +12,7 @@ namespace ImoutoRebirth.Lilin.DataAccess
 {
     public class LilinDbContext : DbContext, IUnitOfWork
     {
-        private readonly TimeTrackDbContextHelper _timeTrackDbContextHelper;
+        private readonly IEventStorage _eventStorage;
 
         public DbSet<TagTypeEntity> TagTypes { get; set; }
 
@@ -23,10 +24,10 @@ namespace ImoutoRebirth.Lilin.DataAccess
 
         public LilinDbContext(
             DbContextOptions<LilinDbContext> options,
-            TimeTrackDbContextHelper timeTrackDbContextHelper) 
+            IEventStorage eventStorage) 
             : base(options)
         {
-            _timeTrackDbContextHelper = timeTrackDbContextHelper;
+            _eventStorage = eventStorage;
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -70,15 +71,23 @@ namespace ImoutoRebirth.Lilin.DataAccess
             });
         }
 
-        public async Task<bool> SaveEntitiesAsync(CancellationToken cancellationToken = default(CancellationToken))
+        public async Task SaveEntitiesAsync(CancellationToken cancellationToken = default(CancellationToken))
         {
             await SaveChangesAsync(cancellationToken);
-            return true;
+
+            foreach (var domainEvent in ChangeTracker
+                                       .Entries()
+                                       .Select(x => x.Entity)
+                                       .OfType<Entity>()
+                                       .SelectMany(x => x.Events))
+            {
+                _eventStorage.Add(domainEvent);
+            }
         }
 
         public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = new CancellationToken())
         {
-            _timeTrackDbContextHelper.OnBeforeSaveChanges(ChangeTracker);
+            ChangeTracker.TrackImplicitTimeBeforeSaveChanges();
 
             return base.SaveChangesAsync(cancellationToken);
         }
