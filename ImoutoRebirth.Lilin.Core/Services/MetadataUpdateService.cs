@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
 using ImoutoRebirth.Common.Domain;
+using ImoutoRebirth.Lilin.Core.Events;
 using ImoutoRebirth.Lilin.Core.Infrastructure;
 using ImoutoRebirth.Lilin.Core.Models;
 
@@ -10,16 +11,16 @@ namespace ImoutoRebirth.Lilin.Core.Services
     {
         private readonly IFileTagRepository _fileTagRepository;
         private readonly IFileNoteRepository _fileNoteRepository;
-        private readonly IUnitOfWork _unitOfWork;
+        private readonly IEventStorage _eventStorage;
 
         public MetadataUpdateService(
             IFileTagRepository fileTagRepository, 
-            IFileNoteRepository fileNoteRepository, 
-            IUnitOfWork unitOfWork)
+            IFileNoteRepository fileNoteRepository,
+            IEventStorage eventStorage)
         {
             _fileTagRepository = fileTagRepository;
             _fileNoteRepository = fileNoteRepository;
-            _unitOfWork = unitOfWork;
+            _eventStorage = eventStorage;
         }
 
         public async Task ApplyMetadata(MetadataUpdate update)
@@ -39,7 +40,7 @@ namespace ImoutoRebirth.Lilin.Core.Services
                 await _fileNoteRepository.Add(note);
             }
 
-            await _unitOfWork.SaveEntitiesAsync();
+            _eventStorage.Add(new MetadataUpdated(update.FileId, update.MetadataSource));
         }
 
         private async Task ClearOldMetadata(Guid fileId, MetadataSource source)

@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
-using ImoutoRebirth.Common.Domain;
 using ImoutoRebirth.Lilin.Core.Infrastructure;
 using ImoutoRebirth.Lilin.Core.Models;
 using ImoutoRebirth.Lilin.DataAccess;
@@ -30,8 +29,6 @@ namespace ImoutoRebirth.Lilin.Infrastructure.Repositories
             _tagRepository = tagRepository;
         }
 
-        public IUnitOfWork UnitOfWork => _lilinDbContext;
-        
         public async Task Add(FileTagBind fileTag)
         {
             var type = await _tagTypeRepository.GetOrCreate(fileTag.Type);

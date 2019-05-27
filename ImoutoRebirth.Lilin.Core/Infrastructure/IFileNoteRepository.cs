@@ -5,7 +5,7 @@ using ImoutoRebirth.Lilin.Core.Models;
 
 namespace ImoutoRebirth.Lilin.Core.Infrastructure
 {
-    public interface IFileNoteRepository : IRepository
+    public interface IFileNoteRepository
     {
         Task Add(FileNote fileNote);
 

@@ -5,7 +5,7 @@ using ImoutoRebirth.Lilin.Core.Models;
 
 namespace ImoutoRebirth.Lilin.Core.Infrastructure
 {
-    public interface IFileTagRepository : IRepository
+    public interface IFileTagRepository
     {
         Task Add(FileTagBind fileTag);
 

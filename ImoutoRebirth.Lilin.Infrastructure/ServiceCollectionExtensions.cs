@@ -16,7 +16,7 @@ namespace ImoutoRebirth.Lilin.Infrastructure
             services.AddTransient<ITagRepository, TagRepository>();
 
             services.AddScoped<Common.Domain.IUnitOfWork>(provider => provider.GetRequiredService<LilinDbContext>());
-            services.AddTransient<IEventStorage, EventStorage>();
+            services.AddScoped<IEventStorage, EventStorage>();
 
             return services;
         }

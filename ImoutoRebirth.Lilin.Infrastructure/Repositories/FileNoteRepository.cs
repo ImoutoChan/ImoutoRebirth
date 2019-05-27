@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using ImoutoRebirth.Common.Domain;
 using ImoutoRebirth.Lilin.Core.Infrastructure;
 using ImoutoRebirth.Lilin.Core.Models;
 using ImoutoRebirth.Lilin.DataAccess;
@@ -19,8 +18,6 @@ namespace ImoutoRebirth.Lilin.Infrastructure.Repositories
         {
             _lilinDbContext = lilinDbContext;
         }
-
-        public IUnitOfWork UnitOfWork => _lilinDbContext;
 
         public async Task Add(FileNote fileNote)
         {
