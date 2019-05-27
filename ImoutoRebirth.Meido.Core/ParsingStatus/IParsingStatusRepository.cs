@@ -7,6 +7,6 @@ namespace ImoutoRebirth.Meido.Core.ParsingStatus
     {
         Task Add(ParsingStatus parsingStatus);
 
-        Task<ParsingStatus> Get(Guid fileId, int sourceId);
+        Task<ParsingStatus> Get(Guid fileId, MetadataSource source);
     }
 }

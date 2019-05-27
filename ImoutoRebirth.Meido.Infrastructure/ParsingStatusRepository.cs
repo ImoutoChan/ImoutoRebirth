@@ -18,7 +18,7 @@ namespace ImoutoRebirth.Meido.Infrastructure
         public Task Add(ParsingStatus parsingStatus)
             => _meidoDbContext.ParsingStatuses.AddAsync(parsingStatus);
 
-        public Task<ParsingStatus> Get(Guid fileId, int sourceId)
-            => _meidoDbContext.ParsingStatuses.FindAsync(fileId, (MetadataSource)sourceId);
+        public Task<ParsingStatus> Get(Guid fileId, MetadataSource source)
+            => _meidoDbContext.ParsingStatuses.FindAsync(fileId, source);
     }
 }

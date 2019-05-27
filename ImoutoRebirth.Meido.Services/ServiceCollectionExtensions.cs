@@ -21,6 +21,7 @@ namespace ImoutoRebirth.Meido.Services
 
             services.AddTransient<NewFileCommandConsumer>();
             services.AddTransient<SearchCompleteCommandConsumer>();
+            services.AddTransient<SavedCommandConsumer>();
 
             services.AddTransient<IMetadataRequesterProvider, MetadataRequesterProvider>();
             services.AddTransient<IMetadataRequester, YandereMetadataRequester>();
@@ -35,6 +36,7 @@ namespace ImoutoRebirth.Meido.Services
         {
             builder.AddConsumer<NewFileCommandConsumer, INewFileCommand>()
                    .AddConsumer<SearchCompleteCommandConsumer, ISearchCompleteCommand>()
+                   .AddConsumer<SavedCommandConsumer, ISavedCommand>()
                    .AddFireAndForget<IYandereSearchMetadataCommand>(ReceiverApp.Name)
                    .AddFireAndForget<IDanbooruSearchMetadataCommand>(ReceiverApp.Name)
                    .AddFireAndForget<ISankakuSearchMetadataCommand>(ReceiverApp.Name);

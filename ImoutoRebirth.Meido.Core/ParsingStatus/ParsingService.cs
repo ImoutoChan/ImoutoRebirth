@@ -2,16 +2,19 @@
 using System.Linq;
 using System.Threading.Tasks;
 using ImoutoRebirth.Common;
+using Microsoft.Extensions.Logging;
 
 namespace ImoutoRebirth.Meido.Core.ParsingStatus
 {
     public class ParsingService : IParsingService
     {
         private readonly IParsingStatusRepository _parsingStatusRepository;
+        private readonly ILogger<ParsingService> _logger;
 
-        public ParsingService(IParsingStatusRepository parsingStatusRepository)
+        public ParsingService(IParsingStatusRepository parsingStatusRepository, ILogger<ParsingService> logger)
         {
             _parsingStatusRepository = parsingStatusRepository;
+            _logger = logger;
         }
 
         public async Task CreateParsingStatusesForNewFile(Guid fileId, string md5)
@@ -23,6 +26,13 @@ namespace ImoutoRebirth.Meido.Core.ParsingStatus
 
             foreach (var metadataSource in allMetadataSources)
             {
+                var check = await _parsingStatusRepository.Get(fileId, metadataSource);
+                if (check != null)
+                {
+                    _logger.LogWarning("Can't create a parsing status with duplicate key {FileId}, {Source}");
+                    continue;
+                }
+
                 var parsingStatus = ParsingStatus.Create(fileId, md5, metadataSource);
                 
                 await _parsingStatusRepository.Add(parsingStatus);
@@ -39,7 +49,7 @@ namespace ImoutoRebirth.Meido.Core.ParsingStatus
             ArgumentValidator.IsEnumDefined(() => resultStatus);
             ArgumentValidator.Requires(() => fileId != default, nameof(fileId));
 
-            var parsingStatus = await _parsingStatusRepository.Get(fileId, sourceId);
+            var parsingStatus = await _parsingStatusRepository.Get(fileId, (MetadataSource)sourceId);
 
             switch (resultStatus)
             {
@@ -57,6 +67,16 @@ namespace ImoutoRebirth.Meido.Core.ParsingStatus
                 default:
                     throw new ArgumentOutOfRangeException(nameof(resultStatus), resultStatus, null);
             }
+        }
+
+        public async Task MarkAsSaved(Guid fileId, int sourceId)
+        {
+            ArgumentValidator.Requires(() => fileId != default, nameof(fileId));
+            ArgumentValidator.Requires(() => sourceId >= 0 && sourceId <= 2, nameof(sourceId));
+
+            var parsingStatus = await _parsingStatusRepository.Get(fileId, (MetadataSource)sourceId);
+
+            parsingStatus.SetSearchSaved();
         }
     }
 }

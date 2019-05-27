@@ -2,11 +2,11 @@
 {
     public enum Status
     {
-        SearchRequested,
-        SearchFound,
-        SearchNotFound,
-        SearchFailed,
-        OriginalRequested,
-        SearchSaved
+        SearchRequested = 0,
+        SearchFound = 1,
+        SearchNotFound = 2,
+        SearchFailed = 3,
+        OriginalRequested = 4,
+        SearchSaved = 5
     }
 }
