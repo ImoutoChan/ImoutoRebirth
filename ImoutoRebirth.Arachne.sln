@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
-VisualStudioVersion = 15.0.28010.2046
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.28917.182
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ImoutoRebirth.Arachne.Core", "ImoutoRebirth.Arachne.Core\ImoutoRebirth.Arachne.Core.csproj", "{48A21126-9CC4-4C5D-BAE3-F3CED2D835B9}"
 EndProject
@@ -12,6 +12,11 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ImoutoRebirth.Arachne.MessageContracts", "ImoutoRebirth.Arachne.MessageContracts\ImoutoRebirth.Arachne.MessageContracts.csproj", "{7AF8CE42-0EFF-42D6-9322-00F261D8A180}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ImoutoRebirth.Arachne.Host", "ImoutoRebirth.Arachne.Host\ImoutoRebirth.Arachne.Host.csproj", "{2A6DBE19-39F0-4B5F-B0CD-3442A7165B98}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{28EA2DF9-9F0D-49A1-ADC2-4C3A48C6A4C3}"
+	ProjectSection(SolutionItems) = preProject
+		appveyor.yml = appveyor.yml
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

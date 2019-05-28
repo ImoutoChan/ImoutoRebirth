@@ -1,0 +1,20 @@
+version: 1.0.0-CI-{build}
+image: Visual Studio 2019 Preview
+configuration: Release
+dotnet_csproj:
+  patch: true
+  file: '**\*.csproj'
+  version: '{version}'
+before_build:
+- ps: nuget restore
+build:
+  verbosity: minimal
+artifacts:
+- path: '**\ImoutoRebirth.Arachne.MessageContracts.*.nupkg'
+  name: Nuget Packages
+deploy:
+- provider: NuGet
+  server: https://www.myget.org/F/imoutochan/api/v2/package
+  api_key:
+    secure: SCM9tW5fuxonNLnU4EBGQZloqpOf2kvWkvoTBeSveTbN0OLC9DwP7pFkQc5POwjn
+  skip_symbols: false
