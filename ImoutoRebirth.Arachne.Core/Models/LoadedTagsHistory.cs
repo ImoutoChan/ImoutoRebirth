@@ -1,8 +1,8 @@
 ﻿namespace ImoutoRebirth.Arachne.Core.Models
 {
-    public class LoadedHistory
+    public class LoadedTagsHistory
     {
-        public LoadedHistory(int[] changedPostIds, int lastHistoryId)
+        public LoadedTagsHistory(int[] changedPostIds, int lastHistoryId)
         {
             ChangedPostIds = changedPostIds;
             LastHistoryId = lastHistoryId;

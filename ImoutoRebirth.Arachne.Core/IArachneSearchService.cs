@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using ImoutoRebirth.Arachne.Core.Models;
 
@@ -10,8 +11,12 @@ namespace ImoutoRebirth.Arachne.Core
 
         Task<IReadOnlyCollection<SearchResult>> SearchInAllEngines(Image searchFor);
 
-        Task<LoadedHistory> LoadChangesForTagsSinceHistoryId(
+        Task<LoadedTagsHistory> LoadChangesForTagsSinceHistoryId(
             int historyId, 
+            SearchEngineType searchEngineType);
+
+        Task<LoadedNotesHistory> LoadChangesForNotesSince(
+            DateTimeOffset lastProcessedNoteUpdateAt, 
             SearchEngineType searchEngineType);
     }
 }

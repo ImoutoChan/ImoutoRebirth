@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
 using ImoutoRebirth.Arachne.Core.Models;
 
 namespace ImoutoRebirth.Arachne.Core.InfrastructureContracts
@@ -9,6 +10,8 @@ namespace ImoutoRebirth.Arachne.Core.InfrastructureContracts
 
         Task<SearchResult> Search(Image image);
 
-        Task<LoadedHistory> LoadChangesForTagsSinceHistoryId(int historyId);
+        Task<LoadedTagsHistory> LoadChangesForTagsSinceHistoryId(int historyId);
+
+        Task<LoadedNotesHistory> LoadChangesForNotesSince(DateTimeOffset lastProcessedNoteUpdateAt);
     }
 }

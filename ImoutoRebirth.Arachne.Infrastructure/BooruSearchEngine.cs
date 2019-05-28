@@ -49,7 +49,7 @@ namespace ImoutoRebirth.Arachne.Infrastructure
             }
         }
 
-        public async Task<LoadedHistory> LoadChangesForTagsSinceHistoryId(int historyId)
+        public async Task<LoadedTagsHistory> LoadChangesForTagsSinceHistoryId(int historyId)
         {
             try
             {
@@ -62,22 +62,55 @@ namespace ImoutoRebirth.Arachne.Infrastructure
                     var postIds = history.Select(x => x.PostId).ToArray();
 
                     _logger.LogInformation(
-                        "Requested history loaded with {PostTagUpdatesCount} for {SearchEngine}.",
+                        "Requested tags history loaded with {PostTagUpdatesCount} for {SearchEngine}.",
                         history.Count,
                         SearchEngineType);
 
-                    return new LoadedHistory(postIds, lastHistoryId);
+                    return new LoadedTagsHistory(postIds, lastHistoryId);
                 }
                 
-                _logger.LogWarning("Requested history is empty.");
-                return new LoadedHistory(Array.Empty<int>(), historyId);
+                _logger.LogWarning("Requested tags history is empty.");
+                return new LoadedTagsHistory(Array.Empty<int>(), historyId);
             }
             catch (Exception e)
             {
-                _logger.LogError(e, "Exception occured while loading tag history update.");
+                _logger.LogError(e, "Exception occured while loading tags history update.");
                 throw;
             }
         }
+
+        public async Task<LoadedNotesHistory> LoadChangesForNotesSince(DateTimeOffset lastProcessedNoteUpdateAt)
+        {
+            try
+            {
+                var history = await LoadNoteHistory(lastProcessedNoteUpdateAt);
+
+                var first = history.FirstOrDefault();
+                if (first != null)
+                {
+                    var lastDate = first.Date;
+                    var postIds = history.Select(x => x.PostId).ToArray();
+
+                    _logger.LogInformation(
+                        "Requested notes history loaded with {PostTagUpdatesCount} for {SearchEngine}.",
+                        history.Count,
+                        SearchEngineType);
+
+                    return new LoadedNotesHistory(postIds, lastDate);
+                }
+
+                _logger.LogWarning("Requested notes history is empty.");
+                return new LoadedNotesHistory(Array.Empty<int>(), lastProcessedNoteUpdateAt);
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e, "Exception occured while loading notes history update.");
+                throw;
+            }
+        }
+
+        private Task<List<NoteUpdateEntry>> LoadNoteHistory(DateTimeOffset lastProcessedNoteUpdateAt)
+            => _booruLoader.LoadNotesHistoryAsync(lastProcessedNoteUpdateAt.UtcDateTime);
 
         private Task<List<PostUpdateEntry>> LoadTagHistory(int historyId)
             => historyId == default
