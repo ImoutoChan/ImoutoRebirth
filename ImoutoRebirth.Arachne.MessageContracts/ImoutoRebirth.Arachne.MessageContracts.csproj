@@ -4,4 +4,8 @@
     <TargetFramework>netstandard2.0</TargetFramework>
   </PropertyGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\ImoutoRebirth.Arachne.Core\ImoutoRebirth.Arachne.Core.csproj" />
+  </ItemGroup>
+
 </Project>
