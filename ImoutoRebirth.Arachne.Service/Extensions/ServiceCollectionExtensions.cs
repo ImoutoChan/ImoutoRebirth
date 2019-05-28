@@ -17,6 +17,7 @@ namespace ImoutoRebirth.Arachne.Service.Extensions
             services.AddTransient<YandereSearchMetadataCommandConsumer>();
             services.AddTransient<DanbooruSearchMetadataCommandConsumer>();
             services.AddTransient<SankakuSearchMetadataCommandConsumer>();
+            services.AddTransient<LoadTagHistoryCommandConsumer>();
 
             return services;
         }
@@ -27,6 +28,7 @@ namespace ImoutoRebirth.Arachne.Service.Extensions
                       .AddConsumer<YandereSearchMetadataCommandConsumer, IYandereSearchMetadataCommand>()
                       .AddConsumer<DanbooruSearchMetadataCommandConsumer, IDanbooruSearchMetadataCommand>()
                       .AddConsumer<SankakuSearchMetadataCommandConsumer, ISankakuSearchMetadataCommand>()
+                      .AddConsumer<LoadTagHistoryCommandConsumer, ILoadTagHistoryCommand>()
                       .AddFireAndForget<IUpdateMetadataCommand>(Lilin.MessageContracts.ReceiverApp.Name)
                       .AddFireAndForget<ISearchCompleteCommand>(Meido.MessageContracts.ReceiverApp.Name);
     }

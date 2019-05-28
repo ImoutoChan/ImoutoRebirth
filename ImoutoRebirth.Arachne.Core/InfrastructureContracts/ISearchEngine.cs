@@ -8,5 +8,7 @@ namespace ImoutoRebirth.Arachne.Core.InfrastructureContracts
         SearchEngineType SearchEngineType { get; }
 
         Task<SearchResult> Search(Image image);
+
+        Task<LoadedHistory> LoadChangesForTagsSinceHistoryId(int historyId);
     }
 }

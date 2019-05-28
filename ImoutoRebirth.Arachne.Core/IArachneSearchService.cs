@@ -9,5 +9,9 @@ namespace ImoutoRebirth.Arachne.Core
         Task<SearchResult> Search(Image searchFor, SearchEngineType searchEngineType);
 
         Task<IReadOnlyCollection<SearchResult>> SearchInAllEngines(Image searchFor);
+
+        Task<LoadedHistory> LoadChangesForTagsSinceHistoryId(
+            int historyId, 
+            SearchEngineType searchEngineType);
     }
 }

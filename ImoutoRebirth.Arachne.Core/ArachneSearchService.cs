@@ -27,5 +27,10 @@ namespace ImoutoRebirth.Arachne.Core
 
         public Task<SearchResult> Search(Image searchFor, SearchEngineType searchEngineType)
             => _searchEngineProvider.Get(searchEngineType).Search(searchFor);
+
+        public Task<LoadedHistory> LoadChangesForTagsSinceHistoryId(
+            int historyId, 
+            SearchEngineType searchEngineType)
+            => _searchEngineProvider.Get(searchEngineType).LoadChangesForTagsSinceHistoryId(historyId);
     }
 }
