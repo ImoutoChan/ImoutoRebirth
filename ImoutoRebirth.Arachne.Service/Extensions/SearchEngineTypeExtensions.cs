@@ -20,5 +20,8 @@ namespace ImoutoRebirth.Arachne.Service.Extensions
                     throw new ArgumentOutOfRangeException(nameof(searchEngineType), searchEngineType, null);
             }
         }
+
+        public static SearchEngineType ToModel(this MessageContracts.SearchEngineType searchEngineType) 
+            => (SearchEngineType) searchEngineType;
     }
 }

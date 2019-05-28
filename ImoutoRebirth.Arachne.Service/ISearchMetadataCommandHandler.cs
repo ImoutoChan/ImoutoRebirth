@@ -1,7 +1,7 @@
 ﻿using System.Threading.Tasks;
-using ImoutoRebirth.Arachne.Core.Models;
 using ImoutoRebirth.Arachne.MessageContracts;
 using MassTransit;
+using SearchEngineType = ImoutoRebirth.Arachne.Core.Models.SearchEngineType;
 
 namespace ImoutoRebirth.Arachne.Service
 {

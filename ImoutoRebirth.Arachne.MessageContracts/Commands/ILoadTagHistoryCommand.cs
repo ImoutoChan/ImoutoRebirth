@@ -1,6 +1,4 @@
-﻿using ImoutoRebirth.Arachne.Core.Models;
-
-namespace ImoutoRebirth.Arachne.MessageContracts.Commands
+﻿namespace ImoutoRebirth.Arachne.MessageContracts.Commands
 {
     public interface ILoadTagHistoryCommand
     {

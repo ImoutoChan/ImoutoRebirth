@@ -11,6 +11,7 @@ using ImoutoRebirth.Lilin.MessageContracts;
 using Mackiovello.Maybe;
 using MassTransit;
 using Microsoft.Extensions.Logging;
+using SearchEngineType = ImoutoRebirth.Arachne.Core.Models.SearchEngineType;
 
 namespace ImoutoRebirth.Arachne.Service
 {

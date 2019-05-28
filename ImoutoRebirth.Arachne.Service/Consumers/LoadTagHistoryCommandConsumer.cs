@@ -1,6 +1,7 @@
 ﻿using System.Threading.Tasks;
 using ImoutoRebirth.Arachne.Core;
 using ImoutoRebirth.Arachne.MessageContracts.Commands;
+using ImoutoRebirth.Arachne.Service.Extensions;
 using MassTransit;
 using Microsoft.Extensions.Logging;
 
@@ -24,11 +25,11 @@ namespace ImoutoRebirth.Arachne.Service.Consumers
             _logger.LogTrace(
                 "Tag history requested from history id {HistoryId} in {SearchEngine}", 
                 context.Message.LastProcessedTagHistoryId,
-                context.Message.SearchEngineType);
+                context.Message.SearchEngineType.ToModel());
 
             var (changedPostIds, lastHistoryId) = await _arachneSearchService.LoadChangesForTagsSinceHistoryId(
                 context.Message.LastProcessedTagHistoryId,
-                context.Message.SearchEngineType);
+                context.Message.SearchEngineType.ToModel());
 
 
         }
