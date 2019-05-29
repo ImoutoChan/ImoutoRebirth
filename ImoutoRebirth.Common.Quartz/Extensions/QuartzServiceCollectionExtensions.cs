@@ -23,12 +23,17 @@ namespace ImoutoRebirth.Common.Quartz.Extensions
 
         public static IServiceCollection AddQuartzJob<TJob, TJobDescription>(
             this IServiceCollection serviceCollection,
+            Func<IServiceProvider, TJobDescription> factory = null,
             ServiceLifetime lifetime = ServiceLifetime.Transient)
             where TJob : IJob
             where TJobDescription : IQuartzJobDescription
         {
             serviceCollection.Add(new ServiceDescriptor(typeof(TJob), typeof(TJob), lifetime));
-            serviceCollection.Add(new ServiceDescriptor(typeof(IQuartzJobDescription), typeof(TJobDescription), lifetime));
+
+            serviceCollection.Add(
+                factory == null
+                    ? new ServiceDescriptor(typeof(IQuartzJobDescription), typeof(TJobDescription), lifetime)
+                    : new ServiceDescriptor(typeof(IQuartzJobDescription), x => factory(x), lifetime));
 
             return serviceCollection;
         }
