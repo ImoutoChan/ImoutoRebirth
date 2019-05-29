@@ -48,7 +48,7 @@ namespace ImoutoRebirth.Common.Quartz
             _logger.LogTrace("Returning instance of Job");
             (job as IDisposable)?.Dispose();
 
-            if (!_scopes.TryGetValue(job, out var scope))
+            if (!_scopes.TryRemove(job, out var scope))
                 return;
 
             scope.Dispose();
