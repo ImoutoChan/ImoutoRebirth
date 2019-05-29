@@ -24,6 +24,7 @@ namespace ImoutoRebirth.Meido.Host
         public override void ConfigureServices(IServiceCollection services)
         {
             services.AddMeidoServices()
+                    .ConfigureMeidoServices(Configuration)
                     .AddMeidoDataAccess(Configuration.GetConnectionString("MeidoDatabase"))
                     .AddMeidoDomain()
                     .AddMeidoInfrastructure();

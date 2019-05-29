@@ -2,6 +2,7 @@
 using ImoutoRebirth.Common.EntityFrameworkCore;
 using ImoutoRebirth.Common.Host;
 using ImoutoRebirth.Common.Logging;
+using ImoutoRebirth.Common.Quartz.Extensions;
 using ImoutoRebirth.Meido.DataAccess;
 using Microsoft.Extensions.Hosting;
 
@@ -31,6 +32,7 @@ namespace ImoutoRebirth.Meido.Host
                            .WithAllRollingFile()
                            .WithInformationRollingFile()
                            .PatchWithConfiguration(appConfiguration))
+              .UseQuartz()
               .UseStartup(x => new Startup(x))
               .Build();
 
