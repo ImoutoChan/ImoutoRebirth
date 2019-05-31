@@ -28,11 +28,11 @@ namespace ImoutoRebirth.Meido.Core.SourceActualizingState
 
         public DateTimeOffset LastRequested { get; private set; }
 
-        public SourceActualizingState Create(MetadataSource source, int currentTagHistoryId)
+        public SourceActualizingState Create(MetadataSource source)
         {
             ArgumentValidator.IsEnumDefined(() => source);
 
-            return new SourceActualizingState(source, currentTagHistoryId, DateTimeOffset.Now, DateTimeOffset.Now);
+            return new SourceActualizingState(source, 0, DateTimeOffset.Now, DateTimeOffset.Now);
         }
 
         public void SetLastTagUpdate(int lastProcessedTagUpdateId)
