@@ -1,8 +1,12 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
+using ImoutoRebirth.Common.Domain.Specifications;
 using ImoutoRebirth.Meido.Core;
 using ImoutoRebirth.Meido.Core.ParsingStatus;
 using ImoutoRebirth.Meido.DataAccess;
+using Microsoft.EntityFrameworkCore;
 
 namespace ImoutoRebirth.Meido.Infrastructure
 {
@@ -16,9 +20,16 @@ namespace ImoutoRebirth.Meido.Infrastructure
         }
 
         public Task Add(ParsingStatus parsingStatus)
-            => _meidoDbContext.ParsingStatuses.AddAsync(parsingStatus);
+            => _meidoDbContext.ParsingStatuses
+                              .AddAsync(parsingStatus);
 
         public Task<ParsingStatus> Get(Guid fileId, MetadataSource source)
-            => _meidoDbContext.ParsingStatuses.FindAsync(fileId, source);
+            => _meidoDbContext.ParsingStatuses
+                              .FindAsync(fileId, source);
+
+        public async Task<IReadOnlyCollection<ParsingStatus>> Find(Specification<ParsingStatus> specification)
+            => await _meidoDbContext.ParsingStatuses
+                                    .Where(specification.ToExpression())
+                                    .ToArrayAsync();
     }
 }

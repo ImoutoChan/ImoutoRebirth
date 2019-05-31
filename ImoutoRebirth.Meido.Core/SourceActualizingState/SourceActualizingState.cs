@@ -6,6 +6,18 @@ namespace ImoutoRebirth.Meido.Core.SourceActualizingState
 {
     public class SourceActualizingState : Entity
     {
+        private SourceActualizingState(
+            MetadataSource source,
+            int lastProcessedTagHistoryId,
+            DateTimeOffset lastProcessedTagUpdateAt,
+            DateTimeOffset lastProcessedNoteUpdateAt)
+        {
+            Source = source;
+            LastProcessedTagHistoryId = lastProcessedTagHistoryId;
+            LastProcessedTagUpdateAt = lastProcessedTagUpdateAt;
+            LastProcessedNoteUpdateAt = lastProcessedNoteUpdateAt;
+        }
+
         public MetadataSource Source { get; }
 
         public int LastProcessedTagHistoryId { get; private set; }
@@ -15,18 +27,6 @@ namespace ImoutoRebirth.Meido.Core.SourceActualizingState
         public DateTimeOffset LastProcessedNoteUpdateAt { get; private set; }
 
         public DateTimeOffset LastRequested { get; private set; }
-
-        private SourceActualizingState(
-            MetadataSource source, 
-            int lastProcessedTagHistoryId, 
-            DateTimeOffset lastProcessedTagUpdateAt, 
-            DateTimeOffset lastProcessedNoteUpdateAt)
-        {
-            Source = source;
-            LastProcessedTagHistoryId = lastProcessedTagHistoryId;
-            LastProcessedTagUpdateAt = lastProcessedTagUpdateAt;
-            LastProcessedNoteUpdateAt = lastProcessedNoteUpdateAt;
-        }
 
         public SourceActualizingState Create(MetadataSource source, int currentTagHistoryId)
         {

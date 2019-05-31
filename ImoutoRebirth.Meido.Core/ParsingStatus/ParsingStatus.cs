@@ -81,5 +81,12 @@ namespace ImoutoRebirth.Meido.Core.ParsingStatus
             Status = Status.SearchSaved;
             UpdatedAt = DateTimeOffset.Now;
         }
+
+        public void RequestMetadataUpdate()
+        {
+            Status = Status.UpdateRequested;
+            UpdatedAt = DateTimeOffset.Now;
+            Add(new UpdateRequested(this));
+        }
     }
 }

@@ -7,6 +7,7 @@
         SearchNotFound = 2,
         SearchFailed = 3,
         OriginalRequested = 4,
-        SearchSaved = 5
+        SearchSaved = 5,
+        UpdateRequested = 6
     }
 }

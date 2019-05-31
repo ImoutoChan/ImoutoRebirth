@@ -6,6 +6,7 @@ using ImoutoRebirth.Meido.MessageContracts;
 using ImoutoRebirth.Meido.Services.Consumers;
 using ImoutoRebirth.Meido.Services.Cqrs.Commands;
 using ImoutoRebirth.Meido.Services.MetadataActualizer;
+using ImoutoRebirth.Meido.Services.MetadataActualizer.Consumers;
 using ImoutoRebirth.Meido.Services.MetadataRequest;
 using MediatR;
 using Microsoft.Extensions.Configuration;
@@ -25,6 +26,8 @@ namespace ImoutoRebirth.Meido.Services
             services.AddTransient<NewFileCommandConsumer>();
             services.AddTransient<SearchCompleteCommandConsumer>();
             services.AddTransient<SavedCommandConsumer>();
+            services.AddTransient<TagsUpdatedCommandConsumer>();
+            services.AddTransient<NotesUpdatedCommandConsumer>();
 
             services.AddTransient<IMetadataRequesterProvider, MetadataRequesterProvider>();
             services.AddTransient<IMetadataRequester, YandereMetadataRequester>();
@@ -52,6 +55,8 @@ namespace ImoutoRebirth.Meido.Services
             builder.AddConsumer<NewFileCommandConsumer, INewFileCommand>()
                    .AddConsumer<SearchCompleteCommandConsumer, ISearchCompleteCommand>()
                    .AddConsumer<SavedCommandConsumer, ISavedCommand>()
+                   .AddConsumer<TagsUpdatedCommandConsumer, ITagsUpdatedCommand>()
+                   .AddConsumer<NotesUpdatedCommandConsumer, INotesUpdatedCommand>()
                    .AddFireAndForget<IYandereSearchMetadataCommand>(ReceiverApp.Name)
                    .AddFireAndForget<IDanbooruSearchMetadataCommand>(ReceiverApp.Name)
                    .AddFireAndForget<ISankakuSearchMetadataCommand>(ReceiverApp.Name)

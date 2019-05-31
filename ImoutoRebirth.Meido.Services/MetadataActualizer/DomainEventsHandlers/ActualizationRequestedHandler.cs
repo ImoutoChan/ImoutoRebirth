@@ -7,7 +7,7 @@ using ImoutoRebirth.Meido.Core.SourceActualizingState;
 using MassTransit;
 using Microsoft.Extensions.Logging;
 
-namespace ImoutoRebirth.Meido.Services.MetadataActualizer
+namespace ImoutoRebirth.Meido.Services.MetadataActualizer.DomainEventsHandlers
 {
     public class ActualizationRequestedHandler : DomainEventNotificationHandler<ActualizationRequested>
     {
