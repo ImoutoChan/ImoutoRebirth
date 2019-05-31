@@ -1,7 +1,8 @@
-﻿using System.Threading.Tasks;
-using ImoutoRebirth.Meido.Core;
+﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 using ImoutoRebirth.Meido.Core.SourceActualizingState;
 using ImoutoRebirth.Meido.DataAccess;
+using Microsoft.EntityFrameworkCore;
 
 namespace ImoutoRebirth.Meido.Infrastructure
 {
@@ -16,5 +17,8 @@ namespace ImoutoRebirth.Meido.Infrastructure
 
         public Task Add(SourceActualizingState sourceActualizingState)
             => _meidoDbContext.SourceActualizingStates.AddAsync(sourceActualizingState);
+
+        public async Task<IReadOnlyCollection<SourceActualizingState>> GetAll()
+            => await _meidoDbContext.SourceActualizingStates.ToArrayAsync();
     }
 }

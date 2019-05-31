@@ -1,11 +1,9 @@
-﻿using System;
-using ImoutoRebirth.Common.EntityFrameworkCore.TimeTrack;
-using ImoutoRebirth.Meido.Core;
+﻿using ImoutoRebirth.Common.EntityFrameworkCore.TimeTrack;
 using ImoutoRebirth.Meido.Core.ParsingStatus;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-namespace ImoutoRebirth.Meido.DataAccess.Entities
+namespace ImoutoRebirth.Meido.DataAccess.EntityConfigurations
 {
     internal class ParsingStatusConfiguration : IEntityTypeConfiguration<ParsingStatus>
     {

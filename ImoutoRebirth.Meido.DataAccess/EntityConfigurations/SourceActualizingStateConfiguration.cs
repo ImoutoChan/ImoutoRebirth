@@ -1,10 +1,9 @@
 ﻿using ImoutoRebirth.Common.EntityFrameworkCore.TimeTrack;
-using ImoutoRebirth.Meido.Core;
 using ImoutoRebirth.Meido.Core.SourceActualizingState;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-namespace ImoutoRebirth.Meido.DataAccess.Entities
+namespace ImoutoRebirth.Meido.DataAccess.EntityConfigurations
 {
     internal class SourceActualizingStateConfiguration : IEntityTypeConfiguration<SourceActualizingState>
     {

@@ -14,6 +14,8 @@ namespace ImoutoRebirth.Meido.Core.SourceActualizingState
 
         public DateTimeOffset LastProcessedNoteUpdateAt { get; private set; }
 
+        public DateTimeOffset LastRequested { get; private set; }
+
         private SourceActualizingState(
             MetadataSource source, 
             int lastProcessedTagHistoryId, 
@@ -42,6 +44,12 @@ namespace ImoutoRebirth.Meido.Core.SourceActualizingState
         public void SetLastNoteUpdate(DateTimeOffset lastProcessedNoteUpdateAt)
         {
             LastProcessedNoteUpdateAt = lastProcessedNoteUpdateAt;
+        }
+
+        public void RequestActualization()
+        {
+            LastRequested = DateTimeOffset.Now;
+            Add(new ActualizationRequested(this));
         }
     }
 }

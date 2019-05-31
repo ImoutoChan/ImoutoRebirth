@@ -1,5 +1,7 @@
 ﻿using System.Threading.Tasks;
 using ImoutoRebirth.Common.Quartz;
+using ImoutoRebirth.Meido.Services.Cqrs.Commands;
+using MediatR;
 using Microsoft.Extensions.Options;
 using Quartz;
 
@@ -8,10 +10,15 @@ namespace ImoutoRebirth.Meido.Services.MetadataActualizer
     [DisallowConcurrentExecution]
     public class MetaActualizerJob : IJob
     {
-        public async Task Execute(IJobExecutionContext context)
+        private readonly IMediator _mediator;
+
+        public MetaActualizerJob(IMediator mediator)
         {
-            throw new System.NotImplementedException();
+            _mediator = mediator;
         }
+
+        public async Task Execute(IJobExecutionContext context) 
+            => await _mediator.Send(new ActualizeSources());
 
         public class Description : IQuartzJobDescription
         {

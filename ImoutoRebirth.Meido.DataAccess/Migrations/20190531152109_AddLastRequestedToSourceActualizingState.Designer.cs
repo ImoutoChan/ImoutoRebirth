@@ -3,15 +3,17 @@ using System;
 using ImoutoRebirth.Meido.DataAccess;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 namespace ImoutoRebirth.Meido.DataAccess.Migrations
 {
     [DbContext(typeof(MeidoDbContext))]
-    partial class MeidoDbContextModelSnapshot : ModelSnapshot
+    [Migration("20190531152109_AddLastRequestedToSourceActualizingState")]
+    partial class AddLastRequestedToSourceActualizingState
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

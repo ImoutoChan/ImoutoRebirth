@@ -54,7 +54,9 @@ namespace ImoutoRebirth.Meido.Services
                    .AddConsumer<SavedCommandConsumer, ISavedCommand>()
                    .AddFireAndForget<IYandereSearchMetadataCommand>(ReceiverApp.Name)
                    .AddFireAndForget<IDanbooruSearchMetadataCommand>(ReceiverApp.Name)
-                   .AddFireAndForget<ISankakuSearchMetadataCommand>(ReceiverApp.Name);
+                   .AddFireAndForget<ISankakuSearchMetadataCommand>(ReceiverApp.Name)
+                   .AddFireAndForget<ILoadTagHistoryCommand>(ReceiverApp.Name)
+                   .AddFireAndForget<ILoadNoteHistoryCommand>(ReceiverApp.Name);
 
             return builder;
         }
