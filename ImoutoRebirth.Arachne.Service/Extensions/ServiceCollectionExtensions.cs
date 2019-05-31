@@ -1,5 +1,6 @@
 ﻿using ImoutoRebirth.Arachne.MessageContracts.Commands;
 using ImoutoRebirth.Arachne.Service.Consumers;
+using ImoutoRebirth.Arachne.Service.SearchEngineHistory;
 using ImoutoRebirth.Common.MassTransit;
 using ImoutoRebirth.Lilin.MessageContracts;
 using ImoutoRebirth.Meido.MessageContracts;
@@ -19,6 +20,9 @@ namespace ImoutoRebirth.Arachne.Service.Extensions
             services.AddTransient<SankakuSearchMetadataCommandConsumer>();
             services.AddTransient<LoadTagHistoryCommandConsumer>();
             services.AddTransient<LoadNoteHistoryCommandConsumer>();
+
+            services.AddSingleton<TagsSearchEngineHistoryAccessor>();
+            services.AddSingleton<NotesSearchEngineHistoryAccessor>();
 
             return services;
         }
