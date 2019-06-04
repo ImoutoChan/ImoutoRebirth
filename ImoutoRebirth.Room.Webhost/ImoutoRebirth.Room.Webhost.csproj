@@ -15,7 +15,7 @@
     <PackageReference Include="ImoutoRebirth.Common.Quartz" Version="1.0.0-CI00041" />
     <PackageReference Include="ImoutoRebirth.Common.Logging" Version="1.0.0-CI00041" />
     <PackageReference Include="Microsoft.AspNetCore.App" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="2.2.1">
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="2.2.4">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
     </PackageReference>

@@ -1,0 +1,21 @@
+version: 1.0.0-CI-{build}
+image: Visual Studio 2019 Preview
+configuration: Release
+dotnet_csproj:
+  patch: true
+  file: '**\*.csproj'
+  version: '{version}'
+before_build:
+- ps: nuget restore
+build:
+  verbosity: minimal
+  after_build:
+- pwsh: >-
+    dotnet publish ImoutoRebirth.Room.Webhost\ImoutoRebirth.Room.Webhost.csproj -c Release -r win-x64
+
+    rm ImoutoRebirth.Room.Webhost\bin\Release\netcoreapp2.2\win-x64\publish\appsettings.Development.json
+
+    Compress-Archive -Path ImoutoRebirth.Room.Webhost\bin\Release\netcoreapp2.2\win-x64\publish\* -DestinationPath ImoutoRebirth.Room.zip
+artifacts:
+- path: 'ImoutoRebirth.Room.zip'
+  name: ImoutoRebirth.Room
