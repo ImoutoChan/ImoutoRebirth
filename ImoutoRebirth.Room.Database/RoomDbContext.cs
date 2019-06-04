@@ -82,7 +82,8 @@ namespace ImoutoRebirth.Room.Database
         {
             modelBuilder.Entity<SourceFolderEntity>()
                         .Property<string>("SupportedExtensions")
-                        .HasField("_supportedExtensions");
+                        // rename to _supportedExtensions after ef core 3.0 release
+                        .HasField("SupportedExtensions");
         }
 
         private static void BuildCollectionFileEntity(ModelBuilder modelBuilder)

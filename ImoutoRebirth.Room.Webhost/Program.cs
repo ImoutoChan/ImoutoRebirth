@@ -2,8 +2,8 @@
 using ImoutoRebirth.Common.EntityFrameworkCore;
 using ImoutoRebirth.Common.Logging;
 using ImoutoRebirth.Room.Database;
-using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.Extensions.Hosting;
 
 namespace ImoutoRebirth.Room.Webhost
 {
@@ -11,21 +11,22 @@ namespace ImoutoRebirth.Room.Webhost
     {
         public static async Task Main(string[] args)
         {
-            await CreateWebHostBuilder(args)
+            await CreateHostBuilder(args)
                .Build()
                .MigrateIfNecessary<RoomDbContext>()
                .RunAsync();
         }
 
-        public static IWebHostBuilder CreateWebHostBuilder(string[] args)
-            => WebHost.CreateDefaultBuilder(args)
-                      .ConfigureSerilog(
-                           (loggerBuilder, appConfiguration) => loggerBuilder
-                                                               .WithoutDefaultLoggers()
-                                                               .WithConsole()
-                                                               .WithAllRollingFile()
-                                                               .WithInformationRollingFile()
-                                                               .PatchWithConfiguration(appConfiguration))
-                      .UseStartup<Startup>();
+        public static IHostBuilder CreateHostBuilder(string[] args)
+            => Host.CreateDefaultBuilder(args)
+                   .UseWindowsService()
+                   .ConfigureSerilog(
+                        (loggerBuilder, appConfiguration) => loggerBuilder
+                                                            .WithoutDefaultLoggers()
+                                                            .WithConsole()
+                                                            .WithAllRollingFile()
+                                                            .WithInformationRollingFile()
+                                                            .PatchWithConfiguration(appConfiguration))
+                   .ConfigureWebHostDefaults(builder => builder.UseStartup<Startup>());
     }
 }

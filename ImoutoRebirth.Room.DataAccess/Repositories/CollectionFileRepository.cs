@@ -29,13 +29,13 @@ namespace ImoutoRebirth.Room.DataAccess.Repositories
             _collectionFileCacheService = collectionFileCacheService;
         }
 
-        public Task Add(CollectionFile collectionFile)
+        public async Task Add(CollectionFile collectionFile)
         {
             var entity = _mapper.Map<CollectionFileEntity>(collectionFile);
 
             _collectionFileCacheService.AddToFilter(collectionFile.CollectionId, entity.Path);
 
-            return _roomDbContext.CollectionFiles.AddAsync(entity);
+            await _roomDbContext.CollectionFiles.AddAsync(entity);
         }
 
         public async Task<bool> HasFile(Guid collectionId, string path)

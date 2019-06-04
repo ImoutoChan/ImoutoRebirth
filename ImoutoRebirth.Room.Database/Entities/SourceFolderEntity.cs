@@ -9,7 +9,10 @@ namespace ImoutoRebirth.Room.Database.Entities
     public class SourceFolderEntity : EntityBase
     {
         private const string _separator = ";";
-        private string _supportedExtensions;
+
+        // ReSharper disable once InconsistentNaming
+        // Rename after ef core 3.0 release. Before that backing fields should be named as properties.
+        private string SupportedExtensions;
 
         [ForeignKey(nameof(Collection))]
         public Guid CollectionId { get; set; }
@@ -28,8 +31,8 @@ namespace ImoutoRebirth.Room.Database.Entities
         [NotMapped]
         public IReadOnlyCollection<string> SupportedExtensionCollection
         {
-            get => _supportedExtensions?.Split(new [] {_separator}, StringSplitOptions.RemoveEmptyEntries);
-            set => _supportedExtensions = value != null ? string.Join(_separator, value) : null;
+            get => SupportedExtensions?.Split(new [] {_separator}, StringSplitOptions.RemoveEmptyEntries);
+            set => SupportedExtensions = value != null ? string.Join(_separator, value) : null;
         }
 
         public CollectionEntity Collection { get; set; }

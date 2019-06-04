@@ -36,6 +36,8 @@ namespace ImoutoRebirth.Room.WebApi
                         x.createRequest.FormatErrorSubfolder,
                         x.createRequest.HashErrorSubfolder,
                         x.createRequest.WithoutHashErrorSubfolder));
+
+            CreateMap<CollectionCreateRequest, CollectionCreateData>();
         }
     }
 }

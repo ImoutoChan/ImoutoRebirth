@@ -9,16 +9,17 @@ using ImoutoRebirth.Room.Core;
 using ImoutoRebirth.Room.DataAccess;
 using ImoutoRebirth.Room.Database;
 using ImoutoRebirth.Room.Infrastructure;
+using ImoutoRebirth.Room.WebApi;
 using ImoutoRebirth.Room.WebApi.Controllers;
 using ImoutoRebirth.Room.Webhost.Quartz;
 using ImoutoRebirth.Room.Webhost.Settings;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Swashbuckle.AspNetCore.Swagger;
+using Microsoft.Extensions.Hosting;
+using Microsoft.OpenApi.Models;
 
 namespace ImoutoRebirth.Room.Webhost
 {
@@ -36,8 +37,7 @@ namespace ImoutoRebirth.Room.Webhost
 
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddMvc()
-                    .SetCompatibilityVersion(CompatibilityVersion.Version_2_1)
+            services.AddControllers()
                     .AddApplicationPart(typeof(CollectionsController).Assembly);
             
             services.AddRoomServices();
@@ -69,8 +69,7 @@ namespace ImoutoRebirth.Room.Webhost
         private void ConfigureSwaggerServices(IServiceCollection services)
         {
             services.AddSwaggerGen(c 
-                => c.SwaggerDoc("v1", 
-                                new Info
+                => c.SwaggerDoc("v1", new OpenApiInfo
                                 {
                                     Title = "ImoutoRebirth.Room API",
                                     Version = "v1"
@@ -93,12 +92,12 @@ namespace ImoutoRebirth.Room.Webhost
 
         public void ConfigureAutoMapperServices(IServiceCollection services)
         {
-            services.AddAutoMapper();
+            services.AddAutoMapper(typeof(ModelAutoMapperProfile), typeof(DtoAutoMapperProfile));
         }
 
         public void Configure(
             IApplicationBuilder app,
-            IHostingEnvironment env,
+            IWebHostEnvironment env,
             IMapper mapper)
         {
             //mapper.ConfigurationProvider.AssertConfigurationIsValid();
@@ -113,10 +112,9 @@ namespace ImoutoRebirth.Room.Webhost
             }
 
             app.UseHttpsRedirection();
-            app.UseMvc();
-
-            app.UseEFSecondLevelCache();
-
+            app.UseRouting();
+            app.UseEndpoints(builder => builder.MapControllers());
+            
             app.UseSwagger();
             app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "ImoutoRebirth.Room API V1"));
 
