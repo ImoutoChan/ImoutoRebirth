@@ -98,7 +98,7 @@ namespace ImoutoRebirth.Room.Webhost
 
         public void Configure(
             IApplicationBuilder app,
-            IWebHostEnvironment env,
+            IHostEnvironment env,
             IMapper mapper)
         {
             //mapper.ConfigurationProvider.AssertConfigurationIsValid();

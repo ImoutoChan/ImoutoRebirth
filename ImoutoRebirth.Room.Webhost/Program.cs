@@ -1,9 +1,9 @@
-﻿using System.Threading.Tasks;
-using ImoutoRebirth.Common.EntityFrameworkCore;
+﻿using ImoutoRebirth.Common.EntityFrameworkCore;
 using ImoutoRebirth.Common.Logging;
 using ImoutoRebirth.Room.Database;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Hosting;
+using System.Threading.Tasks;
 
 namespace ImoutoRebirth.Room.Webhost
 {
@@ -21,12 +21,13 @@ namespace ImoutoRebirth.Room.Webhost
             => Host.CreateDefaultBuilder(args)
                    .UseWindowsService()
                    .ConfigureSerilog(
-                        (loggerBuilder, appConfiguration) => loggerBuilder
-                                                            .WithoutDefaultLoggers()
-                                                            .WithConsole()
-                                                            .WithAllRollingFile()
-                                                            .WithInformationRollingFile()
-                                                            .PatchWithConfiguration(appConfiguration))
+                        (loggerBuilder, appConfiguration) 
+                            => loggerBuilder
+                                .WithoutDefaultLoggers()
+                                .WithConsole()
+                                .WithAllRollingFile()
+                                .WithInformationRollingFile()
+                                .PatchWithConfiguration(appConfiguration))
                    .ConfigureWebHostDefaults(builder => builder.UseStartup<Startup>());
     }
 }
