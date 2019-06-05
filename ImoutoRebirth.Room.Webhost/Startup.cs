@@ -38,6 +38,7 @@ namespace ImoutoRebirth.Room.Webhost
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllers()
+                    .AddNewtonsoftJson()
                     .AddApplicationPart(typeof(CollectionsController).Assembly);
             
             services.AddRoomServices();
