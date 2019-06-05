@@ -1,11 +1,10 @@
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using ImoutoRebirth.Room.DataAccess;
 using ImoutoRebirth.Room.DataAccess.Cache;
 using Xunit;
 
-namespace ImoutoRebirth.Roo_.DataAccess.Tests
+namespace ImoutoRebirth.Room.DataAccess.Tests
 {
     public class CollectionsCacheStorageTests
     {

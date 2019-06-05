@@ -8,7 +8,7 @@ dotnet_csproj:
 before_build:
 - ps: nuget restore
 build:
-  verbosity: minimal
+  verbosity: detailed
 after_build:
 - pwsh: >-
     dotnet publish ImoutoRebirth.Room.Webhost\ImoutoRebirth.Room.Webhost.csproj -c Release -r win-x64
