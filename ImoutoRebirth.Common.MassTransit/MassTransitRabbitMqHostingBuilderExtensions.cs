@@ -58,10 +58,17 @@ namespace ImoutoRebirth.Common.MassTransit
         public static ITrueMassTransitConfigurator AddFireAndForget<TMessage>(
             this ITrueMassTransitConfigurator configurator,
             string targetAppName,
-            Action<IRabbitMqReceiveEndpointConfigurator> endpointConfigurator = null)
+            Action<RabbitMqSendEndpointConfigurator> sendEndpointConfigurator = null)
             where TMessage : class
         {
             var queueName = GetQueueName<TMessage>(targetAppName);
+
+            if (sendEndpointConfigurator != null)
+            {
+                var sendConfigurator = new RabbitMqSendEndpointConfigurator();
+                sendEndpointConfigurator(sendConfigurator);
+                queueName += sendConfigurator.GetUrlParams();
+            }
 
             var path = Path.Combine(configurator.RabbitMqHost.Address.ToString(), queueName);
             EndpointConvention.Map<TMessage>(new Uri(path));
