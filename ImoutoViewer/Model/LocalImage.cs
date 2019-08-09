@@ -1,8 +1,9 @@
-﻿using Imouto;
-using System;
+﻿using System;
+using System.Drawing;
 using System.Windows;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
+using Size = System.Windows.Size;
 
 namespace Imouto.Viewer.Model
 {
@@ -175,7 +176,7 @@ namespace Imouto.Viewer.Model
 
         private double _autoResized;
         private double _localZoom;
-
+        private static RotateFlipType _defaultRotation;
         #endregion Fields
 
         #region Constructors
@@ -285,42 +286,6 @@ namespace Imouto.Viewer.Model
 
         #region Public methods
 
-        private void Load()
-        {
-            try
-            {
-                try
-                {
-                    var bi = new BitmapImage();
-
-                    bi.BeginInit();
-                    bi.CacheOption = BitmapCacheOption.OnDemand;
-                    bi.UriSource = new Uri(_filePath);
-                    bi.EndInit();
-
-                    _image = bi;
-                }
-                catch (ArgumentException)
-                {
-                    //Process fail in color reading exception.
-                    var bi = new BitmapImage();
-
-                    bi.BeginInit();
-                    bi.CacheOption = BitmapCacheOption.OnDemand;
-                    bi.CreateOptions |= BitmapCreateOptions.IgnoreColorProfile;
-                    bi.UriSource = new Uri(_filePath);
-                    bi.EndInit();
-
-                    _image = bi;
-                }
-            }
-            catch (Exception e)
-            {
-                IsError = true;
-                ErrorMessage = e.Message;
-            }
-        }
-
         public void FreeMemory()
         {
             _image = null;
@@ -400,19 +365,142 @@ namespace Imouto.Viewer.Model
 
         #region Methods
 
+        private void Load()
+        {
+            try
+            {
+                try
+                {
+                    _image = LoadImage(_filePath);
+                }
+                catch (ArgumentException)
+                {
+                    //Process fail in color reading exception.
+                    _image = LoadImage(_filePath, BitmapCreateOptions.IgnoreColorProfile);
+                }
+            }
+            catch (Exception e)
+            {
+                IsError = true;
+                ErrorMessage = e.Message;
+            }
+        }
+
+        private static BitmapSource LoadImage(
+            string filePath, 
+            BitmapCreateOptions options = BitmapCreateOptions.None)
+        {
+            var fileUri = new Uri(filePath);
+            var bitmap = BitmapFrame.Create(fileUri, options, BitmapCacheOption.OnDemand);
+
+            var defaultRotation = GetDefaultRotation(bitmap);
+
+            return defaultRotation != RotateFlipType.RotateNoneFlipNone 
+                ? Rotate(bitmap, GetTransform(defaultRotation)) 
+                : bitmap;
+        }
+
+        private static Transform GetTransform(RotateFlipType defaultRotation)
+        {
+            var result = new TransformGroup();
+            switch (defaultRotation)
+            {
+                case RotateFlipType.RotateNoneFlipNone:
+                    result.Children.Add(new RotateTransform(0));
+                    break;
+                case RotateFlipType.Rotate90FlipNone:
+                    result.Children.Add(new RotateTransform(90));
+                    break;
+                case RotateFlipType.Rotate180FlipNone:
+                    result.Children.Add(new RotateTransform(180));
+                    break;
+                case RotateFlipType.Rotate270FlipNone:
+                    result.Children.Add(new RotateTransform(270));
+                    break;
+                case RotateFlipType.RotateNoneFlipX:
+                    result.Children.Add(new RotateTransform(0));
+                    result.Children.Add(new ScaleTransform(-1, 1, 0, 0));
+                    break;
+                case RotateFlipType.Rotate90FlipX:
+                    result.Children.Add(new RotateTransform(90));
+                    result.Children.Add(new ScaleTransform(-1, 1, 0, 0));
+                    break;
+                case RotateFlipType.Rotate180FlipX:
+                    result.Children.Add(new RotateTransform(180));
+                    result.Children.Add(new ScaleTransform(-1, 1, 0, 0));
+                    break;
+                case RotateFlipType.Rotate270FlipX:
+                    result.Children.Add(new RotateTransform(270));
+                    result.Children.Add(new ScaleTransform(-1, 1, 0, 0));
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(defaultRotation), defaultRotation, null);
+            }
+
+            return result;
+        }
+
+        private static RotateFlipType GetDefaultRotation(BitmapFrame bitmap)
+        {
+            if (!(bitmap.Metadata is BitmapMetadata bitmapMetadata)
+                || !bitmapMetadata.ContainsQuery("System.Photo.Orientation"))
+                return RotateFlipType.RotateNoneFlipNone;
+
+            var o = bitmapMetadata.GetQuery("System.Photo.Orientation");
+
+            if (o == null)
+                return RotateFlipType.RotateNoneFlipNone;
+
+            switch ((ushort)o)
+            {
+                case 1:
+                    return RotateFlipType.RotateNoneFlipNone;
+                case 2:
+                    return RotateFlipType.RotateNoneFlipX;
+                case 3:
+                    return RotateFlipType.Rotate180FlipNone;
+                case 4:
+                    return RotateFlipType.Rotate180FlipX;
+                case 5:
+                    return RotateFlipType.Rotate90FlipX;
+                case 6:
+                    return RotateFlipType.Rotate90FlipNone;
+                case 7:
+                    return RotateFlipType.Rotate270FlipX;
+                case 8:
+                    return RotateFlipType.Rotate270FlipNone;
+                default:
+                    return RotateFlipType.RotateNoneFlipNone;
+            }
+        }
+
         private void Rotate(int angle)
         {
-            var trasformedBitmap = new TransformedBitmap();
+            var transformedBitmap = new TransformedBitmap();
 
-            trasformedBitmap.BeginInit();
-            trasformedBitmap.Source = Image;
+            transformedBitmap.BeginInit();
+            transformedBitmap.Source = Image;
 
             var rotateTransform = new RotateTransform(angle);
-            trasformedBitmap.Transform = rotateTransform;
+            transformedBitmap.Transform = rotateTransform;
 
-            trasformedBitmap.EndInit();
+            transformedBitmap.EndInit();
 
-            Image = trasformedBitmap;
+            Image = transformedBitmap;
+        }
+
+        private static BitmapSource Rotate(BitmapSource input, Transform transform)
+        {
+            var transformedBitmap = new TransformedBitmap();
+
+            transformedBitmap.BeginInit();
+            transformedBitmap.Source = input;
+
+            transformedBitmap.Transform = transform;
+
+            transformedBitmap.EndInit();
+
+            return transformedBitmap;
         }
 
         #endregion Methods
