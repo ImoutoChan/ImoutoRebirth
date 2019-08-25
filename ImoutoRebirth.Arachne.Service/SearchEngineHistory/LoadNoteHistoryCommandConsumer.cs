@@ -4,25 +4,29 @@ using ImoutoRebirth.Arachne.Core;
 using ImoutoRebirth.Arachne.Core.Models;
 using ImoutoRebirth.Arachne.MessageContracts.Commands;
 using ImoutoRebirth.Arachne.Service.Extensions;
+using ImoutoRebirth.Meido.MessageContracts;
 using MassTransit;
 using Microsoft.Extensions.Logging;
 
 namespace ImoutoRebirth.Arachne.Service.SearchEngineHistory
 {
-    public class LoadNoteHistoryCommandConsumer : IConsumer<ILoadNoteHistoryCommand>
+    internal class LoadNoteHistoryCommandConsumer : IConsumer<ILoadNoteHistoryCommand>
     {
         private readonly ILogger<LoadTagHistoryCommandConsumer> _logger;
         private readonly IArachneSearchService _arachneSearchService;
         private readonly SearchEngineHistoryAccessor _searchEngineHistoryAccessor;
+        private readonly IBus _bus;
 
         public LoadNoteHistoryCommandConsumer(
             ILogger<LoadTagHistoryCommandConsumer> logger,
             IArachneSearchService arachneSearchService,
-            NotesSearchEngineHistoryAccessor searchEngineHistoryAccessor)
+            NotesSearchEngineHistoryAccessor searchEngineHistoryAccessor,
+            IBus bus)
         {
             _logger = logger;
             _arachneSearchService = arachneSearchService;
             _searchEngineHistoryAccessor = searchEngineHistoryAccessor;
+            _bus = bus;
         }
 
         public async Task Consume(ConsumeContext<ILoadNoteHistoryCommand> context)
@@ -56,11 +60,18 @@ namespace ImoutoRebirth.Arachne.Service.SearchEngineHistory
                 lastProcessedNoteUpdateAt,
                 searchEngineType);
 
-            var (changedPostIds, lastHistoryId) = await _arachneSearchService.LoadChangesForNotesSince(
+            var (changedPostIds, lastNoteUpdateDate) = await _arachneSearchService.LoadChangesForNotesSince(
                                                       lastProcessedNoteUpdateAt,
                                                       searchEngineType);
 
-            // todo send results
+            var command = new
+            {
+                SourceId = (int)searchEngineType,
+                PostIds = changedPostIds,
+                LastNoteUpdateDate = lastNoteUpdateDate
+            };
+
+            await _bus.Send<INotesUpdatedCommand>(command);
         }
     }
 }

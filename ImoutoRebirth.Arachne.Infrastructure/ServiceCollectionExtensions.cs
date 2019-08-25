@@ -21,7 +21,7 @@ namespace ImoutoRebirth.Arachne.Infrastructure
             // singleton: contains cache of loaders (ensure delays and such)
             services.AddSingleton<ISearchEngineProvider, SearchEngineProvider>();
 
-            // todo
+            // todo find all ifactory and register them
             services.RegisterTypedFactory<BooruSearchEngine.IFactory>().ForConcreteType<BooruSearchEngine>();
 
             var policy 

@@ -33,9 +33,23 @@ namespace ImoutoRebirth.Arachne.Service.Extensions
                       .AddConsumer<YandereSearchMetadataCommandConsumer, IYandereSearchMetadataCommand>()
                       .AddConsumer<DanbooruSearchMetadataCommandConsumer, IDanbooruSearchMetadataCommand>()
                       .AddConsumer<SankakuSearchMetadataCommandConsumer, ISankakuSearchMetadataCommand>()
-                      .AddConsumer<LoadTagHistoryCommandConsumer, ILoadTagHistoryCommand>()
-                      .AddConsumer<LoadNoteHistoryCommandConsumer, ILoadNoteHistoryCommand>()
+                      .AddConsumer<LoadTagHistoryCommandConsumer, ILoadTagHistoryCommand>(
+                           configurator =>
+                           {
+                               configurator.PrefetchCount = 16;
+                               configurator.AutoDelete = true;
+                               configurator.Durable = false;
+                           })
+                      .AddConsumer<LoadNoteHistoryCommandConsumer, ILoadNoteHistoryCommand>(
+                           configurator =>
+                           {
+                               configurator.PrefetchCount = 16;
+                               configurator.AutoDelete = true;
+                               configurator.Durable = false;
+                           })
                       .AddFireAndForget<IUpdateMetadataCommand>(Lilin.MessageContracts.ReceiverApp.Name)
-                      .AddFireAndForget<ISearchCompleteCommand>(Meido.MessageContracts.ReceiverApp.Name);
+                      .AddFireAndForget<ISearchCompleteCommand>(Meido.MessageContracts.ReceiverApp.Name)
+                      .AddFireAndForget<INotesUpdatedCommand>(Meido.MessageContracts.ReceiverApp.Name)
+                      .AddFireAndForget<ITagsUpdatedCommand>(Meido.MessageContracts.ReceiverApp.Name);
     }
 }

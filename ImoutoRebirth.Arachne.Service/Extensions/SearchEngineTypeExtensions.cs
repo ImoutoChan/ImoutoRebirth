@@ -21,7 +21,19 @@ namespace ImoutoRebirth.Arachne.Service.Extensions
             }
         }
 
-        public static SearchEngineType ToModel(this MessageContracts.SearchEngineType searchEngineType) 
-            => (SearchEngineType) searchEngineType;
+        public static SearchEngineType ToModel(this MessageContracts.SearchEngineType searchEngineType)
+        {
+            switch (searchEngineType)
+            {
+                case MessageContracts.SearchEngineType.Yandere:
+                    return SearchEngineType.Yandere;
+                case MessageContracts.SearchEngineType.Danbooru:
+                    return SearchEngineType.Danbooru;
+                case MessageContracts.SearchEngineType.Sankaku:
+                    return SearchEngineType.Sankaku;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(searchEngineType), searchEngineType, null);
+            }
+        }
     }
 }

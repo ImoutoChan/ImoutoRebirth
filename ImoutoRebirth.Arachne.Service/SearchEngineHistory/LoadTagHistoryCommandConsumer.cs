@@ -3,26 +3,29 @@ using ImoutoRebirth.Arachne.Core;
 using ImoutoRebirth.Arachne.Core.Models;
 using ImoutoRebirth.Arachne.MessageContracts.Commands;
 using ImoutoRebirth.Arachne.Service.Extensions;
+using ImoutoRebirth.Meido.MessageContracts;
 using MassTransit;
 using Microsoft.Extensions.Logging;
 
 namespace ImoutoRebirth.Arachne.Service.SearchEngineHistory
 {
-
-    public class LoadTagHistoryCommandConsumer : IConsumer<ILoadTagHistoryCommand>
+    internal class LoadTagHistoryCommandConsumer : IConsumer<ILoadTagHistoryCommand>
     {
         private readonly ILogger<LoadTagHistoryCommandConsumer> _logger;
         private readonly IArachneSearchService _arachneSearchService;
         private readonly SearchEngineHistoryAccessor _searchEngineHistoryAccessor;
+        private readonly IBus _bus;
 
         public LoadTagHistoryCommandConsumer(
             ILogger<LoadTagHistoryCommandConsumer> logger,
             IArachneSearchService arachneSearchService,
-            TagsSearchEngineHistoryAccessor searchEngineHistoryAccessor)
+            TagsSearchEngineHistoryAccessor searchEngineHistoryAccessor,
+            IBus bus)
         {
             _logger = logger;
             _arachneSearchService = arachneSearchService;
             _searchEngineHistoryAccessor = searchEngineHistoryAccessor;
+            _bus = bus;
         }
 
         public async Task Consume(ConsumeContext<ILoadTagHistoryCommand> context)
@@ -60,7 +63,14 @@ namespace ImoutoRebirth.Arachne.Service.SearchEngineHistory
                                                       lastProcessedTagHistoryId,
                                                       searchEngineType);
 
-            // todo send signals
+            var command = new
+            {
+                SourceId = (int)searchEngineType,
+                PostIds = changedPostIds,
+                LastHistoryId = lastHistoryId
+            };
+
+            await _bus.Send<ITagsUpdatedCommand>(command);
         }
     }
 }
