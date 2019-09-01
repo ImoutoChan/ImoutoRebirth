@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
-using EFSecondLevelCache.Core;
 using ImoutoRebirth.Room.DataAccess.Cache;
 using ImoutoRebirth.Room.DataAccess.Models;
 using ImoutoRebirth.Room.DataAccess.Repositories.Abstract;
@@ -52,7 +51,6 @@ namespace ImoutoRebirth.Room.DataAccess.Repositories
                        .CollectionFiles
                        .Where(x => x.CollectionId == collectionId)
                        .Select(x => x.Path)
-                       .Cacheable()
                        .AnyAsync(x => x == path);
 
         private async Task<List<string>> GetFromDatabase(Guid collectionId)

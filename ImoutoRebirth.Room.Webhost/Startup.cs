@@ -1,7 +1,4 @@
-﻿using System;
-using AutoMapper;
-using CacheManager.Core;
-using EFSecondLevelCache.Core;
+﻿using AutoMapper;
 using ImoutoRebirth.Common.MassTransit;
 using ImoutoRebirth.Common.Quartz.Extensions;
 using ImoutoRebirth.Meido.MessageContracts;
@@ -14,7 +11,6 @@ using ImoutoRebirth.Room.WebApi.Controllers;
 using ImoutoRebirth.Room.Webhost.Quartz;
 using ImoutoRebirth.Room.Webhost.Settings;
 using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -56,7 +52,6 @@ namespace ImoutoRebirth.Room.Webhost
                     .AddQuartzJob<OverseeJob, OverseeJob.Description>();
 
             ConfigureDatabaseServices(services);
-            ConfigureCacheServices(services);
             ConfigureAutoMapperServices(services);
             ConfigureSwaggerServices(services);
         }
@@ -75,20 +70,6 @@ namespace ImoutoRebirth.Room.Webhost
                                     Title = "ImoutoRebirth.Room API",
                                     Version = "v1"
                                 }));
-        }
-
-        public void ConfigureCacheServices(IServiceCollection services)
-        {
-            services.AddEFSecondLevelCache();
-
-            // Add an in-memory cache service provider
-            services.AddSingleton(typeof(ICacheManager<>), typeof(BaseCacheManager<>));
-            services.AddSingleton(typeof(ICacheManagerConfiguration),
-                new CacheManager.Core.ConfigurationBuilder()
-                   .WithJsonSerializer()
-                   .WithMicrosoftMemoryCacheHandle()
-                   .WithExpiration(ExpirationMode.Absolute, TimeSpan.FromMinutes(10))
-                   .Build());
         }
 
         public void ConfigureAutoMapperServices(IServiceCollection services)

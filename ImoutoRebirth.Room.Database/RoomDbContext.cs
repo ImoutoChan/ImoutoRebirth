@@ -1,11 +1,8 @@
 ﻿using System.Threading;
 using System.Threading.Tasks;
-using EFSecondLevelCache.Core;
-using EFSecondLevelCache.Core.Contracts;
 using ImoutoRebirth.Common.EntityFrameworkCore.TimeTrack;
 using ImoutoRebirth.Room.Database.Entities;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Infrastructure;
 
 namespace ImoutoRebirth.Room.Database
 {
@@ -40,24 +37,7 @@ namespace ImoutoRebirth.Room.Database
         {
             ChangeTracker.TrackImplicitTimeBeforeSaveChanges();
 
-            var changedEntityNames = GetChangedNames();
-
-            var result = base.SaveChangesAsync(acceptAllChangesOnSuccess, cancellationToken);
-
-            InvalidateSecondLevelCache(changedEntityNames);
-
-            return result;
-        }
-
-        private void InvalidateSecondLevelCache(string[] changedEntityNames)
-        {
-            this.GetService<IEFCacheServiceProvider>().InvalidateCacheDependencies(changedEntityNames);
-        }
-
-        private string[] GetChangedNames()
-        {
-            ChangeTracker.DetectChanges();
-            return this.GetChangedEntityNames();
+            return base.SaveChangesAsync(acceptAllChangesOnSuccess, cancellationToken);
         }
 
         private static void BuildDestinationFolderEntity(ModelBuilder modelBuilder)
