@@ -11,7 +11,9 @@ namespace ImoutoRebirth.Arachne.Host
 
         private static async Task Main(string[] args)
         {
-            await CreateConsoleHost(args).RunAsync();
+            await CreateConsoleHost(args)
+                .ConfigureBooruParserLogging()
+                .RunAsync();
         }
 
         public static IHost CreateConsoleHost(string[] args)

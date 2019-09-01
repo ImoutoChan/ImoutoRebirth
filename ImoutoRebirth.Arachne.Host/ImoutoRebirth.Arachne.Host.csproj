@@ -8,6 +8,7 @@
 
   <ItemGroup>
     <PackageReference Include="AspNetCoreInjection.TypedFactories" Version="1.2.0" />
+    <PackageReference Include="Imouto.BooruParser" Version="1.6.0" />
     <PackageReference Include="ImoutoRebirth.Common.Host" Version="1.0.0-CI00047" />
     <PackageReference Include="ImoutoRebirth.Common.Logging" Version="1.0.0-CI00047" />
     <PackageReference Include="Microsoft.Extensions.Configuration.EnvironmentVariables" Version="2.2.0" />

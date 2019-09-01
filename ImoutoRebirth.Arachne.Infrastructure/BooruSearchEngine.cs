@@ -55,7 +55,7 @@ namespace ImoutoRebirth.Arachne.Infrastructure
             {
                 var history = await LoadTagHistory(historyId);
 
-                var first = history.FirstOrDefault();
+                 var first = history.FirstOrDefault();
                 if (first != null)
                 {
                     var lastHistoryId = first.UpdateId;
@@ -110,7 +110,7 @@ namespace ImoutoRebirth.Arachne.Infrastructure
         }
 
         private Task<List<NoteUpdateEntry>> LoadNoteHistory(DateTimeOffset lastProcessedNoteUpdateAt)
-            => _booruLoader.LoadNotesHistoryAsync(lastProcessedNoteUpdateAt.UtcDateTime);
+            => _booruLoader.LoadNotesHistoryAsync(lastProcessedNoteUpdateAt.DateTime);
 
         private Task<List<PostUpdateEntry>> LoadTagHistory(int historyId)
             => historyId == default
