@@ -15,9 +15,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ImoutoRebirth.Common.Entity
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ImoutoRebirth.Common.Logging", "ImoutoRebirth.Common.Logging\ImoutoRebirth.Common.Logging.csproj", "{5104AEED-883B-4456-A3C5-4A5CCF367ADE}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ImoutoProject.Common.Cqrs", "ImoutoProject.Common.Cqrs\ImoutoProject.Common.Cqrs.csproj", "{E8ED0B52-F5A8-41A7-A4E5-6352344C17F8}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ImoutoRebirth.Common.Cqrs", "ImoutoRebirth.Common.Cqrs\ImoutoRebirth.Common.Cqrs.csproj", "{E8ED0B52-F5A8-41A7-A4E5-6352344C17F8}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ImoutoRebirth.Common.Domain", "ImoutoRebirth.Common.Domain\ImoutoRebirth.Common.Domain.csproj", "{D90AF729-4CDC-4637-84AF-581ACD9BB116}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ImoutoRebirth.Common.Domain", "ImoutoRebirth.Common.Domain\ImoutoRebirth.Common.Domain.csproj", "{D90AF729-4CDC-4637-84AF-581ACD9BB116}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
