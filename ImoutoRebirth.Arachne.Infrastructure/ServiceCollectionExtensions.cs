@@ -28,12 +28,16 @@ namespace ImoutoRebirth.Arachne.Infrastructure
                 = HttpPolicyExtensions.HandleTransientHttpError()
                                       .WaitAndRetryAsync(2, i => TimeSpan.FromMilliseconds(100 * Math.Pow(10, i)));
 
-            services.AddHttpClient<IBooruLoaderFabric, YandereLoaderFabric>()
+            services.AddHttpClient<YandereLoaderFabric>()
                     .AddPolicyHandler(policy);
-            services.AddHttpClient<IBooruLoaderFabric, DanbooruLoaderFabric>()
+            services.AddHttpClient<DanbooruLoaderFabric>()
                     .AddPolicyHandler(policy);
-            services.AddHttpClient<IBooruLoaderFabric, SankakuLoaderFabric>()
+            services.AddHttpClient<SankakuLoaderFabric>()
                     .AddPolicyHandler(policy);
+
+            services.AddTransient<IBooruLoaderFabric>(provider => provider.GetRequiredService<YandereLoaderFabric>());
+            services.AddTransient<IBooruLoaderFabric>(provider => provider.GetRequiredService<DanbooruLoaderFabric>());
+            services.AddTransient<IBooruLoaderFabric>(provider => provider.GetRequiredService<SankakuLoaderFabric>());
             
 
             services.AddTransient<DanbooruSettings>(x => danbooruSettings);
