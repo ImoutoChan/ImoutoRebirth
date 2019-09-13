@@ -10,7 +10,7 @@
 
   <ItemGroup>
     <PackageReference Include="AspNetCoreInjection.TypedFactories" Version="1.2.0" />
-    <PackageReference Include="Imouto.BooruParser" Version="1.6.0.1" />
+    <PackageReference Include="Imouto.BooruParser" Version="1.6.0" />
     <PackageReference Include="ImoutoRebirth.Common.Host" Version="2.0.1--.1" />
     <PackageReference Include="ImoutoRebirth.Common.Logging" Version="2.0.1--.1" />
     <PackageReference Include="Microsoft.Extensions.Configuration.EnvironmentVariables" Version="3.0.0-preview9.19423.4" />
