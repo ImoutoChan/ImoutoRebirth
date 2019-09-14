@@ -1,4 +1,6 @@
-﻿using System.Threading.Tasks;
+﻿using System.IO;
+using System.Reflection;
+using System.Threading.Tasks;
 using ImoutoRebirth.Common.Host;
 using ImoutoRebirth.Common.Logging;
 using Microsoft.Extensions.Hosting;
@@ -11,6 +13,8 @@ namespace ImoutoRebirth.Arachne.Host
 
         private static async Task Main(string[] args)
         {
+            Directory.SetCurrentDirectory(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location));
+
             await CreateConsoleHost(args)
                 .ConfigureBooruParserLogging()
                 .RunAsync();
