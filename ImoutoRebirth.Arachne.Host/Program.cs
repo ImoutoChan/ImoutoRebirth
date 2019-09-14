@@ -19,7 +19,6 @@ namespace ImoutoRebirth.Arachne.Host
         public static IHost CreateConsoleHost(string[] args)
             => new HostBuilder()
               .UseWindowsService()
-              .UseConsoleLifetime()
               .UseEnvironmentFromEnvironmentVariable(ServicePrefix)
               .UseConfiguration(ServicePrefix)
               .ConfigureSerilog(
