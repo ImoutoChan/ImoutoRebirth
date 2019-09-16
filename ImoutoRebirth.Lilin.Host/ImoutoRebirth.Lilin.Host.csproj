@@ -12,6 +12,7 @@
     <PackageReference Include="ImoutoRebirth.Common.EntityFrameworkCore" Version="2.0.1--.1" />
     <PackageReference Include="ImoutoRebirth.Common.Host" Version="2.0.1--.1" />
     <PackageReference Include="ImoutoRebirth.Common.Logging" Version="2.0.1--.1" />
+    <PackageReference Include="Microsoft.Extensions.Hosting.WindowsServices" Version="3.0.0-rc1.19456.10" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="3.0.0-rc1.19456.14">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>

@@ -20,7 +20,7 @@ namespace ImoutoRebirth.Lilin.Host
 
         public static IHost CreateConsoleHost(string[] args)
             => new HostBuilder()
-              .UseConsoleLifetime()
+              .UseWindowsService()
               .UseEnvironmentFromEnvironmentVariable(ServicePrefix)
               .UseConfiguration(ServicePrefix)
               .ConfigureSerilog(
