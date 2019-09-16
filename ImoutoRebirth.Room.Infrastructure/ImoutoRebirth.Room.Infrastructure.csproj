@@ -1,11 +1,11 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>netstandard2.0</TargetFramework>
+    <TargetFramework>netstandard2.1</TargetFramework>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="ImoutoRebirth.Common.MassTransit" Version="1.0.0-CI00041" />
+    <PackageReference Include="ImoutoRebirth.Common.MassTransit" Version="2.0.1--.1" />
     <PackageReference Include="ImoutoRebirth.Meido.MessageContracts" Version="1.0.0-CI0004" />
     <PackageReference Include="SixLabors.ImageSharp" Version="1.0.0-beta0004" />
   </ItemGroup>
