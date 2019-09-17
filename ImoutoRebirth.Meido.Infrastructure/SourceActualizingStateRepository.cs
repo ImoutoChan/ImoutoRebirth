@@ -15,8 +15,8 @@ namespace ImoutoRebirth.Meido.Infrastructure
             _meidoDbContext = meidoDbContext;
         }
 
-        public Task Add(SourceActualizingState sourceActualizingState)
-            => _meidoDbContext.SourceActualizingStates.AddAsync(sourceActualizingState);
+        public async Task Add(SourceActualizingState sourceActualizingState)
+            => await _meidoDbContext.SourceActualizingStates.AddAsync(sourceActualizingState);
 
         public async Task<IReadOnlyCollection<SourceActualizingState>> GetAll()
             => await _meidoDbContext.SourceActualizingStates.ToArrayAsync();

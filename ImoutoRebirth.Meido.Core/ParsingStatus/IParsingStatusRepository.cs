@@ -7,9 +7,9 @@ namespace ImoutoRebirth.Meido.Core.ParsingStatus
 {
     public interface IParsingStatusRepository
     {
-        Task Add(ParsingStatus parsingStatus);
+        ValueTask Add(ParsingStatus parsingStatus);
 
-        Task<ParsingStatus> Get(Guid fileId, MetadataSource source);
+        ValueTask<ParsingStatus> Get(Guid fileId, MetadataSource source);
 
         Task<IReadOnlyCollection<ParsingStatus>> Find(Specification<ParsingStatus> specification);
     }

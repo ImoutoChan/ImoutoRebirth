@@ -1,18 +1,18 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>netstandard2.0</TargetFramework>
+    <TargetFramework>netstandard2.1</TargetFramework>
     <LangVersion>latest</LangVersion>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="ImoutoProject.Common.Cqrs" Version="1.0.0-CI00047" />
-    <PackageReference Include="ImoutoRebirth.Arachne.MessageContracts" Version="1.0.0-CI-7" />
-    <PackageReference Include="ImoutoRebirth.Common.MassTransit" Version="1.0.0-CI00047" />
-    <PackageReference Include="ImoutoRebirth.Common.Quartz" Version="1.0.0-CI00047" />
+    <PackageReference Include="ImoutoRebirth.Arachne.MessageContracts" Version="1.1.1-master-.1" />
+    <PackageReference Include="ImoutoRebirth.Common.Cqrs" Version="2.0.1--.1" />
+    <PackageReference Include="ImoutoRebirth.Common.MassTransit" Version="2.0.1--.1" />
+    <PackageReference Include="ImoutoRebirth.Common.Quartz" Version="2.0.1--.1" />
     <PackageReference Include="MediatR" Version="7.0.0" />
     <PackageReference Include="MediatR.Extensions.Microsoft.DependencyInjection" Version="7.0.0" />
-    <PackageReference Include="Microsoft.Extensions.Options.ConfigurationExtensions" Version="2.2.0" />
+    <PackageReference Include="Microsoft.Extensions.Options.ConfigurationExtensions" Version="3.0.0-rc1.19456.10" />
   </ItemGroup>
 
   <ItemGroup>
