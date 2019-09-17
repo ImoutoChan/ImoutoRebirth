@@ -21,20 +21,20 @@ namespace ImoutoRebirth.Meido.Host
 
         public static IHost CreateConsoleHost(string[] args)
             => new HostBuilder()
-              .UseConsoleLifetime()
-              .UseEnvironmentFromEnvironmentVariable(ServicePrefix)
-              .UseConfiguration(ServicePrefix)
-              .ConfigureSerilog(
-                   (loggerBuilder, appConfiguration) 
-                       => loggerBuilder
-                           .WithoutDefaultLoggers()
-                           .WithConsole()
-                           .WithAllRollingFile()
-                           .WithInformationRollingFile()
-                           .PatchWithConfiguration(appConfiguration))
-              .UseQuartz()
-              .UseStartup(x => new Startup(x))
-              .Build();
+                .UseWindowsService()
+                .UseEnvironmentFromEnvironmentVariable(ServicePrefix)
+                .UseConfiguration(ServicePrefix)
+                .ConfigureSerilog(
+                    (loggerBuilder, appConfiguration) 
+                        => loggerBuilder
+                            .WithoutDefaultLoggers()
+                            .WithConsole()
+                            .WithAllRollingFile()
+                            .WithInformationRollingFile()
+                            .PatchWithConfiguration(appConfiguration))
+                .UseQuartz()
+                .UseStartup(x => new Startup(x))
+                .Build();
 
         /// <summary>
         /// Hack for EFCore DesignTime DbContext construction.
