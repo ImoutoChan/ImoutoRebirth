@@ -60,8 +60,20 @@ namespace ImoutoRebirth.Meido.Services
                    .AddFireAndForget<IYandereSearchMetadataCommand>(ReceiverApp.Name)
                    .AddFireAndForget<IDanbooruSearchMetadataCommand>(ReceiverApp.Name)
                    .AddFireAndForget<ISankakuSearchMetadataCommand>(ReceiverApp.Name)
-                   .AddFireAndForget<ILoadTagHistoryCommand>(ReceiverApp.Name)
-                   .AddFireAndForget<ILoadNoteHistoryCommand>(ReceiverApp.Name);
+                   .AddFireAndForget<ILoadTagHistoryCommand>(
+                        ReceiverApp.Name,
+                        configurator =>
+                        {
+                            configurator.AutoDelete = true;
+                            configurator.Durable = false;
+                        })
+                   .AddFireAndForget<ILoadNoteHistoryCommand>(
+                        ReceiverApp.Name,
+                        configurator =>
+                        {
+                            configurator.AutoDelete = true;
+                            configurator.Durable = false;
+                        });
 
             return builder;
         }

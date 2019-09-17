@@ -29,7 +29,10 @@ namespace ImoutoRebirth.Meido.Core.ParsingStatus
                 var check = await _parsingStatusRepository.Get(fileId, metadataSource);
                 if (check != null)
                 {
-                    _logger.LogWarning("Can't create a parsing status with duplicate key {FileId}, {Source}");
+                    _logger.LogWarning(
+                        "Can't create a parsing status with duplicate key {FileId}, {Source}",
+                        fileId,
+                        metadataSource);
                     continue;
                 }
 
