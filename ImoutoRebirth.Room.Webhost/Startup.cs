@@ -48,8 +48,7 @@ namespace ImoutoRebirth.Room.Webhost
             services.AddRoomDataAccess();
             services.AddRoomDatabase();
 
-            services.AddQuartz()
-                    .AddQuartzJob<OverseeJob, OverseeJob.Description>();
+            services.AddQuartzJob<OverseeJob, OverseeJob.Description>();
 
             ConfigureDatabaseServices(services);
             ConfigureAutoMapperServices(services);
@@ -99,8 +98,6 @@ namespace ImoutoRebirth.Room.Webhost
             
             app.UseSwagger();
             app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "ImoutoRebirth.Room API V1"));
-
-            app.UseQuartz();
         }
     }
 }
