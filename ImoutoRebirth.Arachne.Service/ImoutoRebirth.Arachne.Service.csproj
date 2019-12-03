@@ -9,7 +9,7 @@
     <PackageReference Include="ImoutoRebirth.Common.MassTransit" Version="2.0.1--.1" />
     <PackageReference Include="ImoutoRebirth.Lilin.MessageContracts" Version="1.0.0-CI00006" />
     <PackageReference Include="ImoutoRebirth.Meido.MessageContracts" Version="1.0.0-CI00015" />
-    <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="3.0.0-preview9.19423.4" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="3.1.0" />
   </ItemGroup>
 
   <ItemGroup>
