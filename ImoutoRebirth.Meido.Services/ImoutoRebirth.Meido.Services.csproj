@@ -7,9 +7,9 @@
 
   <ItemGroup>
     <PackageReference Include="ImoutoRebirth.Arachne.MessageContracts" Version="1.1.1-master-.1" />
-    <PackageReference Include="ImoutoRebirth.Common.Cqrs" Version="2.0.1--.1" />
-    <PackageReference Include="ImoutoRebirth.Common.MassTransit" Version="2.0.1--.1" />
-    <PackageReference Include="ImoutoRebirth.Common.Quartz" Version="2.0.1--.1" />
+    <PackageReference Include="ImoutoRebirth.Common.Cqrs" Version="2.1.0" />
+    <PackageReference Include="ImoutoRebirth.Common.MassTransit" Version="2.1.0" />
+    <PackageReference Include="ImoutoRebirth.Common.Quartz" Version="2.1.0" />
     <PackageReference Include="MediatR" Version="7.0.0" />
     <PackageReference Include="MediatR.Extensions.Microsoft.DependencyInjection" Version="7.0.0" />
     <PackageReference Include="Microsoft.Extensions.Options.ConfigurationExtensions" Version="3.0.0-rc1.19456.10" />
