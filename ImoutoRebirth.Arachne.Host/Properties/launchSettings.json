@@ -3,7 +3,8 @@
     "ImoutoRebirth.Arachne.Host": {
       "commandName": "Project",
       "environmentVariables": {
-        "ARACHNE_ENVIRONMENT": "Development"
+        "ASP_ENVIRONMENT": "Development",
+        "ARACHNE_SankakuSettings__Login": "LOOOL"
       }
     }
   }

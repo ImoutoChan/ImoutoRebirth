@@ -13,8 +13,6 @@ namespace ImoutoRebirth.Arachne.Host
 
         private static async Task Main(string[] args)
         {
-            Directory.SetCurrentDirectory(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location));
-
             await CreateConsoleHost(args)
                 .ConfigureBooruParserLogging()
                 .RunAsync();
@@ -22,6 +20,7 @@ namespace ImoutoRebirth.Arachne.Host
 
         public static IHost CreateConsoleHost(string[] args)
             => new HostBuilder()
+              .SetWorkingDirectory()
               .UseWindowsService()
               .UseEnvironmentFromEnvironmentVariable(ServicePrefix)
               .UseConfiguration(ServicePrefix)
