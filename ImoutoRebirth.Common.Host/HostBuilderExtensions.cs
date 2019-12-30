@@ -1,4 +1,6 @@
 ﻿using System;
+using System.IO;
+using System.Reflection;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
 
@@ -39,6 +41,14 @@ namespace ImoutoRebirth.Common.Host
                                                   true,
                                                   true)
                                              .AddEnvironmentVariables(servicePrefix));
+
+            return hostBuilder;
+        }
+
+        public static IHostBuilder SetWorkingDirectory(this IHostBuilder hostBuilder)
+        {
+            Directory.SetCurrentDirectory(
+                Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location));
 
             return hostBuilder;
         }
