@@ -6,7 +6,7 @@
 
   <ItemGroup>
     <PackageReference Include="ImoutoProject.Common.Cqrs" Version="1.0.0-CI00048" />
-    <PackageReference Include="ImoutoRebirth.Common.MassTransit" Version="2.0.1--.1" />
+    <PackageReference Include="ImoutoRebirth.Common.MassTransit" Version="2.1.0" />
     <PackageReference Include="ImoutoRebirth.Meido.MessageContracts" Version="1.0.0-CI0009" />
     <PackageReference Include="MediatR" Version="7.0.0" />
     <PackageReference Include="MediatR.Extensions.Microsoft.DependencyInjection" Version="7.0.0" />

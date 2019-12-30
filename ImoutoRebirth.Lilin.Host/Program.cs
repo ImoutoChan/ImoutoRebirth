@@ -21,6 +21,7 @@ namespace ImoutoRebirth.Lilin.Host
         public static IHost CreateConsoleHost(string[] args)
             => new HostBuilder()
               .UseWindowsService()
+              .SetWorkingDirectory()
               .UseEnvironmentFromEnvironmentVariable(ServicePrefix)
               .UseConfiguration(ServicePrefix)
               .ConfigureSerilog(
