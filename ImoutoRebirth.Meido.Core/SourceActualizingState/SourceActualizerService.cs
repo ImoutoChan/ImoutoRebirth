@@ -19,11 +19,13 @@ namespace ImoutoRebirth.Meido.Core.SourceActualizingState
             _parsingStatusRepository = parsingStatusRepository;
         }
 
-        public async Task RequestActualization()
+        public async Task RequestActualization(MetadataSource[] activeSources)
         {
             var states = await _sourceActualizingStateRepository.GetAll();
 
-            foreach (var state in states)
+            var activeStates = states.Where(x => activeSources.Contains(x.Source));
+
+            foreach (var state in activeStates)
             {
                 state.RequestActualization();
             }

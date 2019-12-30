@@ -1,6 +1,5 @@
 ﻿using System.Threading.Tasks;
 using ImoutoRebirth.Common.Quartz;
-using ImoutoRebirth.Meido.Services.Cqrs.Commands;
 using ImoutoRebirth.Meido.Services.MetadataActualizer.CqrsCommands;
 using MediatR;
 using Microsoft.Extensions.Options;
