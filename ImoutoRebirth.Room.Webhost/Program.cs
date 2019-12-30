@@ -24,6 +24,7 @@ namespace ImoutoRebirth.Room.Webhost
         public static IHostBuilder CreateHostBuilder(string[] args)
             => Host.CreateDefaultBuilder(args)
                    .UseWindowsService()
+                   .SetWorkingDirectory()
                    .UseQuartz()
                    .UseConfiguration(ServicePrefix)
                    .ConfigureSerilog(
