@@ -26,6 +26,7 @@ namespace ImoutoRebirth.Room.WebApi.Controllers
         }
 
         [HttpGet]
+        [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Get))]
         public async Task<ActionResult<DestinationFolderResponse>> Get(Guid collectionGuid)
         {
             var destinationFolder = await _destinationFolderRepository.Get(collectionGuid);
@@ -37,7 +38,8 @@ namespace ImoutoRebirth.Room.WebApi.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult<DestinationFolderResponse>> Post(
+        [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Create))]
+        public async Task<ActionResult<DestinationFolderResponse>> Create(
             Guid collectionGuid,
             [FromBody] DestinationFolderCreateRequest request)
         {
@@ -45,10 +47,14 @@ namespace ImoutoRebirth.Room.WebApi.Controllers
 
             var destinationFolder = await _destinationFolderRepository.AddOrReplace(createData);
 
-            return _mapper.Map<DestinationFolderResponse>(destinationFolder);
+            return CreatedAtAction(
+                nameof(Get),
+                new { collectionGuid = collectionGuid },
+                _mapper.Map<DestinationFolderResponse>(destinationFolder));
         }
 
         [HttpDelete("{guid}")]
+        [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Delete))]
         public async Task<ActionResult> Delete(Guid collectionGuid, Guid guid)
         {
             try

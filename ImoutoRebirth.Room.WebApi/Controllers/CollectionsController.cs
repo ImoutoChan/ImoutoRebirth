@@ -26,6 +26,7 @@ namespace ImoutoRebirth.Room.WebApi.Controllers
         }
 
         [HttpGet]
+        [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Get))]
         public async Task<ActionResult<CollectionResponse[]>> GetAll()
         {
             var collections = await _collectionRepository.GetAll();
@@ -33,16 +34,18 @@ namespace ImoutoRebirth.Room.WebApi.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult<CollectionResponse>> Post([FromBody] CollectionCreateRequest request)
+        [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Create))]
+        public async Task<ActionResult<CollectionResponse>> Create([FromBody] CollectionCreateRequest request)
         {
             var createData = _mapper.Map<CollectionCreateData>(request);
 
             var collection =  await _collectionRepository.Add(createData);
 
-            return _mapper.Map<CollectionResponse>(collection);
+            return Created("/", _mapper.Map<CollectionResponse>(collection));
         }
 
         [HttpDelete("{guid}")]
+        [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Delete))]
         public async Task<ActionResult> Delete(Guid guid)
         {
             try
