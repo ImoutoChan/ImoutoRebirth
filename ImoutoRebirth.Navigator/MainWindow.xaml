@@ -27,7 +27,8 @@
                           TitleCharacterCasing="Upper"
                           Title="{Binding Title}"
                           WindowState="Maximized"
-                          WindowButtonCommandsOverlayBehavior="Never">
+                          WindowButtonCommandsOverlayBehavior="Never"
+                          ResizeBorderThickness="0">
 
     <metroControl:MetroWindow.Resources>
         <converters:ConditionVisibilityConverter x:Key="ConditionVisibilityConverter" />
@@ -193,7 +194,7 @@
                                            Template="{StaticResource VideoOverlayIcon}"
                                            Visibility="{Binding Path=Type, Converter={StaticResource ConditionVisibilityConverter}, ConverterParameter=Video}">
                                         <Label.Effect>
-                                            <DropShadowEffect Color="{Binding Source={StaticResource WhiteBrush}, Path=Color, Mode=OneTime}"
+                                            <DropShadowEffect Color="{Binding Source={StaticResource MahApps.Brushes.White}, Path=Color, Mode=OneTime}"
                                                               BlurRadius="5"
                                                               Opacity="0.9"
                                                               Direction="315"
@@ -207,7 +208,7 @@
                                            Template="{StaticResource GifOverlayIcon}"
                                            Visibility="{Binding Path=Type, Converter={StaticResource ConditionVisibilityConverter}, ConverterParameter=Gif}">
                                         <Label.Effect>
-                                            <DropShadowEffect Color="{Binding Source={StaticResource WhiteBrush}, Path=Color, Mode=OneTime}"
+                                            <DropShadowEffect Color="{Binding Source={StaticResource MahApps.Brushes.White}, Path=Color, Mode=OneTime}"
                                                               BlurRadius="5"
                                                               Opacity="0.9"
                                                               Direction="315"

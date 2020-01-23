@@ -39,7 +39,7 @@
         <Border Grid.Column="0"
                 Grid.Row="1"
                 BorderThickness="1"
-                BorderBrush="{StaticResource WhiteBrush}"
+                BorderBrush="{StaticResource MahApps.Brushes.White}"
                 Visibility="{Binding RecentlyTags.Count, Converter={StaticResource ConditionVisibilityConverter}, ConverterParameter=!0}">
             <ScrollViewer HorizontalScrollBarVisibility="Disabled"
                           VerticalScrollBarVisibility="Auto">
@@ -64,7 +64,7 @@
                                             <Trigger Property="IsMouseOver"
                                                      Value="True">
                                                 <Setter Property="Background"
-                                                        Value="{StaticResource AccentColorBrush3}" />
+                                                        Value="{StaticResource MahApps.Brushes.Accent3}" />
                                             </Trigger>
                                         </Style.Triggers>
                                     </Style>
@@ -125,7 +125,7 @@
         <Border Grid.Column="4"
                 Grid.Row="1"
                 BorderThickness="1"
-                BorderBrush="{StaticResource WhiteBrush}">
+                BorderBrush="{StaticResource MahApps.Brushes.White}">
             <ScrollViewer HorizontalScrollBarVisibility="Disabled"
                           VerticalScrollBarVisibility="Auto">
                 <ItemsControl ItemsSource="{Binding FoundTags}">
@@ -149,7 +149,7 @@
                                             <Trigger Property="IsMouseOver"
                                                      Value="True">
                                                 <Setter Property="Background"
-                                                        Value="{StaticResource AccentColorBrush3}" />
+                                                        Value="{StaticResource MahApps.Brushes.Accent3}" />
                                             </Trigger>
                                         </Style.Triggers>
                                     </Style>
@@ -200,7 +200,7 @@
         <Border Grid.Column="6"
                 Grid.Row="1"
                 BorderThickness="1"
-                BorderBrush="{StaticResource WhiteBrush}">
+                BorderBrush="{StaticResource MahApps.Brushes.White}">
             <ScrollViewer HorizontalScrollBarVisibility="Disabled"
                           VerticalScrollBarVisibility="Auto">
                 <ItemsControl ItemsSource="{Binding SelectedTags}">
@@ -224,7 +224,7 @@
                                             <Trigger Property="IsMouseOver"
                                                      Value="True">
                                                 <Setter Property="Background"
-                                                        Value="{StaticResource AccentColorBrush3}" />
+                                                        Value="{StaticResource MahApps.Brushes.Accent3}" />
                                             </Trigger>
                                         </Style.Triggers>
                                     </Style>
@@ -274,7 +274,7 @@
                                    Visibility="{Binding IsSavind, ConverterParameter=true, Converter={StaticResource ConditionVisibilityConverter}}" />
 
             <Rectangle HorizontalAlignment="Left"
-                       Fill="{StaticResource AccentColorBrush}"
+                       Fill="{StaticResource MahApps.Brushes.Accent}"
                        Height="20"
                        Width="20"
                        Visibility="{Binding IsSuccess, ConverterParameter=true, Converter={StaticResource ConditionVisibilityConverter}}">

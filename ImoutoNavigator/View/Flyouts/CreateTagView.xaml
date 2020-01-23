@@ -51,7 +51,7 @@
                                                Visibility="{Binding IsSavind, ConverterParameter=true, Converter={StaticResource ConditionVisibilityConverter}}" />
 
                         <Rectangle HorizontalAlignment="Left"
-                                   Fill="{StaticResource AccentColorBrush}"
+                                   Fill="{StaticResource MahApps.Brushes.Accent}"
                                    Height="20"
                                    Width="20"
                                    Visibility="{Binding IsSuccess, ConverterParameter=true, Converter={StaticResource ConditionVisibilityConverter}}">

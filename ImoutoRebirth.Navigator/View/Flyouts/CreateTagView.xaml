@@ -4,6 +4,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:controls="http://metro.mahapps.com/winfx/xaml/controls"
+             xmlns:viewModel="clr-namespace:ImoutoRebirth.Navigator.ViewModel"
              mc:Ignorable="d"
              d:DesignHeight="500"
              d:DesignWidth="250"
@@ -50,7 +51,7 @@
                                                Visibility="{Binding IsSavind, ConverterParameter=true, Converter={StaticResource ConditionVisibilityConverter}}" />
 
                         <Rectangle HorizontalAlignment="Left"
-                                   Fill="{StaticResource AccentColorBrush}"
+                                   Fill="{StaticResource MahApps.Brushes.Accent}"
                                    Height="20"
                                    Width="20"
                                    Visibility="{Binding IsSuccess, ConverterParameter=true, Converter={StaticResource ConditionVisibilityConverter}}">
