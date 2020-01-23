@@ -25,16 +25,23 @@ namespace ImoutoRebirth.Room.WebApi.Controllers
             _mapper = mapper;
         }
 
+        /// <summary>
+        /// Retrieve all collections.
+        /// </summary>
+        /// <returns>The list of all collections.</returns>
         [HttpGet]
-        [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Get))]
         public async Task<ActionResult<CollectionResponse[]>> GetAll()
         {
             var collections = await _collectionRepository.GetAll();
             return _mapper.Map<CollectionResponse[]>(collections);
         }
 
+        /// <summary>
+        /// Create new collection with specific name.
+        /// </summary>
+        /// <param name="request">Collection parameters.</param>
+        /// <returns>Description of created collection.</returns>
         [HttpPost]
-        [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Create))]
         public async Task<ActionResult<CollectionResponse>> Create([FromBody] CollectionCreateRequest request)
         {
             var createData = _mapper.Map<CollectionCreateData>(request);
@@ -44,13 +51,16 @@ namespace ImoutoRebirth.Room.WebApi.Controllers
             return Created("/", _mapper.Map<CollectionResponse>(collection));
         }
 
-        [HttpDelete("{guid}")]
-        [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Delete))]
-        public async Task<ActionResult> Delete(Guid guid)
+        /// <summary>
+        /// Delete collection by id.
+        /// </summary>
+        /// <param name="id">Collection id.</param>
+        [HttpDelete("{id}")]
+        public async Task<ActionResult> Delete(Guid id)
         {
             try
             {
-                await _collectionRepository.Remove(guid);
+                await _collectionRepository.Remove(id);
             }
             catch (EntityNotFoundException e)
             {

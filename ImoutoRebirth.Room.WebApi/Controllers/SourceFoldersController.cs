@@ -10,7 +10,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace ImoutoRebirth.Room.WebApi.Controllers
 {
-    [Route("api/Collections/{collectionGuid}/[controller]")]
+    [Route("api/Collections/{collectionId}/[controller]")]
     [ApiController]
     public class SourceFoldersController : ControllerBase
     {
@@ -25,30 +25,42 @@ namespace ImoutoRebirth.Room.WebApi.Controllers
             _mapper = mapper;
         }
 
+        /// <summary>
+        /// Get all source folders for collection.
+        /// </summary>
+        /// <param name="collectionId">The collection id.</param>
+        /// <returns>The collection of source folders.</returns>
         [HttpGet]
-        [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Get))]
-        public async Task<ActionResult<SourceFolderResponse[]>> GetAll(Guid collectionGuid)
+        public async Task<ActionResult<SourceFolderResponse[]>> GetAll(Guid collectionId)
         {
-            var sourceFolders = await _sourceFolderRepository.Get(collectionGuid);
+            var sourceFolders = await _sourceFolderRepository.Get(collectionId);
             return _mapper.Map<SourceFolderResponse[]>(sourceFolders);
         }
 
+        /// <summary>
+        /// Create a source folder for collection.
+        /// </summary>
+        /// <param name="collectionId">The collection id.</param>
+        /// <param name="request">Source folder parameters.</param>
+        /// <returns>Created source folder.</returns>
         [HttpPost]
-        [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Create))]
         public async Task<ActionResult<SourceFolderResponse>> Create(
-            Guid collectionGuid, 
+            Guid collectionId, 
             [FromBody] SourceFolderCreateRequest request)
         {
-            var createData = _mapper.Map<SourceFolderCreateData>((collectionGuid, request));
+            var createData = _mapper.Map<SourceFolderCreateData>((collectionId, request));
 
             var sourceFolder =  await _sourceFolderRepository.Add(createData);
 
             return Created("/", _mapper.Map<SourceFolderResponse>(sourceFolder));
         }
 
+        /// <summary>
+        /// Delete the source folder.
+        /// </summary>
+        /// <param name="guid">Id of the folder that will be deleted.</param>
         [HttpDelete("{guid}")]
-        [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Delete))]
-        public async Task<ActionResult> Delete(Guid collectionGuid, Guid guid)
+        public async Task<ActionResult> Delete(Guid guid)
         {
             try
             {
