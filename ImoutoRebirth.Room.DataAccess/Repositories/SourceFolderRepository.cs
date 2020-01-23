@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.Serialization;
 using System.Threading.Tasks;
 using AutoMapper;
 using ImoutoRebirth.Room.DataAccess.Exceptions;
@@ -8,6 +9,7 @@ using ImoutoRebirth.Room.DataAccess.Models;
 using ImoutoRebirth.Room.DataAccess.Repositories.Abstract;
 using ImoutoRebirth.Room.Database;
 using ImoutoRebirth.Room.Database.Entities;
+using ImoutoRebirth.Room.Database.Entities.Abstract;
 using Microsoft.EntityFrameworkCore;
 
 namespace ImoutoRebirth.Room.DataAccess.Repositories
@@ -43,6 +45,27 @@ namespace ImoutoRebirth.Room.DataAccess.Repositories
             await _roomDbContext.SaveChangesAsync();
 
             return sourceFolder;
+        }
+
+        public async Task<SourceFolder> Update(SourceFolderUpdateData updateData)
+        {
+            var folder = await _roomDbContext
+                .SourceFolders
+                .FirstOrDefaultAsync(x => x.Id == updateData.Id);
+
+            if (folder == null)
+                throw new EntityNotFoundException<SourceFolderEntity>(updateData.Id);
+            
+            folder.Path = updateData.Path;
+            folder.SupportedExtensionCollection = updateData.SupportedExtensions;
+            folder.ShouldAddTagFromFilename = updateData.ShouldAddTagFromFilename;
+            folder.ShouldCreateTagsFromSubfolders = updateData.ShouldCreateTagsFromSubfolders;
+            folder.ShouldCheckFormat = updateData.ShouldCheckFormat;
+            folder.ShouldCheckHashFromName = updateData.ShouldCheckHashFromName;
+
+            await _roomDbContext.SaveChangesAsync();
+
+            return _mapper.Map<SourceFolder>(folder);
         }
 
         public async Task Remove(Guid id)

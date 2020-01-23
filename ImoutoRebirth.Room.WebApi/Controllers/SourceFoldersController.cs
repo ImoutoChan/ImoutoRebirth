@@ -56,15 +56,33 @@ namespace ImoutoRebirth.Room.WebApi.Controllers
         }
 
         /// <summary>
+        /// Update the source folder for given collection.
+        /// </summary>
+        /// <param name="id">The id of the source folder that will be updated.</param>
+        /// <param name="request">Source folder parameters.</param>
+        /// <returns>Updated source folder.</returns>
+        [HttpPut("{id}")]
+        public async Task<ActionResult<SourceFolderResponse>> Update(
+            Guid id, 
+            [FromBody] SourceFolderCreateRequest request)
+        {
+            var createData = _mapper.Map<SourceFolderUpdateData>((id, request));
+
+            var sourceFolder =  await _sourceFolderRepository.Update(createData);
+
+            return Created("/", _mapper.Map<SourceFolderResponse>(sourceFolder));
+        }
+
+        /// <summary>
         /// Delete the source folder.
         /// </summary>
-        /// <param name="guid">Id of the folder that will be deleted.</param>
-        [HttpDelete("{guid}")]
-        public async Task<ActionResult> Delete(Guid guid)
+        /// <param name="id">Id of the folder that will be deleted.</param>
+        [HttpDelete("{id}")]
+        public async Task<ActionResult> Delete(Guid id)
         {
             try
             {
-                await _sourceFolderRepository.Remove(guid);
+                await _sourceFolderRepository.Remove(id);
             }
             catch (EntityNotFoundException e)
             {

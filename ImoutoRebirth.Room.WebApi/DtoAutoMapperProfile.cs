@@ -26,6 +26,17 @@ namespace ImoutoRebirth.Room.WebApi
                         x.createRequest.ShouldAddTagFromFilename,
                         x.createRequest.SupportedExtensions));
 
+            CreateMap<(Guid id, SourceFolderCreateRequest createRequest), SourceFolderUpdateData>()
+               .ConvertUsing(x
+                    => new SourceFolderUpdateData(
+                        x.id, 
+                        x.createRequest.Path,
+                        x.createRequest.ShouldCheckFormat,
+                        x.createRequest.ShouldCheckHashFromName,
+                        x.createRequest.ShouldCreateTagsFromSubfolders,
+                        x.createRequest.ShouldAddTagFromFilename,
+                        x.createRequest.SupportedExtensions));
+
             CreateMap<(Guid collectionId, DestinationFolderCreateRequest createRequest), DestinationFolderCreateData>()
                .ConvertUsing(x
                     => new DestinationFolderCreateData(

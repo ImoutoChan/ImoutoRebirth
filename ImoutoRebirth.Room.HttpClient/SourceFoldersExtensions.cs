@@ -92,19 +92,47 @@ namespace ImoutoRebirth.Room.HttpClient
             }
 
             /// <summary>
-            /// Delete the source folder.
+            /// Update the source folder for given collection.
             /// </summary>
             /// <param name='operations'>
             /// The operations group for this extension method.
             /// </param>
-            /// <param name='guid'>
-            /// Id of the folder that will be deleted.
+            /// <param name='id'>
+            /// The id of the source folder that will be updated.
             /// </param>
             /// <param name='collectionId'>
             /// </param>
-            public static void Delete(this ISourceFolders operations, System.Guid guid, string collectionId)
+            /// <param name='body'>
+            /// Source folder parameters.
+            /// </param>
+            public static SourceFolderResponse Update(this ISourceFolders operations, System.Guid id, string collectionId, SourceFolderCreateRequest body = default(SourceFolderCreateRequest))
             {
-                operations.DeleteAsync(guid, collectionId).GetAwaiter().GetResult();
+                return operations.UpdateAsync(id, collectionId, body).GetAwaiter().GetResult();
+            }
+
+            /// <summary>
+            /// Update the source folder for given collection.
+            /// </summary>
+            /// <param name='operations'>
+            /// The operations group for this extension method.
+            /// </param>
+            /// <param name='id'>
+            /// The id of the source folder that will be updated.
+            /// </param>
+            /// <param name='collectionId'>
+            /// </param>
+            /// <param name='body'>
+            /// Source folder parameters.
+            /// </param>
+            /// <param name='cancellationToken'>
+            /// The cancellation token.
+            /// </param>
+            public static async Task<SourceFolderResponse> UpdateAsync(this ISourceFolders operations, System.Guid id, string collectionId, SourceFolderCreateRequest body = default(SourceFolderCreateRequest), CancellationToken cancellationToken = default(CancellationToken))
+            {
+                using (var _result = await operations.UpdateWithHttpMessagesAsync(id, collectionId, body, null, cancellationToken).ConfigureAwait(false))
+                {
+                    return _result.Body;
+                }
             }
 
             /// <summary>
@@ -113,7 +141,23 @@ namespace ImoutoRebirth.Room.HttpClient
             /// <param name='operations'>
             /// The operations group for this extension method.
             /// </param>
-            /// <param name='guid'>
+            /// <param name='id'>
+            /// Id of the folder that will be deleted.
+            /// </param>
+            /// <param name='collectionId'>
+            /// </param>
+            public static void Delete(this ISourceFolders operations, System.Guid id, string collectionId)
+            {
+                operations.DeleteAsync(id, collectionId).GetAwaiter().GetResult();
+            }
+
+            /// <summary>
+            /// Delete the source folder.
+            /// </summary>
+            /// <param name='operations'>
+            /// The operations group for this extension method.
+            /// </param>
+            /// <param name='id'>
             /// Id of the folder that will be deleted.
             /// </param>
             /// <param name='collectionId'>
@@ -121,9 +165,9 @@ namespace ImoutoRebirth.Room.HttpClient
             /// <param name='cancellationToken'>
             /// The cancellation token.
             /// </param>
-            public static async Task DeleteAsync(this ISourceFolders operations, System.Guid guid, string collectionId, CancellationToken cancellationToken = default(CancellationToken))
+            public static async Task DeleteAsync(this ISourceFolders operations, System.Guid id, string collectionId, CancellationToken cancellationToken = default(CancellationToken))
             {
-                (await operations.DeleteWithHttpMessagesAsync(guid, collectionId, null, cancellationToken).ConfigureAwait(false)).Dispose();
+                (await operations.DeleteWithHttpMessagesAsync(id, collectionId, null, cancellationToken).ConfigureAwait(false)).Dispose();
             }
 
     }
