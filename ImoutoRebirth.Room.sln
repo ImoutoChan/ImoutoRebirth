@@ -22,6 +22,8 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{C2A196E6-30A7-4680-990B-88FE3BDE7FC1}"
 	ProjectSection(SolutionItems) = preProject
 		appveyor.yml = appveyor.yml
+		AutoRest\autorest-configuration.yml = AutoRest\autorest-configuration.yml
+		AutoRest\generate-client.ps1 = AutoRest\generate-client.ps1
 	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ImoutoRebirth.Room.HttpClient", "ImoutoRebirth.Room.HttpClient\ImoutoRebirth.Room.HttpClient.csproj", "{818A8695-65D9-4D47-8CC2-20E4C1F80A6A}"
