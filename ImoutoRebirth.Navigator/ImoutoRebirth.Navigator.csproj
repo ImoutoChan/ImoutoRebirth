@@ -1,0 +1,127 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.WindowsDesktop">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+    <UseWPF>true</UseWPF>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="UserControls\PlayerControl.xaml.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Remove="Resources\Entypo.ttf" />
+    <None Remove="Resources\Icon\49a7b0a953e5106e5942169f3cb0c237.ico" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Page Remove="UserControls\PlayerControl.xaml" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Imouto.Utils.Core" Version="2.0.0" />
+    <PackageReference Include="Imouto.WcfExchangeLibrary.Core" Version="2.0.1" />
+    <PackageReference Include="MahApps.Metro" Version="2.0.0-alpha0660" />
+    <PackageReference Include="MahApps.Metro.IconPacks" Version="3.1.0" />
+    <PackageReference Include="Microsoft.Xaml.Behaviors.Wpf" Version="1.1.19" />
+    <PackageReference Include="SharedModelLibrary.Core" Version="2.0.0" />
+    <PackageReference Include="WpfAnimatedGif" Version="2.0.0-beta.2" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Resource Include="Resources\Entypo.ttf" />
+    <Resource Include="Resources\Icon\49a7b0a953e5106e5942169f3cb0c237.ico" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Update="Settings.Designer.cs">
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+      <DependentUpon>Settings.settings</DependentUpon>
+      <AutoGen>True</AutoGen>
+    </Compile>
+    <Compile Update="UserControls\FavoriteControl.xaml.cs">
+      <DependentUpon>FavoriteControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Update="UserControls\RatingControl.xaml.cs">
+      <DependentUpon>RatingControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Update="UserControls\TagView.xaml.cs">
+      <DependentUpon>TagView.xaml</DependentUpon>
+    </Compile>
+    <Compile Update="View\FileInfoView.xaml.cs">
+      <DependentUpon>FileInfoView.xaml</DependentUpon>
+    </Compile>
+    <Compile Update="View\Flyouts\CollectionsView.xaml.cs">
+      <DependentUpon>CollectionsView.xaml</DependentUpon>
+    </Compile>
+    <Compile Update="View\Flyouts\CreateTagView.xaml.cs">
+      <DependentUpon>CreateTagView.xaml</DependentUpon>
+    </Compile>
+    <Compile Update="View\Flyouts\SettingsView.xaml.cs">
+      <DependentUpon>SettingsView.xaml</DependentUpon>
+    </Compile>
+    <Compile Update="View\Flyouts\TagsEditView.xaml.cs">
+      <DependentUpon>TagsEditView.xaml</DependentUpon>
+    </Compile>
+    <Compile Update="View\StatusBarView.xaml.cs">
+      <DependentUpon>StatusBarView.xaml</DependentUpon>
+    </Compile>
+    <Compile Update="View\TagsSearchView.xaml.cs">
+      <DependentUpon>TagsSearchView.xaml</DependentUpon>
+    </Compile>
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="Settings.settings">
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+      <Generator>SettingsSingleFileGenerator</Generator>
+    </None>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Page Update="DebugWindow.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="Resources\Icons.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="Resources\IconsNonShared.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="styles.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="UserControls\FavoriteControl.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="UserControls\RatingControl.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="UserControls\TagView.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="View\FileInfoView.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="View\Flyouts\CollectionsView.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="View\Flyouts\CreateTagView.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="View\Flyouts\SettingsView.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="View\Flyouts\TagsEditView.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="View\StatusBarView.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="View\TagsSearchView.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+  </ItemGroup>
+
+</Project>

@@ -1,0 +1,523 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:wpfHelpers="clr-namespace:ImoutoRebirth.Navigator.Utils.Wpf"
+                    xmlns:converters1="clr-namespace:ImoutoRebirth.Navigator.Converters"
+                    xmlns:viewModel="clr-namespace:ImoutoRebirth.Navigator.ViewModel"
+                    xmlns:Imouto.Navigator="clr-namespace:ImoutoRebirth.Navigator">
+    <ResourceDictionary.MergedDictionaries>
+        <ResourceDictionary Source="Resources/Icons.xaml" />
+    </ResourceDictionary.MergedDictionaries>
+
+    <converters1:IntToColorConverter x:Key="IntToColorConverter" />
+
+    <converters1:ConditionVisibilityConverter x:Key="ConditionVisibilityConverter" />
+
+    <converters1:BooleanResultConverter x:Key="BooleanResultConverter" />
+
+    <ControlTemplate x:Key="SelectableTagElementControlTemplate"
+                     TargetType="Button">
+        <Label Background="{TemplateBinding Background}"
+               x:Name="label"
+               HorizontalContentAlignment="Stretch"
+               Padding="10,4,5,2">
+            <Label.Content>
+                <TextBlock Text="{Binding Title}"
+                           TextAlignment="Left"
+                           Foreground="{Binding Type.Color, Converter={StaticResource IntToColorConverter}}"
+                           FontFamily="Comic Sans MS"
+                           FontSize="13"
+                           FontWeight="Bold"
+                           VerticalAlignment="Center"
+                           ToolTip="{Binding Title}" />
+            </Label.Content>
+        </Label>
+
+        <ControlTemplate.Triggers>
+            <Trigger Property="IsMouseOver"
+                     Value="True">
+                <Setter TargetName="label"
+                        Property="Background"
+                        Value="{DynamicResource AccentColorBrush3}" />
+            </Trigger>
+        </ControlTemplate.Triggers>
+    </ControlTemplate>
+
+    <ControlTemplate x:Key="SelectableBindedTagElementControlTemplate"
+                     TargetType="Button">
+        <Label Background="{TemplateBinding Background}"
+               x:Name="label"
+               HorizontalContentAlignment="Stretch"
+               Padding="10,4,5,2">
+            <Label.Content>
+                <TextBlock TextAlignment="Left"
+                           VerticalAlignment="Center"
+                           ToolTip="{Binding Tag.Title}">
+                    <Run Text="{Binding Tag.Title}"
+                         Foreground="{Binding Tag.Type.Color, Converter={StaticResource IntToColorConverter}}"
+                         FontFamily="Comic Sans MS"
+                         FontSize="13"
+                         FontWeight="Bold" />
+                    <Run Text="{Binding Tag.Count, StringFormat=' ({0})'}"
+                         Foreground="{StaticResource GrayBrush3}"/>
+                    <Run Text="{Binding Value}"
+                         wpfHelpers:RunVisibility.Visible="{Binding Value, Converter={StaticResource BooleanResultConverter}, ConverterParameter=!null}" />
+                </TextBlock>
+            </Label.Content>
+        </Label>
+
+        <ControlTemplate.Triggers>
+            <Trigger Property="IsMouseOver"
+                     Value="True">
+                <Setter TargetName="label"
+                        Property="Background"
+                        Value="{DynamicResource AccentColorBrush3}" />
+            </Trigger>
+        </ControlTemplate.Triggers>
+    </ControlTemplate>
+
+    <ControlTemplate x:Key="InvertSelectedTagControlTemplate"
+                     TargetType="Button">
+        <Label Background="{TemplateBinding Background}"
+               x:Name="label"
+               HorizontalContentAlignment="Stretch"
+               Padding="5,4,5,2">
+            <Label.Content>
+                <Rectangle Width="15"
+                           Height="15">
+                    <Rectangle.Style>
+                        <Style TargetType="Rectangle">
+                            <Style.Resources>
+                                <Canvas x:Key="MinusVisual"
+                                        Width="76"
+                                        Height="76"
+                                        Clip="F1 M 0,0L 76,0L 76,76L 0,76L 0,0">
+                                    <Path Width="38"
+                                          Height="6"
+                                          Canvas.Left="19"
+                                          Canvas.Top="38"
+                                          Stretch="Fill"
+                                          Fill="{DynamicResource BlackBrush}"
+                                          Data="F1 M 19,38L 57,38L 57,44L 19,44L 19,38 Z "
+                                          Name="Path1" />
+                                </Canvas>
+
+                                <Canvas x:Key="MinusVisualDisabled"
+                                        Width="76"
+                                        Height="76"
+                                        Clip="F1 M 0,0L 76,0L 76,76L 0,76L 0,0">
+                                    <Path Width="38"
+                                          Height="6"
+                                          Canvas.Left="19"
+                                          Canvas.Top="38"
+                                          Stretch="Fill"
+                                          Fill="{DynamicResource GrayBrush9}"
+                                          Data="F1 M 19,38L 57,38L 57,44L 19,44L 19,38 Z "
+                                          Name="Path2" />
+                                </Canvas>
+                            </Style.Resources>
+
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding Path=SearchType}"
+                                             Value="Exclude">
+                                    <Setter Property="Fill">
+                                        <Setter.Value>
+                                            <VisualBrush Stretch="Uniform"
+                                                         Visual="{DynamicResource MinusVisual}" />
+                                        </Setter.Value>
+                                    </Setter>
+                                </DataTrigger>
+                                <DataTrigger Binding="{Binding Path=SearchType}"
+                                             Value="Include">
+                                    <Setter Property="Fill">
+                                        <Setter.Value>
+                                            <VisualBrush Stretch="Uniform"
+                                                         Visual="{DynamicResource MinusVisualDisabled}" />
+                                        </Setter.Value>
+                                    </Setter>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Rectangle.Style>
+                </Rectangle>
+            </Label.Content>
+        </Label>
+
+        <ControlTemplate.Triggers>
+            <Trigger Property="IsMouseOver"
+                     Value="True">
+                <Setter TargetName="label"
+                        Property="Background"
+                        Value="{DynamicResource AccentColorBrush3}" />
+            </Trigger>
+        </ControlTemplate.Triggers>
+    </ControlTemplate>
+
+    <ControlTemplate x:Key="TagElementControlTemplate"
+                     TargetType="Button">
+        <DockPanel LastChildFill="True">
+            <Label DockPanel.Dock="Right"
+                   Background="Transparent"
+                   HorizontalContentAlignment="Stretch"
+                   Padding="10,4,5,2">
+                <Label.Content>
+                    <TextBlock TextAlignment="Left"
+                               VerticalAlignment="Center">
+                        <Run Text="{Binding Count, StringFormat='({0})'}"
+                             Foreground="{StaticResource GrayBrush3}" />
+                    </TextBlock>
+                </Label.Content>
+            </Label>
+
+            <Label Background="Transparent"
+                   x:Name="label"
+                   HorizontalContentAlignment="Stretch"
+                   Padding="10,4,5,2">
+                <Label.Content>
+                    <TextBlock TextAlignment="Left"
+                               VerticalAlignment="Center">
+                        <Run Text="{Binding Title}"
+                             Foreground="{Binding Type.Color, Converter={StaticResource IntToColorConverter}}"
+                             FontFamily="Comic Sans MS"
+                             FontSize="13"
+                             FontWeight="Bold"
+                             ToolTip="{Binding Title}" />
+                    </TextBlock>
+                </Label.Content>
+            </Label>
+        </DockPanel>
+    </ControlTemplate>
+
+    <ControlTemplate x:Key="BindedTagVMElementControlTemplate"
+                     TargetType="Button">
+        <Label Background="Transparent"
+               x:Name="label"
+               HorizontalContentAlignment="Stretch"
+               Padding="10,4,5,2">
+            <Label.Content>
+                <TextBlock Text="{Binding Tag.Title}"
+                           TextAlignment="Left"
+                           Foreground="{Binding Tag.Type.Color, Converter={StaticResource IntToColorConverter}}"
+                           FontFamily="Comic Sans MS"
+                           FontSize="13"
+                           FontWeight="Bold"
+                           VerticalAlignment="Center"
+                           ToolTip="{Binding Tag.Title}" />
+            </Label.Content>
+        </Label>
+    </ControlTemplate>
+
+    <DataTemplate x:Key="BindedTagVMElementContentTemplate">
+        <Label Background="Transparent"
+               x:Name="label"
+               HorizontalContentAlignment="Stretch"
+               Padding="10,4,5,2">
+            <Label.Content>
+                <TextBlock Text="{Binding Tag.Title}"
+                           TextAlignment="Left"
+                           Foreground="{Binding Tag.Type.Color, Converter={StaticResource IntToColorConverter}}"
+                           FontFamily="Comic Sans MS"
+                           FontSize="13"
+                           FontWeight="Bold"
+                           VerticalAlignment="Center"
+                           ToolTip="{Binding Tag.Title}" />
+            </Label.Content>
+        </Label>
+    </DataTemplate>
+
+    <DataTemplate x:Key="CurrentTagsSourceDataTemplate"
+                  DataType="{x:Type viewModel:TagSourceVM}">
+        <StackPanel>
+            <TextBlock Text="{Binding Title}"
+                       FontSize="15"
+                       Margin="0,0,0,2" />
+
+            <ItemsControl ItemsSource="{Binding Tags}">
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="Auto" />
+                            </Grid.ColumnDefinitions>
+
+                            <TextBlock Grid.Column="0"
+                                       Margin="5,0,0,2">
+                                <Hyperlink TextDecorations="None"
+                                           Command="{Binding RelativeSource={RelativeSource FindAncestor,
+                                                                                            AncestorType={x:Type UserControl}},
+                                                             Path=DataContext.SelectBindedTagCommand}"
+                                           CommandParameter="{Binding}">
+                                    <TextBlock TextWrapping="Wrap"
+                                               ToolTip="{Binding Title}"
+                                               VerticalAlignment="Center">
+                                        <Run Text="{Binding Title, Mode=OneWay}"
+                                             Foreground="{Binding TypeBrush}"
+                                             FontFamily="Comic Sans MS"
+                                             FontSize="13"
+                                             FontWeight="Bold" />
+
+                                        <Run Text="{Binding Tag.Count, StringFormat=' ({0})', Mode=OneWay}"
+                                             Foreground="{StaticResource GrayBrush3}" />
+                                    </TextBlock>
+                                </Hyperlink>
+                            </TextBlock>
+
+                            <Button Grid.Column="1"
+                                    Width="20"
+                                    Height="20"
+                                    Margin="0, 0, 0, 0"
+                                    Style="{DynamicResource MetroCircleButtonStyle}"
+                                    HorizontalAlignment="Left"
+                                    Command="{Binding UnbindCommand}"
+                                    Visibility="{Binding IsEditable, 
+                                                         Mode=OneWay, 
+                                                         Converter={StaticResource ConditionVisibilityConverter}, 
+                                                         ConverterParameter=true, 
+                                                         FallbackValue=Collapsed}">
+                                <Rectangle Width="8"
+                                           Height="8"
+                                           Fill="{Binding Path=Foreground, 
+                                                          RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Button}}}">
+                                    <Rectangle.OpacityMask>
+                                        <VisualBrush Stretch="Fill"
+                                                     Visual="{DynamicResource appbar_close}" />
+                                    </Rectangle.OpacityMask>
+                                </Rectangle>
+                            </Button>
+                        </Grid>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+        </StackPanel>
+    </DataTemplate>
+
+    <DataTemplate x:Key="SearchTagElementDataTemplateWithX">
+        <Button HorizontalAlignment="Stretch"
+                HorizontalContentAlignment="Stretch"
+                FontWeight="Normal"
+                Template="{StaticResource TagElementControlTemplate}">
+            <Button.Content>
+                <DockPanel>
+                    <Button DockPanel.Dock="Right"
+                            Style="{DynamicResource ChromelessButtonStyle}"
+                            Command="{Binding Path=DataContext.RemoveTagFromSearch, 
+                                                RelativeSource={RelativeSource AncestorType={x:Type Imouto.Navigator:MainWindow}}}"
+                            CommandParameter="{Binding}">
+                        <Button.Content>
+                            <TextBlock Text="X"
+                                       FontSize="12"
+                                       Margin="0,0,5,0" />
+                        </Button.Content>
+                    </Button>
+
+                    <TextBlock>
+                        <TextBlock.Text>
+                            <MultiBinding StringFormat="{}{0} ({1})">
+                                <Binding Path="Key.Name" />
+                                <Binding Path="Value" />
+                            </MultiBinding>
+                        </TextBlock.Text>
+                    </TextBlock>
+                </DockPanel>
+            </Button.Content>
+        </Button>
+    </DataTemplate>
+
+    <DataTemplate x:Key="SelectedTagsElementDataTemplate">
+        <Button HorizontalAlignment="Stretch"
+                HorizontalContentAlignment="Stretch"
+                Template="{StaticResource SelectableTagElementControlTemplate}">
+            <Button.InputBindings>
+                <MouseBinding Gesture="LeftClick"
+                              Command="{Binding Path=DataContext.UnselectTagCommand, 
+                                                 RelativeSource={RelativeSource AncestorType={x:Type UserControl}}}"
+                              CommandParameter="{Binding}" />
+            </Button.InputBindings>
+        </Button>
+    </DataTemplate>
+
+    <DataTemplate x:Key="SelectedBindedTagsElementDataTemplate">
+        <DockPanel>
+            <Button HorizontalAlignment="Stretch"
+                    HorizontalContentAlignment="Stretch"
+                    Template="{StaticResource InvertSelectedTagControlTemplate}"
+                    DockPanel.Dock="Right"
+                    Width="30">
+                <Button.InputBindings>
+                    <MouseBinding Gesture="LeftClick"
+                                  Command="{Binding Path=DataContext.InvertSearchTypeCommand, 
+                                                     RelativeSource={RelativeSource AncestorType={x:Type UserControl}}}"
+                                  CommandParameter="{Binding}" />
+                </Button.InputBindings>
+            </Button>
+
+            <Button HorizontalAlignment="Stretch"
+                    HorizontalContentAlignment="Stretch"
+                    Template="{StaticResource SelectableBindedTagElementControlTemplate}">
+                <Button.InputBindings>
+                    <MouseBinding Gesture="LeftClick"
+                                  Command="{Binding Path=DataContext.UnselectTagCommand, 
+                                                     RelativeSource={RelativeSource AncestorType={x:Type UserControl}}}"
+                                  CommandParameter="{Binding}" />
+                </Button.InputBindings>
+            </Button>
+        </DockPanel>
+    </DataTemplate>
+
+    <Style x:Key="SearchHintListBoxItemContainerStyle"
+           TargetType="ListBoxItem">
+        <Setter Property="Padding"
+                Value="0" />
+        <Setter Property="HorizontalContentAlignment"
+                Value="Stretch" />
+        <Setter Property="VerticalContentAlignment"
+                Value="Top" />
+        <Setter Property="Background"
+                Value="Transparent" />
+        <Setter Property="BorderThickness"
+                Value="1" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="ListBoxItem">
+                    <Grid Background="{TemplateBinding Background}"
+                          x:Name="Border">
+                        <VisualStateManager.VisualStateGroups>
+                            <VisualStateGroup x:Name="CommonStates">
+                                <VisualState x:Name="Normal" />
+                                <VisualState x:Name="MouseOver">
+                                    <Storyboard>
+                                        <DoubleAnimation Storyboard.TargetName="fillColor"
+                                                         Storyboard.TargetProperty="Opacity"
+                                                         Duration="0"
+                                                         To=".35" />
+                                    </Storyboard>
+                                </VisualState>
+                                <VisualState x:Name="Disabled">
+                                    <Storyboard>
+                                        <DoubleAnimation Storyboard.TargetName="contentPresenter"
+                                                         Storyboard.TargetProperty="Opacity"
+                                                         Duration="0"
+                                                         To=".55" />
+                                    </Storyboard>
+                                </VisualState>
+                            </VisualStateGroup>
+                            <VisualStateGroup x:Name="SelectionStates">
+                                <VisualState x:Name="Unselected" />
+                                <VisualState x:Name="Selected">
+                                    <Storyboard>
+                                        <DoubleAnimation Storyboard.TargetName="fillColor2"
+                                                         Storyboard.TargetProperty="Opacity"
+                                                         Duration="0"
+                                                         To=".75" />
+                                    </Storyboard>
+                                </VisualState>
+                            </VisualStateGroup>
+                            <VisualStateGroup x:Name="FocusStates">
+                                <VisualState x:Name="Focused">
+                                    <Storyboard>
+                                        <ObjectAnimationUsingKeyFrames Storyboard.TargetName="FocusVisualElement"
+                                                                       Storyboard.TargetProperty="Visibility"
+                                                                       Duration="0">
+                                            <DiscreteObjectKeyFrame KeyTime="0">
+                                                <DiscreteObjectKeyFrame.Value>
+                                                    <Visibility>Visible</Visibility>
+                                                </DiscreteObjectKeyFrame.Value>
+                                            </DiscreteObjectKeyFrame>
+                                        </ObjectAnimationUsingKeyFrames>
+                                    </Storyboard>
+                                </VisualState>
+                                <VisualState x:Name="Unfocused" />
+                            </VisualStateGroup>
+                        </VisualStateManager.VisualStateGroups>
+                        <Rectangle x:Name="fillColor"
+                                   Opacity="0"
+                                   Fill="#FFBADDE9"
+                                   IsHitTestVisible="False"
+                                   RadiusX="1"
+                                   RadiusY="1" />
+                        <Rectangle x:Name="fillColor2"
+                                   Opacity="0"
+                                   Fill="#FFBADDE9"
+                                   IsHitTestVisible="False"
+                                   RadiusX="1"
+                                   RadiusY="1" />
+                        <ContentPresenter x:Name="contentPresenter"
+                                          Content="{TemplateBinding Content}"
+                                          ContentTemplate="{TemplateBinding ContentTemplate}"
+                                          HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                          Margin="{TemplateBinding Padding}" />
+                        <Rectangle x:Name="FocusVisualElement"
+                                   Stroke="#FF6DBDD1"
+                                   StrokeThickness="1"
+                                   Visibility="Collapsed"
+                                   RadiusX="1"
+                                   RadiusY="1" />
+                    </Grid>
+
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsSelected"
+                                 Value="true">
+                            <Setter TargetName="Border"
+                                    Property="Background"
+                                    Value="{DynamicResource AccentColorBrush2}" />
+                        </Trigger>
+                        <Trigger Property="IsMouseOver"
+                                 Value="True">
+                            <Setter TargetName="Border"
+                                    Property="Background"
+                                    Value="{DynamicResource AccentColorBrush3}" />
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <ControlTemplate x:Key="VideoOverlayIcon"
+                     TargetType="{x:Type Label}">
+        <Rectangle Width="30"
+                   Height="30"
+                   Fill="{StaticResource BlackBrush}">
+            <Rectangle.OpacityMask>
+                <VisualBrush Stretch="Fill"
+                             Visual="{DynamicResource appbar_movie_clapper}" />
+            </Rectangle.OpacityMask>
+        </Rectangle>
+    </ControlTemplate>
+
+    <ControlTemplate x:Key="GifOverlayIcon"
+                     TargetType="{x:Type Label}">
+        <Rectangle Width="30"
+                   Height="30"
+                   Fill="{StaticResource BlackBrush}">
+            <Rectangle.OpacityMask>
+                <VisualBrush Stretch="Fill"
+                             Visual="{DynamicResource appbar_image_export}" />
+            </Rectangle.OpacityMask>
+        </Rectangle>
+    </ControlTemplate>
+
+    <ControlTemplate x:Key="VideoPlayOverlayIcon"
+                     TargetType="{x:Type Button}">
+        <Rectangle Width="20"
+                   Height="20"
+                   Fill="{StaticResource BlackBrush}">
+            <Rectangle.OpacityMask>
+                <VisualBrush Stretch="Fill"
+                             Visual="{DynamicResource appbar_control_play}" />
+            </Rectangle.OpacityMask>
+        </Rectangle>
+    </ControlTemplate>
+
+    <ControlTemplate x:Key="VideoPauseOverlayIcon"
+                     TargetType="{x:Type Button}">
+        <Rectangle Width="20"
+                   Height="20"
+                   Fill="{StaticResource BlackBrush}">
+            <Rectangle.OpacityMask>
+                <VisualBrush Stretch="Fill"
+                             Visual="{DynamicResource appbar_control_pause}" />
+            </Rectangle.OpacityMask>
+        </Rectangle>
+    </ControlTemplate>
+</ResourceDictionary>

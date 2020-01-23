@@ -153,3 +153,4 @@ ImoutoViewer.sln.ide/*
 /Imouto Navigator.sln.ide
 *.DotSettings
 ImoutoNavigator/LibVlc/
+/.vs
