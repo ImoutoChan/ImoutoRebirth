@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using ImoutoRebirth.Room.Database.Entities.Abstract;
@@ -20,6 +21,8 @@ namespace ImoutoRebirth.Room.Database.Entities
         public long Size { get; set; }
 
         public string OriginalPath { get; set; }
+
+        public bool IsRemoved { get; set; }
 
         public CollectionEntity Collection { get; set; }
     }

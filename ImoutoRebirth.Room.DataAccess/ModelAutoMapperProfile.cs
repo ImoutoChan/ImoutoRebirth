@@ -16,7 +16,8 @@ namespace ImoutoRebirth.Room.DataAccess
                .ForCtorParam("supportedExtensions", o => o.MapFrom(x => x.SupportedExtensionCollection));
 
             CreateMap<Collection, CollectionEntity>();
-            CreateMap<CollectionFile, CollectionFileEntity>();
+            CreateMap<CollectionFile, CollectionFileEntity>()
+                .ForMember(x => x.IsRemoved, o => o.Ignore()); ;
             CreateMap<CustomDestinationFolder, DestinationFolderEntity>()
                .ForMember(x => x.Path, o => o.MapFrom(x => x.GetDestinationDirectory().FullName));
 

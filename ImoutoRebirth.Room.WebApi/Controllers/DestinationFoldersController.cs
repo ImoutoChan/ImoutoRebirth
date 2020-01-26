@@ -7,6 +7,7 @@ using ImoutoRebirth.Room.DataAccess.Repositories.Abstract;
 using ImoutoRebirth.Room.WebApi.Requests;
 using ImoutoRebirth.Room.WebApi.Responses;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
 
 namespace ImoutoRebirth.Room.WebApi.Controllers
 {
@@ -31,7 +32,7 @@ namespace ImoutoRebirth.Room.WebApi.Controllers
         /// <param name="collectionId">The collection id.</param>
         /// <returns>The destination folder.</returns>
         [HttpGet]
-        public async Task<ActionResult<DestinationFolderResponse>> Get(Guid collectionId)
+        public async Task<ActionResult<DestinationFolderResponse>> Get([BindRequired] Guid collectionId)
         {
             var destinationFolder = await _destinationFolderRepository.Get(collectionId);
 
@@ -49,7 +50,7 @@ namespace ImoutoRebirth.Room.WebApi.Controllers
         /// <returns>Created destination folder.</returns>
         [HttpPost]
         public async Task<ActionResult<DestinationFolderResponse>> CreateOrUpdate(
-            Guid collectionId,
+            [BindRequired] Guid collectionId,
             [FromBody] DestinationFolderCreateRequest request)
         {
             var createData = _mapper.Map<DestinationFolderCreateData>((collectionId, request));
@@ -65,13 +66,13 @@ namespace ImoutoRebirth.Room.WebApi.Controllers
         /// <summary>
         /// Delete the destination folder.
         /// </summary>
-        /// <param name="guid">Id of the folder that will be deleted.</param>
-        [HttpDelete("{guid}")]
-        public async Task<ActionResult> Delete(Guid guid)
+        /// <param name="id">Id of the folder that will be deleted.</param>
+        [HttpDelete("{id}")]
+        public async Task<ActionResult> Delete([BindRequired] Guid id)
         {
             try
             {
-                await _destinationFolderRepository.Remove(guid);
+                await _destinationFolderRepository.Remove(id);
             }
             catch (EntityNotFoundException e)
             {

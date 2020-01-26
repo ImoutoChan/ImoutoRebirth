@@ -7,6 +7,7 @@ using ImoutoRebirth.Room.DataAccess.Repositories.Abstract;
 using ImoutoRebirth.Room.WebApi.Requests;
 using ImoutoRebirth.Room.WebApi.Responses;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
 
 namespace ImoutoRebirth.Room.WebApi.Controllers
 {
@@ -31,7 +32,7 @@ namespace ImoutoRebirth.Room.WebApi.Controllers
         /// <param name="collectionId">The collection id.</param>
         /// <returns>The collection of source folders.</returns>
         [HttpGet]
-        public async Task<ActionResult<SourceFolderResponse[]>> GetAll(Guid collectionId)
+        public async Task<ActionResult<SourceFolderResponse[]>> GetAll([BindRequired] Guid collectionId)
         {
             var sourceFolders = await _sourceFolderRepository.Get(collectionId);
             return _mapper.Map<SourceFolderResponse[]>(sourceFolders);
@@ -45,7 +46,7 @@ namespace ImoutoRebirth.Room.WebApi.Controllers
         /// <returns>Created source folder.</returns>
         [HttpPost]
         public async Task<ActionResult<SourceFolderResponse>> Create(
-            Guid collectionId, 
+            [BindRequired] Guid collectionId, 
             [FromBody] SourceFolderCreateRequest request)
         {
             var createData = _mapper.Map<SourceFolderCreateData>((collectionId, request));
@@ -63,7 +64,7 @@ namespace ImoutoRebirth.Room.WebApi.Controllers
         /// <returns>Updated source folder.</returns>
         [HttpPut("{id}")]
         public async Task<ActionResult<SourceFolderResponse>> Update(
-            Guid id, 
+            [BindRequired] Guid id, 
             [FromBody] SourceFolderCreateRequest request)
         {
             var createData = _mapper.Map<SourceFolderUpdateData>((id, request));
@@ -78,7 +79,7 @@ namespace ImoutoRebirth.Room.WebApi.Controllers
         /// </summary>
         /// <param name="id">Id of the folder that will be deleted.</param>
         [HttpDelete("{id}")]
-        public async Task<ActionResult> Delete(Guid id)
+        public async Task<ActionResult> Delete([BindRequired] Guid id)
         {
             try
             {

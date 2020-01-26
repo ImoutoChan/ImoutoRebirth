@@ -70,6 +70,17 @@ namespace ImoutoRebirth.Room.Database
         {
             modelBuilder.Entity<CollectionFileEntity>()
                         .HasIndex(entity => entity.Path);
+
+            modelBuilder.Entity<CollectionFileEntity>()
+                        .HasIndex(entity => entity.Md5);
+
+            modelBuilder.Entity<CollectionFileEntity>()
+                        .HasIndex(entity => entity.IsRemoved);
+
+            // Maybe add IsRemoved + Fields indexes
+
+            modelBuilder.Entity<CollectionFileEntity>()
+                        .HasQueryFilter(x => !x.IsRemoved);
         }
     }
 }

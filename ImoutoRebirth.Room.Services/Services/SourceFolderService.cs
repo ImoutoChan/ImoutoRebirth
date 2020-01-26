@@ -58,7 +58,7 @@ namespace ImoutoRebirth.Room.Core.Services
             var newFiles = new List<FileInfo>();
             foreach (var fileInfo in files)
             {
-                var exists = await _collectionFileRepository.HasFile(forSourceFolder.CollectionId, fileInfo.FullName);
+                var exists = await _collectionFileRepository.AnyWithPath(forSourceFolder.CollectionId, fileInfo.FullName);
 
                 if (exists)
                     continue;

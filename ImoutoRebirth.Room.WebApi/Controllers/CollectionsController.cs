@@ -7,6 +7,7 @@ using ImoutoRebirth.Room.DataAccess.Repositories.Abstract;
 using ImoutoRebirth.Room.WebApi.Requests;
 using ImoutoRebirth.Room.WebApi.Responses;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
 
 namespace ImoutoRebirth.Room.WebApi.Controllers
 {
@@ -56,7 +57,7 @@ namespace ImoutoRebirth.Room.WebApi.Controllers
         /// </summary>
         /// <param name="id">Collection id.</param>
         [HttpDelete("{id}")]
-        public async Task<ActionResult> Delete(Guid id)
+        public async Task<ActionResult> Delete([BindRequired] Guid id)
         {
             try
             {

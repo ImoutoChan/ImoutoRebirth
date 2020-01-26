@@ -1,6 +1,7 @@
 ﻿using System;
 using AutoMapper;
 using ImoutoRebirth.Room.DataAccess.Models;
+using ImoutoRebirth.Room.DataAccess.Repositories.Queries;
 using ImoutoRebirth.Room.WebApi.Requests;
 using ImoutoRebirth.Room.WebApi.Responses;
 
@@ -12,8 +13,11 @@ namespace ImoutoRebirth.Room.WebApi
         {
             CreateMap<Collection, CollectionResponse>();
             CreateMap<SourceFolder, SourceFolderResponse>();
+            CreateMap<CollectionFile, CollectionFileResponse>();
             CreateMap<CustomDestinationFolder, DestinationFolderResponse>()
                .ForCtorParam("path", o => o.MapFrom(x => x.GetDestinationDirectory().FullName));
+
+
 
             CreateMap<(Guid collectionId, SourceFolderCreateRequest createRequest), SourceFolderCreateData>()
                .ConvertUsing(x
@@ -49,6 +53,7 @@ namespace ImoutoRebirth.Room.WebApi
                         x.createRequest.WithoutHashErrorSubfolder));
 
             CreateMap<CollectionCreateRequest, CollectionCreateData>();
+            CreateMap<CollectionFilesRequest, CollectionFilesQuery>();
         }
     }
 }
