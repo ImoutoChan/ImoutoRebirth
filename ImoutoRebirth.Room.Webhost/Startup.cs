@@ -130,7 +130,7 @@ namespace ImoutoRebirth.Room.Webhost
             IHostEnvironment env,
             IMapper mapper)
         {
-            //mapper.ConfigurationProvider.AssertConfigurationIsValid();
+            mapper.ConfigurationProvider.AssertConfigurationIsValid();
             
             if (env.IsDevelopment())
             {

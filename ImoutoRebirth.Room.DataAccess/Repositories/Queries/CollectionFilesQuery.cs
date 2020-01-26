@@ -3,6 +3,8 @@ using System.Collections.Generic;
 
 namespace ImoutoRebirth.Room.DataAccess.Repositories.Queries
 {
+    // ReSharper disable once ClassNeverInstantiated.Global
+    // Automapper
     public class CollectionFilesQuery
     {
         public Guid? CollectionId { get; }
@@ -28,7 +30,7 @@ namespace ImoutoRebirth.Room.DataAccess.Repositories.Queries
             CollectionId = collectionId;
             CollectionFileIds = collectionFileIds;
             Path = path;
-            Md5 = md5;
+            Md5 = md5?.ToLowerInvariant();
             Count = count;
             Skip = skip;
         }

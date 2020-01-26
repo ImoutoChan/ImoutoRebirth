@@ -30,7 +30,7 @@ namespace ImoutoRebirth.Room.WebApi.Controllers
         ///     Retrieve all files by request.
         /// </summary>
         /// <returns>The collection of files.</returns>
-        [HttpGet]
+        [HttpPost]
         public async Task<ActionResult<CollectionFileResponse[]>> Search(
             [FromBody] CollectionFilesRequest request)
         {
@@ -46,7 +46,7 @@ namespace ImoutoRebirth.Room.WebApi.Controllers
         ///     Note that Skip and Count fields are ignored.
         /// </remarks>
         /// <returns>The count of files that was found by request.</returns>
-        [HttpGet("count")]
+        [HttpPost("count")]
         public async Task<ActionResult<int>> Count(
             [FromBody] CollectionFilesRequest request)
         {

@@ -44,8 +44,8 @@ namespace ImoutoRebirth.Room.DataAccess.Repositories
             return await _collectionFileCacheService.GetResultOrCreateFilterAsync(
                 collectionId,
                 path,
-                CheckInDatabase,
-                GetFromDatabase);
+                CheckInDatabaseWithRemoved,
+                GetFromDatabaseWithRemoved);
         }
 
         public async Task<IReadOnlyCollection<CollectionFile>> SearchByQuery(CollectionFilesQuery query)
@@ -87,7 +87,7 @@ namespace ImoutoRebirth.Room.DataAccess.Repositories
             var files = _roomDbContext.CollectionFiles.AsQueryable();
             
             if (query.CollectionId.HasValue)
-                files = files.Where(x => x.CollectionId == query.CollectionId);
+                files = files.Where(x => x.CollectionId == query.CollectionId.Value);
 
             if (query.CollectionFileIds?.Any() == true)
                 files = files.Where(x => query.CollectionFileIds.Contains(x.Id));
@@ -95,23 +95,26 @@ namespace ImoutoRebirth.Room.DataAccess.Repositories
             if (query.Path != null)
                 files = files.Where(x => query.Path.Equals(x.Path));
 
-            if (query.Md5 != null)
-                files = files.Where(x => query.Md5.Equals(x.Md5, StringComparison.InvariantCultureIgnoreCase));
+            if (query.Md5 != null) 
+                files = files.Where(x => x.Md5.Equals(query.Md5));
 
             return files;
         }
 
-        private async Task<bool> CheckInDatabase(Guid collectionId, string path)
+        private async Task<bool> CheckInDatabaseWithRemoved(Guid collectionId, string path)
             => await _roomDbContext
-                       .CollectionFiles
-                       .Where(x => x.CollectionId == collectionId)
-                       .Select(x => x.Path)
-                       .AnyAsync(x => x == path);
+                .CollectionFiles
+                .IgnoreQueryFilters()
+                .Where(x => x.CollectionId == collectionId)
+                .Select(x => x.Path)
+                .AnyAsync(x => x == path);
 
-        private async Task<List<string>> GetFromDatabase(Guid collectionId)
+        private async Task<List<string>> GetFromDatabaseWithRemoved(Guid collectionId)
             => await _roomDbContext
-                    .CollectionFiles.Where(x => x.CollectionId == collectionId)
-                    .Select(x => x.Path)
-                    .ToListAsync();
+                .CollectionFiles
+                .IgnoreQueryFilters()
+                .Where(x => x.CollectionId == collectionId)
+                .Select(x => x.Path)
+                .ToListAsync();
     }
 }

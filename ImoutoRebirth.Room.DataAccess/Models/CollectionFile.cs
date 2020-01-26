@@ -26,7 +26,7 @@ namespace ImoutoRebirth.Room.DataAccess.Models
         {
             CollectionId = collectionId;
             Path = path;
-            Md5 = md5;
+            Md5 = md5.ToLowerInvariant();
             Size = size;
             OriginalPath = originalPath;
         }
