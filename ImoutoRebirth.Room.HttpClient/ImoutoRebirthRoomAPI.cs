@@ -33,6 +33,11 @@ namespace ImoutoRebirth.Room.HttpClient
         public JsonSerializerSettings DeserializationSettings { get; private set; }
 
         /// <summary>
+        /// Gets the ICollectionFiles.
+        /// </summary>
+        public virtual ICollectionFiles CollectionFiles { get; private set; }
+
+        /// <summary>
         /// Gets the ICollections.
         /// </summary>
         public virtual ICollections Collections { get; private set; }
@@ -139,6 +144,7 @@ namespace ImoutoRebirth.Room.HttpClient
         /// </summary>
         private void Initialize()
         {
+            CollectionFiles = new CollectionFiles(this);
             Collections = new Collections(this);
             DestinationFolder = new DestinationFolder(this);
             SourceFolders = new SourceFolders(this);

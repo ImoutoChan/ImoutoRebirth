@@ -14,37 +14,14 @@ namespace ImoutoRebirth.Room.HttpClient
     using System.Threading.Tasks;
 
     /// <summary>
-    /// DestinationFolder operations.
+    /// CollectionFiles operations.
     /// </summary>
-    public partial interface IDestinationFolder
+    public partial interface ICollectionFiles
     {
         /// <summary>
-        /// Get the destination folder for collection.
+        /// Retrieve all files by request.
         /// </summary>
-        /// <param name='collectionId'>
-        /// The collection id.
-        /// </param>
-        /// <param name='customHeaders'>
-        /// The headers that will be added to request.
-        /// </param>
-        /// <param name='cancellationToken'>
-        /// The cancellation token.
-        /// </param>
-        /// <exception cref="Microsoft.Rest.HttpOperationException">
-        /// Thrown when the operation returned an invalid status code
-        /// </exception>
-        /// <exception cref="Microsoft.Rest.SerializationException">
-        /// Thrown when unable to deserialize the response
-        /// </exception>
-        Task<HttpOperationResponse<DestinationFolderResponse>> GetWithHttpMessagesAsync(System.Guid collectionId, Dictionary<string, List<string>> customHeaders = null, CancellationToken cancellationToken = default(CancellationToken));
-        /// <summary>
-        /// CreateOrUpdate or update a destination folder for collection.
-        /// </summary>
-        /// <param name='collectionId'>
-        /// The collection id.
-        /// </param>
         /// <param name='body'>
-        /// Destination folder parameters.
         /// </param>
         /// <param name='customHeaders'>
         /// The headers that will be added to request.
@@ -58,14 +35,32 @@ namespace ImoutoRebirth.Room.HttpClient
         /// <exception cref="Microsoft.Rest.SerializationException">
         /// Thrown when unable to deserialize the response
         /// </exception>
-        Task<HttpOperationResponse<DestinationFolderResponse>> CreateOrUpdateWithHttpMessagesAsync(System.Guid collectionId, DestinationFolderCreateRequest body = default(DestinationFolderCreateRequest), Dictionary<string, List<string>> customHeaders = null, CancellationToken cancellationToken = default(CancellationToken));
+        Task<HttpOperationResponse<IList<CollectionFileResponse>>> SearchWithHttpMessagesAsync(CollectionFilesRequest body = default(CollectionFilesRequest), Dictionary<string, List<string>> customHeaders = null, CancellationToken cancellationToken = default(CancellationToken));
         /// <summary>
-        /// Delete the destination folder.
+        /// Retrieve count of files by request.
+        /// </summary>
+        /// <remarks>
+        /// Note that Skip and Count fields are ignored.
+        /// </remarks>
+        /// <param name='body'>
+        /// </param>
+        /// <param name='customHeaders'>
+        /// The headers that will be added to request.
+        /// </param>
+        /// <param name='cancellationToken'>
+        /// The cancellation token.
+        /// </param>
+        /// <exception cref="Microsoft.Rest.HttpOperationException">
+        /// Thrown when the operation returned an invalid status code
+        /// </exception>
+        /// <exception cref="Microsoft.Rest.SerializationException">
+        /// Thrown when unable to deserialize the response
+        /// </exception>
+        Task<HttpOperationResponse<int?>> CountWithHttpMessagesAsync(CollectionFilesRequest body = default(CollectionFilesRequest), Dictionary<string, List<string>> customHeaders = null, CancellationToken cancellationToken = default(CancellationToken));
+        /// <summary>
+        /// Remove file with id.
         /// </summary>
         /// <param name='id'>
-        /// Id of the folder that will be deleted.
-        /// </param>
-        /// <param name='collectionId'>
         /// </param>
         /// <param name='customHeaders'>
         /// The headers that will be added to request.
@@ -76,9 +71,6 @@ namespace ImoutoRebirth.Room.HttpClient
         /// <exception cref="Microsoft.Rest.HttpOperationException">
         /// Thrown when the operation returned an invalid status code
         /// </exception>
-        /// <exception cref="Microsoft.Rest.ValidationException">
-        /// Thrown when a required parameter is null
-        /// </exception>
-        Task<HttpOperationResponse> DeleteWithHttpMessagesAsync(System.Guid id, string collectionId, Dictionary<string, List<string>> customHeaders = null, CancellationToken cancellationToken = default(CancellationToken));
+        Task<HttpOperationResponse> RemoveWithHttpMessagesAsync(System.Guid id, Dictionary<string, List<string>> customHeaders = null, CancellationToken cancellationToken = default(CancellationToken));
     }
 }

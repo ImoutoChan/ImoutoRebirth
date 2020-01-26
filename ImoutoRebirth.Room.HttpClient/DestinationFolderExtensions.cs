@@ -95,14 +95,14 @@ namespace ImoutoRebirth.Room.HttpClient
             /// <param name='operations'>
             /// The operations group for this extension method.
             /// </param>
-            /// <param name='guid'>
+            /// <param name='id'>
             /// Id of the folder that will be deleted.
             /// </param>
             /// <param name='collectionId'>
             /// </param>
-            public static void Delete(this IDestinationFolder operations, System.Guid guid, string collectionId)
+            public static void Delete(this IDestinationFolder operations, System.Guid id, string collectionId)
             {
-                operations.DeleteAsync(guid, collectionId).GetAwaiter().GetResult();
+                operations.DeleteAsync(id, collectionId).GetAwaiter().GetResult();
             }
 
             /// <summary>
@@ -111,7 +111,7 @@ namespace ImoutoRebirth.Room.HttpClient
             /// <param name='operations'>
             /// The operations group for this extension method.
             /// </param>
-            /// <param name='guid'>
+            /// <param name='id'>
             /// Id of the folder that will be deleted.
             /// </param>
             /// <param name='collectionId'>
@@ -119,9 +119,9 @@ namespace ImoutoRebirth.Room.HttpClient
             /// <param name='cancellationToken'>
             /// The cancellation token.
             /// </param>
-            public static async Task DeleteAsync(this IDestinationFolder operations, System.Guid guid, string collectionId, CancellationToken cancellationToken = default(CancellationToken))
+            public static async Task DeleteAsync(this IDestinationFolder operations, System.Guid id, string collectionId, CancellationToken cancellationToken = default(CancellationToken))
             {
-                (await operations.DeleteWithHttpMessagesAsync(guid, collectionId, null, cancellationToken).ConfigureAwait(false)).Dispose();
+                (await operations.DeleteWithHttpMessagesAsync(id, collectionId, null, cancellationToken).ConfigureAwait(false)).Dispose();
             }
 
     }

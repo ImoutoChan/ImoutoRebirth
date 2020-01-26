@@ -30,6 +30,11 @@ namespace ImoutoRebirth.Room.HttpClient
 
 
         /// <summary>
+        /// Gets the ICollectionFiles.
+        /// </summary>
+        ICollectionFiles CollectionFiles { get; }
+
+        /// <summary>
         /// Gets the ICollections.
         /// </summary>
         ICollections Collections { get; }
