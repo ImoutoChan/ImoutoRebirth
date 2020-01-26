@@ -1,5 +1,4 @@
 ﻿using ImoutoRebirth.Common.EntityFrameworkCore;
-using ImoutoRebirth.Common.EntityFrameworkCore.TimeTrack;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace ImoutoRebirth.Room.Database

@@ -1,12 +1,8 @@
 ﻿using System;
 using System.Buffers;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Reflection;
 using System.Runtime.InteropServices;
 using AutoMapper;
-using ImoutoRebirth.Common;
 using ImoutoRebirth.Common.MassTransit;
 using ImoutoRebirth.Common.Quartz.Extensions;
 using ImoutoRebirth.Meido.MessageContracts;
@@ -19,15 +15,12 @@ using ImoutoRebirth.Room.WebApi.Controllers;
 using ImoutoRebirth.Room.Webhost.Quartz;
 using ImoutoRebirth.Room.Webhost.Settings;
 using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Mvc.Authorization;
 using Microsoft.AspNetCore.Mvc.Controllers;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.OpenApi.Any;
 using Microsoft.OpenApi.Models;
-using Swashbuckle.AspNetCore.SwaggerGen;
 
 namespace ImoutoRebirth.Room.Webhost
 {

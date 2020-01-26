@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.Serialization;
 using System.Threading.Tasks;
 using AutoMapper;
 using ImoutoRebirth.Room.DataAccess.Exceptions;
@@ -9,7 +8,6 @@ using ImoutoRebirth.Room.DataAccess.Models;
 using ImoutoRebirth.Room.DataAccess.Repositories.Abstract;
 using ImoutoRebirth.Room.Database;
 using ImoutoRebirth.Room.Database.Entities;
-using ImoutoRebirth.Room.Database.Entities.Abstract;
 using Microsoft.EntityFrameworkCore;
 
 namespace ImoutoRebirth.Room.DataAccess.Repositories
