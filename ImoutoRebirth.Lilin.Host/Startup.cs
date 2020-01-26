@@ -13,7 +13,7 @@ namespace ImoutoRebirth.Lilin.Host
 {
     public class Startup : BaseStartup
     {
-        public LilinSettings LilinSettings { get; }
+        private LilinSettings LilinSettings { get; }
 
         public Startup(IConfiguration configuration)
             : base(configuration)

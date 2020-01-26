@@ -9,6 +9,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <FrameworkReference Include="Microsoft.AspNetCore.App" />
     <PackageReference Include="ImoutoRebirth.Common.EntityFrameworkCore" Version="2.1.0" />
     <PackageReference Include="ImoutoRebirth.Common.Host" Version="2.1.0" />
     <PackageReference Include="ImoutoRebirth.Common.Logging" Version="2.1.0" />
@@ -24,6 +25,7 @@
     <ProjectReference Include="..\ImoutoRebirth.Lilin.Infrastructure\ImoutoRebirth.Lilin.Infrastructure.csproj" />
     <ProjectReference Include="..\ImoutoRebirth.Lilin.MessageContracts\ImoutoRebirth.Lilin.MessageContracts.csproj" />
     <ProjectReference Include="..\ImoutoRebirth.Lilin.Services\ImoutoRebirth.Lilin.Services.csproj" />
+    <ProjectReference Include="..\ImoutoRebirth.Lilin.WebApi\ImoutoRebirth.Lilin.WebApi.csproj" />
   </ItemGroup>
 
   <ItemGroup>
