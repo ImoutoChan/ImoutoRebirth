@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 using ImoutoRebirth.Lilin.Core.Models;
 
 namespace ImoutoRebirth.Lilin.Core.Infrastructure
@@ -8,5 +9,6 @@ namespace ImoutoRebirth.Lilin.Core.Infrastructure
         Task<TagType> GetOrCreate(string name);
         Task<TagType?> Get(string name);
         Task<TagType> Create(string name);
+        Task<IReadOnlyCollection<TagType>> GetAll();
     }
 }

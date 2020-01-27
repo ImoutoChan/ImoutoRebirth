@@ -1,0 +1,20 @@
+﻿using System.Collections.Generic;
+using System.Threading;
+using System.Threading.Tasks;
+using ImoutoProject.Common.Cqrs.Abstract;
+using ImoutoRebirth.Lilin.Core.Infrastructure;
+using ImoutoRebirth.Lilin.Core.Models;
+
+namespace ImoutoRebirth.Lilin.Services.CQRS.Queries
+{
+    public class TagTypesQueryHandler : IQueryHandler<TagTypesQuery, IReadOnlyCollection<TagType>>
+    {
+        private readonly ITagTypeRepository _tagTypeRepository;
+
+        public TagTypesQueryHandler(ITagTypeRepository tagTypeRepository) 
+            => _tagTypeRepository = tagTypeRepository;
+
+        public async Task<IReadOnlyCollection<TagType>> Handle(TagTypesQuery _, CancellationToken cancellationToken) 
+            => await _tagTypeRepository.GetAll();
+    }
+}

@@ -23,7 +23,7 @@ namespace ImoutoRebirth.Lilin.WebApi.Controllers
         }
 
         /// <summary>
-        /// Retrieve file info for id.
+        ///     Retrieve file info for id.
         /// </summary>
         /// <returns>File info result.</returns>
         [HttpGet]
@@ -32,18 +32,5 @@ namespace ImoutoRebirth.Lilin.WebApi.Controllers
             var fileInfo = await _mediator.Send(new FileInfoQuery(fileId));
             return _mapper.Map<FileInfoResponse>(fileInfo);
         }
-    }
-
-    [Route("api/Files/{fileId}/[controller]")]
-    [ApiController]
-    public class TagsController : ControllerBase
-    {
-    }
-
-    [Route("api/Files/{fileId}/[controller]")]
-    [ApiController]
-    public class NotesController : ControllerBase
-    {
-
     }
 }

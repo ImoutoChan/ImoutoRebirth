@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using ImoutoRebirth.Lilin.Core.Infrastructure;
 using ImoutoRebirth.Lilin.Core.Models;
@@ -33,5 +35,8 @@ namespace ImoutoRebirth.Lilin.Infrastructure.Repositories
 
             return tagType.ToModel();
         }
+
+        public async Task<IReadOnlyCollection<TagType>> GetAll() 
+            => await _lilinDbContext.TagTypes.Select(x => x.ToModel()).ToArrayAsync();
     }
 }
