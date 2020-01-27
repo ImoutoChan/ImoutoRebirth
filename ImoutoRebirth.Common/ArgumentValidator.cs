@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq.Expressions;
+using System.Diagnostics.CodeAnalysis;
 
 namespace ImoutoRebirth.Common
 {
@@ -12,6 +13,26 @@ namespace ImoutoRebirth.Common
                 if (GetParameterValue(expression) == null)
                     throw new ArgumentNullException(GetParameterName(expression));
             }
+        }
+
+        public static void NotNull<T>([NotNull] T value, string argumentName)
+            where T : class
+        {
+            if (value is null)
+                throw new ArgumentNullException(argumentName);
+        }
+
+        public static void NotNull<T>([NotNull] T? value, string argumentName)
+            where T : struct
+        {
+            if (value is null)
+                throw new ArgumentNullException(argumentName);
+        }
+
+        public static void Requires([DoesNotReturnIf(false)] bool condition, string argumentName)
+        {
+            if (!condition)
+                throw new ArgumentException(argumentName);
         }
 
         public static void IsEnumDefined<T>(params Expression<Func<T>>[] callerArgs) where T : struct, IConvertible
