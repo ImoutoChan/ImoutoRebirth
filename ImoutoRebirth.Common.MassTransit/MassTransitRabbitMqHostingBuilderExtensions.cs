@@ -17,7 +17,7 @@ namespace ImoutoRebirth.Common.MassTransit
             this IServiceCollection services,
             RabbitSettings settings,
             string appName,
-            Action<ITrueMassTransitConfigurator> configureAction = null)
+            Action<ITrueMassTransitConfigurator>? configureAction = null)
         {
             services.AddMassTransit(
                 provider => Bus.Factory.CreateUsingRabbitMq(cfg =>
@@ -36,12 +36,11 @@ namespace ImoutoRebirth.Common.MassTransit
 
         public static ITrueMassTransitConfigurator AddConsumer<TConsumer, TMessage>(
             this ITrueMassTransitConfigurator configurator,
-            Action<IRabbitMqReceiveEndpointConfigurator> endpointConfigurator = null)
+            Action<IRabbitMqReceiveEndpointConfigurator>? endpointConfigurator = null)
             where TConsumer : class, IConsumer<TMessage>
             where TMessage : class
         {
             configurator.RabbitMqBusFactoryConfigurator.ReceiveEndpoint(
-                configurator.RabbitMqHost,
                 GetQueueName<TMessage>(configurator.ApplicationName),
                 x =>
                 {
@@ -58,7 +57,7 @@ namespace ImoutoRebirth.Common.MassTransit
         public static ITrueMassTransitConfigurator AddFireAndForget<TMessage>(
             this ITrueMassTransitConfigurator configurator,
             string targetAppName,
-            Action<RabbitMqSendEndpointConfigurator> sendEndpointConfigurator = null)
+            Action<RabbitMqSendEndpointConfigurator>? sendEndpointConfigurator = null)
             where TMessage : class
         {
             var queueName = GetQueueName<TMessage>(targetAppName);
@@ -86,7 +85,7 @@ namespace ImoutoRebirth.Common.MassTransit
             var snailName = GetSnailName(typeof(TMessage));
             return $"{applicationName}_{snailName.Underscore()}";
 
-            string GetSnailName(Type type)
+            static string GetSnailName(Type type)
             {
                 var name = type.IsInterface && Regex.IsMatch(type.Name, "^I[A-Z]")
                     ? type.Name.Substring(1) // type is interface and looks like ISomeInterface

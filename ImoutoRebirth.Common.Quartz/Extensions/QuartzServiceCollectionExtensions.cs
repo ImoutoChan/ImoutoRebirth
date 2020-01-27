@@ -8,11 +8,7 @@ namespace ImoutoRebirth.Common.Quartz.Extensions
 {
     public static class QuartzServiceCollectionExtensions
     {
-        /// <summary>
-        /// Obsolete only for public consumers, should be made internal in future.
-        /// </summary>
-        [Obsolete("Use [Web]HostBuilderExtensions.UseQuartz instead.")]
-        public static IServiceCollection AddQuartz(this IServiceCollection serviceCollection)
+        internal static IServiceCollection AddQuartz(this IServiceCollection serviceCollection)
         {
             serviceCollection.AddSingleton<IJobFactory, QuartzJobFactory>();
             serviceCollection.AddSingleton<QuartzHostedService>();
