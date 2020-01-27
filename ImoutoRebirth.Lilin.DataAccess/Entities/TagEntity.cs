@@ -2,36 +2,42 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Linq;
 
 namespace ImoutoRebirth.Lilin.DataAccess.Entities
 {
     public class TagEntity : EntityBase
     {
-        private static readonly string _synonymsSeparator = ":.:";
-        
+        private const string SynonymsSeparator = ":.:";
+
         public Guid TypeId { get; set; }
 
         [Required]
-        public string Name { get; set; }
+        public string Name { get; set; } = default!;
 
         public bool HasValue { get; set; }
 
         /// <summary>
-        /// Separator: :.:
+        /// Values separator: :.: -- SynonymsSeparator
         /// </summary>
-        public string Synonyms { get; set; }
+        public string? Synonyms { get; set; }
+
+        public int Count { get; set; }
 
         [NotMapped]
         public IReadOnlyCollection<string> SynonymsArray
         {
-            get => Synonyms.Split(new [] {_synonymsSeparator}, StringSplitOptions.RemoveEmptyEntries);
-            set => Synonyms = string.Join(_synonymsSeparator, value);
+            get => Synonyms?.Split(new [] {SynonymsSeparator}, StringSplitOptions.RemoveEmptyEntries) 
+                   ?? Array.Empty<string>();
+
+            set => Synonyms = value.Any() 
+                ? string.Join(SynonymsSeparator, value) 
+                : null;
         }
 
-        public int Count { get; set; }
 
-        public TagTypeEntity Type { get; set; }
+        public TagTypeEntity? Type { get; set; } = default!;
 
-        public IReadOnlyCollection<FileTagEntity> FileTags { get; set; }
+        public IReadOnlyCollection<FileTagEntity>? FileTags { get; set; } = default!;
     }
 }

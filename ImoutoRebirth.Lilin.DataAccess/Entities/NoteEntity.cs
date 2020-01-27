@@ -14,7 +14,7 @@ namespace ImoutoRebirth.Lilin.DataAccess.Entities
         public int? SourceId { get; set; }
 
         [Required]
-        public string Label { get; set; }
+        public string Label { get; set; } = default!;
 
         public int PositionFromLeft { get; set; }
 

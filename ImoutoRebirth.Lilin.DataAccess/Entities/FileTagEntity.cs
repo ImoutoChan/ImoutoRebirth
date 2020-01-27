@@ -9,10 +9,11 @@ namespace ImoutoRebirth.Lilin.DataAccess.Entities
 
         public Guid TagId { get; set; }
 
-        public string Value { get; set; }
+        public string? Value { get; set; }
 
         public MetadataSource Source { get; set; }
 
-        public TagEntity Tag { get; set; }
+
+        public TagEntity? Tag { get; set; }
     }
 }

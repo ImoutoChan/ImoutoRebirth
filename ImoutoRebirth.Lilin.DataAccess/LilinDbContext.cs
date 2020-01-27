@@ -14,13 +14,13 @@ namespace ImoutoRebirth.Lilin.DataAccess
     {
         private readonly IEventStorage _eventStorage;
 
-        public DbSet<TagTypeEntity> TagTypes { get; set; }
+        public DbSet<TagTypeEntity> TagTypes { get; set; } = default!;
 
-        public DbSet<TagEntity> Tags { get; set; }
+        public DbSet<TagEntity> Tags { get; set; } = default!;
 
-        public DbSet<NoteEntity> Notes { get; set; }
+        public DbSet<NoteEntity> Notes { get; set; } = default!;
 
-        public DbSet<FileTagEntity> FileTags { get; set; }
+        public DbSet<FileTagEntity> FileTags { get; set; } = default!;
 
         public LilinDbContext(
             DbContextOptions<LilinDbContext> options,
@@ -35,7 +35,7 @@ namespace ImoutoRebirth.Lilin.DataAccess
             modelBuilder.Entity<FileTagEntity>(b =>
             {
                 b.HasOne(x => x.Tag)
-                 .WithMany(x => x.FileTags)
+                 .WithMany(x => x!.FileTags)
                  .IsRequired()
                  .OnDelete(DeleteBehavior.Restrict);
                 
@@ -50,7 +50,7 @@ namespace ImoutoRebirth.Lilin.DataAccess
             modelBuilder.Entity<TagEntity>(b =>
             {
                 b.HasOne(x => x.Type)
-                 .WithMany(x => x.Tags)
+                 .WithMany(x => x!.Tags)
                  .IsRequired()
                  .OnDelete(DeleteBehavior.Restrict);
 
@@ -71,7 +71,7 @@ namespace ImoutoRebirth.Lilin.DataAccess
             });
         }
 
-        public async Task SaveEntitiesAsync(CancellationToken cancellationToken = default(CancellationToken))
+        public async Task SaveEntitiesAsync(CancellationToken cancellationToken = default)
         {
             await SaveChangesAsync(cancellationToken);
 
@@ -85,7 +85,7 @@ namespace ImoutoRebirth.Lilin.DataAccess
             }
         }
 
-        public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = new CancellationToken())
+        public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
         {
             ChangeTracker.TrackImplicitTimeBeforeSaveChanges();
 

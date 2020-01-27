@@ -7,10 +7,7 @@ namespace ImoutoRebirth.Lilin.Infrastructure.ExpressionHelpers
 {
     public static class PredicateBuilder
     {
-        public static Expression<Func<T, bool>> Get<T>()
-        {
-            return (Expression<Func<T, bool>>)null;
-        }
+        public static Expression<Func<T, bool>>? Get<T>() => null;
 
         public static Expression<Func<T, bool>> Get<T>(
             this Expression<Func<T, bool>> predicate)
@@ -54,7 +51,7 @@ namespace ImoutoRebirth.Lilin.Infrastructure.ExpressionHelpers
 
         private static void Replace(object instance, object old, object replacement)
         {
-            for (Type type = instance.GetType(); type != (Type)null; type = type.BaseType)
+            for (var type = instance.GetType(); type != null; type = type.BaseType)
             {
                 foreach (FieldInfo field in type.GetFields(
                     BindingFlags.Instance 

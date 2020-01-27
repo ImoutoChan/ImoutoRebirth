@@ -1,4 +1,5 @@
 ﻿using System;
+using ImoutoRebirth.Common;
 using ImoutoRebirth.Lilin.Core.Models;
 using ImoutoRebirth.Lilin.DataAccess.Entities;
 
@@ -27,6 +28,10 @@ namespace ImoutoRebirth.Lilin.Infrastructure.Mappers
             };
 
         public static FileTag ToModel(this FileTagEntity entity)
-            => new FileTag(entity.FileId, entity.Tag.ToModel(), entity.Value, entity.Source);
+        {
+            ArgumentValidator.NotNull(entity.Tag, nameof(entity.Tag));
+
+            return new FileTag(entity.FileId, entity.Tag.ToModel(), entity.Value, entity.Source);
+        }
     }
 }

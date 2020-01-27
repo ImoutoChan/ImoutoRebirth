@@ -68,7 +68,7 @@ namespace ImoutoRebirth.Lilin.Infrastructure.Repositories
         {
             var results = await _lilinDbContext.FileTags
                                                .Include(x => x.Tag)
-                                               .ThenInclude(x => x.Type)
+                                               .ThenInclude(x => x!.Type)
                                                .Where(x => x.FileId == fileId)
                                                .AsNoTracking()
                                                .ToArrayAsync();
@@ -87,7 +87,7 @@ namespace ImoutoRebirth.Lilin.Infrastructure.Repositories
 
             foreach (var tagGroup in fileTagsForRemove.GroupBy(x => x.Tag))
             {
-                tagGroup.Key.Count -= tagGroup.Count();
+                tagGroup.Key!.Count -= tagGroup.Count();
             }
 
             await _lilinDbContext.SaveChangesAsync();
@@ -126,7 +126,7 @@ namespace ImoutoRebirth.Lilin.Infrastructure.Repositories
         {
             var query = fileTags;
 
-            Expression<Func<FileTagEntity, bool>> condition = null;
+            Expression<Func<FileTagEntity, bool>>? condition = null;
             if (filters.Any())
             {
                 foreach (var f in filters)

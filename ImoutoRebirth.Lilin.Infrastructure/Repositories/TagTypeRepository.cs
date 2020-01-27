@@ -22,7 +22,7 @@ namespace ImoutoRebirth.Lilin.Infrastructure.Repositories
             => await Get(name) 
                ?? await Create(name);
 
-        public async Task<TagType> Get(string name) 
+        public async Task<TagType?> Get(string name) 
             => (await _lilinDbContext.TagTypes.SingleOrDefaultAsync(x => x.Name == name))?.ToModel();
 
         public async Task<TagType> Create(string name)

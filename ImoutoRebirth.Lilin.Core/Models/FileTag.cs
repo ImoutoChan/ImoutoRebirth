@@ -9,11 +9,11 @@ namespace ImoutoRebirth.Lilin.Core.Models
 
         public Tag Tag { get; }
 
-        public string Value { get; }
+        public string? Value { get; }
 
         public MetadataSource Source { get; }
 
-        public FileTag(Guid fileId, Tag tag, string value, MetadataSource source)
+        public FileTag(Guid fileId, Tag tag, string? value, MetadataSource source)
         {
             ArgumentValidator.NotNull(() => tag);
             ArgumentValidator.Requires(() => tag.HasValue || value == null, nameof(value));
