@@ -16,9 +16,7 @@ namespace ImoutoRebirth.Room.WebApi
             CreateMap<CollectionFile, CollectionFileResponse>();
             CreateMap<CustomDestinationFolder, DestinationFolderResponse>()
                .ForCtorParam("path", o => o.MapFrom(x => x.GetDestinationDirectory().FullName));
-
-
-
+            
             CreateMap<(Guid collectionId, SourceFolderCreateRequest createRequest), SourceFolderCreateData>()
                .ConvertUsing(x
                     => new SourceFolderCreateData(
