@@ -7,7 +7,7 @@ using Microsoft.Extensions.Hosting;
 namespace ImoutoRebirth.Lilin.WebApi
 {
     /// <remarks>
-    ///     Maybe use two extension methods instead
+    ///     todo: maybe use two extension methods instead
     /// </remarks>
     public class WebApiStartup
     {
