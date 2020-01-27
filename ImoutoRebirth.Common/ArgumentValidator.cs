@@ -15,7 +15,7 @@ namespace ImoutoRebirth.Common
             }
         }
 
-        public static void NotNull<T>([NotNull] T value, string argumentName)
+        public static void NotNull<T>([NotNull] T? value, string argumentName)
             where T : class
         {
             if (value is null)
