@@ -17,7 +17,13 @@ namespace ImoutoRebirth.Lilin.Core.Models
 
         public MetadataSource Source { get; }
 
-        public FileTagBind(Guid fileId, MetadataSource source, string type, string name, string value, string[] synonyms)
+        public FileTagBind(
+            Guid fileId,
+            MetadataSource source,
+            string type,
+            string name,
+            string value,
+            string[] synonyms)
         {
             ArgumentValidator.NotNull(() => type, () => name, () => synonyms);
 

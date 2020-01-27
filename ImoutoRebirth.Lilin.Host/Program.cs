@@ -3,6 +3,7 @@ using ImoutoRebirth.Common.EntityFrameworkCore;
 using ImoutoRebirth.Common.Host;
 using ImoutoRebirth.Common.Logging;
 using ImoutoRebirth.Lilin.DataAccess;
+using ImoutoRebirth.Lilin.WebApi;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Hosting;
 using GenericHost = Microsoft.Extensions.Hosting.Host;
