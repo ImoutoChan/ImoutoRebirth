@@ -1,6 +1,5 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
 using ImoutoRebirth.Lilin.Core.Models;
 
 namespace ImoutoRebirth.Lilin.DataAccess.Entities

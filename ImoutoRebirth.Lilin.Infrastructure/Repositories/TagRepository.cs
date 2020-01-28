@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using ImoutoRebirth.Lilin.Core.Infrastructure;
@@ -19,11 +20,15 @@ namespace ImoutoRebirth.Lilin.Infrastructure.Repositories
             _lilinDbContext = lilinDbContext;
         }
 
-        public async Task<Tag> GetOrCreate(string name, Guid typeId, bool hasValue = false, string[]? synonyms = null)
+        public async Task<Tag> GetOrCreate(
+            string name, 
+            Guid typeId, 
+            bool hasValue = false, 
+            IReadOnlyCollection<string>? synonyms = null)
             => await Get(name, typeId, hasValue, synonyms)
                ?? await Create(name, typeId, hasValue, synonyms);
 
-        public async Task<Tag?> Get(string name, Guid typeId, bool hasValue, string[]? synonyms)
+        public async Task<Tag?> Get(string name, Guid typeId, bool hasValue, IReadOnlyCollection<string>? synonyms)
         {
             var result = await _lilinDbContext.Tags
                 .Include(x => x.Type)
@@ -37,7 +42,7 @@ namespace ImoutoRebirth.Lilin.Infrastructure.Repositories
             return result.ToModel();
         }
         
-        public async Task<Tag> Create(string name, Guid typeId, bool hasValue, string[]? synonyms)
+        public async Task<Tag> Create(string name, Guid typeId, bool hasValue, IReadOnlyCollection<string>? synonyms)
         {
             var tag = new TagEntity
             {
@@ -51,12 +56,49 @@ namespace ImoutoRebirth.Lilin.Infrastructure.Repositories
             await _lilinDbContext.Tags.AddAsync(tag);
             await _lilinDbContext.SaveChangesAsync();
 
-            tag = await _lilinDbContext.Tags.Include(x => x.Type).FirstAsync();
+            tag = await _lilinDbContext.Tags
+                .Include(x => x.Type)
+                .FirstAsync(x => x.Id == tag.Id);
 
             return tag.ToModel();
         }
 
-        private static void UpdateValues(TagEntity tag, bool hasValue, string[]? synonyms)
+        public async Task<IReadOnlyCollection<Tag>> Search(string? requestSearchPattern, int requestLimit)
+        {
+            var tagsWithTypes = _lilinDbContext.Tags
+                .OrderByDescending(x => x.Count)
+                .Include(x => x.Type);
+            
+            List<TagEntity> finalResult;
+            if (string.IsNullOrEmpty(requestSearchPattern))
+            {
+                finalResult = await tagsWithTypes.Take(requestLimit).ToListAsync();
+            }
+            else
+            {
+                finalResult = await tagsWithTypes
+                    .Where(x => x.Name.StartsWith(requestSearchPattern))
+                    .Take(requestLimit)
+                    .ToListAsync();
+
+                if (finalResult.Count < requestLimit)
+                {
+                    requestLimit -= finalResult.Count;
+
+                    var contains = await tagsWithTypes
+                        .Where(x => !x.Name.StartsWith(requestSearchPattern))
+                        .Where(x => x.Name.Contains(requestSearchPattern))
+                        .Take(requestLimit)
+                        .ToListAsync();
+
+                    finalResult.AddRange(contains);
+                }
+            }
+            
+            return finalResult.Select(x => x.ToModel()).ToArray();
+        }
+
+        private static void UpdateValues(TagEntity tag, bool hasValue, IReadOnlyCollection<string>? synonyms)
         {
             if (!tag.HasValue && hasValue)
                 tag.HasValue = true;

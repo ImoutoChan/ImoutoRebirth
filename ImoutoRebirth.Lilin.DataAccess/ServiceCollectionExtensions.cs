@@ -1,5 +1,4 @@
-﻿using ImoutoRebirth.Common.EntityFrameworkCore.TimeTrack;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace ImoutoRebirth.Lilin.DataAccess
