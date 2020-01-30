@@ -27,6 +27,9 @@ namespace ImoutoRebirth.Lilin.Infrastructure.Repositories
         public async Task<TagType?> Get(string name) 
             => (await _lilinDbContext.TagTypes.SingleOrDefaultAsync(x => x.Name == name))?.ToModel();
 
+        public async Task<TagType?> Get(Guid id) 
+            => (await _lilinDbContext.TagTypes.SingleOrDefaultAsync(x => x.Id == id))?.ToModel();
+
         public async Task<TagType> Create(string name)
         {
             var tagType = new TagTypeEntity {Id = Guid.NewGuid(), Name = name};

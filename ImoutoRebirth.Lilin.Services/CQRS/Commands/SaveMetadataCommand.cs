@@ -1,15 +1,15 @@
 ﻿using ImoutoProject.Common.Cqrs.Abstract;
-using ImoutoRebirth.Lilin.Core.Models;
+using ImoutoRebirth.Lilin.MessageContracts;
 
 namespace ImoutoRebirth.Lilin.Services.CQRS.Commands
 {
     public class SaveMetadataCommand : ICommand
     {
-        public MetadataUpdate Update { get; }
+        public IUpdateMetadataCommand MqCommand { get; }
 
-        public SaveMetadataCommand(MetadataUpdate update)
+        public SaveMetadataCommand(IUpdateMetadataCommand mqCommand)
         {
-            Update = update;
+            MqCommand = mqCommand;
         }
     }
 }

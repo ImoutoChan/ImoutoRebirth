@@ -6,8 +6,8 @@
 
         string Name { get; }
 
-        string Value { get; }
+        string? Value { get; }
 
-        string[] Synonyms { get; }
+        string[]? Synonyms { get; }
     }
 }

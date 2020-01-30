@@ -1,7 +1,7 @@
 ﻿using System;
 using ImoutoRebirth.Common;
 
-namespace ImoutoRebirth.Lilin.Core.Models
+namespace ImoutoRebirth.Lilin.Core.Models.FileInfoAggregate
 {
     public class FileTag
     {

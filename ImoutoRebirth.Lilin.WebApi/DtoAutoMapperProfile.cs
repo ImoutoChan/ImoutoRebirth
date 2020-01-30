@@ -1,5 +1,7 @@
 ﻿using AutoMapper;
 using ImoutoRebirth.Lilin.Core.Models;
+using ImoutoRebirth.Lilin.Core.Models.FileInfoAggregate;
+using ImoutoRebirth.Lilin.Services.CQRS.Commands;
 using ImoutoRebirth.Lilin.Services.CQRS.Queries;
 using ImoutoRebirth.Lilin.WebApi.Requests;
 using ImoutoRebirth.Lilin.WebApi.Responses;
@@ -16,7 +18,7 @@ namespace ImoutoRebirth.Lilin.WebApi
 
         private void CreateMapFromRequestsToQueries()
         {
-            CreateMap<TagCreateRequest, TagCreateQuery>();
+            CreateMap<TagCreateRequest, CreateTagCommand>();
         }
 
         private void CreateMapFromModelToResponses()

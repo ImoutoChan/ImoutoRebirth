@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using ImoutoProject.Common.Cqrs.Abstract;
 using ImoutoRebirth.Lilin.Core.Models;
 
-namespace ImoutoRebirth.Lilin.Services.CQRS.Queries
+namespace ImoutoRebirth.Lilin.Services.CQRS.Commands
 {
-    public class TagCreateQuery : IQuery<Tag>
+    public class CreateTagCommand : ICommand<Tag>
     {
         public Guid TypeId { get; }
 
@@ -15,7 +15,7 @@ namespace ImoutoRebirth.Lilin.Services.CQRS.Queries
 
         public IReadOnlyCollection<string>? Synonyms { get; }
 
-        public TagCreateQuery(Guid typeId, string name, bool hasValue, IReadOnlyCollection<string>? synonyms)
+        public CreateTagCommand(Guid typeId, string name, bool hasValue, IReadOnlyCollection<string>? synonyms)
         {
             TypeId = typeId;
             Name = name;

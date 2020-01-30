@@ -28,5 +28,8 @@ namespace ImoutoRebirth.Lilin.Core.Models
             Width = width;
             Height = height;
         }
+
+        public static Note CreateNew(string label, int positionFromLeft, int positionFromTop, int width, int height)
+            => new Note(Guid.NewGuid(), label, positionFromLeft, positionFromTop, width, height);
     }
 }

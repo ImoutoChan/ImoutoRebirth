@@ -3,6 +3,7 @@ using ImoutoRebirth.Common.MassTransit;
 using ImoutoRebirth.Lilin.MessageContracts;
 using ImoutoRebirth.Lilin.Services.CQRS.Commands;
 using ImoutoRebirth.Lilin.Services.MessageCommandHandlers;
+using ImoutoRebirth.Lilin.Services.Services;
 using ImoutoRebirth.Meido.MessageContracts;
 using MediatR;
 using Microsoft.Extensions.DependencyInjection;
@@ -19,6 +20,7 @@ namespace ImoutoRebirth.Lilin.Services
             services.AddTransactionBehavior();
 
             services.AddTransient<UpdateMetadataCommandConsumer>();
+            services.AddTransient<IMetadataUpdateService, MetadataUpdateService>();
 
             return services;
         }

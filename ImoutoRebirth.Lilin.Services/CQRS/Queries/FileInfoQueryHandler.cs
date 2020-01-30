@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using ImoutoProject.Common.Cqrs.Abstract;
 using ImoutoRebirth.Lilin.Core.Infrastructure;
 using ImoutoRebirth.Lilin.Core.Models;
+using ImoutoRebirth.Lilin.Core.Models.FileInfoAggregate;
 
 namespace ImoutoRebirth.Lilin.Services.CQRS.Queries
 {

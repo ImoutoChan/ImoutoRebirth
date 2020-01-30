@@ -1,5 +1,4 @@
-﻿using ImoutoRebirth.Lilin.Core.Services;
-using Microsoft.Extensions.DependencyInjection;
+﻿using Microsoft.Extensions.DependencyInjection;
 
 namespace ImoutoRebirth.Lilin.Core
 {
@@ -7,8 +6,6 @@ namespace ImoutoRebirth.Lilin.Core
     {
         public static IServiceCollection AddLilinCore(this IServiceCollection services)
         {
-            services.AddTransient<IMetadataUpdateService, MetadataUpdateService>();
-
             return services;
         }
     }

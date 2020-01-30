@@ -1,6 +1,7 @@
 ﻿using System;
 using ImoutoRebirth.Common;
 using ImoutoRebirth.Lilin.Core.Models;
+using ImoutoRebirth.Lilin.Core.Models.FileInfoAggregate;
 using ImoutoRebirth.Lilin.DataAccess.Entities;
 
 namespace ImoutoRebirth.Lilin.Infrastructure.Mappers
