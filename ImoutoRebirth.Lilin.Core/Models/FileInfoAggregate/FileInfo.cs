@@ -9,12 +9,15 @@ namespace ImoutoRebirth.Lilin.Core.Models.FileInfoAggregate
         private List<FileTag> _tags;
         private List<FileNote> _notes;
 
+        public Guid Id { get; }
+
         public IReadOnlyCollection<FileTag> Tags => _tags;
 
         public IReadOnlyCollection<FileNote> Notes => _notes;
 
-        public FileInfo(IEnumerable<FileTag> tags, IEnumerable<FileNote> notes)
+        public FileInfo(IEnumerable<FileTag> tags, IEnumerable<FileNote> notes, Guid id)
         {
+            Id = id;
             _tags = new List<FileTag>(tags);
             _notes = new List<FileNote>(notes);
         }

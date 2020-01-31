@@ -23,7 +23,7 @@ namespace ImoutoRebirth.Lilin.Services.CQRS.Queries
             var tags = await _fileTagRepository.GetForFile(request.FileId);
             var notes = await _fileNoteRepository.GetForFile(request.FileId);
 
-            return new FileInfo(tags, notes);
+            return new FileInfo(tags, notes, request.FileId);
         }
     }
 }

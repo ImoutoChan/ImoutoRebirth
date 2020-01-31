@@ -20,5 +20,11 @@ namespace ImoutoRebirth.Lilin.Core.Infrastructure
         Task<IReadOnlyCollection<FileTag>> GetForFile(Guid fileId);
 
         Task ClearForSource(Guid fileId, MetadataSource source);
+
+        Task Update(FileTag fileTag);
+
+        Task Add(FileTag fileTag);
+
+        Task Delete(FileTag fileTag);
     }
 }

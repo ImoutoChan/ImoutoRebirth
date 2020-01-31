@@ -94,6 +94,21 @@ namespace ImoutoRebirth.Lilin.Infrastructure.Repositories
             await _lilinDbContext.SaveChangesAsync();
         }
 
+        public Task Update(FileTag fileTag)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task Add(FileTag fileTag)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task Delete(FileTag fileTag)
+        {
+            throw new NotImplementedException();
+        }
+
         private IQueryable<Guid> GetSearchFilesQueryable(IReadOnlyCollection<TagSearchEntry> tagSearchEntries)
         {
             var fileTags = _lilinDbContext.FileTags;

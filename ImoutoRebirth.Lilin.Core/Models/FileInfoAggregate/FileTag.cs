@@ -23,5 +23,10 @@ namespace ImoutoRebirth.Lilin.Core.Models.FileInfoAggregate
             Value = value;
             Source = source;
         }
+
+        public bool IsSameIdentity(FileTag tag) 
+            => this.FileId == tag.FileId 
+               && this.Tag.Id == tag.Tag.Id 
+               && this.Source == tag.Source;
     }
 }

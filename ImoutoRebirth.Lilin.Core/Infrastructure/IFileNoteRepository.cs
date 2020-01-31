@@ -12,6 +12,8 @@ namespace ImoutoRebirth.Lilin.Core.Infrastructure
 
         Task<IReadOnlyCollection<FileNote>> GetForFile(Guid fileId);
 
-        Task ClearForSource(Guid fileId, MetadataSource source);
+        Task Update(Guid noteId, Note note);
+
+        Task Delete(Guid noteId);
     }
 }
