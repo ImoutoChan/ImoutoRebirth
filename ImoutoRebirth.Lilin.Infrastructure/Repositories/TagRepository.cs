@@ -89,5 +89,21 @@ namespace ImoutoRebirth.Lilin.Infrastructure.Repositories
 
             await _lilinDbContext.SaveChangesAsync();
         }
+
+        public async Task UpdateTagsCounters()
+        {
+            var script = $@"
+                        UPDATE ""{nameof(LilinDbContext.Tags)}"" tags
+                        SET ""{nameof(TagEntity.Count)}"" = usages.count
+                        FROM
+                        (
+                            SELECT ""{nameof(FileTagEntity.TagId)}"" AS id, count(*) AS count
+                            FROM ""{nameof(LilinDbContext.FileTags)}""
+                            GROUP BY id
+                        ) usages
+                        WHERE tags.""{nameof(TagEntity.Id)}"" = usages.id";
+
+            await _lilinDbContext.Database.ExecuteSqlRawAsync(script);
+        }
     }
 }

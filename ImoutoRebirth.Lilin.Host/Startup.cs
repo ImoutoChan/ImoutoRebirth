@@ -29,14 +29,14 @@ namespace ImoutoRebirth.Lilin.Host
                 .AddLilinInfrastructure()
                 .AddLilinServices()
                 .AddLilinDataAccess(Configuration.GetConnectionString("LilinDatabase"))
-                .AddLilinCore();
+                .AddLilinCore()
+                .AddAutoMapper(typeof(DtoAutoMapperProfile))
+                .AddTrueMassTransit(
+                    LilinSettings.RabbitSettings,
+                    ReceiverApp.Name,
+                    с => с.AddLilinServicesForRabbit());
 
-            services.AddTrueMassTransit(
-                LilinSettings.RabbitSettings,
-                ReceiverApp.Name,
-                с => с.AddLilinServicesForRabbit());
-
-            services.AddAutoMapper(typeof(DtoAutoMapperProfile));
+            services.ConfigureLilinServices(Configuration);
         }
 
         public void Configure(IMapper mapper)

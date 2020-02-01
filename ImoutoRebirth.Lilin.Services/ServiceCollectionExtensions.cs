@@ -1,10 +1,13 @@
 ﻿using ImoutoRebirth.Common.Cqrs;
 using ImoutoRebirth.Common.MassTransit;
+using ImoutoRebirth.Common.Quartz.Extensions;
 using ImoutoRebirth.Lilin.MessageContracts;
 using ImoutoRebirth.Lilin.Services.CQRS.Commands;
 using ImoutoRebirth.Lilin.Services.MessageCommandHandlers;
+using ImoutoRebirth.Lilin.Services.Quartz;
 using ImoutoRebirth.Meido.MessageContracts;
 using MediatR;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using ReceiverApp = ImoutoRebirth.Meido.MessageContracts.ReceiverApp;
 
@@ -20,6 +23,8 @@ namespace ImoutoRebirth.Lilin.Services
 
             services.AddTransient<UpdateMetadataCommandConsumer>();
 
+            services.AddQuartzJob<RecalculateTagsCountersJob, RecalculateTagsCountersJob.Description>();
+
             return services;
         }
         
@@ -30,6 +35,16 @@ namespace ImoutoRebirth.Lilin.Services
                    .AddFireAndForget<ISavedCommand>(ReceiverApp.Name);
 
             return builder;
+        }
+
+        public static IServiceCollection ConfigureLilinServices(
+            this IServiceCollection services,
+            IConfiguration configuration)
+        {
+            services.Configure<RecalculateTagCountersSettings>(
+                configuration.GetSection(nameof(RecalculateTagCountersSettings)));
+
+            return services;
         }
     }
 }

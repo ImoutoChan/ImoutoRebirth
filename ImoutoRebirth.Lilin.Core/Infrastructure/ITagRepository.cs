@@ -14,5 +14,7 @@ namespace ImoutoRebirth.Lilin.Core.Infrastructure
         Task Update(Tag tag);
 
         Task Create(Tag tag);
+
+        Task UpdateTagsCounters();
     }
 }
