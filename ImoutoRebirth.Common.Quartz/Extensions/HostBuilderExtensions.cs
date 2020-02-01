@@ -15,7 +15,7 @@ namespace ImoutoRebirth.Common.Quartz.Extensions
         /// <returns>Initial Host builder.</returns>
         public static IHostBuilder UseQuartz(
             this IHostBuilder hostBuilder, 
-            Action<IServiceCollection> jobsBuilder = null)
+            Action<IServiceCollection>? jobsBuilder = null)
         {
             hostBuilder
                .ConfigureServices(
@@ -26,7 +26,7 @@ namespace ImoutoRebirth.Common.Quartz.Extensions
                             .AddQuartz()
                             .AddHostedService<QuartzHostedService>();
 
-                        jobsBuilder(collection);
+                        jobsBuilder?.Invoke(collection);
                     });
 
             return hostBuilder;

@@ -19,7 +19,7 @@ namespace ImoutoRebirth.Common.Quartz.Extensions
 
         public static IServiceCollection AddQuartzJob<TJob, TJobDescription>(
             this IServiceCollection serviceCollection,
-            Func<IServiceProvider, TJobDescription> factory = null,
+            Func<IServiceProvider, TJobDescription>? factory = null,
             ServiceLifetime lifetime = ServiceLifetime.Transient)
             where TJob : IJob
             where TJobDescription : IQuartzJobDescription
