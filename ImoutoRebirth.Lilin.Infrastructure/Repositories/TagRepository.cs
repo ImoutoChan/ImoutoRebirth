@@ -70,6 +70,8 @@ namespace ImoutoRebirth.Lilin.Infrastructure.Repositories
 
             loadedTag.HasValue = tag.HasValue;
             loadedTag.SynonymsArray = tag.Synonyms;
+
+            await _lilinDbContext.SaveChangesAsync();
         }
 
         public async Task Create(Tag tag)
@@ -84,6 +86,8 @@ namespace ImoutoRebirth.Lilin.Infrastructure.Repositories
             };
 
             await _lilinDbContext.Tags.AddAsync(newEntity);
+
+            await _lilinDbContext.SaveChangesAsync();
         }
     }
 }

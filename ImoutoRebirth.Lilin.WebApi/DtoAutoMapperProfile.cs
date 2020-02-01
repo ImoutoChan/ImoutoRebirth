@@ -2,7 +2,6 @@
 using ImoutoRebirth.Lilin.Core.Models;
 using ImoutoRebirth.Lilin.Core.Models.FileInfoAggregate;
 using ImoutoRebirth.Lilin.Services.CQRS.Commands;
-using ImoutoRebirth.Lilin.Services.CQRS.Queries;
 using ImoutoRebirth.Lilin.WebApi.Requests;
 using ImoutoRebirth.Lilin.WebApi.Responses;
 

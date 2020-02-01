@@ -8,8 +8,6 @@ namespace ImoutoRebirth.Lilin.Core.Infrastructure
 {
     public interface IFileTagRepository
     {
-        Task Add(FileTagBind fileTag);
-
         Task<Guid[]> SearchFiles(
             IReadOnlyCollection<TagSearchEntry> tagSearchEntries,
             uint? limit = 100,
@@ -18,9 +16,7 @@ namespace ImoutoRebirth.Lilin.Core.Infrastructure
         Task<uint> SearchFilesCount(IReadOnlyCollection<TagSearchEntry> tagSearchEntries);
 
         Task<IReadOnlyCollection<FileTag>> GetForFile(Guid fileId);
-
-        Task ClearForSource(Guid fileId, MetadataSource source);
-
+        
         Task Update(FileTag fileTag);
 
         Task Add(FileTag fileTag);

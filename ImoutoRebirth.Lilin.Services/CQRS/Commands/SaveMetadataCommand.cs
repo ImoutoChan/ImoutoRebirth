@@ -1,4 +1,4 @@
-﻿using ImoutoProject.Common.Cqrs.Abstract;
+﻿using ImoutoRebirth.Common.Cqrs.Abstract;
 using ImoutoRebirth.Lilin.MessageContracts;
 
 namespace ImoutoRebirth.Lilin.Services.CQRS.Commands

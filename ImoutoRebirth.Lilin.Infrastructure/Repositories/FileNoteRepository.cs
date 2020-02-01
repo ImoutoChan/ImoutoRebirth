@@ -23,6 +23,7 @@ namespace ImoutoRebirth.Lilin.Infrastructure.Repositories
         public async Task Add(FileNote fileNote)
         {
             await _lilinDbContext.Notes.AddAsync(fileNote.ToEntity());
+            await _lilinDbContext.SaveChangesAsync();
         }
 
         public async Task<IReadOnlyCollection<FileNote>> GetForFile(Guid fileId)
@@ -43,6 +44,8 @@ namespace ImoutoRebirth.Lilin.Infrastructure.Repositories
             entity.Width = note.Width;
             entity.PositionFromTop = note.PositionFromTop;
             entity.PositionFromLeft = note.PositionFromLeft;
+
+            await _lilinDbContext.SaveChangesAsync();
         }
 
         public async Task Delete(Guid noteId)
@@ -50,6 +53,8 @@ namespace ImoutoRebirth.Lilin.Infrastructure.Repositories
             var note = await _lilinDbContext.Notes.FindAsync(noteId);
 
             _lilinDbContext.Remove(note);
+
+            await _lilinDbContext.SaveChangesAsync();
         }
     }
 }

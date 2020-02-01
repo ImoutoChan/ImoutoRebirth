@@ -1,11 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Security.Cryptography.X509Certificates;
 using System.Threading;
 using System.Threading.Tasks;
-using ImoutoProject.Common.Cqrs.Abstract;
-using ImoutoRebirth.Common.Domain;
+using ImoutoRebirth.Common.Cqrs.Abstract;
 using ImoutoRebirth.Lilin.Core.Infrastructure;
 using ImoutoRebirth.Lilin.Core.Models;
 using ImoutoRebirth.Lilin.Core.Models.FileInfoAggregate;
@@ -20,20 +18,17 @@ namespace ImoutoRebirth.Lilin.Services.CQRS.Commands
     {
         private readonly IFileTagRepository _fileTagRepository;
         private readonly IFileNoteRepository _fileNoteRepository;
-        private readonly IEventStorage _eventStorage;
         private readonly ITagTypeRepository _tagTypeRepository;
         private readonly ITagRepository _tagRepository;
 
         public SaveMetadataCommandHandler(
             IFileTagRepository fileTagRepository,
             IFileNoteRepository fileNoteRepository,
-            IEventStorage eventStorage,
             ITagTypeRepository tagTypeRepository,
             ITagRepository tagRepository)
         {
             _fileTagRepository = fileTagRepository;
             _fileNoteRepository = fileNoteRepository;
-            _eventStorage = eventStorage;
             _tagTypeRepository = tagTypeRepository;
             _tagRepository = tagRepository;
         }
@@ -85,11 +80,26 @@ namespace ImoutoRebirth.Lilin.Services.CQRS.Commands
                 var type = await _tagTypeRepository.Get(fileTag.Type) 
                            ?? await _tagTypeRepository.Create(fileTag.Type);
 
-                var tag = await _tagRepository.Get(fileTag.Name, type.Id) 
+                var tag = await GetAndUpdateTag(fileTag, type) 
                           ?? await CreateTag(fileTag, type);
 
                 yield return new FileTag(fileId, tag, fileTag.Value, source);
             }
+        }
+
+        private async Task<Tag?> GetAndUpdateTag(IFileTag fileTag, TagType type)
+        {
+            var tag = await _tagRepository.Get(fileTag.Name, type.Id);
+
+            if (tag == null)
+                return null;
+
+            tag.UpdateHasValue(!string.IsNullOrWhiteSpace(fileTag.Value));
+            tag.UpdateSynonyms(fileTag.Synonyms ?? Array.Empty<string>());
+
+            await _tagRepository.Update(tag);
+
+            return tag;
         }
 
         private async Task<Tag> CreateTag(IFileTag fileTag, TagType type)
