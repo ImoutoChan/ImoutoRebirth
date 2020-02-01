@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using ImoutoRebirth.Lilin.Core.Models;
 
@@ -6,9 +7,10 @@ namespace ImoutoRebirth.Lilin.Core.Infrastructure
 {
     public interface ITagTypeRepository
     {
-        Task<TagType> GetOrCreate(string name);
         Task<TagType?> Get(string name);
+        Task<TagType?> Get(Guid id);
         Task<TagType> Create(string name);
         Task<IReadOnlyCollection<TagType>> GetAll();
+        
     }
 }

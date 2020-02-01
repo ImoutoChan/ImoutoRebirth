@@ -2,6 +2,7 @@
 using ImoutoRebirth.Common.EntityFrameworkCore;
 using ImoutoRebirth.Common.Host;
 using ImoutoRebirth.Common.Logging;
+using ImoutoRebirth.Common.Quartz.Extensions;
 using ImoutoRebirth.Lilin.DataAccess;
 using ImoutoRebirth.Lilin.WebApi;
 using Microsoft.AspNetCore.Hosting;
@@ -38,6 +39,7 @@ namespace ImoutoRebirth.Lilin.Host
                             .WithInformationRollingFile()
                             .PatchWithConfiguration(appConfiguration))
                 .UseStartup(x => new Startup(x))
+                .UseQuartz()
                 .ConfigureWebHostDefaults(
                     webHostBuilder
                         => webHostBuilder

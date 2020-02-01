@@ -7,16 +7,14 @@ namespace ImoutoRebirth.Lilin.Core.Infrastructure
 {
     public interface ITagRepository
     {
-        Task<Tag> GetOrCreate(
-            string name,
-            Guid typeId,
-            bool hasValue = false,
-            IReadOnlyCollection<string>? synonyms = null);
-
-        Task<Tag?> Get(string name, Guid typeId, bool hasValue, IReadOnlyCollection<string>? synonyms);
-
-        Task<Tag> Create(string name, Guid typeId, bool hasValue, IReadOnlyCollection<string>? synonyms);
+        Task<Tag?> Get(string name, Guid typeId);
 
         Task<IReadOnlyCollection<Tag>> Search(string? requestSearchPattern, int requestLimit);
+        
+        Task Update(Tag tag);
+
+        Task Create(Tag tag);
+
+        Task UpdateTagsCounters();
     }
 }

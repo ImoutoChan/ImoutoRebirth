@@ -1,7 +1,7 @@
 ﻿using System;
 using ImoutoRebirth.Common;
 
-namespace ImoutoRebirth.Lilin.Core.Models
+namespace ImoutoRebirth.Lilin.Core.Models.FileInfoAggregate
 {
     public class FileNote
     {
@@ -22,5 +22,10 @@ namespace ImoutoRebirth.Lilin.Core.Models
             Source = source;
             SourceId = sourceId;
         }
+
+        public bool IsSameIdentity(FileNote note) =>
+            this.FileId == note.FileId
+            && this.Source == note.Source
+            && this.SourceId == note.SourceId;
     }
 }

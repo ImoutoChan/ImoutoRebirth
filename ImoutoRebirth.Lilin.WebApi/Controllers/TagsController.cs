@@ -1,5 +1,6 @@
 ﻿using System.Threading.Tasks;
 using AutoMapper;
+using ImoutoRebirth.Lilin.Services.CQRS.Commands;
 using ImoutoRebirth.Lilin.Services.CQRS.Queries;
 using ImoutoRebirth.Lilin.WebApi.Requests;
 using ImoutoRebirth.Lilin.WebApi.Responses;
@@ -39,7 +40,7 @@ namespace ImoutoRebirth.Lilin.WebApi.Controllers
         [HttpPost]
         public async Task<ActionResult<TagResponse>> Create([FromBody] TagCreateRequest request)
         {
-            var query = _mapper.Map<TagCreateQuery>(request);
+            var query = _mapper.Map<CreateTagCommand>(request);
             var created = await _mediator.Send(query);
             return _mapper.Map<TagResponse>(created);
         }

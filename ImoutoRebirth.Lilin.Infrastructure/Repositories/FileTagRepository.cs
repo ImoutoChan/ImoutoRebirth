@@ -5,6 +5,7 @@ using System.Linq.Expressions;
 using System.Threading.Tasks;
 using ImoutoRebirth.Lilin.Core.Infrastructure;
 using ImoutoRebirth.Lilin.Core.Models;
+using ImoutoRebirth.Lilin.Core.Models.FileInfoAggregate;
 using ImoutoRebirth.Lilin.DataAccess;
 using ImoutoRebirth.Lilin.DataAccess.Entities;
 using ImoutoRebirth.Lilin.Infrastructure.ExpressionHelpers;
@@ -16,31 +17,10 @@ namespace ImoutoRebirth.Lilin.Infrastructure.Repositories
     public class FileTagRepository : IFileTagRepository
     {
         private readonly LilinDbContext _lilinDbContext;
-        private readonly ITagTypeRepository _tagTypeRepository;
-        private readonly ITagRepository _tagRepository;
 
-        public FileTagRepository(
-            LilinDbContext lilinDbContext, 
-            ITagTypeRepository tagTypeRepository,
-            ITagRepository tagRepository)
+        public FileTagRepository(LilinDbContext lilinDbContext)
         {
             _lilinDbContext = lilinDbContext;
-            _tagTypeRepository = tagTypeRepository;
-            _tagRepository = tagRepository;
-        }
-
-        public async Task Add(FileTagBind fileTag)
-        {
-            var type = await _tagTypeRepository.GetOrCreate(fileTag.Type);
-            var tag = await _tagRepository.GetOrCreate(
-                fileTag.Name, 
-                type.Id, 
-                fileTag.Value != null, 
-                fileTag.Synonyms);
-
-            await _lilinDbContext.FileTags.AddAsync(fileTag.ToEntity(tag));
-            var tagEntity = await _lilinDbContext.Tags.FindAsync(tag.Id);
-            tagEntity.Count++;
         }
 
         public async Task<Guid[]> SearchFiles(
@@ -75,22 +55,39 @@ namespace ImoutoRebirth.Lilin.Infrastructure.Repositories
 
             return results.Select(x => x.ToModel()).ToArray();
         }
-
-        public async Task ClearForSource(Guid fileId, MetadataSource source)
+        
+        public async Task Update(FileTag fileTag)
         {
-            var fileTagsForRemove = await _lilinDbContext.FileTags
-                                                         .Include(x => x.Tag)
-                                                         .Where(x => x.FileId == fileId && x.Source == source)
-                                                         .ToArrayAsync();
+            var fileTagEntity = await GetByFileTag(fileTag).SingleAsync();
 
-            _lilinDbContext.FileTags.RemoveRange(fileTagsForRemove);
-
-            foreach (var tagGroup in fileTagsForRemove.GroupBy(x => x.Tag))
-            {
-                tagGroup.Key!.Count -= tagGroup.Count();
-            }
+            fileTagEntity.Value = fileTag.Value;
 
             await _lilinDbContext.SaveChangesAsync();
+        }
+
+        public async Task Add(FileTag fileTag)
+        {
+            var entity = fileTag.ToEntity();
+            await _lilinDbContext.FileTags.AddAsync(entity);
+
+            await _lilinDbContext.SaveChangesAsync();
+        }
+
+        public async Task Delete(FileTag fileTag)
+        {
+            var fileTagEntity = await GetByFileTag(fileTag).SingleAsync();
+
+            _lilinDbContext.FileTags.Remove(fileTagEntity);
+
+            await _lilinDbContext.SaveChangesAsync();
+        }
+
+        private IQueryable<FileTagEntity> GetByFileTag(FileTag fileTag)
+        {
+            return _lilinDbContext.FileTags.Where(
+                x => x.Source == fileTag.Source
+                     && x.TagId == fileTag.Tag.Id
+                     && x.FileId == fileTag.FileId);
         }
 
         private IQueryable<Guid> GetSearchFilesQueryable(IReadOnlyCollection<TagSearchEntry> tagSearchEntries)

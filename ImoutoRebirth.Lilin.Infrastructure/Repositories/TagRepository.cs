@@ -20,47 +20,13 @@ namespace ImoutoRebirth.Lilin.Infrastructure.Repositories
             _lilinDbContext = lilinDbContext;
         }
 
-        public async Task<Tag> GetOrCreate(
-            string name, 
-            Guid typeId, 
-            bool hasValue = false, 
-            IReadOnlyCollection<string>? synonyms = null)
-            => await Get(name, typeId, hasValue, synonyms)
-               ?? await Create(name, typeId, hasValue, synonyms);
-
-        public async Task<Tag?> Get(string name, Guid typeId, bool hasValue, IReadOnlyCollection<string>? synonyms)
+        public async Task<Tag?> Get(string name, Guid typeId)
         {
             var result = await _lilinDbContext.Tags
                 .Include(x => x.Type)
                 .SingleOrDefaultAsync(x => x.Name == name && x.TypeId == typeId);
 
-            if (result == null)
-                return null;
-
-            UpdateValues(result, hasValue, synonyms);
-              
-            return result.ToModel();
-        }
-        
-        public async Task<Tag> Create(string name, Guid typeId, bool hasValue, IReadOnlyCollection<string>? synonyms)
-        {
-            var tag = new TagEntity
-            {
-                Id = Guid.NewGuid(),
-                Name = name,
-                HasValue = hasValue,
-                SynonymsArray = synonyms ?? Array.Empty<string>(),
-                TypeId = typeId
-            };
-
-            await _lilinDbContext.Tags.AddAsync(tag);
-            await _lilinDbContext.SaveChangesAsync();
-
-            tag = await _lilinDbContext.Tags
-                .Include(x => x.Type)
-                .FirstAsync(x => x.Id == tag.Id);
-
-            return tag.ToModel();
+            return result?.ToModel();
         }
 
         public async Task<IReadOnlyCollection<Tag>> Search(string? requestSearchPattern, int requestLimit)
@@ -98,17 +64,46 @@ namespace ImoutoRebirth.Lilin.Infrastructure.Repositories
             return finalResult.Select(x => x.ToModel()).ToArray();
         }
 
-        private static void UpdateValues(TagEntity tag, bool hasValue, IReadOnlyCollection<string>? synonyms)
+        public async Task Update(Tag tag)
         {
-            if (!tag.HasValue && hasValue)
-                tag.HasValue = true;
+            var loadedTag = await _lilinDbContext.Tags.SingleAsync(x => x.Id == tag.Id);
 
-            var newSynonyms = synonyms ?? Array.Empty<string>();
+            loadedTag.HasValue = tag.HasValue;
+            loadedTag.SynonymsArray = tag.Synonyms;
 
-            if (newSynonyms.Any(x => !tag.SynonymsArray.Contains(x)))
+            await _lilinDbContext.SaveChangesAsync();
+        }
+
+        public async Task Create(Tag tag)
+        {
+            var newEntity = new TagEntity
             {
-                tag.SynonymsArray = tag.SynonymsArray.Union(newSynonyms).ToArray();
-            }
+                Id = Guid.NewGuid(),
+                Name = tag.Name,
+                HasValue = tag.HasValue,
+                SynonymsArray = tag.Synonyms,
+                TypeId = tag.Type.Id
+            };
+
+            await _lilinDbContext.Tags.AddAsync(newEntity);
+
+            await _lilinDbContext.SaveChangesAsync();
+        }
+
+        public async Task UpdateTagsCounters()
+        {
+            var script = $@"
+                        UPDATE ""{nameof(LilinDbContext.Tags)}"" tags
+                        SET ""{nameof(TagEntity.Count)}"" = usages.count
+                        FROM
+                        (
+                            SELECT ""{nameof(FileTagEntity.TagId)}"" AS id, count(*) AS count
+                            FROM ""{nameof(LilinDbContext.FileTags)}""
+                            GROUP BY id
+                        ) usages
+                        WHERE tags.""{nameof(TagEntity.Id)}"" = usages.id";
+
+            await _lilinDbContext.Database.ExecuteSqlRawAsync(script);
         }
     }
 }

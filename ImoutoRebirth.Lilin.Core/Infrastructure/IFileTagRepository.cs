@@ -2,13 +2,12 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using ImoutoRebirth.Lilin.Core.Models;
+using ImoutoRebirth.Lilin.Core.Models.FileInfoAggregate;
 
 namespace ImoutoRebirth.Lilin.Core.Infrastructure
 {
     public interface IFileTagRepository
     {
-        Task Add(FileTagBind fileTag);
-
         Task<Guid[]> SearchFiles(
             IReadOnlyCollection<TagSearchEntry> tagSearchEntries,
             uint? limit = 100,
@@ -17,7 +16,11 @@ namespace ImoutoRebirth.Lilin.Core.Infrastructure
         Task<uint> SearchFilesCount(IReadOnlyCollection<TagSearchEntry> tagSearchEntries);
 
         Task<IReadOnlyCollection<FileTag>> GetForFile(Guid fileId);
+        
+        Task Update(FileTag fileTag);
 
-        Task ClearForSource(Guid fileId, MetadataSource source);
+        Task Add(FileTag fileTag);
+
+        Task Delete(FileTag fileTag);
     }
 }

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using ImoutoRebirth.Common;
 
 namespace ImoutoRebirth.Lilin.Core.Models
@@ -12,9 +13,9 @@ namespace ImoutoRebirth.Lilin.Core.Models
 
         public string Name { get; }
 
-        public bool HasValue { get; }
+        public bool HasValue { get; private set; }
 
-        public IReadOnlyCollection<string> Synonyms { get; }
+        public IReadOnlyCollection<string> Synonyms { get; private set; }
 
         public int Count { get; }
 
@@ -29,6 +30,24 @@ namespace ImoutoRebirth.Lilin.Core.Models
             HasValue = hasValue;
             Synonyms = synonyms;
             Count = count;
+        }
+
+        public static Tag CreateNew(TagType type, string name, bool hasValue, IReadOnlyCollection<string>? synonyms)
+        {
+            synonyms ??= Array.Empty<string>();
+
+            return new Tag(Guid.NewGuid(), type, name, hasValue, synonyms, 0);
+        }
+
+        public void UpdateHasValue(in bool newHasValue)
+        {
+            if (!HasValue && newHasValue)
+                HasValue = true;
+        }
+
+        public void UpdateSynonyms(IReadOnlyCollection<string> newSynonyms)
+        {
+            Synonyms = Synonyms.Union(newSynonyms).ToArray();
         }
     }
 }
