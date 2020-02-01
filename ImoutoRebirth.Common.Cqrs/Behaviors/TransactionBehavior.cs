@@ -1,11 +1,10 @@
-﻿using System.Data;
-using System.Threading;
+﻿using System.Threading;
 using System.Threading.Tasks;
-using ImoutoProject.Common.Cqrs.Events;
+using ImoutoRebirth.Common.Cqrs.Events;
 using ImoutoRebirth.Common.Domain;
 using MediatR;
 
-namespace ImoutoProject.Common.Cqrs.Behaviors
+namespace ImoutoRebirth.Common.Cqrs.Behaviors
 {
     public class TransactionBehavior<TRequest, TResponse> : IPipelineBehavior<TRequest, TResponse>
     {
@@ -28,8 +27,10 @@ namespace ImoutoProject.Common.Cqrs.Behaviors
             CancellationToken cancellationToken, 
             RequestHandlerDelegate<TResponse> next)
         {
+            var isolationLevel = typeof(TRequest).GetIsolationLevel();
+
             TResponse response;
-            using (await _unitOfWork.CreateTransaction(IsolationLevel.ReadCommitted))
+            using (await _unitOfWork.CreateTransaction(isolationLevel))
             {
                 response = await next();
 

@@ -3,7 +3,7 @@ using System.Threading.Tasks;
 using ImoutoRebirth.Common.Domain;
 using MediatR;
 
-namespace ImoutoProject.Common.Cqrs.Events
+namespace ImoutoRebirth.Common.Cqrs.Events
 {
     public class EventPublisher : IEventPublisher
     {

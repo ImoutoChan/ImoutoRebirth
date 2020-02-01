@@ -1,6 +1,6 @@
 ﻿using MediatR;
 
-namespace ImoutoProject.Common.Cqrs.Abstract
+namespace ImoutoRebirth.Common.Cqrs.Abstract
 {
     public interface ICommand<out TResult> : IRequest<TResult>
     {

@@ -1,9 +1,9 @@
-﻿using ImoutoProject.Common.Cqrs.Behaviors;
-using ImoutoProject.Common.Cqrs.Events;
+﻿using ImoutoRebirth.Common.Cqrs.Behaviors;
+using ImoutoRebirth.Common.Cqrs.Events;
 using MediatR;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace ImoutoProject.Common.Cqrs
+namespace ImoutoRebirth.Common.Cqrs
 {
     public static class ServiceCollectionExtensions
     {
