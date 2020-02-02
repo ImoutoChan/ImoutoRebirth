@@ -16,7 +16,9 @@ namespace ImoutoRebirth.Lilin.Core.Models.FileInfoAggregate
         public FileTag(Guid fileId, Tag tag, string? value, MetadataSource source)
         {
             ArgumentValidator.NotNull(() => tag);
-            ArgumentValidator.Requires(() => tag.HasValue || value == null, nameof(value));
+            
+            if (string.IsNullOrWhiteSpace(value))
+                value = null;
 
             FileId = fileId;
             Tag = tag;
