@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using ImoutoRebirth.Common.Cqrs.Abstract;
+using ImoutoRebirth.Common.Domain;
 using ImoutoRebirth.Lilin.Core.Infrastructure;
 using ImoutoRebirth.Lilin.Core.Models;
 using ImoutoRebirth.Lilin.Core.Models.FileInfoAggregate;
@@ -20,17 +21,20 @@ namespace ImoutoRebirth.Lilin.Services.CQRS.Commands
         private readonly IFileNoteRepository _fileNoteRepository;
         private readonly ITagTypeRepository _tagTypeRepository;
         private readonly ITagRepository _tagRepository;
+        private readonly IEventStorage _eventStorage;
 
         public SaveMetadataCommandHandler(
             IFileTagRepository fileTagRepository,
             IFileNoteRepository fileNoteRepository,
             ITagTypeRepository tagTypeRepository,
-            ITagRepository tagRepository)
+            ITagRepository tagRepository,
+            IEventStorage eventStorage)
         {
             _fileTagRepository = fileTagRepository;
             _fileNoteRepository = fileNoteRepository;
             _tagTypeRepository = tagTypeRepository;
             _tagRepository = tagRepository;
+            _eventStorage = eventStorage;
         }
 
         public async Task<Unit> Handle(SaveMetadataCommand request, CancellationToken cancellationToken)
@@ -45,8 +49,9 @@ namespace ImoutoRebirth.Lilin.Services.CQRS.Commands
                 
             var metadataUpdateData = new MetadataUpdateData(fileId, newTags, newNotes, source);
 
-            file.UpdateMetadata(metadataUpdateData);
-
+            var domainResult = file.UpdateMetadata(metadataUpdateData);
+            _eventStorage.AddRange(domainResult.EventsCollection);
+            
             await PersistFileAggregate(file);
 
             return Unit.Value;
