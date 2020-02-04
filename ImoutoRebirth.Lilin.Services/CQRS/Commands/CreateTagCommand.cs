@@ -7,7 +7,7 @@ using ImoutoRebirth.Lilin.Core.Models;
 
 namespace ImoutoRebirth.Lilin.Services.CQRS.Commands
 {
-    [Command(IsolationLevel.Serializable)]
+    [CommandQuery(IsolationLevel.Serializable)]
     public class CreateTagCommand : ICommand<Tag>
     {
         public Guid TypeId { get; }
