@@ -8,6 +8,14 @@ namespace ImoutoRebirth.Common.Domain
 
         public void Add(IDomainEvent domainEvent) => _events.Add(domainEvent);
 
+        public void AddRange(IEnumerable<IDomainEvent> domainEvents)
+        {
+            foreach (var domainEvent in domainEvents)
+            {
+                _events.Add(domainEvent);
+            }
+        }
+
         public IReadOnlyCollection<IDomainEvent> GetAll() => _events;
     }
 }

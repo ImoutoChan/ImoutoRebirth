@@ -6,6 +6,8 @@ namespace ImoutoRebirth.Common.Domain
     {
         void Add(IDomainEvent domainEvent);
 
+        void AddRange(IEnumerable<IDomainEvent> domainEvents);
+
         IReadOnlyCollection<IDomainEvent> GetAll();
     }
 }
