@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
+using System.Net.Http;
 using System.Threading.Tasks;
 using ImoutoRebirth.Common;
 using ImoutoRebirth.Room.Core.Models;
@@ -58,22 +60,34 @@ namespace ImoutoRebirth.Room.Core.Services
 
             _logger.LogInformation("{NewFilesCount} new files found", newFiles.Count);
 
-            var movedTasks = await newFiles.Select(x => MoveFile(oversawCollection, x))
-                                           .Where(x => x.RequireSave)
-                                           .Select(
-                                                x => _collectionFileService
-                                                    .SaveNew(x, oversawCollection.Collection.Id)
-                                                    .With(x.SystemFile.Md5))
-                                           .WhenAll();
-
+            var movedFiles = await MoveFiles(newFiles, oversawCollection).ToArrayAsync();
+            
             await _dbStateService.SaveChanges();
 
-            _logger.LogInformation("{NewFilesSavedCount} files saved", movedTasks.Length);
+            _logger.LogInformation("{NewFilesSavedCount} files saved", movedFiles.Length);
 
-            await movedTasks.Select(x => _remoteCommandService.UpdateMetadataRequest(x.Result, x.With))
+            await movedFiles.Select(x => _remoteCommandService.UpdateMetadataRequest(x.FileId, x.Md5))
                             .WhenAll();
 
             _logger.LogDebug("Update metadata requests are sent");
+        }
+
+        private async IAsyncEnumerable<(Guid FileId, string Md5)> MoveFiles(
+            IEnumerable<MoveInformation> preparedFiles,
+            OversawCollection oversawCollection)
+        {
+            foreach (var moveInformation in preparedFiles)
+            {
+                var movedInformation = MoveFile(oversawCollection, moveInformation);
+
+                if (!movedInformation.RequireSave)
+                    continue;
+
+                var fileId = await _collectionFileService.SaveNew(movedInformation, oversawCollection.Collection.Id);
+                var md5 = moveInformation.SystemFile.Md5;
+
+                yield return (fileId, md5);
+            }
         }
 
         private MovedInformation MoveFile(OversawCollection oversawCollection, MoveInformation moveInformation)
