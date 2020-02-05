@@ -1,6 +1,6 @@
-﻿using System;
-using ImoutoRebirth.Common.Cqrs.Abstract;
+﻿using ImoutoRebirth.Common.Cqrs.Abstract;
 using ImoutoRebirth.Lilin.Core.Models.FileInfoAggregate;
+using System;
 
 namespace ImoutoRebirth.Lilin.Services.CQRS.Queries
 {

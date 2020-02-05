@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using AutoMapper;
 using ImoutoRebirth.Lilin.Services.CQRS.Queries;
@@ -23,7 +24,7 @@ namespace ImoutoRebirth.Lilin.WebApi.Controllers
         }
 
         /// <summary>
-        ///     Retrieve file info for id.
+        ///     Retrieve file info with all tags and notes by id.
         /// </summary>
         /// <returns>File info result.</returns>
         [HttpGet]
@@ -31,6 +32,19 @@ namespace ImoutoRebirth.Lilin.WebApi.Controllers
         {
             var fileInfo = await _mediator.Send(new FileInfoQuery(fileId));
             return _mapper.Map<FileInfoResponse>(fileInfo);
+        }
+
+        /// <summary>
+        ///     Check all parent and child tags in the database to see if there are related images for given md5 hash.
+        /// </summary>
+        /// <returns>
+        ///     The collection of relatives types for file and correspondent file info with their tags and notes.
+        /// </returns>
+        [HttpGet("relatives")]
+        public async Task<ActionResult<RelativeResponse[]>> GetRelatives([BindRequired] string md5)
+        {
+            var fileInfo = await _mediator.Send(new RelativesQuery(md5));
+            return _mapper.Map<RelativeResponse[]>(fileInfo);
         }
     }
 }

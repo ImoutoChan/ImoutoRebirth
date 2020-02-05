@@ -2,11 +2,10 @@
 using System.Collections.Generic;
 using ImoutoRebirth.Common.Cqrs.Abstract;
 using ImoutoRebirth.Lilin.Core.Models;
-using ImoutoRebirth.Lilin.Core.Models.FileInfoAggregate;
 
 namespace ImoutoRebirth.Lilin.Services.CQRS.Queries
 {
-    public class FilesSearchQuery : FilesSearchQueryBase, IQuery<Guid[]>, IQuery<FileInfo>
+    public class FilesSearchQuery : FilesSearchQueryBase, IQuery<Guid[]>
     {
         public uint? Limit { get; }
 
@@ -14,7 +13,7 @@ namespace ImoutoRebirth.Lilin.Services.CQRS.Queries
 
         public FilesSearchQuery(
             IReadOnlyCollection<TagSearchEntry> tagSearchEntries, 
-            uint? limit, 
+            uint? limit = null, 
             uint offset = 0)
             : base(tagSearchEntries)
         {

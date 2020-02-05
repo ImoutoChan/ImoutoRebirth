@@ -28,6 +28,7 @@ namespace ImoutoRebirth.Lilin.WebApi
             CreateMap<Note, NoteResponse>();
             CreateMap<Tag, TagResponse>();
             CreateMap<TagType, TagTypeResponse>();
+            CreateMap<RelativeInfo, RelativeResponse>();
         }
     }
 }
