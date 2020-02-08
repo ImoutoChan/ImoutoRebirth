@@ -67,31 +67,26 @@ namespace ImoutoRebirth.Arachne.Infrastructure.Models
 
         public IEnumerable<(string TagType, string Tag, string Value)> GetMetaTags()
         {
-            var props = typeof(MetaParsingResults).GetProperties();
+            const string tagType = "LocalMeta";
 
+            var props = typeof(MetaParsingResults).GetProperties();
             foreach (var propertyInfo in props)
             {
-                if (propertyInfo.Name == nameof(Tags))
-                {
-                }
-                else if (propertyInfo.PropertyType == typeof(string))
-                {
-                    yield return
-                        (TagType: "LocalMeta",
-                         Tag: propertyInfo.Name,
-                         Value: propertyInfo.GetValue(this) as string);
-                }
-                else if (propertyInfo.PropertyType == typeof(List<string>))
-                {
-                    var values = propertyInfo.GetValue(this) as List<string>;
+                var tag = propertyInfo.Name;
 
-                    foreach (var value in values)
-                    {
-                        yield return
-                            (TagType: "LocalMeta",
-                             Tag: propertyInfo.Name.Trim('s'),
-                             Value: value);
-                    }
+                if (tag == nameof(Tags) || tag == nameof(Notes))
+                    continue;
+
+                switch (propertyInfo.GetValue(this))
+                {
+                    case string strValue:
+                        yield return (tagType, tag, strValue);
+                        break;
+                    case IReadOnlyCollection<string> collectionValue:
+                        tag = tag.Trim('s');
+                        foreach (var value in collectionValue)
+                            yield return (tagType, tag, value);
+                        break;
                 }
             }
         }
