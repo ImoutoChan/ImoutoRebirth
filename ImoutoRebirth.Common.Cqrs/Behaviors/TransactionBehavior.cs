@@ -30,12 +30,12 @@ namespace ImoutoRebirth.Common.Cqrs.Behaviors
             var isolationLevel = typeof(TRequest).GetIsolationLevel();
 
             TResponse response;
-            using (await _unitOfWork.CreateTransaction(isolationLevel))
+            using (var transaction = await _unitOfWork.CreateTransactionAsync(isolationLevel))
             {
                 response = await next();
 
                 await _unitOfWork.SaveEntitiesAsync(cancellationToken);
-                _unitOfWork.CommitTransaction();
+                await transaction.CommitAsync();
             }
 
             foreach (var domainEvent in _eventStorage.GetAll())

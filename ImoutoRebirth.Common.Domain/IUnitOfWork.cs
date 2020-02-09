@@ -11,8 +11,6 @@ namespace ImoutoRebirth.Common.Domain
 
         Task SaveEntitiesAsync(CancellationToken cancellationToken = default);
 
-        Task<IDisposable> CreateTransaction(IsolationLevel isolationLevel);
-
-        void CommitTransaction();
+        Task<ITransaction> CreateTransactionAsync(IsolationLevel isolationLevel);
     }
 }
