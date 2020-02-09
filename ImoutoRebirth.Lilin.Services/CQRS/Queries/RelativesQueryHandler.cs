@@ -31,7 +31,7 @@ namespace ImoutoRebirth.Lilin.Services.CQRS.Queries
             var results = AsyncEnumerable.Empty<RelativeInfo>();
 
             results = results.Union(await LoadRelativeInfo("ParentMd5", RelativeType.Parent, md5, cancellationToken));
-            results = results.Union(await LoadRelativeInfo("Child", RelativeType.Child, md5, cancellationToken));
+            results = results.Union(await LoadRelativeInfo("Child", RelativeType.Child, $"*{md5}", cancellationToken));
             
             return await results.ToArrayAsync(cancellationToken);
         }
@@ -50,7 +50,6 @@ namespace ImoutoRebirth.Lilin.Services.CQRS.Queries
                 .Select(x => new RelativeInfo(type, x));
 
             return relativeInfo;
-
         }
 
         private async IAsyncEnumerable<FileInfo> GetFileInfoByTagValueRelativeInfo(
@@ -62,8 +61,7 @@ namespace ImoutoRebirth.Lilin.Services.CQRS.Queries
                 new[] {new TagSearchEntry(tagId, value, TagSearchScope.Included)});
 
             var found = await _mediator.Send(filesQuery, cancellationToken);
-
-
+            
             // todo read about cancellation in IAsyncEnumerable
             cancellationToken.ThrowIfCancellationRequested();
             foreach (var guid in found)
@@ -84,8 +82,6 @@ namespace ImoutoRebirth.Lilin.Services.CQRS.Queries
                     entry.AbsoluteExpirationRelativeToNow = tagId.HasValue ? TimeSpan.FromDays(1) : TimeSpan.Zero;
                     return tagId;
                 });
-
-            
 
             async Task<Guid?> SearchTag(string tagName, CancellationToken token)
             {

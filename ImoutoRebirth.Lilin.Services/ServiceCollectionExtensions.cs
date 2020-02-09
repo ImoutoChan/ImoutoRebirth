@@ -24,6 +24,7 @@ namespace ImoutoRebirth.Lilin.Services
             services.AddTransient<UpdateMetadataCommandConsumer>();
 
             services.AddQuartzJob<RecalculateTagsCountersJob, RecalculateTagsCountersJob.Description>();
+            services.AddMemoryCache();
 
             return services;
         }

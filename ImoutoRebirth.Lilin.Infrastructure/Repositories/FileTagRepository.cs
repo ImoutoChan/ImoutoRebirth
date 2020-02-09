@@ -30,6 +30,9 @@ namespace ImoutoRebirth.Lilin.Infrastructure.Repositories
         {
             var files = GetSearchFilesQueryable(tagSearchEntries);
 
+            // workaround for https://github.com/dotnet/efcore/issues/8523
+            files = files.OrderBy(x => x);
+
             files = files.Skip((int)offset);
 
             if (limit.HasValue)
@@ -133,14 +136,39 @@ namespace ImoutoRebirth.Lilin.Infrastructure.Repositories
                     if (!String.IsNullOrEmpty(f.Value))
                     {
                         var (checkEqual, value) = ExtractValue(f.Value);
+                        var asteriskValue = ExtractAsteriskValue(value);
+                        value = asteriskValue.Value;
 
-                        if (checkEqual)
+                        switch (checkEqual, asteriskValue.Place)
                         {
-                            fcond = t => t.TagId == f.TagId && t.Value == value;
-                        }
-                        else
-                        {
-                            fcond = t => t.TagId == f.TagId && t.Value != value;
+                            case (true, AsteriskPlace.None):
+                                fcond = t => t.TagId == f.TagId && t.Value == value;
+                                break;
+                            case (true, AsteriskPlace.Start):
+                                fcond = t => t.TagId == f.TagId && t.Value != null && t.Value.EndsWith(value);
+                                break;
+                            case (true, AsteriskPlace.End):
+                                fcond = t => t.TagId == f.TagId && t.Value != null && t.Value.StartsWith(value);
+                                break;
+                            case (true, AsteriskPlace.Both):
+                                fcond = t => t.TagId == f.TagId && t.Value != null && t.Value.Contains(value);
+                                break;
+
+                            case (false, AsteriskPlace.None):
+                                fcond = t => t.TagId == f.TagId && t.Value != value;
+                                break;
+                            case (false, AsteriskPlace.Start):
+                                fcond = t => t.TagId == f.TagId && (t.Value == null || !t.Value.EndsWith(value));
+                                break;
+                            case (false, AsteriskPlace.End):
+                                fcond = t => t.TagId == f.TagId && (t.Value == null || !t.Value.StartsWith(value));
+                                break;
+                            case (false, AsteriskPlace.Both):
+                                fcond = t => t.TagId == f.TagId && (t.Value == null || !t.Value.Contains(value));
+                                break;
+
+                            default:
+                                throw new NotImplementedException("unsupported pattern scenario");
                         }
                     }
                     else
@@ -150,7 +178,6 @@ namespace ImoutoRebirth.Lilin.Infrastructure.Repositories
 
                     if (condition == null)
                     {
-
                         condition = PredicateBuilder.Get(fcond);
                     }
                     else
@@ -168,17 +195,43 @@ namespace ImoutoRebirth.Lilin.Infrastructure.Repositories
             return query.Select(x => x.FileId);
         }
 
+        /// <summary>
+        ///     Convert string with asterisk symbol to tuple:
+        ///     '*xxx' => start, 'xxx'
+        ///     'xxx' => none, 'xxx'
+        ///     'xxx*' => end, 'xxx'
+        /// </summary>
+        private static (AsteriskPlace Place, string Value) ExtractAsteriskValue(string source)
+            => (source[0], source[^1]) switch
+            {
+                ('*', '*') => (AsteriskPlace.Both, source[1..^2]),
+                ('*', _) => (AsteriskPlace.Start, source[1..]),
+                (_, '*') => (AsteriskPlace.End, source[..^2]),
+                _ => (AsteriskPlace.None, source)
+            };
+        
+        /// <summary>
+        ///     Convert string with equality symbol to tuple:
+        ///     'xxx' => true, 'xxx'
+        ///     '!=xxx' => false, 'xxx'
+        ///     '!asd' => false, 'asd'
+        ///     '=asd' => true, 'asd'
+        /// </summary>
         private static (bool flag, string value) ExtractValue(string source)
+            => (source[0], source[1]) switch
+            {
+                ('=', _) => (true, source.Substring(1)),
+                ('!', '=') => (false, source.Substring(2)),
+                ('!', _) => (false, source.Substring(1)),
+                _ => (true, source)
+            };
+
+        private enum AsteriskPlace
         {
-            var flag = source.Substring(0, 1);
-            if (flag == "=")
-            {
-                return (true, source.Substring(1));
-            }
-            else // == '!='
-            {
-                return (false, source.Substring(2));
-            }
+            None,
+            Start,
+            End,
+            Both
         }
     }
 }
