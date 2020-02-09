@@ -60,16 +60,16 @@ namespace ImoutoRebirth.Lilin.Services.CQRS.Queries
             }
         }
  
-        private async Task<Tag> GetChildTag(CancellationToken cancellationToken)
+        private async Task<Tag?> GetChildTag(CancellationToken cancellationToken)
         {
             var result = await _mediator.Send(new TagsSearchQuery("Child", limit: 1), cancellationToken);
-            return result.Single();
+            return result.SingleOrDefault();
         }
 
-        private async Task<Tag> GetParentTag(CancellationToken cancellationToken)
+        private async Task<Tag?> GetParentTag(CancellationToken cancellationToken)
         {
             var result = await _mediator.Send(new TagsSearchQuery("ParentMd5", limit: 1), cancellationToken);
-            return result.Single();
+            return result.SingleOrDefault();
         }
     }
 }

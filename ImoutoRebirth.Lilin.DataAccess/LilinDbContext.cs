@@ -12,6 +12,7 @@ namespace ImoutoRebirth.Lilin.DataAccess
 {
     public class LilinDbContext : DbContext, IUnitOfWork
     {
+        private bool _ownsTransaction = false;
         private readonly IEventStorage _eventStorage;
 
         public DbSet<TagTypeEntity> TagTypes { get; set; } = default!;
@@ -94,6 +95,10 @@ namespace ImoutoRebirth.Lilin.DataAccess
 
         public async Task<IDisposable> CreateTransaction(IsolationLevel isolationLevel)
         {
+            if (Database.CurrentTransaction != null)
+                return new EmptyTransaction();
+
+            _ownsTransaction = true;
             return await Database.BeginTransactionAsync(isolationLevel);
         }
 
@@ -103,6 +108,9 @@ namespace ImoutoRebirth.Lilin.DataAccess
 
             if (currentTransaction == null)
                 throw new Exception("Can't commit empty transaction.");
+
+            if (!_ownsTransaction)
+                return;
 
             currentTransaction.Commit();
         }
