@@ -8,35 +8,49 @@ using ImoutoRebirth.Common.Cqrs.Abstract;
 using ImoutoRebirth.Lilin.Core.Models;
 using ImoutoRebirth.Lilin.Core.Models.FileInfoAggregate;
 using MediatR;
+using Microsoft.Extensions.Caching.Memory;
 
 namespace ImoutoRebirth.Lilin.Services.CQRS.Queries
 {
     public class RelativesQueryHandler : IQueryHandler<RelativesQuery, IReadOnlyCollection<RelativeInfo>>
     {
         private readonly IMediator _mediator;
+        private readonly IMemoryCache _memoryCache;
 
-        public RelativesQueryHandler(IMediator mediator)
+        public RelativesQueryHandler(IMediator mediator, IMemoryCache memoryCache)
         {
             _mediator = mediator;
+            _memoryCache = memoryCache;
         }
 
         public async Task<IReadOnlyCollection<RelativeInfo>> Handle(
             RelativesQuery request, 
             CancellationToken cancellationToken)
         {
-            // todo add cache
-            var parentTag = await GetParentTag(cancellationToken);
-            var childTag = await GetChildTag(cancellationToken);
-
             var md5 = request.Md5.ToLowerInvariant();
+            var results = AsyncEnumerable.Empty<RelativeInfo>();
 
-            var parents = GetFileInfoByTagValueRelativeInfo(parentTag.Id, md5, cancellationToken)
-                .Select(x => new RelativeInfo(RelativeType.Parent, x));
+            results = results.Union(await LoadRelativeInfo("ParentMd5", RelativeType.Parent, md5, cancellationToken));
+            results = results.Union(await LoadRelativeInfo("Child", RelativeType.Child, md5, cancellationToken));
+            
+            return await results.ToArrayAsync(cancellationToken);
+        }
 
-            var children = GetFileInfoByTagValueRelativeInfo(childTag.Id, md5, cancellationToken)
-                .Select(x => new RelativeInfo(RelativeType.Child, x));
+        private async Task<IAsyncEnumerable<RelativeInfo>> LoadRelativeInfo(
+            string tagName, 
+            RelativeType type, 
+            string md5,
+            CancellationToken cancellationToken)
+        {
+            var tagId = await GetTagId(tagName, cancellationToken);
+            if (!tagId.HasValue) 
+                return AsyncEnumerable.Empty<RelativeInfo>();
 
-            return await parents.Union(children).ToArrayAsync(cancellationToken);
+            var relativeInfo = GetFileInfoByTagValueRelativeInfo(tagId.Value, md5, cancellationToken)
+                .Select(x => new RelativeInfo(type, x));
+
+            return relativeInfo;
+
         }
 
         private async IAsyncEnumerable<FileInfo> GetFileInfoByTagValueRelativeInfo(
@@ -59,17 +73,25 @@ namespace ImoutoRebirth.Lilin.Services.CQRS.Queries
                 cancellationToken.ThrowIfCancellationRequested();
             }
         }
- 
-        private async Task<Tag?> GetChildTag(CancellationToken cancellationToken)
-        {
-            var result = await _mediator.Send(new TagsSearchQuery("Child", limit: 1), cancellationToken);
-            return result.SingleOrDefault();
-        }
 
-        private async Task<Tag?> GetParentTag(CancellationToken cancellationToken)
+        private async Task<Guid?> GetTagId(string name, CancellationToken cancellationToken)
         {
-            var result = await _mediator.Send(new TagsSearchQuery("ParentMd5", limit: 1), cancellationToken);
-            return result.SingleOrDefault();
+            return await _memoryCache.GetOrCreateAsync(
+                name,
+                async entry =>
+                {
+                    var tagId = await SearchTag(name, cancellationToken);
+                    entry.AbsoluteExpirationRelativeToNow = tagId.HasValue ? TimeSpan.FromDays(1) : TimeSpan.Zero;
+                    return tagId;
+                });
+
+            
+
+            async Task<Guid?> SearchTag(string tagName, CancellationToken token)
+            {
+                var result = await _mediator.Send(new TagsSearchQuery(tagName, limit: 1), token);
+                return result.Select(x => x.Id).SingleOrDefault();
+            }
         }
     }
 }
