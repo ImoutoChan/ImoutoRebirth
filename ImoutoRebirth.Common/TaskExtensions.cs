@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace ImoutoRebirth.Common
@@ -10,6 +11,26 @@ namespace ImoutoRebirth.Common
 
         public static Task<T[]> WhenAll<T>(this IEnumerable<Task<T>> tasks)
             => Task.WhenAll(tasks);
+
+        public static async Task WhenAllSequential(this IEnumerable<Task> tasks)
+        {
+            foreach (var task in tasks)
+            {
+                await task;
+            }
+        }
+
+        public static async Task<T[]> WhenAllSequential<T>(this IEnumerable<Task<T>> tasks)
+        {
+            var taskArray = tasks as Task<T>[] ?? tasks.ToArray();
+
+            foreach (var task in taskArray)
+            {
+                await task;
+            }
+
+            return taskArray.Select(x => x.Result).ToArray();
+        }
 
         public static async Task<(TTaskResult Result, TWith With)> With<TTaskResult, TWith>(
             this Task<TTaskResult> task,
