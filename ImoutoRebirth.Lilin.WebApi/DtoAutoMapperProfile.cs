@@ -21,8 +21,8 @@ namespace ImoutoRebirth.Lilin.WebApi
             CreateMap<TagCreateRequest, CreateTagCommand>();
             CreateMap<TagSearchEntryRequest, TagSearchEntry>();
             CreateMap<FilesSearchRequest, FilesSearchQuery>()
-                .ForMember(x => x.Offset, o => o.MapFrom(x => x.Skip ?? 0))
-                .ForMember(x => x.Limit, o => o.MapFrom(x => x.Count));
+                .ForCtorParam("offset", o => o.MapFrom(x => x.Skip ?? 0))
+                .ForCtorParam("limit", o => o.MapFrom(x => x.Count));
             CreateMap<FilesSearchRequest, FilesSearchQueryCount>();
         }
 
