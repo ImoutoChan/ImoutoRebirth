@@ -2,9 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using ImoutoRebirth.Common;
-using ImoutoRebirth.Lilin.Core.Models.FileInfoAggregate;
 
-namespace ImoutoRebirth.Lilin.Core.Models
+namespace ImoutoRebirth.Lilin.Core.Models.FileInfoAggregate
 {
     public class MetadataUpdateData
     {

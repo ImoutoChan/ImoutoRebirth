@@ -42,7 +42,7 @@ namespace ImoutoRebirth.Lilin.DataAccess
                 b.HasIndex(x => new {x.TagId});
                 b.HasIndex(x => new {x.TagId, x.Value});
                 b.HasIndex(x => new {x.Source, x.TagId});
-                b.HasIndex(x => new {x.FileId, x.TagId, x.Source});
+                b.HasIndex(x => new {x.FileId, x.TagId, x.Source}).IsUnique();
             });
 
 

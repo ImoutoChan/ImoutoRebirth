@@ -4,7 +4,7 @@ namespace ImoutoRebirth.Lilin.WebApi.Requests
 {
     public class FilesSearchRequest
     {
-        public IReadOnlyCollection<TagSearchEntryRequest> TagSearchEntries { get; set; }
+        public IReadOnlyCollection<TagSearchEntryRequest> TagSearchEntries { get; set; } = default!;
 
         public int? Count { get; set; }
 

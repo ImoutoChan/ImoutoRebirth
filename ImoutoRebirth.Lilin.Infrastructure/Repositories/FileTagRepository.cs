@@ -76,6 +76,14 @@ namespace ImoutoRebirth.Lilin.Infrastructure.Repositories
             await _lilinDbContext.SaveChangesAsync();
         }
 
+        public async Task AddBatch(IReadOnlyCollection<FileTagInfo> fileTags)
+        {
+            var entities = fileTags.Select(x => x.ToEntity());
+            await _lilinDbContext.AddRangeAsync(entities);
+
+            await _lilinDbContext.SaveChangesAsync();
+        }
+
         public async Task Delete(FileTag fileTag)
         {
             var fileTagEntity = await GetByFileTag(fileTag).SingleAsync();

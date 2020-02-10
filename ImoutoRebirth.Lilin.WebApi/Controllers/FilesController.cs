@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
 using AutoMapper;
+using ImoutoRebirth.Lilin.Services.CQRS.Commands;
 using ImoutoRebirth.Lilin.Services.CQRS.Queries;
 using ImoutoRebirth.Lilin.WebApi.Requests;
 using ImoutoRebirth.Lilin.WebApi.Responses;
@@ -74,6 +75,18 @@ namespace ImoutoRebirth.Lilin.WebApi.Controllers
         {
             var query = _mapper.Map<FilesSearchQueryCount>(request);
             return await _mediator.Send(query);
+        }
+        
+        /// <summary>
+        ///     Create FileTagInfo and bind tags to files with specified values.
+        /// </summary>
+        [HttpPost("tags")]
+        public async Task<ActionResult> CreateFileTags([FromBody] CreateFileTagsRequest request)
+        {
+            var command = _mapper.Map<CreateFileTagsCommand>(request);
+            await _mediator.Send(command);
+
+            return Ok();
         }
     }
 }

@@ -20,10 +20,14 @@ namespace ImoutoRebirth.Lilin.WebApi
         {
             CreateMap<TagCreateRequest, CreateTagCommand>();
             CreateMap<TagSearchEntryRequest, TagSearchEntry>();
+
             CreateMap<FilesSearchRequest, FilesSearchQuery>()
                 .ForCtorParam("offset", o => o.MapFrom(x => x.Skip ?? 0))
                 .ForCtorParam("limit", o => o.MapFrom(x => x.Count));
             CreateMap<FilesSearchRequest, FilesSearchQueryCount>();
+
+            CreateMap<CreateFileTagsRequest, CreateFileTagsCommand>();
+            CreateMap<FileTagRequest, FileTagInfo>();
         }
 
         private void CreateMapFromModelToResponses()
