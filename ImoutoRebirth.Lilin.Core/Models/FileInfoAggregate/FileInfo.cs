@@ -46,5 +46,10 @@ namespace ImoutoRebirth.Lilin.Core.Models.FileInfoAggregate
 
             return result;
         }
+
+        public void AddFileTag(FileTag newTag)
+        {
+            _tags.Add(newTag);
+        }
     }
 }

@@ -83,7 +83,7 @@ namespace ImoutoRebirth.Lilin.WebApi.Controllers
         [HttpPost("tags")]
         public async Task<ActionResult> CreateFileTags([FromBody] CreateFileTagsRequest request)
         {
-            var command = _mapper.Map<CreateFileTagsCommand>(request);
+            var command = _mapper.Map<BindTagsToFilesCommand>(request);
             await _mediator.Send(command);
 
             return Ok();

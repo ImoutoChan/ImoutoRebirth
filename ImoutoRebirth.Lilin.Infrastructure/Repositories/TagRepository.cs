@@ -29,6 +29,15 @@ namespace ImoutoRebirth.Lilin.Infrastructure.Repositories
             return result?.ToModel();
         }
 
+        public async Task<Tag?> Get(Guid id)
+        {
+            var result = await _lilinDbContext.Tags
+                .Include(x => x.Type)
+                .SingleOrDefaultAsync(x => x.Id == id);
+
+            return result?.ToModel();
+        }
+
         public async Task<IReadOnlyCollection<Tag>> Search(string? requestSearchPattern, int requestLimit)
         {
             var tagsWithTypes = _lilinDbContext.Tags

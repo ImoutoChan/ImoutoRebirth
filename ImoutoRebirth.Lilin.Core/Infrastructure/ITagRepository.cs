@@ -9,6 +9,8 @@ namespace ImoutoRebirth.Lilin.Core.Infrastructure
     {
         Task<Tag?> Get(string name, Guid typeId);
 
+        Task<Tag?> Get(Guid id);
+
         Task<IReadOnlyCollection<Tag>> Search(string? requestSearchPattern, int requestLimit);
         
         Task Update(Tag tag);

@@ -15,8 +15,8 @@ namespace ImoutoRebirth.Lilin.DataAccess.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn)
-                .HasAnnotation("ProductVersion", "3.1.1")
+                .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.SerialColumn)
+                .HasAnnotation("ProductVersion", "2.2.1-servicing-10028")
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
             modelBuilder.Entity("ImoutoRebirth.Lilin.DataAccess.Entities.FileTagEntity", b =>
@@ -52,8 +52,7 @@ namespace ImoutoRebirth.Lilin.DataAccess.Migrations
 
                     b.HasIndex("TagId", "Value");
 
-                    b.HasIndex("FileId", "TagId", "Source")
-                        .IsUnique();
+                    b.HasIndex("FileId", "TagId", "Source");
 
                     b.ToTable("FileTags");
                 });
@@ -171,8 +170,7 @@ namespace ImoutoRebirth.Lilin.DataAccess.Migrations
                     b.HasOne("ImoutoRebirth.Lilin.DataAccess.Entities.TagEntity", "Tag")
                         .WithMany("FileTags")
                         .HasForeignKey("TagId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
+                        .OnDelete(DeleteBehavior.Restrict);
                 });
 
             modelBuilder.Entity("ImoutoRebirth.Lilin.DataAccess.Entities.TagEntity", b =>
@@ -180,8 +178,7 @@ namespace ImoutoRebirth.Lilin.DataAccess.Migrations
                     b.HasOne("ImoutoRebirth.Lilin.DataAccess.Entities.TagTypeEntity", "Type")
                         .WithMany("Tags")
                         .HasForeignKey("TypeId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
+                        .OnDelete(DeleteBehavior.Restrict);
                 });
 #pragma warning restore 612, 618
         }

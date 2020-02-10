@@ -2,6 +2,7 @@
 using ImoutoRebirth.Common.MassTransit;
 using ImoutoRebirth.Common.Quartz.Extensions;
 using ImoutoRebirth.Lilin.MessageContracts;
+using ImoutoRebirth.Lilin.Services.ApplicationServices;
 using ImoutoRebirth.Lilin.Services.CQRS.Commands;
 using ImoutoRebirth.Lilin.Services.MessageCommandHandlers;
 using ImoutoRebirth.Lilin.Services.Quartz;
@@ -22,6 +23,7 @@ namespace ImoutoRebirth.Lilin.Services
             services.AddTransactionBehavior();
 
             services.AddTransient<UpdateMetadataCommandConsumer>();
+            services.AddTransient<IFileInfoService, FileInfoService>();
 
             services.AddQuartzJob<RecalculateTagsCountersJob, RecalculateTagsCountersJob.Description>();
             services.AddMemoryCache();
