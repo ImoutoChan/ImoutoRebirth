@@ -2,6 +2,7 @@
 using ImoutoRebirth.Lilin.Core.Models;
 using ImoutoRebirth.Lilin.Core.Models.FileInfoAggregate;
 using ImoutoRebirth.Lilin.Services.CQRS.Commands;
+using ImoutoRebirth.Lilin.Services.CQRS.Queries;
 using ImoutoRebirth.Lilin.WebApi.Requests;
 using ImoutoRebirth.Lilin.WebApi.Responses;
 
@@ -18,6 +19,11 @@ namespace ImoutoRebirth.Lilin.WebApi
         private void CreateMapFromRequestsToQueries()
         {
             CreateMap<TagCreateRequest, CreateTagCommand>();
+            CreateMap<TagSearchEntryRequest, TagSearchEntry>();
+            CreateMap<FilesSearchRequest, FilesSearchQuery>()
+                .ForMember(x => x.Offset, o => o.MapFrom(x => x.Skip ?? 0))
+                .ForMember(x => x.Limit, o => o.MapFrom(x => x.Count));
+            CreateMap<FilesSearchRequest, FilesSearchQueryCount>();
         }
 
         private void CreateMapFromModelToResponses()

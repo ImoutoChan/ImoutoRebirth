@@ -1,8 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Threading.Tasks;
 using AutoMapper;
 using ImoutoRebirth.Lilin.Services.CQRS.Queries;
+using ImoutoRebirth.Lilin.WebApi.Requests;
 using ImoutoRebirth.Lilin.WebApi.Responses;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
@@ -27,8 +27,8 @@ namespace ImoutoRebirth.Lilin.WebApi.Controllers
         ///     Retrieve file info with all tags and notes by id.
         /// </summary>
         /// <returns>File info result.</returns>
-        [HttpGet]
-        public async Task<ActionResult<FileInfoResponse>> GetFileInfo([BindRequired] Guid fileId)
+        [HttpGet("{fileId}")]
+        public async Task<ActionResult<FileInfoResponse>> GetFileInfo(Guid fileId)
         {
             var fileInfo = await _mediator.Send(new FileInfoQuery(fileId));
             return _mapper.Map<FileInfoResponse>(fileInfo);
@@ -45,6 +45,35 @@ namespace ImoutoRebirth.Lilin.WebApi.Controllers
         {
             var fileInfo = await _mediator.Send(new RelativesQuery(md5));
             return _mapper.Map<RelativeResponse[]>(fileInfo);
+        }
+
+        /// <summary>
+        ///     Get all files that's contains certain tags and values.
+        /// </summary>
+        /// <returns>
+        ///     The collection of all found files. Pagination available by count/skip parameters.
+        /// </returns>
+        [HttpPost("search")]
+        public async Task<ActionResult<Guid[]>> GetFilesByTags([FromBody] FilesSearchRequest request)
+        {
+            var query = _mapper.Map<FilesSearchQuery>(request);
+
+            var fileIds = await _mediator.Send(query);
+
+            return fileIds;
+        }
+
+        /// <summary>
+        ///     Get count of files that's contains certain tags and values.
+        /// </summary>
+        /// <returns>
+        ///     The number of found files for given tags.
+        /// </returns>
+        [HttpPost("search/count")]
+        public async Task<ActionResult<int>> GetFilesCountByTags([FromBody] FilesSearchRequest request)
+        {
+            var query = _mapper.Map<FilesSearchQueryCount>(request);
+            return await _mediator.Send(query);
         }
     }
 }

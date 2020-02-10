@@ -10,10 +10,10 @@ namespace ImoutoRebirth.Lilin.Core.Infrastructure
     {
         Task<Guid[]> SearchFiles(
             IReadOnlyCollection<TagSearchEntry> tagSearchEntries,
-            uint? limit = 100,
-            uint offset = 0);
+            int? limit = 100,
+            int offset = 0);
 
-        Task<uint> SearchFilesCount(IReadOnlyCollection<TagSearchEntry> tagSearchEntries);
+        Task<int> SearchFilesCount(IReadOnlyCollection<TagSearchEntry> tagSearchEntries);
 
         Task<IReadOnlyCollection<FileTag>> GetForFile(Guid fileId);
         

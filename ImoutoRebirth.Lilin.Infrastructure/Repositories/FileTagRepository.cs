@@ -25,26 +25,26 @@ namespace ImoutoRebirth.Lilin.Infrastructure.Repositories
 
         public async Task<Guid[]> SearchFiles(
             IReadOnlyCollection<TagSearchEntry> tagSearchEntries,
-            uint? limit = 100,
-            uint offset = 0)
+            int? limit = 100,
+            int offset = 0)
         {
             var files = GetSearchFilesQueryable(tagSearchEntries);
 
             // workaround for https://github.com/dotnet/efcore/issues/8523
             files = files.OrderBy(x => x);
 
-            files = files.Skip((int)offset);
+            files = files.Skip(offset);
 
             if (limit.HasValue)
-                files = files.Take((int)limit.Value);
+                files = files.Take(limit.Value);
 
             return await files.ToArrayAsync();
         }
 
-        public async Task<uint> SearchFilesCount(IReadOnlyCollection<TagSearchEntry> tagSearchEntries)
+        public async Task<int> SearchFilesCount(IReadOnlyCollection<TagSearchEntry> tagSearchEntries)
         {
             var files = GetSearchFilesQueryable(tagSearchEntries);
-            return (uint)await files.CountAsync();
+            return await files.CountAsync();
         }
 
         public async Task<IReadOnlyCollection<FileTag>> GetForFile(Guid fileId)

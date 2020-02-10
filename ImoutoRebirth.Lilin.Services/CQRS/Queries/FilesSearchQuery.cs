@@ -7,14 +7,14 @@ namespace ImoutoRebirth.Lilin.Services.CQRS.Queries
 {
     public class FilesSearchQuery : FilesSearchQueryBase, IQuery<Guid[]>
     {
-        public uint? Limit { get; }
+        public int? Limit { get; }
 
-        public uint Offset { get; }
+        public int Offset { get; }
 
         public FilesSearchQuery(
-            IReadOnlyCollection<TagSearchEntry> tagSearchEntries, 
-            uint? limit = null, 
-            uint offset = 0)
+            IReadOnlyCollection<TagSearchEntry> tagSearchEntries,
+            int? limit = null,
+            int offset = 0)
             : base(tagSearchEntries)
         {
             Limit = limit;

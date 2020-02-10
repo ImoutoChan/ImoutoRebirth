@@ -5,7 +5,7 @@ using ImoutoRebirth.Lilin.Core.Infrastructure;
 
 namespace ImoutoRebirth.Lilin.Services.CQRS.Queries
 {
-    public class FilesSearchQueryCountHandler : IQueryHandler<FilesSearchQueryCount, uint>
+    public class FilesSearchQueryCountHandler : IQueryHandler<FilesSearchQueryCount, int>
     {
         private readonly IFileTagRepository _fileTagRepository;
 
@@ -14,7 +14,7 @@ namespace ImoutoRebirth.Lilin.Services.CQRS.Queries
             _fileTagRepository = fileTagRepository;
         }
 
-        public Task<uint> Handle(FilesSearchQueryCount request, CancellationToken cancellationToken)
+        public Task<int> Handle(FilesSearchQueryCount request, CancellationToken cancellationToken)
             => _fileTagRepository.SearchFilesCount(request.TagSearchEntries);
     }
 }
