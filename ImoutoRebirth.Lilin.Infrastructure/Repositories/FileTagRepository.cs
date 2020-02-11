@@ -131,59 +131,57 @@ namespace ImoutoRebirth.Lilin.Infrastructure.Repositories
             {
                 foreach (var f in filters)
                 {
-                    Expression<Func<FileTagEntity, bool>> fcond;
+                    Expression<Func<FileTagEntity, bool>> predicateExpression;
 
-                    if (!String.IsNullOrEmpty(f.Value))
+                    // for cases where we should check tag values
+                    if (!string.IsNullOrEmpty(f.Value))
                     {
-                        var (checkEqual, value) = ExtractValue(f.Value);
-                        var asteriskValue = ExtractAsteriskValue(value);
-                        value = asteriskValue.Value;
+                        // retrieve whenever we should check tag value for equality or inequality
+                        var (checkEquals, value) = ExtractEqualityFlag(f.Value);
 
-                        switch (checkEqual, asteriskValue.Place)
+                        // retrieve whenever we should search for given value with * pattern
+                        var (asteriskPlace, extractedValue) = ExtractAsteriskFlag(value);
+                        value = extractedValue;
+
+                        predicateExpression = (checkEquals, asteriskPlace) switch
                         {
-                            case (true, AsteriskPlace.None):
-                                fcond = t => t.TagId == f.TagId && t.Value == value;
-                                break;
-                            case (true, AsteriskPlace.Start):
-                                fcond = t => t.TagId == f.TagId && t.Value != null && t.Value.EndsWith(value);
-                                break;
-                            case (true, AsteriskPlace.End):
-                                fcond = t => t.TagId == f.TagId && t.Value != null && t.Value.StartsWith(value);
-                                break;
-                            case (true, AsteriskPlace.Both):
-                                fcond = t => t.TagId == f.TagId && t.Value != null && t.Value.Contains(value);
-                                break;
+                            (true, AsteriskPlace.None) => t 
+                                => t.TagId == f.TagId && t.Value == value,
 
-                            case (false, AsteriskPlace.None):
-                                fcond = t => t.TagId == f.TagId && t.Value != value;
-                                break;
-                            case (false, AsteriskPlace.Start):
-                                fcond = t => t.TagId == f.TagId && (t.Value == null || !t.Value.EndsWith(value));
-                                break;
-                            case (false, AsteriskPlace.End):
-                                fcond = t => t.TagId == f.TagId && (t.Value == null || !t.Value.StartsWith(value));
-                                break;
-                            case (false, AsteriskPlace.Both):
-                                fcond = t => t.TagId == f.TagId && (t.Value == null || !t.Value.Contains(value));
-                                break;
+                            (true, AsteriskPlace.Start) => t 
+                                => t.TagId == f.TagId && t.Value != null && t.Value.EndsWith(value),
 
-                            default:
-                                throw new NotImplementedException("unsupported pattern scenario");
-                        }
+                            (true, AsteriskPlace.End) => t 
+                                => t.TagId == f.TagId && t.Value != null && t.Value.StartsWith(value),
+
+                            (true, AsteriskPlace.Both) => t 
+                                => t.TagId == f.TagId && t.Value != null && t.Value.Contains(value),
+
+                            (false, AsteriskPlace.None) => t 
+                                => t.TagId == f.TagId && t.Value != value,
+
+                            (false, AsteriskPlace.Start) => t 
+                                => t.TagId == f.TagId && (t.Value == null || !t.Value.EndsWith(value)),
+
+                            (false, AsteriskPlace.End) => t 
+                                => t.TagId == f.TagId && (t.Value == null || !t.Value.StartsWith(value)),
+
+                            (false, AsteriskPlace.Both) => t 
+                                => t.TagId == f.TagId && (t.Value == null || !t.Value.Contains(value)),
+
+                            _ => throw new NotImplementedException("unsupported pattern scenario")
+                        };
                     }
+
+                    // for cases without values
                     else
                     {
-                        fcond = t => t.TagId == f.TagId;
+                        predicateExpression = t => t.TagId == f.TagId;
                     }
 
-                    if (condition == null)
-                    {
-                        condition = PredicateBuilder.Get(fcond);
-                    }
-                    else
-                    {
-                        condition = condition.Or(fcond);
-                    }
+                    condition = condition != null 
+                        ? condition.Or(predicateExpression) 
+                        : predicateExpression.Get();
                 }
             }
 
@@ -201,7 +199,7 @@ namespace ImoutoRebirth.Lilin.Infrastructure.Repositories
         ///     'xxx' => none, 'xxx'
         ///     'xxx*' => end, 'xxx'
         /// </summary>
-        private static (AsteriskPlace Place, string Value) ExtractAsteriskValue(string source)
+        private static (AsteriskPlace Place, string Value) ExtractAsteriskFlag(string source)
             => (source[0], source[^1]) switch
             {
                 ('*', '*') => (AsteriskPlace.Both, source[1..^2]),
@@ -217,7 +215,7 @@ namespace ImoutoRebirth.Lilin.Infrastructure.Repositories
         ///     '!asd' => false, 'asd'
         ///     '=asd' => true, 'asd'
         /// </summary>
-        private static (bool flag, string value) ExtractValue(string source)
+        private static (bool flag, string value) ExtractEqualityFlag(string source)
             => (source[0], source[1]) switch
             {
                 ('=', _) => (true, source.Substring(1)),
