@@ -4,7 +4,7 @@
 // regenerated.
 // </auto-generated>
 
-namespace ImoutoRebirth.Room.HttpClient.Models
+namespace ImoutoRebirth.Room.WebApi.Client.Models
 {
     using Newtonsoft.Json;
     using System.Linq;
@@ -22,7 +22,7 @@ namespace ImoutoRebirth.Room.HttpClient.Models
         /// <summary>
         /// Initializes a new instance of the CollectionFileResponse class.
         /// </summary>
-        public CollectionFileResponse(System.Guid? id = default(System.Guid?), System.Guid? collectionId = default(System.Guid?), string path = default(string), string md5 = default(string), long? size = default(long?), string originalPath = default(string))
+        public CollectionFileResponse(System.Guid id, System.Guid collectionId, long size, string path = default(string), string md5 = default(string), string originalPath = default(string))
         {
             Id = id;
             CollectionId = collectionId;
@@ -41,12 +41,12 @@ namespace ImoutoRebirth.Room.HttpClient.Models
         /// <summary>
         /// </summary>
         [JsonProperty(PropertyName = "id")]
-        public System.Guid? Id { get; private set; }
+        public System.Guid Id { get; private set; }
 
         /// <summary>
         /// </summary>
         [JsonProperty(PropertyName = "collectionId")]
-        public System.Guid? CollectionId { get; private set; }
+        public System.Guid CollectionId { get; private set; }
 
         /// <summary>
         /// </summary>
@@ -61,12 +61,22 @@ namespace ImoutoRebirth.Room.HttpClient.Models
         /// <summary>
         /// </summary>
         [JsonProperty(PropertyName = "size")]
-        public long? Size { get; private set; }
+        public long Size { get; private set; }
 
         /// <summary>
         /// </summary>
         [JsonProperty(PropertyName = "originalPath")]
         public string OriginalPath { get; private set; }
 
+        /// <summary>
+        /// Validate the object.
+        /// </summary>
+        /// <exception cref="Microsoft.Rest.ValidationException">
+        /// Thrown if validation fails
+        /// </exception>
+        public virtual void Validate()
+        {
+            //Nothing to validate
+        }
     }
 }

@@ -4,7 +4,7 @@
 // regenerated.
 // </auto-generated>
 
-namespace ImoutoRebirth.Room.HttpClient
+namespace ImoutoRebirth.Room.WebApi.Client
 {
     using Microsoft.Rest;
     using Models;
@@ -14,14 +14,15 @@ namespace ImoutoRebirth.Room.HttpClient
     using System.Threading.Tasks;
 
     /// <summary>
-    /// CollectionFiles operations.
+    /// DestinationFolder operations.
     /// </summary>
-    public partial interface ICollectionFiles
+    public partial interface IDestinationFolder
     {
         /// <summary>
-        /// Retrieve all files by request.
+        /// Get the destination folder for collection.
         /// </summary>
-        /// <param name='body'>
+        /// <param name='collectionId'>
+        /// The collection id.
         /// </param>
         /// <param name='customHeaders'>
         /// The headers that will be added to request.
@@ -35,14 +36,15 @@ namespace ImoutoRebirth.Room.HttpClient
         /// <exception cref="Microsoft.Rest.SerializationException">
         /// Thrown when unable to deserialize the response
         /// </exception>
-        Task<HttpOperationResponse<IList<CollectionFileResponse>>> SearchWithHttpMessagesAsync(CollectionFilesRequest body = default(CollectionFilesRequest), Dictionary<string, List<string>> customHeaders = null, CancellationToken cancellationToken = default(CancellationToken));
+        Task<HttpOperationResponse<DestinationFolderResponse>> GetWithHttpMessagesAsync(System.Guid collectionId, Dictionary<string, List<string>> customHeaders = null, CancellationToken cancellationToken = default(CancellationToken));
         /// <summary>
-        /// Retrieve count of files by request.
+        /// CreateOrUpdate or update a destination folder for collection.
         /// </summary>
-        /// <remarks>
-        /// Note that Skip and Count fields are ignored.
-        /// </remarks>
+        /// <param name='collectionId'>
+        /// The collection id.
+        /// </param>
         /// <param name='body'>
+        /// Destination folder parameters.
         /// </param>
         /// <param name='customHeaders'>
         /// The headers that will be added to request.
@@ -56,11 +58,14 @@ namespace ImoutoRebirth.Room.HttpClient
         /// <exception cref="Microsoft.Rest.SerializationException">
         /// Thrown when unable to deserialize the response
         /// </exception>
-        Task<HttpOperationResponse<int?>> CountWithHttpMessagesAsync(CollectionFilesRequest body = default(CollectionFilesRequest), Dictionary<string, List<string>> customHeaders = null, CancellationToken cancellationToken = default(CancellationToken));
+        Task<HttpOperationResponse<DestinationFolderResponse>> CreateOrUpdateWithHttpMessagesAsync(System.Guid collectionId, DestinationFolderCreateRequest body = default(DestinationFolderCreateRequest), Dictionary<string, List<string>> customHeaders = null, CancellationToken cancellationToken = default(CancellationToken));
         /// <summary>
-        /// Remove file with id.
+        /// Delete the destination folder.
         /// </summary>
         /// <param name='id'>
+        /// Id of the folder that will be deleted.
+        /// </param>
+        /// <param name='collectionId'>
         /// </param>
         /// <param name='customHeaders'>
         /// The headers that will be added to request.
@@ -71,6 +76,9 @@ namespace ImoutoRebirth.Room.HttpClient
         /// <exception cref="Microsoft.Rest.HttpOperationException">
         /// Thrown when the operation returned an invalid status code
         /// </exception>
-        Task<HttpOperationResponse> RemoveWithHttpMessagesAsync(System.Guid id, Dictionary<string, List<string>> customHeaders = null, CancellationToken cancellationToken = default(CancellationToken));
+        /// <exception cref="Microsoft.Rest.ValidationException">
+        /// Thrown when a required parameter is null
+        /// </exception>
+        Task<HttpOperationResponse> DeleteWithHttpMessagesAsync(System.Guid id, string collectionId, Dictionary<string, List<string>> customHeaders = null, CancellationToken cancellationToken = default(CancellationToken));
     }
 }

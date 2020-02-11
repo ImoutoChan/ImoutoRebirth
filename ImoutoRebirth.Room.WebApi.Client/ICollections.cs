@@ -4,7 +4,7 @@
 // regenerated.
 // </auto-generated>
 
-namespace ImoutoRebirth.Room.HttpClient
+namespace ImoutoRebirth.Room.WebApi.Client
 {
     using Microsoft.Rest;
     using Models;
@@ -14,16 +14,13 @@ namespace ImoutoRebirth.Room.HttpClient
     using System.Threading.Tasks;
 
     /// <summary>
-    /// DestinationFolder operations.
+    /// Collections operations.
     /// </summary>
-    public partial interface IDestinationFolder
+    public partial interface ICollections
     {
         /// <summary>
-        /// Get the destination folder for collection.
+        /// Retrieve all collections.
         /// </summary>
-        /// <param name='collectionId'>
-        /// The collection id.
-        /// </param>
         /// <param name='customHeaders'>
         /// The headers that will be added to request.
         /// </param>
@@ -36,15 +33,12 @@ namespace ImoutoRebirth.Room.HttpClient
         /// <exception cref="Microsoft.Rest.SerializationException">
         /// Thrown when unable to deserialize the response
         /// </exception>
-        Task<HttpOperationResponse<DestinationFolderResponse>> GetWithHttpMessagesAsync(System.Guid collectionId, Dictionary<string, List<string>> customHeaders = null, CancellationToken cancellationToken = default(CancellationToken));
+        Task<HttpOperationResponse<IList<CollectionResponse>>> GetAllWithHttpMessagesAsync(Dictionary<string, List<string>> customHeaders = null, CancellationToken cancellationToken = default(CancellationToken));
         /// <summary>
-        /// CreateOrUpdate or update a destination folder for collection.
+        /// Create new collection with specific name.
         /// </summary>
-        /// <param name='collectionId'>
-        /// The collection id.
-        /// </param>
         /// <param name='body'>
-        /// Destination folder parameters.
+        /// Collection parameters.
         /// </param>
         /// <param name='customHeaders'>
         /// The headers that will be added to request.
@@ -58,14 +52,12 @@ namespace ImoutoRebirth.Room.HttpClient
         /// <exception cref="Microsoft.Rest.SerializationException">
         /// Thrown when unable to deserialize the response
         /// </exception>
-        Task<HttpOperationResponse<DestinationFolderResponse>> CreateOrUpdateWithHttpMessagesAsync(System.Guid collectionId, DestinationFolderCreateRequest body = default(DestinationFolderCreateRequest), Dictionary<string, List<string>> customHeaders = null, CancellationToken cancellationToken = default(CancellationToken));
+        Task<HttpOperationResponse<CollectionResponse>> CreateWithHttpMessagesAsync(CollectionCreateRequest body = default(CollectionCreateRequest), Dictionary<string, List<string>> customHeaders = null, CancellationToken cancellationToken = default(CancellationToken));
         /// <summary>
-        /// Delete the destination folder.
+        /// Delete collection by id.
         /// </summary>
         /// <param name='id'>
-        /// Id of the folder that will be deleted.
-        /// </param>
-        /// <param name='collectionId'>
+        /// Collection id.
         /// </param>
         /// <param name='customHeaders'>
         /// The headers that will be added to request.
@@ -76,9 +68,6 @@ namespace ImoutoRebirth.Room.HttpClient
         /// <exception cref="Microsoft.Rest.HttpOperationException">
         /// Thrown when the operation returned an invalid status code
         /// </exception>
-        /// <exception cref="Microsoft.Rest.ValidationException">
-        /// Thrown when a required parameter is null
-        /// </exception>
-        Task<HttpOperationResponse> DeleteWithHttpMessagesAsync(System.Guid id, string collectionId, Dictionary<string, List<string>> customHeaders = null, CancellationToken cancellationToken = default(CancellationToken));
+        Task<HttpOperationResponse> DeleteWithHttpMessagesAsync(System.Guid id, Dictionary<string, List<string>> customHeaders = null, CancellationToken cancellationToken = default(CancellationToken));
     }
 }

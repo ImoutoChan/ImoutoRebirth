@@ -4,7 +4,7 @@
 // regenerated.
 // </auto-generated>
 
-namespace ImoutoRebirth.Room.HttpClient
+namespace ImoutoRebirth.Room.WebApi.Client
 {
     using Models;
     using System.Collections;
@@ -13,101 +13,107 @@ namespace ImoutoRebirth.Room.HttpClient
     using System.Threading.Tasks;
 
     /// <summary>
-    /// Extension methods for Collections.
+    /// Extension methods for CollectionFiles.
     /// </summary>
-    public static partial class CollectionsExtensions
+    public static partial class CollectionFilesExtensions
     {
             /// <summary>
-            /// Retrieve all collections.
+            /// Retrieve all files by request.
             /// </summary>
             /// <param name='operations'>
             /// The operations group for this extension method.
             /// </param>
-            public static IList<CollectionResponse> GetAll(this ICollections operations)
+            /// <param name='body'>
+            /// </param>
+            public static IList<CollectionFileResponse> Search(this ICollectionFiles operations, CollectionFilesRequest body = default(CollectionFilesRequest))
             {
-                return operations.GetAllAsync().GetAwaiter().GetResult();
+                return operations.SearchAsync(body).GetAwaiter().GetResult();
             }
 
             /// <summary>
-            /// Retrieve all collections.
+            /// Retrieve all files by request.
             /// </summary>
             /// <param name='operations'>
             /// The operations group for this extension method.
+            /// </param>
+            /// <param name='body'>
             /// </param>
             /// <param name='cancellationToken'>
             /// The cancellation token.
             /// </param>
-            public static async Task<IList<CollectionResponse>> GetAllAsync(this ICollections operations, CancellationToken cancellationToken = default(CancellationToken))
+            public static async Task<IList<CollectionFileResponse>> SearchAsync(this ICollectionFiles operations, CollectionFilesRequest body = default(CollectionFilesRequest), CancellationToken cancellationToken = default(CancellationToken))
             {
-                using (var _result = await operations.GetAllWithHttpMessagesAsync(null, cancellationToken).ConfigureAwait(false))
+                using (var _result = await operations.SearchWithHttpMessagesAsync(body, null, cancellationToken).ConfigureAwait(false))
                 {
                     return _result.Body;
                 }
             }
 
             /// <summary>
-            /// Create new collection with specific name.
+            /// Retrieve count of files by request.
             /// </summary>
+            /// <remarks>
+            /// Note that Skip and Count fields are ignored.
+            /// </remarks>
             /// <param name='operations'>
             /// The operations group for this extension method.
             /// </param>
             /// <param name='body'>
-            /// Collection parameters.
             /// </param>
-            public static CollectionResponse Create(this ICollections operations, CollectionCreateRequest body = default(CollectionCreateRequest))
+            public static int? Count(this ICollectionFiles operations, CollectionFilesRequest body = default(CollectionFilesRequest))
             {
-                return operations.CreateAsync(body).GetAwaiter().GetResult();
+                return operations.CountAsync(body).GetAwaiter().GetResult();
             }
 
             /// <summary>
-            /// Create new collection with specific name.
+            /// Retrieve count of files by request.
             /// </summary>
+            /// <remarks>
+            /// Note that Skip and Count fields are ignored.
+            /// </remarks>
             /// <param name='operations'>
             /// The operations group for this extension method.
             /// </param>
             /// <param name='body'>
-            /// Collection parameters.
             /// </param>
             /// <param name='cancellationToken'>
             /// The cancellation token.
             /// </param>
-            public static async Task<CollectionResponse> CreateAsync(this ICollections operations, CollectionCreateRequest body = default(CollectionCreateRequest), CancellationToken cancellationToken = default(CancellationToken))
+            public static async Task<int?> CountAsync(this ICollectionFiles operations, CollectionFilesRequest body = default(CollectionFilesRequest), CancellationToken cancellationToken = default(CancellationToken))
             {
-                using (var _result = await operations.CreateWithHttpMessagesAsync(body, null, cancellationToken).ConfigureAwait(false))
+                using (var _result = await operations.CountWithHttpMessagesAsync(body, null, cancellationToken).ConfigureAwait(false))
                 {
                     return _result.Body;
                 }
             }
 
             /// <summary>
-            /// Delete collection by id.
+            /// Remove file with id.
             /// </summary>
             /// <param name='operations'>
             /// The operations group for this extension method.
             /// </param>
             /// <param name='id'>
-            /// Collection id.
             /// </param>
-            public static void Delete(this ICollections operations, System.Guid id)
+            public static void Remove(this ICollectionFiles operations, System.Guid id)
             {
-                operations.DeleteAsync(id).GetAwaiter().GetResult();
+                operations.RemoveAsync(id).GetAwaiter().GetResult();
             }
 
             /// <summary>
-            /// Delete collection by id.
+            /// Remove file with id.
             /// </summary>
             /// <param name='operations'>
             /// The operations group for this extension method.
             /// </param>
             /// <param name='id'>
-            /// Collection id.
             /// </param>
             /// <param name='cancellationToken'>
             /// The cancellation token.
             /// </param>
-            public static async Task DeleteAsync(this ICollections operations, System.Guid id, CancellationToken cancellationToken = default(CancellationToken))
+            public static async Task RemoveAsync(this ICollectionFiles operations, System.Guid id, CancellationToken cancellationToken = default(CancellationToken))
             {
-                (await operations.DeleteWithHttpMessagesAsync(id, null, cancellationToken).ConfigureAwait(false)).Dispose();
+                (await operations.RemoveWithHttpMessagesAsync(id, null, cancellationToken).ConfigureAwait(false)).Dispose();
             }
 
     }

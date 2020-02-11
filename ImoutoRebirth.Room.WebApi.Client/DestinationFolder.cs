@@ -4,7 +4,7 @@
 // regenerated.
 // </auto-generated>
 
-namespace ImoutoRebirth.Room.HttpClient
+namespace ImoutoRebirth.Room.WebApi.Client
 {
     using Microsoft.Rest;
     using Models;
@@ -21,7 +21,7 @@ namespace ImoutoRebirth.Room.HttpClient
     /// <summary>
     /// DestinationFolder operations.
     /// </summary>
-    public partial class DestinationFolder : IServiceOperations<ImoutoRebirthRoomAPI>, IDestinationFolder
+    public partial class DestinationFolder : IServiceOperations<ImoutoRebirthRoomWebApiClient>, IDestinationFolder
     {
         /// <summary>
         /// Initializes a new instance of the DestinationFolder class.
@@ -32,7 +32,7 @@ namespace ImoutoRebirth.Room.HttpClient
         /// <exception cref="System.ArgumentNullException">
         /// Thrown when a required parameter is null
         /// </exception>
-        public DestinationFolder(ImoutoRebirthRoomAPI client)
+        public DestinationFolder(ImoutoRebirthRoomWebApiClient client)
         {
             if (client == null)
             {
@@ -42,9 +42,9 @@ namespace ImoutoRebirth.Room.HttpClient
         }
 
         /// <summary>
-        /// Gets a reference to the ImoutoRebirthRoomAPI
+        /// Gets a reference to the ImoutoRebirthRoomWebApiClient
         /// </summary>
-        public ImoutoRebirthRoomAPI Client { get; private set; }
+        public ImoutoRebirthRoomWebApiClient Client { get; private set; }
 
         /// <summary>
         /// Get the destination folder for collection.
@@ -243,7 +243,7 @@ namespace ImoutoRebirth.Room.HttpClient
             {
                 _requestContent = Microsoft.Rest.Serialization.SafeJsonConvert.SerializeObject(body, Client.SerializationSettings);
                 _httpRequest.Content = new StringContent(_requestContent, System.Text.Encoding.UTF8);
-                _httpRequest.Content.Headers.ContentType =System.Net.Http.Headers.MediaTypeHeaderValue.Parse("application/json-patch+json; charset=utf-8");
+                _httpRequest.Content.Headers.ContentType =System.Net.Http.Headers.MediaTypeHeaderValue.Parse("application/json; charset=utf-8");
             }
             // Send Request
             if (_shouldTrace)

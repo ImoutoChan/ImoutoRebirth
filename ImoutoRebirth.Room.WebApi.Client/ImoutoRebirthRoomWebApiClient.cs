@@ -4,7 +4,7 @@
 // regenerated.
 // </auto-generated>
 
-namespace ImoutoRebirth.Room.HttpClient
+namespace ImoutoRebirth.Room.WebApi.Client
 {
     using Microsoft.Rest;
     using Microsoft.Rest.Serialization;
@@ -15,7 +15,7 @@ namespace ImoutoRebirth.Room.HttpClient
     using System.Net;
     using System.Net.Http;
 
-    public partial class ImoutoRebirthRoomAPI : ServiceClient<ImoutoRebirthRoomAPI>, IImoutoRebirthRoomAPI
+    public partial class ImoutoRebirthRoomWebApiClient : ServiceClient<ImoutoRebirthRoomWebApiClient>, IImoutoRebirthRoomWebApiClient
     {
         /// <summary>
         /// The base URI of the service.
@@ -53,31 +53,31 @@ namespace ImoutoRebirth.Room.HttpClient
         public virtual ISourceFolders SourceFolders { get; private set; }
 
         /// <summary>
-        /// Initializes a new instance of the ImoutoRebirthRoomAPI class.
+        /// Initializes a new instance of the ImoutoRebirthRoomWebApiClient class.
         /// </summary>
         /// <param name='httpClient'>
         /// HttpClient to be used
         /// </param>
         /// <param name='disposeHttpClient'>
-        /// True: will dispose the provided httpClient on calling ImoutoRebirthRoomAPI.Dispose(). False: will not dispose provided httpClient</param>
-        public ImoutoRebirthRoomAPI(HttpClient httpClient, bool disposeHttpClient) : base(httpClient, disposeHttpClient)
+        /// True: will dispose the provided httpClient on calling ImoutoRebirthRoomWebApiClient.Dispose(). False: will not dispose provided httpClient</param>
+        public ImoutoRebirthRoomWebApiClient(HttpClient httpClient, bool disposeHttpClient) : base(httpClient, disposeHttpClient)
         {
             Initialize();
         }
 
         /// <summary>
-        /// Initializes a new instance of the ImoutoRebirthRoomAPI class.
+        /// Initializes a new instance of the ImoutoRebirthRoomWebApiClient class.
         /// </summary>
         /// <param name='handlers'>
         /// Optional. The delegating handlers to add to the http client pipeline.
         /// </param>
-        public ImoutoRebirthRoomAPI(params DelegatingHandler[] handlers) : base(handlers)
+        public ImoutoRebirthRoomWebApiClient(params DelegatingHandler[] handlers) : base(handlers)
         {
             Initialize();
         }
 
         /// <summary>
-        /// Initializes a new instance of the ImoutoRebirthRoomAPI class.
+        /// Initializes a new instance of the ImoutoRebirthRoomWebApiClient class.
         /// </summary>
         /// <param name='rootHandler'>
         /// Optional. The http client handler used to handle http transport.
@@ -85,13 +85,13 @@ namespace ImoutoRebirth.Room.HttpClient
         /// <param name='handlers'>
         /// Optional. The delegating handlers to add to the http client pipeline.
         /// </param>
-        public ImoutoRebirthRoomAPI(HttpClientHandler rootHandler, params DelegatingHandler[] handlers) : base(rootHandler, handlers)
+        public ImoutoRebirthRoomWebApiClient(HttpClientHandler rootHandler, params DelegatingHandler[] handlers) : base(rootHandler, handlers)
         {
             Initialize();
         }
 
         /// <summary>
-        /// Initializes a new instance of the ImoutoRebirthRoomAPI class.
+        /// Initializes a new instance of the ImoutoRebirthRoomWebApiClient class.
         /// </summary>
         /// <param name='baseUri'>
         /// Optional. The base URI of the service.
@@ -102,7 +102,7 @@ namespace ImoutoRebirth.Room.HttpClient
         /// <exception cref="System.ArgumentNullException">
         /// Thrown when a required parameter is null
         /// </exception>
-        public ImoutoRebirthRoomAPI(System.Uri baseUri, params DelegatingHandler[] handlers) : this(handlers)
+        public ImoutoRebirthRoomWebApiClient(System.Uri baseUri, params DelegatingHandler[] handlers) : this(handlers)
         {
             if (baseUri == null)
             {
@@ -112,7 +112,7 @@ namespace ImoutoRebirth.Room.HttpClient
         }
 
         /// <summary>
-        /// Initializes a new instance of the ImoutoRebirthRoomAPI class.
+        /// Initializes a new instance of the ImoutoRebirthRoomWebApiClient class.
         /// </summary>
         /// <param name='baseUri'>
         /// Optional. The base URI of the service.
@@ -126,7 +126,7 @@ namespace ImoutoRebirth.Room.HttpClient
         /// <exception cref="System.ArgumentNullException">
         /// Thrown when a required parameter is null
         /// </exception>
-        public ImoutoRebirthRoomAPI(System.Uri baseUri, HttpClientHandler rootHandler, params DelegatingHandler[] handlers) : this(rootHandler, handlers)
+        public ImoutoRebirthRoomWebApiClient(System.Uri baseUri, HttpClientHandler rootHandler, params DelegatingHandler[] handlers) : this(rootHandler, handlers)
         {
             if (baseUri == null)
             {

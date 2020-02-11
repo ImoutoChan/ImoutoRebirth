@@ -4,7 +4,7 @@
 // regenerated.
 // </auto-generated>
 
-namespace ImoutoRebirth.Room.HttpClient.Models
+namespace ImoutoRebirth.Room.WebApi.Client.Models
 {
     using Microsoft.Rest;
     using Newtonsoft.Json;
@@ -25,7 +25,7 @@ namespace ImoutoRebirth.Room.HttpClient.Models
         /// Initializes a new instance of the DestinationFolderCreateRequest
         /// class.
         /// </summary>
-        public DestinationFolderCreateRequest(string path, string formatErrorSubfolder, string hashErrorSubfolder, string withoutHashErrorSubfolder, bool? shouldCreateSubfoldersByHash = default(bool?), bool? shouldRenameByHash = default(bool?))
+        public DestinationFolderCreateRequest(string path, bool shouldCreateSubfoldersByHash, bool shouldRenameByHash, string formatErrorSubfolder, string hashErrorSubfolder, string withoutHashErrorSubfolder)
         {
             Path = path;
             ShouldCreateSubfoldersByHash = shouldCreateSubfoldersByHash;
@@ -49,12 +49,12 @@ namespace ImoutoRebirth.Room.HttpClient.Models
         /// <summary>
         /// </summary>
         [JsonProperty(PropertyName = "shouldCreateSubfoldersByHash")]
-        public bool? ShouldCreateSubfoldersByHash { get; set; }
+        public bool ShouldCreateSubfoldersByHash { get; set; }
 
         /// <summary>
         /// </summary>
         [JsonProperty(PropertyName = "shouldRenameByHash")]
-        public bool? ShouldRenameByHash { get; set; }
+        public bool ShouldRenameByHash { get; set; }
 
         /// <summary>
         /// </summary>

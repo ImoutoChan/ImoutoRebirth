@@ -4,7 +4,7 @@
 // regenerated.
 // </auto-generated>
 
-namespace ImoutoRebirth.Room.HttpClient.Models
+namespace ImoutoRebirth.Room.WebApi.Client.Models
 {
     using Newtonsoft.Json;
     using System.Collections;
@@ -24,7 +24,7 @@ namespace ImoutoRebirth.Room.HttpClient.Models
         /// <summary>
         /// Initializes a new instance of the SourceFolderResponse class.
         /// </summary>
-        public SourceFolderResponse(System.Guid? id = default(System.Guid?), System.Guid? collectionId = default(System.Guid?), string path = default(string), bool? shouldCheckFormat = default(bool?), bool? shouldCheckHashFromName = default(bool?), bool? shouldCreateTagsFromSubfolders = default(bool?), bool? shouldAddTagFromFilename = default(bool?), IList<string> supportedExtensions = default(IList<string>))
+        public SourceFolderResponse(System.Guid id, System.Guid collectionId, bool shouldCheckFormat, bool shouldCheckHashFromName, bool shouldCreateTagsFromSubfolders, bool shouldAddTagFromFilename, string path = default(string), IList<string> supportedExtensions = default(IList<string>))
         {
             Id = id;
             CollectionId = collectionId;
@@ -45,12 +45,12 @@ namespace ImoutoRebirth.Room.HttpClient.Models
         /// <summary>
         /// </summary>
         [JsonProperty(PropertyName = "id")]
-        public System.Guid? Id { get; private set; }
+        public System.Guid Id { get; private set; }
 
         /// <summary>
         /// </summary>
         [JsonProperty(PropertyName = "collectionId")]
-        public System.Guid? CollectionId { get; private set; }
+        public System.Guid CollectionId { get; private set; }
 
         /// <summary>
         /// </summary>
@@ -60,27 +60,36 @@ namespace ImoutoRebirth.Room.HttpClient.Models
         /// <summary>
         /// </summary>
         [JsonProperty(PropertyName = "shouldCheckFormat")]
-        public bool? ShouldCheckFormat { get; private set; }
+        public bool ShouldCheckFormat { get; private set; }
 
         /// <summary>
         /// </summary>
         [JsonProperty(PropertyName = "shouldCheckHashFromName")]
-        public bool? ShouldCheckHashFromName { get; private set; }
+        public bool ShouldCheckHashFromName { get; private set; }
 
         /// <summary>
         /// </summary>
         [JsonProperty(PropertyName = "shouldCreateTagsFromSubfolders")]
-        public bool? ShouldCreateTagsFromSubfolders { get; private set; }
+        public bool ShouldCreateTagsFromSubfolders { get; private set; }
 
         /// <summary>
         /// </summary>
         [JsonProperty(PropertyName = "shouldAddTagFromFilename")]
-        public bool? ShouldAddTagFromFilename { get; private set; }
+        public bool ShouldAddTagFromFilename { get; private set; }
 
         /// <summary>
         /// </summary>
         [JsonProperty(PropertyName = "supportedExtensions")]
         public IList<string> SupportedExtensions { get; private set; }
 
+        /// <summary>
+        /// Validate the object.
+        /// </summary>
+        /// <exception cref="Microsoft.Rest.ValidationException">
+        /// Thrown if validation fails
+        /// </exception>
+        public virtual void Validate()
+        {
+        }
     }
 }

@@ -4,7 +4,7 @@
 // regenerated.
 // </auto-generated>
 
-namespace ImoutoRebirth.Room.HttpClient.Models
+namespace ImoutoRebirth.Room.WebApi.Client.Models
 {
     using Newtonsoft.Json;
     using System.Linq;
@@ -22,7 +22,7 @@ namespace ImoutoRebirth.Room.HttpClient.Models
         /// <summary>
         /// Initializes a new instance of the CollectionResponse class.
         /// </summary>
-        public CollectionResponse(System.Guid? id = default(System.Guid?), string name = default(string))
+        public CollectionResponse(System.Guid id, string name = default(string))
         {
             Id = id;
             Name = name;
@@ -37,12 +37,22 @@ namespace ImoutoRebirth.Room.HttpClient.Models
         /// <summary>
         /// </summary>
         [JsonProperty(PropertyName = "id")]
-        public System.Guid? Id { get; private set; }
+        public System.Guid Id { get; private set; }
 
         /// <summary>
         /// </summary>
         [JsonProperty(PropertyName = "name")]
         public string Name { get; private set; }
 
+        /// <summary>
+        /// Validate the object.
+        /// </summary>
+        /// <exception cref="Microsoft.Rest.ValidationException">
+        /// Thrown if validation fails
+        /// </exception>
+        public virtual void Validate()
+        {
+            //Nothing to validate
+        }
     }
 }

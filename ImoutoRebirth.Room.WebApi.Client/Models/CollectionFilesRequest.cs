@@ -4,7 +4,7 @@
 // regenerated.
 // </auto-generated>
 
-namespace ImoutoRebirth.Room.HttpClient.Models
+namespace ImoutoRebirth.Room.WebApi.Client.Models
 {
     using Newtonsoft.Json;
     using System.Collections;

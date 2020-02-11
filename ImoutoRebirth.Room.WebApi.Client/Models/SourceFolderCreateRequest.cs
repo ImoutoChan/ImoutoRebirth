@@ -4,7 +4,7 @@
 // regenerated.
 // </auto-generated>
 
-namespace ImoutoRebirth.Room.HttpClient.Models
+namespace ImoutoRebirth.Room.WebApi.Client.Models
 {
     using Microsoft.Rest;
     using Newtonsoft.Json;
@@ -25,7 +25,7 @@ namespace ImoutoRebirth.Room.HttpClient.Models
         /// <summary>
         /// Initializes a new instance of the SourceFolderCreateRequest class.
         /// </summary>
-        public SourceFolderCreateRequest(string path, bool? shouldCheckFormat = default(bool?), bool? shouldCheckHashFromName = default(bool?), bool? shouldCreateTagsFromSubfolders = default(bool?), bool? shouldAddTagFromFilename = default(bool?), IList<string> supportedExtensions = default(IList<string>))
+        public SourceFolderCreateRequest(string path, bool shouldCheckFormat, bool shouldCheckHashFromName, bool shouldCreateTagsFromSubfolders, bool shouldAddTagFromFilename, IList<string> supportedExtensions = default(IList<string>))
         {
             Path = path;
             ShouldCheckFormat = shouldCheckFormat;
@@ -49,22 +49,22 @@ namespace ImoutoRebirth.Room.HttpClient.Models
         /// <summary>
         /// </summary>
         [JsonProperty(PropertyName = "shouldCheckFormat")]
-        public bool? ShouldCheckFormat { get; set; }
+        public bool ShouldCheckFormat { get; set; }
 
         /// <summary>
         /// </summary>
         [JsonProperty(PropertyName = "shouldCheckHashFromName")]
-        public bool? ShouldCheckHashFromName { get; set; }
+        public bool ShouldCheckHashFromName { get; set; }
 
         /// <summary>
         /// </summary>
         [JsonProperty(PropertyName = "shouldCreateTagsFromSubfolders")]
-        public bool? ShouldCreateTagsFromSubfolders { get; set; }
+        public bool ShouldCreateTagsFromSubfolders { get; set; }
 
         /// <summary>
         /// </summary>
         [JsonProperty(PropertyName = "shouldAddTagFromFilename")]
-        public bool? ShouldAddTagFromFilename { get; set; }
+        public bool ShouldAddTagFromFilename { get; set; }
 
         /// <summary>
         /// </summary>

@@ -4,14 +4,14 @@
 // regenerated.
 // </auto-generated>
 
-namespace ImoutoRebirth.Room.HttpClient
+namespace ImoutoRebirth.Room.WebApi.Client
 {
     using Models;
     using Newtonsoft.Json;
 
     /// <summary>
     /// </summary>
-    public partial interface IImoutoRebirthRoomAPI : System.IDisposable
+    public partial interface IImoutoRebirthRoomWebApiClient : System.IDisposable
     {
         /// <summary>
         /// The base URI of the service.

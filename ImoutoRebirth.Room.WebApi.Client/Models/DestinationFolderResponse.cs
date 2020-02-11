@@ -4,7 +4,7 @@
 // regenerated.
 // </auto-generated>
 
-namespace ImoutoRebirth.Room.HttpClient.Models
+namespace ImoutoRebirth.Room.WebApi.Client.Models
 {
     using Newtonsoft.Json;
     using System.Linq;
@@ -22,7 +22,7 @@ namespace ImoutoRebirth.Room.HttpClient.Models
         /// <summary>
         /// Initializes a new instance of the DestinationFolderResponse class.
         /// </summary>
-        public DestinationFolderResponse(System.Guid? id = default(System.Guid?), System.Guid? collectionId = default(System.Guid?), string path = default(string), bool? shouldCreateSubfoldersByHash = default(bool?), bool? shouldRenameByHash = default(bool?), string formatErrorSubfolder = default(string), string hashErrorSubfolder = default(string), string withoutHashErrorSubfolder = default(string))
+        public DestinationFolderResponse(System.Guid id, System.Guid collectionId, bool shouldCreateSubfoldersByHash, bool shouldRenameByHash, string path = default(string), string formatErrorSubfolder = default(string), string hashErrorSubfolder = default(string), string withoutHashErrorSubfolder = default(string))
         {
             Id = id;
             CollectionId = collectionId;
@@ -43,12 +43,12 @@ namespace ImoutoRebirth.Room.HttpClient.Models
         /// <summary>
         /// </summary>
         [JsonProperty(PropertyName = "id")]
-        public System.Guid? Id { get; private set; }
+        public System.Guid Id { get; private set; }
 
         /// <summary>
         /// </summary>
         [JsonProperty(PropertyName = "collectionId")]
-        public System.Guid? CollectionId { get; private set; }
+        public System.Guid CollectionId { get; private set; }
 
         /// <summary>
         /// </summary>
@@ -58,12 +58,12 @@ namespace ImoutoRebirth.Room.HttpClient.Models
         /// <summary>
         /// </summary>
         [JsonProperty(PropertyName = "shouldCreateSubfoldersByHash")]
-        public bool? ShouldCreateSubfoldersByHash { get; private set; }
+        public bool ShouldCreateSubfoldersByHash { get; private set; }
 
         /// <summary>
         /// </summary>
         [JsonProperty(PropertyName = "shouldRenameByHash")]
-        public bool? ShouldRenameByHash { get; private set; }
+        public bool ShouldRenameByHash { get; private set; }
 
         /// <summary>
         /// </summary>
@@ -80,5 +80,15 @@ namespace ImoutoRebirth.Room.HttpClient.Models
         [JsonProperty(PropertyName = "withoutHashErrorSubfolder")]
         public string WithoutHashErrorSubfolder { get; private set; }
 
+        /// <summary>
+        /// Validate the object.
+        /// </summary>
+        /// <exception cref="Microsoft.Rest.ValidationException">
+        /// Thrown if validation fails
+        /// </exception>
+        public virtual void Validate()
+        {
+            //Nothing to validate
+        }
     }
 }
