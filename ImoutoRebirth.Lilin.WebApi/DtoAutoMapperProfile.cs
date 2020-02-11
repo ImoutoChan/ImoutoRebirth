@@ -26,7 +26,9 @@ namespace ImoutoRebirth.Lilin.WebApi
                 .ForCtorParam("limit", o => o.MapFrom(x => x.Count));
             CreateMap<FilesSearchRequest, FilesSearchQueryCount>();
 
-            CreateMap<CreateFileTagsRequest, BindTagsToFilesCommand>();
+            CreateMap<BindTagsRequest, BindTagsCommand>();
+            CreateMap<UnbindTagRequest, UnbindTagCommand>();
+
             CreateMap<FileTagRequest, FileTagInfo>();
         }
 

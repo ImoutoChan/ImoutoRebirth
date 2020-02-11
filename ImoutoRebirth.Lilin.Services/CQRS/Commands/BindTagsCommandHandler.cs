@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using ImoutoRebirth.Common;
 using ImoutoRebirth.Common.Cqrs.Abstract;
 using ImoutoRebirth.Lilin.Core.Infrastructure;
 using ImoutoRebirth.Lilin.Core.Models;
@@ -14,26 +13,23 @@ using Microsoft.Extensions.Logging;
 
 namespace ImoutoRebirth.Lilin.Services.CQRS.Commands
 {
-    public class BindTagsToFilesCommandHandler : ICommandHandler<BindTagsToFilesCommand>
+    public class BindTagsCommandHandler : ICommandHandler<BindTagsCommand>
     {
-        private readonly IFileTagRepository _fileTagRepository;
-        private readonly ILogger<BindTagsToFilesCommandHandler> _logger;
+        private readonly ILogger<BindTagsCommandHandler> _logger;
         private readonly IFileInfoService _fileInfoService;
         private readonly ITagRepository _tagRepository;
 
-        public BindTagsToFilesCommandHandler(
-            IFileTagRepository fileTagRepository, 
-            ILogger<BindTagsToFilesCommandHandler> logger,
+        public BindTagsCommandHandler(
+            ILogger<BindTagsCommandHandler> logger,
             IFileInfoService fileInfoService,
             ITagRepository tagRepository)
         {
-            _fileTagRepository = fileTagRepository;
             _logger = logger;
             _fileInfoService = fileInfoService;
             _tagRepository = tagRepository;
         }
 
-        public async Task<Unit> Handle(BindTagsToFilesCommand request, CancellationToken cancellationToken)
+        public async Task<Unit> Handle(BindTagsCommand request, CancellationToken cancellationToken)
         {
             if (!request.FileTags.Any())
             {
@@ -66,7 +62,7 @@ namespace ImoutoRebirth.Lilin.Services.CQRS.Commands
             return Unit.Value;
         }
 
-        private async Task<IReadOnlyCollection<FileInfo>> LoadFileInfos(BindTagsToFilesCommand request)
+        private async Task<IReadOnlyCollection<FileInfo>> LoadFileInfos(BindTagsCommand request)
         {
             var fileIds = request
                 .FileTags
@@ -84,7 +80,7 @@ namespace ImoutoRebirth.Lilin.Services.CQRS.Commands
             return fileInfos;
         }
 
-        private async Task<Dictionary<Guid, Tag>> LoadTags(BindTagsToFilesCommand request)
+        private async Task<Dictionary<Guid, Tag>> LoadTags(BindTagsCommand request)
         {
             var tagIds = request
                 .FileTags

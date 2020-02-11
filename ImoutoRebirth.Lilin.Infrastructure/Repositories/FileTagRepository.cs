@@ -58,15 +58,6 @@ namespace ImoutoRebirth.Lilin.Infrastructure.Repositories
 
             return results.Select(x => x.ToModel()).ToArray();
         }
-        
-        public async Task Update(FileTag fileTag)
-        {
-            var fileTagEntity = await GetByFileTag(fileTag).SingleAsync();
-
-            fileTagEntity.Value = fileTag.Value;
-
-            await _lilinDbContext.SaveChangesAsync();
-        }
 
         public async Task Add(FileTag fileTag)
         {
@@ -98,7 +89,8 @@ namespace ImoutoRebirth.Lilin.Infrastructure.Repositories
             return _lilinDbContext.FileTags.Where(
                 x => x.Source == fileTag.Source
                      && x.TagId == fileTag.Tag.Id
-                     && x.FileId == fileTag.FileId);
+                     && x.FileId == fileTag.FileId
+                     && x.Value == fileTag.Value);
         }
 
         private IQueryable<Guid> GetSearchFilesQueryable(IReadOnlyCollection<TagSearchEntry> tagSearchEntries)

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using ImoutoRebirth.Lilin.Core.Events;
 
 namespace ImoutoRebirth.Lilin.Core.Models.FileInfoAggregate
@@ -50,6 +51,17 @@ namespace ImoutoRebirth.Lilin.Core.Models.FileInfoAggregate
         public void AddFileTag(FileTag newTag)
         {
             _tags.Add(newTag);
+        }
+
+        public void RemoveFileTag(Guid tagId, MetadataSource source, string? value)
+        {
+            var tag = Tags.FirstOrDefault(
+                x => x.Tag.Id == tagId
+                     && x.Source == source
+                     && value == x.Value);
+
+            if (tag != null)
+                _tags.Remove(tag);
         }
     }
 }

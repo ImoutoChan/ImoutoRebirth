@@ -17,8 +17,6 @@ namespace ImoutoRebirth.Lilin.Core.Infrastructure
 
         Task<IReadOnlyCollection<FileTag>> GetForFile(Guid fileId);
         
-        Task Update(FileTag fileTag);
-
         Task Add(FileTag fileTag);
         
         Task AddBatch(IReadOnlyCollection<FileTagInfo> fileTags);

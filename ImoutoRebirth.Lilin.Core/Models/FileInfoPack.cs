@@ -19,10 +19,8 @@ namespace ImoutoRebirth.Lilin.Core.Models
             {
                 foreach (var newTag in newFileTags.Where(x => x.FileId == file.Id))
                 {
-                    var existingTags = file.Tags.Where(x => x.IsSameIdentity(newTag));
-
-                    var shouldSkip = existingTags.Any(x => x.Value == newTag.Value);
-
+                    var shouldSkip = file.Tags.Any(x => x.IsSameIdentity(newTag));
+                    
                     if (shouldSkip)
                         continue;
 

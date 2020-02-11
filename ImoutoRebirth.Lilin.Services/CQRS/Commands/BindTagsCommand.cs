@@ -7,11 +7,11 @@ using ImoutoRebirth.Lilin.Core.Models;
 namespace ImoutoRebirth.Lilin.Services.CQRS.Commands
 {
     [CommandQuery(IsolationLevel.ReadCommitted)]
-    public class BindTagsToFilesCommand : ICommand
+    public class BindTagsCommand : ICommand
     {
         public IReadOnlyCollection<FileTagInfo> FileTags { get; }
 
-        public BindTagsToFilesCommand(IReadOnlyCollection<FileTagInfo> fileTags)
+        public BindTagsCommand(IReadOnlyCollection<FileTagInfo> fileTags)
         {
             FileTags = fileTags;
         }

@@ -76,14 +76,26 @@ namespace ImoutoRebirth.Lilin.WebApi.Controllers
             var query = _mapper.Map<FilesSearchQueryCount>(request);
             return await _mediator.Send(query);
         }
-        
+
         /// <summary>
         ///     Create FileTagInfo and bind tags to files with specified values.
         /// </summary>
         [HttpPost("tags")]
-        public async Task<ActionResult> CreateFileTags([FromBody] CreateFileTagsRequest request)
+        public async Task<ActionResult> BindTagsToFiles([FromBody] BindTagsRequest request)
         {
-            var command = _mapper.Map<BindTagsToFilesCommand>(request);
+            var command = _mapper.Map<BindTagsCommand>(request);
+            await _mediator.Send(command);
+
+            return Ok();
+        }
+
+        /// <summary>
+        ///     Remove tag from file with given value.
+        /// </summary>
+        [HttpDelete]
+        public async Task<ActionResult> UnbindTagFromFile([FromBody] UnbindTagRequest request)
+        {
+            var command = _mapper.Map<UnbindTagCommand>(request);
             await _mediator.Send(command);
 
             return Ok();

@@ -18,23 +18,17 @@ namespace ImoutoRebirth.Lilin.Services.CQRS.Commands
 {
     public class SaveMetadataCommandHandler : ICommandHandler<SaveMetadataCommand>
     {
-        private readonly IFileTagRepository _fileTagRepository;
-        private readonly IFileNoteRepository _fileNoteRepository;
         private readonly ITagTypeRepository _tagTypeRepository;
         private readonly ITagRepository _tagRepository;
         private readonly IEventStorage _eventStorage;
         private readonly IFileInfoService _fileInfoService;
 
         public SaveMetadataCommandHandler(
-            IFileTagRepository fileTagRepository,
-            IFileNoteRepository fileNoteRepository,
             ITagTypeRepository tagTypeRepository,
             ITagRepository tagRepository,
             IEventStorage eventStorage,
             IFileInfoService fileInfoService)
         {
-            _fileTagRepository = fileTagRepository;
-            _fileNoteRepository = fileNoteRepository;
             _tagTypeRepository = tagTypeRepository;
             _tagRepository = tagRepository;
             _eventStorage = eventStorage;

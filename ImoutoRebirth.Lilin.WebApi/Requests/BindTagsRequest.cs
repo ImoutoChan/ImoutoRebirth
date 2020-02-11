@@ -1,9 +1,11 @@
 ﻿using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 
 namespace ImoutoRebirth.Lilin.WebApi.Requests
 {
-    public class CreateFileTagsRequest
+    public class BindTagsRequest
     {
+        [Required]
         public IReadOnlyCollection<FileTagRequest> FileTags { get; set; } = default!;
     }
 }

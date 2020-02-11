@@ -62,16 +62,13 @@ namespace ImoutoRebirth.Lilin.Services.ApplicationServices
             {
                 var existedTag = existingTags.FirstOrDefault(x => x.IsSameIdentity(newTag));
 
-                if (existedTag != null)
+                if (existedTag == null)
                 {
-                    if (existedTag.Value != newTag.Value)
-                        await _fileTagRepository.Update(newTag);
-
-                    existingTags.Remove(existedTag);
+                    await _fileTagRepository.Add(newTag);
                 }
                 else
                 {
-                    await _fileTagRepository.Add(newTag);
+                    existingTags.Remove(existedTag);
                 }
             }
 
