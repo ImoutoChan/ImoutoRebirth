@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Builder;
+﻿using System.Text.Json.Serialization;
+using ImoutoRebirth.Common.WebApi;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -20,8 +22,12 @@ namespace ImoutoRebirth.Lilin.WebApi
 
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddControllers();
-            services.AddSwagger();
+            services
+                .AddControllers()
+                .AddJsonOptions(
+                    options =>
+                        options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter()));
+            services.AddSwagger("ImoutoRebirth.Lilin WebApi Client", typeof(WebApiStartup).Assembly);
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
