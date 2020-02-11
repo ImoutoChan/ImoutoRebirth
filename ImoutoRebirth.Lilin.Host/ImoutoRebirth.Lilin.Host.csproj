@@ -7,9 +7,6 @@
     <SelfContained>false</SelfContained>
     <LangVersion>8</LangVersion>
     <Nullable>enable</Nullable>
-  </PropertyGroup>
-
-  <PropertyGroup>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
   </PropertyGroup>
 
