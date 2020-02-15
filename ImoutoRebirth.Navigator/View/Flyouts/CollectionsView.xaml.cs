@@ -26,7 +26,7 @@ namespace ImoutoRebirth.Navigator.View.Flyouts
             if (result == null) //user pressed cancel
                 return;
 
-            var error = (DataContext as CollectionManagerVM).CreateCollection(result);
+            var error = await ((CollectionManagerVm) DataContext).CreateCollection(result);
             if (error != null)
             {
                 await parentWindow.ShowMessageAsync("Can not create collection", error);
@@ -52,7 +52,7 @@ namespace ImoutoRebirth.Navigator.View.Flyouts
             if (result == null) //user pressed cancel
                 return;
 
-            var error = (DataContext as CollectionManagerVM).Rename(result);
+            var error = (DataContext as CollectionManagerVm).Rename(result);
             if (error != null)
             {
                 await parentWindow.ShowMessageAsync("Can not create collection", error);

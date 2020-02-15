@@ -3,10 +3,11 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using System.Windows.Media;
-using Imouto.WcfExchangeLibrary.Core.Data;
 using ImoutoRebirth.Navigator.Commands;
+using ImoutoRebirth.Navigator.Services;
+using ImoutoRebirth.Navigator.Services.Tags;
 using ImoutoRebirth.Navigator.Utils;
-using ImoutoRebirth.Navigator.WCF;
+using Tag = ImoutoRebirth.Navigator.Services.Tags.Tag;
 
 namespace ImoutoRebirth.Navigator.ViewModel
 {
@@ -32,15 +33,18 @@ namespace ImoutoRebirth.Navigator.ViewModel
         #region Fields
 
         private ICommand _unbindCommand;
-        private readonly int? _targetId;
+        private readonly Guid? _targetId;
+        private readonly IFileTagService _fileTagService;
+        private SearchType _searchType;
 
         #endregion Fields
 
         #region Constructors
 
-        public BindedTagVM(BindedTag bindedTagModel, int? targetId = null)
+        public BindedTagVM(FileTag bindedTagModel, Guid? targetId = null)
         {
             Model = bindedTagModel;
+            _fileTagService = ServiceLocator.GetService<IFileTagService>();
             _targetId = targetId;
         }
 
@@ -50,13 +54,10 @@ namespace ImoutoRebirth.Navigator.ViewModel
 
         public SearchType SearchType
         {
-            get
-            {
-                return Model.SearchType;
-            }
+            get => _searchType;
             set
             {
-                Model.SearchType = value;
+                _searchType = value;
                 OnPropertyChanged(() => SearchType);
             }
         }
@@ -69,10 +70,7 @@ namespace ImoutoRebirth.Navigator.ViewModel
 
         public string Value
         {
-            get
-            {
-                return Model.Value;
-            }
+            get => Model.Value;
             set
             {
                 Model.Value = value;
@@ -80,7 +78,7 @@ namespace ImoutoRebirth.Navigator.ViewModel
             }
         }
 
-        public BindedTag Model { get; }
+        public FileTag Model { get; }
 
         public string Title
         {
@@ -96,13 +94,7 @@ namespace ImoutoRebirth.Navigator.ViewModel
             }
         }
 
-        public bool IsEditable
-        {
-            get
-            {
-                return Model.IsEditable;
-            }
-        }
+        public bool IsEditable => Model.IsEditable;
 
         public int TypePriority
         {
@@ -117,13 +109,7 @@ namespace ImoutoRebirth.Navigator.ViewModel
 
         #region Commands
 
-        public ICommand UnbindCommand
-        {
-            get
-            {
-                return _unbindCommand ?? (_unbindCommand = new RelayCommand(UnbindAsync));
-            }
-        }
+        public ICommand UnbindCommand => _unbindCommand ??= new RelayCommand(UnbindAsync);
 
         private async void UnbindAsync(object obj)
         {
@@ -142,15 +128,9 @@ namespace ImoutoRebirth.Navigator.ViewModel
             }
         }
 
-        private Task UnbindTagTask(int imageId, int tagId)
+        private async Task UnbindTagTask(Guid imageId, Guid tagId)
         {
-            return Task.Run(() =>
-            {
-                ImoutoService.Use(imoutoService =>
-                {
-                    imoutoService.UnbindTag(imageId, tagId);
-                });
-            });
+            await _fileTagService.UnbindTag(imageId, tagId);
         }
 
         #endregion Commands

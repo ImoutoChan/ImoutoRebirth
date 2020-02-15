@@ -24,7 +24,7 @@ namespace ImoutoRebirth.Navigator.ViewModel
 
         #region Constructors
 
-        public VideoEntryVM(string path, Size initPreviewSize = new Size(), int? dbId = null)
+        public VideoEntryVM(string path, Size initPreviewSize = new Size(), Guid? dbId = null)
         {
             if (!path.IsVideo())
             {
@@ -78,7 +78,7 @@ namespace ImoutoRebirth.Navigator.ViewModel
 
         public ListEntryType Type { get; }
 
-        public int? DbId { get; }
+        public Guid? DbId { get; }
 
         #endregion Properties
 

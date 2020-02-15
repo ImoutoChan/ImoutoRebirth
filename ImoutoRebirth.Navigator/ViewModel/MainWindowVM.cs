@@ -11,7 +11,8 @@ using System.Windows.Input;
 using Imouto.Utils.Core;
 using ImoutoRebirth.Navigator.Commands;
 using ImoutoRebirth.Navigator.Model;
-using ImoutoRebirth.Navigator.WCF;
+using ImoutoRebirth.Navigator.Services;
+using ImoutoRebirth.Navigator.Services.Tags;
 using MahApps.Metro.Controls.Dialogs;
 
 namespace ImoutoRebirth.Navigator.ViewModel
@@ -20,13 +21,15 @@ namespace ImoutoRebirth.Navigator.ViewModel
     {
         #region Fields
 
-        private readonly MainWindow _view;
+        private MainWindow _view;
         private CancellationTokenSource _ctsImageLoading;
         private int _previewSize = 256;
         private int _totalCount;
         private bool _isLoading;
         private string _status;
         private string _statusToolTip;
+        private static readonly SemaphoreSlim ReloadImagesAsyncSemaphore = new SemaphoreSlim(1, 1);
+        private readonly IFileService _fileService;
 
         #endregion Fields
 
@@ -34,11 +37,16 @@ namespace ImoutoRebirth.Navigator.ViewModel
 
         public MainWindowVM()
         {
+            _fileService = ServiceLocator.GetService<IFileService>();
+
             InitializeCommands();
 
             NavigatorList.CollectionChanged += (s, e) => OnPropertyChanged(() => LoadedCount);
+        }
 
-            CollectionManager.ReloadCollections();
+        public async Task InitializeAsync()
+        {
+            await CollectionManager.ReloadCollectionsAsync();
 
             TagSearchVM = new TagSearchVM(CollectionManager.Collections);
             TagSearchVM.SelectedTagsUpdated += TagSearchVM_SelectedTagsUpdated;
@@ -61,7 +69,9 @@ namespace ImoutoRebirth.Navigator.ViewModel
         {
             OnPropertyChanged(() => SelectedItems);
             TagSearchVM.UpdateCurrentTags(_view.ListBoxElement.SelectedItem as INavigatorListEntry);
-            FileInfoVM.UpdateCurrentInfo(_view.ListBoxElement.SelectedItem as INavigatorListEntry, NavigatorList.IndexOf(_view.ListBoxElement.SelectedItem as INavigatorListEntry));
+            FileInfoVM.UpdateCurrentInfo(
+                _view.ListBoxElement.SelectedItem as INavigatorListEntry, 
+                NavigatorList.IndexOf(_view.ListBoxElement.SelectedItem as INavigatorListEntry));
         }
 
         #endregion Constructors
@@ -76,13 +86,13 @@ namespace ImoutoRebirth.Navigator.ViewModel
 
         public string Title => "Imouto Navigator";
 
-        public TagSearchVM TagSearchVM { get; }
+        public TagSearchVM TagSearchVM { get; set; }
 
-        public CollectionManagerVM CollectionManager { get; } = new CollectionManagerVM();
+        public CollectionManagerVm CollectionManager { get; } = new CollectionManagerVm();
 
         public SettingsVM Settings { get; } = new SettingsVM();
 
-        public TagsEditVM TagsEdit { get; }
+        public TagsEditVM TagsEdit { get; set; }
 
         public bool IsLoading
         {
@@ -265,8 +275,6 @@ namespace ImoutoRebirth.Navigator.ViewModel
             }
         }
 
-        private static readonly SemaphoreSlim ReloadImagesAsyncSemaphore = new SemaphoreSlim(1, 1);
-
         private async void GetImagesFromCollectionAsync(int skip = 0, int block = 10)
         {
             // TODO COUNT
@@ -361,36 +369,28 @@ namespace ImoutoRebirth.Navigator.ViewModel
             }
         }
 
-        private Task<ObservableCollection<INavigatorListEntry>> GetImagesFromCollectionAsyncTask(int count, int skip)
+        private async Task<ObservableCollection<INavigatorListEntry>> GetImagesFromCollectionAsyncTask(
+            int count, 
+            int skip)
         {
-            return Task.Run(() =>
-            {
-                return new ObservableCollection<INavigatorListEntry>(ImoutoService.Use(imoutoService =>
-                {
-                    return imoutoService.SearchImage(TagSearchVM.SelectedColleciton.Value, 
-                                                     TagSearchVM
-                                                        .SelectedBindedTags
-                                                        .Select(x => x.Model)
-                                                        .ToList(), 
-                                                     count, 
-                                                     skip,
-                                                     App.AppGuid);
-                }).Select(x => EntryVM.GetListEntry(x.Item1, PreviewSize, x.Item2))
-                  .SkipExceptions()
-                );
-            });
+            var found = await _fileService.SearchFiles(
+                TagSearchVM.SelectedColleciton.Value,
+                TagSearchVM.SelectedBindedTags.Select(x => x.Model).ToList(),
+                count,
+                skip);
+
+            var entries = found
+                .Select(x => EntryVM.GetListEntry(x.Path, PreviewSize, x.Id))
+                .SkipExceptions();
+
+            return new ObservableCollection<INavigatorListEntry>(entries);
         }
 
-        private Task<int> GetImagesCountFromCollectionAsyncTask()
+        private async Task<int> GetImagesCountFromCollectionAsyncTask()
         {
-            return Task.Run(() =>
-            {
-                return ImoutoService.Use(imoutoService =>
-                {
-                    return imoutoService.CountSearchImage(TagSearchVM.SelectedColleciton.Value, 
-                        TagSearchVM.SelectedBindedTags.Select(x => x.Model).ToList());
-                });
-            });
+            return await _fileService.CountFiles(
+                TagSearchVM.SelectedColleciton.Value,
+                TagSearchVM.SelectedBindedTags.Select(x => x.Model).ToList());
         }
 
         private async void RemoveImage(object o)
@@ -408,28 +408,31 @@ namespace ImoutoRebirth.Navigator.ViewModel
                 NegativeButtonText = "No",
                 ColorScheme = MetroDialogColorScheme.Accented
             };
-            var result = await _view.ShowMessageDialog("Remove Element", $"Are you sure you want to remove this element from database?", MessageDialogStyle.AffirmativeAndNegative, mySettings);
+            var result = await _view.ShowMessageDialog(
+                "Remove Element", 
+                $"Are you sure you want to remove this element from database?", 
+                MessageDialogStyle.AffirmativeAndNegative, 
+                mySettings);
 
-            if (result == MessageDialogResult.Affirmative)
-            {
-                await Task.Run(() =>
-                {
-                    ImoutoService.Use(imoutoService =>
-                    {
-                        imoutoService.RemoveImage(selectedItem.DbId.Value);
-                    });
-                });
+            if (result != MessageDialogResult.Affirmative) 
+                return;
 
-                // NavigatorList.Remove(selectedItem);
 
-                await _view.ShowMessageDialog("Remove Element", "Element successfully removed.", MessageDialogStyle.Affirmative, new MetroDialogSettings
+            await _fileService.RemoveFile(selectedItem.DbId.Value);
+
+            // NavigatorList.Remove(selectedItem);
+
+            await _view.ShowMessageDialog(
+                "Remove Element",
+                "Element successfully removed.",
+                MessageDialogStyle.Affirmative,
+                new MetroDialogSettings
                 {
                     ColorScheme = MetroDialogColorScheme.Accented
                 });
-            }
         }
         
-        private async void CopySelected(object o)
+        private void CopySelected(object o)
         {
             var lastItems = SelectedItems.Select(x => x.Path).ToArray();
             if (!lastItems.Any())

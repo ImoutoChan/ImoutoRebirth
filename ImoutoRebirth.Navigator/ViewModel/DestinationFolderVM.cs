@@ -76,7 +76,7 @@ namespace ImoutoRebirth.Navigator.ViewModel
 
         #region Constructors
 
-        public DestinationFolderVM(int? id,
+        public DestinationFolderVM(Guid? id,
             string path,
             bool needDevideImagesByHash,
             bool needRename,

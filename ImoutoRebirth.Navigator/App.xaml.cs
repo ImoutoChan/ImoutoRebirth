@@ -1,9 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Configuration;
-using System.Data;
-using System.Linq;
-using System.Threading.Tasks;
 using System.Windows;
 using ImoutoRebirth.Navigator.ViewModel;
 
@@ -18,10 +13,11 @@ namespace ImoutoRebirth.Navigator
 
         internal static MainWindowVM MainWindowVM { get; private set; }
 
-        protected override void OnStartup(StartupEventArgs e)
+        protected override async void OnStartup(StartupEventArgs e)
         {
             //Start the main window
             MainWindowVM = new MainWindowVM();
+            await MainWindowVM.InitializeAsync();
 
             base.OnStartup(e);
         }

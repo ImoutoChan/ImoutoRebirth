@@ -10,7 +10,7 @@ namespace ImoutoRebirth.Navigator.ViewModel
 
         #region Constructors
 
-        protected FolderVM(int? id, string path)
+        protected FolderVM(Guid? id, string path)
         {
             Id = id;
             Path = path;
@@ -20,7 +20,7 @@ namespace ImoutoRebirth.Navigator.ViewModel
 
         #region Properties
 
-        public int? Id { get; }
+        public Guid? Id { get; }
 
         public string Path
         {

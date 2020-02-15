@@ -22,14 +22,24 @@ namespace ImoutoRebirth.Navigator.ViewModel
 
         #region Constructors
 
-        public SourceFolderVM(int? id, string path, bool checkFormat, bool checkNameHash, List<string> extensions, bool tagsFromSubfoder, bool addTagFromFilename) : base(id, path)
+        public SourceFolderVM(
+            Guid? id, 
+            string path, 
+            bool checkFormat, 
+            bool checkNameHash, 
+            IEnumerable<string> extensions, 
+            bool tagsFromSubfolder, 
+            bool addTagFromFilename) 
+            : base(id, path)
         {
             CheckFormat = checkFormat;
             CheckNameHash = checkNameHash;
-            TagsFromSubfolder = tagsFromSubfoder;
+            TagsFromSubfolder = tagsFromSubfolder;
             AddTagFromFileName = addTagFromFilename;
 
-            SupportedExtensionsRaw = (extensions != null) ? new ObservableCollection<string>(extensions) : new ObservableCollection<string>();
+            SupportedExtensionsRaw = extensions != null
+                ? new ObservableCollection<string>(extensions) 
+                : new ObservableCollection<string>();
         }
 
         #endregion Constructors

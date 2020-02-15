@@ -21,7 +21,7 @@ namespace ImoutoRebirth.Navigator.ViewModel
 
         #region Constructors
 
-        public ImageEntryVM(string imagePath, Size initPreviewSize = new Size(), int? dbId = null)
+        public ImageEntryVM(string imagePath, Size initPreviewSize = new Size(), Guid? dbId = null)
         {
             ImageEntry = new ImageEntry(imagePath, initPreviewSize);
             ImageEntry.ImageChanged += (s, e) =>
@@ -50,7 +50,7 @@ namespace ImoutoRebirth.Navigator.ViewModel
 
         private ImageEntry ImageEntry { get; }
 
-        public int? DbId { get; }
+        public Guid? DbId { get; }
 
         public string Path => ImageEntry.FullName;
 

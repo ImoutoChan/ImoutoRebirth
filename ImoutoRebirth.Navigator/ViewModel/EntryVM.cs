@@ -5,7 +5,7 @@ namespace ImoutoRebirth.Navigator.ViewModel
 {
     static class EntryVM
     {
-        public static INavigatorListEntry GetListEntry(string path, Size initPreviewSize, int? dbId = null)
+        public static INavigatorListEntry GetListEntry(string path, Size initPreviewSize, Guid? dbId = null)
         {
             try
             {

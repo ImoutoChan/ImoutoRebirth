@@ -1,4 +1,5 @@
-﻿using System.Windows;
+﻿using System;
+using System.Windows;
 using System.Windows.Input;
 using ImoutoRebirth.Navigator.Behavior;
 
@@ -16,7 +17,7 @@ namespace ImoutoRebirth.Navigator.ViewModel
 
         Size ViewPortSize { get; }
 
-        int? DbId { get; }
+        Guid? DbId { get; }
 
         string Path { get; }
     }

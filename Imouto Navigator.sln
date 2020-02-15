@@ -5,7 +5,7 @@ VisualStudioVersion = 16.0.29721.120
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ImoutoNavigator", "ImoutoNavigator\ImoutoNavigator.csproj", "{6BE0B3DE-7FB8-4542-8D88-14A0FD0AC406}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ImoutoRebirth.Navigator", "ImoutoRebirth.Navigator\ImoutoRebirth.Navigator.csproj", "{6E92A6B5-CF5E-41D4-9DDD-0B1D1725CA16}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ImoutoRebirth.Navigator", "ImoutoRebirth.Navigator\ImoutoRebirth.Navigator.csproj", "{6E92A6B5-CF5E-41D4-9DDD-0B1D1725CA16}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

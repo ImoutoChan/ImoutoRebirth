@@ -1,50 +1,53 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Windows.Input;
-using Imouto.WcfExchangeLibrary.Core.Data;
-using ImoutoRebirth.Navigator.Commands;
-using ImoutoRebirth.Navigator.WCF;
+using ImoutoRebirth.Navigator.Services;
+using ImoutoRebirth.Navigator.Utils;
 
 namespace ImoutoRebirth.Navigator.ViewModel
 {
-    class CollectionManagerVM : VMBase
+    internal class CollectionManagerVm : VMBase
     {
-        #region Fields
+        private readonly ICollectionService _collectionService;
 
         private ICommand _removeCommand;
         private CollectionVM _selectedCollection;
 
-        #endregion Fields
+        public CollectionManagerVm()
+        {
+            _collectionService = ServiceLocator.GetService<ICollectionService>();
+        }
 
-        #region Constructors
-
-        public CollectionManagerVM() { }
-
-        public void ReloadCollections()
+        public async Task ReloadCollectionsAsync()
         {
             try
             {
                 var sw = new Stopwatch();
                 sw.Start();
 
-                List<Collection> collections = ImoutoCollectionService.Use(imoutoService =>
-                {
-                    var res = imoutoService.GetCollections();
-                    return res;
-                });
+                var collections = await _collectionService.GetAllCollectionsAsync();
 
                 sw.Stop();
                 Debug.WriteLine($"Collections reloaded in {sw.ElapsedMilliseconds}ms.");
 
                 Collections.Clear();
-                collections.ForEach(x => Collections.Add(new CollectionVM(x.Id, x.Name)));
 
+                foreach (var collection in collections)
+                {
+                    Collections.Add(new CollectionVM(collection.Id, collection.Name));
+                }
+
+                foreach (var collection in collections)
+                {
+                    Collections.Add(new CollectionVM(collection.Id, collection.Name));
+                }
+                
                 foreach (var collectionVm in Collections)
                 {
-                    collectionVm.LoadFolders();
+                    await collectionVm.LoadFolders();
                 }
 
                 SelectedCollection = Collections.FirstOrDefault();
@@ -55,8 +58,6 @@ namespace ImoutoRebirth.Navigator.ViewModel
                 Debug.WriteLine("Collections reload error: " + ex.Message);
             }
         }
-
-        #endregion Constructors
 
         #region Properties
 
@@ -84,16 +85,14 @@ namespace ImoutoRebirth.Navigator.ViewModel
             }
         }
 
-        public string CreateCollection(string name)
+        public async Task<string> CreateCollection(string name)
         {
             try
             {
-                ImoutoCollectionService.Use(imoutoService =>
-                {
-                    imoutoService.CreateCollection(new Collection {Name = name});
-                });
+                await _collectionService.CreateCollectionAsync(name);
 
-                ReloadCollections();
+                await ReloadCollectionsAsync();
+
                 return null;
             }
             catch (Exception ex)
@@ -107,29 +106,24 @@ namespace ImoutoRebirth.Navigator.ViewModel
 
         #region Commands
 
-        public ICommand RemoveCommand
-        {
-            get
-            {
-                return _removeCommand ?? (_removeCommand = new RelayCommand(Remove, CanDoCollectionCommand));
-            }
-        }
+        public ICommand RemoveCommand 
+            => _removeCommand ??= new AsyncCommand(Remove, CanDoCollectionCommand);
 
         #endregion Commands
 
         #region Command Handlers
         
 
-        private void Remove(object param)
+        private async Task Remove()
         {
             if (SelectedCollection != null)
             {
-                SelectedCollection.Remove();
-                ReloadCollections();
+                await SelectedCollection.Remove();
+                await ReloadCollectionsAsync();
             }
         }
 
-        private bool CanDoCollectionCommand(object param)
+        private bool CanDoCollectionCommand()
         {
             return SelectedCollection != null;
         }

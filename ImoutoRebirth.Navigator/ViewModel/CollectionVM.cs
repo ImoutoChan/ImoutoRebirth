@@ -1,10 +1,11 @@
 ﻿using System;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
+using System.Threading.Tasks;
 using System.Windows.Input;
-using Imouto.WcfExchangeLibrary.Core.Data;
 using ImoutoRebirth.Navigator.Commands;
-using ImoutoRebirth.Navigator.WCF;
+using ImoutoRebirth.Navigator.Services;
+using ImoutoRebirth.Navigator.Utils;
 
 namespace ImoutoRebirth.Navigator.ViewModel
 {
@@ -12,29 +13,36 @@ namespace ImoutoRebirth.Navigator.ViewModel
     {
         private ICommand _addSourceCommand;
         private ICommand _removeSourceCommand;
-        private int _id;
+        private Guid _id;
         private string _name;
         private DestinationFolderVM _destination;
         private SourceFolderVM _selectedSource;
+        private readonly ICollectionService _collectionService;
+        private readonly IDestinationFolderService _destinationFolderService;
+        private readonly ISourceFolderService _sourceFolderService;
 
-        public CollectionVM(int id, string name)
+        public CollectionVM(Guid id, string name)
         {
             Id = id;
             Name = name;
+
+            _collectionService = ServiceLocator.GetService<ICollectionService>();
+            _destinationFolderService = ServiceLocator.GetService<IDestinationFolderService>();
+            _sourceFolderService = ServiceLocator.GetService<ISourceFolderService>();
         }
 
         #region Properties
 
-        public int Id
+        public Guid Id
         {
             get { return _id; }
-            set { OnPropertyChanged(ref _id, value, () => this.Id); }
+            set { OnPropertyChanged(ref _id, value, () => Id); }
         }
 
         public string Name
         {
             get { return _name; }
-            set { OnPropertyChanged(ref _name, value, () => this.Name); }
+            set { OnPropertyChanged(ref _name, value, () => Name); }
         }
 
         public ObservableCollection<SourceFolderVM> Sources { get; } = new ObservableCollection<SourceFolderVM>();
@@ -42,67 +50,58 @@ namespace ImoutoRebirth.Navigator.ViewModel
         public SourceFolderVM SelectedSource
         {
             get { return _selectedSource; }
-            set { OnPropertyChanged(ref _selectedSource, value, () => this.SelectedSource); }
+            set { OnPropertyChanged(ref _selectedSource, value, () => SelectedSource); }
         }
 
         public DestinationFolderVM Destination
         {
             get { return _destination; }
-            set { OnPropertyChanged(ref _destination, value, () => this.Destination); }
+            set { OnPropertyChanged(ref _destination, value, () => Destination); }
         }
 
         #endregion Properties
 
         #region Methods
 
-        public void LoadFolders()
+        public async Task LoadFolders()
         {
             try
             {
-                var folders = ImoutoCollectionService.Use(imoutoService =>
+                var destinationFolder = await _destinationFolderService.GetDestinationFolderAsync(Id);
+                var sourceFolders = await _sourceFolderService.GetSourceFoldersAsync(Id);
+
+                Destination = null;
+                Sources.Clear();
+
+                var destinationFolderVm = new DestinationFolderVM(
+                    destinationFolder.Id,
+                    destinationFolder.Path,
+                    destinationFolder.ShouldCreateSubfoldersByHash,
+                    destinationFolder.ShouldRenameByHash,
+                    destinationFolder.FormatErrorSubfolder,
+                    destinationFolder.HashErrorSubfolder,
+                    destinationFolder.WithoutHashErrorSubfolder);
+
+                destinationFolderVm.ResetRequest += FolderVM_ResetRequest;
+                destinationFolderVm.SaveRequest += FolderVM_SaveDestinationRequest;
+                destinationFolderVm.RemoveRequest += DestinationFolderVM_RemoveRequest;
+
+                Destination = destinationFolderVm;
+
+                foreach (var folder in sourceFolders)
                 {
-                    return imoutoService.GetFolders(this.Id);
-                });
+                    var sourceFolderVm = new SourceFolderVM(
+                        folder.Id,
+                        folder.Path,
+                        folder.ShouldCheckFormat,
+                        folder.ShouldCheckHashFromName,
+                        folder.SupportedExtensions,
+                        folder.ShouldCreateTagsFromSubfolders,
+                        folder.ShouldAddTagFromFilename);
+                    sourceFolderVm.ResetRequest += FolderVM_ResetRequest;
+                    sourceFolderVm.SaveRequest += FolderVM_SaveSourceRequest;
 
-                this.Destination = null;
-                this.Sources.Clear();
-
-                foreach (var folder in folders)
-                {
-                    switch (folder.Type)
-                    {
-                        case FolderType.Destination:
-                            var destinationFolderVM = new DestinationFolderVM(
-                                folder.Id,
-                                folder.Path,
-                                folder.NeedDevideImagesByHash,
-                                folder.NeedRename,
-                                folder.IncorrectFormatSubpath,
-                                folder.IncorrectHashSubpath,
-                                folder.NonHashSubpath
-                                );
-                            destinationFolderVM.ResetRequest += FolderVM_ResetRequest;
-                            destinationFolderVM.SaveRequest += FolderVM_SaveRequest;
-                            destinationFolderVM.RemoveRequest += DestinationFolderVM_RemoveRequest;
-
-                            this.Destination = destinationFolderVM;
-                            break;
-                        case FolderType.Source:
-                            var sourceFolderVM = new SourceFolderVM(
-                                folder.Id,
-                                folder.Path,
-                                folder.NeedCheckFormat,
-                                folder.NeedCheckNameHash,
-                                folder.Extensions,
-                                folder.TagsFromSubfoder,
-                                folder.AddTagFromFileName
-                                );
-                            sourceFolderVM.ResetRequest += FolderVM_ResetRequest;
-                            sourceFolderVM.SaveRequest += FolderVM_SaveRequest;
-
-                            this.Sources.Add(sourceFolderVM);
-                            break;
-                    }
+                    Sources.Add(sourceFolderVm);
                 }
             }
             catch (Exception ex)
@@ -112,14 +111,11 @@ namespace ImoutoRebirth.Navigator.ViewModel
             }
         }
         
-        public void Remove()
+        public async Task Remove()
         {
             try
             {
-                ImoutoCollectionService.Use(imoutoService =>
-                {
-                    imoutoService.DeleteCollection(this.Id);
-                });
+                await _collectionService.DeleteCollectionAsync(Id);
             }
             catch (Exception ex)
             {
@@ -128,14 +124,11 @@ namespace ImoutoRebirth.Navigator.ViewModel
             }
         }
 
-        public void Rename(string newName)
+        public async Task Rename(string newName)
         {
             try
             {
-                ImoutoCollectionService.Use(imoutoService =>
-                {
-                    imoutoService.UpdateCollection(new Collection { Id = this.Id, Name = newName });
-                });
+                await _collectionService.RenameCollection(newName);
 
                 Name = newName;
             }
@@ -149,7 +142,7 @@ namespace ImoutoRebirth.Navigator.ViewModel
         #endregion Methods
 
         #region Handlers
-        private void DestinationFolderVM_RemoveRequest(object sender, EventArgs e)
+        private async void DestinationFolderVM_RemoveRequest(object sender, EventArgs e)
         {
             var folderVM = sender as FolderVM;
 
@@ -157,46 +150,69 @@ namespace ImoutoRebirth.Navigator.ViewModel
             {
                 try
                 {
-                    ImoutoCollectionService.Use(imoutoService =>
-                    {
-                        imoutoService.DeleteFolder(this.Id, folderVM.Id.Value);
-                    });
+                    await _destinationFolderService.DeleteDestinationFolderAsync(folderVM.Id.Value);
                 }
                 catch (Exception ex)
                 {
                     App.MainWindowVM?.SetStatusError("Can't remove folder", ex.Message);
                     Debug.WriteLine("Can't remove folder: " + ex.Message);
                 }
-                LoadFolders();
             }
-            else
-            {
-                LoadFolders();
-            }
+
+            await LoadFolders();
         }
 
-        private void FolderVM_SaveRequest(object sender, System.EventArgs e)
+        private async void FolderVM_SaveSourceRequest(object sender, EventArgs e)
         {
-            var folderVM = sender as FolderVM;
+            var folderVm = (SourceFolderVM) sender;
+
+            var sourceFolder = new SourceFolder(
+                folderVm.Id,
+                Id,
+                folderVm.Path,
+                folderVm.CheckFormat,
+                folderVm.CheckNameHash,
+                folderVm.TagsFromSubfolder,
+                folderVm.AddTagFromFileName,
+                folderVm.SupportedExtensionsRaw);
 
             try
             {
-                if (folderVM.Id.HasValue)
+                if (sourceFolder.Id.HasValue)
                 {
-                    ImoutoCollectionService.Use(imoutoService =>
-                    {
-                        imoutoService.UpdateFolder(this.Id, WCFMapper.MapFolder(folderVM));
-                    });
-                    LoadFolders();
+                    await _sourceFolderService.UpdateSourceFolderAsync(sourceFolder);
                 }
                 else
                 {
-                    ImoutoCollectionService.Use(imoutoService =>
-                    {
-                        imoutoService.CreateFolder(this.Id, WCFMapper.MapFolder(folderVM));
-                    });
-                    LoadFolders();
+                    await _sourceFolderService.AddSourceFolderAsync(sourceFolder);
                 }
+
+                await LoadFolders();
+            }
+            catch (Exception ex)
+            {
+                App.MainWindowVM?.SetStatusError("Can't save folder", ex.Message);
+                Debug.WriteLine("Can't save folder: " + ex.Message);
+            }
+        }
+        private async void FolderVM_SaveDestinationRequest(object sender, EventArgs e)
+        {
+            var folderVm = (DestinationFolderVM) sender;
+
+            var destinationFolder = new DestinationFolder(
+                folderVm.Id,
+                Id,
+                folderVm.Path,
+                folderVm.NeedDevideImagesByHash,
+                folderVm.NeedRename,
+                folderVm.IncorrectFormatSubpath,
+                folderVm.IncorrectHashSubpath,
+                folderVm.NonHashSubpath);
+
+            try
+            {
+                await _destinationFolderService.AddOrUpdateDestinationFolderAsync(destinationFolder);
+                await LoadFolders();
             }
             catch (Exception ex)
             {
@@ -205,7 +221,7 @@ namespace ImoutoRebirth.Navigator.ViewModel
             }
         }
 
-        private void FolderVM_ResetRequest(object sender, System.EventArgs e)
+        private void FolderVM_ResetRequest(object sender, EventArgs e)
         {
             LoadFolders();
         }
@@ -222,23 +238,19 @@ namespace ImoutoRebirth.Navigator.ViewModel
             }
         }
 
-        public ICommand RemoveSourceCommand
-        {
-            get
-            {
-                return _removeSourceCommand ?? (_removeSourceCommand = new RelayCommand(RemoveSource, CanRemoveSource));
-            }
-        }
+        public ICommand RemoveSourceCommand 
+            => _removeSourceCommand ??= new AsyncCommand(RemoveSource, CanRemoveSource);
 
 
         private ICommand _createDestinationFolderCommand;
-        public ICommand CreateDestinationFolderCommand => _createDestinationFolderCommand ?? (_createDestinationFolderCommand = new RelayCommand(CreateDestinationFolder));
+        public ICommand CreateDestinationFolderCommand 
+            => _createDestinationFolderCommand ??= new RelayCommand(CreateDestinationFolder);
 
         private void CreateDestinationFolder(object obj)
         {
             var destinationFolderVM = new DestinationFolderVM(null, String.Empty, false, false, "!IncorrectFormat", "!IncorrectHash", "!NonHash");
             destinationFolderVM.ResetRequest += FolderVM_ResetRequest;
-            destinationFolderVM.SaveRequest += FolderVM_SaveRequest;
+            destinationFolderVM.SaveRequest += FolderVM_SaveDestinationRequest;
             destinationFolderVM.RemoveRequest += DestinationFolderVM_RemoveRequest;
             Destination = destinationFolderVM;
         }
@@ -251,11 +263,11 @@ namespace ImoutoRebirth.Navigator.ViewModel
         {
             var newSource = new SourceFolderVM(null, String.Empty, false, false, null, false, false);
             newSource.ResetRequest += FolderVM_ResetRequest;
-            newSource.SaveRequest += FolderVM_SaveRequest;
+            newSource.SaveRequest += FolderVM_SaveSourceRequest;
             Sources.Add(newSource);
         }
 
-        private void RemoveSource(object param)
+        private async Task RemoveSource()
         {
             if (SelectedSource != null)
             { 
@@ -265,11 +277,7 @@ namespace ImoutoRebirth.Navigator.ViewModel
                 {
                     try
                     {
-                        ImoutoCollectionService.Use(imoutoService =>
-                        {
-                            imoutoService.DeleteFolder(this.Id, folderVM.Id.Value);
-                        });
-                        LoadFolders();
+                       await _sourceFolderService.DeleteSourceFolderAsync(folderVM.Id.Value);
                     }
                     catch (Exception ex)
                     {
@@ -277,15 +285,13 @@ namespace ImoutoRebirth.Navigator.ViewModel
                         Debug.WriteLine("Can't remove folder: " + ex.Message);
                     }
                 }
-                else
-                {
-                    LoadFolders();
-                }
+
+                await LoadFolders();
             }
         }
 
 
-        public bool CanRemoveSource(object param)
+        public bool CanRemoveSource()
         {
             return SelectedSource != null;
         }

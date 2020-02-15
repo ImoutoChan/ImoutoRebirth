@@ -6,9 +6,10 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Input;
-using Imouto.WcfExchangeLibrary.Core.Data;
 using ImoutoRebirth.Navigator.Commands;
-using ImoutoRebirth.Navigator.WCF;
+using ImoutoRebirth.Navigator.Services;
+using ImoutoRebirth.Navigator.Services.Tags;
+using TagType = ImoutoRebirth.Navigator.Services.Tags.TagType;
 
 namespace ImoutoRebirth.Navigator.ViewModel
 {
@@ -17,13 +18,14 @@ namespace ImoutoRebirth.Navigator.ViewModel
         #region Fields
 
         private bool _tagTypesLoaded;
-        private bool _isSavind;
+        private bool _isSaving;
         private bool _isSuccess;
         private string _title;
         private TagType _selectedType;
         private string _synonyms;
         private bool _hasValue;
         private ICommand _saveCommand;
+        private readonly ITagService _tagService;
 
         #endregion Fields
 
@@ -32,6 +34,7 @@ namespace ImoutoRebirth.Navigator.ViewModel
         public CreateTagVM()
         {
             ReloadTagTypesAsync();
+            _tagService = ServiceLocator.GetService<ITagService>();
         }
 
         #endregion Constructors
@@ -40,10 +43,7 @@ namespace ImoutoRebirth.Navigator.ViewModel
 
         public TagType SelectedType
         {
-            get
-            {
-                return _selectedType;
-            }
+            get => _selectedType;
             set
             {
                 OnPropertyChanged(ref _selectedType, value, () => SelectedType);
@@ -54,10 +54,7 @@ namespace ImoutoRebirth.Navigator.ViewModel
 
         public string Title
         {
-            get
-            {
-                return _title;
-            }
+            get => _title;
             set
             {
                 OnPropertyChanged(ref _title, value, () => Title);
@@ -69,56 +66,39 @@ namespace ImoutoRebirth.Navigator.ViewModel
         /// </summary>
         public string Synonyms
         {
-            get
-            {
-                return _synonyms;
-            }
+            get => _synonyms;
             set
             {
                 OnPropertyChanged(ref _synonyms, value, () => Synonyms);
             }
         }
 
-        public List<string> SynonymsCollection
-        {
-            get
-            {
-                return _synonyms?.Split(new[] { ":.:" },
-                                        StringSplitOptions.RemoveEmptyEntries).ToList() ?? new List<string>();
-            }
-        }
+        public List<string> SynonymsCollection 
+            => _synonyms?.Split(new[] { ":.:" }, StringSplitOptions.RemoveEmptyEntries).ToList() 
+               ?? new List<string>();
 
         public bool HasValue
         {
-            get
-            {
-                return _hasValue;
-            }
+            get => _hasValue;
             set
             {
                 OnPropertyChanged(ref _hasValue, value, () => HasValue);
             }
         }
 
-        public bool IsSavind
+        public bool IsSaving
         {
-            get
-            {
-                return _isSavind;
-            }
+            get => _isSaving;
             set
             {
-                _isSavind = value;
-                OnPropertyChanged(() => IsSavind);
+                _isSaving = value;
+                OnPropertyChanged(() => IsSaving);
             }
         }
 
         public bool IsSuccess
         {
-            get
-            {
-                return _isSuccess;
-            }
+            get => _isSuccess;
             set
             {
                 _isSuccess = value;
@@ -132,13 +112,7 @@ namespace ImoutoRebirth.Navigator.ViewModel
 
         #region Save command
 
-        public ICommand SaveCommand
-        {
-            get
-            {
-                return _saveCommand ?? (_saveCommand = new RelayCommand(Save, CanSave));
-            }
-        }
+        public ICommand SaveCommand => _saveCommand ??= new RelayCommand(Save, CanSave);
 
         private bool CanSave(object obj)
         {
@@ -149,18 +123,18 @@ namespace ImoutoRebirth.Navigator.ViewModel
         {
             try
             {
-                IsSavind = true;
+                IsSaving = true;
                 await CreateTagTask(this);
-                IsSavind = false;
+                IsSaving = false;
                 IsSuccess = true;
                 await Task.Delay(500);
                 OnRequestClosing();
 
-                Debug.WriteLine("Tag creating", "Tag succsessfully created");
+                Debug.WriteLine("Tag creating", "Tag successfully created");
             }
             catch (Exception ex)
             {
-                IsSavind = false;
+                IsSaving = false;
 
                 Debug.WriteLine("Tag creating", "Error while creating: " + ex.Message);
             }
@@ -172,13 +146,7 @@ namespace ImoutoRebirth.Navigator.ViewModel
 
         private ICommand _cancelCommand;
 
-        public ICommand CancelCommand
-        {
-            get
-            {
-                return _cancelCommand ?? (_cancelCommand = new RelayCommand(Cancel));
-            }
-        }
+        public ICommand CancelCommand => _cancelCommand ??= new RelayCommand(Cancel);
 
         private void Cancel(object obj)
         {
@@ -224,37 +192,23 @@ namespace ImoutoRebirth.Navigator.ViewModel
             }
         }
 
-        private void TagTypesLoadFail(Exception e)
+        private static void TagTypesLoadFail(Exception e)
         {
             Debug.WriteLine("Tag creating", "Unable to load TagTypes. Creating process terminated");
         }
 
-        private Task<List<TagType>> ReloadTagTypesTask()
+        private async Task<IReadOnlyCollection<TagType>> ReloadTagTypesTask()
         {
-            return Task.Run(() =>
-            {
-                return ImoutoService.Use(imoutoService =>
-                {
-                    return imoutoService.GetTagTypes();
-                });
-            });
+            return await _tagService.GеtTypes();
         }
 
-        private Task CreateTagTask(CreateTagVM createTagVM)
+        private async Task CreateTagTask(CreateTagVM createTagVm)
         {
-            return Task.Run(() =>
-            {
-                ImoutoService.Use(imoutoService =>
-                {
-                    imoutoService.CreateTag(new Tag
-                    {
-                        HasValue = createTagVM.HasValue,
-                        SynonymsCollection = createTagVM.SynonymsCollection,
-                        Title = createTagVM.Title,
-                        Type = createTagVM.SelectedType
-                    });
-                });
-            });
+            await _tagService.CreateTag(
+                createTagVm.SelectedType,
+                createTagVm.Title,
+                createTagVm.HasValue,
+                createTagVm.SynonymsCollection);
         }
 
         #endregion Methods

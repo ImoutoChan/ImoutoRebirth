@@ -5,10 +5,12 @@ using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Input;
-using Imouto.WcfExchangeLibrary.Core.Data;
 using ImoutoRebirth.Navigator.Commands;
+using ImoutoRebirth.Navigator.Services;
+using ImoutoRebirth.Navigator.Services.Tags;
 using ImoutoRebirth.Navigator.Utils;
-using ImoutoRebirth.Navigator.WCF;
+using SearchType = ImoutoRebirth.Navigator.Services.Tags.SearchType;
+using Tag = ImoutoRebirth.Navigator.Services.Tags.Tag;
 
 namespace ImoutoRebirth.Navigator.ViewModel
 {
@@ -22,7 +24,7 @@ namespace ImoutoRebirth.Navigator.ViewModel
         private string _enteredValue;
         private List<string> _comparators;
         private string _selectedComparator;
-        private KeyValuePair<string, int?> _selectedColleciton;
+        private KeyValuePair<string, Guid?> _selectedColleciton;
 
         private ICommand _enterValueOkCommand;
         private ICommand _unselectTagCommand;
@@ -30,9 +32,11 @@ namespace ImoutoRebirth.Navigator.ViewModel
         private ICommand _invertSearchTypeCommand;
         private ICommand _selectBindedTag;
         private int _rate;
-        private int? _lastListEntryId = null;
+        private Guid? _lastListEntryId = null;
         private bool _isRateSetted;
         private bool _isFavorite;
+        private readonly IFileTagService _fileTagService;
+        private readonly ITagService _tagService;
 
         #endregion Fields
 
@@ -40,11 +44,14 @@ namespace ImoutoRebirth.Navigator.ViewModel
 
         public TagSearchVM(ObservableCollection<CollectionVM> collections)
         {
-            Collections.Add(new KeyValuePair<string, int?>("All", null));
+            _fileTagService = ServiceLocator.GetService<IFileTagService>();
+            _tagService = ServiceLocator.GetService<ITagService>();
+
+            Collections.Add(new KeyValuePair<string, Guid?>("All", null));
 
             foreach (var collectionVm in collections)
             {
-                Collections.Add(new KeyValuePair<string, int?>(collectionVm.Name, collectionVm.Id));
+                Collections.Add(new KeyValuePair<string, Guid?>(collectionVm.Name, collectionVm.Id));
             }
 
             SelectedColleciton = Collections.FirstOrDefault();
@@ -58,14 +65,12 @@ namespace ImoutoRebirth.Navigator.ViewModel
 
         public ObservableCollection<TagSourceVM> CurrentTagsSources { get; } = new ObservableCollection<TagSourceVM>();
 
-        public ObservableCollection<KeyValuePair<string, int?>> Collections { get; } = new ObservableCollection<KeyValuePair<string, int?>>();
+        public ObservableCollection<KeyValuePair<string, Guid?>> Collections { get; }
+            = new ObservableCollection<KeyValuePair<string, Guid?>>();
 
-        public KeyValuePair<string, int?> SelectedColleciton
+        public KeyValuePair<string, Guid?> SelectedColleciton
         {
-            get
-            {
-                return _selectedColleciton;
-            }
+            get => _selectedColleciton;
             set
             {
                 OnPropertyChanged(ref _selectedColleciton, value, () => SelectedColleciton);
@@ -77,24 +82,18 @@ namespace ImoutoRebirth.Navigator.ViewModel
 
         public Tag SelectedHintBoxTag
         {
-            get
-            {
-                return _selectedHintBoxTag;
-            }
+            get => _selectedHintBoxTag;
             set
             {
                 OnPropertyChanged(ref _selectedHintBoxTag, value, () => SelectedHintBoxTag);
             }
         }
 
-        public ObservableCollection<BindedTagVM> SelectedBindedTags { get; } = new ObservableCollection<BindedTagVM>();
+        public ObservableCollection<SearchTagVM> SelectedBindedTags { get; } = new ObservableCollection<SearchTagVM>();
 
         public string SearchString
         {
-            get
-            {
-                return _searchString;
-            }
+            get => _searchString;
             set
             {
                 if (ValueEnterMode && value != _searchString)
@@ -117,10 +116,7 @@ namespace ImoutoRebirth.Navigator.ViewModel
 
         public bool ValueEnterMode
         {
-            get
-            {
-                return _isValueEnterMode;
-            }
+            get => _isValueEnterMode;
             set
             {
                 OnPropertyChanged(ref _isValueEnterMode, value, () => ValueEnterMode);
@@ -131,18 +127,15 @@ namespace ImoutoRebirth.Navigator.ViewModel
         {
             get
             {
-                return _comparators ?? (_comparators = ComparatorExtensions.GetValues<Comparator>()
-                                                                           .Select(x => x.ToFriendlyString())
-                                                                           .ToList());
+                return _comparators ??= ComparatorExtensions.GetValues<Comparator>()
+                    .Select(x => x.ToFriendlyString())
+                    .ToList();
             }
         }
 
         public string SelectedComparator
         {
-            get
-            {
-                return _selectedComparator;
-            }
+            get => _selectedComparator;
             set
             {
                 OnPropertyChanged(ref _selectedComparator, value, () => SelectedComparator);
@@ -151,10 +144,7 @@ namespace ImoutoRebirth.Navigator.ViewModel
 
         public string EnteredValue
         {
-            get
-            {
-                return _enteredValue;
-            }
+            get => _enteredValue;
             set
             {
                 OnPropertyChanged(ref _enteredValue, value, () => EnteredValue);
@@ -165,10 +155,7 @@ namespace ImoutoRebirth.Navigator.ViewModel
 
         public int Rate
         {
-            get
-            {
-                return _rate;
-            }
+            get => _rate;
             set
             {
                 OnPropertyChanged(ref _rate, value, () => Rate);
@@ -182,10 +169,7 @@ namespace ImoutoRebirth.Navigator.ViewModel
 
         public bool IsFavorite
         {
-            get
-            {
-                return _isFavorite;
-            }
+            get => _isFavorite;
             set
             {
                 OnPropertyChanged(ref _isFavorite, value, () => IsFavorite);
@@ -199,10 +183,7 @@ namespace ImoutoRebirth.Navigator.ViewModel
 
         public bool IsRateSetted
         {
-            get
-            {
-                return _isRateSetted;
-            }
+            get => _isRateSetted;
             set
             {
                 OnPropertyChanged(ref _isRateSetted, value, () => IsRateSetted);
@@ -213,45 +194,15 @@ namespace ImoutoRebirth.Navigator.ViewModel
 
         #region Commands
 
-        public ICommand InvertSearchTypeCommand
-        {
-            get
-            {
-                return _invertSearchTypeCommand ?? (_invertSearchTypeCommand = new RelayCommand(InvertSearchType));
-            }
-        }
+        public ICommand InvertSearchTypeCommand => _invertSearchTypeCommand ??= new RelayCommand(InvertSearchType);
 
-        public ICommand SelectTagCommand
-        {
-            get
-            {
-                return _selectTagCommand ?? (_selectTagCommand = new RelayCommand(SelectTag));
-            }
-        }
+        public ICommand SelectTagCommand => _selectTagCommand ??= new RelayCommand(SelectTag);
 
-        public ICommand UnselectTagCommand
-        {
-            get
-            {
-                return _unselectTagCommand ?? (_unselectTagCommand = new RelayCommand(UnselectTag));
-            }
-        }
+        public ICommand UnselectTagCommand => _unselectTagCommand ??= new RelayCommand(UnselectTag);
 
-        public ICommand EnterValueOkCommand
-        {
-            get
-            {
-                return _enterValueOkCommand ?? (_enterValueOkCommand = new RelayCommand(EnterValueOk));
-            }
-        }
+        public ICommand EnterValueOkCommand => _enterValueOkCommand ??= new RelayCommand(EnterValueOk);
 
-        public ICommand SelectBindedTagCommand
-        {
-            get
-            {
-                return _selectBindedTag ?? (_selectBindedTag = new RelayCommand(SelectBindedTag));
-            }
-        }
+        public ICommand SelectBindedTagCommand => _selectBindedTag ??= new RelayCommand(SelectBindedTag);
 
         #endregion Commands
 
@@ -268,13 +219,8 @@ namespace ImoutoRebirth.Navigator.ViewModel
 
             var id = listEntry.DbId.Value;
 
-            var tags = await Task.Run(() =>
-            {
-                return ImoutoService.Use(imoutoService =>
-                {
-                    return imoutoService.GetImageTags(id);
-                });
-            });
+            var tags = await _fileTagService.GetFileTags(id);
+
             _lastListEntryId = id;
 
             var tagVmsCollection = tags.Where(x => x.Tag.Type.Title != "LocalMeta")
@@ -283,7 +229,7 @@ namespace ImoutoRebirth.Navigator.ViewModel
 
             CurrentTagsSources.Clear();
 
-            var userTags = tagVmsCollection.Where(x => x.Model.Source == Source.User)
+            var userTags = tagVmsCollection.Where(x => x.Model.Source == FileTagSource.Manual)
                                            .ToList();
             if (userTags.Any())
             {
@@ -295,7 +241,7 @@ namespace ImoutoRebirth.Navigator.ViewModel
             }
 
             var parsedSources = tagVmsCollection.Select(x => x.Model.Source)
-                                                .Where(x => x != Source.User)
+                                                .Where(x => x != FileTagSource.Manual)
                                                 .Distinct();
 
             foreach (var parsedSource in parsedSources)
@@ -338,15 +284,9 @@ namespace ImoutoRebirth.Navigator.ViewModel
             }
         }
 
-        private static Task<List<Tag>> SearchTagsAsyncTask(string searchString)
+        private Task<IReadOnlyCollection<Tag>> SearchTagsAsyncTask(string searchString)
         {
-            return Task.Run(() =>
-            {
-                return ImoutoService.Use(imoutoService =>
-                {
-                    return imoutoService.SearchTags(searchString);
-                });
-            });
+            return _tagService.SearchTags(searchString, 10);
         }
 
         private void SelectTag(object param)
@@ -369,14 +309,15 @@ namespace ImoutoRebirth.Navigator.ViewModel
 
             if (SelectedBindedTags.All(x => x.Tag.Id != tag.Id || x.Value != EnteredValue))
             {
-                SelectedBindedTags.Add(new BindedTagVM(new BindedTag
-                {
-                    Tag = tag,
-                    Value = (tag.HasValue && !string.IsNullOrWhiteSpace(EnteredValue))
-                            ? SelectedComparator + EnteredValue
-                            : null,
-                    SearchType = SearchType.Include
-                }));
+                var value = (tag.HasValue && !string.IsNullOrWhiteSpace(EnteredValue))
+                    ? SelectedComparator + EnteredValue
+                    : null;
+
+                SelectedBindedTags.Add(
+                    new SearchTagVM(
+                        new SearchTag(
+                            tag,
+                            value)));
             }
 
             SearchString = string.Empty;
@@ -416,7 +357,7 @@ namespace ImoutoRebirth.Navigator.ViewModel
 
         private void InvertSearchType(object param)
         {
-            var tag = param as BindedTagVM;
+            var tag = param as SearchTagVM;
 
             if (tag == null)
             {
@@ -445,18 +386,13 @@ namespace ImoutoRebirth.Navigator.ViewModel
 
             if (SelectedBindedTags.All(x => x.Tag.Id != tag.Tag.Id || x.Value != tag.Value))
             {
-                SelectedBindedTags.Add(new BindedTagVM(new BindedTag
-                {
-                    Tag = tag.Tag,
-                    Value = tag.Value,
-                    SearchType = SearchType.Include
-                }));
+                SelectedBindedTags.Add(new SearchTagVM(new SearchTag(tag.Tag, tag.Value, SearchType.Include)));
             }
 
             OnSelectedTagsUpdated();
         }
         
-        private void GetRate(List<BindedTag> tags)
+        private void GetRate(IReadOnlyCollection<FileTag> tags)
         {
             var rateTag = tags.FirstOrDefault(x => x.Tag.Title == "Rate" && x.Tag.HasValue);
             if (rateTag != null)
@@ -478,96 +414,106 @@ namespace ImoutoRebirth.Navigator.ViewModel
             OnPropertyChanged(() => Rate);
         }
 
-        private async Task SetRate(int value, int target)
+        private async Task SetRate(int value, Guid fileId)
         {
-            var rateTag = await ImoutoService.UseAsync(imoutoService =>
-            {
-                return imoutoService.SearchTags("Rate", 1)
-                                    .FirstOrDefault();
-            });
+            //var rateTag = await ImoutoService.UseAsync(imoutoService =>
+            //{
+            //    return imoutoService.SearchTags("Rate", 1)
+            //                        .FirstOrDefault();
+            //});
 
-            if (rateTag.Title != "Rate")
-            {
-                rateTag = null;
-            }
+            //if (rateTag.Title != "Rate")
+            //{
+            //    rateTag = null;
+            //}
 
-            if (rateTag == null)
-            {
-                await ImoutoService.UseAsync(imoutoService =>
-                {
-                    var types = imoutoService.GetTagTypes();
-                    var type = types.First(x => x.Title == "LocalMeta");
+            //if (rateTag == null)
+            //{
+            //    await ImoutoService.UseAsync(imoutoService =>
+            //    {
+            //        var types = imoutoService.GetTagTypes();
+            //        var type = types.First(x => x.Title == "LocalMeta");
 
-                    imoutoService.CreateTag(new Tag
-                    {
-                        Title = "Rate",
-                        HasValue = true,
-                        Type = type
-                    });
-                });
+            //        imoutoService.CreateTag(new Tag
+            //        {
+            //            Title = "Rate",
+            //            HasValue = true,
+            //            Type = type
+            //        });
+            //    });
 
-                rateTag = await ImoutoService.UseAsync(imoutoService =>
-                {
-                    return imoutoService.SearchTags("Rate", 1)
-                                        .FirstOrDefault();
-                });
-            }
+            //    rateTag = await ImoutoService.UseAsync(imoutoService =>
+            //    {
+            //        return imoutoService.SearchTags("Rate", 1)
+            //                            .FirstOrDefault();
+            //    });
+            //}
 
-            await ImoutoService.UseAsync(imoutoService =>
-            {
-                imoutoService.BindTag(target, new BindedTag() { Source = Source.User, Tag = rateTag, DateAdded = DateTime.Now, Value = value.ToString() });
-            });
+            //var rateTag = await _tagService.GetOrCreateRateTag();
+
+            //await ImoutoService.UseAsync(imoutoService =>
+            //{
+            //    imoutoService.BindTag(target, new BindedTag() { Source = Source.User, Tag = rateTag, DateAdded = DateTime.Now, Value = value.ToString() });
+            //});
+
+            //await _fileTagService.BindTag(target, rateTag, Source.User, value.ToString());
+
+            await _fileTagService.SetRate(fileId, new Rate(value));
         }
 
-        private void GetFavorite(List<BindedTag> tags)
+        private void GetFavorite(IReadOnlyCollection<FileTag> tags)
         {
             var favTag = tags.FirstOrDefault(x => x.Tag.Title == "favorite");
             _isFavorite = favTag != null;
             OnPropertyChanged(() => IsFavorite);
         }
 
-        private async Task SetFavorite(bool value, int target)
+        private async Task SetFavorite(bool value, Guid fileId)
         {
-            var favTag = await ImoutoService.UseAsync(imoutoService =>
-            {
-                return imoutoService.SearchTags("favorite", 1)
-                                    .FirstOrDefault();
-            });
+            //var favTag = await ImoutoService.UseAsync(imoutoService =>
+            //{
+            //    return imoutoService.SearchTags("favorite", 1)
+            //                        .FirstOrDefault();
+            //});
 
-            if (favTag == null)
-            {
-                await ImoutoService.UseAsync(imoutoService =>
-                {
-                    var types = imoutoService.GetTagTypes();
-                    var type = types.First(x => x.Title == "LocalMeta");
+            //if (favTag == null)
+            //{
+            //    await ImoutoService.UseAsync(imoutoService =>
+            //    {
+            //        var types = imoutoService.GetTagTypes();
+            //        var type = types.First(x => x.Title == "LocalMeta");
 
-                    imoutoService.CreateTag(new Tag { Title = "favorite", HasValue = false, Type = type });
-                });
+            //        imoutoService.CreateTag(new Tag { Title = "favorite", HasValue = false, Type = type });
+            //    });
 
-                favTag = await ImoutoService.UseAsync(imoutoService =>
-                {
-                    return imoutoService.SearchTags("favorite", 1).FirstOrDefault();
-                });
-            }
+            //    favTag = await ImoutoService.UseAsync(imoutoService =>
+            //    {
+            //        return imoutoService.SearchTags("favorite", 1).FirstOrDefault();
+            //    });
+            //}
 
-            var tags = await ImoutoService.UseAsync(imoutoService => imoutoService.GetImageTags(target));
+            //var favTag = await _tagService.GetOrCreateFavTag();
 
-            var favBindedTag = tags.FirstOrDefault(x => x.Tag.Id == favTag.Id);
+            //var tags = await ImoutoService.UseAsync(imoutoService => imoutoService.GetImageTags(target));
 
-            if (favBindedTag != null && !value)
-            {
-                await ImoutoService.UseAsync(imoutoService =>
-                {
-                    imoutoService.UnbindTag(target, favTag.Id.Value);
-                });
-            }
-            else if (favBindedTag == null && value)
-            {
-                await ImoutoService.UseAsync(imoutoService =>
-                {
-                    imoutoService.BindTag(target, new BindedTag { Source = Source.User, Tag = favTag, DateAdded = DateTime.Now });
-                });
-            }
+            //var favBindedTag = tags.FirstOrDefault(x => x.Tag.Id == favTag.Id);
+
+            //if (favBindedTag != null && !value)
+            //{
+            //    await ImoutoService.UseAsync(imoutoService =>
+            //    {
+            //        imoutoService.UnbindTag(target, favTag.Id.Value);
+            //    });
+            //}
+            //else if (favBindedTag == null && value)
+            //{
+            //    await ImoutoService.UseAsync(imoutoService =>
+            //    {
+            //        imoutoService.BindTag(target, new BindedTag { Source = Source.User, Tag = favTag, DateAdded = DateTime.Now });
+            //    });
+            //}
+
+            await _fileTagService.SetFavorite(fileId, value);
         }
 
         #endregion Private Methods

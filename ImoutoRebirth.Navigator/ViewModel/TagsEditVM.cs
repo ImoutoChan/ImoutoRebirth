@@ -9,7 +9,9 @@ using System.Windows.Input;
 using Imouto.WcfExchangeLibrary.Core.Data;
 using ImoutoRebirth.Navigator.Behavior;
 using ImoutoRebirth.Navigator.Commands;
-using ImoutoRebirth.Navigator.WCF;
+using ImoutoRebirth.Navigator.Services;
+using ImoutoRebirth.Navigator.Services.Tags;
+using Tag = ImoutoRebirth.Navigator.Services.Tags.Tag;
 
 namespace ImoutoRebirth.Navigator.ViewModel
 {
@@ -24,10 +26,12 @@ namespace ImoutoRebirth.Navigator.ViewModel
         private ICommand _saveCommand;
         private readonly MainWindowVM _parentVM;
         private CreateTagVM _createTagVM;
-        private bool _isSavind;
+        private bool _isSaving;
         private bool _isSuccess;
         private ICommand _setTagInfoContextCommand;
         private BindedTagVM _tagInfoContext;
+        private readonly IFileTagService _fileTagService;
+        private ITagService _tagService;
 
         #endregion Fields
 
@@ -43,6 +47,9 @@ namespace ImoutoRebirth.Navigator.ViewModel
                 }
             };
             _parentVM = parentVM;
+
+            _fileTagService = ServiceLocator.GetService<IFileTagService>();
+            _tagService = ServiceLocator.GetService<ITagService>();
         }
 
         #endregion Constructor
@@ -98,16 +105,16 @@ namespace ImoutoRebirth.Navigator.ViewModel
             }
         }
 
-        public bool IsSavind
+        public bool IsSaving
         {
             get
             {
-                return _isSavind;
+                return _isSaving;
             }
             set
             {
-                _isSavind = value;
-                OnPropertyChanged(() => IsSavind);
+                _isSaving = value;
+                OnPropertyChanged(() => IsSaving);
             }
         }
 
@@ -128,7 +135,7 @@ namespace ImoutoRebirth.Navigator.ViewModel
 
         #region Commands
 
-        public ICommand CreateTagCommand => _createTagCommand ?? (_createTagCommand = new RelayCommand(CreateTag));
+        public ICommand CreateTagCommand => _createTagCommand ??= new RelayCommand(CreateTag);
 
         private void CreateTag(object obj)
         {
@@ -139,7 +146,7 @@ namespace ImoutoRebirth.Navigator.ViewModel
             };
         }
 
-        public ICommand AddTagsCommand => _addTagsCommand ?? (_addTagsCommand = new RelayCommand(AddTags, CanAddTags));
+        public ICommand AddTagsCommand => _addTagsCommand ??= new RelayCommand(AddTags, CanAddTags);
 
         private bool CanAddTags(object obj)
         {
@@ -183,7 +190,7 @@ namespace ImoutoRebirth.Navigator.ViewModel
             }
         }
 
-        public ICommand RemoveTagsCommand => _removeTagsCommand ?? (_removeTagsCommand = new RelayCommand(RemoveTags, CanRemoveTags));
+        public ICommand RemoveTagsCommand => _removeTagsCommand ??= new RelayCommand(RemoveTags, CanRemoveTags);
 
         private bool CanRemoveTags(object obj)
         {
@@ -222,7 +229,7 @@ namespace ImoutoRebirth.Navigator.ViewModel
             }
         }
 
-        public ICommand SaveCommand => _saveCommand ?? (_saveCommand = new RelayCommand(Save, CanSave));
+        public ICommand SaveCommand => _saveCommand ??= new RelayCommand(Save, CanSave);
 
         private bool CanSave(object obj)
         {
@@ -236,27 +243,27 @@ namespace ImoutoRebirth.Navigator.ViewModel
 
             try
             {
-                IsSavind = true;
+                IsSaving = true;
                 IsSuccess = false;
-                await Task.Run(() =>
-                {
-                    ImoutoService.Use(imoutoService =>
-                    {
-                        imoutoService.BatchBindTag(images.Where(x => x.DbId.HasValue)
-                                                         .Select(x => x.DbId.Value)
-                                                         .ToList(), tags.Select(x => new BindedTag
-                                                         {
-                                                             Tag = x.Tag,
-                                                             DateAdded = DateTime.Now,
-                                                             Source = Source.User,
-                                                             Value = (x.Tag.HasValue)
-                                                                     ? x.Value
-                                                                     : null
-                                                         })
-                                                                        .ToList());
-                    });
-                });
-                IsSavind = false;
+
+                var imageIds = images
+                    .Where(x => x.DbId.HasValue)
+                    .Select(x => x.DbId.Value);
+
+                var fileTags =
+                    from imageId in imageIds
+                    from tag in tags
+                    select new FileTag(
+                        imageId,
+                        tag.Tag,
+                        tag.Tag.HasValue
+                            ? tag.Value
+                            : null,
+                        FileTagSource.Manual);
+
+                await _fileTagService.BindTags(fileTags.ToArray());
+
+                IsSaving = false;
 
                 UpdateRecentlyTags(SelectedTags);
 
@@ -266,7 +273,7 @@ namespace ImoutoRebirth.Navigator.ViewModel
             }
             catch
             {
-                IsSavind = false;
+                IsSaving = false;
             }
         }
 
@@ -291,7 +298,7 @@ namespace ImoutoRebirth.Navigator.ViewModel
             }
         }
 
-        public ICommand SetTagInfoContextCommand => _setTagInfoContextCommand ?? (_setTagInfoContextCommand = new RelayCommand(SetTagInfoContext));
+        public ICommand SetTagInfoContextCommand => _setTagInfoContextCommand ??= new RelayCommand(SetTagInfoContext);
 
         private void SetTagInfoContext(object obj)
         {
@@ -335,7 +342,7 @@ namespace ImoutoRebirth.Navigator.ViewModel
             }
         }
 
-        private void ReloadFoundTags(List<Tag> tags)
+        private void ReloadFoundTags(IReadOnlyCollection<Tag> tags)
         {
             FoundTags.Clear();
             foreach (var tag in tags)
@@ -347,17 +354,9 @@ namespace ImoutoRebirth.Navigator.ViewModel
             }
         }
 
-        private Task<List<Tag>> LoadTagsTask(string searchPattern)
+        private Task<IReadOnlyCollection<Tag>> LoadTagsTask(string searchPattern)
         {
-            return Task.Run(() =>
-            {
-                var tags = ImoutoService.Use(imoutoService =>
-                {
-                    return imoutoService.SearchTags(searchPattern);
-                });
-
-                return tags;
-            });
+            return _tagService.SearchTags(searchPattern, 10);
         }
 
         #endregion Methods
