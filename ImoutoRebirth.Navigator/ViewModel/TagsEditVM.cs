@@ -6,7 +6,6 @@ using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Input;
-using Imouto.WcfExchangeLibrary.Core.Data;
 using ImoutoRebirth.Navigator.Behavior;
 using ImoutoRebirth.Navigator.Commands;
 using ImoutoRebirth.Navigator.Services;
@@ -29,9 +28,9 @@ namespace ImoutoRebirth.Navigator.ViewModel
         private bool _isSaving;
         private bool _isSuccess;
         private ICommand _setTagInfoContextCommand;
-        private BindedTagVM _tagInfoContext;
+        private SearchTagVM _tagInfoContext;
         private readonly IFileTagService _fileTagService;
-        private ITagService _tagService;
+        private readonly ITagService _tagService;
 
         #endregion Fields
 
@@ -58,11 +57,11 @@ namespace ImoutoRebirth.Navigator.ViewModel
 
         #region Collections
 
-        public ObservableCollection<BindedTagVM> FoundTags { get; } = new ObservableCollection<BindedTagVM>();
+        public ObservableCollection<SearchTagVM> FoundTags { get; } = new ObservableCollection<SearchTagVM>();
 
-        public ObservableCollection<BindedTagVM> SelectedTags { get; } = new ObservableCollection<BindedTagVM>();
+        public ObservableCollection<SearchTagVM> SelectedTags { get; } = new ObservableCollection<SearchTagVM>();
 
-        public ObservableCollection<BindedTagVM> RecentlyTags { get; } = new ObservableCollection<BindedTagVM>();
+        public ObservableCollection<SearchTagVM> RecentlyTags { get; } = new ObservableCollection<SearchTagVM>();
 
         #endregion Collections
 
@@ -79,7 +78,7 @@ namespace ImoutoRebirth.Navigator.ViewModel
             }
         }
 
-        public BindedTagVM TagInfoContext
+        public SearchTagVM TagInfoContext
         {
             get
             {
@@ -150,36 +149,36 @@ namespace ImoutoRebirth.Navigator.ViewModel
 
         private bool CanAddTags(object obj)
         {
-            return (obj as IList)?.Cast<BindedTagVM>()
-                                  .Any() ?? obj is BindedTagVM;
+            return (obj as IList)?.Cast<SearchTagVM>()
+                                  .Any() ?? obj is SearchTagVM;
         }
 
         private void AddTags(object obj)
         {
-            var bindedTags = (obj as IList)?.Cast<BindedTagVM>();
+            var bindedTags = (obj as IList)?.Cast<SearchTagVM>();
 
             if (bindedTags == null)
             {
-                var bindedTag = obj as BindedTagVM;
+                var bindedTag = obj as SearchTagVM;
 
                 if (bindedTag == null)
                 {
                     return;
                 }
 
-                bindedTags = new List<BindedTagVM>
+                bindedTags = new List<SearchTagVM>
                 {
                     bindedTag
                 };
             }
 
-            var bindedTagVms = bindedTags as IList<BindedTagVM> ?? bindedTags.ToList();
-            if (!bindedTagVms.Any())
+            var SearchTagVMs = bindedTags as IList<SearchTagVM> ?? bindedTags.ToList();
+            if (!SearchTagVMs.Any())
             {
                 return;
             }
 
-            foreach (var bindedTag in bindedTagVms)
+            foreach (var bindedTag in SearchTagVMs)
             {
                 if (SelectedTags.Any(x => x.Tag.Id == bindedTag.Tag.Id && x.Value == bindedTag.Value))
                 {
@@ -194,32 +193,32 @@ namespace ImoutoRebirth.Navigator.ViewModel
 
         private bool CanRemoveTags(object obj)
         {
-            return (obj as IList)?.Cast<BindedTagVM>()
-                                  .Any() ?? obj is BindedTagVM;
+            return (obj as IList)?.Cast<SearchTagVM>()
+                                  .Any() ?? obj is SearchTagVM;
         }
 
         private void RemoveTags(object obj)
         {
-            var bindedTags = (obj as IList)?.Cast<BindedTagVM>();
+            var bindedTags = (obj as IList)?.Cast<SearchTagVM>();
 
             if (bindedTags == null)
             {
-                var bindedTag = obj as BindedTagVM;
+                var bindedTag = obj as SearchTagVM;
 
                 if (bindedTag == null)
                 {
                     return;
                 }
 
-                bindedTags = new List<BindedTagVM>
+                bindedTags = new List<SearchTagVM>
                 {
                     bindedTag
                 };
             }
 
-            var bindedTagVms = bindedTags as IList<BindedTagVM> ?? bindedTags.ToList();
+            var SearchTagVMs = bindedTags as IList<SearchTagVM> ?? bindedTags.ToList();
 
-            foreach (var bindedTag in bindedTagVms)
+            foreach (var bindedTag in SearchTagVMs)
             {
                 var tagToRemove = SelectedTags.FirstOrDefault(x => x.Tag.Id == bindedTag.Tag.Id && x.Value == bindedTag.Value);
                 if (tagToRemove != null)
@@ -277,7 +276,7 @@ namespace ImoutoRebirth.Navigator.ViewModel
             }
         }
 
-        private void UpdateRecentlyTags(IEnumerable<BindedTagVM> selectedTags)
+        private void UpdateRecentlyTags(IEnumerable<SearchTagVM> selectedTags)
         {
             foreach (var selectedTag in selectedTags)
             {
@@ -302,7 +301,7 @@ namespace ImoutoRebirth.Navigator.ViewModel
 
         private void SetTagInfoContext(object obj)
         {
-            var bindedTag = obj as BindedTagVM;
+            var bindedTag = obj as SearchTagVM;
 
             if (bindedTag == null)
             {
@@ -347,10 +346,7 @@ namespace ImoutoRebirth.Navigator.ViewModel
             FoundTags.Clear();
             foreach (var tag in tags)
             {
-                FoundTags.Add(new BindedTagVM(new BindedTag
-                {
-                    Tag = tag
-                }));
+                FoundTags.Add(new SearchTagVM(new SearchTag(tag, null)));
             }
         }
 
@@ -363,11 +359,11 @@ namespace ImoutoRebirth.Navigator.ViewModel
 
         #region IDpopable members
 
-        public Type DataType => typeof (List<BindedTagVM>);
+        public Type DataType => typeof (List<SearchTagVM>);
 
         public void Drop(object data, int index = -1)
         {
-            var bindedTags = (data as List<BindedTagVM>)?.ToList();
+            var bindedTags = (data as List<SearchTagVM>)?.ToList();
             if (bindedTags == null
                 || !bindedTags.Any())
             {

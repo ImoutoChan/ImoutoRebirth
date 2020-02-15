@@ -39,11 +39,6 @@ namespace ImoutoRebirth.Navigator.ViewModel
                 {
                     Collections.Add(new CollectionVM(collection.Id, collection.Name));
                 }
-
-                foreach (var collection in collections)
-                {
-                    Collections.Add(new CollectionVM(collection.Id, collection.Name));
-                }
                 
                 foreach (var collectionVm in Collections)
                 {

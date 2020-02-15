@@ -21,7 +21,6 @@
 
   <ItemGroup>
     <PackageReference Include="Imouto.Utils.Core" Version="2.0.0" />
-    <PackageReference Include="Imouto.WcfExchangeLibrary.Core" Version="2.0.1" />
     <PackageReference Include="ImoutoRebirth.Common" Version="3.5.1" />
     <PackageReference Include="ImoutoRebirth.Lilin.WebApi.Client" Version="2.0.0" />
     <PackageReference Include="ImoutoRebirth.Room.WebApi.Client" Version="1.4.1" />
