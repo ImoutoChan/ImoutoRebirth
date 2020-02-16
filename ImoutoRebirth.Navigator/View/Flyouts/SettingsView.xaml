@@ -62,8 +62,8 @@
                                              Width="16"
                                              Height="16"
                                              StrokeThickness="1"
-                                             Stroke="{DynamicResource BlackBrush}"
-                                             Fill="{DynamicResource BlackBrush}" />
+                                             Stroke="{DynamicResource MahApps.Brushes.Black}"
+                                             Fill="{DynamicResource MahApps.Brushes.Black}" />
 
                                     <Label Grid.Column="1"
                                            Content="Light" />
@@ -80,8 +80,8 @@
                                              Width="16"
                                              Height="16"
                                              StrokeThickness="1"
-                                             Stroke="{DynamicResource BlackBrush}"
-                                             Fill="{DynamicResource WhiteBrush}" />
+                                             Stroke="{DynamicResource MahApps.Brushes.Black}"
+                                             Fill="{DynamicResource MahApps.Brushes.White}" />
 
                                     <Label Grid.Column="1"
                                            Content="Dark" />

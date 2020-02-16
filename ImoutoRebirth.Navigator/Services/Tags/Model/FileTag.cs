@@ -1,6 +1,7 @@
-﻿using System;
+﻿#nullable enable
+using System;
 
-namespace ImoutoRebirth.Navigator.Services.Tags
+namespace ImoutoRebirth.Navigator.Services.Tags.Model
 {
     internal class FileTag
     {

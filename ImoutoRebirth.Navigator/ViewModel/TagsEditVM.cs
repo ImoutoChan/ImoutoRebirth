@@ -10,7 +10,8 @@ using ImoutoRebirth.Navigator.Behavior;
 using ImoutoRebirth.Navigator.Commands;
 using ImoutoRebirth.Navigator.Services;
 using ImoutoRebirth.Navigator.Services.Tags;
-using Tag = ImoutoRebirth.Navigator.Services.Tags.Tag;
+using ImoutoRebirth.Navigator.Services.Tags.Model;
+using Tag = ImoutoRebirth.Navigator.Services.Tags.Model.Tag;
 
 namespace ImoutoRebirth.Navigator.ViewModel
 {

@@ -1,4 +1,4 @@
-﻿namespace ImoutoRebirth.Navigator.Services.Tags
+﻿namespace ImoutoRebirth.Navigator.Services.Tags.Model
 {
     internal enum FileTagSource
     {

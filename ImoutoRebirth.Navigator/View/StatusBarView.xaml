@@ -6,7 +6,7 @@
              mc:Ignorable="d"
              d:DesignWidth="600">
     <Grid>
-        <StatusBar Background="{DynamicResource AccentColorBrush}"
+        <StatusBar Background="{DynamicResource MahApps.Brushes.Accent}"
                    Grid.Row="1"
                    Grid.ColumnSpan="2"
                    Height="25">

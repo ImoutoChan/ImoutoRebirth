@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using ImoutoRebirth.Navigator.Services.Tags.Model;
 
 namespace ImoutoRebirth.Navigator.Services.Tags
 {

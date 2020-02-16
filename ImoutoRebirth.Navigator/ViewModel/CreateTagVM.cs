@@ -9,7 +9,7 @@ using System.Windows.Input;
 using ImoutoRebirth.Navigator.Commands;
 using ImoutoRebirth.Navigator.Services;
 using ImoutoRebirth.Navigator.Services.Tags;
-using TagType = ImoutoRebirth.Navigator.Services.Tags.TagType;
+using TagType = ImoutoRebirth.Navigator.Services.Tags.Model.TagType;
 
 namespace ImoutoRebirth.Navigator.ViewModel
 {

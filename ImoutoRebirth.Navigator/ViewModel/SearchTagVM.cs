@@ -1,5 +1,6 @@
 ﻿#nullable enable
 using ImoutoRebirth.Navigator.Services.Tags;
+using ImoutoRebirth.Navigator.Services.Tags.Model;
 
 namespace ImoutoRebirth.Navigator.ViewModel
 {

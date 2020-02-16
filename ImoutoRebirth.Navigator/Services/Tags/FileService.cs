@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using AutoMapper;
 using ImoutoRebirth.Lilin.WebApi.Client;
 using ImoutoRebirth.Lilin.WebApi.Client.Models;
+using ImoutoRebirth.Navigator.Services.Tags.Model;
 using ImoutoRebirth.Room.WebApi.Client;
 using ImoutoRebirth.Room.WebApi.Client.Models;
 
@@ -32,6 +33,15 @@ namespace ImoutoRebirth.Navigator.Services.Tags
             int take, 
             int skip)
         {
+            if (!tags.Any())
+            {
+                var filesOnly = await _roomClient.CollectionFiles
+                    .SearchAsync(new CollectionFilesRequest(collectionId, count: take, skip: skip));
+
+                return _mapper.Map<IReadOnlyCollection<File>>(filesOnly);
+            }
+
+
             var tagsSearch = await _lilinClient.Files
                 .GetFilesByTagsAsync(
                     new FilesSearchRequest(
@@ -54,28 +64,6 @@ namespace ImoutoRebirth.Navigator.Services.Tags
         public Task RemoveFile(Guid fileId)
         {
             throw new NotImplementedException();
-        }
-    }
-
-    public class OrganizationProfile : Profile
-    {
-        public OrganizationProfile()
-        {
-            CreateMap<SearchTag, TagSearchEntryRequest>()
-                .ForMember(x => x.TagId, o => o.MapFrom(x => x.Tag.Id.Value))
-                .ForMember(x => x.Value, o => o.MapFrom(x => x.Value))
-                .ForMember(x => x.TagSearchScope, o => o.MapFrom(x => x.SearchType));
-
-            CreateMap<SearchType, TagSearchScope>()
-                .ConvertUsing(
-                    (x, _) => x switch
-                    {
-                        SearchType.Include => TagSearchScope.Included,
-                        SearchType.Exclude => TagSearchScope.Excluded,
-                        _ => throw new NotImplementedException(x.ToString())
-                    });
-
-            CreateMap<CollectionFileResponse, File>();
         }
     }
 }

@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace ImoutoRebirth.Navigator.Services.Tags
+namespace ImoutoRebirth.Navigator.Services.Tags.Model
 {
     public struct Rate
     {

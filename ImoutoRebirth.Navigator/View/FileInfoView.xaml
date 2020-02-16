@@ -4,6 +4,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:converters="clr-namespace:ImoutoRebirth.Navigator.Converters"
+             xmlns:viewModel="clr-namespace:ImoutoRebirth.Navigator.ViewModel"
              mc:Ignorable="d"
              d:DesignHeight="300"
              d:DesignWidth="300"
@@ -13,7 +14,7 @@
     </UserControl.Resources>
 
     <Border BorderThickness="0,3,3,0"
-            BorderBrush="{DynamicResource AccentColorBrush}">
+            BorderBrush="{DynamicResource MahApps.Brushes.Accent}">
         <Grid Margin="5">
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto" />

@@ -165,14 +165,14 @@
                                     <TextBlock TextWrapping="Wrap"
                                                ToolTip="{Binding Tag.Title}"
                                                VerticalAlignment="Center">
-                                        <Run Text="{Binding Title, Mode=OneWay}"
+                                        <Run Text="{Binding Tag.Title, Mode=OneWay}"
                                              Foreground="{Binding TypeBrush}"
                                              FontFamily="Comic Sans MS"
                                              FontSize="13"
                                              FontWeight="Bold" />
 
                                         <Run Text="{Binding Tag.Count, StringFormat=' ({0})', Mode=OneWay}"
-                                             Foreground="{StaticResource GrayBrush3}" />
+                                             Foreground="{StaticResource MahApps.Brushes.Gray3}" />
                                     </TextBlock>
                                 </Label.Content>
                             </Label>

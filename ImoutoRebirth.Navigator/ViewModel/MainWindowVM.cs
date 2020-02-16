@@ -245,7 +245,7 @@ namespace ImoutoRebirth.Navigator.ViewModel
                 NavigatorList.Clear();
             }
 
-            GetImagesFromCollectionAsync(0, 500);
+            GetImagesFromCollectionAsync(0, 20000);
         }
 
         private void UpdatePreviews()
@@ -369,21 +369,29 @@ namespace ImoutoRebirth.Navigator.ViewModel
             }
         }
 
-        private async Task<ObservableCollection<INavigatorListEntry>> GetImagesFromCollectionAsyncTask(
+        private async Task<IReadOnlyCollection<INavigatorListEntry>> GetImagesFromCollectionAsyncTask(
             int count, 
             int skip)
         {
-            var found = await _fileService.SearchFiles(
-                TagSearchVM.SelectedColleciton.Value,
-                TagSearchVM.SelectedBindedTags.Select(x => x.Model).ToList(),
-                count,
-                skip);
 
-            var entries = found
-                .Select(x => EntryVM.GetListEntry(x.Path, PreviewSize, x.Id))
-                .SkipExceptions();
+            var entries = await Task.Run(async () => await NavigatorListEntries());
 
-            return new ObservableCollection<INavigatorListEntry>(entries);
+            return entries;
+
+            async Task<List<INavigatorListEntry>> NavigatorListEntries()
+            {
+                var found = await _fileService.SearchFiles(
+                    TagSearchVM.SelectedColleciton.Value,
+                    TagSearchVM.SelectedBindedTags.Select(x => x.Model).ToList(),
+                    count,
+                    skip);
+
+                var navigatorListEntries = found
+                    .Select(x => EntryVM.GetListEntry(x.Path, PreviewSize, x.Id))
+                    .SkipExceptions()
+                    .ToList();
+                return navigatorListEntries;
+            }
         }
 
         private async Task<int> GetImagesCountFromCollectionAsyncTask()

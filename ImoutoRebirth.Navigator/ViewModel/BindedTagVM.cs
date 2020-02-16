@@ -6,8 +6,9 @@ using System.Windows.Media;
 using ImoutoRebirth.Navigator.Commands;
 using ImoutoRebirth.Navigator.Services;
 using ImoutoRebirth.Navigator.Services.Tags;
+using ImoutoRebirth.Navigator.Services.Tags.Model;
 using ImoutoRebirth.Navigator.Utils;
-using Tag = ImoutoRebirth.Navigator.Services.Tags.Tag;
+using Tag = ImoutoRebirth.Navigator.Services.Tags.Model.Tag;
 
 namespace ImoutoRebirth.Navigator.ViewModel
 {

@@ -15,11 +15,14 @@ namespace ImoutoRebirth.Navigator.Services
         {
             var sc = new ServiceCollection();
 
-            sc.AddSingleton<ICollectionService, CollectionService>();
-            sc.AddSingleton<ICollections, Collections>();
-            sc.AddSingleton<IFileService, FileService>();
-            sc.AddTransient<IImoutoRebirthRoomWebApiClient>(x => x.GetRequiredService<ImoutoRebirthRoomWebApiClient>());
-            sc.AddTransient<IImoutoRebirthLilinWebApiClient>(x => x.GetRequiredService<ImoutoRebirthLilinWebApiClient>());
+            sc.AddTransient<ICollectionService, CollectionService>();
+            sc.AddTransient<ICollections, Collections>();
+            sc.AddTransient<IFileService, FileService>();
+            sc.AddTransient<IFileTagService, FileTagService>();
+            sc.AddTransient<IImoutoRebirthRoomWebApiClient>(x 
+                => x.GetRequiredService<ImoutoRebirthRoomWebApiClient>());
+            sc.AddTransient<IImoutoRebirthLilinWebApiClient>(x 
+                => x.GetRequiredService<ImoutoRebirthLilinWebApiClient>());
 
             sc.AddSingleton<ImoutoRebirthRoomWebApiClient>(x 
                 => new ImoutoRebirthRoomWebApiClient(new Uri("http://miyu:11301/")));

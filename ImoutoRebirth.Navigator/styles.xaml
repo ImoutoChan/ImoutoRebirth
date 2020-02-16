@@ -37,7 +37,7 @@
                      Value="True">
                 <Setter TargetName="label"
                         Property="Background"
-                        Value="{DynamicResource AccentColorBrush3}" />
+                        Value="{DynamicResource MahApps.Brushes.Accent3}" />
             </Trigger>
         </ControlTemplate.Triggers>
     </ControlTemplate>
@@ -58,7 +58,7 @@
                          FontSize="13"
                          FontWeight="Bold" />
                     <Run Text="{Binding Tag.Count, StringFormat=' ({0})'}"
-                         Foreground="{StaticResource GrayBrush3}"/>
+                         Foreground="{StaticResource MahApps.Brushes.Gray3}"/>
                     <Run Text="{Binding Value}"
                          wpfHelpers:RunVisibility.Visible="{Binding Value, Converter={StaticResource BooleanResultConverter}, ConverterParameter=!null}" />
                 </TextBlock>
@@ -70,7 +70,7 @@
                      Value="True">
                 <Setter TargetName="label"
                         Property="Background"
-                        Value="{DynamicResource AccentColorBrush3}" />
+                        Value="{DynamicResource MahApps.Brushes.Accent3}" />
             </Trigger>
         </ControlTemplate.Triggers>
     </ControlTemplate>
@@ -96,7 +96,7 @@
                                           Canvas.Left="19"
                                           Canvas.Top="38"
                                           Stretch="Fill"
-                                          Fill="{DynamicResource BlackBrush}"
+                                          Fill="{DynamicResource MahApps.Brushes.Black}"
                                           Data="F1 M 19,38L 57,38L 57,44L 19,44L 19,38 Z "
                                           Name="Path1" />
                                 </Canvas>
@@ -110,7 +110,7 @@
                                           Canvas.Left="19"
                                           Canvas.Top="38"
                                           Stretch="Fill"
-                                          Fill="{DynamicResource GrayBrush9}"
+                                          Fill="{DynamicResource MahApps.Brushes.Gray9}"
                                           Data="F1 M 19,38L 57,38L 57,44L 19,44L 19,38 Z "
                                           Name="Path2" />
                                 </Canvas>
@@ -163,7 +163,7 @@
                     <TextBlock TextAlignment="Left"
                                VerticalAlignment="Center">
                         <Run Text="{Binding Count, StringFormat='({0})'}"
-                             Foreground="{StaticResource GrayBrush3}" />
+                             Foreground="{StaticResource MahApps.Brushes.Gray3}" />
                     </TextBlock>
                 </Label.Content>
             </Label>
@@ -257,7 +257,7 @@
                                              FontWeight="Bold" />
 
                                         <Run Text="{Binding Tag.Count, StringFormat=' ({0})', Mode=OneWay}"
-                                             Foreground="{StaticResource GrayBrush3}" />
+                                             Foreground="{StaticResource MahApps.Brushes.Gray3}" />
                                     </TextBlock>
                                 </Hyperlink>
                             </TextBlock>
@@ -459,13 +459,13 @@
                                  Value="true">
                             <Setter TargetName="Border"
                                     Property="Background"
-                                    Value="{DynamicResource AccentColorBrush2}" />
+                                    Value="{DynamicResource MahApps.Brushes.Accent2}" />
                         </Trigger>
                         <Trigger Property="IsMouseOver"
                                  Value="True">
                             <Setter TargetName="Border"
                                     Property="Background"
-                                    Value="{DynamicResource AccentColorBrush3}" />
+                                    Value="{DynamicResource MahApps.Brushes.Accent3}" />
                         </Trigger>
                     </ControlTemplate.Triggers>
                 </ControlTemplate>
@@ -477,7 +477,7 @@
                      TargetType="{x:Type Label}">
         <Rectangle Width="30"
                    Height="30"
-                   Fill="{StaticResource BlackBrush}">
+                   Fill="{StaticResource MahApps.Brushes.Black}">
             <Rectangle.OpacityMask>
                 <VisualBrush Stretch="Fill"
                              Visual="{DynamicResource appbar_movie_clapper}" />
@@ -489,7 +489,7 @@
                      TargetType="{x:Type Label}">
         <Rectangle Width="30"
                    Height="30"
-                   Fill="{StaticResource BlackBrush}">
+                   Fill="{StaticResource MahApps.Brushes.Black}">
             <Rectangle.OpacityMask>
                 <VisualBrush Stretch="Fill"
                              Visual="{DynamicResource appbar_image_export}" />
@@ -501,7 +501,7 @@
                      TargetType="{x:Type Button}">
         <Rectangle Width="20"
                    Height="20"
-                   Fill="{StaticResource BlackBrush}">
+                   Fill="{StaticResource MahApps.Brushes.Black}">
             <Rectangle.OpacityMask>
                 <VisualBrush Stretch="Fill"
                              Visual="{DynamicResource appbar_control_play}" />
@@ -513,7 +513,7 @@
                      TargetType="{x:Type Button}">
         <Rectangle Width="20"
                    Height="20"
-                   Fill="{StaticResource BlackBrush}">
+                   Fill="{StaticResource MahApps.Brushes.Black}">
             <Rectangle.OpacityMask>
                 <VisualBrush Stretch="Fill"
                              Visual="{DynamicResource appbar_control_pause}" />

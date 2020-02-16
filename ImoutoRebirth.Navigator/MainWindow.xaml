@@ -4,10 +4,8 @@
                           xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                           xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
                           xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-                          xmlns:local="clr-namespace:ImoutoRebirth.Navigator"
                           xmlns:metroControl="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
-                          xmlns:Dialog="clr-namespace:MahApps.Metro.Controls.Dialogs;assembly=MahApps.Metro"
-                          xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
+                          xmlns:dialog="clr-namespace:MahApps.Metro.Controls.Dialogs;assembly=MahApps.Metro"
                           xmlns:gif="http://wpfanimatedgif.codeplex.com"
                           xmlns:wpfHelpers="clr-namespace:ImoutoRebirth.Navigator.Utils.Wpf"
                           xmlns:b="http://schemas.microsoft.com/xaml/behaviors"
@@ -20,7 +18,7 @@
                           d:DataContext="{d:DesignInstance viewModel:MainWindowVM, IsDesignTimeCreatable=False}"
                           mc:Ignorable="d"
                           WindowStartupLocation="CenterScreen"
-                          BorderBrush="{DynamicResource AccentColorBrush}"
+                          BorderBrush="{DynamicResource MahApps.Brushes.Accent}"
                           BorderThickness="2"
                           Height="720"
                           Width="1280"
@@ -33,13 +31,13 @@
     <metroControl:MetroWindow.Resources>
         <converters:ConditionVisibilityConverter x:Key="ConditionVisibilityConverter" />
 
-        <Dialog:CustomDialog x:Key="SuccessCreateCollectionDialog"
+        <dialog:CustomDialog x:Key="SuccessCreateCollectionDialog"
                              Title="Create collection"
                              x:Name="SuccessCreateCollectionDialog">
             <TextBlock Height="30"
                        Text="Collection has been successfully created!"
-                       Foreground="{DynamicResource AccentColorBrush}" />
-        </Dialog:CustomDialog>
+                       Foreground="{DynamicResource MahApps.Brushes.Accent}" />
+        </dialog:CustomDialog>
 
         <wpfHelpers:BindingProxy x:Key="DataContextProxy"
                                  Data="{Binding}" />
@@ -178,7 +176,7 @@
                                 <Grid>
                                     <Ellipse Width="10"
                                              Height="10"
-                                             Fill="{DynamicResource GrayBrush10}"
+                                             Fill="{DynamicResource MahApps.Brushes.Gray10}"
                                              Visibility="{Binding Path=IsLoading, 
                                                                   Converter={StaticResource ConditionVisibilityConverter},
                                                                   ConverterParameter=true}" />
@@ -235,7 +233,7 @@
                                   Height="{Binding Path=ViewPortSize.Height}">
                                 <Ellipse Width="10"
                                          Height="10"
-                                         Fill="{DynamicResource GrayBrush10}"
+                                         Fill="{DynamicResource MahApps.Brushes.Gray10}"
                                          Visibility="{Binding Path=IsLoading, 
                                                             Converter={StaticResource ConditionVisibilityConverter},
                                                             ConverterParameter=true}" />
@@ -391,11 +389,11 @@
 
                                             <Setter TargetName="Bd"
                                                     Property="Background"
-                                                    Value="{DynamicResource AccentColorBrush4}" />
+                                                    Value="{DynamicResource MahApps.Brushes.Accent4}" />
 
                                             <Setter TargetName="Bd"
                                                     Property="BorderBrush"
-                                                    Value="{DynamicResource AccentColorBrush2}" />
+                                                    Value="{DynamicResource MahApps.Brushes.Accent2}" />
                                         </MultiTrigger>
 
                                         <MultiTrigger>
@@ -409,11 +407,11 @@
 
                                             <Setter TargetName="Bd"
                                                     Property="Background"
-                                                    Value="{DynamicResource AccentColorBrush3}" />
+                                                    Value="{DynamicResource MahApps.Brushes.Accent3}" />
 
                                             <Setter TargetName="Bd"
                                                     Property="BorderBrush"
-                                                    Value="{DynamicResource AccentColorBrush}" />
+                                                    Value="{DynamicResource MahApps.Brushes.Accent}" />
                                         </MultiTrigger>
 
                                         <MultiTrigger>
@@ -427,11 +425,11 @@
 
                                             <Setter TargetName="Bd"
                                                     Property="Background"
-                                                    Value="{DynamicResource AccentColorBrush3}" />
+                                                    Value="{DynamicResource MahApps.Brushes.Accent3}" />
 
                                             <Setter TargetName="Bd"
                                                     Property="BorderBrush"
-                                                    Value="{DynamicResource AccentColorBrush}" />
+                                                    Value="{DynamicResource MahApps.Brushes.Accent}" />
                                         </MultiTrigger>
 
                                         <Trigger Property="IsEnabled"
@@ -464,7 +462,7 @@
                           Grid.RowSpan="2"
                           Width="0"
                           ShowsPreview="True"
-                          Background="{DynamicResource AccentColorBrush}" />
+                          Background="{DynamicResource MahApps.Brushes.Accent}" />
 
             <view:TagsSearchView Grid.Column="0"
                                  DataContext="{Binding TagSearchVM}" />

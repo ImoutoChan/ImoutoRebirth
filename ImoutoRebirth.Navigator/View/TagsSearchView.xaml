@@ -13,7 +13,7 @@
     <Grid>
         <Border Grid.Column="0"
                 BorderThickness="0,0,3,0"
-                BorderBrush="{DynamicResource AccentColorBrush}">
+                BorderBrush="{DynamicResource MahApps.Brushes.Accent}">
             <Grid>
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto" />
@@ -62,7 +62,7 @@
 
                 <Border Grid.Row="3"
                         BorderThickness="1"
-                        BorderBrush="{DynamicResource AccentColorBrush}" />
+                        BorderBrush="{DynamicResource MahApps.Brushes.Accent}" />
 
                 <ItemsControl x:Name="SelectedTags"
                               Grid.Row="3"
@@ -71,7 +71,7 @@
 
                 <Border Grid.Row="5"
                         BorderThickness="1"
-                        BorderBrush="{DynamicResource AccentColorBrush}" />
+                        BorderBrush="{DynamicResource MahApps.Brushes.Accent}" />
 
                 <ScrollViewer Grid.Row="6"
                               HorizontalScrollBarVisibility="Disabled"
@@ -84,7 +84,7 @@
 
                 <Border Grid.Row="7"
                         BorderThickness="1"
-                        BorderBrush="{DynamicResource AccentColorBrush}" />
+                        BorderBrush="{DynamicResource MahApps.Brushes.Accent}" />
 
                 <!-- Rating/fav Control -->
 
@@ -102,7 +102,7 @@
 
         <Border Grid.Column="0"
                 BorderThickness="1"
-                BorderBrush="{DynamicResource AccentColorBrush}"
+                BorderBrush="{DynamicResource MahApps.Brushes.Accent}"
                 HorizontalAlignment="Stretch"
                 VerticalAlignment="Top"
                 Margin="5,68,8,0"

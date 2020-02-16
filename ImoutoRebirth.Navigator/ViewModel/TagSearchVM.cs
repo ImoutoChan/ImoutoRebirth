@@ -8,9 +8,10 @@ using System.Windows.Input;
 using ImoutoRebirth.Navigator.Commands;
 using ImoutoRebirth.Navigator.Services;
 using ImoutoRebirth.Navigator.Services.Tags;
+using ImoutoRebirth.Navigator.Services.Tags.Model;
 using ImoutoRebirth.Navigator.Utils;
-using SearchType = ImoutoRebirth.Navigator.Services.Tags.SearchType;
-using Tag = ImoutoRebirth.Navigator.Services.Tags.Tag;
+using SearchType = ImoutoRebirth.Navigator.Services.Tags.Model.SearchType;
+using Tag = ImoutoRebirth.Navigator.Services.Tags.Model.Tag;
 
 namespace ImoutoRebirth.Navigator.ViewModel
 {
