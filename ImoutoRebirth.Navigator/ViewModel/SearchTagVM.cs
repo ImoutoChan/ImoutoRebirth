@@ -15,7 +15,15 @@ namespace ImoutoRebirth.Navigator.ViewModel
 
         public Tag Tag => _model.Tag;
 
-        public string? Value => _model.Value;
+        public string? Value
+        {
+            get { return _model.Value; }
+            set
+            {
+                _model.Value = value;
+                OnPropertyChanged(() => Value);
+            }
+        }
 
         public SearchType SearchType
         {

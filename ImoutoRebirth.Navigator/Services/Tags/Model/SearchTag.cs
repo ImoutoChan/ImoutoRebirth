@@ -11,7 +11,7 @@
 
         public Tag Tag { get; }
 
-        public string? Value { get; }
+        public string? Value { get; set; }
 
         public SearchType SearchType { get; set; }
     }

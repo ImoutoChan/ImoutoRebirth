@@ -245,7 +245,7 @@ namespace ImoutoRebirth.Navigator.ViewModel
                 NavigatorList.Clear();
             }
 
-            GetImagesFromCollectionAsync(0, 20000);
+            GetImagesFromCollectionAsync(0, 200000);
         }
 
         private void UpdatePreviews()

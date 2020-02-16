@@ -327,7 +327,7 @@ namespace ImoutoRebirth.Navigator.ViewModel
 
         private void UnselectTag(object param)
         {
-            var tag = param as BindedTagVM;
+            var tag = param as SearchTagVM;
 
             if (tag == null)
             {

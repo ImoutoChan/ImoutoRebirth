@@ -51,8 +51,8 @@
             <Label.Content>
                 <TextBlock TextAlignment="Left"
                            VerticalAlignment="Center"
-                           ToolTip="{Binding Tag.Title}">
-                    <Run Text="{Binding Tag.Title}"
+                           ToolTip="{Binding Tag.Title, Mode=OneWay}">
+                    <Run Text="{Binding Tag.Title, Mode=OneWay}"
                          Foreground="{Binding Tag.Type.Color, Converter={StaticResource IntToColorConverter}}"
                          FontFamily="Comic Sans MS"
                          FontSize="13"
@@ -194,14 +194,14 @@
                HorizontalContentAlignment="Stretch"
                Padding="10,4,5,2">
             <Label.Content>
-                <TextBlock Text="{Binding Tag.Title}"
+                <TextBlock Text="{Binding Tag.Title, Mode=OneWay}"
                            TextAlignment="Left"
                            Foreground="{Binding Tag.Type.Color, Converter={StaticResource IntToColorConverter}}"
                            FontFamily="Comic Sans MS"
                            FontSize="13"
                            FontWeight="Bold"
                            VerticalAlignment="Center"
-                           ToolTip="{Binding Tag.Title}" />
+                           ToolTip="{Binding Tag.Title, Mode=OneWay}" />
             </Label.Content>
         </Label>
     </ControlTemplate>
@@ -212,14 +212,14 @@
                HorizontalContentAlignment="Stretch"
                Padding="10,4,5,2">
             <Label.Content>
-                <TextBlock Text="{Binding Tag.Title}"
+                <TextBlock Text="{Binding Tag.Title, Mode=OneWay}"
                            TextAlignment="Left"
                            Foreground="{Binding Tag.Type.Color, Converter={StaticResource IntToColorConverter}}"
                            FontFamily="Comic Sans MS"
                            FontSize="13"
                            FontWeight="Bold"
                            VerticalAlignment="Center"
-                           ToolTip="{Binding Tag.Title}" />
+                           ToolTip="{Binding Tag.Title, Mode=OneWay}" />
             </Label.Content>
         </Label>
     </DataTemplate>
