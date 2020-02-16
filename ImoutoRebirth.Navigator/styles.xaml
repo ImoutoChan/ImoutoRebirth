@@ -57,7 +57,7 @@
                          FontFamily="Comic Sans MS"
                          FontSize="13"
                          FontWeight="Bold" />
-                    <Run Text="{Binding Tag.Count, StringFormat=' ({0})'}"
+                    <Run Text="{Binding Tag.Count, StringFormat=' ({0})', Mode=OneWay}"
                          Foreground="{StaticResource MahApps.Brushes.Gray3}"/>
                     <Run Text="{Binding Value}"
                          wpfHelpers:RunVisibility.Visible="{Binding Value, Converter={StaticResource BooleanResultConverter}, ConverterParameter=!null}" />

@@ -5,13 +5,14 @@ namespace ImoutoRebirth.Navigator.Services.Tags.Model
 {
     internal class Tag
     {
-        public Tag(Guid? id, string title, TagType type, IReadOnlyCollection<string> synonymsCollection, bool hasValue)
+        public Tag(Guid? id, string title, TagType type, IReadOnlyCollection<string> synonymsCollection, bool hasValue, int count)
         {
             Id = id;
             Title = title;
             Type = type;
             SynonymsCollection = synonymsCollection;
             HasValue = hasValue;
+            Count = count;
         }
 
         public Guid? Id { get; }
@@ -23,5 +24,7 @@ namespace ImoutoRebirth.Navigator.Services.Tags.Model
         public IReadOnlyCollection<string> SynonymsCollection { get; }
 
         public bool HasValue { get; }
+
+        public int Count { get; }
     }
 }

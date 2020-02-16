@@ -55,6 +55,14 @@ namespace ImoutoRebirth.Navigator.Services.Tags
 
         public async Task<int> CountFiles(Guid? collectionId, IReadOnlyCollection<SearchTag> tags)
         {
+            if (!tags.Any())
+            {
+                var result = await _roomClient.CollectionFiles
+                    .CountAsync(new CollectionFilesRequest(collectionId));
+
+                return result.Value;
+            }
+
             return (await _lilinClient.Files
                 .GetFilesCountByTagsAsync(
                     new FilesSearchRequest(
