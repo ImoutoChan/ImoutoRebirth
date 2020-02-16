@@ -19,6 +19,7 @@ namespace ImoutoRebirth.Navigator.Services
             sc.AddTransient<ICollections, Collections>();
             sc.AddTransient<IFileService, FileService>();
             sc.AddTransient<IFileTagService, FileTagService>();
+            sc.AddTransient<ITagService, TagService>();
             sc.AddTransient<IImoutoRebirthRoomWebApiClient>(x 
                 => x.GetRequiredService<ImoutoRebirthRoomWebApiClient>());
             sc.AddTransient<IImoutoRebirthLilinWebApiClient>(x 

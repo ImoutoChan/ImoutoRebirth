@@ -4,7 +4,7 @@ using ImoutoRebirth.Navigator.Services.Tags.Model;
 
 namespace ImoutoRebirth.Navigator.Services.Tags
 {
-    interface ITagService
+    internal interface ITagService
     {
         Task<IReadOnlyCollection<TagType>> GеtTypes();
 

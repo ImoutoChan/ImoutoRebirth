@@ -27,6 +27,14 @@ namespace ImoutoRebirth.Navigator.Services.Tags
             CreateMap<CollectionFileResponse, File>();
 
             CreateFileTagMaps();
+            CreateTagMaps();
+        }
+
+        private void CreateTagMaps()
+        {
+            CreateMap<TagResponse, Tag>()
+                .ForCtorParam("title", o => o.MapFrom(x => x.Name))
+                .ForCtorParam("synonymsCollection", o => o.MapFrom(x => x.Synonyms));
         }
 
         private void CreateFileTagMaps()

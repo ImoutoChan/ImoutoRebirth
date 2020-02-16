@@ -162,7 +162,7 @@
                 <Label.Content>
                     <TextBlock TextAlignment="Left"
                                VerticalAlignment="Center">
-                        <Run Text="{Binding Count, StringFormat='({0})'}"
+                        <Run Text="{Binding Count, StringFormat='({0})', Mode=OneWay}"
                              Foreground="{StaticResource MahApps.Brushes.Gray3}" />
                     </TextBlock>
                 </Label.Content>
@@ -175,12 +175,12 @@
                 <Label.Content>
                     <TextBlock TextAlignment="Left"
                                VerticalAlignment="Center">
-                        <Run Text="{Binding Title}"
-                             Foreground="{Binding Type.Color, Converter={StaticResource IntToColorConverter}}"
+                        <Run Text="{Binding Title, Mode=OneWay}"
+                             Foreground="{Binding Type.Color, Converter={StaticResource IntToColorConverter}, Mode=OneWay}"
                              FontFamily="Comic Sans MS"
                              FontSize="13"
                              FontWeight="Bold"
-                             ToolTip="{Binding Title}" />
+                             ToolTip="{Binding Title, Mode=OneWay}" />
                     </TextBlock>
                 </Label.Content>
             </Label>
