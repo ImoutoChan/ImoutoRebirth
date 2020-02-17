@@ -2,6 +2,8 @@
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Media.Imaging;
 using Imouto;
@@ -14,7 +16,7 @@ namespace ImoutoRebirth.Navigator.Model
     {
         public static readonly ThreadQueue PreviewLoadingThreadQueue = new ThreadQueue();
         private const ResizeType DefaultResizeType = ResizeType.FitToViewPort;
-
+        private Size? _frameSize;
         #region Fields
 
         private readonly string _path;
@@ -174,7 +176,7 @@ namespace ImoutoRebirth.Navigator.Model
 
         }
 
-        private void Load()
+        private async Task Load()
         {
             try
             {
@@ -189,37 +191,28 @@ namespace ImoutoRebirth.Navigator.Model
                 {
                     if (_viewPort.Width != 0 && _viewPort.Height != 0)
                     {
-                        var decoder =
-                            BitmapDecoder.Create(new Uri(_path),
-                                BitmapCreateOptions.None,
-                                BitmapCacheOption.None);
-                        var frame = decoder.Frames[0];
+                        if (_frameSize == null)
+                        {
+                            var decoder =
+                                BitmapDecoder.Create(
+                                    new Uri(_path),
+                                    BitmapCreateOptions.None,
+                                    BitmapCacheOption.None);
+                            var frame = decoder.Frames[0];
 
-                        resizedSize = ResizeImage(new Size(frame.PixelWidth, frame.PixelHeight),
-                            new Size(_viewPort.Width, _viewPort.Height),
-                            DefaultResizeType);
+                            _frameSize = new Size(frame.PixelWidth, frame.PixelHeight);
+                        }
 
-                        decoder = null;
+
+                        resizedSize 
+                            = ResizeImage(
+                                _frameSize.Value,
+                                new Size(_viewPort.Width, _viewPort.Height),
+                                DefaultResizeType);
                     }
                 }
 
-                var bi = new BitmapImage();
-
-                bi.BeginInit();
-
-                if (!resizedSize.IsEmpty)
-                {
-                    if (resizedSize.Width != 0 && resizedSize.Height != 0)
-                    {
-                        bi.DecodePixelWidth = Convert.ToInt32(resizedSize.Width);
-                        bi.DecodePixelHeight = Convert.ToInt32(resizedSize.Height);
-                    }
-                }
-
-                bi.CacheOption = BitmapCacheOption.OnLoad;
-                bi.UriSource = new Uri(_path);
-                bi.EndInit();
-                bi.Freeze();
+                var bi = await LoadBitmapImage(resizedSize);
 
                 _image = bi;
 
@@ -238,6 +231,33 @@ namespace ImoutoRebirth.Navigator.Model
             {
                 OnImageChanged();
             }
+        }
+
+        private async Task<BitmapImage> LoadBitmapImage(
+            Size resizedSize, 
+            CancellationToken cancellationToken = default)
+        {
+            return await Task.Run(
+                () =>
+                {
+                    var bi = new BitmapImage();
+                    bi.BeginInit();
+
+                    if (!resizedSize.IsEmpty
+                        && resizedSize.Width != 0
+                        && resizedSize.Height != 0)
+                    {
+                        bi.DecodePixelWidth = Convert.ToInt32(resizedSize.Width);
+                        bi.DecodePixelHeight = Convert.ToInt32(resizedSize.Height);
+                    }
+
+                    bi.CacheOption = BitmapCacheOption.OnLoad;
+                    bi.UriSource = new Uri(_path);
+                    bi.EndInit();
+                    bi.Freeze();
+                    return bi;
+                },
+                cancellationToken);
         }
 
         #endregion //Methods

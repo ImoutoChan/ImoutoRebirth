@@ -207,7 +207,7 @@ namespace ImoutoRebirth.Navigator.ViewModel
             try
             {
                 await _fileLoadingService.LoadFiles(
-                    1,
+                    10_000,
                     _previewSize,
                     TagSearchVM.SelectedColleciton.Value,
                     TagSearchVM.SelectedBindedTags.Select(x => x.Model).ToList(),
@@ -244,7 +244,7 @@ namespace ImoutoRebirth.Navigator.ViewModel
 
         private void UpdatePreviews()
         {
-            OnPropertyChanged("SlotSize");
+            OnPropertyChanged(() => SlotSize);
 
             //Performance ?
             lock (NavigatorList)

@@ -26,8 +26,8 @@ namespace ImoutoRebirth.Navigator.ViewModel
             ImageEntry = new ImageEntry(imagePath, initPreviewSize);
             ImageEntry.ImageChanged += (s, e) =>
             {
-                OnPropertyChanged("IsLoading");
-                OnPropertyChanged("Image");
+                OnPropertyChanged(() => IsLoading);
+                OnPropertyChanged(() => Image);
             };
 
             Type = (ImageEntry.ImageFormat == ImageFormat.GIF)
@@ -88,7 +88,7 @@ namespace ImoutoRebirth.Navigator.ViewModel
         public void UpdatePreview(Size previewSize)
         {
             ImageEntry.UpdatePreview(previewSize);
-            OnPropertyChanged("ViewPortSize");
+            OnPropertyChanged(() => ViewPortSize);
         }
 
         public void Load()

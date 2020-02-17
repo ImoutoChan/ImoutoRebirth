@@ -45,24 +45,28 @@ namespace ImoutoRebirth.Navigator.ViewModel
             OnPropertyChanged(ref value, newValue, GetPropertyName(action));
         }
 
-        protected void OnPropertyChanged<T>(ref T value, T newValue, string propertyName)
+        private void OnPropertyChanged<T>(ref T value, T newValue, string propertyName)
         {
             if (EqualityComparer<T>.Default.Equals(value, newValue))
                 return;
             OnPropertyChanging(ref value, newValue, propertyName);
         }
-        protected virtual void OnPropertyChanging<T>(ref T value, T newValue, string propertyName)
+
+        private void OnPropertyChanging<T>(ref T value, T newValue, string propertyName)
         {
             if (EqualityComparer<T>.Default.Equals(value, newValue))
                 return;
             value = newValue;
-            OnPropertyChanged(propertyName);
+
+            RaisePropertyChanged(propertyName);
         }
+
         public void OnPropertyChanged<T>(Expression<Func<T>> action)
         {
             var propertyName = GetPropertyName(action);
-            OnPropertyChanged(propertyName);
+            RaisePropertyChanged(propertyName);
         }
+
         public static string GetPropertyName<T>(Expression<Func<T>> action)
         {
             var expression = (MemberExpression)action.Body;
@@ -76,10 +80,12 @@ namespace ImoutoRebirth.Navigator.ViewModel
         {
             VerifyPropertyName(propertyName);
 
-            if (PropertyChanged != null)
-            {
-                PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
-            }
+            RaisePropertyChanged(propertyName);
+        }
+
+        private void RaisePropertyChanged(string propertyName)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
 
         #endregion Implement INotyfyPropertyChanged members

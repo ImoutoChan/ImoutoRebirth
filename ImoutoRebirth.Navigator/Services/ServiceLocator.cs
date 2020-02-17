@@ -17,7 +17,7 @@ namespace ImoutoRebirth.Navigator.Services
             var sc = new ServiceCollection();
 
             sc.AddTransient<ICollectionService, CollectionService>();
-            sc.AddTransient<ICollections, Collections>();
+            sc.AddTransient<ICollections, Room.WebApi.Client.Collections>();
             sc.AddTransient<IFileService, FileService>();
             sc.AddTransient<IFileTagService, FileTagService>();
             sc.AddTransient<ITagService, TagService>();
