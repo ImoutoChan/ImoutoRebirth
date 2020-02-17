@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace ImoutoRebirth.Navigator.Services
+namespace ImoutoRebirth.Navigator.Services.Collections
 {
     public class SourceFolder
     {

@@ -4,7 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using ImoutoRebirth.Room.WebApi.Client;
 
-namespace ImoutoRebirth.Navigator.Services
+namespace ImoutoRebirth.Navigator.Services.Collections
 {
     class CollectionService : ICollectionService
     {

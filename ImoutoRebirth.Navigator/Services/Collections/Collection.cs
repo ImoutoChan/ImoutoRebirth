@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace ImoutoRebirth.Navigator.Services
+namespace ImoutoRebirth.Navigator.Services.Collections
 {
     public class Collection
     {

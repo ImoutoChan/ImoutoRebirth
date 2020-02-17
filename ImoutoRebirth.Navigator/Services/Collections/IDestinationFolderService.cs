@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
 
-namespace ImoutoRebirth.Navigator.Services
+namespace ImoutoRebirth.Navigator.Services.Collections
 {
     public interface IDestinationFolderService
     {
