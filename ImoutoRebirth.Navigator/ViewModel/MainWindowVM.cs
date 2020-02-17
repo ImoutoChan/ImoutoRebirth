@@ -4,11 +4,9 @@ using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.Diagnostics;
 using System.Linq;
-using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
-using Imouto.Utils.Core;
 using ImoutoRebirth.Navigator.Commands;
 using ImoutoRebirth.Navigator.Model;
 using ImoutoRebirth.Navigator.Services;
@@ -22,14 +20,13 @@ namespace ImoutoRebirth.Navigator.ViewModel
         #region Fields
 
         private MainWindow _view;
-        private CancellationTokenSource _ctsImageLoading;
         private int _previewSize = 256;
         private int _totalCount;
         private bool _isLoading;
         private string _status;
         private string _statusToolTip;
-        private static readonly SemaphoreSlim ReloadImagesAsyncSemaphore = new SemaphoreSlim(1, 1);
         private readonly IFileService _fileService;
+        private readonly IFileLoadingService _fileLoadingService;
 
         #endregion Fields
 
@@ -37,6 +34,7 @@ namespace ImoutoRebirth.Navigator.ViewModel
 
         public MainWindowVM()
         {
+            _fileLoadingService = ServiceLocator.GetService<IFileLoadingService>();
             _fileService = ServiceLocator.GetService<IFileService>();
 
             InitializeCommands();
@@ -82,7 +80,8 @@ namespace ImoutoRebirth.Navigator.ViewModel
 
         private Size PreviewSize => new Size(_previewSize, _previewSize);
 
-        public ObservableCollection<INavigatorListEntry> NavigatorList { get; } = new ObservableCollection<INavigatorListEntry>();
+        public ObservableCollection<INavigatorListEntry> NavigatorList { get; } 
+            = new ObservableCollection<INavigatorListEntry>();
 
         public string Title => "Imouto Navigator";
 
@@ -96,64 +95,33 @@ namespace ImoutoRebirth.Navigator.ViewModel
 
         public bool IsLoading
         {
-            get
-            {
-                return _isLoading;
-            }
-            private set
-            {
-                _isLoading = value;
-                OnPropertyChanged("IsLoading");
-            }
+            get => _isLoading;
+            private set => OnPropertyChanged(ref _isLoading, value, () => IsLoading);
         }
 
         public int TotalCount
         {
-            get
-            {
-                return _totalCount;
-            }
-            set
-            {
-                OnPropertyChanged(ref _totalCount, value, () => TotalCount);
-            }
+            get => _totalCount;
+            set => OnPropertyChanged(ref _totalCount, value, () => TotalCount);
         }
 
         public int LoadedCount => NavigatorList.Count();
 
         public string Status
         {
-            get
-            {
-                return _status;
-            }
-            set
-            {
-                OnPropertyChanged(ref _status, value, () => Status);
-            }
+            get => _status;
+            set => OnPropertyChanged(ref _status, value, () => Status);
         }
 
         public string StatusToolTip
         {
-            get
-            {
-                return _statusToolTip;
-            }
-            set
-            {
-                OnPropertyChanged(ref _statusToolTip, value, () => StatusToolTip);
-            }
+            get => _statusToolTip;
+            set => OnPropertyChanged(ref _statusToolTip, value, () => StatusToolTip);
         }
 
         public bool ShowPreview => Settings.ShowPreviewOnSelect;
 
-        public IEnumerable<INavigatorListEntry> SelectedItems
-        {
-            get
-            {
-                return _view.SelectedItems;
-            }
-        }
+        public IEnumerable<INavigatorListEntry> SelectedItems => _view.SelectedItems;
 
         public FileInfoVM FileInfoVM { get; } = new FileInfoVM();
 
@@ -179,10 +147,7 @@ namespace ImoutoRebirth.Navigator.ViewModel
 
         private void InitializeCommands()
         {
-            ShuffleCommand = new RelayCommand(x =>
-            {
-                ShuffleNavigatorList();
-            });
+            ShuffleCommand = new RelayCommand(x => ShuffleNavigatorList());
 
             ZoomInCommand = new RelayCommand(x =>
             {
@@ -194,6 +159,7 @@ namespace ImoutoRebirth.Navigator.ViewModel
                 _previewSize = Convert.ToInt32(Math.Floor(_previewSize * 1.1));
                 UpdatePreviews();
             });
+
             ZoomOutCommand = new RelayCommand(x =>
             {
                 if (_previewSize < 64)
@@ -203,6 +169,7 @@ namespace ImoutoRebirth.Navigator.ViewModel
                 _previewSize = Convert.ToInt32(Math.Floor(_previewSize * 0.9));
                 UpdatePreviews();
             });
+
             LoadPreviewsCommand = new RelayCommand(x => LoadPreviews());
             RemoveImageCommand = new RelayCommand(RemoveImage);
 
@@ -235,23 +202,49 @@ namespace ImoutoRebirth.Navigator.ViewModel
             StatusToolTip = message;
         }
         
-        private void Reload()
+        private async Task Reload()
         {
-
-            lock (NavigatorList)
+            try
             {
-                _ctsImageLoading?.Cancel();
+                await _fileLoadingService.LoadFiles(
+                    1,
+                    _previewSize,
+                    TagSearchVM.SelectedColleciton.Value,
+                    TagSearchVM.SelectedBindedTags.Select(x => x.Model).ToList(),
+                    x => TotalCount = x,
+                    (x, ct) =>
+                    {
+                        IsLoading = false;
+                        foreach (var navigatorListEntry in x)
+                        {
+                            ct.ThrowIfCancellationRequested();
+                            NavigatorList.Add(navigatorListEntry);
+                        }
+                    },
+                    () =>
+                    {
+                        TotalCount = 0;
+                        NavigatorList.Clear();
+                        IsLoading = false;
+                    },
+                    () =>
+                    {
+                        IsLoading = true;
+                        NavigatorList.Clear();
 
-                NavigatorList.Clear();
+                    },
+                    () => IsLoading = false);
             }
-
-            GetImagesFromCollectionAsync(0, 200000);
+            catch (Exception ex)
+            {
+                Debug.WriteLine("Can't load images from collection: " + ex.Message);
+                SetStatusError("Can't load images from collection", ex.Message);
+            }
         }
 
         private void UpdatePreviews()
         {
             OnPropertyChanged("SlotSize");
-
 
             //Performance ?
             lock (NavigatorList)
@@ -273,132 +266,6 @@ namespace ImoutoRebirth.Navigator.ViewModel
             {
                 listEntry.Load();
             }
-        }
-
-        private async void GetImagesFromCollectionAsync(int skip = 0, int block = 10)
-        {
-            // TODO COUNT
-
-            try
-            {
-                var sw = new Stopwatch();
-                sw.Start();
-
-                var total = await GetImagesCountFromCollectionAsyncTask() - skip;
-
-                sw.Stop();
-                Debug.WriteLine($"Counted in {sw.ElapsedMilliseconds}ms.");
-
-                // skip ?
-                TotalCount = total + skip;
-
-                var count = total;
-
-                if (count == 0)
-                {
-                    IsLoading = false;
-                    return;
-                }
-
-                _ctsImageLoading?.Cancel();
-
-                await ReloadImagesAsyncSemaphore.WaitAsync();
-
-                var newCTS = new CancellationTokenSource();
-                _ctsImageLoading = newCTS;
-
-                try
-                {
-                    sw = new Stopwatch();
-                    sw.Start();
-
-                    await LoadImages(count, skip, block, _ctsImageLoading.Token);
-
-                    sw.Stop();
-                    Debug.WriteLine($"Loaded in {sw.ElapsedMilliseconds}ms.");
-
-                    LoadPreviews();
-                }
-                catch (OperationCanceledException)
-                {
-                }
-                finally
-                {
-                    ReloadImagesAsyncSemaphore.Release();
-                }
-
-                if (_ctsImageLoading == newCTS)
-                {
-                    _ctsImageLoading = null;
-                }                
-            }
-            catch (Exception ex)
-            {
-                Debug.WriteLine("Can't load images from collection: " + ex.Message);
-                SetStatusError("Can't load images from collection", ex.Message);
-            }
-        }
-
-        private async Task LoadImages(int count, int skip, int block, CancellationToken ct)
-        {
-            for (var i = count; i > 0; i -= block)
-            {
-                var sw = new Stopwatch();
-                sw.Start();
-
-                var result = await GetImagesFromCollectionAsyncTask(block, skip + count - i);
-                
-                lock (NavigatorList)
-                {
-                    ct.ThrowIfCancellationRequested();
-
-                    foreach (var navigatorListEntry in result)
-                    {
-                        NavigatorList.Add(navigatorListEntry);
-                    }
-                }
-
-                sw.Stop();
-                Debug.WriteLine("Loading {0} elemets, skip {1} elemets in ms: {2}", block, skip + count - i, sw.ElapsedMilliseconds);
-
-
-                if (i == count)
-                {
-                    IsLoading = false;
-                }
-            }
-        }
-
-        private async Task<IReadOnlyCollection<INavigatorListEntry>> GetImagesFromCollectionAsyncTask(
-            int count, 
-            int skip)
-        {
-
-            var entries = await Task.Run(async () => await NavigatorListEntries());
-
-            return entries;
-
-            async Task<List<INavigatorListEntry>> NavigatorListEntries()
-            {
-                var found = await _fileService.SearchFiles(
-                    TagSearchVM.SelectedColleciton.Value,
-                    TagSearchVM.SelectedBindedTags.Select(x => x.Model).ToList(),
-                    count,
-                    skip);
-
-                var navigatorListEntries = found
-                    .Select(x => EntryVM.GetListEntry(x.Path, PreviewSize, x.Id))
-                    .SkipExceptions()
-                    .ToList();
-                return navigatorListEntries;
-            }
-        }
-
-        private async Task<int> GetImagesCountFromCollectionAsyncTask()
-        {
-            return await _fileService.CountFiles(
-                TagSearchVM.SelectedColleciton.Value,
-                TagSearchVM.SelectedBindedTags.Select(x => x.Model).ToList());
         }
 
         private async void RemoveImage(object o)
@@ -457,20 +324,20 @@ namespace ImoutoRebirth.Navigator.ViewModel
 
         #region Event handlers
 
-        private void _view_Loaded(object sender, RoutedEventArgs e)
+        private async void _view_Loaded(object sender, RoutedEventArgs e)
         {
             //InitializeCollections();
-            Reload();
+            await Reload();
         }
 
-        private void TagSearchVM_SelectedTagsUpdated(object sender, EventArgs e)
+        private async void TagSearchVM_SelectedTagsUpdated(object sender, EventArgs e)
         {
-            Reload();
+            await Reload();
         }
 
-        private void TagSearchVMOnSelectedCollectionCahnged(object sender, EventArgs eventArgs)
+        private async void TagSearchVMOnSelectedCollectionCahnged(object sender, EventArgs eventArgs)
         {
-            Reload();
+            await Reload();
         }
 
         private void Settings_ShowPreviewOnSelectChanged(object sender, EventArgs e)

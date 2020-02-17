@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using AutoMapper;
 using ImoutoRebirth.Lilin.WebApi.Client;
@@ -28,15 +29,16 @@ namespace ImoutoRebirth.Navigator.Services.Tags
         }
 
         public async Task<IReadOnlyCollection<File>> SearchFiles(
-            Guid? collectionId, 
-            IReadOnlyCollection<SearchTag> tags, 
-            int take, 
-            int skip)
+            Guid? collectionId,
+            IReadOnlyCollection<SearchTag> tags,
+            int take,
+            int skip,
+            CancellationToken token)
         {
             if (!tags.Any())
             {
                 var filesOnly = await _roomClient.CollectionFiles
-                    .SearchAsync(new CollectionFilesRequest(collectionId, count: take, skip: skip));
+                    .SearchAsync(new CollectionFilesRequest(collectionId, count: take, skip: skip), token);
 
                 return _mapper.Map<IReadOnlyCollection<File>>(filesOnly);
             }
@@ -45,20 +47,24 @@ namespace ImoutoRebirth.Navigator.Services.Tags
             var tagsSearch = await _lilinClient.Files
                 .GetFilesByTagsAsync(
                     new FilesSearchRequest(
-                        _mapper.Map<List<TagSearchEntryRequest>>(tags), take, skip));
+                        _mapper.Map<List<TagSearchEntryRequest>>(tags), take, skip),
+                    token);
 
             var filesSearch = await _roomClient.CollectionFiles
-                .SearchAsync(new CollectionFilesRequest(collectionId, tagsSearch));
+                .SearchAsync(new CollectionFilesRequest(collectionId, tagsSearch), token);
 
             return _mapper.Map<IReadOnlyCollection<File>>(filesSearch);
         }
 
-        public async Task<int> CountFiles(Guid? collectionId, IReadOnlyCollection<SearchTag> tags)
+        public async Task<int> CountFiles(
+            Guid? collectionId, 
+            IReadOnlyCollection<SearchTag> tags,
+            CancellationToken cancellationToken)
         {
             if (!tags.Any())
             {
                 var result = await _roomClient.CollectionFiles
-                    .CountAsync(new CollectionFilesRequest(collectionId));
+                    .CountAsync(new CollectionFilesRequest(collectionId), cancellationToken);
 
                 return result.Value;
             }
@@ -66,7 +72,8 @@ namespace ImoutoRebirth.Navigator.Services.Tags
             return (await _lilinClient.Files
                 .GetFilesCountByTagsAsync(
                     new FilesSearchRequest(
-                        _mapper.Map<List<TagSearchEntryRequest>>(tags)))).Value;
+                        _mapper.Map<List<TagSearchEntryRequest>>(tags)),
+                    cancellationToken)).Value;
         }
 
         public Task RemoveFile(Guid fileId)

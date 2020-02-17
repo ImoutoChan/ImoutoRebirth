@@ -147,7 +147,7 @@
                      Value="True">
                 <Setter TargetName="label"
                         Property="Background"
-                        Value="{DynamicResource AccentColorBrush3}" />
+                        Value="{DynamicResource MahApps.Brushes.Accent3}" />
             </Trigger>
         </ControlTemplate.Triggers>
     </ControlTemplate>
