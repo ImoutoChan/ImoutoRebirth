@@ -40,7 +40,7 @@ namespace ImoutoRebirth.Navigator
 
         #region Properties
 
-        public IEnumerable VisibleItems
+        public IEnumerable<INavigatorListEntry> VisibleItems
         {
             get
             {
@@ -49,16 +49,11 @@ namespace ImoutoRebirth.Navigator
                     return null;
                 }
 
-                var result = new List<INavigatorListEntry>();
-
-                result.AddRange(
-                                from INavigatorListEntry item in ListBoxElement.Items
-                                let listBoxItem =
-                                    (FrameworkElement)ListBoxElement.ItemContainerGenerator.ContainerFromItem(item)
-                                where IsFullyOrPartiallyVisible(listBoxItem, ScrollViewerElement)
-                                select item);
-
-                return result;
+                return 
+                    from INavigatorListEntry item in ListBoxElement.Items
+                    let listBoxItem = (UIElement)ListBoxElement.ItemContainerGenerator.ContainerFromItem(item)
+                    where IsFullyOrPartiallyVisible(listBoxItem, ScrollViewerElement)
+                    select item;
             }
         }
 
@@ -103,8 +98,7 @@ namespace ImoutoRebirth.Navigator
 
         private static bool IsFullyOrPartiallyVisible(UIElement child, UIElement scrollViewer)
         {
-            if (child == null ||
-                scrollViewer == null)
+            if (child == null || scrollViewer == null)
             {
                 return false;
             }

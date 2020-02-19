@@ -262,7 +262,7 @@ namespace ImoutoRebirth.Navigator.ViewModel
         {
             ImageEntry.PreviewLoadingThreadQueue.ClearQueue();
 
-            foreach (INavigatorListEntry listEntry in _view.VisibleItems)
+            foreach (var listEntry in _view.VisibleItems)
             {
                 listEntry.Load();
             }

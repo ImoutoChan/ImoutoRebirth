@@ -8,13 +8,14 @@ using System.Windows;
 using System.Windows.Media.Imaging;
 using Imouto;
 using Imouto.Utils.Core;
+using ImoutoRebirth.Navigator.Utils;
 using Extensions = Imouto.Extensions;
 
 namespace ImoutoRebirth.Navigator.Model
 {
     class ImageEntry
     {
-        public static readonly ThreadQueue PreviewLoadingThreadQueue = new ThreadQueue();
+        public static readonly AsyncThreadQueue PreviewLoadingThreadQueue = new AsyncThreadQueue();
         private const ResizeType DefaultResizeType = ResizeType.FitToViewPort;
         private Size? _frameSize;
         #region Fields
@@ -173,7 +174,6 @@ namespace ImoutoRebirth.Navigator.Model
 
             //await Task.Run(() => Load());
             //OnImageChanged();
-
         }
 
         private async Task Load()
