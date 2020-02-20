@@ -266,7 +266,7 @@
                                     Width="20"
                                     Height="20"
                                     Margin="0, 0, 0, 0"
-                                    Style="{DynamicResource MetroCircleButtonStyle}"
+                                    Style="{DynamicResource MahApps.Styles.Button.Circle}"
                                     HorizontalAlignment="Left"
                                     Command="{Binding UnbindCommand}"
                                     Visibility="{Binding IsEditable, 
@@ -299,7 +299,7 @@
             <Button.Content>
                 <DockPanel>
                     <Button DockPanel.Dock="Right"
-                            Style="{DynamicResource ChromelessButtonStyle}"
+                            Style="{DynamicResource MahApps.Styles.Button.Chromeless}"
                             Command="{Binding Path=DataContext.RemoveTagFromSearch, 
                                                 RelativeSource={RelativeSource AncestorType={x:Type Imouto.Navigator:MainWindow}}}"
                             CommandParameter="{Binding}">

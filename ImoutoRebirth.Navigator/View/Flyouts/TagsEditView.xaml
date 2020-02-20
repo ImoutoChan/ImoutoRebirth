@@ -86,9 +86,10 @@
                                                VerticalAlignment="Center">
                                         <TextBlock.ToolTip>
                                             <MultiBinding StringFormat="{}{0} : {1}">
-                                                <Binding Path="Tag.Title" />
+                                                <Binding Path="Tag.Title" Mode="OneWay" />
                                                 <Binding Path="Value"
-                                                         FallbackValue="null" />
+                                                         FallbackValue="null" 
+                                                         Mode="OneWay" />
                                             </MultiBinding>
                                         </TextBlock.ToolTip>
                                     </TextBlock>
@@ -250,8 +251,10 @@
                                                VerticalAlignment="Center">
                                         <TextBlock.ToolTip>
                                             <MultiBinding StringFormat="{}{0} : {1}">
-                                                <Binding Path="Tag.Title" />
-                                                <Binding Path="Value" />
+                                                <Binding Path="Tag.Title" Mode="OneWay" />
+                                                <Binding Path="Value"
+                                                         FallbackValue="null" 
+                                                         Mode="OneWay" />
                                             </MultiBinding>
                                         </TextBlock.ToolTip>
                                     </TextBlock>
@@ -298,8 +301,8 @@
                    Visibility="{Binding Path=TagInfoContext, Converter={StaticResource ConditionVisibilityConverter}, ConverterParameter=!null}">
             <Run Text="Tag: " />
 
-            <Run Text="{Binding ElementName=SelectedListBox, Path=SelectedItem.Tag.Title}"
-                 Foreground="{Binding ElementName=SelectedListBox, Path=SelectedItem.TypeBrush, Mode=OneWay}" />
+            <Run Text="{Binding Path=TagInfoContext.Tag.Title, Mode=OneWay}"
+                 Foreground="{Binding Path=TagInfoContext.TypeBrush, Mode=OneWay}" />
         </TextBlock>
 
         <Grid Grid.Column="8"

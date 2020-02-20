@@ -1,6 +1,8 @@
 ﻿#nullable enable
-using ImoutoRebirth.Navigator.Services.Tags;
+using System.Linq;
+using System.Windows.Media;
 using ImoutoRebirth.Navigator.Services.Tags.Model;
+using ImoutoRebirth.Navigator.Utils;
 
 namespace ImoutoRebirth.Navigator.ViewModel
 {
@@ -14,6 +16,8 @@ namespace ImoutoRebirth.Navigator.ViewModel
         }
 
         public Tag Tag => _model.Tag;
+        
+        public Brush TypeBrush => new SolidColorBrush(Tag.Type.Color.ToColor());
 
         public string? Value
         {
@@ -34,6 +38,11 @@ namespace ImoutoRebirth.Navigator.ViewModel
                 OnPropertyChanged(() => SearchType);
             }
         }
+
+        public string Synonyms
+            => Tag.SynonymsCollection != null && Tag.SynonymsCollection.Any()
+                ? string.Join(", ", Tag.SynonymsCollection)
+                : "none";
 
         public SearchTag Model => _model;
     }

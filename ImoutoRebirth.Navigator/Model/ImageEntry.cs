@@ -7,27 +7,21 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Media.Imaging;
 using Imouto;
-using Imouto.Utils.Core;
 using ImoutoRebirth.Navigator.Utils;
-using Extensions = Imouto.Extensions;
 
 namespace ImoutoRebirth.Navigator.Model
 {
-    class ImageEntry
+    internal class ImageEntry
     {
         public static readonly AsyncThreadQueue PreviewLoadingThreadQueue = new AsyncThreadQueue();
         private const ResizeType DefaultResizeType = ResizeType.FitToViewPort;
         private Size? _frameSize;
-        #region Fields
-
         private readonly string _path;
         private readonly FileInfo _imageFileInfo;
         private BitmapSource _image;
         private Size _viewPort;
         private bool _isLoading; //TODO MAKE COMMON ENUM STATUS NOT FLAGS
         private bool _isLoaded;
-
-        #endregion //Fields
 
         #region Constructors
 
