@@ -27,16 +27,16 @@ namespace ImoutoRebirth.Lilin.Host
         {
             services
                 .AddLilinInfrastructure()
-                .AddLilinServices()
+                .AddLilinServices(Configuration)
                 .AddLilinDataAccess(Configuration.GetConnectionString("LilinDatabase"))
-                .AddLilinCore()
+                .AddLilinCore();
+
+            services
                 .AddAutoMapper(typeof(DtoAutoMapperProfile))
                 .AddTrueMassTransit(
                     LilinSettings.RabbitSettings,
                     ReceiverApp.Name,
                     с => с.AddLilinServicesForRabbit());
-
-            services.ConfigureLilinServices(Configuration);
         }
 
         public void Configure(IMapper mapper)

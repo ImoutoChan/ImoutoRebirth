@@ -16,7 +16,9 @@ namespace ImoutoRebirth.Lilin.Services
 {
     public static class ServiceCollectionExtensions
     {
-        public static IServiceCollection AddLilinServices(this IServiceCollection services)
+        public static IServiceCollection AddLilinServices(
+            this IServiceCollection services, 
+            IConfiguration configuration)
         {
             services.AddMediatR(typeof(SaveMetadataCommand));
             services.AddLoggingBehavior();
@@ -28,6 +30,9 @@ namespace ImoutoRebirth.Lilin.Services
             services.AddQuartzJob<RecalculateTagsCountersJob, RecalculateTagsCountersJob.Description>();
             services.AddMemoryCache();
 
+            services.Configure<RecalculateTagCountersSettings>(
+                configuration.GetSection(nameof(RecalculateTagCountersSettings)));
+
             return services;
         }
         
@@ -38,16 +43,6 @@ namespace ImoutoRebirth.Lilin.Services
                    .AddFireAndForget<ISavedCommand>(ReceiverApp.Name);
 
             return builder;
-        }
-
-        public static IServiceCollection ConfigureLilinServices(
-            this IServiceCollection services,
-            IConfiguration configuration)
-        {
-            services.Configure<RecalculateTagCountersSettings>(
-                configuration.GetSection(nameof(RecalculateTagCountersSettings)));
-
-            return services;
         }
     }
 }
