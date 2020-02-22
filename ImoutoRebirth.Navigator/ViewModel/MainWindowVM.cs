@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
@@ -65,7 +66,7 @@ namespace ImoutoRebirth.Navigator.ViewModel
 
         private void OnViewOnSelectedItemsChanged(object sender, EventArgs args)
         {
-            OnPropertyChanged(() => SelectedItems);
+            OnPropertyChanged(() => SelectedEntries);
             TagSearchVM.UpdateCurrentTags(_view.ListBoxElement.SelectedItem as INavigatorListEntry);
             FileInfoVM.UpdateCurrentInfo(
                 _view.ListBoxElement.SelectedItem as INavigatorListEntry, 
@@ -121,7 +122,9 @@ namespace ImoutoRebirth.Navigator.ViewModel
 
         public bool ShowPreview => Settings.ShowPreviewOnSelect;
 
-        public IEnumerable<INavigatorListEntry> SelectedItems => _view.SelectedItems;
+        public IEnumerable<INavigatorListEntry> SelectedEntries => _view.SelectedEntries;
+
+        public IList SelectedItems => _view.SelectedItems;
 
         public FileInfoVM FileInfoVM { get; } = new FileInfoVM();
 
@@ -309,7 +312,7 @@ namespace ImoutoRebirth.Navigator.ViewModel
         
         private void CopySelected(object o)
         {
-            var lastItems = SelectedItems.Select(x => x.Path).ToArray();
+            var lastItems = SelectedEntries.Select(x => x.Path).ToArray();
             if (!lastItems.Any())
             {
                 return;

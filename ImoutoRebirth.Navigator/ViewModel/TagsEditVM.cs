@@ -41,9 +41,9 @@ namespace ImoutoRebirth.Navigator.ViewModel
         {
             parentVM.PropertyChanged += (sender, args) =>
             {
-                if (args.PropertyName == "SelectedItems")
+                if (args.PropertyName == "SelectedEntries")
                 {
-                    OnPropertyChanged(() => SelectedItems);
+                    OnPropertyChanged(() => SelectedEntries);
                 }
             };
             _parentVM = parentVM;
@@ -91,7 +91,9 @@ namespace ImoutoRebirth.Navigator.ViewModel
             }
         }
 
-        public IEnumerable<INavigatorListEntry> SelectedItems => _parentVM.SelectedItems;
+        public IEnumerable<INavigatorListEntry> SelectedEntries => _parentVM.SelectedEntries;
+
+        public IList SelectedItems => _parentVM.SelectedItems;
 
         public CreateTagVM CreateTagVM
         {
@@ -233,12 +235,12 @@ namespace ImoutoRebirth.Navigator.ViewModel
 
         private bool CanSave(object obj)
         {
-            return SelectedItems.Any() && SelectedTags.Any();
+            return SelectedEntries.Any() && SelectedTags.Any();
         }
 
         private async void Save(object obj)
         {
-            var images = SelectedItems;
+            var images = SelectedEntries;
             var tags = SelectedTags;
 
             try

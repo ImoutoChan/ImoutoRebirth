@@ -57,7 +57,10 @@ namespace ImoutoRebirth.Navigator
             }
         }
 
-        public IEnumerable<INavigatorListEntry> SelectedItems => ListBoxElement.SelectedItems.Cast<INavigatorListEntry>();
+        public IEnumerable<INavigatorListEntry> SelectedEntries 
+            => ListBoxElement.SelectedItems.Cast<INavigatorListEntry>();
+
+        public IList SelectedItems => ListBoxElement.SelectedItems;
 
         private ScrollViewer ScrollViewerElement
         {
