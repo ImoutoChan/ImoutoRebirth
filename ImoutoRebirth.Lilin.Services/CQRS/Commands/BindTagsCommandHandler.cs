@@ -51,7 +51,7 @@ namespace ImoutoRebirth.Lilin.Services.CQRS.Commands
                 .ToArray();
             
             var fileInfoPack = new FileInfoPack(fileInfos);
-            fileInfoPack.UpdateTags(newFileTags);
+            fileInfoPack.UpdateTags(newFileTags, request.SameTagHandleStrategy);
 
             foreach (var file in fileInfoPack.Files)
             {

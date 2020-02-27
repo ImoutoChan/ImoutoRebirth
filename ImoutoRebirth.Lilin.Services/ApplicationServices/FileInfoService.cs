@@ -60,7 +60,7 @@ namespace ImoutoRebirth.Lilin.Services.ApplicationServices
             var existingTags = (await _fileTagRepository.GetForFile(file.Id)).ToList();
             foreach (var newTag in file.Tags)
             {
-                var existedTag = existingTags.FirstOrDefault(x => x.IsSameIdentity(newTag));
+                var existedTag = existingTags.FirstOrDefault(x => x.Equals(newTag));
 
                 if (existedTag == null)
                 {
