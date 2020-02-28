@@ -25,9 +25,12 @@ namespace ImoutoRebirth.Lilin.WebApi.Client.Models
         /// <summary>
         /// Initializes a new instance of the BindTagsRequest class.
         /// </summary>
-        public BindTagsRequest(IList<FileTagRequest> fileTags)
+        /// <param name="sameTagHandleStrategy">Possible values include:
+        /// 'ReplaceExistingValue', 'AddNewFileTag'</param>
+        public BindTagsRequest(IList<FileTagRequest> fileTags, SameTagHandleStrategy sameTagHandleStrategy)
         {
             FileTags = fileTags;
+            SameTagHandleStrategy = sameTagHandleStrategy;
             CustomInit();
         }
 
@@ -40,6 +43,13 @@ namespace ImoutoRebirth.Lilin.WebApi.Client.Models
         /// </summary>
         [JsonProperty(PropertyName = "fileTags")]
         public IList<FileTagRequest> FileTags { get; set; }
+
+        /// <summary>
+        /// Gets or sets possible values include: 'ReplaceExistingValue',
+        /// 'AddNewFileTag'
+        /// </summary>
+        [JsonProperty(PropertyName = "sameTagHandleStrategy")]
+        public SameTagHandleStrategy SameTagHandleStrategy { get; set; }
 
         /// <summary>
         /// Validate the object.
