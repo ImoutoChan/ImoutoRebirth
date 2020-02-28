@@ -100,6 +100,26 @@ namespace ImoutoRebirth.Lilin.Core.Tests
             pack.Files.First().Tags.Should().HaveCount(1);
         }
 
+        [Fact]
+        public void ShouldAddFileTag_WhenDoesNotHaveSameTag()
+        {
+            // arrange
+            var tag = CreateTag();
+            var fileId = Guid.NewGuid();
+            const string value = "Value";
+            var newFileTag = new FileTag(fileId, tag, value, MetadataSource.Manual);
+
+            var existsFileInfo = new FileInfo(Array.Empty<FileTag>(), Array.Empty<FileNote>(), fileId);
+
+            var pack = new FileInfoPack(new []{existsFileInfo});
+            
+            // act
+            pack.UpdateTags(new []{newFileTag}, SameTagHandleStrategy.ReplaceExistingValue);
+
+            // assert
+            pack.Files.First().Tags.Should().HaveCount(1);
+        }
+
         private static Tag CreateTag()
         {
             var tagType = new TagType(Guid.NewGuid(), "Type", 0);
