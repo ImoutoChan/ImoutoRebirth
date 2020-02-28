@@ -19,6 +19,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ImoutoRebirth.Lilin.WebApi"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ImoutoRebirth.Lilin.WebApi.Client", "ImoutoRebirth.Lilin.WebApi.Client\ImoutoRebirth.Lilin.WebApi.Client.csproj", "{C95B9AB3-81D5-4B53-B40B-A31A9471F240}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ImoutoRebirth.Lilin.Core.Tests", "ImoutoRebirth.Lilin.Core.Tests\ImoutoRebirth.Lilin.Core.Tests.csproj", "{CFBA2A5B-ABE2-45B7-946E-0D0929B4C0EE}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -57,6 +59,10 @@ Global
 		{C95B9AB3-81D5-4B53-B40B-A31A9471F240}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C95B9AB3-81D5-4B53-B40B-A31A9471F240}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C95B9AB3-81D5-4B53-B40B-A31A9471F240}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CFBA2A5B-ABE2-45B7-946E-0D0929B4C0EE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CFBA2A5B-ABE2-45B7-946E-0D0929B4C0EE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CFBA2A5B-ABE2-45B7-946E-0D0929B4C0EE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CFBA2A5B-ABE2-45B7-946E-0D0929B4C0EE}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
