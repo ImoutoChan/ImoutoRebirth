@@ -1,27 +1,22 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 
 namespace ImoutoRebirth.Navigator.Services.Tags.Model
 {
-    internal class Tag
+    internal class NewTag
     {
-        public Tag(
-            Guid id, 
+        public NewTag(
             string title, 
             TagType type, 
             IReadOnlyCollection<string> synonymsCollection, 
             bool hasValue, 
             int count)
         {
-            Id = id;
             Title = title;
             Type = type;
             SynonymsCollection = synonymsCollection;
             HasValue = hasValue;
             Count = count;
         }
-
-        public Guid Id { get; }
 
         public string Title { get; }
 

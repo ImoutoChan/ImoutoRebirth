@@ -33,8 +33,8 @@ namespace ImoutoRebirth.Navigator.ViewModel
 
         public CreateTagVM()
         {
-            ReloadTagTypesAsync();
             _tagService = ServiceLocator.GetService<ITagService>();
+            ReloadTagTypesAsync();
         }
 
         #endregion Constructors
@@ -205,7 +205,7 @@ namespace ImoutoRebirth.Navigator.ViewModel
         private async Task CreateTagTask(CreateTagVM createTagVm)
         {
             await _tagService.CreateTag(
-                createTagVm.SelectedType,
+                createTagVm.SelectedType.Id,
                 createTagVm.Title,
                 createTagVm.HasValue,
                 createTagVm.SynonymsCollection);

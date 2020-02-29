@@ -14,7 +14,7 @@ namespace ImoutoRebirth.Navigator.Services.Tags
 
         Task BindTags(IReadOnlyCollection<FileTag> fileTags);
 
-        Task UnbindTag(Guid fileId, Guid tagId);
+        Task UnbindTag(Guid fileId, Guid tagId, FileTagSource source);
 
         Task<IReadOnlyCollection<FileTag>> GetFileTags(Guid fileId);
     }

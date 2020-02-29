@@ -417,54 +417,12 @@ namespace ImoutoRebirth.Navigator.ViewModel
 
         private async Task SetRate(int value, Guid fileId)
         {
-            //var rateTag = await ImoutoService.UseAsync(imoutoService =>
-            //{
-            //    return imoutoService.SearchTags("Rate", 1)
-            //                        .FirstOrDefault();
-            //});
-
-            //if (rateTag.Title != "Rate")
-            //{
-            //    rateTag = null;
-            //}
-
-            //if (rateTag == null)
-            //{
-            //    await ImoutoService.UseAsync(imoutoService =>
-            //    {
-            //        var types = imoutoService.GetTagTypes();
-            //        var type = types.First(x => x.Title == "LocalMeta");
-
-            //        imoutoService.CreateTag(new Tag
-            //        {
-            //            Title = "Rate",
-            //            HasValue = true,
-            //            Type = type
-            //        });
-            //    });
-
-            //    rateTag = await ImoutoService.UseAsync(imoutoService =>
-            //    {
-            //        return imoutoService.SearchTags("Rate", 1)
-            //                            .FirstOrDefault();
-            //    });
-            //}
-
-            //var rateTag = await _tagService.GetOrCreateRateTag();
-
-            //await ImoutoService.UseAsync(imoutoService =>
-            //{
-            //    imoutoService.BindTag(target, new BindedTag() { Source = Source.User, Tag = rateTag, DateAdded = DateTime.Now, Value = value.ToString() });
-            //});
-
-            //await _fileTagService.BindTag(target, rateTag, Source.User, value.ToString());
-
             await _fileTagService.SetRate(fileId, new Rate(value));
         }
 
         private void GetFavorite(IReadOnlyCollection<FileTag> tags)
         {
-            var favTag = tags.FirstOrDefault(x => x.Tag.Title == "favorite");
+            var favTag = tags.FirstOrDefault(x => x.Tag.Title == "Favorite");
             _isFavorite = favTag != null;
             OnPropertyChanged(() => IsFavorite);
         }

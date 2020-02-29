@@ -122,16 +122,16 @@ namespace ImoutoRebirth.Navigator.ViewModel
 
             try
             {
-                await UnbindTagTask(_targetId.Value, Model.Tag.Id.Value);
+                await UnbindTagTask(_targetId.Value, Model.Tag.Id, Model.Source);
             }
             catch (Exception ex)
             {
             }
         }
 
-        private async Task UnbindTagTask(Guid imageId, Guid tagId)
+        private async Task UnbindTagTask(Guid imageId, Guid tagId, FileTagSource modelSource)
         {
-            await _fileTagService.UnbindTag(imageId, tagId);
+            await _fileTagService.UnbindTag(imageId, tagId, modelSource);
         }
 
         #endregion Commands

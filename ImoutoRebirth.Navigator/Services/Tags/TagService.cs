@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
 using ImoutoRebirth.Lilin.WebApi.Client;
@@ -18,14 +20,15 @@ namespace ImoutoRebirth.Navigator.Services.Tags
             _mapper = mapper;
         }
 
-        public Task<IReadOnlyCollection<TagType>> GеtTypes()
+        public async Task<IReadOnlyCollection<TagType>> GеtTypes()
         {
-            throw new System.NotImplementedException();
+            var types = await _lilinClient.TagTypes.GetAllAsync();
+            return _mapper.Map<IReadOnlyCollection<TagType>>(types);
         }
 
-        public Task CreateTag(TagType type, string name, bool hasValue, IReadOnlyCollection<string> synonyms)
+        public Task CreateTag(Guid typeId, string name, bool hasValue, IReadOnlyCollection<string> synonyms)
         {
-            throw new System.NotImplementedException();
+            return _lilinClient.Tags.CreateAsync(new TagCreateRequest(typeId, name, hasValue, synonyms.ToList()));
         }
 
         public async Task<IReadOnlyCollection<Tag>> SearchTags(string name, int count)
