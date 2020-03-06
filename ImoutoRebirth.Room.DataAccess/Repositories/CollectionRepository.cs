@@ -73,5 +73,17 @@ namespace ImoutoRebirth.Room.DataAccess.Repositories
 
             await _roomDbContext.SaveChangesAsync();
         }
+
+        public async Task Rename(Guid id, string newName)
+        {
+            var collection = await _roomDbContext.Collections.FirstOrDefaultAsync(x => x.Id == id);
+
+            if (collection == null)
+                throw new EntityNotFoundException<CollectionEntity>(id);
+
+            collection.Name = newName;
+
+            await _roomDbContext.SaveChangesAsync();
+        }
     }
 }

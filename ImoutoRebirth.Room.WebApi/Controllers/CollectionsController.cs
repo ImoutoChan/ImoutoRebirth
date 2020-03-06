@@ -23,7 +23,6 @@ namespace ImoutoRebirth.Room.WebApi.Controllers
             IMapper mapper)
         {
             _collectionRepository = collectionRepository;
-            _mapper = mapper;
         }
 
         /// <summary>
@@ -38,10 +37,10 @@ namespace ImoutoRebirth.Room.WebApi.Controllers
         }
 
         /// <summary>
-        /// Create new collection with specific name.
+        /// Create a new collection with the specific name.
         /// </summary>
-        /// <param name="request">Collection parameters.</param>
-        /// <returns>Description of created collection.</returns>
+        /// <param name="request">The parameters for the new collection.</param>
+        /// <returns>A description of the created collection.</returns>
         [HttpPost]
         public async Task<ActionResult<CollectionResponse>> Create([FromBody] CollectionCreateRequest request)
         {
@@ -53,9 +52,29 @@ namespace ImoutoRebirth.Room.WebApi.Controllers
         }
 
         /// <summary>
-        /// Delete collection by id.
+        /// Rename the collection with the provided id.
         /// </summary>
-        /// <param name="id">Collection id.</param>
+        /// <param name="id">The collection id.</param>
+        /// <param name="newName">The new name for the collection.</param>
+        [HttpPatch("{id}")]
+        public async Task<ActionResult> Rename([BindRequired] Guid id, [BindRequired]string newName)
+        {
+            try
+            {
+                await _collectionRepository.Rename(id, newName);
+            }
+            catch (EntityNotFoundException e)
+            {
+                return NotFound(e.Message);
+            }
+
+            return Ok();
+        }
+
+        /// <summary>
+        /// Delete the collection with the provided id.
+        /// </summary>
+        /// <param name="id">The collection id.</param>
         [HttpDelete("{id}")]
         public async Task<ActionResult> Delete([BindRequired] Guid id)
         {

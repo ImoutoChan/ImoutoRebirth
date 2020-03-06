@@ -14,5 +14,7 @@ namespace ImoutoRebirth.Room.DataAccess.Repositories.Abstract
         Task<Collection> Add(CollectionCreateData collection);
 
         Task Remove(Guid id);
+
+        Task Rename(Guid id, string newName);
     }
 }

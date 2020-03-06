@@ -35,10 +35,10 @@ namespace ImoutoRebirth.Room.WebApi.Client
         /// </exception>
         Task<HttpOperationResponse<IList<CollectionResponse>>> GetAllWithHttpMessagesAsync(Dictionary<string, List<string>> customHeaders = null, CancellationToken cancellationToken = default(CancellationToken));
         /// <summary>
-        /// Create new collection with specific name.
+        /// Create a new collection with the specific name.
         /// </summary>
         /// <param name='body'>
-        /// Collection parameters.
+        /// The parameters for the new collection.
         /// </param>
         /// <param name='customHeaders'>
         /// The headers that will be added to request.
@@ -54,10 +54,32 @@ namespace ImoutoRebirth.Room.WebApi.Client
         /// </exception>
         Task<HttpOperationResponse<CollectionResponse>> CreateWithHttpMessagesAsync(CollectionCreateRequest body = default(CollectionCreateRequest), Dictionary<string, List<string>> customHeaders = null, CancellationToken cancellationToken = default(CancellationToken));
         /// <summary>
-        /// Delete collection by id.
+        /// Rename the collection with the provided id.
         /// </summary>
         /// <param name='id'>
-        /// Collection id.
+        /// The collection id.
+        /// </param>
+        /// <param name='newName'>
+        /// The new name for the collection.
+        /// </param>
+        /// <param name='customHeaders'>
+        /// The headers that will be added to request.
+        /// </param>
+        /// <param name='cancellationToken'>
+        /// The cancellation token.
+        /// </param>
+        /// <exception cref="Microsoft.Rest.HttpOperationException">
+        /// Thrown when the operation returned an invalid status code
+        /// </exception>
+        /// <exception cref="Microsoft.Rest.ValidationException">
+        /// Thrown when a required parameter is null
+        /// </exception>
+        Task<HttpOperationResponse> RenameWithHttpMessagesAsync(System.Guid id, string newName, Dictionary<string, List<string>> customHeaders = null, CancellationToken cancellationToken = default(CancellationToken));
+        /// <summary>
+        /// Delete the collection with the provided id.
+        /// </summary>
+        /// <param name='id'>
+        /// The collection id.
         /// </param>
         /// <param name='customHeaders'>
         /// The headers that will be added to request.

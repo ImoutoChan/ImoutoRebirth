@@ -46,13 +46,13 @@ namespace ImoutoRebirth.Room.WebApi.Client
             }
 
             /// <summary>
-            /// Create new collection with specific name.
+            /// Create a new collection with the specific name.
             /// </summary>
             /// <param name='operations'>
             /// The operations group for this extension method.
             /// </param>
             /// <param name='body'>
-            /// Collection parameters.
+            /// The parameters for the new collection.
             /// </param>
             public static CollectionResponse Create(this ICollections operations, CollectionCreateRequest body = default(CollectionCreateRequest))
             {
@@ -60,13 +60,13 @@ namespace ImoutoRebirth.Room.WebApi.Client
             }
 
             /// <summary>
-            /// Create new collection with specific name.
+            /// Create a new collection with the specific name.
             /// </summary>
             /// <param name='operations'>
             /// The operations group for this extension method.
             /// </param>
             /// <param name='body'>
-            /// Collection parameters.
+            /// The parameters for the new collection.
             /// </param>
             /// <param name='cancellationToken'>
             /// The cancellation token.
@@ -80,13 +80,50 @@ namespace ImoutoRebirth.Room.WebApi.Client
             }
 
             /// <summary>
-            /// Delete collection by id.
+            /// Rename the collection with the provided id.
             /// </summary>
             /// <param name='operations'>
             /// The operations group for this extension method.
             /// </param>
             /// <param name='id'>
-            /// Collection id.
+            /// The collection id.
+            /// </param>
+            /// <param name='newName'>
+            /// The new name for the collection.
+            /// </param>
+            public static void Rename(this ICollections operations, System.Guid id, string newName)
+            {
+                operations.RenameAsync(id, newName).GetAwaiter().GetResult();
+            }
+
+            /// <summary>
+            /// Rename the collection with the provided id.
+            /// </summary>
+            /// <param name='operations'>
+            /// The operations group for this extension method.
+            /// </param>
+            /// <param name='id'>
+            /// The collection id.
+            /// </param>
+            /// <param name='newName'>
+            /// The new name for the collection.
+            /// </param>
+            /// <param name='cancellationToken'>
+            /// The cancellation token.
+            /// </param>
+            public static async Task RenameAsync(this ICollections operations, System.Guid id, string newName, CancellationToken cancellationToken = default(CancellationToken))
+            {
+                (await operations.RenameWithHttpMessagesAsync(id, newName, null, cancellationToken).ConfigureAwait(false)).Dispose();
+            }
+
+            /// <summary>
+            /// Delete the collection with the provided id.
+            /// </summary>
+            /// <param name='operations'>
+            /// The operations group for this extension method.
+            /// </param>
+            /// <param name='id'>
+            /// The collection id.
             /// </param>
             public static void Delete(this ICollections operations, System.Guid id)
             {
@@ -94,13 +131,13 @@ namespace ImoutoRebirth.Room.WebApi.Client
             }
 
             /// <summary>
-            /// Delete collection by id.
+            /// Delete the collection with the provided id.
             /// </summary>
             /// <param name='operations'>
             /// The operations group for this extension method.
             /// </param>
             /// <param name='id'>
-            /// Collection id.
+            /// The collection id.
             /// </param>
             /// <param name='cancellationToken'>
             /// The cancellation token.
