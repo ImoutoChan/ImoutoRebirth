@@ -23,6 +23,7 @@ namespace ImoutoRebirth.Room.WebApi.Controllers
             IMapper mapper)
         {
             _collectionRepository = collectionRepository;
+            _mapper = mapper;
         }
 
         /// <summary>
