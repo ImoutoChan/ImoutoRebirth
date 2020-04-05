@@ -68,7 +68,7 @@ namespace ImoutoRebirth.Room.WebApi.Controllers
         /// </summary>
         /// <param name="collectionId">The collection id. Aren't needed and added only for routes consistency.</param>
         /// <param name="destinationFolderId">Id of the folder that will be deleted.</param>
-        [HttpDelete("{id}")]
+        [HttpDelete("{destinationFolderId}")]
         public async Task<ActionResult> Delete(
             [BindRequired] Guid collectionId,
             [BindRequired] Guid destinationFolderId)

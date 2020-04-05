@@ -319,8 +319,6 @@ namespace ImoutoRebirth.Room.WebApi.Client
         /// <param name='destinationFolderId'>
         /// Id of the folder that will be deleted.
         /// </param>
-        /// <param name='id'>
-        /// </param>
         /// <param name='customHeaders'>
         /// Headers that will be added to request.
         /// </param>
@@ -330,21 +328,11 @@ namespace ImoutoRebirth.Room.WebApi.Client
         /// <exception cref="HttpOperationException">
         /// Thrown when the operation returned an invalid status code
         /// </exception>
-        /// <exception cref="ValidationException">
-        /// Thrown when a required parameter is null
-        /// </exception>
-        /// <exception cref="System.ArgumentNullException">
-        /// Thrown when a required parameter is null
-        /// </exception>
         /// <return>
         /// A response object containing the response body and response headers.
         /// </return>
-        public async Task<HttpOperationResponse> DeleteWithHttpMessagesAsync(System.Guid collectionId, System.Guid destinationFolderId, string id, Dictionary<string, List<string>> customHeaders = null, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task<HttpOperationResponse> DeleteWithHttpMessagesAsync(System.Guid collectionId, System.Guid destinationFolderId, Dictionary<string, List<string>> customHeaders = null, CancellationToken cancellationToken = default(CancellationToken))
         {
-            if (id == null)
-            {
-                throw new ValidationException(ValidationRules.CannotBeNull, "id");
-            }
             // Tracing
             bool _shouldTrace = ServiceClientTracing.IsEnabled;
             string _invocationId = null;
@@ -354,21 +342,14 @@ namespace ImoutoRebirth.Room.WebApi.Client
                 Dictionary<string, object> tracingParameters = new Dictionary<string, object>();
                 tracingParameters.Add("collectionId", collectionId);
                 tracingParameters.Add("destinationFolderId", destinationFolderId);
-                tracingParameters.Add("id", id);
                 tracingParameters.Add("cancellationToken", cancellationToken);
                 ServiceClientTracing.Enter(_invocationId, this, "Delete", tracingParameters);
             }
             // Construct URL
             var _baseUrl = Client.BaseUri.AbsoluteUri;
-            var _url = new System.Uri(new System.Uri(_baseUrl + (_baseUrl.EndsWith("/") ? "" : "/")), "api/Collections/{collectionId}/DestinationFolder/{id}").ToString();
+            var _url = new System.Uri(new System.Uri(_baseUrl + (_baseUrl.EndsWith("/") ? "" : "/")), "api/Collections/{collectionId}/DestinationFolder/{destinationFolderId}").ToString();
             _url = _url.Replace("{collectionId}", System.Uri.EscapeDataString(Microsoft.Rest.Serialization.SafeJsonConvert.SerializeObject(collectionId, Client.SerializationSettings).Trim('"')));
-            _url = _url.Replace("{id}", System.Uri.EscapeDataString(id));
-            List<string> _queryParameters = new List<string>();
-            _queryParameters.Add(string.Format("destinationFolderId={0}", System.Uri.EscapeDataString(Microsoft.Rest.Serialization.SafeJsonConvert.SerializeObject(destinationFolderId, Client.SerializationSettings).Trim('"'))));
-            if (_queryParameters.Count > 0)
-            {
-                _url += "?" + string.Join("&", _queryParameters);
-            }
+            _url = _url.Replace("{destinationFolderId}", System.Uri.EscapeDataString(Microsoft.Rest.Serialization.SafeJsonConvert.SerializeObject(destinationFolderId, Client.SerializationSettings).Trim('"')));
             // Create HTTP transport objects
             var _httpRequest = new HttpRequestMessage();
             HttpResponseMessage _httpResponse = null;

@@ -101,11 +101,9 @@ namespace ImoutoRebirth.Room.WebApi.Client
             /// <param name='destinationFolderId'>
             /// Id of the folder that will be deleted.
             /// </param>
-            /// <param name='id'>
-            /// </param>
-            public static void Delete(this IDestinationFolder operations, System.Guid collectionId, System.Guid destinationFolderId, string id)
+            public static void Delete(this IDestinationFolder operations, System.Guid collectionId, System.Guid destinationFolderId)
             {
-                operations.DeleteAsync(collectionId, destinationFolderId, id).GetAwaiter().GetResult();
+                operations.DeleteAsync(collectionId, destinationFolderId).GetAwaiter().GetResult();
             }
 
             /// <summary>
@@ -120,14 +118,12 @@ namespace ImoutoRebirth.Room.WebApi.Client
             /// <param name='destinationFolderId'>
             /// Id of the folder that will be deleted.
             /// </param>
-            /// <param name='id'>
-            /// </param>
             /// <param name='cancellationToken'>
             /// The cancellation token.
             /// </param>
-            public static async Task DeleteAsync(this IDestinationFolder operations, System.Guid collectionId, System.Guid destinationFolderId, string id, CancellationToken cancellationToken = default(CancellationToken))
+            public static async Task DeleteAsync(this IDestinationFolder operations, System.Guid collectionId, System.Guid destinationFolderId, CancellationToken cancellationToken = default(CancellationToken))
             {
-                (await operations.DeleteWithHttpMessagesAsync(collectionId, destinationFolderId, id, null, cancellationToken).ConfigureAwait(false)).Dispose();
+                (await operations.DeleteWithHttpMessagesAsync(collectionId, destinationFolderId, null, cancellationToken).ConfigureAwait(false)).Dispose();
             }
 
     }
