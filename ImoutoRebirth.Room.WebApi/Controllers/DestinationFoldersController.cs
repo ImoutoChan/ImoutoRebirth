@@ -66,13 +66,16 @@ namespace ImoutoRebirth.Room.WebApi.Controllers
         /// <summary>
         /// Delete the destination folder.
         /// </summary>
-        /// <param name="id">Id of the folder that will be deleted.</param>
+        /// <param name="collectionId">The collection id. Aren't needed and added only for routes consistency.</param>
+        /// <param name="destinationFolderId">Id of the folder that will be deleted.</param>
         [HttpDelete("{id}")]
-        public async Task<ActionResult> Delete([BindRequired] Guid id)
+        public async Task<ActionResult> Delete(
+            [BindRequired] Guid collectionId,
+            [BindRequired] Guid destinationFolderId)
         {
             try
             {
-                await _destinationFolderRepository.Remove(id);
+                await _destinationFolderRepository.Remove(destinationFolderId);
             }
             catch (EntityNotFoundException e)
             {
