@@ -62,10 +62,12 @@ namespace ImoutoRebirth.Room.WebApi.Client
         /// <summary>
         /// Update the source folder for given collection.
         /// </summary>
-        /// <param name='id'>
-        /// The id of the source folder that will be updated.
-        /// </param>
         /// <param name='collectionId'>
+        /// The collection id. Aren't needed and added only for routes
+        /// consistency.
+        /// </param>
+        /// <param name='sourceFolderId'>
+        /// The id of the source folder that will be updated.
         /// </param>
         /// <param name='body'>
         /// Source folder parameters.
@@ -82,17 +84,16 @@ namespace ImoutoRebirth.Room.WebApi.Client
         /// <exception cref="Microsoft.Rest.SerializationException">
         /// Thrown when unable to deserialize the response
         /// </exception>
-        /// <exception cref="Microsoft.Rest.ValidationException">
-        /// Thrown when a required parameter is null
-        /// </exception>
-        Task<HttpOperationResponse<SourceFolderResponse>> UpdateWithHttpMessagesAsync(System.Guid id, string collectionId, SourceFolderCreateRequest body = default(SourceFolderCreateRequest), Dictionary<string, List<string>> customHeaders = null, CancellationToken cancellationToken = default(CancellationToken));
+        Task<HttpOperationResponse<SourceFolderResponse>> UpdateWithHttpMessagesAsync(System.Guid collectionId, System.Guid sourceFolderId, SourceFolderCreateRequest body = default(SourceFolderCreateRequest), Dictionary<string, List<string>> customHeaders = null, CancellationToken cancellationToken = default(CancellationToken));
         /// <summary>
         /// Delete the source folder.
         /// </summary>
-        /// <param name='id'>
-        /// Id of the folder that will be deleted.
-        /// </param>
         /// <param name='collectionId'>
+        /// The collection id. Aren't needed and added only for routes
+        /// consistency.
+        /// </param>
+        /// <param name='sourceFolderId'>
+        /// Id of the folder that will be deleted.
         /// </param>
         /// <param name='customHeaders'>
         /// The headers that will be added to request.
@@ -103,9 +104,6 @@ namespace ImoutoRebirth.Room.WebApi.Client
         /// <exception cref="Microsoft.Rest.HttpOperationException">
         /// Thrown when the operation returned an invalid status code
         /// </exception>
-        /// <exception cref="Microsoft.Rest.ValidationException">
-        /// Thrown when a required parameter is null
-        /// </exception>
-        Task<HttpOperationResponse> DeleteWithHttpMessagesAsync(System.Guid id, string collectionId, Dictionary<string, List<string>> customHeaders = null, CancellationToken cancellationToken = default(CancellationToken));
+        Task<HttpOperationResponse> DeleteWithHttpMessagesAsync(System.Guid collectionId, System.Guid sourceFolderId, Dictionary<string, List<string>> customHeaders = null, CancellationToken cancellationToken = default(CancellationToken));
     }
 }

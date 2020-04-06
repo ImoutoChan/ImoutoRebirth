@@ -59,15 +59,17 @@ namespace ImoutoRebirth.Room.WebApi.Controllers
         /// <summary>
         /// Update the source folder for given collection.
         /// </summary>
-        /// <param name="id">The id of the source folder that will be updated.</param>
+        /// <param name="sourceFolderId">The id of the source folder that will be updated.</param>
         /// <param name="request">Source folder parameters.</param>
+        /// <param name="collectionId">The collection id. Aren't needed and added only for routes consistency.</param>
         /// <returns>Updated source folder.</returns>
-        [HttpPut("{id}")]
+        [HttpPut("{sourceFolderId}")]
         public async Task<ActionResult<SourceFolderResponse>> Update(
-            [BindRequired] Guid id, 
+            [BindRequired] Guid collectionId,
+            [BindRequired] Guid sourceFolderId, 
             [FromBody] SourceFolderCreateRequest request)
         {
-            var createData = _mapper.Map<SourceFolderUpdateData>((id, request));
+            var createData = _mapper.Map<SourceFolderUpdateData>((sourceFolderId, request));
 
             var sourceFolder =  await _sourceFolderRepository.Update(createData);
 
@@ -77,13 +79,16 @@ namespace ImoutoRebirth.Room.WebApi.Controllers
         /// <summary>
         /// Delete the source folder.
         /// </summary>
-        /// <param name="id">Id of the folder that will be deleted.</param>
-        [HttpDelete("{id}")]
-        public async Task<ActionResult> Delete([BindRequired] Guid id)
+        /// <param name="sourceFolderId">Id of the folder that will be deleted.</param>
+        /// <param name="collectionId">The collection id. Aren't needed and added only for routes consistency.</param>
+        [HttpDelete("{sourceFolderId}")]
+        public async Task<ActionResult> Delete(
+            [BindRequired] Guid collectionId, 
+            [BindRequired] Guid sourceFolderId)
         {
             try
             {
-                await _sourceFolderRepository.Remove(id);
+                await _sourceFolderRepository.Remove(sourceFolderId);
             }
             catch (EntityNotFoundException e)
             {

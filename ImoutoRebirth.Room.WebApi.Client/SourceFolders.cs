@@ -313,10 +313,11 @@ namespace ImoutoRebirth.Room.WebApi.Client
         /// <summary>
         /// Update the source folder for given collection.
         /// </summary>
-        /// <param name='id'>
-        /// The id of the source folder that will be updated.
-        /// </param>
         /// <param name='collectionId'>
+        /// The collection id. Aren't needed and added only for routes consistency.
+        /// </param>
+        /// <param name='sourceFolderId'>
+        /// The id of the source folder that will be updated.
         /// </param>
         /// <param name='body'>
         /// Source folder parameters.
@@ -333,24 +334,14 @@ namespace ImoutoRebirth.Room.WebApi.Client
         /// <exception cref="SerializationException">
         /// Thrown when unable to deserialize the response
         /// </exception>
-        /// <exception cref="ValidationException">
-        /// Thrown when a required parameter is null
-        /// </exception>
-        /// <exception cref="System.ArgumentNullException">
-        /// Thrown when a required parameter is null
-        /// </exception>
         /// <return>
         /// A response object containing the response body and response headers.
         /// </return>
-        public async Task<HttpOperationResponse<SourceFolderResponse>> UpdateWithHttpMessagesAsync(System.Guid id, string collectionId, SourceFolderCreateRequest body = default(SourceFolderCreateRequest), Dictionary<string, List<string>> customHeaders = null, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task<HttpOperationResponse<SourceFolderResponse>> UpdateWithHttpMessagesAsync(System.Guid collectionId, System.Guid sourceFolderId, SourceFolderCreateRequest body = default(SourceFolderCreateRequest), Dictionary<string, List<string>> customHeaders = null, CancellationToken cancellationToken = default(CancellationToken))
         {
             if (body != null)
             {
                 body.Validate();
-            }
-            if (collectionId == null)
-            {
-                throw new ValidationException(ValidationRules.CannotBeNull, "collectionId");
             }
             // Tracing
             bool _shouldTrace = ServiceClientTracing.IsEnabled;
@@ -360,16 +351,16 @@ namespace ImoutoRebirth.Room.WebApi.Client
                 _invocationId = ServiceClientTracing.NextInvocationId.ToString();
                 Dictionary<string, object> tracingParameters = new Dictionary<string, object>();
                 tracingParameters.Add("body", body);
-                tracingParameters.Add("id", id);
                 tracingParameters.Add("collectionId", collectionId);
+                tracingParameters.Add("sourceFolderId", sourceFolderId);
                 tracingParameters.Add("cancellationToken", cancellationToken);
                 ServiceClientTracing.Enter(_invocationId, this, "Update", tracingParameters);
             }
             // Construct URL
             var _baseUrl = Client.BaseUri.AbsoluteUri;
-            var _url = new System.Uri(new System.Uri(_baseUrl + (_baseUrl.EndsWith("/") ? "" : "/")), "api/Collections/{collectionId}/SourceFolders/{id}").ToString();
-            _url = _url.Replace("{id}", System.Uri.EscapeDataString(Microsoft.Rest.Serialization.SafeJsonConvert.SerializeObject(id, Client.SerializationSettings).Trim('"')));
-            _url = _url.Replace("{collectionId}", System.Uri.EscapeDataString(collectionId));
+            var _url = new System.Uri(new System.Uri(_baseUrl + (_baseUrl.EndsWith("/") ? "" : "/")), "api/Collections/{collectionId}/SourceFolders/{sourceFolderId}").ToString();
+            _url = _url.Replace("{collectionId}", System.Uri.EscapeDataString(Microsoft.Rest.Serialization.SafeJsonConvert.SerializeObject(collectionId, Client.SerializationSettings).Trim('"')));
+            _url = _url.Replace("{sourceFolderId}", System.Uri.EscapeDataString(Microsoft.Rest.Serialization.SafeJsonConvert.SerializeObject(sourceFolderId, Client.SerializationSettings).Trim('"')));
             // Create HTTP transport objects
             var _httpRequest = new HttpRequestMessage();
             HttpResponseMessage _httpResponse = null;
@@ -466,10 +457,11 @@ namespace ImoutoRebirth.Room.WebApi.Client
         /// <summary>
         /// Delete the source folder.
         /// </summary>
-        /// <param name='id'>
-        /// Id of the folder that will be deleted.
-        /// </param>
         /// <param name='collectionId'>
+        /// The collection id. Aren't needed and added only for routes consistency.
+        /// </param>
+        /// <param name='sourceFolderId'>
+        /// Id of the folder that will be deleted.
         /// </param>
         /// <param name='customHeaders'>
         /// Headers that will be added to request.
@@ -480,21 +472,11 @@ namespace ImoutoRebirth.Room.WebApi.Client
         /// <exception cref="HttpOperationException">
         /// Thrown when the operation returned an invalid status code
         /// </exception>
-        /// <exception cref="ValidationException">
-        /// Thrown when a required parameter is null
-        /// </exception>
-        /// <exception cref="System.ArgumentNullException">
-        /// Thrown when a required parameter is null
-        /// </exception>
         /// <return>
         /// A response object containing the response body and response headers.
         /// </return>
-        public async Task<HttpOperationResponse> DeleteWithHttpMessagesAsync(System.Guid id, string collectionId, Dictionary<string, List<string>> customHeaders = null, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task<HttpOperationResponse> DeleteWithHttpMessagesAsync(System.Guid collectionId, System.Guid sourceFolderId, Dictionary<string, List<string>> customHeaders = null, CancellationToken cancellationToken = default(CancellationToken))
         {
-            if (collectionId == null)
-            {
-                throw new ValidationException(ValidationRules.CannotBeNull, "collectionId");
-            }
             // Tracing
             bool _shouldTrace = ServiceClientTracing.IsEnabled;
             string _invocationId = null;
@@ -502,16 +484,16 @@ namespace ImoutoRebirth.Room.WebApi.Client
             {
                 _invocationId = ServiceClientTracing.NextInvocationId.ToString();
                 Dictionary<string, object> tracingParameters = new Dictionary<string, object>();
-                tracingParameters.Add("id", id);
                 tracingParameters.Add("collectionId", collectionId);
+                tracingParameters.Add("sourceFolderId", sourceFolderId);
                 tracingParameters.Add("cancellationToken", cancellationToken);
                 ServiceClientTracing.Enter(_invocationId, this, "Delete", tracingParameters);
             }
             // Construct URL
             var _baseUrl = Client.BaseUri.AbsoluteUri;
-            var _url = new System.Uri(new System.Uri(_baseUrl + (_baseUrl.EndsWith("/") ? "" : "/")), "api/Collections/{collectionId}/SourceFolders/{id}").ToString();
-            _url = _url.Replace("{id}", System.Uri.EscapeDataString(Microsoft.Rest.Serialization.SafeJsonConvert.SerializeObject(id, Client.SerializationSettings).Trim('"')));
-            _url = _url.Replace("{collectionId}", System.Uri.EscapeDataString(collectionId));
+            var _url = new System.Uri(new System.Uri(_baseUrl + (_baseUrl.EndsWith("/") ? "" : "/")), "api/Collections/{collectionId}/SourceFolders/{sourceFolderId}").ToString();
+            _url = _url.Replace("{collectionId}", System.Uri.EscapeDataString(Microsoft.Rest.Serialization.SafeJsonConvert.SerializeObject(collectionId, Client.SerializationSettings).Trim('"')));
+            _url = _url.Replace("{sourceFolderId}", System.Uri.EscapeDataString(Microsoft.Rest.Serialization.SafeJsonConvert.SerializeObject(sourceFolderId, Client.SerializationSettings).Trim('"')));
             // Create HTTP transport objects
             var _httpRequest = new HttpRequestMessage();
             HttpResponseMessage _httpResponse = null;
