@@ -10,7 +10,7 @@ namespace ImoutoRebirth.Navigator.Services.Collections
 
         Task<Collection> CreateCollectionAsync(string name);
 
-        Task<Collection> RenameCollection(string name);
+        Task RenameCollection(Guid collectionId, string name);
 
         Task DeleteCollectionAsync(Guid guid);
     }

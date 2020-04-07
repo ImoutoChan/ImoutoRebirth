@@ -5,10 +5,11 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using Imouto.Utils.Core;
+using ImoutoRebirth.Navigator.Services.Tags;
 using ImoutoRebirth.Navigator.Services.Tags.Model;
 using ImoutoRebirth.Navigator.ViewModel;
 
-namespace ImoutoRebirth.Navigator.Services.Tags
+namespace ImoutoRebirth.Navigator.Services
 {
     internal class FileLoadingService : IFileLoadingService
     {

@@ -12,6 +12,6 @@ namespace ImoutoRebirth.Navigator.Services.Collections
 
         Task<SourceFolder> UpdateSourceFolderAsync(SourceFolder sourceFolder);
 
-        Task DeleteSourceFolderAsync(Guid sourceFolderId);
+        Task DeleteSourceFolderAsync(Guid collectionId, Guid sourceFolderId);
     }
 }

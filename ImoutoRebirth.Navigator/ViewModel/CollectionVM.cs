@@ -69,25 +69,30 @@ namespace ImoutoRebirth.Navigator.ViewModel
             try
             {
                 var destinationFolder = await _destinationFolderService.GetDestinationFolderAsync(Id);
-                var sourceFolders = await _sourceFolderService.GetSourceFoldersAsync(Id);
 
                 Destination = null;
+
+                if (destinationFolder != null)
+                {
+
+                    var destinationFolderVm = new DestinationFolderVM(
+                        destinationFolder.Id,
+                        destinationFolder.Path,
+                        destinationFolder.ShouldCreateSubfoldersByHash,
+                        destinationFolder.ShouldRenameByHash,
+                        destinationFolder.FormatErrorSubfolder,
+                        destinationFolder.HashErrorSubfolder,
+                        destinationFolder.WithoutHashErrorSubfolder);
+
+                    destinationFolderVm.ResetRequest += FolderVM_ResetRequest;
+                    destinationFolderVm.SaveRequest += FolderVM_SaveDestinationRequest;
+                    destinationFolderVm.RemoveRequest += DestinationFolderVM_RemoveRequest;
+
+                    Destination = destinationFolderVm;
+                }
+
+                var sourceFolders = await _sourceFolderService.GetSourceFoldersAsync(Id);
                 Sources.Clear();
-
-                var destinationFolderVm = new DestinationFolderVM(
-                    destinationFolder.Id,
-                    destinationFolder.Path,
-                    destinationFolder.ShouldCreateSubfoldersByHash,
-                    destinationFolder.ShouldRenameByHash,
-                    destinationFolder.FormatErrorSubfolder,
-                    destinationFolder.HashErrorSubfolder,
-                    destinationFolder.WithoutHashErrorSubfolder);
-
-                destinationFolderVm.ResetRequest += FolderVM_ResetRequest;
-                destinationFolderVm.SaveRequest += FolderVM_SaveDestinationRequest;
-                destinationFolderVm.RemoveRequest += DestinationFolderVM_RemoveRequest;
-
-                Destination = destinationFolderVm;
 
                 foreach (var folder in sourceFolders)
                 {
@@ -129,7 +134,7 @@ namespace ImoutoRebirth.Navigator.ViewModel
         {
             try
             {
-                await _collectionService.RenameCollection(newName);
+                await _collectionService.RenameCollection(Id, newName);
 
                 Name = newName;
             }
@@ -151,7 +156,7 @@ namespace ImoutoRebirth.Navigator.ViewModel
             {
                 try
                 {
-                    await _destinationFolderService.DeleteDestinationFolderAsync(folderVM.Id.Value);
+                    await _destinationFolderService.DeleteDestinationFolderAsync(Id, folderVM.Id.Value);
                 }
                 catch (Exception ex)
                 {
@@ -278,7 +283,7 @@ namespace ImoutoRebirth.Navigator.ViewModel
                 {
                     try
                     {
-                       await _sourceFolderService.DeleteSourceFolderAsync(folderVM.Id.Value);
+                       await _sourceFolderService.DeleteSourceFolderAsync(Id, folderVM.Id.Value);
                     }
                     catch (Exception ex)
                     {

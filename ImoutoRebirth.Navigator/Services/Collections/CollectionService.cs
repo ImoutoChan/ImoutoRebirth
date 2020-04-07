@@ -2,17 +2,21 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using AutoMapper;
 using ImoutoRebirth.Room.WebApi.Client;
+using ImoutoRebirth.Room.WebApi.Client.Models;
 
 namespace ImoutoRebirth.Navigator.Services.Collections
 {
-    class CollectionService : ICollectionService
+    internal class CollectionService : ICollectionService
     {
         private readonly ICollections _collectionsHttpService;
+        private readonly IMapper _mapper;
 
-        public CollectionService(ICollections collectionsHttpService)
+        public CollectionService(ICollections collectionsHttpService, IMapper mapper)
         {
             _collectionsHttpService = collectionsHttpService;
+            _mapper = mapper;
         }
 
         public async Task<IReadOnlyCollection<Collection>> GetAllCollectionsAsync()
@@ -22,19 +26,21 @@ namespace ImoutoRebirth.Navigator.Services.Collections
             return result.Select(x => new Collection(x.Id, x.Name)).ToArray();
         }
 
-        public Task<Collection> CreateCollectionAsync(string name)
+        public async Task<Collection> CreateCollectionAsync(string name)
         {
-            throw new NotImplementedException();
+            var result = await _collectionsHttpService.CreateAsync(new CollectionCreateRequest(name));
+
+            return _mapper.Map<Collection>(result);
         }
 
-        public Task<Collection> RenameCollection(string name)
+        public Task RenameCollection(Guid collectionId, string name)
         {
-            throw new NotImplementedException();
+            return _collectionsHttpService.RenameAsync(collectionId, name);
         }
 
-        public Task DeleteCollectionAsync(Guid guid)
+        public async Task DeleteCollectionAsync(Guid guid)
         {
-            throw new NotImplementedException();
+            await _collectionsHttpService.DeleteAsync(guid);
         }
     }
 }

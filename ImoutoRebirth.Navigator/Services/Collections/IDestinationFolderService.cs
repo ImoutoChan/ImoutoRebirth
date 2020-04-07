@@ -9,6 +9,6 @@ namespace ImoutoRebirth.Navigator.Services.Collections
 
         Task<DestinationFolder> AddOrUpdateDestinationFolderAsync(DestinationFolder destinationFolder);
 
-        Task DeleteDestinationFolderAsync(Guid destinationFolderId);
+        Task DeleteDestinationFolderAsync(Guid collectionId, Guid destinationFolderId);
     }
 }
