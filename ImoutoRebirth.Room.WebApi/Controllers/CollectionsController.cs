@@ -6,6 +6,7 @@ using ImoutoRebirth.Room.DataAccess.Models;
 using ImoutoRebirth.Room.DataAccess.Repositories.Abstract;
 using ImoutoRebirth.Room.WebApi.Requests;
 using ImoutoRebirth.Room.WebApi.Responses;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 
@@ -31,6 +32,7 @@ namespace ImoutoRebirth.Room.WebApi.Controllers
         /// </summary>
         /// <returns>The list of all collections.</returns>
         [HttpGet]
+        [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<ActionResult<CollectionResponse[]>> GetAll()
         {
             var collections = await _collectionRepository.GetAll();
@@ -43,6 +45,7 @@ namespace ImoutoRebirth.Room.WebApi.Controllers
         /// <param name="request">The parameters for the new collection.</param>
         /// <returns>A description of the created collection.</returns>
         [HttpPost]
+        [ProducesResponseType(StatusCodes.Status201Created)]
         public async Task<ActionResult<CollectionResponse>> Create([FromBody] CollectionCreateRequest request)
         {
             var createData = _mapper.Map<CollectionCreateData>(request);
@@ -58,6 +61,7 @@ namespace ImoutoRebirth.Room.WebApi.Controllers
         /// <param name="id">The collection id.</param>
         /// <param name="newName">The new name for the collection.</param>
         [HttpPatch("{id}")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<ActionResult> Rename([BindRequired] Guid id, [BindRequired]string newName)
         {
             try
@@ -77,6 +81,7 @@ namespace ImoutoRebirth.Room.WebApi.Controllers
         /// </summary>
         /// <param name="id">The collection id.</param>
         [HttpDelete("{id}")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<ActionResult> Delete([BindRequired] Guid id)
         {
             try

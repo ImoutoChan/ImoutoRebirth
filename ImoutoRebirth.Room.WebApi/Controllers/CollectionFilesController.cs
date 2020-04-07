@@ -6,6 +6,7 @@ using ImoutoRebirth.Room.DataAccess.Repositories.Abstract;
 using ImoutoRebirth.Room.DataAccess.Repositories.Queries;
 using ImoutoRebirth.Room.WebApi.Requests;
 using ImoutoRebirth.Room.WebApi.Responses;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 
@@ -31,6 +32,7 @@ namespace ImoutoRebirth.Room.WebApi.Controllers
         /// </summary>
         /// <returns>The collection of files.</returns>
         [HttpPost]
+        [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<ActionResult<CollectionFileResponse[]>> Search(
             [FromBody] CollectionFilesRequest request)
         {
@@ -47,6 +49,7 @@ namespace ImoutoRebirth.Room.WebApi.Controllers
         /// </remarks>
         /// <returns>The count of files that was found by request.</returns>
         [HttpPost("count")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<ActionResult<int>> Count(
             [FromBody] CollectionFilesRequest request)
         {
@@ -59,6 +62,7 @@ namespace ImoutoRebirth.Room.WebApi.Controllers
         ///     Remove file with id.
         /// </summary>
         [HttpDelete("{id}")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<ActionResult> Remove([BindRequired] Guid id)
         {
             try

@@ -6,6 +6,7 @@ using ImoutoRebirth.Room.DataAccess.Models;
 using ImoutoRebirth.Room.DataAccess.Repositories.Abstract;
 using ImoutoRebirth.Room.WebApi.Requests;
 using ImoutoRebirth.Room.WebApi.Responses;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 
@@ -32,6 +33,7 @@ namespace ImoutoRebirth.Room.WebApi.Controllers
         /// <param name="collectionId">The collection id.</param>
         /// <returns>The collection of source folders.</returns>
         [HttpGet]
+        [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<ActionResult<SourceFolderResponse[]>> GetAll([BindRequired] Guid collectionId)
         {
             var sourceFolders = await _sourceFolderRepository.Get(collectionId);
@@ -45,6 +47,7 @@ namespace ImoutoRebirth.Room.WebApi.Controllers
         /// <param name="request">Source folder parameters.</param>
         /// <returns>Created source folder.</returns>
         [HttpPost]
+        [ProducesResponseType(StatusCodes.Status201Created)]
         public async Task<ActionResult<SourceFolderResponse>> Create(
             [BindRequired] Guid collectionId, 
             [FromBody] SourceFolderCreateRequest request)
@@ -64,6 +67,7 @@ namespace ImoutoRebirth.Room.WebApi.Controllers
         /// <param name="collectionId">The collection id. Aren't needed and added only for routes consistency.</param>
         /// <returns>Updated source folder.</returns>
         [HttpPut("{sourceFolderId}")]
+        [ProducesResponseType(StatusCodes.Status201Created)]
         public async Task<ActionResult<SourceFolderResponse>> Update(
             [BindRequired] Guid collectionId,
             [BindRequired] Guid sourceFolderId, 
@@ -82,6 +86,7 @@ namespace ImoutoRebirth.Room.WebApi.Controllers
         /// <param name="sourceFolderId">Id of the folder that will be deleted.</param>
         /// <param name="collectionId">The collection id. Aren't needed and added only for routes consistency.</param>
         [HttpDelete("{sourceFolderId}")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<ActionResult> Delete(
             [BindRequired] Guid collectionId, 
             [BindRequired] Guid sourceFolderId)

@@ -6,6 +6,7 @@ using ImoutoRebirth.Room.DataAccess.Models;
 using ImoutoRebirth.Room.DataAccess.Repositories.Abstract;
 using ImoutoRebirth.Room.WebApi.Requests;
 using ImoutoRebirth.Room.WebApi.Responses;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 
@@ -32,6 +33,7 @@ namespace ImoutoRebirth.Room.WebApi.Controllers
         /// <param name="collectionId">The collection id.</param>
         /// <returns>The destination folder.</returns>
         [HttpGet]
+        [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<ActionResult<DestinationFolderResponse>> Get([BindRequired] Guid collectionId)
         {
             var destinationFolder = await _destinationFolderRepository.Get(collectionId);
@@ -49,6 +51,7 @@ namespace ImoutoRebirth.Room.WebApi.Controllers
         /// <param name="request">Destination folder parameters.</param>
         /// <returns>Created destination folder.</returns>
         [HttpPost]
+        [ProducesResponseType(StatusCodes.Status201Created)]
         public async Task<ActionResult<DestinationFolderResponse>> CreateOrUpdate(
             [BindRequired] Guid collectionId,
             [FromBody] DestinationFolderCreateRequest request)
@@ -69,6 +72,7 @@ namespace ImoutoRebirth.Room.WebApi.Controllers
         /// <param name="collectionId">The collection id. Aren't needed and added only for routes consistency.</param>
         /// <param name="destinationFolderId">Id of the folder that will be deleted.</param>
         [HttpDelete("{destinationFolderId}")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<ActionResult> Delete(
             [BindRequired] Guid collectionId,
             [BindRequired] Guid destinationFolderId)
