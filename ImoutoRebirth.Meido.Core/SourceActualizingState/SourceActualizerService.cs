@@ -74,9 +74,9 @@ namespace ImoutoRebirth.Meido.Core.SourceActualizingState
 
             if (posts.Any())
             {
-                foreach (var parsingStatuses in posts)
+                foreach (var parsingStatus in posts)
                 {
-                    parsingStatuses.RequestMetadataUpdate();
+                    parsingStatus.RequestMetadataUpdate();
                 }
             }
         }

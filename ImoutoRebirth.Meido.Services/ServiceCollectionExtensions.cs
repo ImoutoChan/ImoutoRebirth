@@ -5,6 +5,7 @@ using ImoutoRebirth.Common.Quartz.Extensions;
 using ImoutoRebirth.Meido.MessageContracts;
 using ImoutoRebirth.Meido.Services.Consumers;
 using ImoutoRebirth.Meido.Services.Cqrs.Commands;
+using ImoutoRebirth.Meido.Services.FaultTolerance;
 using ImoutoRebirth.Meido.Services.MetadataActualizer;
 using ImoutoRebirth.Meido.Services.MetadataActualizer.Consumers;
 using ImoutoRebirth.Meido.Services.MetadataRequest;
@@ -35,6 +36,7 @@ namespace ImoutoRebirth.Meido.Services
             services.AddTransient<IMetadataRequester, SankakuMetadataRequester>();
 
             services.AddQuartzJob<MetaActualizerJob, MetaActualizerJob.Description>();
+            services.AddQuartzJob<FaultToleranceJob, FaultToleranceJob.Description>();
 
             return services;
         }
@@ -45,6 +47,9 @@ namespace ImoutoRebirth.Meido.Services
         {
             services.Configure<MetadataActualizerSettings>(
                 configuration.GetSection(nameof(MetadataActualizerSettings)));
+
+            services.Configure<FaultToleranceSettings>(
+                configuration.GetSection(nameof(FaultToleranceSettings)));
 
             return services;
         }
