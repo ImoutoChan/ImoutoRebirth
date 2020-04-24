@@ -8,10 +8,12 @@ namespace ImoutoRebirth.Meido.Core.FaultTolerance
 {
     public class AllFaultedStatusesSpecification : Specification<ParsingStatus.ParsingStatus>
     {
+        private static readonly DateTimeOffset CheckDate = DateTimeOffset.Now.AddDays(-1);
+
         public override Expression<Func<ParsingStatus.ParsingStatus, bool>> ToExpression()
         {
-            return x => StatusSet.AllFaulted.Contains(x.Status) 
-                        &&  DateTimeOffset.Now - x.UpdatedAt > TimeSpan.FromDays(1);
+            return x => StatusSet.AllFaulted.Contains(x.Status)
+                        && x.UpdatedAt < CheckDate;
         }
     }
 }

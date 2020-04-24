@@ -1,4 +1,5 @@
-﻿using ImoutoRebirth.Meido.Core;
+﻿using System;
+using ImoutoRebirth.Meido.Core;
 
 namespace ImoutoRebirth.Meido.Services.MetadataActualizer
 {
@@ -6,6 +7,6 @@ namespace ImoutoRebirth.Meido.Services.MetadataActualizer
     {
         public int RepeatEveryMinutes { get; set; }
 
-        public MetadataSource[] ActiveSources { get; set; }
+        public MetadataSource[] ActiveSources { get; set; } = Array.Empty<MetadataSource>();
     }
 }
