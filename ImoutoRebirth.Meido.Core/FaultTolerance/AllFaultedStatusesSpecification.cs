@@ -10,7 +10,8 @@ namespace ImoutoRebirth.Meido.Core.FaultTolerance
     {
         public override Expression<Func<ParsingStatus.ParsingStatus, bool>> ToExpression()
         {
-            return x => StatusSet.AllFaulted.Contains(x.Status);
+            return x => StatusSet.AllFaulted.Contains(x.Status) 
+                        &&  DateTimeOffset.Now - x.UpdatedAt > TimeSpan.FromDays(1);
         }
     }
 }
