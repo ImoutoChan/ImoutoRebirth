@@ -1,0 +1,35 @@
+{
+  "name": "imouto-extension",
+  "version": "3.0.0",
+  "description": "",
+  "main": "background.js",
+  "scripts": {
+    "build:contentscript-background": "set NODE_ENV=production && webpack --config webpack.config.js",
+    "build": "npm run build:contentscript-background",
+    "watch:contentscript-background": "set NODE_ENV=development && webpack --config webpack.config.js -w",
+    "watch": "npm run watch:contentscript-background",
+    "clean": "rimraf dist && copyfiles manifest.json dist && copyfiles ./assets/**/* dist/",
+    "prebuild": "npm run clean",
+    "prewatch": "npm run clean"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@types/chrome": "0.0.104",
+    "@types/node": "^13.13.2",
+    "awesome-typescript-loader": "^5.2.1",
+    "copyfiles": "^2.2.0",
+    "css-loader": "^3.5.3",
+    "mini-css-extract-plugin": "^0.9.0",
+    "mkdirp": "^1.0.4",
+    "node-sass": "^4.14.0",
+    "rimraf": "^3.0.2",
+    "sass-loader": "^8.0.2",
+    "ts-node": "^8.9.0",
+    "tslint": "^6.1.1",
+    "typescript": "^3.8.3",
+    "webpack": "^4.43.0",
+    "webpack-cli": "^3.3.11"
+  }
+}
