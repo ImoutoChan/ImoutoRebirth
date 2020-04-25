@@ -7,15 +7,19 @@ function log(obj: any): void {
     console.log("Imouto Extension: " + obj.toString());
 }
 
-function sendPost(url: string, hashes: string[], successHandler: (response: string) => void) {
-    const xhr = new XMLHttpRequest();
+async function sendPost(url: string, hashes: string[], successHandler: (response: string) => void) {
+    const response = await fetch(url, {
+        method: "POST", 
+        headers: { 'Content-Type': 'application/json'}, 
+        body: JSON.stringify({ md5: hashes })
+    });
 
-    xhr.onload = () => successHandler(xhr.responseText);
-    xhr.onerror = () => log("Connection error");
-
-    xhr.open("POST", url, true);
-    xhr.setRequestHeader("Content-type", "application/json");
-    xhr.send(JSON.stringify({ md5: hashes }));
+    if (response.ok) {
+        const responseContent = await response.json();
+        successHandler(responseContent);
+    } else {    
+        log(response.status + " " + response.statusText);
+    }
 }
 
 // send md5 request to imouto server
