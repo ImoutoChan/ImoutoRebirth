@@ -24,7 +24,7 @@ namespace ImoutoRebirth.Room.WebApi.Client.Models
         /// <summary>
         /// Initializes a new instance of the CollectionFilesRequest class.
         /// </summary>
-        public CollectionFilesRequest(System.Guid? collectionId = default(System.Guid?), IList<System.Guid?> collectionFileIds = default(IList<System.Guid?>), string path = default(string), string md5 = default(string), int? count = default(int?), int? skip = default(int?))
+        public CollectionFilesRequest(System.Guid? collectionId = default(System.Guid?), IList<System.Guid?> collectionFileIds = default(IList<System.Guid?>), string path = default(string), IList<string> md5 = default(IList<string>), int? count = default(int?), int? skip = default(int?))
         {
             CollectionId = collectionId;
             CollectionFileIds = collectionFileIds;
@@ -58,7 +58,7 @@ namespace ImoutoRebirth.Room.WebApi.Client.Models
         /// <summary>
         /// </summary>
         [JsonProperty(PropertyName = "md5")]
-        public string Md5 { get; set; }
+        public IList<string> Md5 { get; set; }
 
         /// <summary>
         /// </summary>

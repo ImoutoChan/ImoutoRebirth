@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace ImoutoRebirth.Room.DataAccess.Repositories.Queries
 {
@@ -13,7 +14,7 @@ namespace ImoutoRebirth.Room.DataAccess.Repositories.Queries
 
         public string Path { get; }
 
-        public string Md5 { get; }
+        public IReadOnlyCollection<string> Md5 { get; }
 
         public int? Count { get; }
 
@@ -23,14 +24,14 @@ namespace ImoutoRebirth.Room.DataAccess.Repositories.Queries
             Guid? collectionId,
             IReadOnlyCollection<Guid> collectionFileIds,
             string path,
-            string md5,
+            IReadOnlyCollection<string> md5,
             int? count,
             int? skip)
         {
             CollectionId = collectionId;
             CollectionFileIds = collectionFileIds;
             Path = path;
-            Md5 = md5?.ToLowerInvariant();
+            Md5 = md5?.Select(x => x.ToLowerInvariant()).ToArray();
             Count = count;
             Skip = skip;
         }

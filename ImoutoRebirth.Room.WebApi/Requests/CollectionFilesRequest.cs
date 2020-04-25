@@ -11,7 +11,7 @@ namespace ImoutoRebirth.Room.WebApi.Requests
 
         public string Path { get; set; }
 
-        public string Md5 { get; set; }
+        public IReadOnlyCollection<string> Md5 { get; set; }
 
         public int? Count { get; set; }
 
