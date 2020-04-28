@@ -95,7 +95,7 @@ namespace ImoutoRebirth.Room.DataAccess.Repositories
             if (query.Path != null)
                 files = files.Where(x => query.Path.Equals(x.Path));
 
-            if (query.Md5 != null) 
+            if (query.Md5 != null && query.Md5.Any())
                 files = files.Where(x => query.Md5.Contains(x.Md5));
 
             return files;
