@@ -1,36 +1,108 @@
 import { HashResult, ImgStatus } from "../contentscript/contentscript";
 
-const remote = "http://miyu:11301/api/CollectionFiles";
+export interface FoundFile {
+    md5: string;
+}
+
+export interface LilinResult {
+    relativesType: string;
+}
+
+const remoteRoom = "http://miyu:11301/api/CollectionFiles";
+const remoteLilin = "http://miyu:11302/api/Files/relatives";
+let logEnabled = false;
 let disabledApp = false;
 
 function log(obj: any): void {
-    console.log("Imouto Extension: " + obj.toString());
+    if (logEnabled) {
+        console.log("Imouto Extension: " + obj.toString());
+    }
 }
 
-async function sendPost(url: string, hashes: string[], successHandler: (response: string) => void) {
+async function getFromRoom(url: string, hashes: string[]): Promise<FoundFile[]> {
+    const body = JSON.stringify({ md5: hashes });
+    log("requestedHashes: " + body);
+    
     const response = await fetch(url, {
         method: "POST", 
         headers: { 'Content-Type': 'application/json'}, 
-        body: JSON.stringify({ md5: hashes })
+        body: body
     });
 
     if (response.ok) {
         const responseContent = await response.json();
-        successHandler(responseContent);
+
+        log("Room result: " + JSON.stringify(responseContent));
+        return responseContent;
     } else {    
         log(response.status + " " + response.statusText);
+        return [];
+    }
+}
+
+async function getFromLilin(url: string, hashes: string[]): Promise<Map<string, ImgStatus>> {    
+    const result: Map<string, ImgStatus> = new Map<string, ImgStatus>();
+
+    const promises = hashes.map((hash) => getSingleLilin(url, hash));
+
+    await Promise.all(promises);
+
+    for (const promis of promises) {
+        const hashResult = await promis;
+        result.set(hashResult.hash, hashResult.status);
+    }
+
+    return result;
+}
+
+async function getSingleLilin(url: string, hash: string) {
+    const response = await fetch(url + '?md5=' + hash, {
+        method: "GET", 
+        headers: { 'Content-Type': 'application/json'}
+    });
+
+    if (response.ok) {
+        const responseContent = await response.json();    
+        log("Lilin result: " + JSON.stringify(responseContent));
+        
+        const status 
+            = responseContent.length === 0 
+                ? ImgStatus.None
+                : ImgStatus.Relative;
+
+        return {hash, status};
+
+    } else {    
+        log(response.status + " " + response.statusText);
+        return null;
     }
 }
 
 // send md5 request to imouto server
-function tryMd5(hashes: string[], notifyTabId: number) {
-    sendPost(remote, hashes, response => notifyTabs(JSON.parse(response), notifyTabId));
+async function tryMd5(hashes: string[], notifyTabId: number) {
+    console.time('loading')
+
+    const resultRoomPromise = getFromRoom(remoteRoom, hashes);
+    const resultLilinPromise = getFromLilin(remoteLilin, hashes);
+
+    await Promise.all([resultRoomPromise, resultLilinPromise]);
+
+    notifyTabs(await resultRoomPromise, await resultLilinPromise, notifyTabId, hashes);
+
+    console.timeEnd('loading')
 };
 
 // send md5 results to tabs
-function notifyTabs(tryMd5Response, notifyTabId: number) {
-    var results = tryMd5Response.map(x => <HashResult>{ hash: x, result: ImgStatus.Contains});
+function notifyTabs(resultRoom: FoundFile[], resultLilin: Map<string, ImgStatus>, notifyTabId: number, hashes: string[]) {
+    const results = hashes.map(x => {
+        if (resultRoom.some(y => y.md5 === x)) {
+            return <HashResult>{ hash: x, result: ImgStatus.Contains};
+        } else {
+            return <HashResult>{ hash: x, result: resultLilin.get(x)};
+        }
+    });
 
+    log("Notifying with: " + JSON.stringify(results));
     chrome.tabs.sendMessage(notifyTabId, { action: "md5TryResponse", response: results});
 };
 
