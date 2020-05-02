@@ -12,6 +12,7 @@ const remoteRoom = "http://miyu:11301/api/CollectionFiles";
 const remoteLilin = "http://miyu:11302/api/Files/relatives";
 let logEnabled = false;
 let disabledApp = false;
+let loadingCounter: number = 0;
 
 function log(obj: any): void {
     if (logEnabled) {
@@ -80,7 +81,9 @@ async function getSingleLilin(url: string, hash: string) {
 
 // send md5 request to imouto server
 async function tryMd5(hashes: string[], notifyTabId: number) {
-    console.time('loading')
+    const timerKey = 'loading' + loadingCounter++;
+
+    console.time(timerKey);
 
     const resultRoomPromise = getFromRoom(remoteRoom, hashes);
     const resultLilinPromise = getFromLilin(remoteLilin, hashes);
@@ -89,7 +92,7 @@ async function tryMd5(hashes: string[], notifyTabId: number) {
 
     notifyTabs(await resultRoomPromise, await resultLilinPromise, notifyTabId, hashes);
 
-    console.timeEnd('loading')
+    console.timeEnd(timerKey);
 };
 
 // send md5 results to tabs
