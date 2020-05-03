@@ -5,7 +5,6 @@ using GreenPipes;
 using GreenPipes.Configurators;
 using Humanizer;
 using MassTransit;
-using MassTransit.AspNetCoreIntegration;
 using MassTransit.RabbitMqTransport;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -19,8 +18,9 @@ namespace ImoutoRebirth.Common.MassTransit
             string appName,
             Action<ITrueMassTransitConfigurator>? configureAction = null)
         {
-            services.AddMassTransit(
-                provider => Bus.Factory.CreateUsingRabbitMq(cfg =>
+            services.AddMassTransitHostedService();
+            services.AddTransient<IBusControl>(innerServices =>
+                Bus.Factory.CreateUsingRabbitMq(cfg =>
                 {
                     var host = cfg.Host(new Uri(settings.Url), appName, x =>
                     {
@@ -28,7 +28,8 @@ namespace ImoutoRebirth.Common.MassTransit
                         x.Password(settings.Password);
                     });
 
-                    configureAction?.Invoke(new TrueMassTransitConfigurator(appName, cfg, provider, host));
+                    configureAction?.Invoke(
+                        new TrueMassTransitConfigurator(appName, cfg, innerServices, host));
                 }));
 
             return services;
