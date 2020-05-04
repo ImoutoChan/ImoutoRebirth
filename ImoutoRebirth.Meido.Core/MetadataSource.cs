@@ -2,8 +2,8 @@
 {
     public enum MetadataSource
     {
-        Yandere,
-        Danbooru,
-        Sankaku
+        Yandere = 0,
+        Danbooru = 1,
+        Sankaku = 2
     }
 }

@@ -1,4 +1,4 @@
-﻿using ImoutoProject.Common.Cqrs.Abstract;
+﻿using ImoutoRebirth.Common.Cqrs.Abstract;
 using System;
 
 namespace ImoutoRebirth.Meido.Services.Cqrs.Commands

@@ -1,6 +1,6 @@
 ﻿using System.Threading;
 using System.Threading.Tasks;
-using ImoutoProject.Common.Cqrs.Abstract;
+using ImoutoRebirth.Common.Cqrs.Abstract;
 using ImoutoRebirth.Meido.Core.ParsingStatus;
 using MediatR;
 

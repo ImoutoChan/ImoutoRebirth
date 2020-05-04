@@ -1,9 +1,9 @@
-﻿using System;
-using System.Data;
+﻿using System.Data;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using ImoutoRebirth.Common.Domain;
+using ImoutoRebirth.Common.Domain.EntityFrameworkCore;
 using ImoutoRebirth.Common.EntityFrameworkCore.TimeTrack;
 using ImoutoRebirth.Meido.Core.ParsingStatus;
 using ImoutoRebirth.Meido.Core.SourceActualizingState;
@@ -52,17 +52,12 @@ namespace ImoutoRebirth.Meido.DataAccess
             }
         }
 
-        public async Task<IDisposable> CreateTransaction(IsolationLevel isolationLevel) 
-            => await Database.BeginTransactionAsync(isolationLevel);
-
-        public void CommitTransaction()
+        public async Task<ITransaction> CreateTransactionAsync(IsolationLevel isolationLevel)
         {
-            var currentTransaction = Database.CurrentTransaction;
+            if (Database.CurrentTransaction != null)
+                return new EmptyTransaction();
 
-            if (currentTransaction == null)
-                throw new Exception("Can't commit empty transaction.");
-
-            currentTransaction.Commit();
+            return new DbTransaction(await Database.BeginTransactionAsync(isolationLevel));
         }
     }
 }

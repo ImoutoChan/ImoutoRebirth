@@ -1,5 +1,5 @@
-﻿using ImoutoProject.Common.Cqrs;
-using ImoutoRebirth.Arachne.MessageContracts.Commands;
+﻿using ImoutoRebirth.Arachne.MessageContracts.Commands;
+using ImoutoRebirth.Common.Cqrs;
 using ImoutoRebirth.Common.MassTransit;
 using ImoutoRebirth.Common.Quartz.Extensions;
 using ImoutoRebirth.Meido.MessageContracts;

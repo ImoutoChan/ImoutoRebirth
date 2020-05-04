@@ -1,6 +1,6 @@
 ﻿using System.Threading;
 using System.Threading.Tasks;
-using ImoutoProject.Common.Cqrs.Events;
+using ImoutoRebirth.Common.Cqrs.Events;
 using ImoutoRebirth.Meido.Core.ParsingStatus.Events;
 using Microsoft.Extensions.Logging;
 
