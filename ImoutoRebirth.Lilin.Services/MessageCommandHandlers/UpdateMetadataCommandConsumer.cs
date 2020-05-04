@@ -2,7 +2,7 @@
 using ImoutoRebirth.Lilin.MessageContracts;
 using ImoutoRebirth.Lilin.Services.CQRS.Commands;
 using MassTransit;
-using MediatR;
+using IMediator = MediatR.IMediator;
 
 namespace ImoutoRebirth.Lilin.Services.MessageCommandHandlers
 {

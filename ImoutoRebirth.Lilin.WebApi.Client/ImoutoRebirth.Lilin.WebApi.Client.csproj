@@ -6,6 +6,7 @@
     <LangVersion>8</LangVersion>
     <Nullable>enable</Nullable>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <UserSecretsId>72403b86-6d34-4045-a06a-7f050b920318</UserSecretsId>
   </PropertyGroup>
 
   <ItemGroup>
