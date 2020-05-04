@@ -60,8 +60,7 @@ namespace ImoutoRebirth.Meido.Core.ParsingStatus
                     parsingStatus.SetSearchNotFound();
                     break;
                 case SearchStatus.Success:
-                    ArgumentValidator.Requires(() => fileIdFromSource.HasValue, nameof(fileIdFromSource));
-                    // ReSharper disable once PossibleInvalidOperationException
+                    ArgumentValidator.NotNull(fileIdFromSource, nameof(fileIdFromSource));
                     parsingStatus.SetSearchFound(fileIdFromSource.Value);
                     break;
                 case SearchStatus.Error:

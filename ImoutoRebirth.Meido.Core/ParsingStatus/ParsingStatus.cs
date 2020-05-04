@@ -19,7 +19,7 @@ namespace ImoutoRebirth.Meido.Core.ParsingStatus
 
         public Status Status { get; private set; }
 
-        public string ErrorMessage { get; private set; }
+        public string? ErrorMessage { get; private set; }
 
         private ParsingStatus(
             Guid fileId,

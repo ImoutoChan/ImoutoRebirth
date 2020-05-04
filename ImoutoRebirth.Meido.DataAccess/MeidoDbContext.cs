@@ -15,9 +15,9 @@ namespace ImoutoRebirth.Meido.DataAccess
     {
         private readonly IEventStorage _eventStorage;
 
-        public DbSet<ParsingStatus> ParsingStatuses { get; set; }
+        public DbSet<ParsingStatus> ParsingStatuses { get; set; } = default!;
 
-        public DbSet<SourceActualizingState> SourceActualizingStates { get; set; }
+        public DbSet<SourceActualizingState> SourceActualizingStates { get; set; } = default!;
 
         public MeidoDbContext(
             DbContextOptions<MeidoDbContext> options,

@@ -15,10 +15,12 @@ namespace ImoutoRebirth.Meido.Services.DomainEventHandlers
             _logger = logger;
         }
 
-        protected override async Task Handle(MetadataNotFound domainEvent, CancellationToken cancellationToken)
+        protected override Task Handle(MetadataNotFound domainEvent, CancellationToken cancellationToken)
         {
             _logger.LogInformation("Sending request to search original");
+            
             // todo: send search original request
+            return Task.CompletedTask;
         }
     }
 }
