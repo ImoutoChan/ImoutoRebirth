@@ -18,19 +18,26 @@ namespace ImoutoRebirth.Common.MassTransit
             string appName,
             Action<ITrueMassTransitConfigurator>? configureAction = null)
         {
-            services.AddMassTransitHostedService();
-            services.AddTransient<IBusControl>(innerServices =>
-                Bus.Factory.CreateUsingRabbitMq(cfg =>
-                {
-                    var host = cfg.Host(new Uri(settings.Url), appName, x =>
-                    {
-                        x.Username(settings.Username);
-                        x.Password(settings.Password);
-                    });
+            services.AddMassTransit(
+                x => x.AddBus(
+                    innerServices => Bus.Factory.CreateUsingRabbitMq(
+                        cfg =>
+                        {
+                            cfg.UseHealthCheck(innerServices);
+                            var host = cfg.Host(
+                                new Uri(settings.Url),
+                                appName,
+                                x =>
+                                {
+                                    x.Username(settings.Username);
+                                    x.Password(settings.Password);
+                                });
 
-                    configureAction?.Invoke(
-                        new TrueMassTransitConfigurator(appName, cfg, innerServices, host));
-                }));
+                            configureAction?.Invoke(
+                                new TrueMassTransitConfigurator(appName, cfg, innerServices, host));
+                        })));
+
+            services.AddMassTransitHostedService();
 
             return services;
         }
