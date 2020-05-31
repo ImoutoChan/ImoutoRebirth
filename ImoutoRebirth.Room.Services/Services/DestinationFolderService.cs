@@ -25,6 +25,16 @@ namespace ImoutoRebirth.Room.Core.Services
             DestinationFolder destinationFolder, 
             MoveInformation moveInformation)
         {
+            if (moveInformation.MoveProblem == MoveProblem.AlreadyContains)
+            {
+                moveInformation.SystemFile.File.Delete();
+                _logger.LogWarning("File with this md5 already contains in database. Md5: {Md5} File: {NewFile}.");
+                return new MovedInformation(
+                    moveInformation,
+                    false,
+                    moveInformation.SystemFile.File);
+            }
+
             var newPath = GetNewPath(destinationFolder, moveInformation);
 
             _logger.LogInformation("Destination path is calculated: {NewPath}.", newPath);

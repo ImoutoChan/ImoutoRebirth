@@ -72,7 +72,7 @@ namespace ImoutoRebirth.Room.DataAccess.Repositories
 
         public async Task Remove(Guid id)
         {
-            var file = _roomDbContext.CollectionFiles.Find(id);
+            var file = await _roomDbContext.CollectionFiles.FindAsync(id);
 
             if (file == null)
                 throw new EntityNotFoundException<CollectionFileEntity>(id);
@@ -81,6 +81,9 @@ namespace ImoutoRebirth.Room.DataAccess.Repositories
 
             await _roomDbContext.SaveChangesAsync();
         }
+
+        public async Task<bool> ContainsAnyWithMd5(Guid collectionId, string md5) 
+            => await _roomDbContext.CollectionFiles.AnyAsync(x => x.Md5 == md5 && x.CollectionId == collectionId);
 
         private IQueryable<CollectionFileEntity> BuildFilesQuery(CollectionFilesQuery query)
         {

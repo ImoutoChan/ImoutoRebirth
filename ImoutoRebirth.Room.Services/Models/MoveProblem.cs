@@ -5,6 +5,7 @@
         None,
         InvalidFormat,
         WithoutHash,
-        IncorrectHash
+        IncorrectHash,
+        AlreadyContains
     }
 }

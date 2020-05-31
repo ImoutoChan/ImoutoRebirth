@@ -17,5 +17,7 @@ namespace ImoutoRebirth.Room.DataAccess.Repositories.Abstract
         Task<int> CountByQuery(CollectionFilesQuery query);
 
         Task Remove(Guid id);
+
+        Task<bool> ContainsAnyWithMd5(Guid collectionId, string md5);
     }
 }

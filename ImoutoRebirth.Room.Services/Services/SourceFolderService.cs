@@ -39,25 +39,51 @@ namespace ImoutoRebirth.Room.Core.Services
             var extensions = forSourceFolder.SupportedExtensions;
             var directoryInfo = new DirectoryInfo(forSourceFolder.Path);
 
+            if (!directoryInfo.Exists)
+            {
+                return Array.Empty<MoveInformation>();
+            }
+
             var files = _fileService.GetFiles(directoryInfo, extensions);
 
-            var newFiles = await FilterExistingFiles(forSourceFolder, files);
+            var uniqueFiles = files.DistinctBy(x => x.FullName).ToList();
 
-            return newFiles
-                        .Select(CreateSystemFile)
-                        .Select(x => PrepareMove(forSourceFolder, x))
-                        .Where(x => x != null)
-                        .ToArray();
+            if (files.Count != uniqueFiles.Count)
+            {
+                _logger.LogWarning("{DuplicatesCount} duplicates received", files.Count - uniqueFiles.Count);
+            }
+
+            var newFiles = await FilterExistingFilePaths(forSourceFolder.CollectionId, uniqueFiles);
+            var systemFiles = newFiles.Select(x => CreateSystemFile(x));
+
+            var result = new List<MoveInformation>();
+
+            foreach (var systemFile in systemFiles)
+            {
+                var prepared = await PrepareMove(forSourceFolder, systemFile);
+
+                if (prepared != null)
+                    result.Add(prepared);
+            }
+
+            return result;
         }
 
-        private async Task<List<FileInfo>> FilterExistingFiles(
-            SourceFolder forSourceFolder,
-            IReadOnlyCollection<FileInfo> files)
+        /// <summary>
+        /// Filter out images that already in database if source used without destination
+        /// </summary>
+        /// <param name="collectionId">The collection which being processed</param>
+        /// <param name="files">All found files</param>
+        /// <returns>Files which aren't contained in the collection</returns>
+        private async Task<List<FileInfo>> FilterExistingFilePaths(
+            Guid collectionId,
+            IEnumerable<FileInfo> files)
         {
             var newFiles = new List<FileInfo>();
             foreach (var fileInfo in files)
             {
-                var exists = await _collectionFileRepository.AnyWithPath(forSourceFolder.CollectionId, fileInfo.FullName);
+                var exists = await _collectionFileRepository
+                    .AnyWithPath(collectionId, fileInfo.FullName);
 
                 if (exists)
                     continue;
@@ -68,10 +94,9 @@ namespace ImoutoRebirth.Room.Core.Services
             return newFiles;
         }
 
-        private MoveInformation PrepareMove(SourceFolder sourceFolder, SystemFile systemFile)
+        private async Task<MoveInformation> PrepareMove(SourceFolder sourceFolder, SystemFile systemFile)
         {
             var fileInfo = systemFile.File;
-
 
             if (!_fileService.IsFileReady(fileInfo))
             {
@@ -81,7 +106,7 @@ namespace ImoutoRebirth.Room.Core.Services
             
             var moveInformation = new MoveInformation(systemFile);
 
-            moveInformation.MoveProblem = FindProblems(sourceFolder, systemFile);
+            moveInformation.MoveProblem = await FindProblems(sourceFolder, systemFile);
 
             if (sourceFolder.ShouldAddTagFromFilename)
             {
@@ -105,26 +130,35 @@ namespace ImoutoRebirth.Room.Core.Services
         
         private static IReadOnlyCollection<string> GetTags(SourceFolder sourceDirectory, FileInfo fileInfo)
         {
-            string[] GetPathParts(string path)
-                => path.Split(new[]
-                              {
-                                  Path.VolumeSeparatorChar,
-                                  Path.AltDirectorySeparatorChar,
-                                  Path.DirectorySeparatorChar,
-                                  Path.PathSeparator
-                              },
-                              StringSplitOptions.RemoveEmptyEntries);
+            static string[] GetPathParts(string path)
+                => path.Split(
+                    new[]
+                    {
+                        Path.VolumeSeparatorChar,
+                        Path.AltDirectorySeparatorChar,
+                        Path.DirectorySeparatorChar,
+                        Path.PathSeparator
+                    },
+                    StringSplitOptions.RemoveEmptyEntries);
+
+            var directory = fileInfo.Directory;
+            if (directory == null)
+                return Array.Empty<string>();
 
             var sourcePathEntries = GetPathParts(sourceDirectory.Path);
-            var filePathEntries = GetPathParts(fileInfo.Directory.FullName);
+            var filePathEntries = GetPathParts(directory.FullName);
 
             return filePathEntries.Except(sourcePathEntries).ToArray();
         }
 
-        private MoveProblem FindProblems(SourceFolder sourceDirectory, SystemFile systemFile)
+        private async Task<MoveProblem> FindProblems(SourceFolder sourceDirectory, SystemFile systemFile)
         {
-            if (sourceDirectory.ShouldCheckFormat
-                && !_imageService.IsImageCorrect(systemFile.File))
+            if (await _collectionFileRepository.ContainsAnyWithMd5(sourceDirectory.CollectionId, systemFile.Md5))
+            {
+                return MoveProblem.AlreadyContains;
+            }
+
+            if (sourceDirectory.ShouldCheckFormat && !_imageService.IsImageCorrect(systemFile.File))
             {
                 return MoveProblem.InvalidFormat;
             }

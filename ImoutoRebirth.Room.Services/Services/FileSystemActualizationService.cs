@@ -46,9 +46,13 @@ namespace ImoutoRebirth.Room.Core.Services
             }
         }
 
-        private async Task ProcessSourceFolder(OversawCollection oversawCollection, SourceFolder collectionSourceFolder)
+        private async Task ProcessSourceFolder(
+            OversawCollection oversawCollection, 
+            SourceFolder collectionSourceFolder)
         {
-            _logger.LogTrace("Looking at {SourceFolderPath}...", collectionSourceFolder.Path);
+            using var loggerScope = _logger.BeginScope(
+                "Looking at {SourceFolderPath}...",
+                collectionSourceFolder.Path);
 
             var newFiles = await _sourceFolderService.GetNewFiles(collectionSourceFolder);
 
@@ -59,11 +63,11 @@ namespace ImoutoRebirth.Room.Core.Services
 
             _logger.LogInformation("{NewFilesCount} new files found", newFiles.Count);
 
-            var movedFiles = await MoveFiles(newFiles, oversawCollection).ToArrayAsync();
+            var movedFiles = await MoveFiles(newFiles, oversawCollection);
             
             await _dbStateService.SaveChanges();
 
-            _logger.LogInformation("{NewFilesSavedCount} files saved", movedFiles.Length);
+            _logger.LogInformation("{NewFilesSavedCount} files saved", movedFiles.Count);
 
             await movedFiles.Select(x => _remoteCommandService.UpdateMetadataRequest(x.FileId, x.Md5))
                             .WhenAll();
@@ -71,10 +75,12 @@ namespace ImoutoRebirth.Room.Core.Services
             _logger.LogDebug("Update metadata requests are sent");
         }
 
-        private async IAsyncEnumerable<(Guid FileId, string Md5)> MoveFiles(
+        private async Task<IReadOnlyCollection<(Guid FileId, string Md5)>> MoveFiles(
             IEnumerable<MoveInformation> preparedFiles,
             OversawCollection oversawCollection)
         {
+            var result = new List<(Guid FileId, string Md5)>();
+
             foreach (var moveInformation in preparedFiles)
             {
                 var movedInformation = MoveFile(oversawCollection, moveInformation);
@@ -85,27 +91,28 @@ namespace ImoutoRebirth.Room.Core.Services
                 var fileId = await _collectionFileService.SaveNew(movedInformation, oversawCollection.Collection.Id);
                 var md5 = moveInformation.SystemFile.Md5;
 
-                yield return (fileId, md5);
+                result.Add((fileId, md5));
             }
+
+            return result;
         }
 
         private MovedInformation MoveFile(OversawCollection oversawCollection, MoveInformation moveInformation)
         {
-            using (_logger.BeginScope(
+            using var loggerScope = _logger.BeginScope(
                 "Processing new file in source: {NewFile}, {MoveProblem}, {@SourceTags}",
                 moveInformation.SystemFile.File.FullName,
                 moveInformation.MoveProblem,
-                moveInformation.SourceTags))
+                moveInformation.SourceTags);
+
+            try
             {
-                try
-                {
-                    return _destinationFolderService.Move(oversawCollection.DestinationFolder, moveInformation);
-                }
-                catch (Exception e)
-                {
-                    _logger.LogError(e, "Error occured while moving file");
-                    return new MovedInformation(moveInformation, false, moveInformation.SystemFile.File);
-                }
+                return _destinationFolderService.Move(oversawCollection.DestinationFolder, moveInformation);
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e, "Error occured while moving file");
+                return new MovedInformation(moveInformation, false, moveInformation.SystemFile.File);
             }
         }
     }

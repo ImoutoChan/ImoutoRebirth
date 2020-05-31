@@ -7,7 +7,6 @@ namespace ImoutoRebirth.Room.Core.Services.Abstract
 {
     public interface ISourceFolderService
     {
-        Task<IReadOnlyCollection<MoveInformation>> GetNewFiles(
-            SourceFolder forSourceFolder);
+        Task<IReadOnlyCollection<MoveInformation>> GetNewFiles(SourceFolder forSourceFolder);
     }
 }

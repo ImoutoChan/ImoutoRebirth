@@ -14,7 +14,7 @@ namespace ImoutoRebirth.Room.Core.Services
         private readonly IFileSystemActualizationService _fileSystemActualizationService;
         private readonly ICollectionRepository _collectionRepository;
         private readonly ILogger _logger;
-        private static readonly SemaphoreSlim _semaphoreSlim = new SemaphoreSlim(1);
+        private static readonly SemaphoreSlim SemaphoreSlim = new SemaphoreSlim(1);
 
         public OverseeService(
             IFileSystemActualizationService fileSystemActualizationService,
@@ -28,7 +28,7 @@ namespace ImoutoRebirth.Room.Core.Services
 
         public async Task Oversee()
         {
-            if (!_semaphoreSlim.Wait(0))
+            if (!await SemaphoreSlim.WaitAsync(0))
                 _logger.LogTrace("Oversee process have not finished yet");
 
             try
@@ -45,7 +45,7 @@ namespace ImoutoRebirth.Room.Core.Services
             }
             finally
             {
-                _semaphoreSlim.Release();
+                SemaphoreSlim.Release();
             }
         }
 
