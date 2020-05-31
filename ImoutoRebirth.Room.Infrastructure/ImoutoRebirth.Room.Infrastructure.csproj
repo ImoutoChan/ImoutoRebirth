@@ -5,7 +5,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="ImoutoRebirth.Common.MassTransit" Version="3.7.0" />
+    <PackageReference Include="ImoutoRebirth.Common.MassTransit" Version="3.7.1" />
     <PackageReference Include="ImoutoRebirth.Meido.MessageContracts" Version="1.0.0-CI00020" />
     <PackageReference Include="SixLabors.ImageSharp" Version="1.0.0-beta0004" />
   </ItemGroup>
