@@ -8,6 +8,7 @@ using ImoutoRebirth.Room.Core.Models;
 using ImoutoRebirth.Room.Core.Services.Abstract;
 using ImoutoRebirth.Room.DataAccess.Models;
 using ImoutoRebirth.Room.DataAccess.Repositories.Abstract;
+using ImoutoRebirth.Common;
 using Microsoft.Extensions.Logging;
 
 namespace ImoutoRebirth.Room.Core.Services
