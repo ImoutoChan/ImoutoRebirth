@@ -75,6 +75,16 @@ namespace ImoutoRebirth.Room.Database
 
             modelBuilder.Entity<CollectionFileEntity>()
                         .HasIndex(entity => entity.IsRemoved);
+            
+            modelBuilder.Entity<CollectionFileEntity>()
+                        .HasIndex(entity => new
+                        {
+                            entity.CollectionId, 
+                            entity.Md5, 
+                            entity.IsRemoved
+                        })
+                        .HasFilter($"NOT \"{nameof(CollectionFileEntity.IsRemoved)}\"")
+                        .IsUnique();
 
             // Maybe add IsRemoved + Fields indexes
 

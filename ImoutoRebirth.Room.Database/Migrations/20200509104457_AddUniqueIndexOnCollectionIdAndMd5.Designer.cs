@@ -80,9 +80,10 @@ namespace ImoutoRebirth.Room.Database.Migrations
                     b.HasIndex("Md5");
 
                     b.HasIndex("Path");
-
-                    b.HasIndex("CollectionId", "Md5")
-                        .IsUnique();
+                     
+                    b.HasIndex("CollectionId", "Md5", "IsRemoved")
+                        .IsUnique()
+                        .HasFilter("NOT \"IsRemoved\"");
 
                     b.ToTable("CollectionFiles");
                 });
