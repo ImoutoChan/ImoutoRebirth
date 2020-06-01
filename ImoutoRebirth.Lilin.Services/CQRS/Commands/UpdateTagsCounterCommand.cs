@@ -4,7 +4,7 @@ using ImoutoRebirth.Common.Cqrs.Behaviors;
 
 namespace ImoutoRebirth.Lilin.Services.CQRS.Commands
 {
-    [CommandQuery(IsolationLevel.Serializable)]
+    [CommandQuery(IsolationLevel.ReadCommitted)]
     public class UpdateTagsCountersCommand : ICommand
     {
     }
