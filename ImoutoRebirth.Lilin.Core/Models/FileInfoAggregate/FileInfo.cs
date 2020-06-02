@@ -29,8 +29,8 @@ namespace ImoutoRebirth.Lilin.Core.Models.FileInfoAggregate
 
             if (updateData.MetadataSource != MetadataSource.Manual)
             {
-                _tags = new List<FileTag>();
-                _notes = new List<FileNote>();
+                _tags = _tags.Where(x => x.Source != updateData.MetadataSource).ToList();
+                _notes = _notes.Where(x => x.Source != updateData.MetadataSource).ToList();
             }
 
             foreach (var tag in updateData.Tags)
