@@ -1,7 +1,6 @@
 ﻿using System.Threading.Tasks;
 using ImoutoRebirth.Common.Quartz;
 using ImoutoRebirth.Meido.Services.FaultTolerance.CqrsCommands;
-using ImoutoRebirth.Meido.Services.MetadataActualizer;
 using MediatR;
 using Microsoft.Extensions.Options;
 using Quartz;
@@ -12,14 +11,23 @@ namespace ImoutoRebirth.Meido.Services.FaultTolerance
     public class FaultToleranceJob : IJob
     {
         private readonly IMediator _mediator;
+        private readonly IOptionsSnapshot<FaultToleranceSettings> _faultToleranceSettings;
 
-        public FaultToleranceJob(IMediator mediator)
+        public FaultToleranceJob(
+            IMediator mediator, 
+            IOptionsSnapshot<FaultToleranceSettings> faultToleranceSettings)
         {
             _mediator = mediator;
+            _faultToleranceSettings = faultToleranceSettings;
         }
 
-        public async Task Execute(IJobExecutionContext context) 
-            => await _mediator.Send(new RequeueFaultsCommand());
+        public async Task Execute(IJobExecutionContext context)
+        {
+            if (!_faultToleranceSettings.Value.IsEnabled)
+                return;
+
+            await _mediator.Send(new RequeueFaultsCommand());
+        }
 
         public class Description : IQuartzJobDescription
         {
