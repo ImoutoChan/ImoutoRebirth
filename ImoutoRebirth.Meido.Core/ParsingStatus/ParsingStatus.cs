@@ -48,6 +48,9 @@ namespace ImoutoRebirth.Meido.Core.ParsingStatus
 
         public void SetSearchFound(int fileIdFromSource)
         {
+            if (!ValidateStatus(Status.SearchFound))
+                return;
+
             Status = Status.SearchFound;
             FileIdFromSource = fileIdFromSource;
             UpdatedAt = DateTimeOffset.Now;
@@ -55,6 +58,9 @@ namespace ImoutoRebirth.Meido.Core.ParsingStatus
 
         public void SetSearchNotFound()
         {
+            if (!ValidateStatus(Status.SearchNotFound))
+                return;
+
             Status = Status.SearchNotFound;
             UpdatedAt = DateTimeOffset.Now;
 
@@ -65,6 +71,9 @@ namespace ImoutoRebirth.Meido.Core.ParsingStatus
         {
             ArgumentValidator.NotNullOrWhiteSpace(() => errorMessage);
 
+            if (!ValidateStatus(Status.SearchFailed))
+                return;
+
             Status = Status.SearchFailed;
             ErrorMessage = errorMessage;
             UpdatedAt = DateTimeOffset.Now;
@@ -72,21 +81,75 @@ namespace ImoutoRebirth.Meido.Core.ParsingStatus
 
         public void SetOriginalRequested()
         {
+            if (!ValidateStatus(Status.OriginalRequested))
+                return;
+
             Status = Status.OriginalRequested;
             UpdatedAt = DateTimeOffset.Now;
         }
 
         public void SetSearchSaved()
         {
+            if (!ValidateStatus(Status.SearchSaved))
+                return;
+
             Status = Status.SearchSaved;
             UpdatedAt = DateTimeOffset.Now;
         }
 
         public void RequestMetadataUpdate()
         {
+            if (!ValidateStatus(Status.UpdateRequested))
+                return;
+
             Status = Status.UpdateRequested;
             UpdatedAt = DateTimeOffset.Now;
             Add(new UpdateRequested(this));
+        }
+
+        private bool ValidateStatus(Status newStatus)
+        {
+            if (IsStatusChangeAllowed(newStatus)) 
+                return true;
+
+            Add(new DisallowedStatusTransfer(this, newStatus));
+            return false;
+
+        }
+
+        private bool IsStatusChangeAllowed(Status newStatus)
+        {
+            var allowed = (Status, newStatus) switch
+            {
+                (Status.SearchRequested, Status.SearchFound) => true,
+                (Status.SearchRequested, Status.SearchNotFound) => true,
+                (Status.SearchRequested, Status.SearchFailed) => true,
+                (Status.SearchRequested, Status.SearchSaved) => true,
+                (Status.SearchRequested, Status.UpdateRequested) => true,
+
+                (Status.SearchFound, Status.SearchSaved) => true,
+                (Status.SearchFound, Status.UpdateRequested) => true,
+                
+                (Status.SearchFailed, Status.SearchRequested) => true,
+                (Status.SearchFailed, Status.SearchFound) => true,
+                (Status.SearchFailed, Status.SearchNotFound) => true,
+                (Status.SearchFailed, Status.SearchSaved) => true,
+                (Status.SearchFailed, Status.UpdateRequested) => true,
+
+                (Status.SearchNotFound, Status.OriginalRequested) => true,
+                (Status.SearchNotFound, Status.UpdateRequested) => true,
+
+                (Status.SearchSaved, Status.OriginalRequested) => true,
+                (Status.SearchSaved, Status.UpdateRequested) => true,
+
+                (Status.UpdateRequested, Status.SearchFound) => true,
+                (Status.UpdateRequested, Status.SearchFailed) => true,
+                (Status.UpdateRequested, Status.SearchNotFound) => true,
+                (Status.UpdateRequested, Status.SearchSaved) => true,
+                _ => false
+            };
+
+            return allowed;
         }
     }
 }
