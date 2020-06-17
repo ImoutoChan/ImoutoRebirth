@@ -6,7 +6,6 @@ using AutoMapper;
 using ImoutoRebirth.Room.WebApi.Client;
 using ImoutoRebirth.Room.WebApi.Client.Models;
 using Microsoft.Rest;
-using Microsoft.Rest.TransientFaultHandling;
 
 namespace ImoutoRebirth.Navigator.Services.Collections
 {

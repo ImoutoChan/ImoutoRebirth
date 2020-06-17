@@ -7,6 +7,7 @@ using System.Windows.Input;
 using System.Windows.Media.Imaging;
 using Imouto;
 using ImoutoRebirth.Navigator.Commands;
+using Microsoft.WindowsAPICodePack.Shell;
 
 namespace ImoutoRebirth.Navigator.ViewModel
 {
@@ -123,18 +124,13 @@ namespace ImoutoRebirth.Navigator.ViewModel
 
             var thumbNail = await Task.Run(() =>
             {
-                BitmapSource result = new BitmapImage();
-
-                // todo extract shell icon
-                //using (var shellFile = ShellFile.FromFilePath(Path))
-                //{
-                //    result = shellFile.Thumbnail.BitmapSource;
-                //    result.Freeze();
-                //}
-                return result;
+                using var shellFile = ShellFile.FromFilePath(Path);
+                var thumbnail = shellFile.Thumbnail.BitmapSource;
+                thumbnail.Freeze();
+                return thumbnail;
             });
-            Image = thumbNail;
 
+            Image = thumbNail;
 
             _isPreviewLoaded = true;
             IsLoading = false;

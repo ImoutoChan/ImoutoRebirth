@@ -181,22 +181,32 @@ namespace ImoutoRebirth.Navigator.ViewModel
 
         private void ShuffleNavigatorList()
         {
-            var randomGenerator = new Random();
-
             lock (NavigatorList)
             {
                 var newCollection = NavigatorList.ToList();
-                var count = NavigatorList.Count;
+                Shuffle(newCollection);
 
+                NavigatorList.Clear();
+                
                 foreach (var navigatorListEntry in newCollection)
                 {
-                    NavigatorList.Remove(navigatorListEntry);
-
-                    var newIndex = randomGenerator.Next(0, count - 2);
-
-                    NavigatorList.Insert(newIndex, navigatorListEntry);
+                    NavigatorList.Add(navigatorListEntry);
                 }
             }
+        }
+        
+        private static void Shuffle<T>(IList<T> list)  
+        {  
+            var randomGenerator = new Random();
+
+            int n = list.Count;  
+            while (n > 1) {  
+                n--;  
+                int k = randomGenerator.Next(n + 1);  
+                T value = list[k];  
+                list[k] = list[n];  
+                list[n] = value;  
+            }  
         }
 
         public void SetStatusError(string error, string message)

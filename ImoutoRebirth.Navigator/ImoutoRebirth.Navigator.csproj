@@ -25,9 +25,11 @@
     <PackageReference Include="Imouto.Utils.Core" Version="2.0.0" />
     <PackageReference Include="ImoutoRebirth.Common" Version="3.5.1" />
     <PackageReference Include="ImoutoRebirth.Lilin.WebApi.Client" Version="2.1.1-master-0001" />
-    <PackageReference Include="ImoutoRebirth.Room.WebApi.Client" Version="1.6.1" />
+    <PackageReference Include="ImoutoRebirth.Room.WebApi.Client" Version="1.7.0" />
     <PackageReference Include="MahApps.Metro" Version="2.0.0-alpha0660" />
     <PackageReference Include="MahApps.Metro.IconPacks" Version="3.1.0" />
+    <PackageReference Include="Microsoft-WindowsAPICodePack-Core" Version="1.1.4" />
+    <PackageReference Include="Microsoft-WindowsAPICodePack-Shell" Version="1.1.4" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="3.1.1" />
     <PackageReference Include="Microsoft.Xaml.Behaviors.Wpf" Version="1.1.19" />
     <PackageReference Include="SharedModelLibrary.Core" Version="2.0.0" />
