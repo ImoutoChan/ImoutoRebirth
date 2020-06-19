@@ -3,7 +3,6 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-             xmlns:wpf1="clr-namespace:Meta.Vlc.Wpf;assembly=Meta.Vlc.Wpf"
              xmlns:converters="clr-namespace:ImoutoRebirth.Navigator.Converters"
              mc:Ignorable="d"
              d:DesignHeight="300"
@@ -12,15 +11,15 @@
         <converters:PlayerPositionConverter x:Key="PlayerPositionConverter" />
     </UserControl.Resources>
     <Grid>
-        <Grid>
+        <Grid VerticalAlignment="Center">
             <Grid.RowDefinitions>
-                <RowDefinition Height="*" />
+                <RowDefinition Height="Auto" />
                 <RowDefinition Height="Auto" />
                 <RowDefinition Height="Auto" />
             </Grid.RowDefinitions>
 
-            <wpf1:VlcPlayer Grid.Row="0"
-                           x:Name="vlcPlayer" />
+            <ContentControl Grid.Row="0" 
+                            Name="Container"  />
 
             <Grid Grid.Row="1"
                   VerticalAlignment="Center">
@@ -44,7 +43,11 @@
                         Minimum="0"
                         Delay="500"
                         Maximum="100"
-                        Value="{Binding ElementName=vlcPlayer, Path=Position, Converter={StaticResource PlayerPositionConverter}}" />
+                        x:Name="Slider"
+                        Value="{Binding
+                            ElementName=Container,
+                            Path=Content.SourceProvider.MediaPlayer.Position, 
+                            Converter={StaticResource PlayerPositionConverter}}" />
             </Grid>
         </Grid>
     </Grid>

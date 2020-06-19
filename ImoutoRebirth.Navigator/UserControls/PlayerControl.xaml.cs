@@ -1,6 +1,11 @@
 ﻿using System;
+using System.IO;
+using System.Reflection;
+using System.Threading;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
+using Vlc.DotNet.Wpf;
 
 namespace ImoutoRebirth.Navigator.UserControls
 {
@@ -9,12 +14,12 @@ namespace ImoutoRebirth.Navigator.UserControls
     /// </summary>
     public partial class PlayerControl
     {
+        private bool _isPlayed;
+        private VlcControl _control;
+
         private bool IsPlayed
         {
-            get
-            {
-                return _isPlayed;
-            }
+            get => _isPlayed;
             set
             {
                 _isPlayed = value;
@@ -22,11 +27,11 @@ namespace ImoutoRebirth.Navigator.UserControls
                 switch (_isPlayed)
                 {
                     case false:
-                        vlcPlayer.PauseOrResume();
+                        _control.SourceProvider.MediaPlayer?.Pause();
                         PlayButton.Template = Application.Current.FindResource("VideoPlayOverlayIcon") as ControlTemplate;
                         break;
                     case true:
-                        vlcPlayer.PauseOrResume();
+                        _control.SourceProvider.MediaPlayer?.Play();
                         PlayButton.Template = Application.Current.FindResource("VideoPauseOverlayIcon") as ControlTemplate;
                         break;
                 }
@@ -36,44 +41,94 @@ namespace ImoutoRebirth.Navigator.UserControls
         public PlayerControl()
         {
             InitializeComponent();
+
+            InitializePlayer();
         }
 
-        public static readonly DependencyProperty SourceProperty = DependencyProperty.Register("Source", typeof (string), typeof (PlayerControl), new UIPropertyMetadata(null, OnSourceChanged));
+        private void InitializePlayer()
+        {
+            if (!TryGetVlcLibDirectory(out var vlcLibDirectory)) 
+                return;
 
-        private bool _isPlayed;
+            _control = new VlcControl();
+            Container.Content = _control;
+
+            _control.SourceProvider.CreatePlayer(vlcLibDirectory);
+            _control.SourceProvider.MediaPlayer.PositionChanged 
+                += (sender, args) 
+                    => Dispatcher.BeginInvoke((Action) (() => { Slider.Value = 100 * args.NewPosition; }));
+
+            Slider.ValueChanged += (sender, args) =>
+            {
+                var player = _control.SourceProvider.MediaPlayer;
+
+                if (player == null)
+                    return;
+
+                var newValue = (float) args.NewValue / 100;
+                var oldValue = player.Position;
+
+                var absoluteDiff = Math.Abs(oldValue - newValue);
+                var length = player.Length;
+
+                var msDiff = absoluteDiff * length;
+
+                if (msDiff < 1000) 
+                    return;
+
+                var set = (float) args.NewValue / 100;
+
+                Task.Run(() => player.Position = set);
+            };
+        }
+
+        private static bool TryGetVlcLibDirectory(out DirectoryInfo vlcLibDirectory)
+        {
+            var currentAssembly = Assembly.GetEntryAssembly();
+            vlcLibDirectory = null;
+
+            if (currentAssembly == null)
+                return false;
+
+            var currentDirectory = new FileInfo(currentAssembly.Location).DirectoryName;
+            vlcLibDirectory = new DirectoryInfo(
+                Path.Combine(
+                    currentDirectory ?? string.Empty,
+                    "libvlc",
+                    IntPtr.Size == 4 ? "win-x86" : "win-x64"));
+
+            return true;
+        }
+
+        public static readonly DependencyProperty SourceProperty 
+            = DependencyProperty.Register(
+                "Source", 
+                typeof (string), 
+                typeof (PlayerControl), 
+                new UIPropertyMetadata(null, OnSourceChanged));
 
         public string Source
         {
-            get
-            {
-                return (string) GetValue(SourceProperty);
-            }
-            set
-            {
-                SetValue(SourceProperty, value);
-            }
+            get => (string) GetValue(SourceProperty);
+            set => SetValue(SourceProperty, value);
         }
 
         private static void OnSourceChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
             var newPropertyValue = (string) e.NewValue;
-            var control = ((PlayerControl) d);
-            var player = control.vlcPlayer;
+            var control = (PlayerControl) d;
+            var player = control._control.SourceProvider.MediaPlayer;
 
-            player.Dispatcher.BeginInvoke((Action)(() =>
+            control.Dispatcher.BeginInvoke((Action)(() =>
             {
                 if (newPropertyValue == null)
                 {
-                    control.IsPlayed = false;
-                    player.Stop();
-                    //player.Dispose();
+                    Task.Run(() => control._control.Dispose());
                 }
                 else
                 {
-                    player.RebuildPlayer();
-                    player.LoadMedia(newPropertyValue);
-                    player.EndBehavior = EndBehavior.Repeat;
-                    player.Play();
+                    var mediaOptions = new[] { "input-repeat=65535" };
+                    player.SetMedia(new FileInfo(newPropertyValue), mediaOptions);
                     control.IsPlayed = true;
                 }
             }));

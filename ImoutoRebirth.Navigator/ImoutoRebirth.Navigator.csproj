@@ -7,16 +7,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Remove="UserControls\PlayerControl.xaml.cs" />
-  </ItemGroup>
-
-  <ItemGroup>
     <None Remove="Resources\Entypo.ttf" />
     <None Remove="Resources\Icon\49a7b0a953e5106e5942169f3cb0c237.ico" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Page Remove="UserControls\PlayerControl.xaml" />
   </ItemGroup>
 
   <ItemGroup>
@@ -33,6 +25,8 @@
     <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="3.1.1" />
     <PackageReference Include="Microsoft.Xaml.Behaviors.Wpf" Version="1.1.19" />
     <PackageReference Include="SharedModelLibrary.Core" Version="2.0.0" />
+    <PackageReference Include="VideoLAN.LibVLC.Windows" Version="3.0.10" />
+    <PackageReference Include="Vlc.DotNet.Wpf" Version="3.1.0-develop379" />
     <PackageReference Include="WpfAnimatedGif" Version="2.0.0-beta.2" />
   </ItemGroup>
 
@@ -49,6 +43,9 @@
     </Compile>
     <Compile Update="UserControls\FavoriteControl.xaml.cs">
       <DependentUpon>FavoriteControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Update="UserControls\PlayerControl.xaml.cs">
+      <DependentUpon>PlayerControl.xaml</DependentUpon>
     </Compile>
     <Compile Update="UserControls\RatingControl.xaml.cs">
       <DependentUpon>RatingControl.xaml</DependentUpon>
@@ -100,6 +97,9 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Update="UserControls\FavoriteControl.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="UserControls\PlayerControl.xaml">
       <SubType>Designer</SubType>
     </Page>
     <Page Update="UserControls\RatingControl.xaml">

@@ -260,7 +260,7 @@
                             <Grid Width="{Binding Path=ViewPortSize.Width}"
                                   Height="{Binding Path=ViewPortSize.Height}">
                                 <!-- todo: implement video control -->
-                                <!--<userControl:PlayerControl Source="{Binding Path}" />-->
+                                <userControl:PlayerControl Source="{Binding Path}" />
                             </Grid>
                         </Border>
                     </DataTemplate>

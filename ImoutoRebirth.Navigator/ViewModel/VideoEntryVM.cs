@@ -85,7 +85,7 @@ namespace ImoutoRebirth.Navigator.ViewModel
 
         #region Commands
 
-        public ICommand OpenCommand => _openFileCommand ?? (_openFileCommand = new RelayCommand(Open));
+        public ICommand OpenCommand => _openFileCommand ??= new RelayCommand(Open);
 
         private void Open(object obj)
         {

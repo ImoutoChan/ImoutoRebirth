@@ -1,4 +1,6 @@
-﻿using System.Windows;
+﻿using System;
+using System.Diagnostics;
+using System.Windows;
 using System.Windows.Input;
 using Microsoft.Xaml.Behaviors;
 
@@ -31,10 +33,16 @@ namespace ImoutoRebirth.Navigator.Behavior
             if (IsMouseClicked)
             {
                 // Set the item's DataContext as the data to be transferred
-                var dragObject = AssociatedObject.DataContext as IDragable;
-                if (dragObject != null)
+                if (AssociatedObject.DataContext is IDragable dragObject)
                 {
-                    DragDrop.DoDragDrop(AssociatedObject, dragObject.Data, dragObject.AllowDragDropEffects);
+                    try
+                    {
+                        DragDrop.DoDragDrop(AssociatedObject, dragObject.Data, dragObject.AllowDragDropEffects);
+                    }
+                    catch (Exception exception)
+                    {
+                        Debug.WriteLine(exception);
+                    }
                 }
             }
             IsMouseClicked = false;
