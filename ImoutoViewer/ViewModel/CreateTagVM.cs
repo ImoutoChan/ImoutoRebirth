@@ -1,5 +1,4 @@
 ﻿using Imouto.Viewer.Commands;
-using Imouto.Viewer.WCF;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -204,13 +203,15 @@ namespace Imouto.Viewer.ViewModel
 
         private Task<List<TagType>> ReloadTagTypesTask()
         {
-            return Task.Run(() =>
-            {
-                return ImoutoService.Use(imoutoService =>
-                {
-                    return imoutoService.GetTagTypes();
-                });
-            });
+            // TODO load tag types
+            //return Task.Run(() =>
+            //{
+            //    return ImoutoService.Use(imoutoService =>
+            //    {
+            //        return imoutoService.GetTagTypes();
+            //    });
+            //});
+            return Task.FromResult(Array.Empty<TagType>().ToList());
         }
     }
 }

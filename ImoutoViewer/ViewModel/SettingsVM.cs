@@ -1,7 +1,6 @@
 ﻿using AssociationManager;
 using Imouto.Viewer.Commands;
 using Imouto.Viewer.Model;
-using Imouto.Viewer.Properties;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -13,6 +12,7 @@ using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media;
 using ControlzEx.Theming;
+using ImoutoViewer.Properties;
 using MahApps.Metro.Controls.Dialogs;
 
 namespace Imouto.Viewer.ViewModel

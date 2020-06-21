@@ -102,3 +102,5 @@ unknown:
 --resize before drag
 
 NEED BUG FIXES:
+
+-- open in folder

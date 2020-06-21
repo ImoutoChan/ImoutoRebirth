@@ -1,7 +1,6 @@
 ﻿using Imouto.Viewer.Behavior;
 using Imouto.Viewer.Commands;
 using Imouto.Viewer.Model;
-using Imouto.Viewer.WCF;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -352,14 +351,14 @@ namespace Imouto.Viewer.ViewModel
 
                 var guid = (Guid) Application.Current.Properties["NavigatorGuid"];
 
-                
-                var files = await ImoutoService.UseAsync(imoutoService => imoutoService.GetCachedSearch(guid));
+                // TODO search and load
+                //var files = await ImoutoService.UseAsync(imoutoService => imoutoService.GetCachedSearch(guid));
 
 
-                var el = default((string, int));
-                var (path, id) = el = files.FirstOrDefault(x => x.path == Application.Current.Properties["ArbitraryArgName"].ToString());
+                //var el = default((string, int));
+                //var (path, id) = el = files.FirstOrDefault(x => x.path == Application.Current.Properties["ArbitraryArgName"].ToString());
 
-                _imageList = new LocalImageList(files.Select(x => x.path), path == null ? 0 : files.IndexOf(el));
+                //_imageList = new LocalImageList(files.Select(x => x.path), path == null ? 0 : files.IndexOf(el));
             }
             else if (Application.Current.Properties["ArbitraryArgName"] != null)
             {

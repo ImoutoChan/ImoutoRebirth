@@ -1,5 +1,4 @@
 ﻿using Imouto.Viewer.Commands;
-using Imouto.Viewer.WCF;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -199,15 +198,18 @@ namespace Imouto.Viewer.ViewModel
 
         private Task<List<Tag>> LoadTagsTask(string searchPattern)
         {
-            return Task.Run(() =>
-            {
-                var tags = ImoutoService.Use(imoutoService =>
-                {
-                    return imoutoService.SearchTags(searchPattern);
-                });
+            // TODO load tags
+            //return Task.Run(() =>
+            //{
+            //    var tags = ImoutoService.Use(imoutoService =>
+            //    {
+            //        return imoutoService.SearchTags(searchPattern);
+            //    });
 
-                return tags;
-            });
+            //    return tags;
+            //});
+
+            return Task.FromResult(Array.Empty<Tag>().ToList());
         }
 
         #endregion Methods

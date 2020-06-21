@@ -8,7 +8,6 @@ using System.ServiceModel;
 using System.Threading.Tasks;
 using Imouto.Utils;
 using Imouto.Viewer.Model;
-using Imouto.Viewer.WCF;
 using Imouto.WCFExchageLibrary.Data;
 
 namespace Imouto.Viewer.ViewModel
@@ -104,14 +103,10 @@ namespace Imouto.Viewer.ViewModel
                     }
                 }
             }
-            catch (EndpointNotFoundException)
-            {
-                _isLastSuccessConnected = false;
-                OnPropertyChanged(() => ShowTags);
-            }
             catch (Exception ex)
             {
                 _isLastSuccessConnected = false;
+                OnPropertyChanged(() => ShowTags);
                 Debug.WriteLine(ex.Message);
             }
         }
@@ -187,75 +182,86 @@ namespace Imouto.Viewer.ViewModel
 
         private Task CreateTagTask(CreateTagVM createTagVM)
         {
-            return Task.Run(() =>
-            {
-                ImoutoService.Use(imoutoService =>
-                {
-                    imoutoService.CreateTag(new Tag
-                    {
-                        HasValue = createTagVM.HasValue,
-                        SynonymsCollection = createTagVM.SynonymsCollection,
-                        Title = createTagVM.Title,
-                        Type = createTagVM.SelectedType
-                    });
-                });
-            });
+            // TODO create tag
+            //return Task.Run(() =>
+            //{
+            //    ImoutoService.Use(imoutoService =>
+            //    {
+            //        imoutoService.CreateTag(new Tag
+            //        {
+            //            HasValue = createTagVM.HasValue,
+            //            SynonymsCollection = createTagVM.SynonymsCollection,
+            //            Title = createTagVM.Title,
+            //            Type = createTagVM.SelectedType
+            //        });
+            //    });
+            //});
+
+            return Task.CompletedTask;
         }
 
         private Task<Tuple<List<BindedTag>, List<NoteM>>> LoadTagsTask(string path)
         {
-            return Task.Run(() =>
-            {
-                var id = ImoutoService.Use(imoutoService =>
-                {
-                    return imoutoService.GetImageId(path);
-                });
+            // TODO load tags and notes
 
-                string md5;
-                ContainsType containsType = ContainsType.None;
-                if (!id.HasValue)
-                {
-                    md5 = new FileInfo(path).GetMd5Checksum();
-                    id = ImoutoService.Use(imoutoService =>
-                    {
-                        return imoutoService.GetImageId(md5: md5);
-                    });
+            //return Task.Run(() =>
+            //{
+            //    var id = ImoutoService.Use(imoutoService =>
+            //    {
+            //        return imoutoService.GetImageId(path);
+            //    });
 
-                    if (!id.HasValue)
-                    {
+            //    string md5;
+            //    ContainsType containsType = ContainsType.None;
+            //    if (!id.HasValue)
+            //    {
+            //        md5 = new FileInfo(path).GetMd5Checksum();
+            //        id = ImoutoService.Use(imoutoService =>
+            //        {
+            //            return imoutoService.GetImageId(md5: md5);
+            //        });
 
-                        containsType = ImoutoService.Use(imoutoService =>
-                        {
-                            return imoutoService.GetContainsType(md5);
-                        });
-                    }
-                }                
+            //        if (!id.HasValue)
+            //        {
 
-                CurrentId = id;
-                var tags = new List<BindedTag>();
-                var notes = new List<NoteM>();
+            //            containsType = ImoutoService.Use(imoutoService =>
+            //            {
+            //                return imoutoService.GetContainsType(md5);
+            //            });
+            //        }
+            //    }                
 
-                if (CurrentId.HasValue)
-                {
-                    tags = ImoutoService.Use(imoutoService =>
-                    {
-                        return imoutoService.GetImageTags(CurrentId.Value);
-                    });
-                    notes = ImoutoService.Use(imoutoService =>
-                    {
-                        return imoutoService.GetImageNotes(CurrentId.Value)
-                                            .Select(WcfMapper.MapNote)
-                                            .ToList();
-                    });
-                }
-                else if (containsType == ContainsType.Relative)
-                {
-                    tags.Add(new BindedTag { Source = Source.Virtual, Tag = new Tag { Type = new TagType { Color = 0, Title = "Virtual" }, Title = "HasRelative" } });
-                }
+            //    CurrentId = id;
+            //    var tags = new List<BindedTag>();
+            //    var notes = new List<NoteM>();
+
+            //    if (CurrentId.HasValue)
+            //    {
+            //        tags = ImoutoService.Use(imoutoService =>
+            //        {
+            //            return imoutoService.GetImageTags(CurrentId.Value);
+            //        });
+            //        notes = ImoutoService.Use(imoutoService =>
+            //        {
+            //            return imoutoService.GetImageNotes(CurrentId.Value)
+            //                                .Select(WcfMapper.MapNote)
+            //                                .ToList();
+            //        });
+            //    }
+            //    else if (containsType == ContainsType.Relative)
+            //    {
+            //        tags.Add(new BindedTag { Source = Source.Virtual, Tag = new Tag { Type = new TagType { Color = 0, Title = "Virtual" }, Title = "HasRelative" } });
+            //    }
                 
 
-                return new Tuple<List<BindedTag>, List<NoteM>>(tags, notes);
-            });
+            //    return new Tuple<List<BindedTag>, List<NoteM>>(tags, notes);
+            //});
+
+
+            return Task.FromResult(
+                new Tuple<List<BindedTag>, List<NoteM>>(
+                    Array.Empty<BindedTag>().ToList(),
+                    Array.Empty<NoteM>().ToList()));
         }
 
 
@@ -341,32 +347,39 @@ namespace Imouto.Viewer.ViewModel
 
         private Task UnbindTagTask(int imageId, int tagId)
         {
-            return Task.Run(() =>
-            {
-                ImoutoService.Use(imoutoService =>
-                {
-                    imoutoService.UnbindTag(imageId, tagId);
-                });
-            });
+            // TODO remove tag
+
+            //return Task.Run(() =>
+            //{
+            //    ImoutoService.Use(imoutoService =>
+            //    {
+            //        imoutoService.UnbindTag(imageId, tagId);
+            //    });
+            //});
+
+            return Task.CompletedTask;
         }
 
         private Task BindTagTask(AddTagVM addTagVM)
         {
-            return Task.Run(() =>
-            {
-                ImoutoService.Use(imoutoService =>
-                {
-                    imoutoService.BindTag(CurrentId.Value, new BindedTag
-                    {
-                        Tag = addTagVM.SelectedTag,
-                        DateAdded = DateTime.Now,
-                        Source = Source.User,
-                        Value = (addTagVM.SelectedTag.HasValue)
-                                ? addTagVM.Value
-                                : null
-                    });
-                });
-            });
+            // TODO add tag
+            //return Task.Run(() =>
+            //{
+            //    ImoutoService.Use(imoutoService =>
+            //    {
+            //        imoutoService.BindTag(CurrentId.Value, new BindedTag
+            //        {
+            //            Tag = addTagVM.SelectedTag,
+            //            DateAdded = DateTime.Now,
+            //            Source = Source.User,
+            //            Value = (addTagVM.SelectedTag.HasValue)
+            //                    ? addTagVM.Value
+            //                    : null
+            //        });
+            //    });
+            //});
+
+            return Task.CompletedTask;
         }
 
         #endregion Private methods
