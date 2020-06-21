@@ -11,7 +11,8 @@
                           xmlns:view="clr-namespace:Imouto.Viewer.View"
                           xmlns:gif="http://wpfanimatedgif.codeplex.com"
                           xmlns:metroControl="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
-                          xmlns:metroBehaviour="clr-namespace:MahApps.Metro.Behaviours;assembly=MahApps.Metro"
+                          xmlns:b="http://schemas.microsoft.com/xaml/behaviors"
+                          xmlns:mah="http://metro.mahapps.com/winfx/xaml/shared"
                           xmlns:Imouto.Viewer="clr-namespace:Imouto.Viewer"
                           mc:Ignorable="d"
                           d:DataContext="{d:DesignInstance viewModel:MainWindowVM, IsDesignTimeCreatable=False}"
@@ -20,11 +21,11 @@
                           Width="525"
                           WindowStartupLocation="CenterScreen"
                           WindowState="Maximized"
-                          BorderBrush="{DynamicResource AccentColorBrush}"
+                          BorderBrush="{DynamicResource MahApps.Brushes.Accent}"
                           BorderThickness="2"
                           gif:ImageBehavior.AnimateInDesignMode="True"
                           KeyUp="MainWindow_OnKeyUp"
-                          TitleCaps="False"
+                          TitleCharacterCasing="Normal"
                           MinHeight="180"
                           MinWidth="320">
     <metroControl:MetroWindow.InputBindings>
@@ -70,15 +71,15 @@
                     Key="N" />
     </metroControl:MetroWindow.InputBindings>
 
-    <i:Interaction.Triggers>
-        <i:EventTrigger EventName="MouseLeftButtonUp">
-            <i:InvokeCommandAction Command="{Binding NextImageCommand}" />
-        </i:EventTrigger>
+    <b:Interaction.Triggers>
+        <b:EventTrigger EventName="MouseLeftButtonUp">
+            <b:InvokeCommandAction Command="{Binding NextImageCommand}" />
+        </b:EventTrigger>
 
-        <i:EventTrigger EventName="MouseRightButtonUp">
-            <i:InvokeCommandAction Command="{Binding PrevImageCommand}" />
-        </i:EventTrigger>
-    </i:Interaction.Triggers>
+        <b:EventTrigger EventName="MouseRightButtonUp">
+            <b:InvokeCommandAction Command="{Binding PrevImageCommand}" />
+        </b:EventTrigger>
+    </b:Interaction.Triggers>
 
     <metroControl:MetroWindow.RightWindowCommands>
         <metroControl:WindowCommands>
@@ -93,11 +94,11 @@
         </metroControl:WindowCommands>
     </metroControl:MetroWindow.RightWindowCommands>
 
-    <i:Interaction.Behaviors>
+    <b:Interaction.Behaviors>
         <behavior:FrameworkElementDropBehavior />
 
-        <metroBehaviour:BorderlessWindowBehavior />
-    </i:Interaction.Behaviors>
+        <mah:BorderlessWindowBehavior />
+    </b:Interaction.Behaviors>
 
     <metroControl:MetroWindow.Resources>
         <converter:BooleanToVisibilityConverter x:Key="VisibilityConverter" />
@@ -124,11 +125,11 @@
                                  DataContext="{Binding Path=Settings}"
                                  MouseLeftButtonUp="Disable_MouseButton"
                                  Theme="Inverse">
-                <i:Interaction.Triggers>
-                    <i:EventTrigger EventName="IsOpenChanged">
-                        <i:InvokeCommandAction Command="{Binding SaveCommand}" />
-                    </i:EventTrigger>
-                </i:Interaction.Triggers>
+                <b:Interaction.Triggers>
+                    <b:EventTrigger EventName="IsOpenChanged">
+                        <b:InvokeCommandAction Command="{Binding SaveCommand}" />
+                    </b:EventTrigger>
+                </b:Interaction.Triggers>
 
                 <Grid Margin="20">
                     <Grid.RowDefinitions>
@@ -232,8 +233,8 @@
                                                          Width="16"
                                                          Height="16"
                                                          StrokeThickness="1"
-                                                         Stroke="{DynamicResource BlackBrush}"
-                                                         Fill="{DynamicResource BlackBrush}" />
+                                                         Stroke="{DynamicResource MahApps.Brushes.Gray3}"
+                                                         Fill="{DynamicResource MahApps.Brushes.SystemControlBackgroundChromeWhite}" />
 
                                                 <Label Grid.Column="1"
                                                        Content="Light" />
@@ -250,8 +251,8 @@
                                                          Width="16"
                                                          Height="16"
                                                          StrokeThickness="1"
-                                                         Stroke="{DynamicResource BlackBrush}"
-                                                         Fill="{DynamicResource WhiteBrush}" />
+                                                         Stroke="{DynamicResource MahApps.Brushes.Gray3}"
+                                                         Fill="{DynamicResource MahApps.Brushes.SystemControlBackgroundChromeBlackMedium}" />
 
                                                 <Label Grid.Column="1"
                                                        Content="Dark" />
@@ -333,11 +334,11 @@
                                  DataContext="{Binding Path=AddTagVM}"
                                  MouseLeftButtonUp="Disable_MouseButton"
                                  Theme="Inverse">
-                <i:Interaction.Triggers>
-                    <i:EventTrigger EventName="IsOpenChanged">
-                        <i:InvokeCommandAction Command="{Binding ResetCommand}" />
-                    </i:EventTrigger>
-                </i:Interaction.Triggers>
+                <b:Interaction.Triggers>
+                    <b:EventTrigger EventName="IsOpenChanged">
+                        <b:InvokeCommandAction Command="{Binding ResetCommand}" />
+                    </b:EventTrigger>
+                </b:Interaction.Triggers>
 
                 <view:AddTagV IsEnabled="{Binding IsEnabled}" />
             </metroControl:Flyout>
@@ -349,12 +350,12 @@
                                  DataContext="{Binding Path=CreateTagVM}"
                                  MouseLeftButtonUp="Disable_MouseButton"
                                  Theme="Inverse">
-                <i:Interaction.Triggers>
-                    <i:EventTrigger EventName="IsOpenChanged">
-                        <i:InvokeCommandAction Command="{Binding ResetCommand}"
+                <b:Interaction.Triggers>
+                    <b:EventTrigger EventName="IsOpenChanged">
+                        <b:InvokeCommandAction Command="{Binding ResetCommand}"
                                                CommandParameter="{Binding ElementName=CreateTagFlyout, Path=IsOpen}" />
-                    </i:EventTrigger>
-                </i:Interaction.Triggers>
+                    </b:EventTrigger>
+                </b:Interaction.Triggers>
 
                 <view:CreateTagV />
             </metroControl:Flyout>
@@ -391,9 +392,9 @@
                            Width="{Binding ViewportWidth}"
                            gif:ImageBehavior.AnimatedSource="{Binding AnimutedImage}"
                            Visibility="{Binding IsAnimuted, Converter={StaticResource VisibilityConverter}}">
-                        <i:Interaction.Behaviors>
+                        <b:Interaction.Behaviors>
                             <behavior:FrameworkElementDragBehavior />
-                        </i:Interaction.Behaviors>
+                        </b:Interaction.Behaviors>
                     </Image>
 
                     <Image x:Name="ViewPort"
@@ -403,9 +404,9 @@
                            Width="{Binding ViewportWidth}"
                            Source="{Binding Image}"
                            Visibility="{Binding IsAnimuted, Converter={StaticResource VisibilityInvertConverter}}">
-                        <i:Interaction.Behaviors>
+                        <b:Interaction.Behaviors>
                             <behavior:FrameworkElementDragBehavior />
-                        </i:Interaction.Behaviors>
+                        </b:Interaction.Behaviors>
                     </Image>
 
                     <metroControl:ProgressRing IsActive="{Binding IsLoading, Mode=OneWay}" />
@@ -435,10 +436,10 @@
                                         HorizontalAlignment="Left"
                                         VerticalAlignment="Top"
                                         Opacity="0.5">
-                                    <i:Interaction.Behaviors>
+                                    <b:Interaction.Behaviors>
                                         <behavior:FrameworkElementCustomToolTipBehavior
                                             InlineList="{Binding NoteString, Converter={StaticResource StringToInlineCollectionConverter}}" />
-                                    </i:Interaction.Behaviors>
+                                    </b:Interaction.Behaviors>
 
                                     <Border.Width>
                                         <MultiBinding Converter="{StaticResource NoteToWidthResizedConverter}">
@@ -533,7 +534,7 @@
                                                              FontWeight="Bold" />
 
                                                         <Run Text="{Binding Count, StringFormat=' ({0})', Mode=OneWay}"
-                                                             Foreground="{StaticResource GrayBrush3}" />
+                                                             Foreground="{StaticResource MahApps.Brushes.Gray3}" />
                                                     </TextBlock>
 
                                                     <Button Grid.Column="1"
@@ -584,7 +585,7 @@
             </ScrollViewer>
         </Grid>
 
-        <StatusBar Background="{DynamicResource AccentColorBrush}"
+        <StatusBar Background="{DynamicResource MahApps.Brushes.Accent}"
                    Grid.Row="1"
                    Grid.ColumnSpan="2"
                    MouseUp="Disable_MouseButton"

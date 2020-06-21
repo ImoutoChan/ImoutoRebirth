@@ -21,7 +21,7 @@
       <Value Profile="(Default)">False</Value>
     </Setting>
     <Setting Name="AccentColorName" Type="System.String" Scope="User">
-      <Value Profile="(Default)">Blue</Value>
+      <Value Profile="(Default)">Cyan</Value>
     </Setting>
     <Setting Name="ThemeIndex" Type="System.Int32" Scope="User">
       <Value Profile="(Default)">0</Value>

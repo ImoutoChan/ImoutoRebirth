@@ -2,7 +2,6 @@
 using Imouto.Viewer.Commands;
 using Imouto.Viewer.Model;
 using Imouto.Viewer.Properties;
-using MahApps.Metro;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -13,6 +12,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media;
+using ControlzEx.Theming;
 using MahApps.Metro.Controls.Dialogs;
 
 namespace Imouto.Viewer.ViewModel
@@ -55,11 +55,11 @@ namespace Imouto.Viewer.ViewModel
             IsSelectedFilesSortingDescending = Settings.Default.FilesSortingDesc;
             IsSelectedFoldersSortingDescending = Settings.Default.FoldersSortingDesc;
 
-            AccentColors = ThemeManager.Accents
+            AccentColors = ThemeManager.Current.Themes
                                 .Select(a => new AccentColorMenuData
                                 {
-                                    Name = a.Name,
-                                    ColorBrush = a.Resources["AccentColorBrush"] as Brush
+                                    Name = a.Name.Split('.').Last(),
+                                    ColorBrush = a.ShowcaseBrush
                                 })
                                 .ToList();
             SelectedAccentColor = AccentColors.First(x => x.Name == Settings.Default.AccentColorName);
@@ -191,15 +191,14 @@ namespace Imouto.Viewer.ViewModel
             set
             {
                 _selectedTheme = value;
-                var theme = ThemeManager.DetectAppStyle(Application.Current);
                 switch (value)
                 {
                     case 1:
-                        ThemeManager.ChangeAppStyle(Application.Current, theme.Item2, ThemeManager.AppThemes.Last());
+                        ThemeManager.Current.ChangeThemeBaseColor(Application.Current, "Dark");
                         Settings.Default.ThemeIndex = 1;
                         break;
                     default:
-                        ThemeManager.ChangeAppStyle(Application.Current, theme.Item2, ThemeManager.AppThemes.First());
+                        ThemeManager.Current.ChangeThemeBaseColor(Application.Current, "Light");
                         Settings.Default.ThemeIndex = 0;
                         break;
                 }
@@ -545,9 +544,7 @@ namespace Imouto.Viewer.ViewModel
 
         public void ChangeAccent()
         {
-            var theme = ThemeManager.DetectAppStyle(Application.Current);
-            var accent = ThemeManager.GetAccent(Name);
-            ThemeManager.ChangeAppStyle(Application.Current, accent, theme.Item1);
+            ThemeManager.Current.ChangeThemeColorScheme(Application.Current, Name);
             Settings.Default.AccentColorName = Name;
         }
     }

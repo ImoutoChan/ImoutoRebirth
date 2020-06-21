@@ -658,16 +658,22 @@ namespace Imouto.Viewer.ViewModel
         public void Drop(object data, object sourceGuid)
         {
             var droppedFiles = (string[])data;
-            try
+
+            if (sourceGuid != null)
             {
-                var typedSourceGuid = (Guid)sourceGuid;
-                if (typedSourceGuid == _appGuid)
+                try
                 {
-                    return;
+                    var typedSourceGuid = (Guid) sourceGuid;
+                    if (typedSourceGuid == _appGuid)
+                    {
+                        return;
+                    }
+                }
+                catch
+                {
+                    // ignore
                 }
             }
-            catch
-            { }
 
             InitializeImageListAsync(droppedFiles);
         }

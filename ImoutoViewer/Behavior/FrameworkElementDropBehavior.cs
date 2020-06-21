@@ -1,7 +1,7 @@
-﻿using System.Collections.Generic;
+﻿using Microsoft.Xaml.Behaviors;
+using System.Collections.Generic;
 using System.Linq;
 using System.Windows;
-using System.Windows.Interactivity;
 
 namespace Imouto.Viewer.Behavior
 {
