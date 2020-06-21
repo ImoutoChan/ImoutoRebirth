@@ -5,10 +5,10 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Documents;
 using System.Windows.Input;
-using Microsoft.Xaml.Behaviors;
 using Imouto.Utils.WPFHelpers;
+using Microsoft.Xaml.Behaviors;
 
-namespace Imouto.Viewer.Behavior
+namespace ImoutoViewer.Behavior
 {
     internal class FrameworkElementCustomToolTipBehavior : Behavior<FrameworkElement>
     {

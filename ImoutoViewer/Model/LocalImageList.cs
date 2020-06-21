@@ -5,8 +5,9 @@ using System.IO;
 using System.Linq;
 using System.Windows;
 using Imouto.Utils;
+using Extensions = Imouto.Extensions;
 
-namespace Imouto.Viewer.Model
+namespace ImoutoViewer.Model
 {
     class LocalImageList : IEnumerable
     {
@@ -161,7 +162,7 @@ namespace Imouto.Viewer.Model
             //Processing files
             var images =
                 from image in paths
-                where image.IsImage()
+                where Extensions.IsImage(image)
                 select image;
             var imagesList = images as IList<string> ?? images.ToList();
 
@@ -346,7 +347,7 @@ namespace Imouto.Viewer.Model
         private void LoadImages(IEnumerable<string> imagePaths)
         {
 
-            var images = imagePaths.Where(x => x.IsImage());
+            var images = imagePaths.Where(x => Extensions.IsImage(x));
             if ((bool)Application.Current.Properties["Binded"] == false)
             {
                 images = images.OrderByWithDirection(GetFilesOrderProperty, IsFilesSortMethodDescending);
@@ -363,7 +364,7 @@ namespace Imouto.Viewer.Model
             }
 
             var files = Directory.GetFiles(sourceFolder.FullName, "*.*")
-                    .Where(x => x.IsImage())
+                    .Where(x => Extensions.IsImage(x))
                     .OrderByWithDirection(GetFilesOrderProperty, IsFilesSortMethodDescending)
                     .Select(x => new LocalImage(x));
 
@@ -463,7 +464,7 @@ namespace Imouto.Viewer.Model
             {
                 var files =
                     from file in Directory.GetFiles(sourceFolder.FullName, "*.*")
-                    where file.IsImage()
+                    where Extensions.IsImage(file)
                     select file;
 
                 if (files.Any())

@@ -1,6 +1,6 @@
 using System;
 
-namespace Imouto.Viewer.Model
+namespace ImoutoViewer.Model
 {
     [Serializable]
     [Flags]

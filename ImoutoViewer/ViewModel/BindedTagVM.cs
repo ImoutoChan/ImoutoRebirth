@@ -1,10 +1,10 @@
-﻿using Imouto.Viewer.Commands;
-using System.Windows.Input;
+﻿using System.Windows.Input;
 using System.Windows.Media;
 using Imouto.Utils;
 using Imouto.WCFExchageLibrary.Data;
+using ImoutoViewer.Commands;
 
-namespace Imouto.Viewer.ViewModel
+namespace ImoutoViewer.ViewModel
 {
     class BindedTagVM : VMBase
     {

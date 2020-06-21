@@ -1,16 +1,16 @@
-﻿using Imouto.Viewer.Behavior;
-using Imouto.Viewer.Commands;
-using Imouto.Viewer.Model;
-using System;
+﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media.Imaging;
 using System.Windows.Threading;
+using Imouto;
+using ImoutoViewer.Behavior;
+using ImoutoViewer.Commands;
+using ImoutoViewer.Model;
 
-namespace Imouto.Viewer.ViewModel
+namespace ImoutoViewer.ViewModel
 {
     class MainWindowVM : VMBase, IDragable, IDropable
     {

@@ -3,7 +3,7 @@ using System.IO;
 using System.IO.Compression;
 using System.Text;
 
-namespace Imouto.Viewer.ImoutoRebirthNavigator
+namespace ImoutoViewer.ImoutoRebirthNavigator.NavigatorArgs
 {
     public static class StringCompression
     {

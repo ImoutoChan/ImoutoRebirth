@@ -1,9 +1,9 @@
-﻿using Imouto.Viewer.ViewModel;
-using System.Linq;
+﻿using System.Linq;
 using System.Windows;
-using Imouto.Viewer.ImoutoRebirthNavigator;
+using ImoutoViewer.ImoutoRebirthNavigator.NavigatorArgs;
+using ImoutoViewer.ViewModel;
 
-namespace Imouto.Viewer
+namespace ImoutoViewer
 {
     /// <summary>
     /// Interaction logic for App.xaml

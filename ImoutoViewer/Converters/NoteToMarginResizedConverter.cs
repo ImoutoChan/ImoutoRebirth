@@ -2,9 +2,9 @@
 using System.Globalization;
 using System.Windows;
 using System.Windows.Data;
-using Imouto.Viewer.Model;
+using ImoutoViewer.Model;
 
-namespace Imouto.Viewer.Converters
+namespace ImoutoViewer.Converters
 {
     class NoteToMarginResizedConverter : IMultiValueConverter
     {

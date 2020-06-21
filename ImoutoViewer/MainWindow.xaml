@@ -1,19 +1,18 @@
-﻿<metroControl:MetroWindow x:Class="Imouto.Viewer.MainWindow"
+﻿<metroControl:MetroWindow x:Class="ImoutoViewer.MainWindow"
                           xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                           xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                           xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
                           xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
                           xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-                          xmlns:userControl="clr-namespace:Imouto.Viewer.UserControls"
-                          xmlns:behavior="clr-namespace:Imouto.Viewer.Behavior"
-                          xmlns:converter="clr-namespace:Imouto.Viewer.Converters"
-                          xmlns:viewModel="clr-namespace:Imouto.Viewer.ViewModel"
-                          xmlns:view="clr-namespace:Imouto.Viewer.View"
                           xmlns:gif="http://wpfanimatedgif.codeplex.com"
                           xmlns:metroControl="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
                           xmlns:b="http://schemas.microsoft.com/xaml/behaviors"
                           xmlns:mah="http://metro.mahapps.com/winfx/xaml/shared"
-                          xmlns:Imouto.Viewer="clr-namespace:Imouto.Viewer"
+                          xmlns:userControl="clr-namespace:ImoutoViewer.UserControls"
+                          xmlns:behavior="clr-namespace:ImoutoViewer.Behavior"
+                          xmlns:converters="clr-namespace:ImoutoViewer.Converters"
+                          xmlns:view="clr-namespace:ImoutoViewer.View"
+                          xmlns:Imouto.Viewer="clr-namespace:ImoutoViewer"
                           mc:Ignorable="d"
                           d:DataContext="{d:DesignInstance viewModel:MainWindowVM, IsDesignTimeCreatable=False}"
                           Title="{Binding Path=Title}"
@@ -101,19 +100,19 @@
     </b:Interaction.Behaviors>
 
     <metroControl:MetroWindow.Resources>
-        <converter:BooleanToVisibilityConverter x:Key="VisibilityConverter" />
+        <converters:BooleanToVisibilityConverter x:Key="VisibilityConverter" />
 
-        <converter:BooleanToVisibilityConverter x:Key="VisibilityInvertConverter"
+        <converters:BooleanToVisibilityConverter x:Key="VisibilityInvertConverter"
                                                 IsInvert="True" />
 
-        <converter:BooleanToVisibilityConverter x:Key="CollapsedVisibilityConverter"
+        <converters:BooleanToVisibilityConverter x:Key="CollapsedVisibilityConverter"
                                                 CollapsedOnFalse="True" />
 
-        <converter:BooleanToVisibilityConverter x:Key="CollapsedVisibilityInvertConverter"
+        <converters:BooleanToVisibilityConverter x:Key="CollapsedVisibilityInvertConverter"
                                                 CollapsedOnFalse="True"
                                                 IsInvert="True" />
 
-        <converter:ConditionVisibilityConverter x:Key="ConditionVisibilityConverter" />
+        <converters:ConditionVisibilityConverter x:Key="ConditionVisibilityConverter" />
     </metroControl:MetroWindow.Resources>
 
     <metroControl:MetroWindow.Flyouts>
@@ -419,13 +418,13 @@
                             </ItemsPanelTemplate>
                         </ItemsControl.ItemsPanel>
                         <ItemsControl.Resources>
-                            <converter:NoteToMarginResizedConverter x:Key="NoteToMarginResizedConverter" />
+                            <converters:NoteToMarginResizedConverter x:Key="NoteToMarginResizedConverter" />
 
-                            <converter:NoteToHeightResizedConverter x:Key="NoteToHeightResizedConverter" />
+                            <converters:NoteToHeightResizedConverter x:Key="NoteToHeightResizedConverter" />
 
-                            <converter:NoteToWidthResizedConverter x:Key="NoteToWidthResizedConverter" />
+                            <converters:NoteToWidthResizedConverter x:Key="NoteToWidthResizedConverter" />
 
-                            <converter:StringToInlineCollectionConverter x:Key="StringToInlineCollectionConverter" />
+                            <converters:StringToInlineCollectionConverter x:Key="StringToInlineCollectionConverter" />
                         </ItemsControl.Resources>
                         <ItemsControl.ItemTemplate>
                             <DataTemplate>

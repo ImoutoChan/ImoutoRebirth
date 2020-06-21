@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace Imouto.Viewer.ImoutoRebirthNavigator
+namespace ImoutoViewer.ImoutoRebirthNavigator.NavigatorArgs
 {
     internal class ImoutoViewerArgs
     {

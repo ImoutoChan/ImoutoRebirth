@@ -1,12 +1,11 @@
 ﻿using System.Collections.ObjectModel;
 using System.Collections.Specialized;
-using System.Runtime.CompilerServices;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Documents;
 using Imouto.Utils;
 
-namespace Imouto.Viewer.UserControls
+namespace ImoutoViewer.UserControls
 {
     public class BindableTextBlock : TextBlock
     {

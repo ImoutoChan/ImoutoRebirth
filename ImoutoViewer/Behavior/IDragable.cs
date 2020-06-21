@@ -1,6 +1,6 @@
 ﻿using System.Windows;
 
-namespace Imouto.Viewer.Behavior
+namespace ImoutoViewer.Behavior
 {
     interface IDragable
     {

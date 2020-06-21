@@ -1,9 +1,9 @@
-﻿using Microsoft.Xaml.Behaviors;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Windows;
+using Microsoft.Xaml.Behaviors;
 
-namespace Imouto.Viewer.Behavior
+namespace ImoutoViewer.Behavior
 {
     class FrameworkElementDropBehavior : Behavior<FrameworkElement>
     {

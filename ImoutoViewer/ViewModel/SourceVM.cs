@@ -1,6 +1,6 @@
 ﻿using System.Collections.ObjectModel;
 
-namespace Imouto.Viewer.ViewModel
+namespace ImoutoViewer.ViewModel
 {
     class SourceVM : VMBase
     {

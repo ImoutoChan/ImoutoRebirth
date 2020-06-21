@@ -15,7 +15,7 @@
   </PropertyGroup>
 
   <PropertyGroup>
-    <StartupObject>Imouto.Viewer.App</StartupObject>
+    <StartupObject>ImoutoViewer.App</StartupObject>
   </PropertyGroup>
 
   <ItemGroup>

@@ -1,7 +1,4 @@
-﻿using AssociationManager;
-using Imouto.Viewer.Commands;
-using Imouto.Viewer.Model;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
@@ -11,11 +8,15 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media;
+using AssociationManager;
 using ControlzEx.Theming;
+using Imouto;
+using ImoutoViewer.Commands;
+using ImoutoViewer.Model;
 using ImoutoViewer.Properties;
 using MahApps.Metro.Controls.Dialogs;
 
-namespace Imouto.Viewer.ViewModel
+namespace ImoutoViewer.ViewModel
 {
     class SettingsVM : VMBase
     {

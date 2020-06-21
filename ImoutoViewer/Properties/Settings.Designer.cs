@@ -40,9 +40,9 @@ namespace ImoutoViewer.Properties {
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("Folder, Subfolders")]
-        public global::Imouto.Viewer.Model.DirectorySearchFlags DirectorySearchFlags {
+        public global::ImoutoViewer.Model.DirectorySearchFlags DirectorySearchFlags {
             get {
-                return ((global::Imouto.Viewer.Model.DirectorySearchFlags)(this["DirectorySearchFlags"]));
+                return ((global::ImoutoViewer.Model.DirectorySearchFlags)(this["DirectorySearchFlags"]));
             }
             set {
                 this["DirectorySearchFlags"] = value;
@@ -52,9 +52,9 @@ namespace ImoutoViewer.Properties {
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("ByName")]
-        public global::Imouto.Viewer.Model.SortMethod FilesSorting {
+        public global::ImoutoViewer.Model.SortMethod FilesSorting {
             get {
-                return ((global::Imouto.Viewer.Model.SortMethod)(this["FilesSorting"]));
+                return ((global::ImoutoViewer.Model.SortMethod)(this["FilesSorting"]));
             }
             set {
                 this["FilesSorting"] = value;
@@ -64,9 +64,9 @@ namespace ImoutoViewer.Properties {
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("ByName")]
-        public global::Imouto.Viewer.Model.SortMethod FoldersSorting {
+        public global::ImoutoViewer.Model.SortMethod FoldersSorting {
             get {
-                return ((global::Imouto.Viewer.Model.SortMethod)(this["FoldersSorting"]));
+                return ((global::ImoutoViewer.Model.SortMethod)(this["FoldersSorting"]));
             }
             set {
                 this["FoldersSorting"] = value;

@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Imouto.Viewer.Model
+namespace ImoutoViewer.Model
 {
     static class Extentions
     {

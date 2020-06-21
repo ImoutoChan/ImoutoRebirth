@@ -1,12 +1,12 @@
-using Imouto.Viewer.Commands;
-using Microsoft.Win32;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Windows.Input;
+using ImoutoViewer.Commands;
+using Microsoft.Win32;
 
-namespace Imouto.Viewer.ViewModel
+namespace ImoutoViewer.ViewModel
 {
     class OpenWithVM
     {

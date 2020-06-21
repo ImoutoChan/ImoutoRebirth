@@ -1,18 +1,16 @@
-﻿<UserControl x:Class="Imouto.Viewer.View.AddTagV"
+﻿<UserControl x:Class="ImoutoViewer.View.AddTagV"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-             xmlns:local="clr-namespace:Imouto.Viewer.View"
              xmlns:metroControls="http://metro.mahapps.com/winfx/xaml/controls"
-             xmlns:converter="clr-namespace:Imouto.Viewer.Converters"
-             xmlns:viewModel="clr-namespace:Imouto.Viewer.ViewModel"
+             xmlns:converters="clr-namespace:ImoutoViewer.Converters"
              mc:Ignorable="d"
              d:DesignHeight="500"
              d:DesignWidth="250"
              d:DataContext="{d:DesignInstance Type=viewModel:AddTagVM, IsDesignTimeCreatable=True}">
     <UserControl.Resources>
-        <converter:ConditionVisibilityConverter x:Key="ConditionVisibilityConverter" />
+        <converters:ConditionVisibilityConverter x:Key="ConditionVisibilityConverter" />
     </UserControl.Resources>
     <Grid>
         <Grid Margin="20">

@@ -2,15 +2,13 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
-using System.IO;
 using System.Linq;
-using System.ServiceModel;
 using System.Threading.Tasks;
 using Imouto.Utils;
-using Imouto.Viewer.Model;
 using Imouto.WCFExchageLibrary.Data;
+using ImoutoViewer.Model;
 
-namespace Imouto.Viewer.ViewModel
+namespace ImoutoViewer.ViewModel
 {
     class TagsVM : VMBase
     {
