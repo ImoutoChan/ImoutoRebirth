@@ -346,6 +346,8 @@ namespace Imouto.Viewer.ViewModel
             }
             else if (Application.Current.Properties["NavigatorGuid"] != null)
             {
+                // TODO: rewrite search with new services
+
                 Application.Current.Properties["Binded"] = true;
 
                 var guid = (Guid) Application.Current.Properties["NavigatorGuid"];

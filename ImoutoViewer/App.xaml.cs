@@ -1,8 +1,7 @@
-﻿using System;
-using System.Diagnostics;
-using Imouto.Viewer.ViewModel;
+﻿using Imouto.Viewer.ViewModel;
 using System.Linq;
 using System.Windows;
+using Imouto.Viewer.ImoutoRebirthNavigator;
 
 namespace Imouto.Viewer
 {
@@ -11,33 +10,30 @@ namespace Imouto.Viewer
     /// </summary>
     partial class App
     {
-        private const string _navGuidParam = "-nav-guid=";
-
-        private MainWindowVM _mainWindowVM;
+        private const string NavSearchParam = "-nav-search=";
+        private MainWindowVM _mainWindowVm;
 
         protected override void OnStartup(StartupEventArgs e)
         {
             //Get the arguments
             if (e.Args.Length > 0)
             {
-                var guidStr = e.Args.FirstOrDefault(x => x.StartsWith(_navGuidParam));
-                if (guidStr != null)
+                var base64String = e.Args.FirstOrDefault(x => x.StartsWith(NavSearchParam));
+                if (base64String != null)
                 {
-                    var guid = Guid.Parse(guidStr.Substring(_navGuidParam.Length));
-                    if (guid != default(Guid))
-                    {
-                        Properties["NavigatorGuid"] = guid;
-                    }
+                    var navigatorSearchParams = Base64Serializer.Deserialize<ImoutoViewerArgs>(base64String);
+
+                    Properties["NavigatorSearchParams"] = navigatorSearchParams;
                 }
 
-                var filesArgs = e.Args.Where(x => !x.StartsWith(_navGuidParam));
+                var filesArgs = e.Args.Where(x => !x.StartsWith(NavSearchParam));
 
                 string result = filesArgs.Aggregate((current, arg) => current + "\n&$&\n" + arg);
                 Properties["ArbitraryArgName"] = result;
             }
 
             //Start the main window
-            _mainWindowVM = new MainWindowVM();
+            _mainWindowVm = new MainWindowVM();
 
             base.OnStartup(e);
         }
