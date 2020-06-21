@@ -7,7 +7,6 @@ using System.Threading.Tasks;
 using System.Windows.Input;
 using Imouto.WCFExchageLibrary.Data;
 using ImoutoViewer.Commands;
-using ImoutoViewer.Commands;
 
 namespace ImoutoViewer.ViewModel
 {
