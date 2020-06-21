@@ -1,18 +1,11 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+﻿<Project Sdk="Microsoft.NET.Sdk.WindowsDesktop">
   <PropertyGroup>
-    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProjectGuid>{94CB919F-F3C9-4470-AF91-A2878CC8DF4A}</ProjectGuid>
     <OutputType>WinExe</OutputType>
-    <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Imouto.Viewer</RootNamespace>
     <AssemblyName>Imouto.Viewer</AssemblyName>
-    <TargetFrameworkVersion>v4.6.2</TargetFrameworkVersion>
-    <FileAlignment>512</FileAlignment>
+    <TargetFramework>net462</TargetFramework>
     <ProjectTypeGuids>{60dc8134-eba5-43b8-bcc9-bb4bc16c2548};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
-    <WarningLevel>4</WarningLevel>
     <PublishUrl>publish\</PublishUrl>
     <Install>true</Install>
     <InstallFrom>Disk</InstallFrom>
@@ -29,35 +22,35 @@
     <UseApplicationTrust>false</UseApplicationTrust>
     <BootstrapperEnabled>true</BootstrapperEnabled>
     <BaseIntermediateOutputPath>..\obj\</BaseIntermediateOutputPath>
-    <TargetFrameworkProfile />
+    <AssemblyTitle>Imouto Viewer</AssemblyTitle>
+    <Company>Imouto Corporation</Company>
+    <Product>Imouto Viewer</Product>
+    <NeutralLanguage>en</NeutralLanguage>
+    <Copyright>Copyright ©  2013-2015</Copyright>
+    <AssemblyVersion>1.0.1.0</AssemblyVersion>
+    <FileVersion>1.0.1.0</FileVersion>
+    <OutputPath>..\bin\$(Configuration)\</OutputPath>
+    <UseWPF>true</UseWPF>
   </PropertyGroup>
+
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <PlatformTarget>AnyCPU</PlatformTarget>
-    <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
-    <Optimize>false</Optimize>
-    <OutputPath>..\bin\Debug\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
     <Prefer32Bit>true</Prefer32Bit>
     <UseVSHostingProcess>true</UseVSHostingProcess>
   </PropertyGroup>
+
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <PlatformTarget>AnyCPU</PlatformTarget>
     <DebugType>pdbonly</DebugType>
-    <Optimize>true</Optimize>
-    <OutputPath>..\bin\Release\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
   </PropertyGroup>
+
   <PropertyGroup>
     <ApplicationIcon>Resources\49a7b0a953e5106e5942169f3cb0c237_ copy.ico</ApplicationIcon>
   </PropertyGroup>
+
   <PropertyGroup>
     <StartupObject>Imouto.Viewer.App</StartupObject>
   </PropertyGroup>
+
   <ItemGroup>
     <Reference Include="Imouto.SharedModelLibrary">
       <HintPath>..\..\imouto-library\bin\Release\Imouto.SharedModelLibrary.dll</HintPath>
@@ -68,186 +61,50 @@
     <Reference Include="Imouto.WCFExchageLibrary">
       <HintPath>..\..\imouto-library\bin\Release\Imouto.WCFExchageLibrary.dll</HintPath>
     </Reference>
-    <Reference Include="System" />
-    <Reference Include="System.Data" />
-    <Reference Include="System.Drawing" />
     <Reference Include="System.Net" />
     <Reference Include="System.ServiceModel" />
     <Reference Include="System.Windows" />
     <Reference Include="System.Windows.Forms" />
-    <Reference Include="System.Xml" />
     <Reference Include="Microsoft.CSharp" />
-    <Reference Include="System.Core" />
-    <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
-    <Reference Include="System.Xaml">
-      <RequiredTargetFramework>4.0</RequiredTargetFramework>
-    </Reference>
+    <Reference Include="System.Xaml" />
     <Reference Include="WindowsBase" />
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
   </ItemGroup>
+
   <ItemGroup>
-    <ApplicationDefinition Include="App.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </ApplicationDefinition>
-    <Compile Include="Behavior\FrameworkElementCustomToolTipBehavior.cs" />
-    <Compile Include="Behavior\FrameworkElementDragBehavior.cs" />
-    <Compile Include="Behavior\FrameworkElementDropBehavior.cs" />
-    <Compile Include="Behavior\IDragable.cs" />
-    <Compile Include="Behavior\IDropable.cs" />
-    <Compile Include="Commands\RelayCommand.cs" />
-    <Compile Include="Converters\BooleanResultConverter.cs" />
-    <Compile Include="Converters\BooleanToVisibilityConverter.cs" />
-    <Compile Include="Converters\NoteToHeightResizedConverter.cs" />
-    <Compile Include="Converters\NoteToWidthResizedConverter.cs" />
-    <Compile Include="Converters\NoteToMarginResizedConverter.cs" />
-    <Compile Include="Converters\StringToInlineCollectionConverter.cs" />
-    <Compile Include="Converters\VisibilityConverter.cs" />
-    <Compile Include="ImoutoRebirthNavigator\NavigatorArgs\Base64Serializer.cs" />
-    <Compile Include="ImoutoRebirthNavigator\NavigatorArgs\ImoutoViewerArgs.cs" />
-    <Compile Include="ImoutoRebirthNavigator\NavigatorArgs\SearchTagDto.cs" />
-    <Compile Include="ImoutoRebirthNavigator\NavigatorArgs\StringCompression.cs" />
-    <Compile Include="Model\Extentions.cs" />
-    <Compile Include="Model\DirectorySearchFlags.cs" />
-    <Compile Include="Model\SortMethod.cs" />
-    <Compile Include="UserControls\BindableTextBlock.cs" />
-    <Compile Include="UserControls\ExtScrollViewer.cs" />
-    <Compile Include="UserControls\MouseWheelGesture.cs" />
-    <Compile Include="ViewModel\AddTagVM.cs" />
-    <Compile Include="ViewModel\BindedTagVM.cs" />
-    <Compile Include="ViewModel\CreateTagVM.cs" />
-    <Compile Include="ViewModel\MainWindowVM.cs" />
-    <Compile Include="Model\NoteM.cs" />
-    <Compile Include="ViewModel\OpenWithVM.cs" />
-    <Compile Include="ViewModel\SettingsVM.cs" />
-    <Compile Include="ViewModel\SourceVM.cs" />
-    <Compile Include="ViewModel\TagsVM.cs" />
-    <Compile Include="ViewModel\VMBase.cs" />
-    <Compile Include="View\CreateTagV.xaml.cs">
-      <DependentUpon>CreateTagV.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="View\AddTagV.xaml.cs">
-      <DependentUpon>AddTagV.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="WCF\Service.cs" />
-    <Compile Include="WCF\WcfMapper.cs" />
-    <Page Include="AppResourceDictionary.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="MainWindow.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Compile Include="App.xaml.cs">
-      <DependentUpon>App.xaml</DependentUpon>
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="MainWindow.xaml.cs">
-      <DependentUpon>MainWindow.xaml</DependentUpon>
-      <SubType>Code</SubType>
-    </Compile>
-    <Page Include="View\CreateTagV.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="View\AddTagV.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-  </ItemGroup>
-  <ItemGroup>
-    <Compile Include="Model\LocalImage.cs" />
-    <Compile Include="Model\LocalImageList.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Properties\Resources.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>Resources.resx</DependentUpon>
-    </Compile>
-    <Compile Include="Properties\Settings.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DependentUpon>Settings.settings</DependentUpon>
-      <DesignTimeSharedInput>True</DesignTimeSharedInput>
-    </Compile>
-    <EmbeddedResource Include="Properties\Resources.resx">
+    <EmbeddedResource Update="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
       <SubType>Designer</SubType>
     </EmbeddedResource>
-    <None Include="Properties\Settings.settings">
-      <Generator>SettingsSingleFileGenerator</Generator>
-      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
-    </None>
-    <AppDesigner Include="Properties\" />
   </ItemGroup>
-  <ItemGroup>
-    <None Include="App.config" />
-  </ItemGroup>
+
   <ItemGroup>
     <Resource Include="TO DO.txt" />
   </ItemGroup>
-  <ItemGroup>
-    <BootstrapperPackage Include=".NETFramework,Version=v4.5">
-      <Visible>False</Visible>
-      <ProductName>Microsoft .NET Framework 4.5 %28x86 and x64%29</ProductName>
-      <Install>true</Install>
-    </BootstrapperPackage>
-    <BootstrapperPackage Include="Microsoft.Net.Client.3.5">
-      <Visible>False</Visible>
-      <ProductName>.NET Framework 3.5 SP1 Client Profile</ProductName>
-      <Install>false</Install>
-    </BootstrapperPackage>
-    <BootstrapperPackage Include="Microsoft.Net.Framework.3.5.SP1">
-      <Visible>False</Visible>
-      <ProductName>.NET Framework 3.5 SP1</ProductName>
-      <Install>false</Install>
-    </BootstrapperPackage>
-  </ItemGroup>
+
   <ItemGroup>
     <Resource Include="Resources\img\nothing.png" />
   </ItemGroup>
+
   <ItemGroup>
     <Resource Include="Resources\49a7b0a953e5106e5942169f3cb0c237_ copy.ico" />
   </ItemGroup>
+
   <ItemGroup>
     <Resource Include="Resources\img\edit\irfan_view.ico" />
     <Resource Include="Resources\img\edit\ms_paint.ico" />
     <Resource Include="Resources\img\edit\photoshop.ico" />
   </ItemGroup>
+
   <ItemGroup>
-    <Folder Include="ImoutoRebirthNavigator\Services\" />
+    <PackageReference Include="MahApps.Metro" Version="2.0.0" />
+    <PackageReference Include="Microsoft.Xaml.Behaviors.Wpf" Version="1.1.19" />
+    <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
+    <PackageReference Include="rfc1459.AssociationManager" Version="1.1.1" />
+    <PackageReference Include="System.ValueTuple" Version="4.5.0" />
+    <PackageReference Include="WpfAnimatedGif" Version="2.0.0" />
   </ItemGroup>
-  <ItemGroup>
-    <PackageReference Include="MahApps.Metro">
-      <Version>2.0.0</Version>
-    </PackageReference>
-    <PackageReference Include="Microsoft.Xaml.Behaviors.Wpf">
-      <Version>1.1.19</Version>
-    </PackageReference>
-    <PackageReference Include="Newtonsoft.Json">
-      <Version>12.0.3</Version>
-    </PackageReference>
-    <PackageReference Include="rfc1459.AssociationManager">
-      <Version>1.1.1</Version>
-    </PackageReference>
-    <PackageReference Include="System.ValueTuple">
-      <Version>4.5.0</Version>
-    </PackageReference>
-    <PackageReference Include="WpfAnimatedGif">
-      <Version>2.0.0</Version>
-    </PackageReference>
-  </ItemGroup>
-  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
-       Other similar extension points exist, see Microsoft.Common.targets.
-  <Target Name="BeforeBuild">
-  </Target>
-  <Target Name="AfterBuild">
-  </Target>
-  -->
 </Project>
