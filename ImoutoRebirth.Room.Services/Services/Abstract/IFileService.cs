@@ -11,6 +11,6 @@ namespace ImoutoRebirth.Room.Core.Services.Abstract
         IReadOnlyCollection<FileInfo> GetFiles(
             DirectoryInfo directoryInfo,
             IReadOnlyCollection<string> supportedExtensions,
-            SearchOption searchOption = SearchOption.TopDirectoryOnly);
+            SearchOption searchOption = SearchOption.AllDirectories);
     }
 }
