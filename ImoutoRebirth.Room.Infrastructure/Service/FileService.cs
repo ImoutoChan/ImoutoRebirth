@@ -12,7 +12,7 @@ namespace ImoutoRebirth.Room.Infrastructure.Service
         public IReadOnlyCollection<FileInfo> GetFiles(
             DirectoryInfo directoryInfo,
             IReadOnlyCollection<string> supportedExtensions,
-            SearchOption searchOption = SearchOption.TopDirectoryOnly)
+            SearchOption searchOption = SearchOption.AllDirectories)
         {
             return supportedExtensions?.Any() != true
                 ? directoryInfo.GetFiles("*.*", searchOption)
