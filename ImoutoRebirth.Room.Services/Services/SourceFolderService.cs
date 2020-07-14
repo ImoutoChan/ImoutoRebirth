@@ -63,8 +63,22 @@ namespace ImoutoRebirth.Room.Core.Services
             {
                 var prepared = await PrepareMove(forSourceFolder, systemFile);
 
-                if (prepared != null)
-                    result.Add(prepared);
+                if (prepared == null) 
+                    continue;
+
+                var duplicate = result.FirstOrDefault(x => x.SystemFile.Md5 == prepared.SystemFile.Md5);
+
+                if (duplicate != null)
+                {
+                    _logger.LogWarning(
+                        "Duplicate files in source folder: {File}, {DuplicateFile}",
+                        duplicate.SystemFile.File.FullName,
+                        prepared.SystemFile.File.FullName);
+
+                    continue;
+                }
+
+                result.Add(prepared);
             }
 
             return result;

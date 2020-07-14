@@ -29,7 +29,10 @@ namespace ImoutoRebirth.Room.Core.Services
         public async Task Oversee()
         {
             if (!await SemaphoreSlim.WaitAsync(0))
+            {
                 _logger.LogTrace("Oversee process have not finished yet");
+                return;
+            }
 
             try
             {
