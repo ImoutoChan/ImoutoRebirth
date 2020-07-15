@@ -15,7 +15,7 @@ namespace ImoutoRebirth.Common.MassTransit
         public static IServiceCollection AddTrueMassTransit(
             this IServiceCollection services,
             RabbitSettings settings,
-            string appName,
+            string connectionName,
             Action<ITrueMassTransitConfigurator>? configureAction = null)
         {
             services.AddMassTransit(
@@ -26,15 +26,14 @@ namespace ImoutoRebirth.Common.MassTransit
                             cfg.UseHealthCheck(innerServices);
                             var host = cfg.Host(
                                 new Uri(settings.Url),
-                                appName,
-                                x =>
+                                connectionName,
+                                hostConfigurator =>
                                 {
-                                    x.Username(settings.Username);
-                                    x.Password(settings.Password);
+                                    hostConfigurator.Username(settings.Username);
+                                    hostConfigurator.Password(settings.Password);
                                 });
 
-                            configureAction?.Invoke(
-                                new TrueMassTransitConfigurator(appName, cfg, innerServices, host));
+                            configureAction?.Invoke(new TrueMassTransitConfigurator(cfg, innerServices, host));
                         })));
 
             services.AddMassTransitHostedService();
@@ -44,12 +43,13 @@ namespace ImoutoRebirth.Common.MassTransit
 
         public static ITrueMassTransitConfigurator AddConsumer<TConsumer, TMessage>(
             this ITrueMassTransitConfigurator configurator,
+            string messageSourceAppName,
             Action<IRabbitMqReceiveEndpointConfigurator>? endpointConfigurator = null)
             where TConsumer : class, IConsumer<TMessage>
             where TMessage : class
         {
             configurator.RabbitMqBusFactoryConfigurator.ReceiveEndpoint(
-                GetQueueName<TMessage>(configurator.ApplicationName),
+                GetQueueName<TMessage>(messageSourceAppName),
                 x =>
                 {
                     x.PrefetchCount = 1;
