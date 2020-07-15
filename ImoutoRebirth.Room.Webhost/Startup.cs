@@ -38,7 +38,7 @@ namespace ImoutoRebirth.Room.Webhost
 
             services.AddTrueMassTransit(
                 RoomSettings.RabbitSettings,
-                ReceiverApp.Name,
+                "ImoutoRebirth.Room",
                 с => с.AddRoomServicesForRabbit());
 
             services.AddQuartzJob<OverseeJob, OverseeJob.Description>();

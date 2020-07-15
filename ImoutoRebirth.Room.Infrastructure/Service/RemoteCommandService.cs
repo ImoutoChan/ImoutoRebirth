@@ -1,6 +1,9 @@
 ﻿using System;
+using System.Linq;
 using System.Threading.Tasks;
+using ImoutoRebirth.Lilin.MessageContracts;
 using ImoutoRebirth.Meido.MessageContracts;
+using ImoutoRebirth.Room.Core.Models;
 using ImoutoRebirth.Room.Core.Services.Abstract;
 using MassTransit;
 
@@ -24,6 +27,22 @@ namespace ImoutoRebirth.Room.Infrastructure.Service
             };
 
             await _bus.Send<INewFileCommand>(command);
+        }
+
+        public async Task SaveTags(Guid fileId, MovedInformation movedInformation)
+        {
+            var command = new
+            {
+                FileId = fileId,
+                MetadataSource = MetadataSource.Manual,
+                FileTags = movedInformation.SourceTags.Select(x => new
+                {
+                    Type = "location",
+                    Name = x
+                }).ToArray()
+            };
+
+            await _bus.Send<IUpdateMetadataCommand>(command);
         }
     }
 }

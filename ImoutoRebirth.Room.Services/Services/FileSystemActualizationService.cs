@@ -69,17 +69,23 @@ namespace ImoutoRebirth.Room.Core.Services
 
             _logger.LogInformation("{NewFilesSavedCount} files saved", movedFiles.Count);
 
-            await movedFiles.Select(x => _remoteCommandService.UpdateMetadataRequest(x.FileId, x.Md5))
-                            .WhenAll();
+
+            await movedFiles.Select(x => _remoteCommandService.SaveTags(x.FileId, x.MovedInformation))
+                .WhenAll();
+
+            await movedFiles
+                .Select(
+                    x => _remoteCommandService.UpdateMetadataRequest(x.FileId, x.MovedInformation.SystemFile.Md5))
+                .WhenAll();
 
             _logger.LogDebug("Update metadata requests are sent");
         }
 
-        private async Task<IReadOnlyCollection<(Guid FileId, string Md5)>> MoveFiles(
+        private async Task<IReadOnlyCollection<(Guid FileId, MovedInformation MovedInformation)>> MoveFiles(
             IEnumerable<MoveInformation> preparedFiles,
             OversawCollection oversawCollection)
         {
-            var result = new List<(Guid FileId, string Md5)>();
+            var result = new List<(Guid FileId, MovedInformation movedInformation)>();
 
             foreach (var moveInformation in preparedFiles)
             {
@@ -89,9 +95,8 @@ namespace ImoutoRebirth.Room.Core.Services
                     continue;
 
                 var fileId = await _collectionFileService.SaveNew(movedInformation, oversawCollection.Collection.Id);
-                var md5 = moveInformation.SystemFile.Md5;
 
-                result.Add((fileId, md5));
+                result.Add((fileId, movedInformation));
             }
 
             return result;
