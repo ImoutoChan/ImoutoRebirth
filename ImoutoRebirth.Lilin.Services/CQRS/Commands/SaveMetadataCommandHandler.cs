@@ -60,7 +60,13 @@ namespace ImoutoRebirth.Lilin.Services.CQRS.Commands
             MetadataSource source, 
             IEnumerable<IFileNote> mqCommandFileNotes)
         {
-            foreach (var fileNote in mqCommandFileNotes)
+            var commandFileNotes = mqCommandFileNotes as IFileNote[] 
+                                   ?? mqCommandFileNotes?.ToArray() 
+                                   ?? Array.Empty<IFileNote>();
+            if (!commandFileNotes.Any())
+                yield break;
+
+            foreach (var fileNote in commandFileNotes)
             {
                 var note = Note.CreateNew(
                     fileNote.Label, 
@@ -78,7 +84,13 @@ namespace ImoutoRebirth.Lilin.Services.CQRS.Commands
             MetadataSource source, 
             IEnumerable<IFileTag> mqCommandFileTags)
         {
-            foreach (var fileTag in mqCommandFileTags)
+            var commandFileTags = mqCommandFileTags as IFileTag[] 
+                                  ?? mqCommandFileTags?.ToArray() 
+                                  ?? Array.Empty<IFileTag>();
+            if (!commandFileTags.Any())
+                yield break;
+
+            foreach (var fileTag in commandFileTags)
             {
                 var type = await _tagTypeRepository.Get(fileTag.Type) 
                            ?? await _tagTypeRepository.Create(fileTag.Type);
