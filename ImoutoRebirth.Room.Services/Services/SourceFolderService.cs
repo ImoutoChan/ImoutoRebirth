@@ -45,7 +45,9 @@ namespace ImoutoRebirth.Room.Core.Services
                 return Array.Empty<MoveInformation>();
             }
 
-            var files = _fileService.GetFiles(directoryInfo, extensions);
+            var files = _fileService.GetFiles(directoryInfo, extensions)
+                .OrderBy(x => x.LastWriteTimeUtc)
+                .ToList();
 
             var uniqueFiles = files.DistinctBy(x => x.FullName).ToList();
 
