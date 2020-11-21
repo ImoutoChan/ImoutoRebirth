@@ -11,8 +11,6 @@ namespace ImoutoRebirth.Navigator.ViewModel
 
         void UpdatePreview(Size previewSize);
 
-        ICommand OpenCommand { get; }
-
         ListEntryType Type { get; }
 
         Size ViewPortSize { get; }

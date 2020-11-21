@@ -11,6 +11,7 @@ using System.Windows.Input;
 using ImoutoRebirth.Navigator.Commands;
 using ImoutoRebirth.Navigator.Model;
 using ImoutoRebirth.Navigator.Services;
+using ImoutoRebirth.Navigator.Services.ImoutoViewer;
 using ImoutoRebirth.Navigator.Services.Tags;
 using MahApps.Metro.Controls.Dialogs;
 
@@ -28,6 +29,7 @@ namespace ImoutoRebirth.Navigator.ViewModel
         private string _statusToolTip;
         private readonly IFileService _fileService;
         private readonly IFileLoadingService _fileLoadingService;
+        private readonly IImoutoViewerService _imoutoViewerService;
 
         #endregion Fields
 
@@ -37,6 +39,7 @@ namespace ImoutoRebirth.Navigator.ViewModel
         {
             _fileLoadingService = ServiceLocator.GetService<IFileLoadingService>();
             _fileService = ServiceLocator.GetService<IFileService>();
+            _imoutoViewerService = ServiceLocator.GetService<IImoutoViewerService>();
 
             InitializeCommands();
 
@@ -49,7 +52,7 @@ namespace ImoutoRebirth.Navigator.ViewModel
 
             TagSearchVM = new TagSearchVM(CollectionManager.Collections);
             TagSearchVM.SelectedTagsUpdated += TagSearchVM_SelectedTagsUpdated;
-            TagSearchVM.SelectedCollectionCahnged += TagSearchVMOnSelectedCollectionCahnged;
+            TagSearchVM.SelectedCollectionCahnged += TagSearchVMOnSelectedCollectionChanged;
 
             Settings.ShowPreviewOnSelectChanged += Settings_ShowPreviewOnSelectChanged;
 
@@ -144,6 +147,8 @@ namespace ImoutoRebirth.Navigator.ViewModel
 
         public ICommand CopyCommand { get; set; }
 
+        public ICommand OpenFileCommand { get; set; }
+
         #endregion Commands
 
         #region Methods
@@ -177,6 +182,37 @@ namespace ImoutoRebirth.Navigator.ViewModel
             RemoveImageCommand = new RelayCommand(RemoveImage);
 
             CopyCommand = new RelayCommand(CopySelected);
+
+            OpenFileCommand = new RelayCommand<INavigatorListEntry>(x => OpenFile(x));
+        }
+
+        private void OpenFile(INavigatorListEntry navigatorListEntry)
+        {
+            switch (navigatorListEntry)
+            {
+                case ImageEntryVM image:
+                    _imoutoViewerService.OpenFile(
+                        image.Path,
+                        CollectionManager.SelectedCollection.Id, 
+                        TagSearchVM.SelectedBindedTags.Select(x => x.Model));
+                    break;
+                case VideoEntryVM video:
+                {
+                    var process = new Process
+                    {
+                        StartInfo = new ProcessStartInfo(video.Path)
+                        {
+                            UseShellExecute = true
+                        }
+                    };
+
+                    process.Start();
+                    break;
+                }
+                default:
+                    Debug.WriteLine("Can't open unsupported entry type" + navigatorListEntry.GetType().FullName);
+                    break;
+            }
         }
 
         private void ShuffleNavigatorList()
@@ -222,7 +258,7 @@ namespace ImoutoRebirth.Navigator.ViewModel
                 await _fileLoadingService.LoadFiles(
                     10_000,
                     _previewSize,
-                    TagSearchVM.SelectedColleciton.Value,
+                    TagSearchVM.SelectedCollection.Value,
                     TagSearchVM.SelectedBindedTags.Select(x => x.Model).ToList(),
                     x => TotalCount = x,
                     (x, ct) =>
@@ -348,7 +384,7 @@ namespace ImoutoRebirth.Navigator.ViewModel
             await Reload();
         }
 
-        private async void TagSearchVMOnSelectedCollectionCahnged(object sender, EventArgs eventArgs)
+        private async void TagSearchVMOnSelectedCollectionChanged(object sender, EventArgs eventArgs)
         {
             await Reload();
         }

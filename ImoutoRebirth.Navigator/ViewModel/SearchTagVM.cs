@@ -29,6 +29,8 @@ namespace ImoutoRebirth.Navigator.ViewModel
             }
         }
 
+        public string Hint => $"{Tag.Title} : {Value}";
+
         public SearchType SearchType
         {
             get => _model.SearchType;

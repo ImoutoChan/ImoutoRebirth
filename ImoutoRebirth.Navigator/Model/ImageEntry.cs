@@ -28,14 +28,6 @@ namespace ImoutoRebirth.Navigator.Model
         public ImageEntry(string path, Size viewPort = new Size())
         {
             var imageFileInfo = new FileInfo(path);
-            if (!imageFileInfo.Exists)
-            {
-                throw new ArgumentException("File does not exist.");
-            }
-            if (!Extensions.IsImage(imageFileInfo.FullName))
-            {
-                throw new ArgumentException("File format is not supported.");
-            }
             
             _path = path;
             _imageFileInfo = imageFileInfo;

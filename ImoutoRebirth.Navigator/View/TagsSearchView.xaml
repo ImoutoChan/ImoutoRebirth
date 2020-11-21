@@ -30,7 +30,7 @@
 
                 <ComboBox Margin="5"
                           ItemsSource="{Binding Collections}"
-                          SelectedItem="{Binding SelectedColleciton}"
+                          SelectedItem="{Binding SelectedCollection}"
                           DisplayMemberPath="Key" />
 
                 <TextBox Grid.Row="1"
@@ -43,7 +43,10 @@
 
                 <DockPanel Grid.Row="2"
                            Margin="5"
-                           Visibility="{Binding ValueEnterMode, Converter={StaticResource ConditionVisibilityConverter}, ConverterParameter=true}">
+                           Visibility="{Binding 
+                                ValueEnterMode, 
+                                Converter={StaticResource ConditionVisibilityConverter}, 
+                                ConverterParameter=true}">
                     <ComboBox DockPanel.Dock="Left"
                               Width="60"
                               ItemsSource="{Binding Comparators}"
@@ -90,12 +93,20 @@
 
                 <DockPanel Grid.Row="8"
                            LastChildFill="False">
-                    <userControls:FavoriteControl IsChecked="{Binding IsFavorite, Mode=TwoWay}"
-                                                  Visibility="{Binding IsRateSetted, Converter={StaticResource ConditionVisibilityConverter}, ConverterParameter=true}" />
+                    <userControls:FavoriteControl 
+                        IsChecked="{Binding IsFavorite, Mode=TwoWay}"
+                        Visibility="{Binding 
+                            IsRateSetted, 
+                            Converter={StaticResource ConditionVisibilityConverter}, 
+                            ConverterParameter=true}" />
 
-                    <userControls:RatingControl DockPanel.Dock="Right"
-                                                Value="{Binding Rate, Mode=TwoWay}"
-                                                Visibility="{Binding IsRateSetted, Converter={StaticResource ConditionVisibilityConverter}, ConverterParameter=true}" />
+                    <userControls:RatingControl 
+                        DockPanel.Dock="Right"
+                        Value="{Binding Rate, Mode=TwoWay}"
+                        Visibility="{Binding 
+                            IsRateSetted,
+                            Converter={StaticResource ConditionVisibilityConverter}, 
+                            ConverterParameter=true}" />
                 </DockPanel>
             </Grid>
         </Border>
@@ -106,7 +117,10 @@
                 HorizontalAlignment="Stretch"
                 VerticalAlignment="Top"
                 Margin="5,68,8,0"
-                Visibility="{Binding HintBoxTags.Count, Converter={StaticResource ConditionVisibilityConverter}, ConverterParameter=!0}">
+                Visibility="{Binding 
+                    HintBoxTags.Count, 
+                    Converter={StaticResource ConditionVisibilityConverter}, 
+                    ConverterParameter=!0}">
             <ListBox x:Name="HintListBox"
                      ItemsSource="{Binding HintBoxTags}"
                      SelectedItem="{Binding SelectedHintBoxTag}"

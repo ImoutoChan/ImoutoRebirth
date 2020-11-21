@@ -25,7 +25,7 @@ namespace ImoutoRebirth.Navigator.ViewModel
         private string _enteredValue;
         private List<string> _comparators;
         private string _selectedComparator;
-        private KeyValuePair<string, Guid?> _selectedColleciton;
+        private KeyValuePair<string, Guid?> _selectedCollection;
 
         private ICommand _enterValueOkCommand;
         private ICommand _unselectTagCommand;
@@ -55,7 +55,7 @@ namespace ImoutoRebirth.Navigator.ViewModel
                 Collections.Add(new KeyValuePair<string, Guid?>(collectionVm.Name, collectionVm.Id));
             }
 
-            SelectedColleciton = Collections.FirstOrDefault();
+            SelectedCollection = Collections.FirstOrDefault();
 
             ResetValueEnter();
         }
@@ -69,12 +69,12 @@ namespace ImoutoRebirth.Navigator.ViewModel
         public ObservableCollection<KeyValuePair<string, Guid?>> Collections { get; }
             = new ObservableCollection<KeyValuePair<string, Guid?>>();
 
-        public KeyValuePair<string, Guid?> SelectedColleciton
+        public KeyValuePair<string, Guid?> SelectedCollection
         {
-            get => _selectedColleciton;
+            get => _selectedCollection;
             set
             {
-                OnPropertyChanged(ref _selectedColleciton, value, () => SelectedColleciton);
+                OnPropertyChanged(ref _selectedCollection, value, () => SelectedCollection);
                 OnSelectedCollectionCahnged();
             }
         }

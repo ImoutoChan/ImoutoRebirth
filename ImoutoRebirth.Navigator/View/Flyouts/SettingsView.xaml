@@ -62,8 +62,8 @@
                                              Width="16"
                                              Height="16"
                                              StrokeThickness="1"
-                                             Stroke="{DynamicResource MahApps.Brushes.Black}"
-                                             Fill="{DynamicResource MahApps.Brushes.Black}" />
+                                             Stroke="Black"
+                                             Fill="White" />
 
                                     <Label Grid.Column="1"
                                            Content="Light" />
@@ -80,11 +80,11 @@
                                              Width="16"
                                              Height="16"
                                              StrokeThickness="1"
-                                             Stroke="{DynamicResource MahApps.Brushes.Black}"
-                                             Fill="{DynamicResource MahApps.Brushes.White}" />
+                                             Stroke="Black"
+                                             Fill="Black" />
 
                                     <Label Grid.Column="1"
-                                           Content="Dark" />
+                                           Content="Night" />
                                 </Grid>
                             </ComboBoxItem>
                         </ComboBox>

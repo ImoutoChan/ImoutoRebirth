@@ -278,7 +278,9 @@
                                             SnapsToDevicePixels="True"
                                             Margin="2">
                                         <Border.InputBindings>
-                                            <MouseBinding Command="{Binding OpenCommand}"
+                                            <MouseBinding Command="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type Window}}, 
+                                                                            Path=DataContext.OpenFileCommand}"
+                                                          CommandParameter="{Binding}"
                                                           Gesture="LeftDoubleClick" />
                                         </Border.InputBindings>
 

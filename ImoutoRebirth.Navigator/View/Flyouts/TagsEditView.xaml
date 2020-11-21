@@ -83,15 +83,8 @@
                                                FontFamily="Comic Sans MS"
                                                FontSize="13"
                                                FontWeight="Bold"
-                                               VerticalAlignment="Center">
-                                        <TextBlock.ToolTip>
-                                            <MultiBinding StringFormat="{}{0} : {1}">
-                                                <Binding Path="Tag.Title" Mode="OneWay" />
-                                                <Binding Path="Value"
-                                                         FallbackValue="null" 
-                                                         Mode="OneWay" />
-                                            </MultiBinding>
-                                        </TextBlock.ToolTip>
+                                               VerticalAlignment="Center"
+                                               ToolTip="{Binding Hint}">
                                     </TextBlock>
                                 </Label.Content>
                             </Label>

@@ -2,7 +2,9 @@
 using AutoMapper;
 using ImoutoRebirth.Lilin.WebApi.Client;
 using ImoutoRebirth.Navigator.Services.Collections;
+using ImoutoRebirth.Navigator.Services.ImoutoViewer;
 using ImoutoRebirth.Navigator.Services.Tags;
+using ImoutoRebirth.Navigator.ViewModel;
 using ImoutoRebirth.Room.WebApi.Client;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -15,6 +17,8 @@ namespace ImoutoRebirth.Navigator.Services
         static ServiceLocator()
         {
             var sc = new ServiceCollection();
+
+            sc.AddTransient<IImoutoViewerService, ImoutoViewerService>();
 
             sc.AddTransient<ICollectionService, CollectionService>();
             sc.AddTransient<IDestinationFolderService, DestinationFolderService>();

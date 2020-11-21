@@ -1,24 +1,13 @@
 ﻿using System;
-using System.Diagnostics;
-using System.Linq;
 using System.Windows;
-using System.Windows.Input;
 using System.Windows.Media.Imaging;
 using Imouto;
-using ImoutoRebirth.Navigator.Commands;
 using ImoutoRebirth.Navigator.Model;
-using ImoutoRebirth.Navigator.Utils;
 
 namespace ImoutoRebirth.Navigator.ViewModel
 {
-    class ImageEntryVM : VMBase, INavigatorListEntry
+    internal class ImageEntryVM : VMBase, INavigatorListEntry
     {
-        #region Fields
-
-        private ICommand _openFileCommand;
-
-        #endregion Fields
-
         #region Constructors
 
         public ImageEntryVM(string imagePath, Size initPreviewSize = new Size(), Guid? dbId = null)
@@ -57,29 +46,6 @@ namespace ImoutoRebirth.Navigator.ViewModel
         #endregion Properties
 
         #region Commands
-
-        public ICommand OpenCommand => _openFileCommand ?? (_openFileCommand = new RelayCommand(Open));
-
-        private void Open(object obj)
-        {
-            try
-            {
-                var myProcess = new Process
-                {
-                    StartInfo =
-                    {
-                        FileName = Associations.AssocQueryString(Associations.AssocStr.ASSOCSTR_EXECUTABLE,
-                            "." + ImageEntry.FullName.Split('.').Last()),
-                        Arguments = ImageEntry.FullName + $" -nav-guid={App.AppGuid}"
-                    }
-                };
-                myProcess.Start();
-            }
-            catch (Exception e)
-            {
-                Process.Start(ImageEntry.FullName);
-            }
-        }
 
         #endregion Commands
 

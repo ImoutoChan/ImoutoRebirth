@@ -120,7 +120,8 @@ namespace ImoutoRebirth.Navigator.Services
                     ct);
 
                 var navigatorListEntries = found
-                    .Select(x => EntryVM.GetListEntry(x.Path, new Size(previewSize, previewSize), x.Id))
+                    .Select(x => EntryVMFactory.CreateListEntry(x.Path, new Size(previewSize, previewSize), x.Id))
+                    .Where(x => x != null)
                     .SkipExceptions()
                     .WithCancellation(ct)
                     .ToList();

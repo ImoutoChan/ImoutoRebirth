@@ -1,12 +1,9 @@
 using System;
-using System.Diagnostics;
 using System.IO;
 using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Input;
 using System.Windows.Media.Imaging;
 using Imouto;
-using ImoutoRebirth.Navigator.Commands;
 using Microsoft.WindowsAPICodePack.Shell;
 
 namespace ImoutoRebirth.Navigator.ViewModel
@@ -15,7 +12,6 @@ namespace ImoutoRebirth.Navigator.ViewModel
     {
         #region Fields
 
-        private ICommand _openFileCommand;
         private Size _size;
         private bool _isLoading;
         private bool _isPreviewLoaded;
@@ -27,20 +23,9 @@ namespace ImoutoRebirth.Navigator.ViewModel
 
         public VideoEntryVM(string path, Size initPreviewSize = new Size(), Guid? dbId = null)
         {
-            if (!path.IsVideo())
-            {
-                throw new ArgumentException("Unsupported video format.");
-            }
-            else if (!(new FileInfo(path)).Exists)
-            {
-                throw new ArgumentException($"File {path} doesn't exist.");
-            }
-            else
-            {
-                Path = path;
-                Type = ListEntryType.Video;
-                ViewPortSize = initPreviewSize;
-            }
+            Path = path;
+            Type = ListEntryType.Video;
+            ViewPortSize = initPreviewSize;
             DbId = dbId;
         }
 
@@ -82,17 +67,6 @@ namespace ImoutoRebirth.Navigator.ViewModel
         public Guid? DbId { get; }
 
         #endregion Properties
-
-        #region Commands
-
-        public ICommand OpenCommand => _openFileCommand ??= new RelayCommand(Open);
-
-        private void Open(object obj)
-        {
-            Process.Start(Path);
-        }
-
-        #endregion Commands
 
         #region Public methods
 

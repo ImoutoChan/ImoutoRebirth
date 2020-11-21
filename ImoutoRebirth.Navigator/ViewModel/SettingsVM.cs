@@ -101,11 +101,11 @@ namespace ImoutoRebirth.Navigator.ViewModel
                 switch (value)
                 {
                     case 1:
-                        ThemeManager.ChangeThemeBaseColor(Application.Current, ThemeManager.ColorSchemes.Last().Name);
+                        ThemeManager.ChangeThemeBaseColor(Application.Current, "Dark");
                         Settings.Default.ThemeIndex = 1;
                         break;
                     default:
-                        ThemeManager.ChangeThemeBaseColor(Application.Current, ThemeManager.ColorSchemes.First().Name);
+                        ThemeManager.ChangeThemeBaseColor(Application.Current, "Light");
                         Settings.Default.ThemeIndex = 0;
                         break;
                 }
