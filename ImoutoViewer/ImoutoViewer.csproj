@@ -1,22 +1,21 @@
-﻿<Project Sdk="Microsoft.NET.Sdk.WindowsDesktop">
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
   <PropertyGroup>
     <OutputType>WinExe</OutputType>
-    <TargetFramework>netcoreapp3.1</TargetFramework>
+    <TargetFramework>net5.0-windows</TargetFramework>
+    <Nullable>enable</Nullable>
+    <LangVersion>9.0</LangVersion>
+    <TieredCompilation>true</TieredCompilation>
+    <UseWPF>true</UseWPF>
+  </PropertyGroup>
+
+  <PropertyGroup>
     <Company>ImoutoRebirth</Company>
     <Product>Imouto Viewer</Product>
     <Copyright>ImoutoChan ©  2013-2020</Copyright>
     <AssemblyVersion>2.0.0</AssemblyVersion>
     <FileVersion>2.0.0</FileVersion>
-    <UseWPF>true</UseWPF>
-  </PropertyGroup>
-
-  <PropertyGroup>
     <ApplicationIcon>Resources\49a7b0a953e5106e5942169f3cb0c237_ copy.ico</ApplicationIcon>
-  </PropertyGroup>
-
-  <PropertyGroup>
-    <StartupObject>ImoutoViewer.App</StartupObject>
-    <Nullable>enable</Nullable>
   </PropertyGroup>
 
   <ItemGroup>
@@ -64,4 +63,5 @@
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
     </None>
   </ItemGroup>
+
 </Project>
