@@ -2,7 +2,7 @@
 using System.Text;
 using Newtonsoft.Json;
 
-namespace ImoutoViewer.ImoutoRebirthNavigator.NavigatorArgs
+namespace ImoutoViewer.ImoutoRebirth.NavigatorArgs
 {
     public static class Base64Serializer
     {

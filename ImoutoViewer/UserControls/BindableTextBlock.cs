@@ -1,5 +1,6 @@
 ﻿using System.Collections.ObjectModel;
 using System.Collections.Specialized;
+using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Documents;
@@ -26,7 +27,7 @@ namespace ImoutoViewer.UserControls
             {
                 list.CollectionChanged += new NotifyCollectionChangedEventHandler(textBlock.InlineCollectionChanged);
                 textBlock.Inlines.Clear();
-                list.ForEach(x => textBlock.Inlines.Add(x));
+                list.ToList().ForEach(x => textBlock.Inlines.Add(x));
             }
         }
 

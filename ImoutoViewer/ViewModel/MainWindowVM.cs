@@ -1,14 +1,19 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media.Imaging;
 using System.Windows.Threading;
-using Imouto;
+using AutoMapper;
+using ImoutoRebirth.Navigator.Services;
 using ImoutoViewer.Behavior;
 using ImoutoViewer.Commands;
+using ImoutoViewer.ImoutoRebirth.Services;
+using ImoutoViewer.ImoutoRebirth.Services.Tags.Model;
 using ImoutoViewer.Model;
+using ImoutoViewer.ViewModel.SettingsModels;
 
 namespace ImoutoViewer.ViewModel
 {
@@ -20,11 +25,13 @@ namespace ImoutoViewer.ViewModel
 
         private readonly MainWindow _mainWindowView;
         private LocalImageList _imageList;
-        private bool _isSlideshowActive;
+        private bool _isSlideShowActive;
         private DispatcherTimer _timer;
-        private TagsVM _tagsVM;
-        private AddTagVM _addTagVM;
-        private CreateTagVM _createTagVM;
+        private readonly TagsVM _tagsVM;
+        private readonly AddTagVM _addTagVM;
+        private readonly CreateTagVM _createTagVM;
+        private readonly IFileLoadingService _fileLoadingService;
+        private readonly IMapper _mapper;
 
         #endregion Fields
 
@@ -32,6 +39,9 @@ namespace ImoutoViewer.ViewModel
 
         public MainWindowVM()
         {
+            _fileLoadingService = ServiceLocator.GetRequiredService<IFileLoadingService>();
+            _mapper = ServiceLocator.GetRequiredService<IMapper>();
+
             OpenWith = new OpenWithVM();
             IsSimpleWheelNavigationEnable = true;
 
@@ -90,15 +100,12 @@ namespace ImoutoViewer.ViewModel
             }
         }
 
-        public bool IsSlideshowActive
+        public bool IsSlideShowActive
         {
-            get
-            {
-                return _isSlideshowActive;
-            }
+            get => _isSlideShowActive;
             set
             {
-                if (_isSlideshowActive)
+                if (_isSlideShowActive)
                 {
                     _timer.Stop();
                 }
@@ -109,8 +116,8 @@ namespace ImoutoViewer.ViewModel
                     _timer.Start();
                 }
 
-                _isSlideshowActive = value;
-                OnPropertyChanged("IsSlideshowActive");
+                _isSlideShowActive = value;
+                OnPropertyChanged("IsSlideShowActive");
             }
         }
 
@@ -335,37 +342,38 @@ namespace ImoutoViewer.ViewModel
             Tags.ShowTags = Settings.ShowTags;
         }
 
-        private async Task InitializeImageList(IEnumerable<string> images)
+        private async Task InitializeImageList(IEnumerable<string>? images)
         {
-            Application.Current.Properties["Binded"] = false;
+            ApplicationProperties.BoundToNavigatorSearch = false;
 
             if (images != null)
             {
                 _imageList = new LocalImageList(images);
             }
-            else if (Application.Current.Properties["NavigatorGuid"] != null)
+            else if (ApplicationProperties.NavigatorSearchParams != null)
             {
-                // TODO: rewrite search with new services
+                ApplicationProperties.BoundToNavigatorSearch = true;
 
-                Application.Current.Properties["Binded"] = true;
+                var searchParams = ApplicationProperties.NavigatorSearchParams;
 
-                var guid = (Guid) Application.Current.Properties["NavigatorGuid"];
+                var files = await _fileLoadingService.LoadFiles(
+                    searchParams.CollectionId, 
+                    _mapper.Map<IReadOnlyCollection<SearchTag>>(searchParams.SearchTags));
 
-                // TODO search and load
-                //var files = await ImoutoService.UseAsync(imoutoService => imoutoService.GetCachedSearch(guid));
+                if (files.Any())
+                {
+                    var currentFile = files
+                        .FirstOrDefault(x => x == ApplicationProperties.FileNamesToOpen?.FirstOrDefault());
 
-
-                //var el = default((string, int));
-                //var (path, id) = el = files.FirstOrDefault(x => x.path == Application.Current.Properties["ArbitraryArgName"].ToString());
-
-                //_imageList = new LocalImageList(files.Select(x => x.path), path == null ? 0 : files.IndexOf(el));
+                    _imageList = new LocalImageList(files, currentFile == null ? 0 : files.IndexOf(currentFile));
+                }
             }
-            else if (Application.Current.Properties["ArbitraryArgName"] != null)
+            else if (ApplicationProperties.FileNamesToOpen.Any())
             {
-                string[] fname = Application.Current.Properties["ArbitraryArgName"].ToString().Split(new[] { "\n&$&\n" }, StringSplitOptions.RemoveEmptyEntries);
-                Application.Current.Properties["ArbitraryArgName"] = null;
+                var fileNames = ApplicationProperties.FileNamesToOpen;
+                ApplicationProperties.FileNamesToOpen = ArraySegment<string>.Empty;
 
-                _imageList = new LocalImageList(fname);
+                _imageList = new LocalImageList(fileNames);
             }
             else
             {
@@ -417,7 +425,7 @@ namespace ImoutoViewer.ViewModel
             }
         }
 
-        private async void InitializeImageListAsync(IEnumerable<string> images = null)
+        private async void InitializeImageListAsync(IEnumerable<string>? images = null)
         {
             IsLoading = true;
             OnPropertyChanged("Status");
@@ -512,10 +520,10 @@ namespace ImoutoViewer.ViewModel
             {
                 if (param as string == "ForcedDisable")
                 {
-                    IsSlideshowActive = false;
+                    IsSlideShowActive = false;
                 }
             }
-            IsSlideshowActive = !IsSlideshowActive;
+            IsSlideShowActive = !IsSlideShowActive;
         }
 
         private void NextImage()
@@ -611,7 +619,7 @@ namespace ImoutoViewer.ViewModel
             UpdateView();
         }
 
-        private void _imageList_CurrentImageChanged(object sender, EventArgs e)
+        private void _imageList_CurrentImageChanged(object? sender, EventArgs e)
         {
             _mainWindowView.ScrollViewerObject.IsNeedScrollHome = true;
 

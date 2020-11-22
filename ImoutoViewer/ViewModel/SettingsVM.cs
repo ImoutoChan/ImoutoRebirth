@@ -7,13 +7,13 @@ using System.Reflection;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
-using System.Windows.Media;
 using AssociationManager;
 using ControlzEx.Theming;
 using Imouto;
 using ImoutoViewer.Commands;
 using ImoutoViewer.Model;
 using ImoutoViewer.Properties;
+using ImoutoViewer.ViewModel.SettingsModels;
 using MahApps.Metro.Controls.Dialogs;
 
 namespace ImoutoViewer.ViewModel
@@ -258,7 +258,7 @@ namespace ImoutoViewer.ViewModel
                 using (var mgr = new FileAssociationManager())
                 {
                     foreach (
-                        var ext in Extensions.GetSupportedFormatsList(typeof(ImageFormat)).Select(x => x.Substring(1)))
+                        var ext in SupportedFormatsExtensions.GetSupportedFormatsList(typeof(ImageFormat)).Select(x => x.Substring(1)))
                     {
                         Associate(mgr, ext);
                     }
@@ -385,201 +385,4 @@ namespace ImoutoViewer.ViewModel
         
         #endregion Events
     }
-
-    class ResizeTypeDescriptor
-    {
-        #region Properties
-
-        public string Name { get; private set; }
-        public ResizeType Type { get; private set; }
-
-        #endregion Properties
-
-        #region Methods
-
-        public override string ToString()
-        {
-            return Name;
-        }
-
-        #endregion Methods
-
-        #region Static methods
-
-        public static List<ResizeTypeDescriptor> GetList()
-        {
-            return new List<ResizeTypeDescriptor>
-            {
-                new ResizeTypeDescriptor { Name = "Fit to screen (downscale only)", Type = ResizeType.DownscaleToViewPort },
-                new ResizeTypeDescriptor { Name = "Fit to screen (down & up scale)", Type = ResizeType.FitToViewPort },
-                new ResizeTypeDescriptor { Name = "Fit to screen width (downscale only)", Type = ResizeType.DownscaleToViewPortWidth },
-                new ResizeTypeDescriptor { Name = "Fit to screen width (down & up scale)", Type = ResizeType.FitToViewPortWidth },
-                new ResizeTypeDescriptor { Name = "Original size (no resize)", Type = ResizeType.NoResize },
-            };
-        }
-
-        #endregion Static methods
-    }
-
-    class DirectorySearchTypeDescriptor
-    {
-        #region Fields
-
-        private bool? _isSelected;
-
-        #endregion  Fields
-
-        #region Properties
-
-        public string Name { get; private set; }
-        public DirectorySearchFlags Type { get; private set; }
-        public bool IsSelected
-        {
-            get
-            {
-                if (_isSelected == null)
-                {
-                    _isSelected = ((Type & Settings.Default.DirectorySearchFlags) == Type);
-                }
-                return (bool)_isSelected;
-            }
-            set
-            {
-                _isSelected = value;
-                Settings.Default.DirectorySearchFlags = (value)
-                    ? Settings.Default.DirectorySearchFlags | Type
-                    : Settings.Default.DirectorySearchFlags & ~Type;
-                OnSelectedChanged();
-            }
-        }
-
-        #endregion Properties
-
-        #region Methods
-
-        public override string ToString()
-        {
-            return Name;
-        }
-
-        #endregion Methods
-
-        #region Static methods
-
-        public static ObservableCollection<DirectorySearchTypeDescriptor> GetList()
-        {
-            return new ObservableCollection<DirectorySearchTypeDescriptor>
-            {
-                new DirectorySearchTypeDescriptor { Name = "All Pre", Type = DirectorySearchFlags.AllDepthPrefolder },
-                new DirectorySearchTypeDescriptor { Name = "Pre", Type = DirectorySearchFlags.Prefolders },
-                new DirectorySearchTypeDescriptor { Name = "Cur", Type = DirectorySearchFlags.Folder },
-                new DirectorySearchTypeDescriptor { Name = "Sub", Type = DirectorySearchFlags.Subfolders },
-                new DirectorySearchTypeDescriptor { Name = "All Sub", Type = DirectorySearchFlags.AllDepthSubfolders },
-            };
-        }
-
-        #endregion Static methods
-
-        #region Events
-
-        public event EventHandler SelectedChanged;
-        private void OnSelectedChanged()
-        {
-            if (SelectedChanged != null)
-            {
-                SelectedChanged(this, new EventArgs());
-            }
-        }
-
-        #endregion Events
-    }
-
-    class SortingDescriptor
-    {
-        #region Properties
-
-        public string Name { get; set; }
-        public SortMethod Method { get; set; }
-
-        #endregion Properties
-
-        #region Methods
-
-        public override string ToString()
-        {
-            return Name;
-        }
-
-        #endregion Methods
-
-        #region Static methods
-
-        public static List<SortingDescriptor> GetListForFiles()
-        {
-            return new List<SortingDescriptor>
-            {
-                new SortingDescriptor { Name = "Name", Method = SortMethod.ByName },
-                new SortingDescriptor { Name = "Date created", Method = SortMethod.ByCreateDate  },
-                new SortingDescriptor { Name = "Date modified", Method = SortMethod.ByUpdateDate },
-                new SortingDescriptor { Name = "Size", Method = SortMethod.BySize }
-            };
-        }
-
-        public static List<SortingDescriptor> GetListForFolders()
-        {
-            return new List<SortingDescriptor>
-            {
-                new SortingDescriptor { Name = "Name", Method = SortMethod.ByName },
-                new SortingDescriptor { Name = "Date created", Method = SortMethod.ByCreateDate  },
-                new SortingDescriptor { Name = "Date modified", Method = SortMethod.ByUpdateDate }
-            };
-        }
-
-        #endregion Static methods
-    }
-
-    class AccentColorMenuData
-    {
-        public string Name { get; set; }
-        public Brush ColorBrush { get; set; }
-
-        public void ChangeAccent()
-        {
-            ThemeManager.Current.ChangeThemeColorScheme(Application.Current, Name);
-            Settings.Default.AccentColorName = Name;
-        }
-    }
-
-    class TagsModeDescriptor
-    {
-        #region Properties
-
-        public string Name { get; set; }
-        public byte Value { get; set; }
-
-        #endregion Properties
-
-        #region Methods
-
-        public override string ToString()
-        {
-            return Name;
-        }
-
-        #endregion Methods
-
-        #region Static methods
-
-        public static List<TagsModeDescriptor> GetListForFiles()
-        {
-            return new List<TagsModeDescriptor>
-            {
-                new TagsModeDescriptor { Name = "Show", Value = 1 },
-                new TagsModeDescriptor { Name = "Hide", Value = 0  },
-            };
-        }
-
-        #endregion Static methods
-    }
-
 }

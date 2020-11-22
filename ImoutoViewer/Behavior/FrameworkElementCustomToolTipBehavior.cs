@@ -5,7 +5,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Documents;
 using System.Windows.Input;
-using Imouto.Utils.WPFHelpers;
+using ImoutoViewer.Extensions;
 using Microsoft.Xaml.Behaviors;
 
 namespace ImoutoViewer.Behavior
@@ -163,7 +163,7 @@ namespace ImoutoViewer.Behavior
 
         private void PlaceToolTip(UIElement target)
         {
-            var mainWindow = UIHelper.FindVisualParent<Window>(target);
+            var mainWindow = UiHelper.FindVisualParent<Window>(target);
             var area = (UIElement) mainWindow.FindName("GridParent");
 
             if (!_sizeChangeSubscribed)

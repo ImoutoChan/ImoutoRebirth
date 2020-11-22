@@ -13,6 +13,7 @@
                           xmlns:converters="clr-namespace:ImoutoViewer.Converters"
                           xmlns:view="clr-namespace:ImoutoViewer.View"
                           xmlns:Imouto.Viewer="clr-namespace:ImoutoViewer"
+                          xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
                           mc:Ignorable="d"
                           d:DataContext="{d:DesignInstance viewModel:MainWindowVM, IsDesignTimeCreatable=False}"
                           Title="{Binding Path=Title}"
@@ -567,18 +568,12 @@
                     <Button Width="25"
                             Height="25"
                             Margin="10, 0, 10, 0"
-                            Style="{DynamicResource MetroCircleButtonStyle}"
+                            Style="{DynamicResource MahApps.Styles.Button.Circle}"
                             HorizontalAlignment="Left"
                             Click="ShowAddDialog">
-                        <Rectangle Width="10"
-                                   Height="10"
-                                   Fill="{Binding Path=Foreground, 
-                                                  RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Button}}}">
-                            <Rectangle.OpacityMask>
-                                <VisualBrush Stretch="Fill"
-                                             Visual="{DynamicResource appbar_add}" />
-                            </Rectangle.OpacityMask>
-                        </Rectangle>
+                        <iconPacks:PackIconModern Width="10"
+                                                  Height="10"
+                                                  Kind="Add" />
                     </Button>
                 </StackPanel>
             </ScrollViewer>
@@ -635,7 +630,7 @@
             </StatusBarItem>
 
             <StatusBarItem Grid.Column="2"
-                           Visibility="{Binding IsSlideshowActive, Converter={StaticResource VisibilityConverter}}">
+                           Visibility="{Binding IsSlideShowActive, Converter={StaticResource VisibilityConverter}}">
                 <StackPanel Orientation="Horizontal">
                     <TextBlock Text="Slideshow "
                                Foreground="{StaticResource StatusBarForeground}" />

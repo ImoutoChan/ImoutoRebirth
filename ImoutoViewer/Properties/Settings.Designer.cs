@@ -9,6 +9,8 @@
 //------------------------------------------------------------------------------
 
 using Imouto;
+using ImoutoViewer.ViewModel;
+using ImoutoViewer.ViewModel.SettingsModels;
 
 namespace ImoutoViewer.Properties {
     

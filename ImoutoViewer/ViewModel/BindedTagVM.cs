@@ -1,19 +1,21 @@
-﻿using System.Windows.Input;
+﻿using System;
+using System.Windows.Input;
 using System.Windows.Media;
-using Imouto.Utils;
-using Imouto.WCFExchageLibrary.Data;
+using Imouto.Utils.Core;
 using ImoutoViewer.Commands;
+using ImoutoViewer.Extensions;
+using ImoutoViewer.ImoutoRebirth.Services.Tags.Model;
 
 namespace ImoutoViewer.ViewModel
 {
     class BindedTagVM : VMBase
     {
         private TagsVM _parantVM;
-        private BindedTag _modelTag;
+        private FileTag _modelTag;
         private Brush _typeBrush;
         private ICommand _unbindCommand;
 
-        public BindedTagVM(BindedTag tag, TagsVM tagsVM)
+        public BindedTagVM(FileTag tag, TagsVM tagsVM)
         {
             _modelTag = tag;
             _parantVM = tagsVM;
@@ -36,11 +38,11 @@ namespace ImoutoViewer.ViewModel
             }
         }
 
-        public int Id
+        public Guid Id
         {
             get
             {
-                return _modelTag.Tag.Id.Value;
+                return _modelTag.Tag.Id;
             }
         }
 
@@ -48,7 +50,7 @@ namespace ImoutoViewer.ViewModel
         {
             get
             {
-                return _typeBrush ?? (_typeBrush = new SolidColorBrush(this._modelTag.Tag.Type.Color.ToColor()));
+                return _typeBrush ?? (_typeBrush = new SolidColorBrush(ColorExtensions.ToColor(_modelTag.Tag.Type.Color)));
             }
         }
 

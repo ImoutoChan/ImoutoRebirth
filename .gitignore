@@ -151,3 +151,4 @@ $RECYCLE.BIN/
 packages/
 ImoutoViewer.sln.ide/*
 .vs/
+/.idea/*

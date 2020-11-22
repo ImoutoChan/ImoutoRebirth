@@ -16,19 +16,8 @@
 
   <PropertyGroup>
     <StartupObject>ImoutoViewer.App</StartupObject>
+    <Nullable>enable</Nullable>
   </PropertyGroup>
-
-  <ItemGroup>
-    <Reference Include="Imouto.SharedModelLibrary">
-      <HintPath>..\..\imouto-library\bin\Release\Imouto.SharedModelLibrary.dll</HintPath>
-    </Reference>
-    <Reference Include="Imouto.Utils">
-      <HintPath>..\..\imouto-library\bin\Release\Imouto.Utils.dll</HintPath>
-    </Reference>
-    <Reference Include="Imouto.WCFExchageLibrary">
-      <HintPath>..\..\imouto-library\bin\Release\Imouto.WCFExchageLibrary.dll</HintPath>
-    </Reference>
-  </ItemGroup>
 
   <ItemGroup>
     <EmbeddedResource Update="Properties\Resources.resx">
@@ -47,7 +36,14 @@
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="AutoMapper" Version="9.0.0" />
+    <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="7.0.0" />
+    <PackageReference Include="Imouto.Utils.Core" Version="2.0.0" />
+    <PackageReference Include="ImoutoRebirth.Lilin.WebApi.Client" Version="2.1.1-master-0001" />
+    <PackageReference Include="ImoutoRebirth.Room.WebApi.Client" Version="1.7.0" />
     <PackageReference Include="MahApps.Metro" Version="2.0.0" />
+    <PackageReference Include="MahApps.Metro.IconPacks" Version="4.8.0" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="3.1.5" />
     <PackageReference Include="Microsoft.Xaml.Behaviors.Wpf" Version="1.1.19" />
     <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
     <PackageReference Include="rfc1459.AssociationManager" Version="1.1.1" />

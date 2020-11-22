@@ -3,6 +3,7 @@ using System.Linq;
 using System.Windows;
 using System.Windows.Data;
 using Imouto.Utils;
+using ImoutoViewer.Extensions;
 
 namespace ImoutoViewer.Converters
 {

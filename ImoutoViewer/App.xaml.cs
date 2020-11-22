@@ -1,6 +1,8 @@
-﻿using System.Linq;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Windows;
-using ImoutoViewer.ImoutoRebirthNavigator.NavigatorArgs;
+using ImoutoViewer.ImoutoRebirth.NavigatorArgs;
 using ImoutoViewer.ViewModel;
 
 namespace ImoutoViewer
@@ -11,7 +13,8 @@ namespace ImoutoViewer
     partial class App
     {
         private const string NavSearchParam = "-nav-search=";
-        private MainWindowVM _mainWindowVm;
+
+        private MainWindowVM? _mainWindowVm;
 
         protected override void OnStartup(StartupEventArgs e)
         {
@@ -21,21 +24,40 @@ namespace ImoutoViewer
                 var base64String = e.Args.FirstOrDefault(x => x.StartsWith(NavSearchParam));
                 if (base64String != null)
                 {
-                    var navigatorSearchParams = Base64Serializer.Deserialize<ImoutoViewerArgs>(base64String);
-
-                    Properties["NavigatorSearchParams"] = navigatorSearchParams;
+                    var navigatorSearchParams = Base64Serializer.Deserialize<ImoutoViewerArgs>(base64String.Substring(NavSearchParam.Length));
+                    ApplicationProperties.NavigatorSearchParams = navigatorSearchParams;
                 }
 
-                var filesArgs = e.Args.Where(x => !x.StartsWith(NavSearchParam));
-
-                string result = filesArgs.Aggregate((current, arg) => current + "\n&$&\n" + arg);
-                Properties["ArbitraryArgName"] = result;
+                var fileList = e.Args.Where(x => !x.StartsWith(NavSearchParam)).ToList();
+                ApplicationProperties.FileNamesToOpen = fileList;
             }
 
             //Start the main window
             _mainWindowVm = new MainWindowVM();
 
             base.OnStartup(e);
+        }
+    }
+
+    internal static class ApplicationProperties
+    {
+        public static ImoutoViewerArgs? NavigatorSearchParams 
+        {
+            get => Application.Current.Properties["NavigatorSearchParams"] as ImoutoViewerArgs;
+            set => Application.Current.Properties["NavigatorSearchParams"] = value;
+        }
+
+        public static IReadOnlyCollection<string> FileNamesToOpen 
+        {
+            get => Application.Current.Properties["FileNamesToOpen"] as IReadOnlyCollection<string> 
+                   ?? ArraySegment<string>.Empty;
+            set => Application.Current.Properties["FileNamesToOpen"] = value;
+        }
+
+        public static bool BoundToNavigatorSearch
+        {
+            get => Application.Current.Properties["BoundToNavigatorSearch"] is bool value && value;
+            set => Application.Current.Properties["BoundToNavigatorSearch"] = value;
         }
     }
 }

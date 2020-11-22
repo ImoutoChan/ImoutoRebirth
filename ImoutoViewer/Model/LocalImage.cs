@@ -3,6 +3,8 @@ using System.Windows;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using Imouto;
+using ImoutoViewer.ViewModel;
+using ImoutoViewer.ViewModel.SettingsModels;
 using Size = System.Windows.Size;
 
 namespace ImoutoViewer.Model

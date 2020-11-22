@@ -2,10 +2,14 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
-using Imouto.Utils;
-using Imouto.WCFExchageLibrary.Data;
+using Imouto.Utils.Core;
+using ImoutoRebirth.Navigator.Services;
+using ImoutoRebirth.Navigator.Services.Tags;
+using ImoutoViewer.ImoutoRebirth.Services.Tags;
+using ImoutoViewer.ImoutoRebirth.Services.Tags.Model;
 using ImoutoViewer.Model;
 
 namespace ImoutoViewer.ViewModel
@@ -21,6 +25,10 @@ namespace ImoutoViewer.ViewModel
         private bool _isLastSuccessConnected;
         private bool _showNotes;
 
+        private readonly IFileTagService _fileTagService;
+        private readonly ITagService _tagService;
+        private readonly IFileService _fileService;
+
         #endregion Fields
 
         #region Constructors
@@ -28,6 +36,9 @@ namespace ImoutoViewer.ViewModel
         public TagsVM(MainWindowVM mainVM)
         {
             _parent = mainVM;
+            _fileTagService = ServiceLocator.GetRequiredService<IFileTagService>();
+            _fileService = ServiceLocator.GetRequiredService<IFileService>();
+            _tagService = ServiceLocator.GetRequiredService<ITagService>();
         }
 
         #endregion Constructors
@@ -64,7 +75,7 @@ namespace ImoutoViewer.ViewModel
             }
         }
 
-        public int? CurrentId { get; private set; }
+        public Guid? CurrentId { get; private set; }
 
         #endregion Properties
 
@@ -95,8 +106,8 @@ namespace ImoutoViewer.ViewModel
                     {
                         if (_currentPath == path)
                         {
-                            NotesReload(tagsAndNotes.Item2);
-                            TagsReload(tagsAndNotes.Item1);
+                            NotesReload(tagsAndNotes.Notes);
+                            TagsReload(tagsAndNotes.Tags);
                         }
                     }
                 }
@@ -178,92 +189,42 @@ namespace ImoutoViewer.ViewModel
 
         #region Private methods
 
-        private Task CreateTagTask(CreateTagVM createTagVM)
+        private Task CreateTagTask(CreateTagVM createTagVm)
         {
-            // TODO create tag
-            //return Task.Run(() =>
-            //{
-            //    ImoutoService.Use(imoutoService =>
-            //    {
-            //        imoutoService.CreateTag(new Tag
-            //        {
-            //            HasValue = createTagVM.HasValue,
-            //            SynonymsCollection = createTagVM.SynonymsCollection,
-            //            Title = createTagVM.Title,
-            //            Type = createTagVM.SelectedType
-            //        });
-            //    });
-            //});
-
-            return Task.CompletedTask;
+            return _tagService.CreateTag(
+                createTagVm.SelectedType.Id,
+                createTagVm.Title,
+                createTagVm.HasValue,
+                createTagVm.SynonymsCollection);
         }
 
-        private Task<Tuple<List<BindedTag>, List<NoteM>>> LoadTagsTask(string path)
+        private async Task<(IReadOnlyCollection<FileTag> Tags, IReadOnlyCollection<NoteM> Notes)> LoadTagsTask(string path)
         {
-            // TODO load tags and notes
+            var md5Hash = await new FileInfo(path).GetMd5ChecksumAsync();
+            var files = await _fileService.SearchFiles(md5Hash);
 
-            //return Task.Run(() =>
-            //{
-            //    var id = ImoutoService.Use(imoutoService =>
-            //    {
-            //        return imoutoService.GetImageId(path);
-            //    });
+            if (!files.Any())
+            {
+                return
+                (
+                    Array.Empty<FileTag>().ToList(),
+                    Array.Empty<NoteM>().ToList()
+                );
+            }
 
-            //    string md5;
-            //    ContainsType containsType = ContainsType.None;
-            //    if (!id.HasValue)
-            //    {
-            //        md5 = new FileInfo(path).GetMd5Checksum();
-            //        id = ImoutoService.Use(imoutoService =>
-            //        {
-            //            return imoutoService.GetImageId(md5: md5);
-            //        });
+            var file = files.First();
 
-            //        if (!id.HasValue)
-            //        {
+            var tags = await _fileTagService.GetFileTags(file.Id);
 
-            //            containsType = ImoutoService.Use(imoutoService =>
-            //            {
-            //                return imoutoService.GetContainsType(md5);
-            //            });
-            //        }
-            //    }                
-
-            //    CurrentId = id;
-            //    var tags = new List<BindedTag>();
-            //    var notes = new List<NoteM>();
-
-            //    if (CurrentId.HasValue)
-            //    {
-            //        tags = ImoutoService.Use(imoutoService =>
-            //        {
-            //            return imoutoService.GetImageTags(CurrentId.Value);
-            //        });
-            //        notes = ImoutoService.Use(imoutoService =>
-            //        {
-            //            return imoutoService.GetImageNotes(CurrentId.Value)
-            //                                .Select(WcfMapper.MapNote)
-            //                                .ToList();
-            //        });
-            //    }
-            //    else if (containsType == ContainsType.Relative)
-            //    {
-            //        tags.Add(new BindedTag { Source = Source.Virtual, Tag = new Tag { Type = new TagType { Color = 0, Title = "Virtual" }, Title = "HasRelative" } });
-            //    }
-                
-
-            //    return new Tuple<List<BindedTag>, List<NoteM>>(tags, notes);
-            //});
-
-
-            return Task.FromResult(
-                new Tuple<List<BindedTag>, List<NoteM>>(
-                    Array.Empty<BindedTag>().ToList(),
-                    Array.Empty<NoteM>().ToList()));
+            return
+            (
+                tags,
+                Array.Empty<NoteM>().ToList()
+            );
         }
 
 
-        private void TagsReload(List<BindedTag> tags)
+        private void TagsReload(IReadOnlyCollection<FileTag> tags)
         {
             TagsCollection.Clear();
 
@@ -278,7 +239,7 @@ namespace ImoutoViewer.ViewModel
             OnTagsLoaded();
         }
 
-        private void NotesReload(List<NoteM> notes)
+        private void NotesReload(IReadOnlyCollection<NoteM> notes)
         {
             NotesCollection.Clear();
 
@@ -306,8 +267,11 @@ namespace ImoutoViewer.ViewModel
                 var commonBindedTagVms = SourcesCollection.Last()
                                                           .TagsCollection;
 
-                TagsCollection.Where(tag => parsedSources.All(x => TagsCollection.Any(tagg => tagg.Source == x && tagg.Title == tag.Title)))
-                              .ForEach(x => commonBindedTagVms.Add(x));
+                TagsCollection.Where(
+                        tag => parsedSources.All(
+                            x => TagsCollection.Any(tagg => tagg.Source == x && tagg.Title == tag.Title)))
+                    .ToList()
+                    .ForEach(x => commonBindedTagVms.Add(x));
 
                 for (var i = 0; i < commonBindedTagVms.Count;)
                 {
@@ -335,15 +299,18 @@ namespace ImoutoViewer.ViewModel
                     Title = source
                 });
 
-                TagsCollection.Where(x => x.Source == source && (SourcesCollection.FirstOrDefault()
-                                                                                  ?.TagsCollection
-                                                                                  ?.All(y => y.Title != x.Title) ?? false))
-                              .ForEach(x => SourcesCollection.Last()
-                                                             .TagsCollection.Add(x));
+                TagsCollection.Where(
+                        x => x.Source == source && (SourcesCollection.FirstOrDefault()
+                            ?.TagsCollection
+                            ?.All(y => y.Title != x.Title) ?? false))
+                    .ToList()
+                    .ForEach(
+                        x => SourcesCollection.Last()
+                            .TagsCollection.Add(x));
             }
         }
 
-        private Task UnbindTagTask(int imageId, int tagId)
+        private Task UnbindTagTask(Guid imageId, Guid tagId)
         {
             // TODO remove tag
 

@@ -1,12 +1,12 @@
 ﻿using System;
 
-namespace ImoutoViewer.ImoutoRebirthNavigator.NavigatorArgs
+namespace ImoutoViewer.ImoutoRebirth.NavigatorArgs
 {
     internal class SearchTagDto
     {
         public Guid TagId { get; }
 
-        public string Value { get; }
+        public string? Value { get; }
 
         public SearchType SearchType { get; }
 

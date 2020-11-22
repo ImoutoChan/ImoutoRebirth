@@ -102,7 +102,7 @@ namespace ImoutoViewer
             }
             else if (e.Key == Key.Escape)
             {
-                (DataContext as MainWindowVM).IsSlideshowActive = false;
+                (DataContext as MainWindowVM).IsSlideShowActive = false;
                 DeactivateFullscreen();
             }
         }
