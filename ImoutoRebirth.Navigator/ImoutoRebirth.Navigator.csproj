@@ -3,8 +3,16 @@
   <PropertyGroup>
     <OutputType>WinExe</OutputType>
     <TargetFramework>net5.0-windows</TargetFramework>
-    <UseWPF>true</UseWPF>
     <Nullable>enable</Nullable>
+    <LangVersion>9.0</LangVersion>
+    <TieredCompilation>true</TieredCompilation>
+    <UseWPF>true</UseWPF>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <Company>ImoutoRebirth</Company>
+    <Product>Imouto Navigator</Product>
+    <Copyright>ImoutoChan ©  2013-2020</Copyright>
   </PropertyGroup>
 
   <ItemGroup>
