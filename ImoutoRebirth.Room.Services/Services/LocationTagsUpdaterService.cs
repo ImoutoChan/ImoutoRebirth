@@ -73,6 +73,11 @@ namespace ImoutoRebirth.Room.Core.Services
                 new DirectoryInfo(sourceFolder.Path),
                 sourceFolder.SupportedExtensions);
 
+            _logger.LogInformation(
+                "Updating location tags for {SourceFolder}, found {Count} new files",
+                sourceFolder.Path,
+                allFiles.Count);
+            
             foreach (var file in allFiles)
             {
                 var foundFiles = await _collectionFileRepository.SearchByQuery(
@@ -87,7 +92,12 @@ namespace ImoutoRebirth.Room.Core.Services
                 var foundFile = foundFiles.FirstOrDefault();
 
                 if (foundFile == default)
+                {
+                    _logger.LogWarning(
+                        "File {FilePath} was not found in collection",
+                        file.FullName);
                     continue;
+                }
 
                 var tags = _sourceTagsProvider.GetTags(sourceFolder, file);
 
