@@ -11,25 +11,31 @@ namespace ImoutoRebirth.Room.Core.Services
     {
         public IReadOnlyCollection<string> GetTags(SourceFolder sourceDirectory, FileInfo fileInfo)
         {
-            static string[] GetPathParts(string path)
-                => path.Split(
-                    new[]
-                    {
-                        Path.VolumeSeparatorChar,
-                        Path.AltDirectorySeparatorChar,
-                        Path.DirectorySeparatorChar,
-                        Path.PathSeparator
-                    },
-                    StringSplitOptions.RemoveEmptyEntries);
-
-            var directory = fileInfo.Directory;
-            if (directory == null)
-                return Array.Empty<string>();
-
-            var sourcePathEntries = GetPathParts(sourceDirectory.Path);
-            var filePathEntries = GetPathParts(directory.FullName);
+            var sourcePathEntries = GetPathParts(new DirectoryInfo(sourceDirectory.Path));
+            var filePathEntries = GetPathParts(fileInfo);
 
             return filePathEntries.Except(sourcePathEntries).ToArray();
+        }
+
+        private static IEnumerable<string> GetPathParts(DirectoryInfo directoryInfo)
+        {
+            var directory = directoryInfo;
+
+            while(directory != null)
+            {
+                yield return directory.Name;
+                directory = directory.Parent;
+            }
+        }
+
+        private static IEnumerable<string> GetPathParts(FileInfo fileInfo)
+        {
+            yield return fileInfo.Name;
+
+            foreach (var directoryPart in GetPathParts(fileInfo.Directory))
+            {
+                yield return directoryPart;
+            }
         }
     }
 }
