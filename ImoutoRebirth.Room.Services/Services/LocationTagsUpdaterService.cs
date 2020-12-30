@@ -49,7 +49,7 @@ namespace ImoutoRebirth.Room.Core.Services
 
                 foreach (var collection in collections)
                 {
-                    if (collection.DestinationFolder != null)
+                    if (collection.DestinationFolder.GetDestinationDirectory() != null)
                         continue;
 
                     foreach (var sourceFolder in collection.SourceFolders)
