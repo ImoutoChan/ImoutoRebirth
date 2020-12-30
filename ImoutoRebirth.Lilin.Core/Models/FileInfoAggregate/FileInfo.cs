@@ -35,11 +35,17 @@ namespace ImoutoRebirth.Lilin.Core.Models.FileInfoAggregate
 
             foreach (var tag in updateData.Tags)
             {
+                if (_tags.Any(x => x.Equals(tag)))
+                    continue;
+                
                 _tags.Add(tag);
             }
 
             foreach (var note in updateData.Notes)
             {
+                if (_notes.Any(x => x.IsSameIdentity(note)))
+                    _notes = _notes.Where(x => !x.IsSameIdentity(note)).ToList();
+
                 _notes.Add(note);
             }
 
