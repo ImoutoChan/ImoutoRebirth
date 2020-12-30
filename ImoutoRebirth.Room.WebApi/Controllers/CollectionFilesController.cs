@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
 using AutoMapper;
+using ImoutoRebirth.Room.Core.Services.Abstract;
 using ImoutoRebirth.Room.DataAccess.Exceptions;
 using ImoutoRebirth.Room.DataAccess.Repositories.Abstract;
 using ImoutoRebirth.Room.DataAccess.Repositories.Queries;
@@ -17,14 +18,17 @@ namespace ImoutoRebirth.Room.WebApi.Controllers
     public class CollectionFilesController : ControllerBase
     {
         private readonly ICollectionFileRepository _collectionFileRepository;
+        private readonly ILocationTagsUpdaterService _locationTagsUpdaterService;
         private readonly IMapper _mapper;
 
         public CollectionFilesController(
             ICollectionFileRepository collectionFileRepository,
-            IMapper mapper)
+            IMapper mapper,
+            ILocationTagsUpdaterService locationTagsUpdaterService)
         {
             _collectionFileRepository = collectionFileRepository;
             _mapper = mapper;
+            _locationTagsUpdaterService = locationTagsUpdaterService;
         }
 
         /// <summary>
@@ -57,6 +61,18 @@ namespace ImoutoRebirth.Room.WebApi.Controllers
             var count = await _collectionFileRepository.CountByQuery(query);
             return count;
         }
+
+        /// <summary>
+        ///     Get new tags.
+        /// </summary>
+        /// <remarks>
+        ///     Note that Skip and Count fields are ignored.
+        /// </remarks>
+        /// <returns>The count of files that was found by request.</returns>
+        [HttpPost("updateSourceTags")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task UpdateSourceTags() => await _locationTagsUpdaterService.UpdateLocationTags();
 
         /// <summary>
         ///     Remove file with id.

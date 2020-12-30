@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using ImoutoRebirth.Room.Core.Models;
 
@@ -8,6 +9,6 @@ namespace ImoutoRebirth.Room.Core.Services.Abstract
     {
         Task UpdateMetadataRequest(Guid fileId, string md5);
 
-        Task SaveTags(Guid fileId, MovedInformation movedInformation);
+        Task SaveTags(Guid fileId, IReadOnlyCollection<string> tags);
     }
 }

@@ -18,6 +18,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\ImoutoRebirth.Room.DataAccess\ImoutoRebirth.Room.DataAccess.csproj" />
+    <ProjectReference Include="..\ImoutoRebirth.Room.Services\ImoutoRebirth.Room.Core.csproj" />
   </ItemGroup>
 
 </Project>

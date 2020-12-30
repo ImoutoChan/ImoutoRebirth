@@ -13,6 +13,8 @@ namespace ImoutoRebirth.Room.Core
             services.AddTransient<ICollectionFileService, CollectionFileService>();
             services.AddTransient<IFileSystemActualizationService, FileSystemActualizationService>();
             services.AddTransient<IOverseeService, OverseeService>();
+            services.AddTransient<ISourceTagsProvider, SourceTagsProvider>();
+            services.AddTransient<ILocationTagsUpdaterService, LocationTagsUpdaterService>();
 
             return services;
         }

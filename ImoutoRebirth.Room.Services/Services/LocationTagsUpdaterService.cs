@@ -1,0 +1,107 @@
+﻿using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Threading.Tasks;
+using ImoutoRebirth.Room.Core.Services.Abstract;
+using ImoutoRebirth.Room.DataAccess.Models;
+using ImoutoRebirth.Room.DataAccess.Repositories.Abstract;
+using ImoutoRebirth.Room.DataAccess.Repositories.Queries;
+using Microsoft.Extensions.Logging;
+
+namespace ImoutoRebirth.Room.Core.Services
+{
+    public class LocationTagsUpdaterService : ILocationTagsUpdaterService
+    {
+        private readonly ICollectionRepository _collectionRepository;
+        private readonly ILogger _logger;
+        private readonly ISourceTagsProvider _sourceTagsProvider;
+        private readonly ICollectionFileRepository _collectionFileRepository;
+        private readonly IFileService _fileService;
+        private readonly IRemoteCommandService _remoteCommandService;
+
+        public LocationTagsUpdaterService(
+            ICollectionRepository collectionRepository,
+            ILogger<OverseeService> logger,
+            ISourceTagsProvider sourceTagsProvider,
+            ICollectionFileRepository collectionFileRepository,
+            IFileService fileService,
+            IRemoteCommandService remoteCommandService)
+        {
+            _collectionRepository = collectionRepository;
+            _logger = logger;
+            _sourceTagsProvider = sourceTagsProvider;
+            _collectionFileRepository = collectionFileRepository;
+            _fileService = fileService;
+            _remoteCommandService = remoteCommandService;
+        }
+
+        /// <summary>
+        /// Updates location tags of all files in collections, where:
+        ///     1. Destination Folder is null;
+        ///     2. Source Folder is marked with ShouldAddTagFromFilename flag.
+        /// </summary>
+        public async Task UpdateLocationTags()
+        {
+            try
+            {
+                var collections = await LoadCollections();
+
+                foreach (var collection in collections)
+                {
+                    if (collection.DestinationFolder != null)
+                        continue;
+
+                    foreach (var sourceFolder in collection.SourceFolders)
+                    {
+                        if (!sourceFolder.ShouldAddTagFromFilename)
+                            continue;
+
+                        await UpdateLocationTagsInSourceFolder(sourceFolder);
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e, "An error occurred while updating local tags");
+            }
+        }
+
+        private async Task UpdateLocationTagsInSourceFolder(SourceFolder sourceFolder)
+        {
+            var allFiles = _fileService.GetFiles(
+                new DirectoryInfo(sourceFolder.Path),
+                sourceFolder.SupportedExtensions);
+
+            foreach (var file in allFiles)
+            {
+                var foundFiles = await _collectionFileRepository.SearchByQuery(
+                    new CollectionFilesQuery(
+                        default,
+                        Array.Empty<Guid>(),
+                        file.FullName,
+                        Array.Empty<string>(),
+                        1,
+                        0));
+                
+                var foundFile = foundFiles.FirstOrDefault();
+
+                if (foundFile == default)
+                    continue;
+
+                var tags = _sourceTagsProvider.GetTags(sourceFolder, file);
+
+                _logger.LogInformation(
+                    "Saving location tags for {FileId} {FilePath} {Tags}",
+                    foundFile.Id,
+                    foundFile.Path,
+                    tags);
+                
+                await _remoteCommandService.SaveTags(foundFile.Id, tags);
+            }
+        }
+
+        private async Task<IReadOnlyCollection<OversawCollection>> LoadCollections() 
+            => await _collectionRepository.GetAllOversaw();
+    }
+}

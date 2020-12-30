@@ -70,7 +70,7 @@ namespace ImoutoRebirth.Room.Core.Services
             _logger.LogInformation("{NewFilesSavedCount} files saved", movedFiles.Count);
 
 
-            await movedFiles.Select(x => _remoteCommandService.SaveTags(x.FileId, x.MovedInformation))
+            await movedFiles.Select(x => _remoteCommandService.SaveTags(x.FileId, x.MovedInformation.SourceTags))
                 .WhenAll();
 
             await movedFiles
@@ -116,7 +116,7 @@ namespace ImoutoRebirth.Room.Core.Services
             }
             catch (Exception e)
             {
-                _logger.LogError(e, "Error occured while moving file");
+                _logger.LogError(e, "Error occurred while moving file");
                 return new MovedInformation(moveInformation, false, moveInformation.SystemFile.File);
             }
         }

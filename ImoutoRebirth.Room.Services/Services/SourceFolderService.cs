@@ -19,17 +19,20 @@ namespace ImoutoRebirth.Room.Core.Services
         private readonly IFileService _fileService;
         private readonly IImageService _imageService;
         private readonly ICollectionFileRepository _collectionFileRepository;
+        private readonly ISourceTagsProvider _sourceTagsProvider;
 
         public SourceFolderService(
             ILogger<SourceFolderService> logger,
             IFileService fileService,
             IImageService imageService,
-            ICollectionFileRepository collectionFileRepository)
+            ICollectionFileRepository collectionFileRepository,
+            ISourceTagsProvider sourceTagsProvider)
         {
             _logger = logger;
             _fileService = fileService;
             _imageService = imageService;
             _collectionFileRepository = collectionFileRepository;
+            _sourceTagsProvider = sourceTagsProvider;
         }
 
         public async Task<IReadOnlyCollection<MoveInformation>> GetNewFiles(SourceFolder forSourceFolder)
@@ -127,7 +130,7 @@ namespace ImoutoRebirth.Room.Core.Services
 
             if (sourceFolder.ShouldAddTagFromFilename)
             {
-                moveInformation.SourceTags.AddRange(GetTags(sourceFolder, fileInfo));
+                moveInformation.SourceTags.AddRange(_sourceTagsProvider.GetTags(sourceFolder, fileInfo));
             }
 
             if (sourceFolder.ShouldCreateTagsFromSubfolders)
@@ -143,29 +146,6 @@ namespace ImoutoRebirth.Room.Core.Services
             var md5 = _fileService.GetMd5Checksum(file);
 
             return new SystemFile(file, md5, file.Length);
-        }
-        
-        private static IReadOnlyCollection<string> GetTags(SourceFolder sourceDirectory, FileInfo fileInfo)
-        {
-            static string[] GetPathParts(string path)
-                => path.Split(
-                    new[]
-                    {
-                        Path.VolumeSeparatorChar,
-                        Path.AltDirectorySeparatorChar,
-                        Path.DirectorySeparatorChar,
-                        Path.PathSeparator
-                    },
-                    StringSplitOptions.RemoveEmptyEntries);
-
-            var directory = fileInfo.Directory;
-            if (directory == null)
-                return Array.Empty<string>();
-
-            var sourcePathEntries = GetPathParts(sourceDirectory.Path);
-            var filePathEntries = GetPathParts(directory.FullName);
-
-            return filePathEntries.Except(sourcePathEntries).ToArray();
         }
 
         private async Task<MoveProblem> FindProblems(SourceFolder sourceDirectory, SystemFile systemFile)
