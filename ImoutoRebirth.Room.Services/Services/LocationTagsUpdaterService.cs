@@ -54,7 +54,7 @@ namespace ImoutoRebirth.Room.Core.Services
 
                     foreach (var sourceFolder in collection.SourceFolders)
                     {
-                        if (!sourceFolder.ShouldAddTagFromFilename)
+                        if (!sourceFolder.ShouldAddTagFromFilename && !sourceFolder.ShouldCreateTagsFromSubfolders)
                             continue;
 
                         await UpdateLocationTagsInSourceFolder(sourceFolder);
@@ -99,15 +99,23 @@ namespace ImoutoRebirth.Room.Core.Services
                     continue;
                 }
 
-                var tags = _sourceTagsProvider.GetTags(sourceFolder, file);
+                IEnumerable<string> tags = Array.Empty<string>();
+                
+                if (sourceFolder.ShouldAddTagFromFilename)
+                    tags = tags.Union(_sourceTagsProvider.GetTagsFromName(file));
+                
+                if (sourceFolder.ShouldCreateTagsFromSubfolders)
+                    tags = tags.Union(_sourceTagsProvider.GetTagsFromPath(sourceFolder, file));
 
+                var readyTags = tags.ToList();
+                
                 _logger.LogInformation(
                     "Saving location tags for {FileId} {FilePath} {Tags}",
                     foundFile.Id,
                     foundFile.Path,
-                    tags);
+                    readyTags);
                 
-                await _remoteCommandService.SaveTags(foundFile.Id, tags);
+                await _remoteCommandService.SaveTags(foundFile.Id, readyTags);
             }
         }
 

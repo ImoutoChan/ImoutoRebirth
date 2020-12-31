@@ -27,8 +27,16 @@ namespace ImoutoRebirth.Room.Core.Services
         {
             if (moveInformation.MoveProblem == MoveProblem.AlreadyContains)
             {
-                moveInformation.SystemFile.File.Delete();
-                _logger.LogWarning("File with this md5 already contains in database. Md5: {Md5} File: {NewFile}.");
+                var shouldDelete = destinationFolder.GetDestinationDirectory() != null;
+                if (shouldDelete)
+                    moveInformation.SystemFile.File.Delete();
+                
+                _logger.LogWarning(
+                    "File with this md5 already contains in database. Md5: {Md5} File: {NewFile}. File deleted {FileDeleted}.",
+                    moveInformation.SystemFile.Md5,
+                    moveInformation.SystemFile.File.FullName,
+                    shouldDelete);
+
                 return new MovedInformation(
                     moveInformation,
                     false,
@@ -127,8 +135,7 @@ namespace ImoutoRebirth.Room.Core.Services
 
             AddDestinationFolder(destinationFolder, moveInformation, newPathParts);
 
-            var problemSubfolder = GetProblemSubfolder(destinationFolder,
-                moveInformation.MoveProblem);
+            var problemSubfolder = GetProblemSubfolder(destinationFolder, moveInformation.MoveProblem);
 
             var renamed = false;
 

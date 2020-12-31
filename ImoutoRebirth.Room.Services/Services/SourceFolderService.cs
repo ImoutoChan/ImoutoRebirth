@@ -130,12 +130,12 @@ namespace ImoutoRebirth.Room.Core.Services
 
             if (sourceFolder.ShouldAddTagFromFilename)
             {
-                moveInformation.SourceTags.AddRange(_sourceTagsProvider.GetTags(sourceFolder, fileInfo));
+                moveInformation.SourceTags.AddRange(_sourceTagsProvider.GetTagsFromName(fileInfo));
             }
 
             if (sourceFolder.ShouldCreateTagsFromSubfolders)
             {
-                moveInformation.SourceTags.Add(fileInfo.Name);
+                moveInformation.SourceTags.AddRange(_sourceTagsProvider.GetTagsFromPath(sourceFolder, fileInfo));
             }
 
             return moveInformation;

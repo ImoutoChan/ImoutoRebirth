@@ -6,6 +6,8 @@ namespace ImoutoRebirth.Room.Core.Services.Abstract
 {
     public interface ISourceTagsProvider
     {
-        IReadOnlyCollection<string> GetTags(SourceFolder sourceDirectory, FileInfo fileInfo);
+        IReadOnlyCollection<string> GetTagsFromName(FileInfo fileInfo);
+        
+        IReadOnlyCollection<string> GetTagsFromPath(SourceFolder sourceDirectory, FileInfo fileInfo);
     }
 }

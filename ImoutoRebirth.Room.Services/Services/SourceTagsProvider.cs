@@ -9,7 +9,13 @@ namespace ImoutoRebirth.Room.Core.Services
 {
     internal class SourceTagsProvider : ISourceTagsProvider
     {
-        public IReadOnlyCollection<string> GetTags(SourceFolder sourceDirectory, FileInfo fileInfo)
+        public IReadOnlyCollection<string> GetTagsFromName(FileInfo fileInfo) 
+            => new[] {fileInfo.Name};
+
+        public IReadOnlyCollection<string> GetTagsFromPath(SourceFolder sourceDirectory, FileInfo fileInfo) 
+            => GetTags(sourceDirectory, fileInfo);
+
+        private IReadOnlyCollection<string> GetTags(SourceFolder sourceDirectory, FileInfo fileInfo)
         {
             var sourcePathEntries = GetPathParts(new DirectoryInfo(sourceDirectory.Path));
             var filePathEntries = GetPathParts(fileInfo);
@@ -30,8 +36,6 @@ namespace ImoutoRebirth.Room.Core.Services
 
         private static IEnumerable<string> GetPathParts(FileInfo fileInfo)
         {
-            yield return fileInfo.Name;
-
             foreach (var directoryPart in GetPathParts(fileInfo.Directory))
             {
                 yield return directoryPart;
