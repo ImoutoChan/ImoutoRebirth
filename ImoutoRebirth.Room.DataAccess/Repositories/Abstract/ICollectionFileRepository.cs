@@ -18,6 +18,6 @@ namespace ImoutoRebirth.Room.DataAccess.Repositories.Abstract
 
         Task Remove(Guid id);
 
-        Task<bool> ContainsAnyWithMd5(Guid collectionId, string md5);
+        Task<string?> GetWithMd5(Guid collectionId, string md5);
     }
 }

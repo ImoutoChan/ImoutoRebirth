@@ -41,11 +41,7 @@ namespace ImoutoRebirth.Room.DataAccess.Repositories
 
         public async Task<bool> AnyWithPath(Guid collectionId, string path)
         {
-            return await _collectionFileCacheService.GetResultOrCreateFilterAsync(
-                collectionId,
-                path,
-                CheckInDatabaseWithRemoved,
-                GetFromDatabaseWithRemoved);
+            return await CheckInDatabaseWithRemoved(collectionId, path);
         }
 
         public async Task<IReadOnlyCollection<CollectionFile>> SearchByQuery(CollectionFilesQuery query)
@@ -82,8 +78,13 @@ namespace ImoutoRebirth.Room.DataAccess.Repositories
             await _roomDbContext.SaveChangesAsync();
         }
 
-        public async Task<bool> ContainsAnyWithMd5(Guid collectionId, string md5) 
-            => await _roomDbContext.CollectionFiles.AnyAsync(x => x.Md5 == md5 && x.CollectionId == collectionId);
+        public async Task<string?> GetWithMd5(Guid collectionId, string md5)
+        {
+            var file = await _roomDbContext.CollectionFiles.FirstOrDefaultAsync(
+                x => x.Md5 == md5 && x.CollectionId == collectionId);
+
+            return file?.OriginalPath;
+        }
 
         private IQueryable<CollectionFileEntity> BuildFilesQuery(CollectionFilesQuery query)
         {

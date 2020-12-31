@@ -150,8 +150,19 @@ namespace ImoutoRebirth.Room.Core.Services
 
         private async Task<MoveProblem> FindProblems(SourceFolder sourceDirectory, SystemFile systemFile)
         {
-            if (await _collectionFileRepository.ContainsAnyWithMd5(sourceDirectory.CollectionId, systemFile.Md5))
+            var existingFile = await _collectionFileRepository
+                .GetWithMd5(sourceDirectory.CollectionId, systemFile.Md5);
+            
+            if (existingFile != null)
             {
+                _logger.LogWarning(
+                    "File with the same md5 {Md5} already presented in the database. " 
+                        + "NewFile: {NewFile}. " 
+                        + "ExistingFile: {ExistingFile}.",
+                    systemFile.Md5,
+                    systemFile.File.FullName,
+                    existingFile);
+                
                 return MoveProblem.AlreadyContains;
             }
 
