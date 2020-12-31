@@ -9,6 +9,8 @@ namespace ImoutoRebirth.Room.DataAccess
     {
         public static IServiceCollection AddRoomDataAccess(this IServiceCollection services)
         {
+            services.AddMemoryCache();
+            
             services.AddTransient<ICollectionFileRepository, CollectionFileRepository>();
             services.AddTransient<IDbStateService, DbStateService>();
             services.AddTransient<ICollectionRepository, CollectionRepository>();
