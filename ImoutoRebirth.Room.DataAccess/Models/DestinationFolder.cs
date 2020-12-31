@@ -36,6 +36,6 @@ namespace ImoutoRebirth.Room.DataAccess.Models
             WithoutHashErrorSubfolder = withoutHashErrorSubfolder;
         }
 
-        public abstract DirectoryInfo GetDestinationDirectory();
+        public abstract DirectoryInfo? GetDestinationDirectory();
     }
 }

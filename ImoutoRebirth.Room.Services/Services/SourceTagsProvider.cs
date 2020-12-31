@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using ImoutoRebirth.Room.Core.Services.Abstract;
@@ -15,7 +14,7 @@ namespace ImoutoRebirth.Room.Core.Services
         public IReadOnlyCollection<string> GetTagsFromPath(SourceFolder sourceDirectory, FileInfo fileInfo) 
             => GetTags(sourceDirectory, fileInfo);
 
-        private IReadOnlyCollection<string> GetTags(SourceFolder sourceDirectory, FileInfo fileInfo)
+        private static IReadOnlyCollection<string> GetTags(SourceFolder sourceDirectory, FileInfo fileInfo)
         {
             var sourcePathEntries = GetPathParts(new DirectoryInfo(sourceDirectory.Path));
             var filePathEntries = GetPathParts(fileInfo);
@@ -36,6 +35,9 @@ namespace ImoutoRebirth.Room.Core.Services
 
         private static IEnumerable<string> GetPathParts(FileInfo fileInfo)
         {
+            if (fileInfo.Directory == null)
+                yield break;
+            
             foreach (var directoryPart in GetPathParts(fileInfo.Directory))
             {
                 yield return directoryPart;

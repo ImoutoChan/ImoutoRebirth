@@ -14,7 +14,7 @@ namespace ImoutoRebirth.Room.DataAccess.Repositories.Queries
 
         public string Path { get; }
 
-        public IReadOnlyCollection<string> Md5 { get; }
+        public IReadOnlyCollection<string>? Md5 { get; }
 
         public int? Count { get; }
 

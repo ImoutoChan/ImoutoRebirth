@@ -74,7 +74,7 @@ namespace ImoutoRebirth.Room.Core.Services
             if (!oldFile.File.Exists)
                 throw new ArgumentException(nameof(oldFile));
 
-            if (!newFile.Directory.Exists)
+            if (newFile.Directory != null && !newFile.Directory.Exists)
             {
                 _logger.LogInformation("Creating target directory {NewDirectory}", newFile.Directory);
                 newFile.Directory.Create();
@@ -127,7 +127,7 @@ namespace ImoutoRebirth.Room.Core.Services
             return true;
         }
 
-        private string GetNewPath(
+        private static string GetNewPath(
             DestinationFolder destinationFolder,
             MoveInformation moveInformation)
         {
@@ -180,7 +180,7 @@ namespace ImoutoRebirth.Room.Core.Services
         private static void AddDestinationFolder(
             DestinationFolder destinationFolder,
             MoveInformation moveInformation,
-            List<string> newPathParts)
+            ICollection<string> newPathParts)
         {
             var destDirectory = destinationFolder.GetDestinationDirectory();
 
@@ -194,22 +194,17 @@ namespace ImoutoRebirth.Room.Core.Services
             }
         }
 
-        private string GetProblemSubfolder(DestinationFolder destinationDirectory,
+        private static string? GetProblemSubfolder(DestinationFolder destinationDirectory,
             MoveProblem moveProblem)
         {
-            switch (moveProblem)
+            return moveProblem switch
             {
-                case MoveProblem.None:
-                    return null;
-                case MoveProblem.InvalidFormat:
-                    return destinationDirectory.FormatErrorSubfolder;
-                case MoveProblem.WithoutHash:
-                    return destinationDirectory.WithoutHashErrorSubfolder;
-                case MoveProblem.IncorrectHash:
-                    return destinationDirectory.HashErrorSubfolder;
-                default:
-                    throw new ArgumentOutOfRangeException(nameof(moveProblem), moveProblem, null);
-            }
+                MoveProblem.None => null,
+                MoveProblem.InvalidFormat => destinationDirectory.FormatErrorSubfolder,
+                MoveProblem.WithoutHash => destinationDirectory.WithoutHashErrorSubfolder,
+                MoveProblem.IncorrectHash => destinationDirectory.HashErrorSubfolder,
+                _ => throw new ArgumentOutOfRangeException(nameof(moveProblem), moveProblem, null)
+            };
         }
     }
 }

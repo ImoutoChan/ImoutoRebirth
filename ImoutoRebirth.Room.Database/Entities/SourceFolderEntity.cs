@@ -10,13 +10,13 @@ namespace ImoutoRebirth.Room.Database.Entities
     {
         private const string SupportedExtensionsSeparator = ";";
 
-        private string _supportedExtensions;
+        private string? _supportedExtensions;
 
         [ForeignKey(nameof(Collection))]
         public Guid CollectionId { get; set; }
 
         [Required]
-        public string Path { get; set; }
+        public string Path { get; set; } = default!;
 
         public bool ShouldCheckFormat { get; set; }
 
@@ -27,13 +27,16 @@ namespace ImoutoRebirth.Room.Database.Entities
         public bool ShouldAddTagFromFilename { get; set; }
 
         [NotMapped]
-        public IReadOnlyCollection<string> SupportedExtensionCollection
+        public IReadOnlyCollection<string>? SupportedExtensionCollection
         {
-            get => _supportedExtensions
-                ?.Split(new[] {SupportedExtensionsSeparator}, StringSplitOptions.RemoveEmptyEntries);
-            set => _supportedExtensions = value != null ? string.Join(SupportedExtensionsSeparator, value) : null;
+            get => _supportedExtensions?.Split(
+                    new[] {SupportedExtensionsSeparator}, 
+                    StringSplitOptions.RemoveEmptyEntries);
+            set => _supportedExtensions = value != null 
+                ? string.Join(SupportedExtensionsSeparator, value) 
+                : null;
         }
 
-        public CollectionEntity Collection { get; set; }
+        public CollectionEntity? Collection { get; set; }
     }
 }

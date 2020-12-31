@@ -4,6 +4,6 @@ namespace ImoutoRebirth.Room.Webhost.Settings
 {
     public class RoomAppSettings
     {
-        public RabbitSettings RabbitSettings { get; set; }
+        public RabbitSettings RabbitSettings { get; set; } = default!;
     }
 }

@@ -15,7 +15,7 @@ namespace ImoutoRebirth.Room.WebApi.Requests
             _requiredValueNames = requiredValueNames;
         }
 
-        protected override ValidationResult IsValid(object value, ValidationContext validationContext)                 
+        protected override ValidationResult? IsValid(object? value, ValidationContext validationContext)                 
         {
             if (value == null)
                 return ValidationResult.Success;

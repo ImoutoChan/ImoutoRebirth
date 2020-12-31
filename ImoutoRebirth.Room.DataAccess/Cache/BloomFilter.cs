@@ -7,7 +7,7 @@ namespace ImoutoRebirth.Room.DataAccess.Cache
     /// Bloom filter.
     /// </summary>
     /// <typeparam name="T">Item type </typeparam>
-    public class BloomFilter<T>
+    public class BloomFilter<T> where T: notnull
     {
         private readonly int _hashFunctionCount;
         private readonly BitArray _hashBits;
@@ -39,7 +39,7 @@ namespace ImoutoRebirth.Room.DataAccess.Cache
         /// </summary>
         /// <param name="capacity">The anticipated number of items to be added to the filter. More than this number of items can be added, but the error rate will exceed what is expected.</param>
         /// <param name="hashFunction">The function to hash the input values. Do not use GetHashCode(). If it is null, and T is string or int a hash function will be provided for you.</param>
-        public BloomFilter(int capacity, HashFunction hashFunction)
+        public BloomFilter(int capacity, HashFunction? hashFunction)
             : this(capacity, BestErrorRate(capacity), hashFunction)
         {
         }
@@ -50,7 +50,7 @@ namespace ImoutoRebirth.Room.DataAccess.Cache
         /// <param name="capacity">The anticipated number of items to be added to the filter. More than this number of items can be added, but the error rate will exceed what is expected.</param>
         /// <param name="errorRate">The accepable false-positive rate (e.g., 0.01F = 1%)</param>
         /// <param name="hashFunction">The function to hash the input values. Do not use GetHashCode(). If it is null, and T is string or int a hash function will be provided for you.</param>
-        public BloomFilter(int capacity, float errorRate, HashFunction hashFunction)
+        public BloomFilter(int capacity, float errorRate, HashFunction? hashFunction)
             : this(capacity, errorRate, hashFunction, BestM(capacity, errorRate), BestK(capacity, errorRate))
         {
         }
@@ -63,7 +63,7 @@ namespace ImoutoRebirth.Room.DataAccess.Cache
         /// <param name="hashFunction">The function to hash the input values. Do not use GetHashCode(). If it is null, and T is string or int a hash function will be provided for you.</param>
         /// <param name="m">The number of elements in the BitArray.</param>
         /// <param name="k">The number of hash functions to use.</param>
-        public BloomFilter(int capacity, float errorRate, HashFunction hashFunction, int m, int k)
+        public BloomFilter(int capacity, float errorRate, HashFunction? hashFunction, int m, int k)
         {
             // validate the params are in range
             if (capacity < 1)
@@ -193,15 +193,18 @@ namespace ImoutoRebirth.Room.DataAccess.Cache
         /// <returns>The hashed result.</returns>
         private static int HashInt32(T input)
         {
-            uint? x = input as uint?;
+            var x = input as uint?;
+            if (x == null)
+                return 0;
+
             unchecked
             {
                 x = ~x + (x << 15); // x = (x << 15) - x- 1, as (~x) + y is equivalent to y - x - 1 in two's complement representation
-                x = x ^ (x >> 12);
-                x = x + (x << 2);
-                x = x ^ (x >> 4);
-                x = x * 2057; // x = (x + (x << 3)) + (x<< 11);
-                x = x ^ (x >> 16);
+                x ^= (x >> 12);
+                x += (x << 2);
+                x ^= (x >> 4);
+                x *= 2057; // x = (x + (x << 3)) + (x<< 11);
+                x ^= (x >> 16);
                 return (int)x;
             }
         }
@@ -214,7 +217,7 @@ namespace ImoutoRebirth.Room.DataAccess.Cache
         /// <returns>The hashed result.</returns>
         private static int HashString(T input)
         {
-            string s = input as string;
+            string s = (input as string)!;
             int hash = 0;
 
             for (int i = 0; i < s.Length; i++)

@@ -16,6 +16,6 @@ namespace ImoutoRebirth.Room.DataAccess.Models
                 DefaultValues.DestinationFolderEntityWithoutHashErrorSubfolder)
         {
         }
-        public override DirectoryInfo GetDestinationDirectory() => null;
+        public override DirectoryInfo? GetDestinationDirectory() => null;
     }
 }

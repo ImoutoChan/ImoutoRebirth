@@ -14,7 +14,7 @@ namespace ImoutoRebirth.Room.Core.Services
         private readonly IFileSystemActualizationService _fileSystemActualizationService;
         private readonly ICollectionRepository _collectionRepository;
         private readonly ILogger _logger;
-        private static readonly SemaphoreSlim SemaphoreSlim = new SemaphoreSlim(1);
+        private static readonly SemaphoreSlim SemaphoreSlim = new(1);
 
         public OverseeService(
             IFileSystemActualizationService fileSystemActualizationService,

@@ -9,13 +9,13 @@ namespace ImoutoRebirth.Room.Database
     public class RoomDbContext : DbContext
     {
 
-        public DbSet<CollectionEntity> Collections { get; set; }
+        public DbSet<CollectionEntity> Collections { get; set; } = default!;
 
-        public DbSet<SourceFolderEntity> SourceFolders { get; set; }
+        public DbSet<SourceFolderEntity> SourceFolders { get; set; } = default!;
 
-        public DbSet<DestinationFolderEntity> DestinationFolders { get; set; }
+        public DbSet<DestinationFolderEntity> DestinationFolders { get; set; } = default!;
 
-        public DbSet<CollectionFileEntity> CollectionFiles { get; set; }
+        public DbSet<CollectionFileEntity> CollectionFiles { get; set; } = default!;
 
         public RoomDbContext(DbContextOptions options)
             : base(options)

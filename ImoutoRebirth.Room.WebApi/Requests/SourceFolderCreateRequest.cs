@@ -6,7 +6,7 @@ namespace ImoutoRebirth.Room.WebApi.Requests
     public class SourceFolderCreateRequest
     {
         [Required]
-        public string Path { get; set; }
+        public string Path { get; set; } = default!;
 
         public bool ShouldCheckFormat { get; set; }
 
@@ -16,6 +16,6 @@ namespace ImoutoRebirth.Room.WebApi.Requests
 
         public bool ShouldAddTagFromFilename { get; set; }
 
-        public IReadOnlyCollection<string> SupportedExtensions { get; set; }
+        public IReadOnlyCollection<string> SupportedExtensions { get; set; } = new List<string>();
     }
 }

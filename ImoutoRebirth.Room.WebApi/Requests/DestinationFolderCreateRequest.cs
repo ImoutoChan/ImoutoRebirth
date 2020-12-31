@@ -5,19 +5,19 @@ namespace ImoutoRebirth.Room.WebApi.Requests
     public class DestinationFolderCreateRequest
     {
         [Required]
-        public string Path { get; set; }
+        public string Path { get; set; } = default!;
 
         public bool ShouldCreateSubfoldersByHash { get; set; }
 
         public bool ShouldRenameByHash { get; set; }
 
         [Required]
-        public string FormatErrorSubfolder { get; set; }
+        public string FormatErrorSubfolder { get; set; } = default!;
 
         [Required]
-        public string HashErrorSubfolder { get; set; }
+        public string HashErrorSubfolder { get; set; } = default!;
 
         [Required]
-        public string WithoutHashErrorSubfolder { get; set; }
+        public string WithoutHashErrorSubfolder { get; set; } = default!;
     }
 }

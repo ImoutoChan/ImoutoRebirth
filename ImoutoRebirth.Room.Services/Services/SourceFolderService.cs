@@ -114,7 +114,7 @@ namespace ImoutoRebirth.Room.Core.Services
             return newFiles;
         }
 
-        private async Task<MoveInformation> PrepareMove(SourceFolder sourceFolder, SystemFile systemFile)
+        private async Task<MoveInformation?> PrepareMove(SourceFolder sourceFolder, SystemFile systemFile)
         {
             var fileInfo = systemFile.File;
 
@@ -166,7 +166,8 @@ namespace ImoutoRebirth.Room.Core.Services
                 {
                     return MoveProblem.WithoutHash;
                 }
-                else if (!string.Equals(nameHash, systemFile.Md5, StringComparison.OrdinalIgnoreCase))
+
+                if (!string.Equals(nameHash, systemFile.Md5, StringComparison.OrdinalIgnoreCase))
                 {
                     return MoveProblem.IncorrectHash;
                 }
@@ -175,7 +176,7 @@ namespace ImoutoRebirth.Room.Core.Services
             return MoveProblem.None;
         }
 
-        private static bool TryGetHashFromFileName(string name, out string hash)
+        private static bool TryGetHashFromFileName(string name, out string? hash)
         {
             hash = null;
             var match = Regex.Match(name, "[0-9a-f]{32}", RegexOptions.IgnoreCase | RegexOptions.Compiled);

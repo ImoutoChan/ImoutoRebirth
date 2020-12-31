@@ -13,6 +13,6 @@ namespace ImoutoRebirth.Room.Core.Models
 
         public MoveProblem MoveProblem { get; set; } = MoveProblem.None;
 
-        public List<string> SourceTags { get; } = new List<string>();
+        public List<string> SourceTags { get; } = new();
     }
 }

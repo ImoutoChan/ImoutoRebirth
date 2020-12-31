@@ -7,11 +7,11 @@ namespace ImoutoRebirth.Room.WebApi.Requests
     {
         public Guid? CollectionId { get; set; }
 
-        public IReadOnlyCollection<Guid> CollectionFileIds { get; set; }
+        public IReadOnlyCollection<Guid>? CollectionFileIds { get; set; }
 
-        public string Path { get; set; }
+        public string? Path { get; set; }
 
-        public IReadOnlyCollection<string> Md5 { get; set; }
+        public IReadOnlyCollection<string>? Md5 { get; set; }
 
         public int? Count { get; set; }
 

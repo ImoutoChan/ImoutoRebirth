@@ -11,18 +11,18 @@ namespace ImoutoRebirth.Room.Database.Entities
         public Guid CollectionId { get; set; }
 
         [Required]
-        public string Path { get; set; }
+        public string Path { get; set; } = default!;
 
         [Required]
         [StringLength(32)]
-        public string Md5 { get; set; }
+        public string Md5 { get; set; } = default!;
 
         public long Size { get; set; }
 
-        public string OriginalPath { get; set; }
+        public string? OriginalPath { get; set; }
 
         public bool IsRemoved { get; set; }
 
-        public CollectionEntity Collection { get; set; }
+        public CollectionEntity Collection { get; set; } = default!;
     }
 }
