@@ -124,7 +124,7 @@ namespace ImoutoViewer.Model
 
         private readonly List<DirectoryInfo> _directoriesList;
         private DirectoryInfo _currentDirectory;
-        private LocalImage _currentImage;
+        private LocalImage? _currentImage;
 
         #endregion Fields
 
@@ -136,7 +136,10 @@ namespace ImoutoViewer.Model
 
         private bool CheckExist(string path) => Path.GetExtension(path) == String.Empty;
 
-        public LocalImageList(IEnumerable<string> imagePaths, int selectedElementId = -1)
+        public LocalImageList(
+            IEnumerable<string> imagePaths,
+            int selectedElementId = -1,
+            string? selectedFilePath = null)
         {
             _imageList = new List<LocalImage>();
             _directoriesList = new List<DirectoryInfo>();
@@ -153,7 +156,7 @@ namespace ImoutoViewer.Model
 
                 _currentDirectory = _directoriesList.First();
                 LoadImages(_currentDirectory);
-                CurrentImage = _imageList.SelectByIndexOrFirst(selectedElementId);
+                CurrentImage = SelectByIndexOrFirst(_imageList, selectedElementId, selectedFilePath);
 
                 IsDirectoryActive = true;
                 return;
@@ -171,7 +174,7 @@ namespace ImoutoViewer.Model
             if (imagesCount > 1)
             {
                 LoadImages(imagesList);
-                CurrentImage = _imageList.SelectByIndexOrFirst(selectedElementId);
+                CurrentImage = SelectByIndexOrFirst(_imageList, selectedElementId, selectedFilePath);
                 _directoriesList.Add((new FileInfo(CurrentImage.Path)).Directory);
                 _currentDirectory = _directoriesList.First();
                 IsDirectoryActive = false;
@@ -217,11 +220,29 @@ namespace ImoutoViewer.Model
             }
         }
 
+        private static LocalImage? SelectByIndexOrFirst(
+            IReadOnlyList<LocalImage> imageList, 
+            int selectedElementId, 
+            string? selectedFilePath)
+        {
+            if (selectedFilePath != null)
+            {
+                var found = imageList.FirstOrDefault(x => x.Path == selectedFilePath);
+                if (found != null)
+                    return found;
+            }
+
+            if (selectedElementId >= 0 && selectedElementId < imageList.Count)
+                return imageList[selectedElementId];
+
+            return imageList.FirstOrDefault();
+        }
+
         #endregion Constructors
 
         #region Properties
 
-        public LocalImage CurrentImage
+        public LocalImage? CurrentImage
         {
             get { return _currentImage; }
             private set

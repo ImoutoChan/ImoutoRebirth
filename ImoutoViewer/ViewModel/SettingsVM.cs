@@ -251,7 +251,7 @@ namespace ImoutoViewer.ViewModel
 
         #region Methods
 
-        private async Task SetFileAssociations()
+        private static async Task SetFileAssociations()
         {
             try
             {
@@ -271,7 +271,7 @@ namespace ImoutoViewer.ViewModel
             catch (UnauthorizedAccessException e)
             {
                 var result = await MainWindow.CurrentWindow.ShowMessageAsync("File association", 
-                    "You need administrative rigths to set assotiations. Application will be restarted with admistrative rights.",
+                    "You need administrative rigths to set associations. Application will be restarted with administrative rights.",
                     MessageDialogStyle.AffirmativeAndNegative);
 
                 if (result == MessageDialogResult.Affirmative)

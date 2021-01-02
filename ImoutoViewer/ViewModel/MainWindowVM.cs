@@ -365,7 +365,7 @@ namespace ImoutoViewer.ViewModel
                     var currentFile = files
                         .FirstOrDefault(x => x == ApplicationProperties.FileNamesToOpen?.FirstOrDefault());
 
-                    _imageList = new LocalImageList(files, currentFile == null ? 0 : files.IndexOf(currentFile));
+                    _imageList = new LocalImageList(files, -1, ApplicationProperties.FileNamesToOpen?.FirstOrDefault());
                 }
             }
             else if (ApplicationProperties.FileNamesToOpen.Any())
