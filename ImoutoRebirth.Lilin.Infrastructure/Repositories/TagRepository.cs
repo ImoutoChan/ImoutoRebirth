@@ -60,11 +60,13 @@ namespace ImoutoRebirth.Lilin.Infrastructure.Repositories
 
                 if (finalResult.Count < requestLimit)
                 {
-                    finalResult = await tagsWithTypes
+                    var startsWith = await tagsWithTypes
                         .Where(x => !x.Name.ToLower().Equals(requestSearchPattern))
                         .Where(x => x.Name.ToLower().StartsWith(requestSearchPattern))
                         .Take(requestLimit)
                         .ToListAsync();
+                    
+                    finalResult.AddRange(startsWith);
                 }
 
                 if (finalResult.Count < requestLimit)
