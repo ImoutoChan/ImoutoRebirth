@@ -51,8 +51,10 @@ namespace ImoutoRebirth.Lilin.Infrastructure.Repositories
             }
             else
             {
+                requestSearchPattern = requestSearchPattern.ToLower();
+                
                 finalResult = await tagsWithTypes
-                    .Where(x => x.Name.StartsWith(requestSearchPattern))
+                    .Where(x => x.Name.ToLower().StartsWith(requestSearchPattern))
                     .Take(requestLimit)
                     .ToListAsync();
 
@@ -61,8 +63,8 @@ namespace ImoutoRebirth.Lilin.Infrastructure.Repositories
                     requestLimit -= finalResult.Count;
 
                     var contains = await tagsWithTypes
-                        .Where(x => !x.Name.StartsWith(requestSearchPattern))
-                        .Where(x => x.Name.Contains(requestSearchPattern))
+                        .Where(x => !x.Name.ToLower().StartsWith(requestSearchPattern))
+                        .Where(x => x.Name.ToLower().Contains(requestSearchPattern))
                         .Take(requestLimit)
                         .ToListAsync();
 
