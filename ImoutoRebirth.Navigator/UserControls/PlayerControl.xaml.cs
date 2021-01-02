@@ -1,7 +1,6 @@
 ﻿using System;
 using System.IO;
 using System.Reflection;
-using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -111,6 +110,30 @@ namespace ImoutoRebirth.Navigator.UserControls
         {
             get => (string) GetValue(SourceProperty);
             set => SetValue(SourceProperty, value);
+        }
+
+        public static readonly DependencyProperty ShouldPauseProperty 
+            = DependencyProperty.Register(
+                "ShouldPause", 
+                typeof (bool), 
+                typeof (PlayerControl), 
+                new UIPropertyMetadata(false, OnShouldPauseChanged));
+
+        private static void OnShouldPauseChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            var shouldPause = (bool) e.NewValue;
+            var control = (PlayerControl) d;
+            
+            if (shouldPause)
+            {
+                control.IsPlayed = false;
+            }
+        }
+
+        public bool ShouldPause
+        {
+            get => (bool) GetValue(ShouldPauseProperty);
+            set => SetValue(ShouldPauseProperty, value);
         }
 
         private static void OnSourceChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)

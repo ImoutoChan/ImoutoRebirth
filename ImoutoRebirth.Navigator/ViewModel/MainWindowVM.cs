@@ -137,6 +137,8 @@ namespace ImoutoRebirth.Navigator.ViewModel
 
         public ICommand ShuffleCommand { get; set; }
 
+        public ICommand ReverseCommand { get; set; }
+
         public ICommand ZoomInCommand { get; set; }
 
         public ICommand ZoomOutCommand { get; set; }
@@ -157,13 +159,10 @@ namespace ImoutoRebirth.Navigator.ViewModel
         {
             ShuffleCommand = new RelayCommand(x => ShuffleNavigatorList());
 
+            ReverseCommand = new RelayCommand(x => ReverseNavigatorList());
+
             ZoomInCommand = new RelayCommand(x =>
             {
-                if (_previewSize > 1024)
-                {
-                    return;
-                }
-
                 _previewSize = Convert.ToInt32(Math.Floor(_previewSize * 1.1));
                 UpdatePreviews();
             });
@@ -198,6 +197,7 @@ namespace ImoutoRebirth.Navigator.ViewModel
                     break;
                 case VideoEntryVM video:
                 {
+                    video.Pause();
                     var process = new Process
                     {
                         StartInfo = new ProcessStartInfo(video.Path)
@@ -224,6 +224,26 @@ namespace ImoutoRebirth.Navigator.ViewModel
 
                 NavigatorList.Clear();
                 
+                foreach (var navigatorListEntry in newCollection)
+                {
+                    NavigatorList.Add(navigatorListEntry);
+                }
+            }
+        }
+
+        private void ReverseNavigatorList()
+        {
+            lock (NavigatorList)
+            {
+                var newCollection = NavigatorList.ToList();
+                for (int i = 0; i < newCollection.Count / 2; i++)
+                {
+                    var item = newCollection[i];
+                    newCollection[i] = newCollection[newCollection.Count - 1 - i];
+                    newCollection[newCollection.Count - 1 - i] = item;
+                }
+
+                NavigatorList.Clear();
                 foreach (var navigatorListEntry in newCollection)
                 {
                     NavigatorList.Add(navigatorListEntry);

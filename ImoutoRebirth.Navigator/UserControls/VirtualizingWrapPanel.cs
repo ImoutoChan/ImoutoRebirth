@@ -27,7 +27,7 @@ namespace ImoutoRebirth.Navigator.UserControls
                     double.NaN,
                     FrameworkPropertyMetadataOptions.AffectsMeasure
                 ),
-                new ValidateValueCallback(VirtualizingWrapPanel.IsWidthHeightValid)
+                new ValidateValueCallback(IsWidthHeightValid)
             );
 
         /// <summary>
@@ -37,8 +37,8 @@ namespace ImoutoRebirth.Navigator.UserControls
         [TypeConverter(typeof(LengthConverter)), Category("共通")]
         public double ItemWidth
         {
-            get { return (double)this.GetValue(ItemWidthProperty); }
-            set { this.SetValue(ItemWidthProperty, value); }
+            get { return (double)GetValue(ItemWidthProperty); }
+            set { SetValue(ItemWidthProperty, value); }
         }
 
         #endregion
@@ -57,7 +57,7 @@ namespace ImoutoRebirth.Navigator.UserControls
                     double.NaN,
                     FrameworkPropertyMetadataOptions.AffectsMeasure
                 ),
-                new ValidateValueCallback(VirtualizingWrapPanel.IsWidthHeightValid)
+                new ValidateValueCallback(IsWidthHeightValid)
             );
 
         /// <summary>
@@ -67,8 +67,8 @@ namespace ImoutoRebirth.Navigator.UserControls
         [TypeConverter(typeof(LengthConverter)), Category("共通")]
         public double ItemHeight
         {
-            get { return (double)this.GetValue(ItemHeightProperty); }
-            set { this.SetValue(ItemHeightProperty, value); }
+            get { return (double)GetValue(ItemHeightProperty); }
+            set { SetValue(ItemHeightProperty, value); }
         }
 
         #endregion
@@ -100,7 +100,7 @@ namespace ImoutoRebirth.Navigator.UserControls
                 new FrameworkPropertyMetadata(
                     Orientation.Horizontal,
                     FrameworkPropertyMetadataOptions.AffectsMeasure,
-                    new PropertyChangedCallback(VirtualizingWrapPanel.OnOrientationChanged)
+                    new PropertyChangedCallback(OnOrientationChanged)
                 )
             );
 
@@ -110,8 +110,8 @@ namespace ImoutoRebirth.Navigator.UserControls
         [Category("共通")]
         public Orientation Orientation
         {
-            get { return (Orientation)this.GetValue(OrientationProperty); }
-            set { this.SetValue(OrientationProperty, value); }
+            get { return (Orientation)GetValue(OrientationProperty); }
+            set { SetValue(OrientationProperty, value); }
         }
 
         /// <summary>
@@ -122,7 +122,7 @@ namespace ImoutoRebirth.Navigator.UserControls
         private static void OnOrientationChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
             var panel = d as VirtualizingWrapPanel;
-            panel.offset = default(Point);
+            panel._offset = default(Point);
             panel.InvalidateMeasure();
         }
 
@@ -133,7 +133,7 @@ namespace ImoutoRebirth.Navigator.UserControls
         /// <summary>
         /// 指定したインデックスのアイテムの位置およびサイズを記憶するディクショナリ。
         /// </summary>
-        private Dictionary<int, Rect> containerLayouts = new Dictionary<int, Rect>();
+        private Dictionary<int, Rect> _containerLayouts = new Dictionary<int, Rect>();
 
         /// <summary>
         /// 子要素に必要なレイアウトのサイズを測定し、パネルのサイズを決定する。
@@ -145,18 +145,18 @@ namespace ImoutoRebirth.Navigator.UserControls
             var maxSize = default(Size);
             try
             {
-                this.containerLayouts.Clear();
+                _containerLayouts.Clear();
 
-                var isAutoWidth = double.IsNaN(this.ItemWidth);
-                var isAutoHeight = double.IsNaN(this.ItemHeight);
+                var isAutoWidth = double.IsNaN(ItemWidth);
+                var isAutoHeight = double.IsNaN(ItemHeight);
                 var childAvailable = new Size(isAutoWidth
                                               ? double.PositiveInfinity
-                                              : this.ItemWidth, isAutoHeight
+                                              : ItemWidth, isAutoHeight
                                                                 ? double.PositiveInfinity
-                                                                : this.ItemHeight);
-                var isHorizontal = this.Orientation == Orientation.Horizontal;
+                                                                : ItemHeight);
+                var isHorizontal = Orientation == Orientation.Horizontal;
 
-                var childrenCount = this.InternalChildren.Count;
+                var childrenCount = InternalChildren.Count;
 
                 var itemsControl = ItemsControl.GetItemsOwner(this);
                 if (itemsControl != null)
@@ -170,7 +170,7 @@ namespace ImoutoRebirth.Navigator.UserControls
 
                 for (int i = 0; i < childrenCount; i++)
                 {
-                    var childSize = this.ContainerSizeForIndex(i);
+                    var childSize = ContainerSizeForIndex(i);
 
                     // ビューポートとの交差判定用に仮サイズで x, y を調整
                     var isWrapped = isHorizontal
@@ -188,16 +188,16 @@ namespace ImoutoRebirth.Navigator.UserControls
 
                     // 子要素がビューポート内であれば子要素を生成しサイズを再計測
                     var itemRect = new Rect(x, y, childSize.Width, childSize.Height);
-                    var viewportRect = new Rect(this.offset, availableSize);
+                    var viewportRect = new Rect(_offset, availableSize);
                     if (itemRect.IntersectsWith(viewportRect))
                     {
                         var child = generator.GetOrCreateChild(i);
                         child.Measure(childAvailable);
-                        childSize = this.ContainerSizeForIndex(i);
+                        childSize = ContainerSizeForIndex(i);
                     }
 
                     // 確定したサイズを記憶
-                    this.containerLayouts[i] = new Rect(x, y, childSize.Width, childSize.Height);
+                    _containerLayouts[i] = new Rect(x, y, childSize.Width, childSize.Height);
 
                     // lineSize, maxSize を計算
                     isWrapped = isHorizontal
@@ -252,14 +252,14 @@ namespace ImoutoRebirth.Navigator.UserControls
                                  ? maxSize.Height + lineSize.Height
                                  : Math.Max(lineSize.Height, maxSize.Height);
 
-                this.extent = maxSize;
-                this.viewport = availableSize;
+                _extent = maxSize;
+                _viewport = availableSize;
 
                 generator.CleanupChildren();
                 generator?.Dispose();
 
-                if (this.ScrollOwner != null)
-                    this.ScrollOwner.InvalidateScrollInfo();
+                if (ScrollOwner != null)
+                    ScrollOwner.InvalidateScrollInfo();
             }
             catch { }
 
@@ -277,32 +277,32 @@ namespace ImoutoRebirth.Navigator.UserControls
             /// <summary>
             /// アイテムを生成する対象の <see cref="VirtualizingWrapPanel"/>。
             /// </summary>
-            private VirtualizingWrapPanel owner;
+            private VirtualizingWrapPanel _owner;
 
             /// <summary>
-            /// <see cref="owner"/> の <see cref="System.Windows.Controls.ItemContainerGenerator"/>。
+            /// <see cref="_owner"/> の <see cref="System.Windows.Controls.ItemContainerGenerator"/>。
             /// </summary>
-            private IItemContainerGenerator generator;
+            private IItemContainerGenerator _generator;
 
             /// <summary>
-            /// <see cref="generator"/> の生成プロセスの有効期間を追跡するオブジェクト。
+            /// <see cref="_generator"/> の生成プロセスの有効期間を追跡するオブジェクト。
             /// </summary>
-            private IDisposable generatorTracker;
+            private IDisposable _generatorTracker;
 
             /// <summary>
             /// 表示範囲内にある最初の要素のインデックス。
             /// </summary>
-            private int firstGeneratedIndex;
+            private int _firstGeneratedIndex;
 
             /// <summary>
             /// 表示範囲内にある最後の要素のインデックス。
             /// </summary>
-            private int lastGeneratedIndex;
+            private int _lastGeneratedIndex;
 
             /// <summary>
             /// 次に生成される要素の <see cref="System.Windows.Controls.Panel.InternalChildren"/> 内のインデックス。
             /// </summary>
-            private int currentGenerateIndex;
+            private int _currentGenerateIndex;
 
             #endregion
 
@@ -314,11 +314,11 @@ namespace ImoutoRebirth.Navigator.UserControls
             /// <param name="owner">アイテムを生成する対象の <see cref="VirtualizingWrapPanel"/>。</param>
             public ChildGenerator(VirtualizingWrapPanel owner)
             {
-                this.owner = owner;
+                _owner = owner;
 
                 // ItemContainerGenerator 取得前に InternalChildren にアクセスしないと null になる
                 var childrenCount = owner.InternalChildren.Count;
-                this.generator = owner.ItemContainerGenerator;
+                _generator = owner.ItemContainerGenerator;
             }
 
             /// <summary>
@@ -326,7 +326,7 @@ namespace ImoutoRebirth.Navigator.UserControls
             /// </summary>
             ~ChildGenerator()
             {
-                this.Dispose();
+                Dispose();
             }
 
             /// <summary>
@@ -334,8 +334,8 @@ namespace ImoutoRebirth.Navigator.UserControls
             /// </summary>
             public void Dispose()
             {
-                if (this.generatorTracker != null)
-                    this.generatorTracker.Dispose();
+                if (_generatorTracker != null)
+                    _generatorTracker.Dispose();
             }
 
             #endregion
@@ -348,10 +348,10 @@ namespace ImoutoRebirth.Navigator.UserControls
             /// <param name="index">アイテムのインデックス。</param>
             private void BeginGenerate(int index)
             {
-                this.firstGeneratedIndex = index;
-                var startPos = this.generator.GeneratorPositionFromIndex(index);
-                this.currentGenerateIndex = (startPos.Offset == 0) ? startPos.Index : startPos.Index + 1;
-                this.generatorTracker = this.generator.StartAt(startPos, GeneratorDirection.Forward, true);
+                _firstGeneratedIndex = index;
+                var startPos = _generator.GeneratorPositionFromIndex(index);
+                _currentGenerateIndex = (startPos.Offset == 0) ? startPos.Index : startPos.Index + 1;
+                _generatorTracker = _generator.StartAt(startPos, GeneratorDirection.Forward, true);
             }
 
             /// <summary>
@@ -361,26 +361,26 @@ namespace ImoutoRebirth.Navigator.UserControls
             /// <returns>指定したインデックスのアイテム。</returns>
             public UIElement GetOrCreateChild(int index)
             {
-                if (this.generator == null)
-                    return this.owner.InternalChildren[index];
+                if (_generator == null)
+                    return _owner.InternalChildren[index];
 
-                if (this.generatorTracker == null)
-                    this.BeginGenerate(index);
+                if (_generatorTracker == null)
+                    BeginGenerate(index);
 
                 bool newlyRealized;
-                var child = this.generator.GenerateNext(out newlyRealized) as UIElement;
+                var child = _generator.GenerateNext(out newlyRealized) as UIElement;
                 if (newlyRealized)
                 {
-                    if (this.currentGenerateIndex >= this.owner.InternalChildren.Count)
-                        this.owner.AddInternalChild(child);
+                    if (_currentGenerateIndex >= _owner.InternalChildren.Count)
+                        _owner.AddInternalChild(child);
                     else
-                        this.owner.InsertInternalChild(this.currentGenerateIndex, child);
+                        _owner.InsertInternalChild(_currentGenerateIndex, child);
 
-                    this.generator.PrepareItemContainer(child);
+                    _generator.PrepareItemContainer(child);
                 }
 
-                this.lastGeneratedIndex = index;
-                this.currentGenerateIndex++;
+                _lastGeneratedIndex = index;
+                _currentGenerateIndex++;
 
                 return child;
             }
@@ -393,19 +393,19 @@ namespace ImoutoRebirth.Navigator.UserControls
             /// </summary>
             public void CleanupChildren()
             {
-                if (this.generator == null)
+                if (_generator == null)
                     return;
 
-                var children = this.owner.InternalChildren;
+                var children = _owner.InternalChildren;
 
                 for (int i = children.Count - 1; i >= 0; i--)
                 {
                     var childPos = new GeneratorPosition(i, 0);
-                    var index = generator.IndexFromGeneratorPosition(childPos);
-                    if (index < this.firstGeneratedIndex || index > this.lastGeneratedIndex)
+                    var index = _generator.IndexFromGeneratorPosition(childPos);
+                    if (index < _firstGeneratedIndex || index > _lastGeneratedIndex)
                     {
-                        this.generator.Remove(childPos, 1);
-                        this.owner.RemoveInternalChildRange(i, 1);
+                        _generator.Remove(childPos, 1);
+                        _owner.RemoveInternalChildRange(i, 1);
                     }
                 }
             }
@@ -420,14 +420,14 @@ namespace ImoutoRebirth.Navigator.UserControls
         /// <returns>使用する実際のサイズ。</returns>
         protected override Size ArrangeOverride(Size finalSize)
         {
-            foreach (UIElement child in this.InternalChildren)
+            foreach (UIElement child in InternalChildren)
             {
-                var gen = this.ItemContainerGenerator as ItemContainerGenerator;
-                var index = (gen != null) ? gen.IndexFromContainer(child) : this.InternalChildren.IndexOf(child);
-                if (this.containerLayouts.ContainsKey(index))
+                var gen = ItemContainerGenerator as ItemContainerGenerator;
+                var index = (gen != null) ? gen.IndexFromContainer(child) : InternalChildren.IndexOf(child);
+                if (_containerLayouts.ContainsKey(index))
                 {
-                    var layout = this.containerLayouts[index];
-                    layout.Offset(this.offset.X * -1, this.offset.Y * -1);
+                    var layout = _containerLayouts[index];
+                    layout.Offset(_offset.X * -1, _offset.Y * -1);
                     child.Arrange(layout);
                 }
             }
@@ -446,7 +446,7 @@ namespace ImoutoRebirth.Navigator.UserControls
         /// <see cref="System.Windows.DataTemplate"/> 使用時、全要素のサイズが一致することを前提に、
         /// 要素のサイズの推定に使用する。
         /// </remarks>
-        private Size prevSize = new Size(16, 16);
+        private Size _prevSize = new Size(16, 16);
 
         /// <summary>
         /// 指定したインデックスに対するアイテムのサイズを、実際にアイテムを生成せずに推定する。
@@ -459,13 +459,13 @@ namespace ImoutoRebirth.Navigator.UserControls
             {
                 UIElement item = null;
                 var itemsOwner = ItemsControl.GetItemsOwner(this);
-                var generator = this.ItemContainerGenerator as ItemContainerGenerator;
+                var generator = ItemContainerGenerator as ItemContainerGenerator;
 
                 if (itemsOwner == null || generator == null)
                 {
                     // VirtualizingWrapPanel 単体で使用されている場合、自身のアイテムを返す
-                    if (this.InternalChildren.Count > idx)
-                        item = this.InternalChildren[idx];
+                    if (InternalChildren.Count > idx)
+                        item = InternalChildren[idx];
                 }
                 else
                 {
@@ -489,22 +489,22 @@ namespace ImoutoRebirth.Navigator.UserControls
                 }
 
                 // 前回の測定値があればそちらを使う
-                if (this.containerLayouts.ContainsKey(idx))
-                    return this.containerLayouts[idx].Size;
+                if (_containerLayouts.ContainsKey(idx))
+                    return _containerLayouts[idx].Size;
 
                 // 有効なサイズが取得できなかった場合、直前のアイテムのサイズを返す
-                return this.prevSize;
+                return _prevSize;
             });
 
             var size = getSize(index);
 
             // ItemWidth, ItemHeight が指定されていれば調整する
-            if (!double.IsNaN(this.ItemWidth))
-                size.Width = this.ItemWidth;
-            if (!double.IsNaN(this.ItemHeight))
-                size.Height = this.ItemHeight;
+            if (!double.IsNaN(ItemWidth))
+                size.Width = ItemWidth;
+            if (!double.IsNaN(ItemHeight))
+                size.Height = ItemHeight;
 
-            return this.prevSize = size;
+            return _prevSize = size;
         }
 
         #endregion
@@ -541,14 +541,14 @@ namespace ImoutoRebirth.Navigator.UserControls
         /// <summary>
         /// エクステントのサイズ。
         /// </summary>
-        private Size extent = default(Size);
+        private Size _extent = default(Size);
 
         /// <summary>
         /// エクステントの縦幅を取得する。
         /// </summary>
         public double ExtentHeight
         {
-            get { return this.extent.Height; }
+            get { return _extent.Height; }
         }
 
         /// <summary>
@@ -556,7 +556,7 @@ namespace ImoutoRebirth.Navigator.UserControls
         /// </summary>
         public double ExtentWidth
         {
-            get { return this.extent.Width; }
+            get { return _extent.Width; }
         }
 
         #endregion Extent
@@ -566,14 +566,14 @@ namespace ImoutoRebirth.Navigator.UserControls
         /// <summary>
         /// ビューポートのサイズ。
         /// </summary>
-        private Size viewport = default(Size);
+        private Size _viewport = default(Size);
 
         /// <summary>
         /// このコンテンツに対するビューポートの縦幅を取得する。
         /// </summary>
         public double ViewportHeight
         {
-            get { return this.viewport.Height; }
+            get { return _viewport.Height; }
         }
 
         /// <summary>
@@ -581,7 +581,7 @@ namespace ImoutoRebirth.Navigator.UserControls
         /// </summary>
         public double ViewportWidth
         {
-            get { return this.viewport.Width; }
+            get { return _viewport.Width; }
         }
 
         #endregion
@@ -591,14 +591,14 @@ namespace ImoutoRebirth.Navigator.UserControls
         /// <summary>
         /// スクロールしたコンテンツのオフセット。
         /// </summary>
-        private Point offset;
+        private Point _offset;
 
         /// <summary>
         /// スクロールしたコンテンツの水平オフセットを取得する。
         /// </summary>
         public double HorizontalOffset
         {
-            get { return this.offset.X; }
+            get { return _offset.X; }
         }
 
         /// <summary>
@@ -606,7 +606,7 @@ namespace ImoutoRebirth.Navigator.UserControls
         /// </summary>
         public double VerticalOffset
         {
-            get { return this.offset.Y; }
+            get { return _offset.Y; }
         }
 
         #endregion
@@ -641,8 +641,8 @@ namespace ImoutoRebirth.Navigator.UserControls
         {
             //this.SetVerticalOffset(this.VerticalOffset - SystemParameters.ScrollHeight);
 
-            var currentTopLine = this.VerticalOffset / this.ItemHeight - 1;
-            this.SetVerticalOffset(Math.Ceiling(currentTopLine) * this.ItemHeight);
+            var currentTopLine = VerticalOffset / ItemHeight - 1;
+            SetVerticalOffset(Math.Ceiling(currentTopLine) * ItemHeight);
         }
         #endregion
 
@@ -654,8 +654,8 @@ namespace ImoutoRebirth.Navigator.UserControls
         {
             //this.SetVerticalOffset(this.VerticalOffset + SystemParameters.ScrollHeight);
 
-            var currentBottomLine = (this.VerticalOffset + this.ViewportHeight) / this.ItemHeight + 1;
-            this.SetVerticalOffset(Math.Floor(currentBottomLine) * this.ItemHeight - this.ViewportHeight);
+            var currentBottomLine = (VerticalOffset + ViewportHeight) / ItemHeight + 1;
+            SetVerticalOffset(Math.Floor(currentBottomLine) * ItemHeight - ViewportHeight);
         }
         #endregion
 
@@ -665,7 +665,7 @@ namespace ImoutoRebirth.Navigator.UserControls
         /// </summary>
         public void LineLeft()
         {
-            this.SetHorizontalOffset(this.HorizontalOffset - SystemParameters.ScrollWidth);
+            SetHorizontalOffset(HorizontalOffset - SystemParameters.ScrollWidth);
         }
         #endregion
 
@@ -675,7 +675,7 @@ namespace ImoutoRebirth.Navigator.UserControls
         /// </summary>
         public void LineRight()
         {
-            this.SetHorizontalOffset(this.HorizontalOffset + SystemParameters.ScrollWidth);
+            SetHorizontalOffset(HorizontalOffset + SystemParameters.ScrollWidth);
         }
         #endregion
 
@@ -685,7 +685,7 @@ namespace ImoutoRebirth.Navigator.UserControls
         /// </summary>
         public void PageUp()
         {
-            this.SetVerticalOffset(this.VerticalOffset - this.viewport.Height);
+            SetVerticalOffset(VerticalOffset - _viewport.Height);
         }
         #endregion
 
@@ -695,7 +695,7 @@ namespace ImoutoRebirth.Navigator.UserControls
         /// </summary>
         public void PageDown()
         {
-            this.SetVerticalOffset(this.VerticalOffset + this.viewport.Height);
+            SetVerticalOffset(VerticalOffset + _viewport.Height);
         }
         #endregion
 
@@ -705,7 +705,7 @@ namespace ImoutoRebirth.Navigator.UserControls
         /// </summary>
         public void PageLeft()
         {
-            this.SetHorizontalOffset(this.HorizontalOffset - this.viewport.Width);
+            SetHorizontalOffset(HorizontalOffset - _viewport.Width);
         }
         #endregion
 
@@ -715,7 +715,7 @@ namespace ImoutoRebirth.Navigator.UserControls
         /// </summary>
         public void PageRight()
         {
-            this.SetHorizontalOffset(this.HorizontalOffset + this.viewport.Width);
+            SetHorizontalOffset(HorizontalOffset + _viewport.Width);
         }
         #endregion
 
@@ -725,7 +725,7 @@ namespace ImoutoRebirth.Navigator.UserControls
         /// </summary>
         public void MouseWheelUp()
         {
-            this.SetVerticalOffset(this.VerticalOffset - SystemParameters.ScrollHeight * SystemParameters.WheelScrollLines);
+            SetVerticalOffset(VerticalOffset - SystemParameters.ScrollHeight * SystemParameters.WheelScrollLines);
         }
         #endregion
 
@@ -735,7 +735,7 @@ namespace ImoutoRebirth.Navigator.UserControls
         /// </summary>
         public void MouseWheelDown()
         {
-            this.SetVerticalOffset(this.VerticalOffset + SystemParameters.ScrollHeight * SystemParameters.WheelScrollLines);
+            SetVerticalOffset(VerticalOffset + SystemParameters.ScrollHeight * SystemParameters.WheelScrollLines);
         }
         #endregion
 
@@ -745,7 +745,7 @@ namespace ImoutoRebirth.Navigator.UserControls
         /// </summary>
         public void MouseWheelLeft()
         {
-            this.SetHorizontalOffset(this.HorizontalOffset - SystemParameters.ScrollWidth * SystemParameters.WheelScrollLines);
+            SetHorizontalOffset(HorizontalOffset - SystemParameters.ScrollWidth * SystemParameters.WheelScrollLines);
         }
         #endregion
 
@@ -755,7 +755,7 @@ namespace ImoutoRebirth.Navigator.UserControls
         /// </summary>
         public void MouseWheelRight()
         {
-            this.SetHorizontalOffset(this.HorizontalOffset + SystemParameters.ScrollWidth * SystemParameters.WheelScrollLines);
+            SetHorizontalOffset(HorizontalOffset + SystemParameters.ScrollWidth * SystemParameters.WheelScrollLines);
         }
         #endregion
 
@@ -769,9 +769,9 @@ namespace ImoutoRebirth.Navigator.UserControls
         /// <returns>表示される <see cref="System.Windows.Rect"/>。</returns>
         public Rect MakeVisible(Visual visual, Rect rectangle)
         {
-            var idx = this.InternalChildren.IndexOf(visual as UIElement);
+            var idx = InternalChildren.IndexOf(visual as UIElement);
 
-            var generator = this.ItemContainerGenerator as IItemContainerGenerator;
+            var generator = ItemContainerGenerator as IItemContainerGenerator;
             if (generator != null)
             {
                 var pos = new GeneratorPosition(idx, 0);
@@ -781,23 +781,23 @@ namespace ImoutoRebirth.Navigator.UserControls
             if (idx < 0)
                 return Rect.Empty;
 
-            if (!this.containerLayouts.ContainsKey(idx))
+            if (!_containerLayouts.ContainsKey(idx))
                 return Rect.Empty;
 
-            var layout = this.containerLayouts[idx];
+            var layout = _containerLayouts[idx];
 
-            if (this.HorizontalOffset + this.ViewportWidth < layout.X + layout.Width)
-                this.SetHorizontalOffset(layout.X + layout.Width - this.ViewportWidth);
-            if (layout.X < this.HorizontalOffset)
-                this.SetHorizontalOffset(layout.X);
+            if (HorizontalOffset + ViewportWidth < layout.X + layout.Width)
+                SetHorizontalOffset(layout.X + layout.Width - ViewportWidth);
+            if (layout.X < HorizontalOffset)
+                SetHorizontalOffset(layout.X);
 
-            if (this.VerticalOffset + this.ViewportHeight < layout.Y + layout.Height)
-                this.SetVerticalOffset(layout.Y + layout.Height - this.ViewportHeight);
-            if (layout.Y < this.VerticalOffset)
-                this.SetVerticalOffset(layout.Y);
+            if (VerticalOffset + ViewportHeight < layout.Y + layout.Height)
+                SetVerticalOffset(layout.Y + layout.Height - ViewportHeight);
+            if (layout.Y < VerticalOffset)
+                SetVerticalOffset(layout.Y);
 
-            layout.Width = Math.Min(this.ViewportWidth, layout.Width);
-            layout.Height = Math.Min(this.ViewportHeight, layout.Height);
+            layout.Width = Math.Min(ViewportWidth, layout.Width);
+            layout.Height = Math.Min(ViewportHeight, layout.Height);
 
             return layout;
         }
@@ -810,22 +810,22 @@ namespace ImoutoRebirth.Navigator.UserControls
         /// <param name="offset">包含するビューポートからのコンテンツの水平方向オフセットの程度。</param>
         public void SetHorizontalOffset(double offset)
         {
-            if (offset < 0 || this.ViewportWidth >= this.ExtentWidth)
+            if (offset < 0 || ViewportWidth >= ExtentWidth)
             {
                 offset = 0;
             }
             else
             {
-                if (offset + this.ViewportWidth >= this.ExtentWidth)
-                    offset = this.ExtentWidth - this.ViewportWidth;
+                if (offset + ViewportWidth >= ExtentWidth)
+                    offset = ExtentWidth - ViewportWidth;
             }
 
-            this.offset.X = offset;
+            _offset.X = offset;
 
-            if (this.ScrollOwner != null)
-                this.ScrollOwner.InvalidateScrollInfo();
+            if (ScrollOwner != null)
+                ScrollOwner.InvalidateScrollInfo();
 
-            this.InvalidateMeasure();
+            InvalidateMeasure();
         }
         #endregion
 
@@ -836,22 +836,22 @@ namespace ImoutoRebirth.Navigator.UserControls
         /// <param name="offset">包含するビューポートからの垂直方向オフセットの程度。</param>
         public void SetVerticalOffset(double offset)
         {
-            if (offset < 0 || this.ViewportHeight >= this.ExtentHeight)
+            if (offset < 0 || ViewportHeight >= ExtentHeight)
             {
                 offset = 0;
             }
             else
             {
-                if (offset + this.ViewportHeight >= this.ExtentHeight)
-                    offset = this.ExtentHeight - this.ViewportHeight;
+                if (offset + ViewportHeight >= ExtentHeight)
+                    offset = ExtentHeight - ViewportHeight;
             }
 
-            this.offset.Y = offset;
+            _offset.Y = offset;
 
-            if (this.ScrollOwner != null)
-                this.ScrollOwner.InvalidateScrollInfo();
+            if (ScrollOwner != null)
+                ScrollOwner.InvalidateScrollInfo();
 
-            this.InvalidateMeasure();
+            InvalidateMeasure();
         }
         #endregion
 

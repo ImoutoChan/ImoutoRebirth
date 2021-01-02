@@ -1,14 +1,12 @@
 using System;
-using System.IO;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Media.Imaging;
-using Imouto;
 using Microsoft.WindowsAPICodePack.Shell;
 
 namespace ImoutoRebirth.Navigator.ViewModel
 {
-    class VideoEntryVM : VMBase, INavigatorListEntry
+    internal class VideoEntryVM : VMBase, INavigatorListEntry
     {
         #region Fields
 
@@ -16,6 +14,7 @@ namespace ImoutoRebirth.Navigator.ViewModel
         private bool _isLoading;
         private bool _isPreviewLoaded;
         private readonly object _loaderLocker = new object();
+        private bool _shouldPause;
 
         #endregion Fields
 
@@ -35,24 +34,27 @@ namespace ImoutoRebirth.Navigator.ViewModel
 
         public bool IsLoading
         {
-            get
-            {
-                return _isLoading;
-            }
+            get => _isLoading;
             private set
             {
                 OnPropertyChanged(ref _isLoading, value, () => IsLoading);
             }
         }
 
-        public BitmapSource Image { get; private set; }
+        public bool ShouldPause
+        {
+            get => _shouldPause;
+            private set
+            {
+                OnPropertyChanged(ref _shouldPause, value, () => ShouldPause);
+            }
+        }
+
+        public BitmapSource? Image { get; private set; }
 
         public Size ViewPortSize
         {
-            get
-            {
-                return _size;
-            }
+            get => _size;
             private set
             {
                 _size = value;
@@ -78,6 +80,12 @@ namespace ImoutoRebirth.Navigator.ViewModel
         public void Load()
         {
             LoadPreview();
+        }
+
+        public void Pause()
+        {
+            ShouldPause = false;
+            ShouldPause = true;
         }
 
         #endregion Public methods

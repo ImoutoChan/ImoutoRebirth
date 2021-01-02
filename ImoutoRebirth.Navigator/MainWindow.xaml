@@ -82,14 +82,16 @@
 
     <metroControl:MetroWindow.RightWindowCommands>
         <metroControl:WindowCommands>
+            <Button Content="Reverse" 
+                    Command="{Binding ReverseCommand}"/>
+            <Button Content="Shuffle" 
+                    Command="{Binding ShuffleCommand}"/>
             <Button Content="Collections"
                     Click="Button_Click"
                     Tag="{Binding ElementName=CollectionsFlyOut}" />
             <Button Content="Settings"
                     Click="Button_Click"
                     Tag="{Binding ElementName=SettingFlyout}" />
-            <Button Content="Shuffle" 
-                    Command="{Binding ShuffleCommand}"/>
         </metroControl:WindowCommands>
     </metroControl:MetroWindow.RightWindowCommands>
 
@@ -247,7 +249,7 @@
                     </DataTemplate>
 
                     <DataTemplate x:Key="VideoListBoxItemTemplate"
-                                  DataType="{x:Type ContentControl}">
+                                  DataType="{x:Type viewModel:VideoEntryVM}">
                         <Border Margin="0,11,0,11">
                             <b:Interaction.Behaviors>
                                 <behavior:FrameworkElementDragBehavior />
@@ -260,7 +262,7 @@
                             <Grid Width="{Binding Path=ViewPortSize.Width}"
                                   Height="{Binding Path=ViewPortSize.Height}">
                                 <!-- todo: implement video control -->
-                                <userControl:PlayerControl Source="{Binding Path}" />
+                                <userControl:PlayerControl Source="{Binding Path}" ShouldPause="{Binding ShouldPause}" />
                             </Grid>
                         </Border>
                     </DataTemplate>
