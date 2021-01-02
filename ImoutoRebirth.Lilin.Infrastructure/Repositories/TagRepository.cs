@@ -54,15 +54,25 @@ namespace ImoutoRebirth.Lilin.Infrastructure.Repositories
                 requestSearchPattern = requestSearchPattern.ToLower();
                 
                 finalResult = await tagsWithTypes
-                    .Where(x => x.Name.ToLower().StartsWith(requestSearchPattern))
+                    .Where(x => x.Name.ToLower().Equals(requestSearchPattern))
                     .Take(requestLimit)
                     .ToListAsync();
+
+                if (finalResult.Count < requestLimit)
+                {
+                    finalResult = await tagsWithTypes
+                        .Where(x => !x.Name.ToLower().Equals(requestSearchPattern))
+                        .Where(x => x.Name.ToLower().StartsWith(requestSearchPattern))
+                        .Take(requestLimit)
+                        .ToListAsync();
+                }
 
                 if (finalResult.Count < requestLimit)
                 {
                     requestLimit -= finalResult.Count;
 
                     var contains = await tagsWithTypes
+                        .Where(x => !x.Name.ToLower().Equals(requestSearchPattern))
                         .Where(x => !x.Name.ToLower().StartsWith(requestSearchPattern))
                         .Where(x => x.Name.ToLower().Contains(requestSearchPattern))
                         .Take(requestLimit)
