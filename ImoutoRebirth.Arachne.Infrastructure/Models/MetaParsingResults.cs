@@ -1,5 +1,7 @@
 ﻿using System.Collections.Generic;
+using Imouto.BooruParser.Model.Danbooru.Json;
 using ImoutoRebirth.Arachne.Core.Models;
+using Newtonsoft.Json;
 
 namespace ImoutoRebirth.Arachne.Infrastructure.Models
 {
@@ -29,9 +31,11 @@ namespace ImoutoRebirth.Arachne.Infrastructure.Models
 
         public IReadOnlyCollection<string> Pools { get; }
 
-        public IReadOnlyCollection<(string TagType, string Tag, string[] Synonyms)> Tags { get; }
+        public IReadOnlyCollection<MetaParsingTagResults> Tags { get; }
 
         public IReadOnlyCollection<Note> Notes { get; }
+
+        public UgoiraFrameData UgoiraFrameData { get; }
 
         public MetaParsingResults(
             string source,
@@ -46,8 +50,9 @@ namespace ImoutoRebirth.Arachne.Infrastructure.Models
             string parentMd5,
             IReadOnlyCollection<string> childs,
             IReadOnlyCollection<string> pools,
-            IReadOnlyCollection<(string TagType, string Tag, string[] Synonyms)> tags,
-            IReadOnlyCollection<Note> notes)
+            IReadOnlyCollection<MetaParsingTagResults> tags,
+            IReadOnlyCollection<Note> notes,
+            UgoiraFrameData ugoiraFrameData)
         {
             Source = source;
             BooruPostId = booruPostId;
@@ -63,6 +68,7 @@ namespace ImoutoRebirth.Arachne.Infrastructure.Models
             Pools = pools;
             Tags = tags;
             Notes = notes;
+            UgoiraFrameData = ugoiraFrameData;
         }
 
         public IEnumerable<(string TagType, string Tag, string Value)> GetMetaTags()
@@ -81,6 +87,9 @@ namespace ImoutoRebirth.Arachne.Infrastructure.Models
                 {
                     case string strValue:
                         yield return (tagType, tag, strValue);
+                        break;
+                    case UgoiraFrameData ugoira:
+                        yield return (tagType, tag, JsonConvert.SerializeObject(ugoira));
                         break;
                     case IReadOnlyCollection<string> collectionValue:
                         tag = tag.Trim('s');

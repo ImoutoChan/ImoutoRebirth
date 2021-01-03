@@ -1,6 +1,7 @@
 using System;
 using System.Linq;
 using FluentAssertions;
+using Imouto.BooruParser.Model.Danbooru.Json;
 using ImoutoRebirth.Arachne.Core.Models;
 using ImoutoRebirth.Arachne.Infrastructure.Models;
 using Xunit;
@@ -27,8 +28,9 @@ namespace ImoutoRebirth.Arachne.Tests.Infrastructure
                 parentMd5: generatedTags[9],
                 childs: Array.Empty<string>(),
                 pools: Array.Empty<string>(),
-                tags: Array.Empty<(string TagType, string Tag, string[] Synonyms)>(),
-                notes: Array.Empty<Note>());
+                tags: Array.Empty<MetaParsingTagResults>(),
+                notes: Array.Empty<Note>(),
+                new UgoiraFrameData());
 
             var metaTags = obj.GetMetaTags().ToList();
 
@@ -58,8 +60,9 @@ namespace ImoutoRebirth.Arachne.Tests.Infrastructure
                 parentMd5: default,
                 childs: Array.Empty<string>(),
                 pools: generatedTags,
-                tags: Array.Empty<(string TagType, string Tag, string[] Synonyms)>(),
-                notes: Array.Empty<Note>());
+                tags: Array.Empty<MetaParsingTagResults>(),
+                notes: Array.Empty<Note>(),
+                new UgoiraFrameData());
 
             var resultTagsValues = obj.GetMetaTags().ToArray();
 
@@ -87,8 +90,9 @@ namespace ImoutoRebirth.Arachne.Tests.Infrastructure
                 parentMd5: default,
                 childs: generatedTags,
                 pools: Array.Empty<string>(),
-                tags: Array.Empty<(string TagType, string Tag, string[] Synonyms)>(),
-                notes: Array.Empty<Note>());
+                tags: Array.Empty<MetaParsingTagResults>(),
+                notes: Array.Empty<Note>(),
+                new UgoiraFrameData());
             
             var resultTagsValues = obj.GetMetaTags().ToArray();
 
@@ -96,6 +100,42 @@ namespace ImoutoRebirth.Arachne.Tests.Infrastructure
             {
                 resultTagsValues.Count(x => x.Tag == "Child" && x.Value == tag).Should().Be(1);
             }
+        }
+
+        [Fact]
+        public void ShouldReturnUgoiraFrameData()
+        {
+            var generatedTags = Enumerable.Range(0, 10).Select(x => $"tag{x}").ToArray();
+
+            var obj = new MetaParsingResults(
+                source: default,
+                booruPostId: default,
+                booruLastUpdate: default,
+                md5: default,
+                postedDateTime: default,
+                postedById: default,
+                postedByUsername: default,
+                rating: default,
+                parentId: default,
+                parentMd5: default,
+                childs: generatedTags,
+                pools: Array.Empty<string>(),
+                tags: Array.Empty<MetaParsingTagResults>(),
+                notes: Array.Empty<Note>(),
+                new UgoiraFrameData
+                {
+                    ContentType = "jpeg",
+                    Data = new []{ new FrameData()
+                    {
+                        Delay = 10,
+                        File = "file"
+                    }}
+                });
+            
+            var tags = obj.GetMetaTags().ToArray();
+
+            tags.FirstOrDefault(x => x.Tag == "UgoiraFrameData").Should().NotBeNull();
+            tags.FirstOrDefault(x => x.Tag == "UgoiraFrameData").Value.Should().NotBeEmpty();
         }
     }
 }

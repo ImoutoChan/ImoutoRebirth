@@ -1,10 +1,12 @@
-﻿using System.Linq;
-using Imouto.BooruParser.Model.Base;
+﻿using System.Collections.Generic;
+using System.Linq;
+using Imouto.BooruParser.Model.Danbooru.Json;
 using ImoutoRebirth.Arachne.Core.Models;
 using ImoutoRebirth.Arachne.Infrastructure.Abstract;
 using ImoutoRebirth.Arachne.Infrastructure.Models;
 using ImoutoRebirth.Common;
 using Note = ImoutoRebirth.Arachne.Core.Models.Note;
+using Post = Imouto.BooruParser.Model.Base.Post;
 using SearchResult = ImoutoRebirth.Arachne.Core.Models.SearchResult;
 using Tag = ImoutoRebirth.Arachne.Core.Models.Tag;
 
@@ -24,7 +26,7 @@ namespace ImoutoRebirth.Arachne.Infrastructure
                           .Select(x => new Tag(x.TagType, x.Tag, x.Value));
             var postTags = metadataParsingDto
                           .Tags
-                          .Select(x => new Tag(x.TagType, x.Tag, null, x.Synonyms));
+                          .Select(x => new Tag(x.TagType, x.Tag, x.Value, x.Synonyms));
 
             return new Metadata(
                 image, 
@@ -53,7 +55,8 @@ namespace ImoutoRebirth.Arachne.Infrastructure
                 post.ChildrenIds,
                 post.Pools.Select(x => x.Id + "||" + x.Name).ToArray(),
                 post.Tags.Select(ConvertTag).ToArray(),
-                post.Notes.Select(ConvertNote).ToArray());
+                post.Notes.Select(ConvertNote).ToArray(),
+                post.UgoiraFrameData);
         }
 
         private static (string, string) GetParentInfo(string postParentId)
@@ -72,8 +75,8 @@ namespace ImoutoRebirth.Arachne.Infrastructure
             return (parentId, parentMd5);
         }
 
-        private static (string, string, string[]) ConvertTag(Imouto.BooruParser.Model.Base.Tag tag)
-            => (tag.Type.ToString(), tag.Name, new[] {tag.JapName});
+        private static MetaParsingTagResults ConvertTag(Imouto.BooruParser.Model.Base.Tag tag)
+            => new MetaParsingTagResults(tag.Type.ToString(), tag.Name, new[] {tag.JapName}, null);
         
         private static Note ConvertNote(Imouto.BooruParser.Model.Base.Note note) 
             => new Note(
