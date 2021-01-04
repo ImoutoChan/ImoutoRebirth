@@ -1,6 +1,7 @@
-﻿using System.Collections.ObjectModel;
+﻿using System.Collections.Generic;
 using System.IO;
 using System.IO.Compression;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
@@ -24,9 +25,13 @@ namespace ImoutoRebirth.Navigator.UserControls
             InitializeComponent();
         }
 
-        private BitmapSource? CurrentImage => Frames.Count > _currentFrame ? Frames[_currentFrame] : null;
+        private BitmapSource? CurrentImage => Frames.Count > _currentFrame ? Frames[_currentFrame].Image : null;
 
-        private ObservableCollection<BitmapSource> Frames { get; } = new();
+        private FrameItem? CurrentFrame => Frames.Count > _currentFrame ? Frames[_currentFrame] : null;
+
+        private List<FrameItem> Frames { get; } = new();
+        
+        private List<DelayItem> Delays { get; set; } = new();
 
         public static readonly DependencyProperty SourceProperty 
             = DependencyProperty.Register(
@@ -39,6 +44,19 @@ namespace ImoutoRebirth.Navigator.UserControls
         {
             get => (string) GetValue(SourceProperty);
             set => SetValue(SourceProperty, value);
+        }
+
+        public static readonly DependencyProperty FrameDelaysProperty 
+            = DependencyProperty.Register(
+                nameof(FrameDelays), 
+                typeof (IEnumerable<DelayItem>), 
+                typeof (UgoiraPlayer), 
+                new UIPropertyMetadata(null, OnFrameDelaysChanged));
+
+        public IEnumerable<DelayItem> FrameDelays
+        {
+            get => (IEnumerable<DelayItem>) GetValue(FrameDelaysProperty);
+            set => SetValue(FrameDelaysProperty, value);
         }
 
         private static async void OnSourceChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
@@ -54,6 +72,16 @@ namespace ImoutoRebirth.Navigator.UserControls
             {
                 await control.LoadUgoira(path);
             }
+        }
+
+        private static void OnFrameDelaysChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            if (e.NewValue is not IEnumerable<DelayItem> delays)
+                return;
+
+            var control = (UgoiraPlayer) d;
+
+            control.Delays = delays.ToList();
         }
 
 
@@ -84,7 +112,7 @@ namespace ImoutoRebirth.Navigator.UserControls
 
                     var frame = BitmapFrame.Create(resultImage, BitmapCreateOptions.None, BitmapCacheOption.OnLoad);
 
-                    Frames.Add(frame);
+                    Frames.Add(new FrameItem(frame, 33, entry.FullName));
                 }
 
                 StartPlaying();
@@ -119,9 +147,10 @@ namespace ImoutoRebirth.Navigator.UserControls
                 if (Frames.Count == 0)
                     return;
 
-                SynchronizationContext.Current?.Post(x => { Image.Source = CurrentImage; }, null);
-
-                await Task.Delay(33);
+                var current = CurrentFrame;
+                var delay = Delays.FirstOrDefault(x => x.FileName == current?.FileName)?.Delay;
+                Image.Source = current?.Image;
+                await Task.Delay(delay ?? current?.Delay ?? 33);
             };
         }
 
@@ -130,4 +159,8 @@ namespace ImoutoRebirth.Navigator.UserControls
             _isPlaying = false;
         }
     }
+
+    public record DelayItem(int Delay, string FileName);
+
+    public record FrameItem(BitmapSource Image, int Delay, string FileName);
 }

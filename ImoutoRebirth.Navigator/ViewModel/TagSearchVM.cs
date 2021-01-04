@@ -9,8 +9,10 @@ using ImoutoRebirth.Navigator.Commands;
 using ImoutoRebirth.Navigator.Services;
 using ImoutoRebirth.Navigator.Services.Tags;
 using ImoutoRebirth.Navigator.Services.Tags.Model;
+using ImoutoRebirth.Navigator.UserControls;
 using ImoutoRebirth.Navigator.Utils;
 using ImoutoRebirth.Navigator.ViewModel.ListEntries;
+using Newtonsoft.Json;
 using SearchType = ImoutoRebirth.Navigator.Services.Tags.Model.SearchType;
 using Tag = ImoutoRebirth.Navigator.Services.Tags.Model.Tag;
 
@@ -39,6 +41,7 @@ namespace ImoutoRebirth.Navigator.ViewModel
         private bool _isFavorite;
         private readonly IFileTagService _fileTagService;
         private readonly ITagService _tagService;
+        private IReadOnlyCollection<DelayItem> _ugoiraFrameDelays;
 
         #endregion Fields
 
@@ -181,7 +184,15 @@ namespace ImoutoRebirth.Navigator.ViewModel
                     SetFavorite(value, _lastListEntryId.Value);
                 }
             }
+        }        
+        
+        public IReadOnlyCollection<DelayItem> UgoiraFrameDelays
+        {
+            get => _ugoiraFrameDelays;
+            set => OnPropertyChanged(ref _ugoiraFrameDelays, value, () => UgoiraFrameDelays);
         }
+
+
 
         public bool IsRateSetted
         {
@@ -259,6 +270,7 @@ namespace ImoutoRebirth.Navigator.ViewModel
 
             GetFavorite(tags);
             GetRate(tags);
+            GetUgoiraFrameData(tags);
             IsRateSetted = true;
         }
 
@@ -428,6 +440,19 @@ namespace ImoutoRebirth.Navigator.ViewModel
             OnPropertyChanged(() => IsFavorite);
         }
 
+        private void GetUgoiraFrameData(IReadOnlyCollection<FileTag> tags)
+        {
+            var frameDataTag = tags.FirstOrDefault(x => x.Tag.Title == "UgoiraFrameData");
+
+            if (frameDataTag == null || string.IsNullOrEmpty(frameDataTag.Value)) 
+                return;
+            
+            var frameData = JsonConvert.DeserializeObject<UgoiraFrameData>(frameDataTag.Value);
+
+            _ugoiraFrameDelays = frameData.Data.Select(x => new DelayItem(x.Delay, x.File)).ToList();
+            OnPropertyChanged(() => UgoiraFrameDelays);
+        }
+
         private async Task SetFavorite(bool value, Guid fileId)
         {
             //var favTag = await ImoutoService.UseAsync(imoutoService =>
@@ -555,6 +580,24 @@ namespace ImoutoRebirth.Navigator.ViewModel
         {
             return Enum.GetValues(typeof (T))
                        .Cast<T>();
+        }
+    }
+
+    internal class UgoiraFrameData
+    {
+        [JsonProperty("data")]
+        public IReadOnlyCollection<FrameData> Data { get; set; } = default!;
+
+        [JsonProperty("content_type")]
+        public string ContentType { get; set; } = default!;
+
+        public class FrameData
+        {
+            [JsonProperty("delay")]
+            public int Delay { get; set; }
+
+            [JsonProperty("file")]
+            public string File { get; set; } = default!;
         }
     }
 }
