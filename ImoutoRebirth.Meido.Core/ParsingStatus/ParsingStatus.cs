@@ -146,6 +146,7 @@ namespace ImoutoRebirth.Meido.Core.ParsingStatus
                 (Status.UpdateRequested, Status.SearchFailed) => true,
                 (Status.UpdateRequested, Status.SearchNotFound) => true,
                 (Status.UpdateRequested, Status.SearchSaved) => true,
+                (Status.UpdateRequested, Status.UpdateRequested) => true,
                 _ => false
             };
 
