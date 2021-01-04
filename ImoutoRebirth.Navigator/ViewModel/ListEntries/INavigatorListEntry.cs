@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Windows;
-using System.Windows.Input;
+using System.Windows.Media.Imaging;
 using ImoutoRebirth.Navigator.Behavior;
 
-namespace ImoutoRebirth.Navigator.ViewModel
+namespace ImoutoRebirth.Navigator.ViewModel.ListEntries
 {
     internal interface INavigatorListEntry : IDragable
     {
@@ -18,5 +18,9 @@ namespace ImoutoRebirth.Navigator.ViewModel
         Guid? DbId { get; }
 
         string Path { get; }
+
+        bool IsLoading { get; }
+
+        BitmapSource Image { get; }
     }
 }

@@ -76,9 +76,6 @@ namespace ImoutoRebirth.Navigator.Services.Tags
                     cancellationToken)).Value;
         }
 
-        public Task RemoveFile(Guid fileId)
-        {
-            throw new NotImplementedException();
-        }
+        public Task RemoveFile(Guid fileId) => _roomClient.CollectionFiles.RemoveAsync(fileId);
     }
 }

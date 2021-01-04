@@ -1,12 +1,11 @@
 ﻿#nullable enable
 using System;
-using System.IO;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Windows;
 using Imouto;
 
-namespace ImoutoRebirth.Navigator.ViewModel
+namespace ImoutoRebirth.Navigator.ViewModel.ListEntries
 {
     internal static class EntryVMFactory
     {
@@ -26,6 +25,9 @@ namespace ImoutoRebirth.Navigator.ViewModel
 
             if (path.IsVideo() || path.EndsWith(".m4v"))
                 return new VideoEntryVM(path, initPreviewSize, dbId);
+
+            if (path.EndsWith(".zip"))
+                return new UgoiraEntryVM(path, initPreviewSize, dbId);
 
             return null;
         }

@@ -2,6 +2,7 @@
 using System.Windows.Input;
 using Imouto.Utils.Core;
 using ImoutoRebirth.Navigator.Commands;
+using ImoutoRebirth.Navigator.ViewModel.ListEntries;
 
 namespace ImoutoRebirth.Navigator.ViewModel
 {

@@ -10,6 +10,7 @@ using ImoutoRebirth.Navigator.Services;
 using ImoutoRebirth.Navigator.Services.Tags;
 using ImoutoRebirth.Navigator.Services.Tags.Model;
 using ImoutoRebirth.Navigator.Utils;
+using ImoutoRebirth.Navigator.ViewModel.ListEntries;
 using SearchType = ImoutoRebirth.Navigator.Services.Tags.Model.SearchType;
 using Tag = ImoutoRebirth.Navigator.Services.Tags.Model.Tag;
 
@@ -287,7 +288,7 @@ namespace ImoutoRebirth.Navigator.ViewModel
 
         private Task<IReadOnlyCollection<Tag>> SearchTagsAsyncTask(string searchString)
         {
-            return _tagService.SearchTags(searchString, 10);
+            return _tagService.SearchTags(searchString, 50);
         }
 
         private void SelectTag(object param)

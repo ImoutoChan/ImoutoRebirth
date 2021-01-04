@@ -112,30 +112,6 @@ namespace ImoutoRebirth.Navigator.UserControls
             set => SetValue(SourceProperty, value);
         }
 
-        public static readonly DependencyProperty ShouldPauseProperty 
-            = DependencyProperty.Register(
-                "ShouldPause", 
-                typeof (bool), 
-                typeof (PlayerControl), 
-                new UIPropertyMetadata(false, OnShouldPauseChanged));
-
-        private static void OnShouldPauseChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
-        {
-            var shouldPause = (bool) e.NewValue;
-            var control = (PlayerControl) d;
-            
-            if (shouldPause)
-            {
-                control.IsPlayed = false;
-            }
-        }
-
-        public bool ShouldPause
-        {
-            get => (bool) GetValue(ShouldPauseProperty);
-            set => SetValue(ShouldPauseProperty, value);
-        }
-
         private static void OnSourceChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
             var newPropertyValue = (string) e.NewValue;
@@ -155,6 +131,30 @@ namespace ImoutoRebirth.Navigator.UserControls
                     control.IsPlayed = true;
                 }
             }));
+        }
+
+        public bool ShouldPause
+        {
+            get => (bool) GetValue(ShouldPauseProperty);
+            set => SetValue(ShouldPauseProperty, value);
+        }
+
+        public static readonly DependencyProperty ShouldPauseProperty 
+            = DependencyProperty.Register(
+                "ShouldPause", 
+                typeof (bool), 
+                typeof (PlayerControl), 
+                new UIPropertyMetadata(false, OnShouldPauseChanged));
+
+        private static void OnShouldPauseChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            var shouldPause = (bool) e.NewValue;
+            var control = (PlayerControl) d;
+            
+            if (shouldPause)
+            {
+                control.IsPlayed = false;
+            }
         }
 
         private void PlayButton_OnClick(object sender, RoutedEventArgs e)

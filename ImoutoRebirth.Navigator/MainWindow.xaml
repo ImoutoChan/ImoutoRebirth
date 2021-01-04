@@ -15,6 +15,7 @@
                           xmlns:userControl="clr-namespace:ImoutoRebirth.Navigator.UserControls"
                           xmlns:behavior="clr-namespace:ImoutoRebirth.Navigator.Behavior"
                           xmlns:view="clr-namespace:ImoutoRebirth.Navigator.View"
+                          xmlns:listEntries="clr-namespace:ImoutoRebirth.Navigator.ViewModel.ListEntries"
                           d:DataContext="{d:DesignInstance viewModel:MainWindowVM, IsDesignTimeCreatable=False}"
                           mc:Ignorable="d"
                           WindowStartupLocation="CenterScreen"
@@ -123,6 +124,7 @@
                                        Visibility="{Binding Path=IsLoading, Converter={StaticResource ConditionVisibilityConverter}, ConverterParameter=true, Mode=OneWay}" />
 
             <ListBox x:Name="ListBoxElement"
+                     Grid.Row="0"
                      Grid.Column="1"
                      Grid.RowSpan="2"
                      ScrollViewer.HorizontalScrollBarVisibility="Disabled"
@@ -163,7 +165,7 @@
 
                 <ListBox.Resources>
                     <DataTemplate x:Key="PreviewListBoxItemTemplate"
-                                  DataType="{x:Type ContentControl}">
+                                  DataType="{x:Type listEntries:INavigatorListEntry}">
                         <Border Margin="0,11,0,11">
                             <b:Interaction.Behaviors>
                                 <behavior:FrameworkElementDragBehavior />
@@ -221,7 +223,7 @@
                     </DataTemplate>
 
                     <DataTemplate x:Key="GifListBoxItemTemplate"
-                                  DataType="{x:Type ContentControl}">
+                                  DataType="{x:Type listEntries:ImageEntryVM}">
                         <Border Margin="0,11,0,11">
                             <b:Interaction.Behaviors>
                                 <behavior:FrameworkElementDragBehavior />
@@ -249,7 +251,7 @@
                     </DataTemplate>
 
                     <DataTemplate x:Key="VideoListBoxItemTemplate"
-                                  DataType="{x:Type viewModel:VideoEntryVM}">
+                                  DataType="{x:Type listEntries:VideoEntryVM}">
                         <Border Margin="0,11,0,11">
                             <b:Interaction.Behaviors>
                                 <behavior:FrameworkElementDragBehavior />
@@ -263,6 +265,24 @@
                                   Height="{Binding Path=ViewPortSize.Height}">
                                 <!-- todo: implement video control -->
                                 <userControl:PlayerControl Source="{Binding Path}" ShouldPause="{Binding ShouldPause}" />
+                            </Grid>
+                        </Border>
+                    </DataTemplate>
+
+                    <DataTemplate x:Key="UgoiraListBoxItemTemplate"
+                                  DataType="{x:Type listEntries:UgoiraEntryVM}">
+                        <Border Margin="0,11,0,11">
+                            <b:Interaction.Behaviors>
+                                <behavior:FrameworkElementDragBehavior />
+                            </b:Interaction.Behaviors>
+
+                            <Border.Effect>
+                                <DropShadowEffect />
+                            </Border.Effect>
+
+                            <Grid Width="{Binding Path=ViewPortSize.Width}"
+                                  Height="{Binding Path=ViewPortSize.Height}">
+                                <userControl:UgoiraPlayer Source="{Binding Path}" />
                             </Grid>
                         </Border>
                     </DataTemplate>
@@ -328,7 +348,7 @@
                                                            Value="True" />
 
                                                 <Condition Binding="{Binding Type}"
-                                                           Value="{x:Static viewModel:ListEntryType.Gif}" />
+                                                           Value="{x:Static listEntries:ListEntryType.Gif}" />
 
                                                 <Condition Binding="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type Window}}, Path=DataContext.ShowPreview}"
                                                            Value="True" />
@@ -348,7 +368,7 @@
                                                            Value="True" />
 
                                                 <Condition Binding="{Binding Type}"
-                                                           Value="{x:Static viewModel:ListEntryType.Video}" />
+                                                           Value="{x:Static listEntries:ListEntryType.Video}" />
 
                                                 <Condition Binding="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type Window}}, Path=DataContext.ShowPreview}"
                                                            Value="True" />
@@ -361,6 +381,26 @@
                                             </MultiDataTrigger.Setters>
                                         </MultiDataTrigger>
 
+                                        <!-- Selected && Ugoira && ShowPreview -->
+                                        <MultiDataTrigger>
+                                            <MultiDataTrigger.Conditions>
+                                                <Condition Binding="{Binding RelativeSource={RelativeSource Self}, Path=IsSelected}"
+                                                           Value="True" />
+
+                                                <Condition Binding="{Binding Type}"
+                                                           Value="{x:Static listEntries:ListEntryType.Ugoira}" />
+
+                                                <Condition Binding="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type Window}}, Path=DataContext.ShowPreview}"
+                                                           Value="True" />
+                                            </MultiDataTrigger.Conditions>
+
+                                            <MultiDataTrigger.Setters>
+                                                <Setter Property="ContentTemplate"
+                                                        Value="{StaticResource UgoiraListBoxItemTemplate}"
+                                                        TargetName="ContentControl" />
+                                            </MultiDataTrigger.Setters>
+                                        </MultiDataTrigger>
+
                                         <!-- Selected && Image && ShowPreview -->
                                         <MultiDataTrigger>
                                             <MultiDataTrigger.Conditions>
@@ -368,7 +408,7 @@
                                                            Value="True" />
 
                                                 <Condition Binding="{Binding Type}"
-                                                           Value="{x:Static viewModel:ListEntryType.Image}" />
+                                                           Value="{x:Static listEntries:ListEntryType.Image}" />
 
                                                 <Condition Binding="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type Window}}, Path=DataContext.ShowPreview}"
                                                            Value="True" />

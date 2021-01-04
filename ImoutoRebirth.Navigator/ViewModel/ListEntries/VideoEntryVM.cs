@@ -4,7 +4,7 @@ using System.Windows;
 using System.Windows.Media.Imaging;
 using Microsoft.WindowsAPICodePack.Shell;
 
-namespace ImoutoRebirth.Navigator.ViewModel
+namespace ImoutoRebirth.Navigator.ViewModel.ListEntries
 {
     internal class VideoEntryVM : VMBase, INavigatorListEntry
     {
@@ -13,7 +13,7 @@ namespace ImoutoRebirth.Navigator.ViewModel
         private Size _size;
         private bool _isLoading;
         private bool _isPreviewLoaded;
-        private readonly object _loaderLocker = new object();
+        private readonly object _loaderLocker = new();
         private bool _shouldPause;
 
         #endregion Fields

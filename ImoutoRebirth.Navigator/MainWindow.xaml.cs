@@ -8,6 +8,7 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
 using ImoutoRebirth.Navigator.ViewModel;
+using ImoutoRebirth.Navigator.ViewModel.ListEntries;
 using MahApps.Metro.Controls;
 using MahApps.Metro.Controls.Dialogs;
 

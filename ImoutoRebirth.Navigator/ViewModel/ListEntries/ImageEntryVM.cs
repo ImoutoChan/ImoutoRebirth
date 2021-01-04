@@ -4,7 +4,7 @@ using System.Windows.Media.Imaging;
 using Imouto;
 using ImoutoRebirth.Navigator.Model;
 
-namespace ImoutoRebirth.Navigator.ViewModel
+namespace ImoutoRebirth.Navigator.ViewModel.ListEntries
 {
     internal class ImageEntryVM : VMBase, INavigatorListEntry
     {

@@ -13,6 +13,7 @@ using ImoutoRebirth.Navigator.Model;
 using ImoutoRebirth.Navigator.Services;
 using ImoutoRebirth.Navigator.Services.ImoutoViewer;
 using ImoutoRebirth.Navigator.Services.Tags;
+using ImoutoRebirth.Navigator.ViewModel.ListEntries;
 using MahApps.Metro.Controls.Dialogs;
 
 namespace ImoutoRebirth.Navigator.ViewModel
@@ -364,7 +365,7 @@ namespace ImoutoRebirth.Navigator.ViewModel
 
             await _fileService.RemoveFile(selectedItem.DbId.Value);
 
-            // NavigatorList.Remove(selectedItem);
+            NavigatorList.Remove(selectedItem);
 
             await _view.ShowMessageDialog(
                 "Remove Element",

@@ -8,6 +8,7 @@ using Imouto.Utils.Core;
 using ImoutoRebirth.Navigator.Services.Tags;
 using ImoutoRebirth.Navigator.Services.Tags.Model;
 using ImoutoRebirth.Navigator.ViewModel;
+using ImoutoRebirth.Navigator.ViewModel.ListEntries;
 
 namespace ImoutoRebirth.Navigator.Services
 {
