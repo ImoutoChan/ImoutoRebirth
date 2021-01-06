@@ -22,5 +22,9 @@ namespace ImoutoRebirth.Navigator.ViewModel.ListEntries
         bool IsLoading { get; }
 
         BitmapSource Image { get; }
+
+        bool IsFavorite { get; }
+
+        int Rating { get; }
     }
 }

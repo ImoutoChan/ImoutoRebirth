@@ -2,15 +2,21 @@
 using System.Windows;
 using System.Windows.Media.Imaging;
 using Imouto;
+using ImoutoRebirth.Lilin.WebApi.Client;
 using ImoutoRebirth.Navigator.Model;
 
 namespace ImoutoRebirth.Navigator.ViewModel.ListEntries
 {
-    internal class ImageEntryVM : VMBase, INavigatorListEntry
+    internal class ImageEntryVM : BaseEntryVM, INavigatorListEntry
     {
         #region Constructors
 
-        public ImageEntryVM(string imagePath, Size initPreviewSize = new Size(), Guid? dbId = null)
+        public ImageEntryVM(
+            string imagePath,
+            IImoutoRebirthLilinWebApiClient lilinWebApiClient,
+            Size initPreviewSize,
+            Guid? dbId)
+            : base(dbId, lilinWebApiClient)
         {
             ImageEntry = new ImageEntry(imagePath, initPreviewSize);
             ImageEntry.ImageChanged += (s, e) =>
@@ -57,9 +63,10 @@ namespace ImoutoRebirth.Navigator.ViewModel.ListEntries
             OnPropertyChanged(() => ViewPortSize);
         }
 
-        public void Load()
+        public async void Load()
         {
             ImageEntry.DoLoadAsyns();
+            LoadRating();
         }
 
         #endregion Public methods

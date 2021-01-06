@@ -5,6 +5,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using Imouto.Utils.Core;
+using ImoutoRebirth.Lilin.WebApi.Client;
 using ImoutoRebirth.Navigator.Services.Tags;
 using ImoutoRebirth.Navigator.Services.Tags.Model;
 using ImoutoRebirth.Navigator.ViewModel;
@@ -18,10 +19,12 @@ namespace ImoutoRebirth.Navigator.Services
         private readonly SemaphoreSlim _operationLocker = new SemaphoreSlim(1);
         private readonly object _ctsLocker = new object();
         private readonly IFileService _fileService;
+        private readonly IImoutoRebirthLilinWebApiClient _lilinWebApiClient;
 
-        public FileLoadingService(IFileService fileService)
+        public FileLoadingService(IFileService fileService, IImoutoRebirthLilinWebApiClient lilinWebApiClient)
         {
             _fileService = fileService;
+            _lilinWebApiClient = lilinWebApiClient;
         }
 
         public async Task LoadFiles(
@@ -121,7 +124,12 @@ namespace ImoutoRebirth.Navigator.Services
                     ct);
 
                 var navigatorListEntries = found
-                    .Select(x => EntryVMFactory.CreateListEntry(x.Path, new Size(previewSize, previewSize), x.Id))
+                    .Select(
+                        x => EntryVMFactory.CreateListEntry(
+                            x.Path,
+                            new Size(previewSize, previewSize),
+                            _lilinWebApiClient,
+                            x.Id))
                     .Where(x => x != null)
                     .SkipExceptions()
                     .WithCancellation(ct)

@@ -139,18 +139,38 @@ namespace ImoutoRebirth.Navigator.UserControls
             
             while (_isPlaying)
             {
-                _currentFrame++;
+                var delaysMode = Delays.Any();
 
-                if (_currentFrame >= Frames.Count)
-                    _currentFrame = 0;
+                if (!delaysMode)
+                {
+                    _currentFrame++;
 
-                if (Frames.Count == 0)
-                    return;
+                    if (!delaysMode && _currentFrame >= Frames.Count)
+                        _currentFrame = 0;
 
-                var current = CurrentFrame;
-                var delay = Delays.FirstOrDefault(x => x.FileName == current?.FileName)?.Delay;
-                Image.Source = current?.Image;
-                await Task.Delay(delay ?? current?.Delay ?? 33);
+                    if (Frames.Count == 0)
+                        return;
+
+                    var current = CurrentFrame;
+                    var delay = Delays.FirstOrDefault(x => x.FileName == current?.FileName)?.Delay;
+                    Image.Source = current?.Image;
+                    await Task.Delay(delay ?? current?.Delay ?? 33);
+                }
+                else
+                {
+                    _currentFrame++;
+
+                    if (_currentFrame >= Delays.Count)
+                        _currentFrame = 0;
+
+                    if (Frames.Count == 0)
+                        return;
+
+                    var current = Delays[_currentFrame];
+                    var frame = Frames.FirstOrDefault(x => x.FileName == current?.FileName);
+                    Image.Source = frame?.Image;
+                    await Task.Delay(current.Delay);
+                }
             };
         }
 

@@ -4,6 +4,7 @@
                           xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                           xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
                           xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+                          xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
                           xmlns:metroControl="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
                           xmlns:dialog="clr-namespace:MahApps.Metro.Controls.Dialogs;assembly=MahApps.Metro"
                           xmlns:gif="http://wpfanimatedgif.codeplex.com"
@@ -193,7 +194,6 @@
                                     <Label HorizontalAlignment="Left"
                                            VerticalAlignment="Top"
                                            Margin="5,5,5,5"
-                                           Template="{StaticResource VideoOverlayIcon}"
                                            Visibility="{Binding Path=Type, Converter={StaticResource ConditionVisibilityConverter}, ConverterParameter=Video}">
                                         <Label.Effect>
                                             <DropShadowEffect Color="{Binding Source={StaticResource MahApps.Brushes.White}, Path=Color, Mode=OneTime}"
@@ -202,12 +202,20 @@
                                                               Direction="315"
                                                               ShadowDepth="3" />
                                         </Label.Effect>
+                                        <Label.Template>
+                                            <ControlTemplate>
+                                                <iconPacks:PackIconModern
+                                                    Width="19"
+                                                    Height="19"
+                                                    Kind="MovieClapper">
+                                                </iconPacks:PackIconModern>
+                                            </ControlTemplate>
+                                        </Label.Template>
                                     </Label>
 
                                     <Label HorizontalAlignment="Left"
                                            VerticalAlignment="Top"
                                            Margin="5,5,5,5"
-                                           Template="{StaticResource GifOverlayIcon}"
                                            Visibility="{Binding Path=Type, Converter={StaticResource ConditionVisibilityConverter}, ConverterParameter=Gif}">
                                         <Label.Effect>
                                             <DropShadowEffect Color="{Binding Source={StaticResource MahApps.Brushes.White}, Path=Color, Mode=OneTime}"
@@ -216,7 +224,133 @@
                                                               Direction="315"
                                                               ShadowDepth="3" />
                                         </Label.Effect>
+                                        <Label.Template>
+                                            <ControlTemplate>
+                                                <iconPacks:PackIconModern
+                                                    Width="19"
+                                                    Height="19"
+                                                    Kind="ImageExport">
+                                                </iconPacks:PackIconModern>
+                                            </ControlTemplate>
+                                        </Label.Template>
                                     </Label>
+
+                                    <Label HorizontalAlignment="Left"
+                                           VerticalAlignment="Top"
+                                           Margin="5,5,5,5"
+                                           Visibility="{Binding Path=Type, Converter={StaticResource ConditionVisibilityConverter}, ConverterParameter=Ugoira}">
+                                        <Label.Effect>
+                                            <DropShadowEffect Color="{Binding Source={StaticResource MahApps.Brushes.White}, Path=Color, Mode=OneTime}"
+                                                              BlurRadius="5"
+                                                              Opacity="0.9"
+                                                              Direction="315"
+                                                              ShadowDepth="3" />
+                                        </Label.Effect>
+                                        <Label.Template>
+                                            <ControlTemplate>
+                                                <iconPacks:PackIconModern
+                                                    Width="19"
+                                                    Height="19"
+                                                    Kind="ImageMultiple">
+                                                </iconPacks:PackIconModern>
+                                            </ControlTemplate>
+                                        </Label.Template>
+                                    </Label>
+
+                                    <Label HorizontalAlignment="Left"
+                                           VerticalAlignment="Top"
+                                           Margin="5,5,5,5"
+                                           Visibility="{Binding Path=Type, Converter={StaticResource ConditionVisibilityConverter}, ConverterParameter=Ugoira}">
+                                        <Label.Effect>
+                                            <DropShadowEffect Color="{Binding Source={StaticResource MahApps.Brushes.White}, Path=Color, Mode=OneTime}"
+                                                              BlurRadius="5"
+                                                              Opacity="0.9"
+                                                              Direction="315"
+                                                              ShadowDepth="3" />
+                                        </Label.Effect>
+                                        <Label.Template>
+                                            <ControlTemplate>
+                                                <iconPacks:PackIconModern
+                                                    Width="19"
+                                                    Height="19"
+                                                    Kind="ImageMultiple">
+                                                </iconPacks:PackIconModern>
+                                            </ControlTemplate>
+                                        </Label.Template>
+                                    </Label>
+
+                                    <StackPanel HorizontalAlignment="Right"
+                                                VerticalAlignment="Bottom"
+                                                Orientation="Horizontal">
+                                        <Label HorizontalAlignment="Left"
+                                               VerticalAlignment="Bottom"
+                                               Margin="5,5,5,5"
+                                               Visibility="{Binding Path=Rating, Converter={StaticResource ConditionVisibilityConverter}, ConverterParameter=4}">
+                                            <Label.Effect>
+                                                <DropShadowEffect Color="{Binding Source={StaticResource MahApps.Brushes.White}, Path=Color, Mode=OneTime}"
+                                                                  BlurRadius="5"
+                                                                  Opacity="0.9"
+                                                                  Direction="315"
+                                                                  ShadowDepth="3" />
+                                            </Label.Effect>
+                                            <Label.Template>
+                                                <ControlTemplate>
+                                                    <iconPacks:PackIconModern
+                                                        Width="25"
+                                                        Height="25"
+                                                        Kind="Star"
+                                                        Foreground="Silver">
+                                                    </iconPacks:PackIconModern>
+                                                </ControlTemplate>
+                                            </Label.Template>
+                                        </Label>
+
+                                        <Label HorizontalAlignment="Left"
+                                               VerticalAlignment="Bottom"
+                                               Margin="5,5,5,5"
+                                               Visibility="{Binding Path=Rating, Converter={StaticResource ConditionVisibilityConverter}, ConverterParameter=5}">
+                                            <Label.Effect>
+                                                <DropShadowEffect Color="{Binding Source={StaticResource MahApps.Brushes.White}, Path=Color, Mode=OneTime}"
+                                                                  BlurRadius="5"
+                                                                  Opacity="0.9"
+                                                                  Direction="315"
+                                                                  ShadowDepth="3" />
+                                            </Label.Effect>
+                                            <Label.Template>
+                                                <ControlTemplate>
+                                                    <iconPacks:PackIconModern
+                                                        Width="25"
+                                                        Height="25"
+                                                        Kind="Star"
+                                                        Foreground="Goldenrod">
+                                                    </iconPacks:PackIconModern>
+                                                </ControlTemplate>
+                                            </Label.Template>
+                                        </Label>
+
+                                        <Label HorizontalAlignment="Right"
+                                               VerticalAlignment="Bottom"
+                                               Margin="5,5,5,5"
+                                               Visibility="{Binding Path=IsFavorite, Converter={StaticResource ConditionVisibilityConverter}, ConverterParameter=true}">
+                                            <Label.Effect>
+                                                <DropShadowEffect Color="{Binding Source={StaticResource MahApps.Brushes.White}, Path=Color, Mode=OneTime}"
+                                                                  BlurRadius="5"
+                                                                  Opacity="0.9"
+                                                                  Direction="315"
+                                                                  ShadowDepth="3" />
+                                            </Label.Effect>
+                                            <Label.Template>
+                                                <ControlTemplate>
+                                                    <iconPacks:PackIconModern
+                                                        Width="23"
+                                                        Height="23"
+                                                        Kind="Heart"
+                                                        Foreground="PaleVioletRed">
+                                                    </iconPacks:PackIconModern>
+                                                </ControlTemplate>
+                                            </Label.Template>
+                                        </Label>
+                                    </StackPanel>
                                 </Grid>
                             </Grid>
                         </Border>

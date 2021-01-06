@@ -4,15 +4,21 @@ using System.IO.Compression;
 using System.Linq;
 using System.Windows;
 using System.Windows.Media.Imaging;
+using ImoutoRebirth.Lilin.WebApi.Client;
 
 namespace ImoutoRebirth.Navigator.ViewModel.ListEntries
 {
-    internal class UgoiraEntryVM : VMBase, INavigatorListEntry
+    internal class UgoiraEntryVM : BaseEntryVM, INavigatorListEntry
     {
         private Size _size;
         private bool _isLoading;
 
-        public UgoiraEntryVM(string path, Size viewPortSize, Guid? dbId)
+        public UgoiraEntryVM(
+            string path,
+            IImoutoRebirthLilinWebApiClient lilinWebApiClient,
+            Size viewPortSize,
+            Guid? dbId) 
+            : base(dbId, lilinWebApiClient)
         {
             DbId = dbId;
             ViewPortSize = viewPortSize;
@@ -46,6 +52,8 @@ namespace ImoutoRebirth.Navigator.ViewModel.ListEntries
         public async void Load()
         {
             IsLoading = true;
+            
+            LoadRating();
 
             await using var zipToOpen = new FileStream(Path, FileMode.Open, FileAccess.Read);
             using var archive = new ZipArchive(zipToOpen, ZipArchiveMode.Read);

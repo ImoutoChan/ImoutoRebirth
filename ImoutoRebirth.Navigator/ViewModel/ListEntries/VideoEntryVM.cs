@@ -2,11 +2,12 @@ using System;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Media.Imaging;
+using ImoutoRebirth.Lilin.WebApi.Client;
 using Microsoft.WindowsAPICodePack.Shell;
 
 namespace ImoutoRebirth.Navigator.ViewModel.ListEntries
 {
-    internal class VideoEntryVM : VMBase, INavigatorListEntry
+    internal class VideoEntryVM: BaseEntryVM, INavigatorListEntry
     {
         #region Fields
 
@@ -20,7 +21,12 @@ namespace ImoutoRebirth.Navigator.ViewModel.ListEntries
 
         #region Constructors
 
-        public VideoEntryVM(string path, Size initPreviewSize = new Size(), Guid? dbId = null)
+        public VideoEntryVM(
+            string path,
+            IImoutoRebirthLilinWebApiClient lilinWebApiClient,
+            Size initPreviewSize,
+            Guid? dbId)
+            : base(dbId, lilinWebApiClient)
         {
             Path = path;
             Type = ListEntryType.Video;
@@ -77,9 +83,10 @@ namespace ImoutoRebirth.Navigator.ViewModel.ListEntries
             ViewPortSize = previewSize;
         }
 
-        public void Load()
+        public async void Load()
         {
             LoadPreview();
+            await LoadRating();
         }
 
         public void Pause()

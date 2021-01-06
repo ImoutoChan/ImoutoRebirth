@@ -3,7 +3,8 @@
                     xmlns:wpfHelpers="clr-namespace:ImoutoRebirth.Navigator.Utils.Wpf"
                     xmlns:converters1="clr-namespace:ImoutoRebirth.Navigator.Converters"
                     xmlns:viewModel="clr-namespace:ImoutoRebirth.Navigator.ViewModel"
-                    xmlns:Imouto.Navigator="clr-namespace:ImoutoRebirth.Navigator">
+                    xmlns:Imouto.Navigator="clr-namespace:ImoutoRebirth.Navigator"
+                    xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks">
     <ResourceDictionary.MergedDictionaries>
         <ResourceDictionary Source="Resources/Icons.xaml" />
     </ResourceDictionary.MergedDictionaries>
@@ -263,8 +264,8 @@
                             </TextBlock>
 
                             <Button Grid.Column="1"
-                                    Width="20"
-                                    Height="20"
+                                    Width="15"
+                                    Height="15"
                                     Margin="0, 0, 0, 0"
                                     Style="{DynamicResource MahApps.Styles.Button.Circle}"
                                     HorizontalAlignment="Left"
@@ -274,15 +275,11 @@
                                                          Converter={StaticResource ConditionVisibilityConverter}, 
                                                          ConverterParameter=true, 
                                                          FallbackValue=Collapsed}">
-                                <Rectangle Width="8"
-                                           Height="8"
-                                           Fill="{Binding Path=Foreground, 
-                                                          RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Button}}}">
-                                    <Rectangle.OpacityMask>
-                                        <VisualBrush Stretch="Fill"
-                                                     Visual="{DynamicResource appbar_close}" />
-                                    </Rectangle.OpacityMask>
-                                </Rectangle>
+                                <iconPacks:PackIconModern 
+                                    Width="6" 
+                                    Height="6" 
+                                    Kind="Close">
+                                </iconPacks:PackIconModern>
                             </Button>
                         </Grid>
                     </DataTemplate>
@@ -472,30 +469,6 @@
             </Setter.Value>
         </Setter>
     </Style>
-
-    <ControlTemplate x:Key="VideoOverlayIcon"
-                     TargetType="{x:Type Label}">
-        <Rectangle Width="30"
-                   Height="30"
-                   Fill="{StaticResource MahApps.Brushes.Black}">
-            <Rectangle.OpacityMask>
-                <VisualBrush Stretch="Fill"
-                             Visual="{DynamicResource appbar_movie_clapper}" />
-            </Rectangle.OpacityMask>
-        </Rectangle>
-    </ControlTemplate>
-
-    <ControlTemplate x:Key="GifOverlayIcon"
-                     TargetType="{x:Type Label}">
-        <Rectangle Width="30"
-                   Height="30"
-                   Fill="{StaticResource MahApps.Brushes.Black}">
-            <Rectangle.OpacityMask>
-                <VisualBrush Stretch="Fill"
-                             Visual="{DynamicResource appbar_image_export}" />
-            </Rectangle.OpacityMask>
-        </Rectangle>
-    </ControlTemplate>
 
     <ControlTemplate x:Key="VideoPlayOverlayIcon"
                      TargetType="{x:Type Button}">

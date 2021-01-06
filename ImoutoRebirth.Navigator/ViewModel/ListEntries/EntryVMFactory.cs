@@ -4,30 +4,32 @@ using System.Runtime.InteropServices;
 using System.Text;
 using System.Windows;
 using Imouto;
+using ImoutoRebirth.Lilin.WebApi.Client;
 
 namespace ImoutoRebirth.Navigator.ViewModel.ListEntries
 {
     internal static class EntryVMFactory
     {
         public static INavigatorListEntry? CreateListEntry(
-            string path, 
-            Size initPreviewSize, 
+            string path,
+            Size initPreviewSize,
+            IImoutoRebirthLilinWebApiClient lilinWebApiClient,
             Guid? dbId = null)
         {
             // todo disk replacement
             path = "Q" + path.Substring(1);
 
             if (path.IsImage())
-                return new ImageEntryVM(path, initPreviewSize, dbId);
+                return new ImageEntryVM(path, lilinWebApiClient, initPreviewSize, dbId);
 
             if (!FileExists(path))
                 return null;
 
             if (path.IsVideo() || path.EndsWith(".m4v"))
-                return new VideoEntryVM(path, initPreviewSize, dbId);
+                return new VideoEntryVM(path, lilinWebApiClient, initPreviewSize, dbId);
 
             if (path.EndsWith(".zip"))
-                return new UgoiraEntryVM(path, initPreviewSize, dbId);
+                return new UgoiraEntryVM(path, lilinWebApiClient, initPreviewSize, dbId);
 
             return null;
         }
