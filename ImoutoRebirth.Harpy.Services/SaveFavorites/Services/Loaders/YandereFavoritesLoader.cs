@@ -31,7 +31,8 @@ namespace ImoutoRebirth.Harpy.Services.SaveFavorites.Services.Loaders
                 var result = await _httpClient.GetStringAsync(url + $"&page={page}");
                 posts = JsonSerializer.Deserialize<Post[]>(result) ?? Array.Empty<Post>();
 
-                foreach (var post in posts)
+                foreach (var post in posts
+                    .Where(x => x.Md5 != null && x.FileUrl != null))
                 {
                     post.WithoutHash = true;
                     yield return post;
