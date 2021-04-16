@@ -24,14 +24,16 @@ namespace ImoutoRebirth.Room.DataAccess.Repositories
             _mapper = mapper;
         }
 
-        public async Task<CustomDestinationFolder> Get(Guid collectionGuid)
+        public async Task<CustomDestinationFolder?> Get(Guid collectionGuid)
         {
             var destinationFolders = await _roomDbContext
                                            .DestinationFolders
                                            .Where(x => x.CollectionId == collectionGuid)
                                            .FirstOrDefaultAsync();
 
-            return _mapper.Map<CustomDestinationFolder>(destinationFolders);
+            return destinationFolders == null
+                ? null
+                : _mapper.Map<CustomDestinationFolder>(destinationFolders);
         }
 
         public async Task<CustomDestinationFolder> AddOrReplace(DestinationFolderCreateData createData)

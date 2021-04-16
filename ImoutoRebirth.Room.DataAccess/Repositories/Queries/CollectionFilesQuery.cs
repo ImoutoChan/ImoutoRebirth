@@ -12,7 +12,7 @@ namespace ImoutoRebirth.Room.DataAccess.Repositories.Queries
 
         public IReadOnlyCollection<Guid> CollectionFileIds { get; }
 
-        public string Path { get; }
+        public string? Path { get; }
 
         public IReadOnlyCollection<string>? Md5 { get; }
 
@@ -23,7 +23,7 @@ namespace ImoutoRebirth.Room.DataAccess.Repositories.Queries
         public CollectionFilesQuery(
             Guid? collectionId,
             IReadOnlyCollection<Guid> collectionFileIds,
-            string path,
+            string? path,
             IReadOnlyCollection<string> md5,
             int? count,
             int? skip)

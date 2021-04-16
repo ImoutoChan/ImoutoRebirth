@@ -9,5 +9,7 @@ namespace ImoutoRebirth.Room.Core.Services.Abstract
         Task<Guid> SaveNew(
             MovedInformation movedInformation,
             Guid collectionId);
+
+        Task Delete(Guid id);
     }
 }

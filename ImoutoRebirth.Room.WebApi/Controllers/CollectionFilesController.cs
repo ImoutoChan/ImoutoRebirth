@@ -18,17 +18,20 @@ namespace ImoutoRebirth.Room.WebApi.Controllers
     public class CollectionFilesController : ControllerBase
     {
         private readonly ICollectionFileRepository _collectionFileRepository;
+        private readonly ICollectionFileService _collectionFileService;
         private readonly ILocationTagsUpdaterService _locationTagsUpdaterService;
         private readonly IMapper _mapper;
 
         public CollectionFilesController(
             ICollectionFileRepository collectionFileRepository,
             IMapper mapper,
-            ILocationTagsUpdaterService locationTagsUpdaterService)
+            ILocationTagsUpdaterService locationTagsUpdaterService,
+            ICollectionFileService collectionFileService)
         {
             _collectionFileRepository = collectionFileRepository;
             _mapper = mapper;
             _locationTagsUpdaterService = locationTagsUpdaterService;
+            _collectionFileService = collectionFileService;
         }
 
         /// <summary>
@@ -79,18 +82,9 @@ namespace ImoutoRebirth.Room.WebApi.Controllers
         /// </summary>
         [HttpDelete("{id}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<ActionResult> Remove([BindRequired] Guid id)
+        public async Task Remove([BindRequired] Guid id)
         {
-            try
-            {
-                await _collectionFileRepository.Remove(id);
-            }
-            catch (EntityNotFoundException e)
-            {
-                return NotFound(e.Message);
-            }
-
-            return Ok();
+            await _collectionFileService.Delete(id);
         }
     }
 }
