@@ -12,15 +12,19 @@ namespace ImoutoRebirth.Room.Core.Services
 {
     public class CollectionFileService : ICollectionFileService
     {
+        private const string DeletedDirectoryName = "deleted";
         private readonly ICollectionFileRepository _collectionFileRepository;
+        private readonly IDestinationFolderRepository _destinationFolderRepository;
         private readonly IFileService _fileService;
 
         public CollectionFileService(
             ICollectionFileRepository collectionFileRepository,
-            IFileService fileService)
+            IFileService fileService,
+            IDestinationFolderRepository destinationFolderRepository)
         {
             _collectionFileRepository = collectionFileRepository;
             _fileService = fileService;
+            _destinationFolderRepository = destinationFolderRepository;
         }
 
         public async Task<Guid> SaveNew(
@@ -48,29 +52,45 @@ namespace ImoutoRebirth.Room.Core.Services
             {
                 foreach (var file in found)
                 {
-                    DeleteCollectionFile(file);
+                    await DeleteCollectionFile(file);
                 }
 
                 await _collectionFileRepository.Remove(id);
             }
         }
 
-        private void DeleteCollectionFile(CollectionFile file)
+        private async Task DeleteCollectionFile(CollectionFile file)
         {
             var fileToDelete = new FileInfo(file.Path);
-            var directoryOfFileToDelete = fileToDelete.Directory;
 
-            if (directoryOfFileToDelete == null)
-            {
-                return;
-            }
 
-            var subDirectory = directoryOfFileToDelete.CreateSubdirectory("deleted");
-            var fileToDeleteDestination = new FileInfo(Path.Combine(subDirectory.FullName, fileToDelete.Name));
+            var deletedDirectory = await GetDeletedFolder(fileToDelete, file.Id);
+
+            var fileToDeleteDestination = new FileInfo(Path.Combine(deletedDirectory.FullName, fileToDelete.Name));
 
             _fileService.MoveFile(
                 new SystemFile(fileToDelete, file.Md5, file.Size),
                 ref fileToDeleteDestination);
+        }
+
+        private async Task<DirectoryInfo> GetDeletedFolder(FileInfo fileToDelete, Guid fileId)
+        {
+            var destinationFolderForFile = await _destinationFolderRepository.Get(fileId);
+
+            if (destinationFolderForFile == null)
+                return fileToDelete.Directory.CreateSubdirectory(DeletedDirectoryName);
+
+            var destPath = destinationFolderForFile.GetDestinationDirectory();
+
+            var isFileInDestinationDirectory = fileToDelete.Directory.FullName.ToLowerInvariant()
+                .Contains(destPath.FullName.ToLowerInvariant());
+
+            if (isFileInDestinationDirectory)
+            {
+                return destPath.CreateSubdirectory(DeletedDirectoryName);
+            }
+
+            return fileToDelete.Directory.CreateSubdirectory(DeletedDirectoryName);
         }
     }
 }
