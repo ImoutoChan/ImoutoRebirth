@@ -69,7 +69,7 @@ namespace ImoutoRebirth.Room.Core.Services
             using var scope = _logger.BeginScope("Deleting file {File} {Md5}", file.Path, file.Md5);
 
             var fileToDelete = new FileInfo(file.Path);
-            var deletedDirectory = await GetDeletedFolder(fileToDelete, file.Id);
+            var deletedDirectory = await GetDeletedFolder(fileToDelete, file.CollectionId);
 
             var fileToDeleteDestination = new FileInfo(Path.Combine(deletedDirectory.FullName, fileToDelete.Name));
 
@@ -78,9 +78,9 @@ namespace ImoutoRebirth.Room.Core.Services
                 ref fileToDeleteDestination);
         }
 
-        private async Task<DirectoryInfo> GetDeletedFolder(FileInfo fileToDelete, Guid fileId)
+        private async Task<DirectoryInfo> GetDeletedFolder(FileInfo fileToDelete, Guid collectionId)
         {
-            var destinationFolderForFile = await _destinationFolderRepository.Get(fileId);
+            var destinationFolderForFile = await _destinationFolderRepository.Get(collectionId);
 
             if (destinationFolderForFile == null)
             {
