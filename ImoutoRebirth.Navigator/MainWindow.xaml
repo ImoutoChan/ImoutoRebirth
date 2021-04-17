@@ -84,9 +84,9 @@
 
     <metroControl:MetroWindow.RightWindowCommands>
         <metroControl:WindowCommands>
-            <Button Content="Reverse" 
+            <Button Content="Reverse"
                     Command="{Binding ReverseCommand}"/>
-            <Button Content="Shuffle" 
+            <Button Content="Shuffle"
                     Command="{Binding ShuffleCommand}"/>
             <Button Content="Collections"
                     Click="Button_Click"
@@ -182,12 +182,12 @@
                                     <Ellipse Width="10"
                                              Height="10"
                                              Fill="{DynamicResource MahApps.Brushes.Gray10}"
-                                             Visibility="{Binding Path=IsLoading, 
+                                             Visibility="{Binding Path=IsLoading,
                                                                   Converter={StaticResource ConditionVisibilityConverter},
                                                                   ConverterParameter=true}" />
 
                                     <Image Source="{Binding Path=Image}"
-                                           Visibility="{Binding Path=IsLoading, 
+                                           Visibility="{Binding Path=IsLoading,
                                                                 Converter={StaticResource ConditionVisibilityConverter},
                                                                 ConverterParameter=false}" />
 
@@ -372,12 +372,12 @@
                                 <Ellipse Width="10"
                                          Height="10"
                                          Fill="{DynamicResource MahApps.Brushes.Gray10}"
-                                         Visibility="{Binding Path=IsLoading, 
+                                         Visibility="{Binding Path=IsLoading,
                                                             Converter={StaticResource ConditionVisibilityConverter},
                                                             ConverterParameter=true}" />
 
                                 <Image gif:ImageBehavior.AnimatedSource="{Binding Image}"
-                                       Visibility="{Binding Path=IsLoading, 
+                                       Visibility="{Binding Path=IsLoading,
                                                             Converter={StaticResource ConditionVisibilityConverter},
                                                             ConverterParameter=false}" />
                             </Grid>
@@ -416,8 +416,8 @@
 
                             <Grid Width="{Binding Path=ViewPortSize.Width}"
                                   Height="{Binding Path=ViewPortSize.Height}">
-                                <userControl:UgoiraPlayer 
-                                    Source="{Binding Path}" 
+                                <userControl:UgoiraPlayer
+                                    Source="{Binding Path}"
                                     FrameDelays="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type Window}}, Path=DataContext.TagSearchVM.UgoiraFrameDelays}" />
                             </Grid>
                         </Border>
@@ -436,7 +436,7 @@
                                             SnapsToDevicePixels="True"
                                             Margin="2">
                                         <Border.InputBindings>
-                                            <MouseBinding Command="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type Window}}, 
+                                            <MouseBinding Command="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type Window}},
                                                                             Path=DataContext.OpenFileCommand}"
                                                           CommandParameter="{Binding}"
                                                           Gesture="LeftDoubleClick" />
@@ -628,7 +628,7 @@
                             <Setter.Value>
                                 <ContextMenu DataContext="{Binding Source={StaticResource DataContextProxy}}"
                                              Tag="{Binding RelativeSource={RelativeSource Mode=Self}, Path=PlacementTarget}">
-                                    <MenuItem Header="Remove element"
+                                    <MenuItem Header="Remove from collection"
                                               Command="{Binding Data.RemoveImageCommand}"
                                               CommandParameter="{Binding Path=Tag.DataContext, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type ContextMenu}}}" />
                                 </ContextMenu>

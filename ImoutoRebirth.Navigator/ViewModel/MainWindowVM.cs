@@ -73,7 +73,7 @@ namespace ImoutoRebirth.Navigator.ViewModel
             OnPropertyChanged(() => SelectedEntries);
             TagSearchVM.UpdateCurrentTags(_view.ListBoxElement.SelectedItem as INavigatorListEntry);
             FileInfoVM.UpdateCurrentInfo(
-                _view.ListBoxElement.SelectedItem as INavigatorListEntry, 
+                _view.ListBoxElement.SelectedItem as INavigatorListEntry,
                 NavigatorList.IndexOf(_view.ListBoxElement.SelectedItem as INavigatorListEntry));
         }
 
@@ -85,7 +85,7 @@ namespace ImoutoRebirth.Navigator.ViewModel
 
         private Size PreviewSize => new Size(_previewSize, _previewSize);
 
-        public ObservableCollection<INavigatorListEntry> NavigatorList { get; } 
+        public ObservableCollection<INavigatorListEntry> NavigatorList { get; }
             = new ObservableCollection<INavigatorListEntry>();
 
         public string Title => "Imouto Navigator";
@@ -193,7 +193,7 @@ namespace ImoutoRebirth.Navigator.ViewModel
                 case ImageEntryVM image:
                     _imoutoViewerService.OpenFile(
                         image.Path,
-                        CollectionManager.SelectedCollection.Id, 
+                        CollectionManager.SelectedCollection.Id,
                         TagSearchVM.SelectedBindedTags.Select(x => x.Model));
                     break;
                 case VideoEntryVM video:
@@ -224,7 +224,7 @@ namespace ImoutoRebirth.Navigator.ViewModel
                 Shuffle(newCollection);
 
                 NavigatorList.Clear();
-                
+
                 foreach (var navigatorListEntry in newCollection)
                 {
                     NavigatorList.Add(navigatorListEntry);
@@ -251,19 +251,19 @@ namespace ImoutoRebirth.Navigator.ViewModel
                 }
             }
         }
-        
-        private static void Shuffle<T>(IList<T> list)  
-        {  
+
+        private static void Shuffle<T>(IList<T> list)
+        {
             var randomGenerator = new Random();
 
-            int n = list.Count;  
-            while (n > 1) {  
-                n--;  
-                int k = randomGenerator.Next(n + 1);  
-                T value = list[k];  
-                list[k] = list[n];  
-                list[n] = value;  
-            }  
+            int n = list.Count;
+            while (n > 1) {
+                n--;
+                int k = randomGenerator.Next(n + 1);
+                T value = list[k];
+                list[k] = list[n];
+                list[n] = value;
+            }
         }
 
         public void SetStatusError(string error, string message)
@@ -271,7 +271,7 @@ namespace ImoutoRebirth.Navigator.ViewModel
             Status = error;
             StatusToolTip = message;
         }
-        
+
         private async Task Reload()
         {
             try
@@ -354,14 +354,13 @@ namespace ImoutoRebirth.Navigator.ViewModel
                 ColorScheme = MetroDialogColorScheme.Accented
             };
             var result = await _view.ShowMessageDialog(
-                "Remove Element", 
-                $"Are you sure you want to remove this element from database?", 
-                MessageDialogStyle.AffirmativeAndNegative, 
+                "Remove Element",
+                "Are you sure you want to remove this item from collection?",
+                MessageDialogStyle.AffirmativeAndNegative,
                 mySettings);
 
-            if (result != MessageDialogResult.Affirmative) 
+            if (result != MessageDialogResult.Affirmative)
                 return;
-
 
             await _fileService.RemoveFile(selectedItem.DbId.Value);
 
@@ -376,7 +375,7 @@ namespace ImoutoRebirth.Navigator.ViewModel
                     ColorScheme = MetroDialogColorScheme.Accented
                 });
         }
-        
+
         private void CopySelected(object o)
         {
             var lastItems = SelectedEntries.Select(x => x.Path).ToArray();

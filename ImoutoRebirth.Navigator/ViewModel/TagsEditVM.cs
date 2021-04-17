@@ -294,10 +294,6 @@ namespace ImoutoRebirth.Navigator.ViewModel
                     RecentlyTags.Move(RecentlyTags.IndexOf(element), 0);
                 }
 
-                if (RecentlyTags.Count > 10)
-                {
-                    RecentlyTags.Remove(RecentlyTags.Last());
-                }
             }
         }
 
