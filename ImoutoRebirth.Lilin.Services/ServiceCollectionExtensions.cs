@@ -17,7 +17,7 @@ namespace ImoutoRebirth.Lilin.Services
     public static class ServiceCollectionExtensions
     {
         public static IServiceCollection AddLilinServices(
-            this IServiceCollection services, 
+            this IServiceCollection services,
             IConfiguration configuration)
         {
             services.AddMediatR(typeof(SaveMetadataCommand));
@@ -35,11 +35,11 @@ namespace ImoutoRebirth.Lilin.Services
 
             return services;
         }
-        
+
         public static ITrueMassTransitConfigurator AddLilinServicesForRabbit(
             this ITrueMassTransitConfigurator builder)
         {
-            builder.AddConsumer<UpdateMetadataCommandConsumer, IUpdateMetadataCommand>()
+            builder.AddConsumer<UpdateMetadataCommandConsumer, IUpdateMetadataCommand>(ReceiverApp.Name)
                    .AddFireAndForget<ISavedCommand>(ReceiverApp.Name);
 
             return builder;
