@@ -43,7 +43,7 @@ namespace ImoutoRebirth.Lilin.Infrastructure.Repositories
             var tagsWithTypes = _lilinDbContext.Tags
                 .OrderByDescending(x => x.Count)
                 .Include(x => x.Type);
-            
+
             List<TagEntity> finalResult;
             if (string.IsNullOrEmpty(requestSearchPattern))
             {
@@ -52,7 +52,7 @@ namespace ImoutoRebirth.Lilin.Infrastructure.Repositories
             else
             {
                 requestSearchPattern = requestSearchPattern.ToLower();
-                
+
                 finalResult = await tagsWithTypes
                     .Where(x => x.Name.ToLower().Equals(requestSearchPattern))
                     .Take(requestLimit)
@@ -65,7 +65,7 @@ namespace ImoutoRebirth.Lilin.Infrastructure.Repositories
                         .Where(x => x.Name.ToLower().StartsWith(requestSearchPattern))
                         .Take(requestLimit)
                         .ToListAsync();
-                    
+
                     finalResult.AddRange(startsWith);
                 }
 
@@ -83,7 +83,7 @@ namespace ImoutoRebirth.Lilin.Infrastructure.Repositories
                     finalResult.AddRange(contains);
                 }
             }
-            
+
             return finalResult.Select(x => x.ToModel()).ToArray();
         }
 
@@ -120,8 +120,11 @@ namespace ImoutoRebirth.Lilin.Infrastructure.Repositories
                         SET ""{nameof(TagEntity.Count)}"" = usages.count
                         FROM
                         (
-                            SELECT ""{nameof(FileTagEntity.TagId)}"" AS id, count(*) AS count
-                            FROM ""{nameof(LilinDbContext.FileTags)}""
+                            SELECT id, count(*) AS count
+                            FROM (
+                                SELECT ""{nameof(FileTagEntity.TagId)}"" AS id, ""{nameof(FileTagEntity.FileId)}"" AS fileId
+                                FROM ""{nameof(LilinDbContext.FileTags)}""
+                                GROUP BY id, fileId) as inn
                             GROUP BY id
                         ) usages
                         WHERE tags.""{nameof(TagEntity.Id)}"" = usages.id";
