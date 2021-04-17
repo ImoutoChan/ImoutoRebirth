@@ -13,6 +13,7 @@
     <Company>ImoutoRebirth</Company>
     <Product>Imouto Navigator</Product>
     <Copyright>ImoutoChan © 2013-2020</Copyright>
+    <Version>1.0.1</Version>
   </PropertyGroup>
 
   <ItemGroup>
