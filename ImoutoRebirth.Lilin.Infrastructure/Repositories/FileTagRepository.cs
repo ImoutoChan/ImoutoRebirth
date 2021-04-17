@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
+using EFCore.BulkExtensions;
 using ImoutoRebirth.Lilin.Core.Infrastructure;
 using ImoutoRebirth.Lilin.Core.Models;
 using ImoutoRebirth.Lilin.Core.Models.FileInfoAggregate;
@@ -77,11 +78,7 @@ namespace ImoutoRebirth.Lilin.Infrastructure.Repositories
 
         public async Task Delete(FileTag fileTag)
         {
-            var fileTagEntity = await GetByFileTag(fileTag).SingleAsync();
-
-            _lilinDbContext.FileTags.Remove(fileTagEntity);
-
-            await _lilinDbContext.SaveChangesAsync();
+            await GetByFileTag(fileTag).BatchDeleteAsync();
         }
 
         private IQueryable<FileTagEntity> GetByFileTag(FileTag fileTag)
@@ -121,7 +118,7 @@ namespace ImoutoRebirth.Lilin.Infrastructure.Repositories
         }
 
         private static IQueryable<Guid> MakeOrFilter(
-            IQueryable<FileTagEntity> fileTags, 
+            IQueryable<FileTagEntity> fileTags,
             IReadOnlyCollection<TagSearchEntry> filters)
         {
             var query = fileTags;
@@ -145,28 +142,28 @@ namespace ImoutoRebirth.Lilin.Infrastructure.Repositories
 
                         predicateExpression = (checkEquals, asteriskPlace) switch
                         {
-                            (true, AsteriskPlace.None) => t 
+                            (true, AsteriskPlace.None) => t
                                 => t.TagId == f.TagId && t.Value == value,
 
-                            (true, AsteriskPlace.Start) => t 
+                            (true, AsteriskPlace.Start) => t
                                 => t.TagId == f.TagId && t.Value != null && t.Value.EndsWith(value),
 
-                            (true, AsteriskPlace.End) => t 
+                            (true, AsteriskPlace.End) => t
                                 => t.TagId == f.TagId && t.Value != null && t.Value.StartsWith(value),
 
-                            (true, AsteriskPlace.Both) => t 
+                            (true, AsteriskPlace.Both) => t
                                 => t.TagId == f.TagId && t.Value != null && t.Value.Contains(value),
 
-                            (false, AsteriskPlace.None) => t 
+                            (false, AsteriskPlace.None) => t
                                 => t.TagId == f.TagId && t.Value != value,
 
-                            (false, AsteriskPlace.Start) => t 
+                            (false, AsteriskPlace.Start) => t
                                 => t.TagId == f.TagId && (t.Value == null || !t.Value.EndsWith(value)),
 
-                            (false, AsteriskPlace.End) => t 
+                            (false, AsteriskPlace.End) => t
                                 => t.TagId == f.TagId && (t.Value == null || !t.Value.StartsWith(value)),
 
-                            (false, AsteriskPlace.Both) => t 
+                            (false, AsteriskPlace.Both) => t
                                 => t.TagId == f.TagId && (t.Value == null || !t.Value.Contains(value)),
 
                             _ => throw new NotImplementedException("unsupported pattern scenario")
@@ -179,8 +176,8 @@ namespace ImoutoRebirth.Lilin.Infrastructure.Repositories
                         predicateExpression = t => t.TagId == f.TagId;
                     }
 
-                    condition = condition != null 
-                        ? condition.Or(predicateExpression) 
+                    condition = condition != null
+                        ? condition.Or(predicateExpression)
                         : predicateExpression.Get();
                 }
             }
@@ -207,7 +204,7 @@ namespace ImoutoRebirth.Lilin.Infrastructure.Repositories
                 (_, '*') => (AsteriskPlace.End, source[..^2]),
                 _ => (AsteriskPlace.None, source)
             };
-        
+
         /// <summary>
         ///     Convert string with equality symbol to tuple:
         ///     'xxx' => true, 'xxx'
