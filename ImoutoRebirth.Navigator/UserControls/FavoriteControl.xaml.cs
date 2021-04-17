@@ -14,30 +14,19 @@ namespace ImoutoRebirth.Navigator.UserControls
         {
             InitializeComponent();
         }
-        
-        /// <summary>
-        ///     Value Dependency Property
-        /// </summary>
-        public static readonly DependencyProperty IsCheckedProperty = DependencyProperty.Register("IsChecked", typeof (bool), typeof (FavoriteControl), new PropertyMetadata(false, OnIsCheckedChanged));
 
-        /// <summary>
-        ///     Gets or sets the Value property.
-        /// </summary>
+        public static readonly DependencyProperty IsCheckedProperty
+            = DependencyProperty.Register(
+                nameof(IsChecked),
+                typeof(bool),
+                typeof(FavoriteControl),
+                new PropertyMetadata(false, OnIsCheckedChanged));
+
         public bool IsChecked
         {
-            get
-            {
-                return (bool) GetValue(IsCheckedProperty);
-            }
-            set
-            {
-                SetValue(IsCheckedProperty, value);
-            }
+            get => (bool) GetValue(IsCheckedProperty);
+            set => SetValue(IsCheckedProperty, value);
         }
-
-        /// <summary>
-        ///     Handles changes to the Value property.
-        /// </summary>
         private static void OnIsCheckedChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
             var isChecked = (bool) e.NewValue;

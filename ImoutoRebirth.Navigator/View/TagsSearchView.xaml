@@ -22,6 +22,7 @@
                     <RowDefinition Height="Auto" />
                     <RowDefinition Height="Auto" />
                     <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
                     <RowDefinition Height="*" />
                     <RowDefinition Height="Auto" />
                     <RowDefinition Height="Auto" />
@@ -43,9 +44,9 @@
 
                 <DockPanel Grid.Row="2"
                            Margin="5"
-                           Visibility="{Binding 
-                                ValueEnterMode, 
-                                Converter={StaticResource ConditionVisibilityConverter}, 
+                           Visibility="{Binding
+                                ValueEnterMode,
+                                Converter={StaticResource ConditionVisibilityConverter},
                                 ConverterParameter=true}">
                     <ComboBox DockPanel.Dock="Left"
                               Width="60"
@@ -63,20 +64,68 @@
                              Text="{Binding EnteredValue}" />
                 </DockPanel>
 
-                <Border Grid.Row="3"
+                <!-- fav rate buttons -->
+                <StackPanel Grid.Row="3" Orientation="Horizontal" Background="White">
+                    <Button
+                        Style="{StaticResource ButtonStyleDefault}"
+                        Margin="4"
+                        Command="{Binding
+                            RelativeSource={RelativeSource
+                                FindAncestor,
+                                AncestorType={x:Type UserControl}},
+                                Path=DataContext.SelectStaticTagCommand}"
+                        CommandParameter="Favorite">
+                        Fav
+                    </Button>
+                    <Button
+                        Style="{StaticResource ButtonStyleDefault}"
+                        Margin="5"
+                        Command="{Binding
+                            RelativeSource={RelativeSource
+                                FindAncestor,
+                                AncestorType={x:Type UserControl}},
+                                Path=DataContext.SelectStaticTagCommand}"
+                        CommandParameter="Rated5">
+                        Rated5
+                    </Button>
+                    <Button
+                        Style="{StaticResource ButtonStyleDefault}"
+                        Margin="5"
+                        Command="{Binding
+                            RelativeSource={RelativeSource
+                                FindAncestor,
+                                AncestorType={x:Type UserControl}},
+                                Path=DataContext.SelectStaticTagCommand}"
+                        CommandParameter="Rated4">
+                        Rated4
+                    </Button>
+                    <Button
+                        Style="{StaticResource ButtonStyleDefault}"
+                        Margin="4"
+                        Command="{Binding
+                            RelativeSource={RelativeSource
+                                FindAncestor,
+                                AncestorType={x:Type UserControl}},
+                                Path=DataContext.SelectStaticTagCommand}"
+                        CommandParameter="Unrated">
+                        Unrated
+                    </Button>
+                </StackPanel>
+
+                <Border Grid.Row="4"
                         BorderThickness="1"
                         BorderBrush="{DynamicResource MahApps.Brushes.Accent}" />
 
                 <ItemsControl x:Name="SelectedTags"
-                              Grid.Row="3"
+                              Grid.Row="4"
                               ItemsSource="{Binding Path=SelectedBindedTags, UpdateSourceTrigger=PropertyChanged}"
                               ItemTemplate="{StaticResource SelectedBindedTagsElementDataTemplate}" />
 
-                <Border Grid.Row="5"
+                <Border Grid.Row="6"
                         BorderThickness="1"
                         BorderBrush="{DynamicResource MahApps.Brushes.Accent}" />
 
-                <ScrollViewer Grid.Row="6"
+                <ScrollViewer Grid.Row="7"
                               HorizontalScrollBarVisibility="Disabled"
                               VerticalScrollBarVisibility="Auto">
                     <ItemsControl x:Name="CurrentTags"
@@ -85,27 +134,27 @@
                                   ItemTemplate="{StaticResource CurrentTagsSourceDataTemplate}" />
                 </ScrollViewer>
 
-                <Border Grid.Row="7"
+                <Border Grid.Row="8"
                         BorderThickness="1"
                         BorderBrush="{DynamicResource MahApps.Brushes.Accent}" />
 
                 <!-- Rating/fav Control -->
 
-                <DockPanel Grid.Row="8"
+                <DockPanel Grid.Row="9"
                            LastChildFill="False">
-                    <userControls:FavoriteControl 
+                    <userControls:FavoriteControl
                         IsChecked="{Binding IsFavorite, Mode=TwoWay}"
-                        Visibility="{Binding 
-                            IsRateSetted, 
-                            Converter={StaticResource ConditionVisibilityConverter}, 
+                        Visibility="{Binding
+                            IsRateSetted,
+                            Converter={StaticResource ConditionVisibilityConverter},
                             ConverterParameter=true}" />
 
-                    <userControls:RatingControl 
+                    <userControls:RatingControl
                         DockPanel.Dock="Right"
                         Value="{Binding Rate, Mode=TwoWay}"
-                        Visibility="{Binding 
+                        Visibility="{Binding
                             IsRateSetted,
-                            Converter={StaticResource ConditionVisibilityConverter}, 
+                            Converter={StaticResource ConditionVisibilityConverter},
                             ConverterParameter=true}" />
                 </DockPanel>
             </Grid>
@@ -117,10 +166,11 @@
                 HorizontalAlignment="Stretch"
                 VerticalAlignment="Top"
                 Margin="5,68,8,0"
-                Visibility="{Binding 
-                    HintBoxTags.Count, 
-                    Converter={StaticResource ConditionVisibilityConverter}, 
+                Visibility="{Binding
+                    HintBoxTags.Count,
+                    Converter={StaticResource ConditionVisibilityConverter},
                     ConverterParameter=!0}">
+
             <ListBox x:Name="HintListBox"
                      ItemsSource="{Binding HintBoxTags}"
                      SelectedItem="{Binding SelectedHintBoxTag}"
@@ -132,8 +182,8 @@
                 <ItemsControl.ItemTemplate>
                     <DataTemplate>
                         <Button Command="{Binding RelativeSource={RelativeSource FindAncestor,
-                                                                                 AncestorType={x:Type UserControl}},
-                                                                                 Path=DataContext.SelectTagCommand}"
+                                                                             AncestorType={x:Type UserControl}},
+                                                                             Path=DataContext.SelectTagCommand}"
                                 CommandParameter="{Binding}"
                                 Template="{StaticResource TagElementControlTemplate}"
                                 HorizontalContentAlignment="Left" />

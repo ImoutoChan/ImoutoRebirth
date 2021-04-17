@@ -33,6 +33,7 @@ namespace ImoutoRebirth.Navigator.ViewModel
         private ICommand _enterValueOkCommand;
         private ICommand _unselectTagCommand;
         private ICommand _selectTagCommand;
+        private ICommand _selectStaticTagCommand;
         private ICommand _invertSearchTypeCommand;
         private ICommand _selectBindedTag;
         private int _rate;
@@ -42,6 +43,8 @@ namespace ImoutoRebirth.Navigator.ViewModel
         private readonly IFileTagService _fileTagService;
         private readonly ITagService _tagService;
         private IReadOnlyCollection<DelayItem> _ugoiraFrameDelays;
+        private Tag? _favoriteTag;
+        private Tag? _rateTag;
 
         #endregion Fields
 
@@ -184,8 +187,8 @@ namespace ImoutoRebirth.Navigator.ViewModel
                     SetFavorite(value, _lastListEntryId.Value);
                 }
             }
-        }        
-        
+        }
+
         public IReadOnlyCollection<DelayItem> UgoiraFrameDelays
         {
             get => _ugoiraFrameDelays;
@@ -210,6 +213,8 @@ namespace ImoutoRebirth.Navigator.ViewModel
         public ICommand InvertSearchTypeCommand => _invertSearchTypeCommand ??= new RelayCommand(InvertSearchType);
 
         public ICommand SelectTagCommand => _selectTagCommand ??= new RelayCommand(SelectTag);
+
+        public ICommand SelectStaticTagCommand => _selectStaticTagCommand ??= new RelayCommand(SelectStaticTag);
 
         public ICommand UnselectTagCommand => _unselectTagCommand ??= new RelayCommand(UnselectTag);
 
@@ -338,6 +343,76 @@ namespace ImoutoRebirth.Navigator.ViewModel
             OnSelectedTagsUpdated();
         }
 
+        private async void SelectStaticTag(object param)
+        {
+            var staticMode = param as string;
+
+            if (staticMode == null)
+            {
+                return;
+            }
+
+            var favTag = await LoadFavoriteTag();
+            var rateTag = await LoadRateTag();
+
+            switch (staticMode)
+            {
+                case "Favorite":
+                    SelectedBindedTags.Add(
+                        new SearchTagVM(
+                            new SearchTag(
+                                favTag,
+                                null)));
+                    break;
+                case "Rated5":
+                    SelectedBindedTags.Add(
+                        new SearchTagVM(
+                            new SearchTag(
+                                rateTag,
+                                "=5")));
+                    break;
+                case "Rated4":
+                    SelectedBindedTags.Add(
+                        new SearchTagVM(
+                            new SearchTag(
+                                rateTag,
+                                "=4")));
+                    break;
+                case "Unrated":
+                    SelectedBindedTags.Add(
+                        new SearchTagVM(
+                            new SearchTag(
+                                rateTag,
+                                null,
+                                SearchType.Exclude))
+                        );
+                    break;
+            }
+
+            SearchString = string.Empty;
+            OnSelectedTagsUpdated();
+        }
+
+        private async Task<Tag> LoadFavoriteTag()
+        {
+            if (_favoriteTag != null)
+                return _favoriteTag;
+
+            _favoriteTag = (await _tagService.SearchTags("Favorite", 1)).First();
+
+            return _favoriteTag;
+        }
+
+        private async Task<Tag> LoadRateTag()
+        {
+            if (_rateTag != null)
+                return _rateTag;
+
+            _rateTag = (await _tagService.SearchTags("Rate", 1)).First();
+
+            return _rateTag;
+        }
+
         private void UnselectTag(object param)
         {
             var tag = param as SearchTagVM;
@@ -405,7 +480,7 @@ namespace ImoutoRebirth.Navigator.ViewModel
 
             OnSelectedTagsUpdated();
         }
-        
+
         private void GetRate(IReadOnlyCollection<FileTag> tags)
         {
             var rateTag = tags.FirstOrDefault(x => x.Tag.Title == "Rate" && x.Tag.HasValue);
@@ -444,9 +519,9 @@ namespace ImoutoRebirth.Navigator.ViewModel
         {
             var frameDataTag = tags.FirstOrDefault(x => x.Tag.Title == "UgoiraFrameData");
 
-            if (frameDataTag == null || string.IsNullOrEmpty(frameDataTag.Value)) 
+            if (frameDataTag == null || string.IsNullOrEmpty(frameDataTag.Value))
                 return;
-            
+
             var frameData = JsonConvert.DeserializeObject<UgoiraFrameData>(frameDataTag.Value);
 
             _ugoiraFrameDelays = frameData.Data.Select(x => new DelayItem(x.Delay, x.File)).ToList();
