@@ -7,6 +7,7 @@ using Quartz;
 
 namespace ImoutoRebirth.Harpy.Services.SaveFavorites.Quartz
 {
+    [DisallowConcurrentExecution]
     internal class FavoritesSaveJob : IJob
     {
         private readonly IMediator _mediator;
