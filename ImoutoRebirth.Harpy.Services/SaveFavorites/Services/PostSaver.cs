@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net.Http;
@@ -21,6 +22,8 @@ namespace ImoutoRebirth.Harpy.Services.SaveFavorites.Services
             foreach (var post in posts)
             {
                 var name = GetName(post);
+
+                _httpClient.Timeout = TimeSpan.FromMinutes(5);
                 var response = await _httpClient.GetAsync(post.FileUrl);
                 response.EnsureSuccessStatusCode();
 
