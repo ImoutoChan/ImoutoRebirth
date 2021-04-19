@@ -16,7 +16,6 @@
       <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
     </PackageReference>
     <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="5.0.5" />
-    <PackageReference Include="EFCore.BulkExtensions" Version="5.0.7" />
   </ItemGroup>
 
   <ItemGroup>

@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
-using EFCore.BulkExtensions;
 using ImoutoRebirth.Lilin.Core.Infrastructure;
 using ImoutoRebirth.Lilin.Core.Models;
 using ImoutoRebirth.Lilin.Core.Models.FileInfoAggregate;
@@ -13,7 +12,6 @@ using ImoutoRebirth.Lilin.Infrastructure.ExpressionHelpers;
 using ImoutoRebirth.Lilin.Infrastructure.Mappers;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
-using SQLitePCL;
 
 namespace ImoutoRebirth.Lilin.Infrastructure.Repositories
 {
@@ -82,22 +80,15 @@ namespace ImoutoRebirth.Lilin.Infrastructure.Repositories
 
         public async Task Delete(FileTag fileTag)
         {
-            var query = GetByFileTag(fileTag);
-            var (sql, _) = query.ToParametrizedSql();
-            var (sql1, sql2) = BatchUtil.SplitLeadingCommentsAndMainSqlQuery(sql);
-            _logger.LogInformation("Generated SQL: {Sql} {Sql1} {Sql2}", sql, sql1, sql2);
-            await query.BatchDeleteAsync();
-        }
-
-        private IQueryable<FileTagEntity> GetByFileTag(FileTag fileTag)
-        {
-            var tagId = fileTag.Tag.Id;
-
-            return _lilinDbContext.FileTags.Where(
+            var tagsToDelete = _lilinDbContext.FileTags.Where(
                 x => x.Source == fileTag.Source
-                     && x.TagId == tagId
+                     && x.TagId == fileTag.Tag.Id
                      && x.FileId == fileTag.FileId
-                     && x.Value == fileTag.Value);
+                     && x.Value == fileTag.Value)
+                .ToListAsync();
+
+            _lilinDbContext.RemoveRange(tagsToDelete);
+            await _lilinDbContext.SaveChangesAsync();
         }
 
         private IQueryable<Guid> GetSearchFilesQueryable(IReadOnlyCollection<TagSearchEntry> tagSearchEntries)
