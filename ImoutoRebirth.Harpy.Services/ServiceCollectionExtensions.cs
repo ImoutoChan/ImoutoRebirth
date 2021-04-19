@@ -1,4 +1,5 @@
-﻿using ImoutoRebirth.Common.Cqrs;
+﻿using System;
+using ImoutoRebirth.Common.Cqrs;
 using ImoutoRebirth.Common.Quartz.Extensions;
 using ImoutoRebirth.Harpy.Services.SaveFavorites.Commands;
 using ImoutoRebirth.Harpy.Services.SaveFavorites.Quartz;
@@ -14,7 +15,7 @@ namespace ImoutoRebirth.Harpy.Services
     public static class ServiceCollectionExtensions
     {
         public static IServiceCollection AddHarpyServices(
-            this IServiceCollection services, 
+            this IServiceCollection services,
             IConfiguration configuration)
         {
             services.AddMediatR(typeof(FavoritesSaveCommand));
@@ -24,7 +25,7 @@ namespace ImoutoRebirth.Harpy.Services
 
             services.Configure<FavoritesSaveJobSettings>(
                 configuration.GetSection(nameof(FavoritesSaveJobSettings)));
-            
+
             services.Configure<SaverConfiguration>(configuration.GetSection("Saver"));
             services.Configure<DanbooruBooruConfiguration>(configuration.GetSection("Danbooru"));
             services.Configure<YandereBooruConfiguration>(configuration.GetSection("Yandere"));
@@ -32,7 +33,7 @@ namespace ImoutoRebirth.Harpy.Services
             services.AddHttpClient<DanbooruFavoritesLoader>();
             services.AddHttpClient<YandereFavoritesLoader>();
             services.AddHttpClient<RoomSavedChecker>();
-            services.AddHttpClient<PostSaver>();
+            services.AddHttpClient<PostSaver>().ConfigureHttpClient(x => x.Timeout = TimeSpan.FromMinutes(5));
 
             return services;
         }

@@ -22,8 +22,6 @@ namespace ImoutoRebirth.Harpy.Services.SaveFavorites.Services
             foreach (var post in posts)
             {
                 var name = GetName(post);
-
-                _httpClient.Timeout = TimeSpan.FromMinutes(5);
                 var response = await _httpClient.GetAsync(post.FileUrl);
                 response.EnsureSuccessStatusCode();
 
