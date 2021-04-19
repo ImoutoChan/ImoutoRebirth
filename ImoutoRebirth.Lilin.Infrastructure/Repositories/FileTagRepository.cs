@@ -80,14 +80,14 @@ namespace ImoutoRebirth.Lilin.Infrastructure.Repositories
 
         public async Task Delete(FileTag fileTag)
         {
-            var tagsToDelete = _lilinDbContext.FileTags.Where(
+            var tagsToDelete = await _lilinDbContext.FileTags.Where(
                 x => x.Source == fileTag.Source
                      && x.TagId == fileTag.Tag.Id
                      && x.FileId == fileTag.FileId
                      && x.Value == fileTag.Value)
                 .ToListAsync();
 
-            _lilinDbContext.RemoveRange(tagsToDelete);
+            _lilinDbContext.FileTags.RemoveRange(tagsToDelete);
             await _lilinDbContext.SaveChangesAsync();
         }
 
