@@ -20,9 +20,9 @@ namespace ImoutoRebirth.Lilin.Infrastructure.Repositories
     public class FileTagRepository : IFileTagRepository
     {
         private readonly LilinDbContext _lilinDbContext;
-        private readonly Logger<FileTagRepository> _logger;
+        private readonly ILogger<FileTagRepository> _logger;
 
-        public FileTagRepository(LilinDbContext lilinDbContext, Logger<FileTagRepository> logger)
+        public FileTagRepository(LilinDbContext lilinDbContext, ILogger<FileTagRepository> logger)
         {
             _lilinDbContext = lilinDbContext;
             _logger = logger;
