@@ -91,9 +91,11 @@ namespace ImoutoRebirth.Lilin.Infrastructure.Repositories
 
         private IQueryable<FileTagEntity> GetByFileTag(FileTag fileTag)
         {
+            var tagId = fileTag.Tag.Id;
+
             return _lilinDbContext.FileTags.Where(
                 x => x.Source == fileTag.Source
-                     && x.TagId == fileTag.Tag.Id
+                     && x.TagId == tagId
                      && x.FileId == fileTag.FileId
                      && x.Value == fileTag.Value);
         }
