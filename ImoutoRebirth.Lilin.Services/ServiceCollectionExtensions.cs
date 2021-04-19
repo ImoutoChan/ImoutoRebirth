@@ -39,8 +39,9 @@ namespace ImoutoRebirth.Lilin.Services
         public static ITrueMassTransitConfigurator AddLilinServicesForRabbit(
             this ITrueMassTransitConfigurator builder)
         {
-            builder.AddConsumer<UpdateMetadataCommandConsumer, IUpdateMetadataCommand>(ReceiverApp.Name)
-                   .AddFireAndForget<ISavedCommand>(ReceiverApp.Name);
+            builder.AddConsumer<UpdateMetadataCommandConsumer, IUpdateMetadataCommand>(
+                    Lilin.MessageContracts.ReceiverApp.Name)
+                .AddFireAndForget<ISavedCommand>(ReceiverApp.Name);
 
             return builder;
         }
