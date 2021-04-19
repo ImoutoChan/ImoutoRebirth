@@ -12,16 +12,20 @@ using ImoutoRebirth.Lilin.DataAccess.Entities;
 using ImoutoRebirth.Lilin.Infrastructure.ExpressionHelpers;
 using ImoutoRebirth.Lilin.Infrastructure.Mappers;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
+using SQLitePCL;
 
 namespace ImoutoRebirth.Lilin.Infrastructure.Repositories
 {
     public class FileTagRepository : IFileTagRepository
     {
         private readonly LilinDbContext _lilinDbContext;
+        private readonly Logger<FileTagRepository> _logger;
 
-        public FileTagRepository(LilinDbContext lilinDbContext)
+        public FileTagRepository(LilinDbContext lilinDbContext, Logger<FileTagRepository> logger)
         {
             _lilinDbContext = lilinDbContext;
+            _logger = logger;
         }
 
         public async Task<Guid[]> SearchFiles(
@@ -78,7 +82,11 @@ namespace ImoutoRebirth.Lilin.Infrastructure.Repositories
 
         public async Task Delete(FileTag fileTag)
         {
-            await GetByFileTag(fileTag).BatchDeleteAsync();
+            var query = GetByFileTag(fileTag);
+            var (sql, _) = query.ToParametrizedSql();
+            var (sql1, sql2) = BatchUtil.SplitLeadingCommentsAndMainSqlQuery(sql);
+            _logger.LogInformation("Generated SQL: {Sql} {Sql1} {Sql2}", sql, sql1, sql2);
+            await query.BatchDeleteAsync();
         }
 
         private IQueryable<FileTagEntity> GetByFileTag(FileTag fileTag)
