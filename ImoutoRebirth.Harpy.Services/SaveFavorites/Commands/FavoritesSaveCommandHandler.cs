@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -66,25 +67,33 @@ namespace ImoutoRebirth.Harpy.Services.SaveFavorites.Commands
         }
 
         private async Task<IReadOnlyCollection<Post>> GetNewPostsFromBooru(
-            IAsyncEnumerable<Post> loader, 
+            IAsyncEnumerable<Post> loader,
             CancellationToken cancellationToken)
         {
             var uncheckedPosts = new List<Post>(20);
             var checkedPosts = new List<Post>(20);
 
-            await foreach (var favoritePost in loader.WithCancellation(cancellationToken))
+            try
             {
-                uncheckedPosts.Add(favoritePost);
+                await foreach (var favoritePost in loader.WithCancellation(cancellationToken))
+                {
+                    uncheckedPosts.Add(favoritePost);
 
-                if (uncheckedPosts.Count < CheckPostsBatchSize)
-                    continue;
+                    if (uncheckedPosts.Count < CheckPostsBatchSize)
+                        continue;
 
-                var onlyNew = await _roomSavedChecker.GetOnlyNewPosts(uncheckedPosts);
-                if (!onlyNew.Any())
-                    break;
+                    var onlyNew = await _roomSavedChecker.GetOnlyNewPosts(uncheckedPosts);
+                    if (!onlyNew.Any())
+                        break;
 
-                checkedPosts.AddRange(onlyNew);
-                uncheckedPosts.Clear();
+                    checkedPosts.AddRange(onlyNew);
+                    uncheckedPosts.Clear();
+                }
+            }
+            catch (Exception e)
+            {
+                _logger.LogWarning(e, "Unable to retrieve favorite posts");
+                return Array.Empty<Post>();
             }
 
             return checkedPosts;
