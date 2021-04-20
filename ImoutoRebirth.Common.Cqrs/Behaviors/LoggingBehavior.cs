@@ -8,6 +8,7 @@ using Microsoft.Extensions.Logging;
 namespace ImoutoRebirth.Common.Cqrs.Behaviors
 {
     public class LoggingBehavior<TRequest, TResponse> : IPipelineBehavior<TRequest, TResponse>
+        where TRequest : notnull
     {
         private readonly ILogger<LoggingBehavior<TRequest, TResponse>> _logger;
 
@@ -17,8 +18,8 @@ namespace ImoutoRebirth.Common.Cqrs.Behaviors
         }
 
         public async Task<TResponse> Handle(
-            TRequest request, 
-            CancellationToken cancellationToken, 
+            TRequest request,
+            CancellationToken cancellationToken,
             RequestHandlerDelegate<TResponse> next)
         {
             _logger.LogTrace("Handling {RequestName}", typeof(TRequest).Name);

@@ -24,7 +24,7 @@ namespace ImoutoRebirth.Common.MassTransit
                         cfg =>
                         {
                             cfg.UseHealthCheck(innerServices);
-                            var host = cfg.Host(
+                            cfg.Host(
                                 new Uri(settings.Url),
                                 connectionName,
                                 hostConfigurator =>
@@ -33,7 +33,7 @@ namespace ImoutoRebirth.Common.MassTransit
                                     hostConfigurator.Password(settings.Password);
                                 });
 
-                            configureAction?.Invoke(new TrueMassTransitConfigurator(cfg, innerServices, host));
+                            configureAction?.Invoke(new TrueMassTransitConfigurator(cfg, innerServices));
                         })));
 
             services.AddMassTransitHostedService();
@@ -77,8 +77,7 @@ namespace ImoutoRebirth.Common.MassTransit
                 queueName += sendConfigurator.GetUrlParams();
             }
 
-            var path = Path.Combine(configurator.RabbitMqHost.Address.ToString(), queueName);
-            EndpointConvention.Map<TMessage>(new Uri(path));
+            EndpointConvention.Map<TMessage>(new Uri($"queue:{queueName}"));
 
             return configurator;
         }

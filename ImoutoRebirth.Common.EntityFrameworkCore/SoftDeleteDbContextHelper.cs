@@ -43,7 +43,7 @@ namespace ImoutoRebirth.Common.EntityFrameworkCore
                    .Entity(entity.ClrType)
                    .HasQueryFilter(GetIsDeletedRestriction(entity.ClrType))
                    .HasIndex(IsDeletedProperty)
-                   .HasName($"IX_{entity.ClrType.Name}_{IsDeletedProperty}");
+                   .HasDatabaseName($"IX_{entity.ClrType.Name}_{IsDeletedProperty}");
             }
         }
 
@@ -51,8 +51,8 @@ namespace ImoutoRebirth.Common.EntityFrameworkCore
         {
             var param = Expression.Parameter(type, "it");
             var prop = Expression.Call(
-                SoftDeleteDbContextHelper.EfPropertyMethod, 
-                param, 
+                SoftDeleteDbContextHelper.EfPropertyMethod,
+                param,
                 Expression.Constant(IsDeletedProperty));
 
             var condition = Expression.MakeBinary(ExpressionType.Equal, prop, Expression.Constant(false));

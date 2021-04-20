@@ -20,6 +20,5 @@ namespace ImoutoRebirth.Common.Cqrs.Events
             var wrapper = new EventWrapper<TEvent>(e);
             return _mediator.Publish(wrapper, cancellationToken);
         }
-
     }
 }

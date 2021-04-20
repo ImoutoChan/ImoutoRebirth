@@ -8,7 +8,5 @@ namespace ImoutoRebirth.Common.MassTransit
         IRabbitMqBusFactoryConfigurator RabbitMqBusFactoryConfigurator { get; }
 
         IServiceProvider ServiceProvider { get; }
-
-        IRabbitMqHost RabbitMqHost { get; }
     }
 }

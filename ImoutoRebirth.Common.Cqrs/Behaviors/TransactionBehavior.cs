@@ -7,13 +7,14 @@ using MediatR;
 namespace ImoutoRebirth.Common.Cqrs.Behaviors
 {
     public class TransactionBehavior<TRequest, TResponse> : IPipelineBehavior<TRequest, TResponse>
+        where TRequest : notnull
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly IEventStorage _eventStorage;
         private readonly IEventPublisher _eventPublisher;
 
         public TransactionBehavior(
-            IUnitOfWork unitOfWork, 
+            IUnitOfWork unitOfWork,
             IEventStorage eventStorage,
             IEventPublisher eventPublisher)
         {
@@ -23,8 +24,8 @@ namespace ImoutoRebirth.Common.Cqrs.Behaviors
         }
 
         public async Task<TResponse> Handle(
-            TRequest request, 
-            CancellationToken cancellationToken, 
+            TRequest request,
+            CancellationToken cancellationToken,
             RequestHandlerDelegate<TResponse> next)
         {
             var isolationLevel = typeof(TRequest).GetIsolationLevel();

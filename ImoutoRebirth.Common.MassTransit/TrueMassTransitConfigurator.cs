@@ -9,16 +9,12 @@ namespace ImoutoRebirth.Common.MassTransit
 
         public IServiceProvider ServiceProvider { get; }
 
-        public IRabbitMqHost RabbitMqHost { get; }
-
         public TrueMassTransitConfigurator(
-            IRabbitMqBusFactoryConfigurator rabbitMqBusFactoryConfigurator, 
-            IServiceProvider serviceProvider, 
-            IRabbitMqHost rabbitMqHost)
+            IRabbitMqBusFactoryConfigurator rabbitMqBusFactoryConfigurator,
+            IServiceProvider serviceProvider)
         {
             RabbitMqBusFactoryConfigurator = rabbitMqBusFactoryConfigurator;
             ServiceProvider = serviceProvider;
-            RabbitMqHost = rabbitMqHost;
         }
     }
 }
