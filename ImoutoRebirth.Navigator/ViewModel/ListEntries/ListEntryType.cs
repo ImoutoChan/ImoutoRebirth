@@ -5,6 +5,7 @@
         Video,
         Gif,
         Image,
-        Ugoira
+        Ugoira,
+        Png
     }
 }

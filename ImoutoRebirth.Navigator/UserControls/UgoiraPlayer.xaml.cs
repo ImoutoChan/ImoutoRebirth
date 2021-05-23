@@ -16,7 +16,7 @@ namespace ImoutoRebirth.Navigator.UserControls
     public partial class UgoiraPlayer : UserControl
     {
         private bool _isPlaying = false;
-        private int _currentFrame = 0;
+        private int _currentFrame = -1;
         private bool _loaded = false;
         private readonly SemaphoreSlim _loadLocker = new(1);
 

@@ -17,6 +17,7 @@
                           xmlns:behavior="clr-namespace:ImoutoRebirth.Navigator.Behavior"
                           xmlns:view="clr-namespace:ImoutoRebirth.Navigator.View"
                           xmlns:listEntries="clr-namespace:ImoutoRebirth.Navigator.ViewModel.ListEntries"
+                          xmlns:apngPlayer="clr-namespace:ImoutoRebirth.Navigator.ApngWpfPlayer.ApngPlayer;assembly=ImoutoRebirth.Navigator.ApngWpfPlayer"
                           d:DataContext="{d:DesignInstance viewModel:MainWindowVM, IsDesignTimeCreatable=False}"
                           mc:Ignorable="d"
                           WindowStartupLocation="CenterScreen"
@@ -356,6 +357,24 @@
                         </Border>
                     </DataTemplate>
 
+                    <DataTemplate x:Key="PngListBoxItemTemplate"
+                                  DataType="{x:Type listEntries:ImageEntryVM}">
+                        <Border Margin="0,11,0,11">
+                            <b:Interaction.Behaviors>
+                                <behavior:FrameworkElementDragBehavior />
+                            </b:Interaction.Behaviors>
+
+                            <Border.Effect>
+                                <DropShadowEffect />
+                            </Border.Effect>
+
+                            <Grid Width="{Binding Path=ViewPortSize.Width}"
+                                  Height="{Binding Path=ViewPortSize.Height}">
+                                <apngPlayer:ApngPlayer Source="{Binding Path}" />
+                            </Grid>
+                        </Border>
+                    </DataTemplate>
+
                     <DataTemplate x:Key="GifListBoxItemTemplate"
                                   DataType="{x:Type listEntries:ImageEntryVM}">
                         <Border Margin="0,11,0,11">
@@ -395,7 +414,7 @@
                                 <DropShadowEffect />
                             </Border.Effect>
 
-                            <Grid Width="{Binding Path=ViewPortSize.Width}"
+                             <Grid Width="{Binding Path=ViewPortSize.Width}"
                                   Height="{Binding Path=ViewPortSize.Height}">
                                 <!-- todo: implement video control -->
                                 <userControl:PlayerControl Source="{Binding Path}" ShouldPause="{Binding ShouldPause}" />
@@ -493,6 +512,26 @@
                                             <MultiDataTrigger.Setters>
                                                 <Setter Property="ContentTemplate"
                                                         Value="{StaticResource GifListBoxItemTemplate}"
+                                                        TargetName="ContentControl" />
+                                            </MultiDataTrigger.Setters>
+                                        </MultiDataTrigger>
+
+                                        <!-- Selected && Png && ShowPreview -->
+                                        <MultiDataTrigger>
+                                            <MultiDataTrigger.Conditions>
+                                                <Condition Binding="{Binding RelativeSource={RelativeSource Self}, Path=IsSelected}"
+                                                           Value="True" />
+
+                                                <Condition Binding="{Binding Type}"
+                                                           Value="{x:Static listEntries:ListEntryType.Png}" />
+
+                                                <Condition Binding="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type Window}}, Path=DataContext.ShowPreview}"
+                                                           Value="True" />
+                                            </MultiDataTrigger.Conditions>
+
+                                            <MultiDataTrigger.Setters>
+                                                <Setter Property="ContentTemplate"
+                                                        Value="{StaticResource PngListBoxItemTemplate}"
                                                         TargetName="ContentControl" />
                                             </MultiDataTrigger.Setters>
                                         </MultiDataTrigger>

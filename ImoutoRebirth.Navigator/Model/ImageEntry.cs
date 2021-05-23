@@ -28,7 +28,7 @@ namespace ImoutoRebirth.Navigator.Model
         public ImageEntry(string path, Size viewPort = new Size())
         {
             var imageFileInfo = new FileInfo(path);
-            
+
             _path = path;
             _imageFileInfo = imageFileInfo;
             _viewPort = viewPort;
@@ -46,7 +46,7 @@ namespace ImoutoRebirth.Navigator.Model
             {
                 if (_image == null && !_isLoading)
                 {
-                    //LoadAsyns();
+                    //LoadAsync();
                 }
                 return _image;
             }
@@ -143,7 +143,7 @@ namespace ImoutoRebirth.Navigator.Model
         {
             if (!_isLoaded)
             {
-                LoadAsyns();
+                LoadAsync();
             }
         }
 
@@ -151,7 +151,7 @@ namespace ImoutoRebirth.Navigator.Model
 
         #region Methods
 
-        private async void LoadAsyns()
+        private async void LoadAsync()
         {
             _isLoading = true;
             OnImageChanged();
@@ -190,7 +190,7 @@ namespace ImoutoRebirth.Navigator.Model
                         }
 
 
-                        resizedSize 
+                        resizedSize
                             = ResizeImage(
                                 _frameSize.Value,
                                 new Size(_viewPort.Width, _viewPort.Height),
@@ -220,7 +220,7 @@ namespace ImoutoRebirth.Navigator.Model
         }
 
         private async Task<BitmapImage> LoadBitmapImage(
-            Size resizedSize, 
+            Size resizedSize,
             CancellationToken cancellationToken = default)
         {
             return await Task.Run(
@@ -241,6 +241,7 @@ namespace ImoutoRebirth.Navigator.Model
                     bi.UriSource = new Uri(_path);
                     bi.EndInit();
                     bi.Freeze();
+
                     return bi;
                 },
                 cancellationToken);

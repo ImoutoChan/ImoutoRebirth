@@ -25,9 +25,13 @@ namespace ImoutoRebirth.Navigator.ViewModel.ListEntries
                 OnPropertyChanged(() => Image);
             };
 
-            Type = (ImageEntry.ImageFormat == ImageFormat.GIF)
-                   ? ListEntryType.Gif
-                   : ListEntryType.Image;
+            Type = ImageEntry.ImageFormat switch
+            {
+                ImageFormat.GIF => ListEntryType.Gif,
+                ImageFormat.PNG => ListEntryType.Png,
+                _ => ListEntryType.Image
+            };
+
             DbId = dbId;
         }
 
@@ -41,7 +45,7 @@ namespace ImoutoRebirth.Navigator.ViewModel.ListEntries
 
         public Size ViewPortSize => ImageEntry.ViewPort;
 
-        public ListEntryType Type { get; }
+        public ListEntryType Type { get; private set; }
 
         private ImageEntry ImageEntry { get; }
 
