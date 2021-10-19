@@ -86,10 +86,11 @@ async function tryMd5(hashes: string[], notifyTabId: number) {
     console.time(timerKey);
 
     const resultRoomPromise = getFromRoom(remoteRoom, hashes);
+    notifyTabs(await resultRoomPromise, new Map<string, ImgStatus>(), notifyTabId, hashes);
+    
     const resultLilinPromise = getFromLilin(remoteLilin, hashes);
 
     await Promise.all([resultRoomPromise, resultLilinPromise]);
-
     notifyTabs(await resultRoomPromise, await resultLilinPromise, notifyTabId, hashes);
 
     console.timeEnd(timerKey);
