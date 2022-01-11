@@ -10,7 +10,7 @@ namespace ImoutoRebirth.Harpy.Services.SaveFavorites.Services.Loaders
     internal class YandereFavoritesLoader
     {
         private const string FavoritesUrl =
-            "https://yande.re/post.json?tags=vote%3A3%3A{0}+order%3Avote&login={0}&api_key={1}";
+            "https://yande.re/post.json?tags=vote%3A3%3A{0}+order%3Avote+holds%3Aall&login={0}&api_key={1}";
 
         private readonly BooruConfiguration _booruConfiguration;
         private readonly HttpClient _httpClient;
