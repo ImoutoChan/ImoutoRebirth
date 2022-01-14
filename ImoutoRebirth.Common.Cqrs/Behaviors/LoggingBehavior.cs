@@ -8,7 +8,7 @@ using Microsoft.Extensions.Logging;
 namespace ImoutoRebirth.Common.Cqrs.Behaviors
 {
     public class LoggingBehavior<TRequest, TResponse> : IPipelineBehavior<TRequest, TResponse>
-        where TRequest : notnull
+        where TRequest : IRequest<TResponse>
     {
         private readonly ILogger<LoggingBehavior<TRequest, TResponse>> _logger;
 

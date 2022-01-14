@@ -6,11 +6,11 @@ namespace ImoutoRebirth.Common.Logging
 {
     public static class SerilogExtensions
     {
-        private const string _fileTemplate 
+        private const string _fileTemplate
             = "{Timestamp:yyyy-MM-dd HH:mm:ss.fff zzz} [{Level}] <s:{SourceContext}> {Message}{NewLine}{Exception}";
-        private const string _consoleTemplate 
+        private const string _consoleTemplate
             = "[{Timestamp:HH:mm:ss} {Level:u3}] <s:{SourceContext}> {Message:lj}{NewLine}{Exception}";
-        
+
 
         public static LoggerConfiguration WithoutDefaultLoggers(this LoggerConfiguration configuration)
             => configuration.MinimumLevel.Verbose()
@@ -25,16 +25,16 @@ namespace ImoutoRebirth.Common.Logging
         public static LoggerConfiguration WithAllRollingFile(
             this LoggerConfiguration configuration,
             string pathFormat = "logs/{Date}-all.log")
-            => configuration.WriteTo.RollingFile(
-                pathFormat: pathFormat,
+            => configuration.WriteTo.File(
+                pathFormat,
                 outputTemplate: _fileTemplate,
                 restrictedToMinimumLevel: LogEventLevel.Verbose);
 
         public static LoggerConfiguration WithInformationRollingFile(
             this LoggerConfiguration configuration,
             string pathFormat = "logs/{Date}-information.log")
-            => configuration.WriteTo.RollingFile(
-                pathFormat: pathFormat,
+            => configuration.WriteTo.File(
+                pathFormat,
                 outputTemplate: _fileTemplate,
                 restrictedToMinimumLevel: LogEventLevel.Information);
 

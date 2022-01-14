@@ -48,7 +48,7 @@ namespace ImoutoRebirth.Common.Host
         public static IHostBuilder SetWorkingDirectory(this IHostBuilder hostBuilder)
         {
             Directory.SetCurrentDirectory(
-                Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location));
+                Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location)!);
 
             return hostBuilder;
         }

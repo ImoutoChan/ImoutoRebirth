@@ -23,7 +23,6 @@ namespace ImoutoRebirth.Common.MassTransit
                     innerServices => Bus.Factory.CreateUsingRabbitMq(
                         cfg =>
                         {
-                            cfg.UseHealthCheck(innerServices);
                             cfg.Host(
                                 new Uri(settings.Url),
                                 connectionName,
@@ -97,7 +96,7 @@ namespace ImoutoRebirth.Common.MassTransit
                 var name = type.IsInterface && Regex.IsMatch(type.Name, "^I[A-Z]")
                     ? type.Name.Substring(1) // type is interface and looks like ISomeInterface
                     : type.Name;
-                var namespaceSnail = type.Namespace.Replace(".", "").Underscore();
+                var namespaceSnail = type.Namespace?.Replace(".", "").Underscore();
                 return $"{namespaceSnail}_{name.Underscore()}";
             }
         }

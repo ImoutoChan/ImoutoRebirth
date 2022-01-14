@@ -7,7 +7,7 @@ using MediatR;
 namespace ImoutoRebirth.Common.Cqrs.Behaviors
 {
     public class TransactionBehavior<TRequest, TResponse> : IPipelineBehavior<TRequest, TResponse>
-        where TRequest : notnull
+        where TRequest : IRequest<TResponse>
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly IEventStorage _eventStorage;
