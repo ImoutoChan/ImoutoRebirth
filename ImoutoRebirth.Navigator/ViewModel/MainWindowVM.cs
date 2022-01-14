@@ -4,6 +4,7 @@ using System.Collections.Specialized;
 using System.Diagnostics;
 using System.Windows;
 using System.Windows.Input;
+using System.Windows.Threading;
 using ImoutoRebirth.Navigator.Commands;
 using ImoutoRebirth.Navigator.Model;
 using ImoutoRebirth.Navigator.Services;
@@ -27,6 +28,7 @@ class MainWindowVM : VMBase
     private readonly IFileService _fileService;
     private readonly IFileLoadingService _fileLoadingService;
     private readonly IImoutoViewerService _imoutoViewerService;
+    private readonly DispatcherTimer _appendNewContentTimer = new() { Interval = TimeSpan.FromSeconds(5) };
 
     #endregion Fields
 
@@ -40,7 +42,55 @@ class MainWindowVM : VMBase
 
         InitializeCommands();
 
-        NavigatorList.CollectionChanged += (s, e) => OnPropertyChanged(() => LoadedCount);
+        NavigatorList.CollectionChanged += (_, _) => OnPropertyChanged(() => LoadedCount);
+
+        _appendNewContentTimer.Tick += async (_, _) => await LoadNew();
+    }
+
+    private async Task LoadNew()
+    {
+        _appendNewContentTimer.Stop();
+
+        var total = TotalCount;
+
+        var newTotal = await _fileLoadingService.GetCount(
+            TagSearchVM.SelectedCollection.Value,
+            TagSearchVM.SelectedBindedTags.Select(x => x.Model).ToList());
+
+        if (newTotal <= total)
+        {
+            _appendNewContentTimer.Start();
+            return;
+        }
+
+        try
+        {
+            await _fileLoadingService.LoadFiles(
+                10_000,
+                _previewSize,
+                TagSearchVM.SelectedCollection.Value,
+                TagSearchVM.SelectedBindedTags.Select(x => x.Model).ToList(),
+                x => TotalCount = x,
+                (x, ct) =>
+                {
+                    foreach (var navigatorListEntry in x)
+                    {
+                        ct.ThrowIfCancellationRequested();
+                        NavigatorList.Add(navigatorListEntry);
+                    }
+                },
+                () => TotalCount = total,
+                () => { },
+                () => { },
+                total);
+        }
+        catch (Exception ex)
+        {
+            Debug.WriteLine("Can't load images from collection: " + ex.Message);
+            SetStatusError("Can't load images from collection", ex.Message);
+        }
+
+        _appendNewContentTimer.Start();
     }
 
     public async Task InitializeAsync()
@@ -67,30 +117,31 @@ class MainWindowVM : VMBase
     private void OnViewOnSelectedItemsChanged(object sender, EventArgs args)
     {
         OnPropertyChanged(() => SelectedEntries);
-        TagSearchVM.UpdateCurrentTags(_view.ListBoxElement.SelectedItem as INavigatorListEntry);
-        FileInfoVM.UpdateCurrentInfo(
-            _view.ListBoxElement.SelectedItem as INavigatorListEntry,
-            NavigatorList.IndexOf(_view.ListBoxElement.SelectedItem as INavigatorListEntry));
+
+        if (SelectedItem == null)
+            return;
+
+        TagSearchVM.UpdateCurrentTags(SelectedItem);
+        FileInfoVM.UpdateCurrentInfo(SelectedItem, NavigatorList.IndexOf(SelectedItem));
     }
 
     #endregion Constructors
 
     #region Properties
 
-    public Size SlotSize => new Size(_previewSize + 30, _previewSize + 30);
+    public Size SlotSize => new(_previewSize + 30, _previewSize + 30);
 
-    private Size PreviewSize => new Size(_previewSize, _previewSize);
+    private Size PreviewSize => new(_previewSize, _previewSize);
 
-    public ObservableCollection<INavigatorListEntry> NavigatorList { get; }
-        = new ObservableCollection<INavigatorListEntry>();
+    public ObservableCollection<INavigatorListEntry> NavigatorList { get; } = new();
 
     public string Title => "Imouto Navigator";
 
     public TagSearchVM TagSearchVM { get; set; }
 
-    public CollectionManagerVm CollectionManager { get; } = new CollectionManagerVm();
+    public CollectionManagerVm CollectionManager { get; } = new();
 
-    public SettingsVM Settings { get; } = new SettingsVM();
+    public SettingsVM Settings { get; } = new();
 
     public TagsEditVM TagsEdit { get; set; }
 
@@ -106,7 +157,7 @@ class MainWindowVM : VMBase
         set => OnPropertyChanged(ref _totalCount, value, () => TotalCount);
     }
 
-    public int LoadedCount => NavigatorList.Count();
+    public int LoadedCount => NavigatorList.Count;
 
     public string Status
     {
@@ -126,7 +177,9 @@ class MainWindowVM : VMBase
 
     public IList SelectedItems => _view.SelectedItems;
 
-    public FileInfoVM FileInfoVM { get; } = new FileInfoVM();
+    public FileInfoVM FileInfoVM { get; } = new();
+
+    public INavigatorListEntry? SelectedItem => _view.ListBoxElement.SelectedItem as INavigatorListEntry;
 
     #endregion Properties
 
@@ -154,17 +207,17 @@ class MainWindowVM : VMBase
 
     private void InitializeCommands()
     {
-        ShuffleCommand = new RelayCommand(x => ShuffleNavigatorList());
+        ShuffleCommand = new RelayCommand(_ => ShuffleNavigatorList());
 
-        ReverseCommand = new RelayCommand(x => ReverseNavigatorList());
+        ReverseCommand = new RelayCommand(_ => ReverseNavigatorList());
 
-        ZoomInCommand = new RelayCommand(x =>
+        ZoomInCommand = new RelayCommand(_ =>
         {
             _previewSize = Convert.ToInt32(Math.Floor(_previewSize * 1.1));
             UpdatePreviews();
         });
 
-        ZoomOutCommand = new RelayCommand(x =>
+        ZoomOutCommand = new RelayCommand(_ =>
         {
             if (_previewSize < 64)
             {
@@ -174,8 +227,8 @@ class MainWindowVM : VMBase
             UpdatePreviews();
         });
 
-        LoadPreviewsCommand = new RelayCommand(x => LoadPreviews());
-        RemoveImageCommand = new RelayCommand(RemoveImage);
+        LoadPreviewsCommand = new RelayCommand(_ => LoadPreviews());
+        RemoveImageCommand = new RelayCommand(o => RemoveImage(o));
 
         CopyCommand = new RelayCommand(CopySelected);
 
@@ -235,9 +288,9 @@ class MainWindowVM : VMBase
             var newCollection = NavigatorList.ToList();
             for (int i = 0; i < newCollection.Count / 2; i++)
             {
-                var item = newCollection[i];
-                newCollection[i] = newCollection[newCollection.Count - 1 - i];
-                newCollection[newCollection.Count - 1 - i] = item;
+                // swap newCollection[i] and newCollection[newCollection.Count - 1 - i]
+                (newCollection[i], newCollection[newCollection.Count - 1 - i])
+                    = (newCollection[newCollection.Count - 1 - i], newCollection[i]);
             }
 
             NavigatorList.Clear();
@@ -252,13 +305,14 @@ class MainWindowVM : VMBase
     {
         var randomGenerator = new Random();
 
-        int n = list.Count;
-        while (n > 1) {
-            n--;
-            int k = randomGenerator.Next(n + 1);
-            T value = list[k];
-            list[k] = list[n];
-            list[n] = value;
+        var count = list.Count;
+
+        while (count > 1)
+        {
+            count--;
+
+            var k = randomGenerator.Next(count + 1);
+            (list[k], list[count]) = (list[count], list[k]);
         }
     }
 
@@ -295,11 +349,16 @@ class MainWindowVM : VMBase
                 },
                 () =>
                 {
+                    _appendNewContentTimer.Stop();
                     IsLoading = true;
                     NavigatorList.Clear();
 
                 },
-                () => IsLoading = false);
+                () =>
+                {
+                    IsLoading = false;
+                    _appendNewContentTimer.Start();
+                });
         }
         catch (Exception ex)
         {
@@ -338,7 +397,9 @@ class MainWindowVM : VMBase
     {
         var selectedItem = o as INavigatorListEntry;
 
-        if (!selectedItem.DbId.HasValue)
+        var dbId = selectedItem?.DbId;
+
+        if (dbId == null)
         {
             return;
         }
@@ -358,9 +419,9 @@ class MainWindowVM : VMBase
         if (result != MessageDialogResult.Affirmative)
             return;
 
-        await _fileService.RemoveFile(selectedItem.DbId.Value);
+        await _fileService.RemoveFile(dbId.Value);
 
-        NavigatorList.Remove(selectedItem);
+        NavigatorList.Remove(selectedItem!);
 
         await _view.ShowMessageDialog(
             "Remove Element",
@@ -389,26 +450,13 @@ class MainWindowVM : VMBase
 
     #region Event handlers
 
-    private async void _view_Loaded(object sender, RoutedEventArgs e)
-    {
-        //InitializeCollections();
-        await Reload();
-    }
+    private async void _view_Loaded(object sender, RoutedEventArgs e) => await Reload();
 
-    private async void TagSearchVM_SelectedTagsUpdated(object sender, EventArgs e)
-    {
-        await Reload();
-    }
+    private async void TagSearchVM_SelectedTagsUpdated(object sender, EventArgs e) => await Reload();
 
-    private async void TagSearchVMOnSelectedCollectionChanged(object sender, EventArgs eventArgs)
-    {
-        await Reload();
-    }
+    private async void TagSearchVMOnSelectedCollectionChanged(object sender, EventArgs eventArgs) => await Reload();
 
-    private void Settings_ShowPreviewOnSelectChanged(object sender, EventArgs e)
-    {
-        OnPropertyChanged(() => ShowPreview);
-    }
+    private void Settings_ShowPreviewOnSelectChanged(object sender, EventArgs e) => OnPropertyChanged(() => ShowPreview);
 
     #endregion Event handlers
 }

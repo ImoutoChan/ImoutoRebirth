@@ -10,9 +10,9 @@ namespace ImoutoRebirth.Navigator.Services;
 
 internal class FileLoadingService : IFileLoadingService
 {
-    private CancellationTokenSource _lastOperationCts = new CancellationTokenSource();
-    private readonly SemaphoreSlim _operationLocker = new SemaphoreSlim(1);
-    private readonly object _ctsLocker = new object();
+    private CancellationTokenSource _lastOperationCts = new();
+    private readonly SemaphoreSlim _operationLocker = new(1);
+    private readonly object _ctsLocker = new();
     private readonly IFileService _fileService;
     private readonly IImoutoRebirthLilinWebApiClient _lilinWebApiClient;
 
@@ -23,15 +23,16 @@ internal class FileLoadingService : IFileLoadingService
     }
 
     public async Task LoadFiles(
-        int bulkFactor, 
+        int bulkFactor,
         int previewSize,
         Guid? collectionId,
         IReadOnlyCollection<SearchTag> searchTags,
-        Action<int> counterUpdater, 
+        Action<int> counterUpdater,
         Action<IReadOnlyCollection<INavigatorListEntry>, CancellationToken> entryUpdater,
         Action rollbackAction,
         Action initAction,
-        Action finishAction)
+        Action finishAction,
+        int skip = 0)
     {
         var newCts = new CancellationTokenSource();
         var token = newCts.Token;
@@ -41,7 +42,7 @@ internal class FileLoadingService : IFileLoadingService
             _lastOperationCts.Cancel();
             _lastOperationCts = newCts;
         }
-            
+
         await _operationLocker.WaitAsync(token);
 
         try
@@ -51,14 +52,14 @@ internal class FileLoadingService : IFileLoadingService
 
             var count = await GetCount(collectionId, searchTags, token);
             counterUpdater(count);
-                
+
             if (count == 0)
             {
                 finishAction();
                 return;
             }
 
-            await BulkLoadEntries(bulkFactor, count, previewSize, collectionId, searchTags, entryUpdater, token);
+            await BulkLoadEntries(bulkFactor, count, previewSize, collectionId, searchTags, entryUpdater, skip, token);
 
             finishAction();
         }
@@ -79,18 +80,19 @@ internal class FileLoadingService : IFileLoadingService
         Guid? collectionId,
         IReadOnlyCollection<SearchTag> searchTags,
         Action<IReadOnlyCollection<INavigatorListEntry>, CancellationToken> entryUpdater,
+        int skip,
         CancellationToken token)
     {
-        for (var i = totalCount; i > 0; i -= bulkFactor)
+        for (var i = totalCount - skip; i > 0; i -= bulkFactor)
         {
             token.ThrowIfCancellationRequested();
 
             var entries = await LoadNewEntries(
-                count: bulkFactor, 
-                skip: totalCount - i, 
-                previewSize: previewSize, 
-                collectionId: collectionId, 
-                searchTags: searchTags, 
+                count: bulkFactor,
+                skip: totalCount - i,
+                previewSize: previewSize,
+                collectionId: collectionId,
+                searchTags: searchTags,
                 token: token);
 
             entryUpdater(entries, token);
@@ -134,7 +136,7 @@ internal class FileLoadingService : IFileLoadingService
         }
     }
 
-    private async Task<int> GetCount(
+    public async Task<int> GetCount(
         Guid? collectionId,
         IReadOnlyCollection<SearchTag> searchTags,
         CancellationToken token)

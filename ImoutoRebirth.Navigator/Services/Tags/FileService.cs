@@ -52,7 +52,7 @@ class FileService : IFileService
     }
 
     public async Task<int> CountFiles(
-        Guid? collectionId, 
+        Guid? collectionId,
         IReadOnlyCollection<SearchTag> tags,
         CancellationToken cancellationToken)
     {

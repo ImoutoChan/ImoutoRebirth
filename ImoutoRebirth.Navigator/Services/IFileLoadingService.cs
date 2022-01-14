@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Threading;
-using System.Threading.Tasks;
-using ImoutoRebirth.Navigator.Services.Tags.Model;
+﻿using ImoutoRebirth.Navigator.Services.Tags.Model;
 using ImoutoRebirth.Navigator.ViewModel.ListEntries;
 
 namespace ImoutoRebirth.Navigator.Services;
@@ -18,5 +14,11 @@ internal interface IFileLoadingService
         Action<IReadOnlyCollection<INavigatorListEntry>, CancellationToken> entryUpdater,
         Action rollbackAction,
         Action initAction,
-        Action finishAction);
+        Action finishAction,
+        int skip = 0);
+
+    Task<int> GetCount(
+        Guid? collectionId,
+        IReadOnlyCollection<SearchTag> searchTags,
+        CancellationToken token = default);
 }
