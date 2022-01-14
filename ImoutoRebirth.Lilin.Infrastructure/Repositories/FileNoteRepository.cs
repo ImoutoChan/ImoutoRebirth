@@ -39,6 +39,9 @@ namespace ImoutoRebirth.Lilin.Infrastructure.Repositories
         {
             var entity = await _lilinDbContext.Notes.FindAsync(noteId);
 
+            if (entity == null)
+                throw new Exception($"Note with id {noteId} wasn't found");
+
             entity.Label = note.Label;
             entity.Height = note.Height;
             entity.Width = note.Width;
@@ -51,6 +54,9 @@ namespace ImoutoRebirth.Lilin.Infrastructure.Repositories
         public async Task Delete(Guid noteId)
         {
             var note = await _lilinDbContext.Notes.FindAsync(noteId);
+
+            if (note == null)
+                throw new Exception($"Note with id {noteId} wasn't found");
 
             _lilinDbContext.Remove(note);
 
