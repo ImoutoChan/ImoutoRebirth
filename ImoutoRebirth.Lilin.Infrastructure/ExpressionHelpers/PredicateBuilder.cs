@@ -23,12 +23,12 @@ namespace ImoutoRebirth.Lilin.Infrastructure.ExpressionHelpers
                 return or;
 
             PredicateBuilder.Replace(
-                (object)or, 
-                (object)or.Parameters[0], 
+                (object)or,
+                (object)or.Parameters[0],
                 (object)expr.Parameters[0]);
 
             return Expression.Lambda<Func<T, bool>>(
-                (Expression)Expression.Or(expr.Body, or.Body), 
+                (Expression)Expression.Or(expr.Body, or.Body),
                 (IEnumerable<ParameterExpression>)expr.Parameters);
         }
 
@@ -40,12 +40,12 @@ namespace ImoutoRebirth.Lilin.Infrastructure.ExpressionHelpers
                 return and;
 
             PredicateBuilder.Replace(
-                (object)and, 
-                (object)and.Parameters[0], 
+                (object)and,
+                (object)and.Parameters[0],
                 (object)expr.Parameters[0]);
 
             return Expression.Lambda<Func<T, bool>>(
-                (Expression)Expression.And(expr.Body, and.Body), 
+                (Expression)Expression.And(expr.Body, and.Body),
                 (IEnumerable<ParameterExpression>)expr.Parameters);
         }
 
@@ -54,11 +54,11 @@ namespace ImoutoRebirth.Lilin.Infrastructure.ExpressionHelpers
             for (var type = instance.GetType(); type != null; type = type.BaseType)
             {
                 foreach (FieldInfo field in type.GetFields(
-                    BindingFlags.Instance 
-                    | BindingFlags.Public 
+                    BindingFlags.Instance
+                    | BindingFlags.Public
                     | BindingFlags.NonPublic))
                 {
-                    object instance1 = field.GetValue(instance);
+                    object? instance1 = field.GetValue(instance);
                     if (instance1 != null && instance1.GetType().Assembly == typeof(Expression).Assembly)
                     {
                         if (instance1 == old)
