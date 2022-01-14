@@ -4,53 +4,52 @@ using System.Reflection;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
 
-namespace ImoutoRebirth.Common.Host
+namespace ImoutoRebirth.Common.Host;
+
+public static class HostBuilderExtensions
 {
-    public static class HostBuilderExtensions
+    public static IHostBuilder UseStartup(this IHostBuilder builder, Func<IConfiguration, BaseStartup> startupFabric)
     {
-        public static IHostBuilder UseStartup(this IHostBuilder builder, Func<IConfiguration, BaseStartup> startupFabric)
+        ArgumentValidator.NotNull(() => startupFabric);
+
+        builder.ConfigureServices((context, collection) =>
         {
-            ArgumentValidator.NotNull(() => startupFabric);
+            var startup = startupFabric.Invoke(context.Configuration);
+            startup.ConfigureServices(collection);
+        });
 
-            builder.ConfigureServices((context, collection) =>
-            {
-                var startup = startupFabric.Invoke(context.Configuration);
-                startup.ConfigureServices(collection);
-            });
+        return builder;
+    }
 
-            return builder;
-        }
+    public static IHostBuilder UseEnvironmentFromEnvironmentVariable(
+        this IHostBuilder builder,
+        string servicePrefix)
+    {
+        var environment = Environment.GetEnvironmentVariable($"{servicePrefix}ENVIRONMENT");
 
-        public static IHostBuilder UseEnvironmentFromEnvironmentVariable(
-            this IHostBuilder builder,
-            string servicePrefix)
-        {
-            var environment = Environment.GetEnvironmentVariable($"{servicePrefix}ENVIRONMENT");
+        builder.UseEnvironment(environment ?? "Production");
 
-            builder.UseEnvironment(environment ?? "Production");
+        return builder;
+    }
 
-            return builder;
-        }
+    public static IHostBuilder UseConfiguration(this IHostBuilder hostBuilder, string servicePrefix)
+    {
+        hostBuilder.ConfigureAppConfiguration(
+            (context, builder) => builder.AddJsonFile("appSettings.json", false, true)
+                .AddJsonFile(
+                    $"appSettings.{context.HostingEnvironment.EnvironmentName}.json",
+                    true,
+                    true)
+                .AddEnvironmentVariables(servicePrefix));
 
-        public static IHostBuilder UseConfiguration(this IHostBuilder hostBuilder, string servicePrefix)
-        {
-            hostBuilder.ConfigureAppConfiguration(
-                (context, builder) => builder.AddJsonFile("appSettings.json", false, true)
-                                             .AddJsonFile(
-                                                  $"appSettings.{context.HostingEnvironment.EnvironmentName}.json",
-                                                  true,
-                                                  true)
-                                             .AddEnvironmentVariables(servicePrefix));
+        return hostBuilder;
+    }
 
-            return hostBuilder;
-        }
+    public static IHostBuilder SetWorkingDirectory(this IHostBuilder hostBuilder)
+    {
+        Directory.SetCurrentDirectory(
+            Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location)!);
 
-        public static IHostBuilder SetWorkingDirectory(this IHostBuilder hostBuilder)
-        {
-            Directory.SetCurrentDirectory(
-                Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location)!);
-
-            return hostBuilder;
-        }
+        return hostBuilder;
     }
 }

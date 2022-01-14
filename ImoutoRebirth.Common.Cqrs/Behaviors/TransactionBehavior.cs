@@ -4,47 +4,46 @@ using ImoutoRebirth.Common.Cqrs.Events;
 using ImoutoRebirth.Common.Domain;
 using MediatR;
 
-namespace ImoutoRebirth.Common.Cqrs.Behaviors
+namespace ImoutoRebirth.Common.Cqrs.Behaviors;
+
+public class TransactionBehavior<TRequest, TResponse> : IPipelineBehavior<TRequest, TResponse>
+    where TRequest : IRequest<TResponse>
 {
-    public class TransactionBehavior<TRequest, TResponse> : IPipelineBehavior<TRequest, TResponse>
-        where TRequest : IRequest<TResponse>
+    private readonly IUnitOfWork _unitOfWork;
+    private readonly IEventStorage _eventStorage;
+    private readonly IEventPublisher _eventPublisher;
+
+    public TransactionBehavior(
+        IUnitOfWork unitOfWork,
+        IEventStorage eventStorage,
+        IEventPublisher eventPublisher)
     {
-        private readonly IUnitOfWork _unitOfWork;
-        private readonly IEventStorage _eventStorage;
-        private readonly IEventPublisher _eventPublisher;
+        _unitOfWork = unitOfWork;
+        _eventStorage = eventStorage;
+        _eventPublisher = eventPublisher;
+    }
 
-        public TransactionBehavior(
-            IUnitOfWork unitOfWork,
-            IEventStorage eventStorage,
-            IEventPublisher eventPublisher)
+    public async Task<TResponse> Handle(
+        TRequest request,
+        CancellationToken cancellationToken,
+        RequestHandlerDelegate<TResponse> next)
+    {
+        var isolationLevel = typeof(TRequest).GetIsolationLevel();
+
+        TResponse response;
+        using (var transaction = await _unitOfWork.CreateTransactionAsync(isolationLevel))
         {
-            _unitOfWork = unitOfWork;
-            _eventStorage = eventStorage;
-            _eventPublisher = eventPublisher;
+            response = await next();
+
+            await _unitOfWork.SaveEntitiesAsync(cancellationToken);
+            await transaction.CommitAsync();
         }
 
-        public async Task<TResponse> Handle(
-            TRequest request,
-            CancellationToken cancellationToken,
-            RequestHandlerDelegate<TResponse> next)
+        foreach (var domainEvent in _eventStorage.GetAll())
         {
-            var isolationLevel = typeof(TRequest).GetIsolationLevel();
-
-            TResponse response;
-            using (var transaction = await _unitOfWork.CreateTransactionAsync(isolationLevel))
-            {
-                response = await next();
-
-                await _unitOfWork.SaveEntitiesAsync(cancellationToken);
-                await transaction.CommitAsync();
-            }
-
-            foreach (var domainEvent in _eventStorage.GetAll())
-            {
-                await _eventPublisher.Publish(domainEvent, cancellationToken);
-            }
-
-            return response;
+            await _eventPublisher.Publish(domainEvent, cancellationToken);
         }
+
+        return response;
     }
 }

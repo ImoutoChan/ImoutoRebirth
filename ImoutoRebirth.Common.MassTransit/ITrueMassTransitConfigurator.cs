@@ -1,12 +1,11 @@
 ﻿using System;
 using MassTransit.RabbitMqTransport;
 
-namespace ImoutoRebirth.Common.MassTransit
-{
-    public interface ITrueMassTransitConfigurator
-    {
-        IRabbitMqBusFactoryConfigurator RabbitMqBusFactoryConfigurator { get; }
+namespace ImoutoRebirth.Common.MassTransit;
 
-        IServiceProvider ServiceProvider { get; }
-    }
+public interface ITrueMassTransitConfigurator
+{
+    IRabbitMqBusFactoryConfigurator RabbitMqBusFactoryConfigurator { get; }
+
+    IServiceProvider ServiceProvider { get; }
 }

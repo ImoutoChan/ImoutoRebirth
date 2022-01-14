@@ -1,20 +1,19 @@
 ﻿using System;
 using MassTransit.RabbitMqTransport;
 
-namespace ImoutoRebirth.Common.MassTransit
+namespace ImoutoRebirth.Common.MassTransit;
+
+internal class TrueMassTransitConfigurator : ITrueMassTransitConfigurator
 {
-    internal class TrueMassTransitConfigurator : ITrueMassTransitConfigurator
+    public IRabbitMqBusFactoryConfigurator RabbitMqBusFactoryConfigurator { get; }
+
+    public IServiceProvider ServiceProvider { get; }
+
+    public TrueMassTransitConfigurator(
+        IRabbitMqBusFactoryConfigurator rabbitMqBusFactoryConfigurator,
+        IServiceProvider serviceProvider)
     {
-        public IRabbitMqBusFactoryConfigurator RabbitMqBusFactoryConfigurator { get; }
-
-        public IServiceProvider ServiceProvider { get; }
-
-        public TrueMassTransitConfigurator(
-            IRabbitMqBusFactoryConfigurator rabbitMqBusFactoryConfigurator,
-            IServiceProvider serviceProvider)
-        {
-            RabbitMqBusFactoryConfigurator = rabbitMqBusFactoryConfigurator;
-            ServiceProvider = serviceProvider;
-        }
+        RabbitMqBusFactoryConfigurator = rabbitMqBusFactoryConfigurator;
+        ServiceProvider = serviceProvider;
     }
 }

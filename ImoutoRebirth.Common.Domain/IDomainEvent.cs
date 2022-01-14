@@ -1,6 +1,5 @@
-﻿namespace ImoutoRebirth.Common.Domain
+﻿namespace ImoutoRebirth.Common.Domain;
+
+public interface IDomainEvent
 {
-    public interface IDomainEvent
-    {
-    }
 }

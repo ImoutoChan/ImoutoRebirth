@@ -1,13 +1,12 @@
 ﻿using System.Threading.Tasks;
 
-namespace ImoutoRebirth.Common.Domain
-{
-    public class EmptyTransaction : ITransaction
-    {
-        public void Dispose()
-        {
-        }
+namespace ImoutoRebirth.Common.Domain;
 
-        public Task CommitAsync() => Task.CompletedTask;
+public class EmptyTransaction : ITransaction
+{
+    public void Dispose()
+    {
     }
+
+    public Task CommitAsync() => Task.CompletedTask;
 }

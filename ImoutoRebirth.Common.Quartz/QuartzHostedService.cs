@@ -5,45 +5,44 @@ using System.Threading.Tasks;
 using Microsoft.Extensions.Hosting;
 using Quartz;
 
-namespace ImoutoRebirth.Common.Quartz
+namespace ImoutoRebirth.Common.Quartz;
+
+internal class QuartzHostedService : IHostedService
 {
-    internal class QuartzHostedService : IHostedService
+    private const int WaitBeforeForcedShutdown = 30000;
+
+    private readonly IScheduler _scheduler;
+    private readonly IReadOnlyCollection<IQuartzJobDescription> _jobDescriptions;
+
+    public QuartzHostedService(IScheduler scheduler, IEnumerable<IQuartzJobDescription> jobDescriptions)
     {
-        private const int WaitBeforeForcedShutdown = 30000;
+        _scheduler = scheduler;
+        _jobDescriptions = jobDescriptions.ToArray();
+    }
 
-        private readonly IScheduler _scheduler;
-        private readonly IReadOnlyCollection<IQuartzJobDescription> _jobDescriptions;
+    public void Start() => StartAsync().Wait();
 
-        public QuartzHostedService(IScheduler scheduler, IEnumerable<IQuartzJobDescription> jobDescriptions)
-        {
-            _scheduler = scheduler;
-            _jobDescriptions = jobDescriptions.ToArray();
-        }
+    public async Task StartAsync(CancellationToken cancellationToken = default)
+    {
+        await _scheduler.Start(cancellationToken);
 
-        public void Start() => StartAsync().Wait();
+        foreach (var jobDescription in _jobDescriptions)
+            await _scheduler.ScheduleJob(
+                jobDescription.GetJobDetails(), 
+                jobDescription.GetJobTrigger(), 
+                cancellationToken);
+    }
 
-        public async Task StartAsync(CancellationToken cancellationToken = default)
-        {
-            await _scheduler.Start(cancellationToken);
+    public void Stop() => StopAsync().Wait();
 
-            foreach (var jobDescription in _jobDescriptions)
-                await _scheduler.ScheduleJob(
-                    jobDescription.GetJobDetails(), 
-                    jobDescription.GetJobTrigger(), 
-                    cancellationToken);
-        }
+    public async Task StopAsync(CancellationToken cancellationToken = default)
+    {
+        var schedulerShutdownTask = _scheduler.Shutdown(waitForJobsToComplete: true, cancellationToken);
+        var timeoutTask = Task.Delay(WaitBeforeForcedShutdown, cancellationToken);
 
-        public void Stop() => StopAsync().Wait();
+        await Task.WhenAny(schedulerShutdownTask, timeoutTask);
 
-        public async Task StopAsync(CancellationToken cancellationToken = default)
-        {
-            var schedulerShutdownTask = _scheduler.Shutdown(waitForJobsToComplete: true, cancellationToken);
-            var timeoutTask = Task.Delay(WaitBeforeForcedShutdown, cancellationToken);
-
-            await Task.WhenAny(schedulerShutdownTask, timeoutTask);
-
-            if (!_scheduler.IsShutdown)
-                await _scheduler.Shutdown(cancellationToken);
-        }
+        if (!_scheduler.IsShutdown)
+            await _scheduler.Shutdown(cancellationToken);
     }
 }

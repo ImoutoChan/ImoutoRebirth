@@ -1,10 +1,9 @@
 ﻿using Quartz;
 
-namespace ImoutoRebirth.Common.Quartz.Extensions
+namespace ImoutoRebirth.Common.Quartz.Extensions;
+
+public static class SchedulerFactoryExtensions
 {
-    public static class SchedulerFactoryExtensions
-    {
-        public static IScheduler GetSchedulerSynchronously(this ISchedulerFactory factory)
-            => factory.GetScheduler().Result;
-    }
+    public static IScheduler GetSchedulerSynchronously(this ISchedulerFactory factory)
+        => factory.GetScheduler().Result;
 }

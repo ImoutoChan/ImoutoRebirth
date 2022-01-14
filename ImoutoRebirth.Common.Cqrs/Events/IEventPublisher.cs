@@ -2,10 +2,9 @@
 using System.Threading.Tasks;
 using ImoutoRebirth.Common.Domain;
 
-namespace ImoutoRebirth.Common.Cqrs.Events
+namespace ImoutoRebirth.Common.Cqrs.Events;
+
+public interface IEventPublisher
 {
-    public interface IEventPublisher
-    {
-        Task Publish<TEvent>(TEvent e, CancellationToken cancellationToken) where TEvent : IDomainEvent;
-    }
+    Task Publish<TEvent>(TEvent e, CancellationToken cancellationToken) where TEvent : IDomainEvent;
 }
