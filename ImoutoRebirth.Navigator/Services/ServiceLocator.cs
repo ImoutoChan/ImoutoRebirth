@@ -1,10 +1,8 @@
 ﻿using System;
-using AutoMapper;
 using ImoutoRebirth.Lilin.WebApi.Client;
 using ImoutoRebirth.Navigator.Services.Collections;
 using ImoutoRebirth.Navigator.Services.ImoutoViewer;
 using ImoutoRebirth.Navigator.Services.Tags;
-using ImoutoRebirth.Navigator.ViewModel;
 using ImoutoRebirth.Room.WebApi.Client;
 using Microsoft.Extensions.DependencyInjection;
 

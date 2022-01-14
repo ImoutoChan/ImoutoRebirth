@@ -6,7 +6,6 @@ using System.Windows.Input;
 using System.Windows.Media;
 using ControlzEx.Theming;
 using ImoutoRebirth.Navigator.Commands;
-using MahApps.Metro;
 
 namespace ImoutoRebirth.Navigator.ViewModel
 {
