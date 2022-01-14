@@ -12,38 +12,37 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using ReceiverApp = ImoutoRebirth.Meido.MessageContracts.ReceiverApp;
 
-namespace ImoutoRebirth.Lilin.Services
+namespace ImoutoRebirth.Lilin.Services;
+
+public static class ServiceCollectionExtensions
 {
-    public static class ServiceCollectionExtensions
+    public static IServiceCollection AddLilinServices(
+        this IServiceCollection services,
+        IConfiguration configuration)
     {
-        public static IServiceCollection AddLilinServices(
-            this IServiceCollection services,
-            IConfiguration configuration)
-        {
-            services.AddMediatR(typeof(SaveMetadataCommand));
-            services.AddLoggingBehavior();
-            services.AddTransactionBehavior();
+        services.AddMediatR(typeof(SaveMetadataCommand));
+        services.AddLoggingBehavior();
+        services.AddTransactionBehavior();
 
-            services.AddTransient<UpdateMetadataCommandConsumer>();
-            services.AddTransient<IFileInfoService, FileInfoService>();
+        services.AddTransient<UpdateMetadataCommandConsumer>();
+        services.AddTransient<IFileInfoService, FileInfoService>();
 
-            services.AddQuartzJob<RecalculateTagsCountersJob, RecalculateTagsCountersJob.Description>();
-            services.AddMemoryCache();
+        services.AddQuartzJob<RecalculateTagsCountersJob, RecalculateTagsCountersJob.Description>();
+        services.AddMemoryCache();
 
-            services.Configure<RecalculateTagCountersSettings>(
-                configuration.GetSection(nameof(RecalculateTagCountersSettings)));
+        services.Configure<RecalculateTagCountersSettings>(
+            configuration.GetSection(nameof(RecalculateTagCountersSettings)));
 
-            return services;
-        }
+        return services;
+    }
 
-        public static ITrueMassTransitConfigurator AddLilinServicesForRabbit(
-            this ITrueMassTransitConfigurator builder)
-        {
-            builder.AddConsumer<UpdateMetadataCommandConsumer, IUpdateMetadataCommand>(
-                    Lilin.MessageContracts.ReceiverApp.Name)
-                .AddFireAndForget<ISavedCommand>(ReceiverApp.Name);
+    public static ITrueMassTransitConfigurator AddLilinServicesForRabbit(
+        this ITrueMassTransitConfigurator builder)
+    {
+        builder.AddConsumer<UpdateMetadataCommandConsumer, IUpdateMetadataCommand>(
+                Lilin.MessageContracts.ReceiverApp.Name)
+            .AddFireAndForget<ISavedCommand>(ReceiverApp.Name);
 
-            return builder;
-        }
+        return builder;
     }
 }

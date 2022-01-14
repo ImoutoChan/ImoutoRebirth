@@ -2,25 +2,24 @@
 using ImoutoRebirth.Lilin.Core.Infrastructure;
 using ImoutoRebirth.Lilin.Core.Models.FileInfoAggregate;
 
-namespace ImoutoRebirth.Lilin.Services.CQRS.Queries
+namespace ImoutoRebirth.Lilin.Services.CQRS.Queries;
+
+public class FileInfoQueryHandler : IQueryHandler<FileInfoQuery, FileInfo>
 {
-    public class FileInfoQueryHandler : IQueryHandler<FileInfoQuery, FileInfo>
+    private readonly IFileTagRepository _fileTagRepository;
+    private readonly IFileNoteRepository _fileNoteRepository;
+
+    public FileInfoQueryHandler(IFileTagRepository fileTagRepository, IFileNoteRepository fileNoteRepository)
     {
-        private readonly IFileTagRepository _fileTagRepository;
-        private readonly IFileNoteRepository _fileNoteRepository;
+        _fileTagRepository = fileTagRepository;
+        _fileNoteRepository = fileNoteRepository;
+    }
 
-        public FileInfoQueryHandler(IFileTagRepository fileTagRepository, IFileNoteRepository fileNoteRepository)
-        {
-            _fileTagRepository = fileTagRepository;
-            _fileNoteRepository = fileNoteRepository;
-        }
+    public async Task<FileInfo> Handle(FileInfoQuery request, CancellationToken cancellationToken)
+    {
+        var tags = await _fileTagRepository.GetForFile(request.FileId);
+        var notes = await _fileNoteRepository.GetForFile(request.FileId);
 
-        public async Task<FileInfo> Handle(FileInfoQuery request, CancellationToken cancellationToken)
-        {
-            var tags = await _fileTagRepository.GetForFile(request.FileId);
-            var notes = await _fileNoteRepository.GetForFile(request.FileId);
-
-            return new FileInfo(tags, notes, request.FileId);
-        }
+        return new FileInfo(tags, notes, request.FileId);
     }
 }

@@ -6,46 +6,45 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 
-namespace ImoutoRebirth.Lilin.WebApi
+namespace ImoutoRebirth.Lilin.WebApi;
+
+/// <remarks>
+///     todo: maybe use two extension methods instead
+/// </remarks>
+public class WebApiStartup
 {
-    /// <remarks>
-    ///     todo: maybe use two extension methods instead
-    /// </remarks>
-    public class WebApiStartup
+    private IConfiguration Configuration { get; }
+
+    public WebApiStartup(IConfiguration configuration)
     {
-        private IConfiguration Configuration { get; }
+        Configuration = configuration;
+    }
 
-        public WebApiStartup(IConfiguration configuration)
+    public void ConfigureServices(IServiceCollection services)
+    {
+        services
+            .AddControllers()
+            .AddJsonOptions(
+                options =>
+                    options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter()));
+        services.AddSwagger("ImoutoRebirth.Lilin WebApi Client", typeof(WebApiStartup).Assembly);
+    }
+
+    public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+    {
+        if (env.IsDevelopment())
         {
-            Configuration = configuration;
+            app.UseDeveloperExceptionPage();
         }
-
-        public void ConfigureServices(IServiceCollection services)
-        {
-            services
-                .AddControllers()
-                .AddJsonOptions(
-                    options =>
-                        options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter()));
-            services.AddSwagger("ImoutoRebirth.Lilin WebApi Client", typeof(WebApiStartup).Assembly);
-        }
-
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
-        {
-            if (env.IsDevelopment())
-            {
-                app.UseDeveloperExceptionPage();
-            }
             
-            app.UseRouting();
+        app.UseRouting();
 
-            app.UseEndpoints(endpoints => endpoints.MapControllers());
+        app.UseEndpoints(endpoints => endpoints.MapControllers());
 
-            app.UseSwagger();
-            app.UseSwaggerUI(c =>
-            {
-                c.SwaggerEndpoint("/swagger/v1.0/swagger.json", "ImoutoRebirth.Lilin API V1.0");
-            });
-        }
+        app.UseSwagger();
+        app.UseSwaggerUI(c =>
+        {
+            c.SwaggerEndpoint("/swagger/v1.0/swagger.json", "ImoutoRebirth.Lilin API V1.0");
+        });
     }
 }

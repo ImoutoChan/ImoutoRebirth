@@ -1,8 +1,7 @@
-﻿namespace ImoutoRebirth.Lilin.Core.Models
+﻿namespace ImoutoRebirth.Lilin.Core.Models;
+
+public enum RelativeType
 {
-    public enum RelativeType
-    {
-        Child,
-        Parent
-    }
+    Child,
+    Parent
 }

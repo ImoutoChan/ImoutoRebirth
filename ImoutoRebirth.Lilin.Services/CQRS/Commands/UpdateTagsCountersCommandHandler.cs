@@ -2,22 +2,21 @@
 using ImoutoRebirth.Lilin.Core.Infrastructure;
 using MediatR;
 
-namespace ImoutoRebirth.Lilin.Services.CQRS.Commands
+namespace ImoutoRebirth.Lilin.Services.CQRS.Commands;
+
+public class UpdateTagsCountersCommandHandler : ICommandHandler<UpdateTagsCountersCommand>
 {
-    public class UpdateTagsCountersCommandHandler : ICommandHandler<UpdateTagsCountersCommand>
+    private readonly ITagRepository _tagRepository;
+
+    public UpdateTagsCountersCommandHandler(ITagRepository tagRepository)
     {
-        private readonly ITagRepository _tagRepository;
+        _tagRepository = tagRepository;
+    }
 
-        public UpdateTagsCountersCommandHandler(ITagRepository tagRepository)
-        {
-            _tagRepository = tagRepository;
-        }
+    public async Task<Unit> Handle(UpdateTagsCountersCommand request, CancellationToken cancellationToken)
+    {
+        await _tagRepository.UpdateTagsCounters();
 
-        public async Task<Unit> Handle(UpdateTagsCountersCommand request, CancellationToken cancellationToken)
-        {
-            await _tagRepository.UpdateTagsCounters();
-
-            return Unit.Value;
-        }
+        return Unit.Value;
     }
 }

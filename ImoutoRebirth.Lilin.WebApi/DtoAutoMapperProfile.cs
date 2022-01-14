@@ -6,41 +6,40 @@ using ImoutoRebirth.Lilin.Services.CQRS.Queries;
 using ImoutoRebirth.Lilin.WebApi.Requests;
 using ImoutoRebirth.Lilin.WebApi.Responses;
 
-namespace ImoutoRebirth.Lilin.WebApi
+namespace ImoutoRebirth.Lilin.WebApi;
+
+public class DtoAutoMapperProfile : Profile
 {
-    public class DtoAutoMapperProfile : Profile
+    public DtoAutoMapperProfile()
     {
-        public DtoAutoMapperProfile()
-        {
-            CreateMapFromModelToResponses();
-            CreateMapFromRequestsToQueries();
-        }
+        CreateMapFromModelToResponses();
+        CreateMapFromRequestsToQueries();
+    }
 
-        private void CreateMapFromRequestsToQueries()
-        {
-            CreateMap<TagCreateRequest, CreateTagCommand>();
-            CreateMap<TagSearchEntryRequest, TagSearchEntry>();
+    private void CreateMapFromRequestsToQueries()
+    {
+        CreateMap<TagCreateRequest, CreateTagCommand>();
+        CreateMap<TagSearchEntryRequest, TagSearchEntry>();
 
-            CreateMap<FilesSearchRequest, FilesSearchQuery>()
-                .ForCtorParam("offset", o => o.MapFrom(x => x.Skip ?? 0))
-                .ForCtorParam("limit", o => o.MapFrom(x => x.Count));
-            CreateMap<FilesSearchRequest, FilesSearchQueryCount>();
+        CreateMap<FilesSearchRequest, FilesSearchQuery>()
+            .ForCtorParam("offset", o => o.MapFrom(x => x.Skip ?? 0))
+            .ForCtorParam("limit", o => o.MapFrom(x => x.Count));
+        CreateMap<FilesSearchRequest, FilesSearchQueryCount>();
 
-            CreateMap<BindTagsRequest, BindTagsCommand>();
-            CreateMap<UnbindTagRequest, UnbindTagCommand>();
+        CreateMap<BindTagsRequest, BindTagsCommand>();
+        CreateMap<UnbindTagRequest, UnbindTagCommand>();
 
-            CreateMap<FileTagRequest, FileTagInfo>();
-        }
+        CreateMap<FileTagRequest, FileTagInfo>();
+    }
 
-        private void CreateMapFromModelToResponses()
-        {
-            CreateMap<FileInfo, FileInfoResponse>();
-            CreateMap<FileTag, FileTagResponse>();
-            CreateMap<FileNote, FileNoteResponse>();
-            CreateMap<Note, NoteResponse>();
-            CreateMap<Tag, TagResponse>();
-            CreateMap<TagType, TagTypeResponse>();
-            CreateMap<RelativeInfo, RelativeResponse>();
-        }
+    private void CreateMapFromModelToResponses()
+    {
+        CreateMap<FileInfo, FileInfoResponse>();
+        CreateMap<FileTag, FileTagResponse>();
+        CreateMap<FileNote, FileNoteResponse>();
+        CreateMap<Note, NoteResponse>();
+        CreateMap<Tag, TagResponse>();
+        CreateMap<TagType, TagTypeResponse>();
+        CreateMap<RelativeInfo, RelativeResponse>();
     }
 }

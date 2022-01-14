@@ -4,21 +4,20 @@ using ImoutoRebirth.Lilin.DataAccess;
 using ImoutoRebirth.Lilin.Infrastructure.Repositories;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace ImoutoRebirth.Lilin.Infrastructure
+namespace ImoutoRebirth.Lilin.Infrastructure;
+
+public static class ServiceCollectionExtensions
 {
-    public static class ServiceCollectionExtensions
+    public static IServiceCollection AddLilinInfrastructure(this IServiceCollection services)
     {
-        public static IServiceCollection AddLilinInfrastructure(this IServiceCollection services)
-        {
-            services.AddTransient<IFileTagRepository, FileTagRepository>();
-            services.AddTransient<IFileNoteRepository, FileNoteRepository>();
-            services.AddTransient<ITagTypeRepository, TagTypeRepository>();
-            services.AddTransient<ITagRepository, TagRepository>();
+        services.AddTransient<IFileTagRepository, FileTagRepository>();
+        services.AddTransient<IFileNoteRepository, FileNoteRepository>();
+        services.AddTransient<ITagTypeRepository, TagTypeRepository>();
+        services.AddTransient<ITagRepository, TagRepository>();
 
-            services.AddScoped<IUnitOfWork>(provider => provider.GetRequiredService<LilinDbContext>());
-            services.AddScoped<IEventStorage, EventStorage>();
+        services.AddScoped<IUnitOfWork>(provider => provider.GetRequiredService<LilinDbContext>());
+        services.AddScoped<IEventStorage, EventStorage>();
 
-            return services;
-        }
+        return services;
     }
 }

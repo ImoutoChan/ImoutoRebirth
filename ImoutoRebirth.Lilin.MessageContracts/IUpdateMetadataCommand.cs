@@ -1,13 +1,12 @@
-﻿namespace ImoutoRebirth.Lilin.MessageContracts
+﻿namespace ImoutoRebirth.Lilin.MessageContracts;
+
+public interface IUpdateMetadataCommand
 {
-    public interface IUpdateMetadataCommand
-    {
-        Guid FileId { get; }
+    Guid FileId { get; }
 
-        MetadataSource MetadataSource { get; }
+    MetadataSource MetadataSource { get; }
 
-        IFileNote[] FileNotes { get; }
+    IFileNote[] FileNotes { get; }
 
-        IFileTag[] FileTags { get; }
-    }
+    IFileTag[] FileTags { get; }
 }

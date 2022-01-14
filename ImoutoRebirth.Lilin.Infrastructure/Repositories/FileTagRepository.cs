@@ -9,218 +9,217 @@ using ImoutoRebirth.Lilin.Infrastructure.Mappers;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 
-namespace ImoutoRebirth.Lilin.Infrastructure.Repositories
+namespace ImoutoRebirth.Lilin.Infrastructure.Repositories;
+
+public class FileTagRepository : IFileTagRepository
 {
-    public class FileTagRepository : IFileTagRepository
+    private readonly LilinDbContext _lilinDbContext;
+    private readonly ILogger<FileTagRepository> _logger;
+
+    public FileTagRepository(LilinDbContext lilinDbContext, ILogger<FileTagRepository> logger)
     {
-        private readonly LilinDbContext _lilinDbContext;
-        private readonly ILogger<FileTagRepository> _logger;
+        _lilinDbContext = lilinDbContext;
+        _logger = logger;
+    }
 
-        public FileTagRepository(LilinDbContext lilinDbContext, ILogger<FileTagRepository> logger)
-        {
-            _lilinDbContext = lilinDbContext;
-            _logger = logger;
-        }
+    public async Task<Guid[]> SearchFiles(
+        IReadOnlyCollection<TagSearchEntry> tagSearchEntries,
+        int? limit = 100,
+        int offset = 0)
+    {
+        var files = GetSearchFilesQueryable(tagSearchEntries);
 
-        public async Task<Guid[]> SearchFiles(
-            IReadOnlyCollection<TagSearchEntry> tagSearchEntries,
-            int? limit = 100,
-            int offset = 0)
-        {
-            var files = GetSearchFilesQueryable(tagSearchEntries);
+        files = files.Skip(offset);
 
-            files = files.Skip(offset);
+        if (limit.HasValue)
+            files = files.Take(limit.Value);
 
-            if (limit.HasValue)
-                files = files.Take(limit.Value);
+        return await files.ToArrayAsync();
+    }
 
-            return await files.ToArrayAsync();
-        }
+    public async Task<int> SearchFilesCount(IReadOnlyCollection<TagSearchEntry> tagSearchEntries)
+    {
+        var files = GetSearchFilesQueryable(tagSearchEntries);
+        return await files.CountAsync();
+    }
 
-        public async Task<int> SearchFilesCount(IReadOnlyCollection<TagSearchEntry> tagSearchEntries)
-        {
-            var files = GetSearchFilesQueryable(tagSearchEntries);
-            return await files.CountAsync();
-        }
+    public async Task<IReadOnlyCollection<FileTag>> GetForFile(Guid fileId)
+    {
+        var results = await _lilinDbContext.FileTags
+            .Include(x => x.Tag)
+            .ThenInclude(x => x!.Type)
+            .Where(x => x.FileId == fileId)
+            .AsNoTracking()
+            .ToArrayAsync();
 
-        public async Task<IReadOnlyCollection<FileTag>> GetForFile(Guid fileId)
-        {
-            var results = await _lilinDbContext.FileTags
-                                               .Include(x => x.Tag)
-                                               .ThenInclude(x => x!.Type)
-                                               .Where(x => x.FileId == fileId)
-                                               .AsNoTracking()
-                                               .ToArrayAsync();
+        return results.Select(x => x.ToModel()).ToArray();
+    }
 
-            return results.Select(x => x.ToModel()).ToArray();
-        }
+    public async Task Add(FileTag fileTag)
+    {
+        var entity = fileTag.ToEntity();
+        await _lilinDbContext.FileTags.AddAsync(entity);
 
-        public async Task Add(FileTag fileTag)
-        {
-            var entity = fileTag.ToEntity();
-            await _lilinDbContext.FileTags.AddAsync(entity);
+        await _lilinDbContext.SaveChangesAsync();
+    }
 
-            await _lilinDbContext.SaveChangesAsync();
-        }
+    public async Task AddBatch(IReadOnlyCollection<FileTagInfo> fileTags)
+    {
+        var entities = fileTags.Select(x => x.ToEntity());
+        await _lilinDbContext.AddRangeAsync(entities);
 
-        public async Task AddBatch(IReadOnlyCollection<FileTagInfo> fileTags)
-        {
-            var entities = fileTags.Select(x => x.ToEntity());
-            await _lilinDbContext.AddRangeAsync(entities);
+        await _lilinDbContext.SaveChangesAsync();
+    }
 
-            await _lilinDbContext.SaveChangesAsync();
-        }
-
-        public async Task Delete(FileTag fileTag)
-        {
-            var tagsToDelete = await _lilinDbContext.FileTags.Where(
+    public async Task Delete(FileTag fileTag)
+    {
+        var tagsToDelete = await _lilinDbContext.FileTags.Where(
                 x => x.Source == fileTag.Source
                      && x.TagId == fileTag.Tag.Id
                      && x.FileId == fileTag.FileId
                      && x.Value == fileTag.Value)
-                .ToListAsync();
+            .ToListAsync();
 
-            _lilinDbContext.FileTags.RemoveRange(tagsToDelete);
-            await _lilinDbContext.SaveChangesAsync();
+        _lilinDbContext.FileTags.RemoveRange(tagsToDelete);
+        await _lilinDbContext.SaveChangesAsync();
+    }
+
+    private IQueryable<Guid> GetSearchFilesQueryable(IReadOnlyCollection<TagSearchEntry> tagSearchEntries)
+    {
+        var fileTags = _lilinDbContext.FileTags;
+        var files = _lilinDbContext.FileTags.Select(x => x.FileId).Distinct();
+
+        // exclude tags
+        var excludeFilters = tagSearchEntries
+            .Where(x => x.TagSearchScope == TagSearchScope.Excluded)
+            .ToArray();
+
+        if (excludeFilters.Any())
+        {
+            var excludeFilter = MakeOrFilter(fileTags, excludeFilters);
+
+            files = files.Where(f => !excludeFilter.Contains(f));
         }
 
-        private IQueryable<Guid> GetSearchFilesQueryable(IReadOnlyCollection<TagSearchEntry> tagSearchEntries)
+        // include tags
+        foreach (var tagSearchEntry in tagSearchEntries.Where(x => x.TagSearchScope == TagSearchScope.Included))
         {
-            var fileTags = _lilinDbContext.FileTags;
-            var files = _lilinDbContext.FileTags.Select(x => x.FileId).Distinct();
-
-            // exclude tags
-            var excludeFilters = tagSearchEntries
-                                .Where(x => x.TagSearchScope == TagSearchScope.Excluded)
-                                .ToArray();
-
-            if (excludeFilters.Any())
-            {
-                var excludeFilter = MakeOrFilter(fileTags, excludeFilters);
-
-                files = files.Where(f => !excludeFilter.Contains(f));
-            }
-
-            // include tags
-            foreach (var tagSearchEntry in tagSearchEntries.Where(x => x.TagSearchScope == TagSearchScope.Included))
-            {
-                var includeFilter = MakeOrFilter(fileTags, new[] {tagSearchEntry});
-                files = files.Where(f => includeFilter.Contains(f));
-            }
-
-            return files;
+            var includeFilter = MakeOrFilter(fileTags, new[] {tagSearchEntry});
+            files = files.Where(f => includeFilter.Contains(f));
         }
 
-        private static IQueryable<Guid> MakeOrFilter(
-            IQueryable<FileTagEntity> fileTags,
-            IReadOnlyCollection<TagSearchEntry> filters)
-        {
-            var query = fileTags;
+        return files;
+    }
 
-            Expression<Func<FileTagEntity, bool>>? condition = null;
-            if (filters.Any())
+    private static IQueryable<Guid> MakeOrFilter(
+        IQueryable<FileTagEntity> fileTags,
+        IReadOnlyCollection<TagSearchEntry> filters)
+    {
+        var query = fileTags;
+
+        Expression<Func<FileTagEntity, bool>>? condition = null;
+        if (filters.Any())
+        {
+            foreach (var f in filters)
             {
-                foreach (var f in filters)
+                Expression<Func<FileTagEntity, bool>> predicateExpression;
+
+                // for cases where we should check tag values
+                if (!string.IsNullOrEmpty(f.Value))
                 {
-                    Expression<Func<FileTagEntity, bool>> predicateExpression;
+                    // retrieve whenever we should check tag value for equality or inequality
+                    var (checkEquals, value) = ExtractEqualityFlag(f.Value);
 
-                    // for cases where we should check tag values
-                    if (!string.IsNullOrEmpty(f.Value))
+                    // retrieve whenever we should search for given value with * pattern
+                    var (asteriskPlace, extractedValue) = ExtractAsteriskFlag(value);
+                    value = extractedValue;
+
+                    predicateExpression = (checkEquals, asteriskPlace) switch
                     {
-                        // retrieve whenever we should check tag value for equality or inequality
-                        var (checkEquals, value) = ExtractEqualityFlag(f.Value);
+                        (true, AsteriskPlace.None) => t
+                            => t.TagId == f.TagId && t.Value == value,
 
-                        // retrieve whenever we should search for given value with * pattern
-                        var (asteriskPlace, extractedValue) = ExtractAsteriskFlag(value);
-                        value = extractedValue;
+                        (true, AsteriskPlace.Start) => t
+                            => t.TagId == f.TagId && t.Value != null && t.Value.EndsWith(value),
 
-                        predicateExpression = (checkEquals, asteriskPlace) switch
-                        {
-                            (true, AsteriskPlace.None) => t
-                                => t.TagId == f.TagId && t.Value == value,
+                        (true, AsteriskPlace.End) => t
+                            => t.TagId == f.TagId && t.Value != null && t.Value.StartsWith(value),
 
-                            (true, AsteriskPlace.Start) => t
-                                => t.TagId == f.TagId && t.Value != null && t.Value.EndsWith(value),
+                        (true, AsteriskPlace.Both) => t
+                            => t.TagId == f.TagId && t.Value != null && t.Value.Contains(value),
 
-                            (true, AsteriskPlace.End) => t
-                                => t.TagId == f.TagId && t.Value != null && t.Value.StartsWith(value),
+                        (false, AsteriskPlace.None) => t
+                            => t.TagId == f.TagId && t.Value != value,
 
-                            (true, AsteriskPlace.Both) => t
-                                => t.TagId == f.TagId && t.Value != null && t.Value.Contains(value),
+                        (false, AsteriskPlace.Start) => t
+                            => t.TagId == f.TagId && (t.Value == null || !t.Value.EndsWith(value)),
 
-                            (false, AsteriskPlace.None) => t
-                                => t.TagId == f.TagId && t.Value != value,
+                        (false, AsteriskPlace.End) => t
+                            => t.TagId == f.TagId && (t.Value == null || !t.Value.StartsWith(value)),
 
-                            (false, AsteriskPlace.Start) => t
-                                => t.TagId == f.TagId && (t.Value == null || !t.Value.EndsWith(value)),
+                        (false, AsteriskPlace.Both) => t
+                            => t.TagId == f.TagId && (t.Value == null || !t.Value.Contains(value)),
 
-                            (false, AsteriskPlace.End) => t
-                                => t.TagId == f.TagId && (t.Value == null || !t.Value.StartsWith(value)),
-
-                            (false, AsteriskPlace.Both) => t
-                                => t.TagId == f.TagId && (t.Value == null || !t.Value.Contains(value)),
-
-                            _ => throw new NotImplementedException("unsupported pattern scenario")
-                        };
-                    }
-
-                    // for cases without values
-                    else
-                    {
-                        predicateExpression = t => t.TagId == f.TagId;
-                    }
-
-                    condition = condition != null
-                        ? condition.Or(predicateExpression)
-                        : predicateExpression.Get();
+                        _ => throw new NotImplementedException("unsupported pattern scenario")
+                    };
                 }
-            }
 
-            if (condition != null)
-            {
-                query = query.Where(condition);
-            }
+                // for cases without values
+                else
+                {
+                    predicateExpression = t => t.TagId == f.TagId;
+                }
 
-            return query.Select(x => x.FileId);
+                condition = condition != null
+                    ? condition.Or(predicateExpression)
+                    : predicateExpression.Get();
+            }
         }
 
-        /// <summary>
-        ///     Convert string with asterisk symbol to tuple:
-        ///     '*xxx' => start, 'xxx'
-        ///     'xxx' => none, 'xxx'
-        ///     'xxx*' => end, 'xxx'
-        /// </summary>
-        private static (AsteriskPlace Place, string Value) ExtractAsteriskFlag(string source)
-            => (source[0], source[^1]) switch
-            {
-                ('*', '*') => (AsteriskPlace.Both, source[1..^2]),
-                ('*', _) => (AsteriskPlace.Start, source[1..]),
-                (_, '*') => (AsteriskPlace.End, source[..^2]),
-                _ => (AsteriskPlace.None, source)
-            };
-
-        /// <summary>
-        ///     Convert string with equality symbol to tuple:
-        ///     'xxx' => true, 'xxx'
-        ///     '!=xxx' => false, 'xxx'
-        ///     '!asd' => false, 'asd'
-        ///     '=asd' => true, 'asd'
-        /// </summary>
-        private static (bool flag, string value) ExtractEqualityFlag(string source)
-            => (source[0], source[1]) switch
-            {
-                ('=', _) => (true, source.Substring(1)),
-                ('!', '=') => (false, source.Substring(2)),
-                ('!', _) => (false, source.Substring(1)),
-                _ => (true, source)
-            };
-
-        private enum AsteriskPlace
+        if (condition != null)
         {
-            None,
-            Start,
-            End,
-            Both
+            query = query.Where(condition);
         }
+
+        return query.Select(x => x.FileId);
+    }
+
+    /// <summary>
+    ///     Convert string with asterisk symbol to tuple:
+    ///     '*xxx' => start, 'xxx'
+    ///     'xxx' => none, 'xxx'
+    ///     'xxx*' => end, 'xxx'
+    /// </summary>
+    private static (AsteriskPlace Place, string Value) ExtractAsteriskFlag(string source)
+        => (source[0], source[^1]) switch
+        {
+            ('*', '*') => (AsteriskPlace.Both, source[1..^2]),
+            ('*', _) => (AsteriskPlace.Start, source[1..]),
+            (_, '*') => (AsteriskPlace.End, source[..^2]),
+            _ => (AsteriskPlace.None, source)
+        };
+
+    /// <summary>
+    ///     Convert string with equality symbol to tuple:
+    ///     'xxx' => true, 'xxx'
+    ///     '!=xxx' => false, 'xxx'
+    ///     '!asd' => false, 'asd'
+    ///     '=asd' => true, 'asd'
+    /// </summary>
+    private static (bool flag, string value) ExtractEqualityFlag(string source)
+        => (source[0], source[1]) switch
+        {
+            ('=', _) => (true, source.Substring(1)),
+            ('!', '=') => (false, source.Substring(2)),
+            ('!', _) => (false, source.Substring(1)),
+            _ => (true, source)
+        };
+
+    private enum AsteriskPlace
+    {
+        None,
+        Start,
+        End,
+        Both
     }
 }

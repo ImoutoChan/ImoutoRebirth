@@ -1,8 +1,7 @@
-﻿namespace ImoutoRebirth.Lilin.Core.Models
+﻿namespace ImoutoRebirth.Lilin.Core.Models;
+
+public enum TagSearchScope
 {
-    public enum TagSearchScope
-    {
-        Included,
-        Excluded
-    }
+    Included,
+    Excluded
 }

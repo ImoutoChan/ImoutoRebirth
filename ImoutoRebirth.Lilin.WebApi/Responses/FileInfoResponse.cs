@@ -1,17 +1,16 @@
-﻿namespace ImoutoRebirth.Lilin.WebApi.Responses
+﻿namespace ImoutoRebirth.Lilin.WebApi.Responses;
+
+public class FileInfoResponse
 {
-    public class FileInfoResponse
+    public IReadOnlyCollection<FileTagResponse> Tags { get; }
+
+    public IReadOnlyCollection<FileNoteResponse> Notes { get; }
+
+    public FileInfoResponse(
+        IReadOnlyCollection<FileTagResponse> tags, 
+        IReadOnlyCollection<FileNoteResponse> notes)
     {
-        public IReadOnlyCollection<FileTagResponse> Tags { get; }
-
-        public IReadOnlyCollection<FileNoteResponse> Notes { get; }
-
-        public FileInfoResponse(
-            IReadOnlyCollection<FileTagResponse> tags, 
-            IReadOnlyCollection<FileNoteResponse> notes)
-        {
-            Tags = tags;
-            Notes = notes;
-        }
+        Tags = tags;
+        Notes = notes;
     }
 }

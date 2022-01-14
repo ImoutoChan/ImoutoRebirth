@@ -1,13 +1,12 @@
-﻿namespace ImoutoRebirth.Lilin.MessageContracts
+﻿namespace ImoutoRebirth.Lilin.MessageContracts;
+
+public interface IFileTag
 {
-    public interface IFileTag
-    {
-        string Type { get; }
+    string Type { get; }
 
-        string Name { get; }
+    string Name { get; }
 
-        string? Value { get; }
+    string? Value { get; }
 
-        string[]? Synonyms { get; }
-    }
+    string[]? Synonyms { get; }
 }

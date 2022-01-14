@@ -9,118 +9,117 @@ using ImoutoRebirth.Lilin.Services.Extensions;
 using MediatR;
 using MetadataSource = ImoutoRebirth.Lilin.Core.Models.MetadataSource;
 
-namespace ImoutoRebirth.Lilin.Services.CQRS.Commands
+namespace ImoutoRebirth.Lilin.Services.CQRS.Commands;
+
+public class SaveMetadataCommandHandler : ICommandHandler<SaveMetadataCommand>
 {
-    public class SaveMetadataCommandHandler : ICommandHandler<SaveMetadataCommand>
+    private readonly ITagTypeRepository _tagTypeRepository;
+    private readonly ITagRepository _tagRepository;
+    private readonly IEventStorage _eventStorage;
+    private readonly IFileInfoService _fileInfoService;
+
+    public SaveMetadataCommandHandler(
+        ITagTypeRepository tagTypeRepository,
+        ITagRepository tagRepository,
+        IEventStorage eventStorage,
+        IFileInfoService fileInfoService)
     {
-        private readonly ITagTypeRepository _tagTypeRepository;
-        private readonly ITagRepository _tagRepository;
-        private readonly IEventStorage _eventStorage;
-        private readonly IFileInfoService _fileInfoService;
+        _tagTypeRepository = tagTypeRepository;
+        _tagRepository = tagRepository;
+        _eventStorage = eventStorage;
+        _fileInfoService = fileInfoService;
+    }
 
-        public SaveMetadataCommandHandler(
-            ITagTypeRepository tagTypeRepository,
-            ITagRepository tagRepository,
-            IEventStorage eventStorage,
-            IFileInfoService fileInfoService)
-        {
-            _tagTypeRepository = tagTypeRepository;
-            _tagRepository = tagRepository;
-            _eventStorage = eventStorage;
-            _fileInfoService = fileInfoService;
-        }
+    public async Task<Unit> Handle(SaveMetadataCommand request, CancellationToken cancellationToken)
+    {
+        var source = request.MqCommand.MetadataSource.Convert();
+        var fileId = request.MqCommand.FileId;
 
-        public async Task<Unit> Handle(SaveMetadataCommand request, CancellationToken cancellationToken)
-        {
-            var source = request.MqCommand.MetadataSource.Convert();
-            var fileId = request.MqCommand.FileId;
+        var file = await _fileInfoService.LoadFileAggregate(fileId);
 
-            var file = await _fileInfoService.LoadFileAggregate(fileId);
-
-            var newTags = await LoadTags(fileId, source, request.MqCommand.FileTags).ToReadOnlyListAsync();
-            var newNotes = LoadNotes(fileId, source, request.MqCommand.FileNotes).ToList();
+        var newTags = await LoadTags(fileId, source, request.MqCommand.FileTags).ToReadOnlyListAsync();
+        var newNotes = LoadNotes(fileId, source, request.MqCommand.FileNotes).ToList();
                 
-            var metadataUpdateData = new MetadataUpdateData(fileId, newTags, newNotes, source);
+        var metadataUpdateData = new MetadataUpdateData(fileId, newTags, newNotes, source);
 
-            var domainResult = file.UpdateMetadata(metadataUpdateData);
-            _eventStorage.AddRange(domainResult.EventsCollection);
+        var domainResult = file.UpdateMetadata(metadataUpdateData);
+        _eventStorage.AddRange(domainResult.EventsCollection);
             
-            await _fileInfoService.PersistFileAggregate(file);
+        await _fileInfoService.PersistFileAggregate(file);
 
-            return Unit.Value;
-        }
+        return Unit.Value;
+    }
 
-        private static IEnumerable<FileNote> LoadNotes(
-            Guid fileId, 
-            MetadataSource source, 
-            IEnumerable<IFileNote> mqCommandFileNotes)
+    private static IEnumerable<FileNote> LoadNotes(
+        Guid fileId, 
+        MetadataSource source, 
+        IEnumerable<IFileNote> mqCommandFileNotes)
+    {
+        var commandFileNotes = mqCommandFileNotes as IFileNote[] 
+                               ?? mqCommandFileNotes?.ToArray() 
+                               ?? Array.Empty<IFileNote>();
+        if (!commandFileNotes.Any())
+            yield break;
+
+        foreach (var fileNote in commandFileNotes)
         {
-            var commandFileNotes = mqCommandFileNotes as IFileNote[] 
-                                   ?? mqCommandFileNotes?.ToArray() 
-                                   ?? Array.Empty<IFileNote>();
-            if (!commandFileNotes.Any())
-                yield break;
+            var note = Note.CreateNew(
+                fileNote.Label, 
+                fileNote.PositionFromLeft, 
+                fileNote.PositionFromTop,
+                fileNote.Width, 
+                fileNote.Height);
 
-            foreach (var fileNote in commandFileNotes)
-            {
-                var note = Note.CreateNew(
-                    fileNote.Label, 
-                    fileNote.PositionFromLeft, 
-                    fileNote.PositionFromTop,
-                    fileNote.Width, 
-                    fileNote.Height);
-
-                yield return new FileNote(fileId, note, source, fileNote.SourceId);
-            }
+            yield return new FileNote(fileId, note, source, fileNote.SourceId);
         }
+    }
 
-        private async IAsyncEnumerable<FileTag> LoadTags(
-            Guid fileId, 
-            MetadataSource source, 
-            IEnumerable<IFileTag> mqCommandFileTags)
+    private async IAsyncEnumerable<FileTag> LoadTags(
+        Guid fileId, 
+        MetadataSource source, 
+        IEnumerable<IFileTag> mqCommandFileTags)
+    {
+        var commandFileTags = mqCommandFileTags as IFileTag[] 
+                              ?? mqCommandFileTags?.ToArray() 
+                              ?? Array.Empty<IFileTag>();
+        if (!commandFileTags.Any())
+            yield break;
+
+        foreach (var fileTag in commandFileTags)
         {
-            var commandFileTags = mqCommandFileTags as IFileTag[] 
-                                  ?? mqCommandFileTags?.ToArray() 
-                                  ?? Array.Empty<IFileTag>();
-            if (!commandFileTags.Any())
-                yield break;
+            var type = await _tagTypeRepository.Get(fileTag.Type) 
+                       ?? await _tagTypeRepository.Create(fileTag.Type);
 
-            foreach (var fileTag in commandFileTags)
-            {
-                var type = await _tagTypeRepository.Get(fileTag.Type) 
-                           ?? await _tagTypeRepository.Create(fileTag.Type);
+            var tag = await GetAndUpdateTag(fileTag, type) 
+                      ?? await CreateTag(fileTag, type);
 
-                var tag = await GetAndUpdateTag(fileTag, type) 
-                          ?? await CreateTag(fileTag, type);
-
-                yield return new FileTag(fileId, tag, fileTag.Value, source);
-            }
+            yield return new FileTag(fileId, tag, fileTag.Value, source);
         }
+    }
 
-        private async Task<Tag?> GetAndUpdateTag(IFileTag fileTag, TagType type)
-        {
-            var tag = await _tagRepository.Get(fileTag.Name, type.Id);
+    private async Task<Tag?> GetAndUpdateTag(IFileTag fileTag, TagType type)
+    {
+        var tag = await _tagRepository.Get(fileTag.Name, type.Id);
 
-            if (tag == null)
-                return null;
+        if (tag == null)
+            return null;
 
-            tag.UpdateHasValue(!string.IsNullOrWhiteSpace(fileTag.Value));
-            tag.UpdateSynonyms(fileTag.Synonyms ?? Array.Empty<string>());
+        tag.UpdateHasValue(!string.IsNullOrWhiteSpace(fileTag.Value));
+        tag.UpdateSynonyms(fileTag.Synonyms ?? Array.Empty<string>());
 
-            await _tagRepository.Update(tag);
+        await _tagRepository.Update(tag);
 
-            return tag;
-        }
+        return tag;
+    }
 
-        private async Task<Tag> CreateTag(IFileTag fileTag, TagType type)
-        {
-            var hasValue = !string.IsNullOrWhiteSpace(fileTag.Value);
+    private async Task<Tag> CreateTag(IFileTag fileTag, TagType type)
+    {
+        var hasValue = !string.IsNullOrWhiteSpace(fileTag.Value);
 
-            var newTag = Tag.CreateNew(type, fileTag.Name, hasValue, fileTag.Synonyms);
-            await _tagRepository.Create(newTag);
+        var newTag = Tag.CreateNew(type, fileTag.Name, hasValue, fileTag.Synonyms);
+        await _tagRepository.Create(newTag);
 
-            return await _tagRepository.Get(fileTag.Name, type.Id)
-                   ?? throw new ApplicationException("Tag was not created");
-        }
+        return await _tagRepository.Get(fileTag.Name, type.Id)
+               ?? throw new ApplicationException("Tag was not created");
     }
 }

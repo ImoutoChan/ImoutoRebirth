@@ -1,17 +1,16 @@
 ﻿using ImoutoRebirth.Common;
 using ImoutoRebirth.Lilin.Core.Models;
 
-namespace ImoutoRebirth.Lilin.Services.CQRS.Queries
+namespace ImoutoRebirth.Lilin.Services.CQRS.Queries;
+
+public class FilesSearchQueryBase
 {
-    public class FilesSearchQueryBase
+    public IReadOnlyCollection<TagSearchEntry> TagSearchEntries { get; }
+
+    public FilesSearchQueryBase(IReadOnlyCollection<TagSearchEntry> tagSearchEntries)
     {
-        public IReadOnlyCollection<TagSearchEntry> TagSearchEntries { get; }
+        ArgumentValidator.NotNull(() => tagSearchEntries);
 
-        public FilesSearchQueryBase(IReadOnlyCollection<TagSearchEntry> tagSearchEntries)
-        {
-            ArgumentValidator.NotNull(() => tagSearchEntries);
-
-            TagSearchEntries = tagSearchEntries;
-        }
+        TagSearchEntries = tagSearchEntries;
     }
 }

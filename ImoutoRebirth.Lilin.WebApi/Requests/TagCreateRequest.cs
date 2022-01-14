@@ -1,16 +1,15 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace ImoutoRebirth.Lilin.WebApi.Requests
+namespace ImoutoRebirth.Lilin.WebApi.Requests;
+
+public class TagCreateRequest
 {
-    public class TagCreateRequest
-    {
-        public Guid TypeId { get; set; }
+    public Guid TypeId { get; set; }
 
-        [Required]
-        public string Name { get; set; } = default!;
+    [Required]
+    public string Name { get; set; } = default!;
 
-        public bool HasValue { get; set; }
+    public bool HasValue { get; set; }
 
-        public IReadOnlyCollection<string>? Synonyms { get; set; }
-    }
+    public IReadOnlyCollection<string>? Synonyms { get; set; }
 }

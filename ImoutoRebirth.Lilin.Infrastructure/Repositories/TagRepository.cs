@@ -5,113 +5,113 @@ using ImoutoRebirth.Lilin.DataAccess.Entities;
 using ImoutoRebirth.Lilin.Infrastructure.Mappers;
 using Microsoft.EntityFrameworkCore;
 
-namespace ImoutoRebirth.Lilin.Infrastructure.Repositories
+namespace ImoutoRebirth.Lilin.Infrastructure.Repositories;
+
+public class TagRepository : ITagRepository
 {
-    public class TagRepository : ITagRepository
+    private readonly LilinDbContext _lilinDbContext;
+
+    public TagRepository(LilinDbContext lilinDbContext)
     {
-        private readonly LilinDbContext _lilinDbContext;
+        _lilinDbContext = lilinDbContext;
+    }
 
-        public TagRepository(LilinDbContext lilinDbContext)
+    public async Task<Tag?> Get(string name, Guid typeId)
+    {
+        var result = await _lilinDbContext.Tags
+            .Include(x => x.Type)
+            .SingleOrDefaultAsync(x => x.Name == name && x.TypeId == typeId);
+
+        return result?.ToModel();
+    }
+
+    public async Task<Tag?> Get(Guid id)
+    {
+        var result = await _lilinDbContext.Tags
+            .Include(x => x.Type)
+            .SingleOrDefaultAsync(x => x.Id == id);
+
+        return result?.ToModel();
+    }
+
+    public async Task<IReadOnlyCollection<Tag>> Search(string? requestSearchPattern, int requestLimit)
+    {
+        var tagsWithTypes = _lilinDbContext.Tags
+            .OrderByDescending(x => x.Count)
+            .Include(x => x.Type);
+
+        List<TagEntity> finalResult;
+        if (string.IsNullOrEmpty(requestSearchPattern))
         {
-            _lilinDbContext = lilinDbContext;
+            finalResult = await tagsWithTypes.Take(requestLimit).ToListAsync();
         }
-
-        public async Task<Tag?> Get(string name, Guid typeId)
+        else
         {
-            var result = await _lilinDbContext.Tags
-                .Include(x => x.Type)
-                .SingleOrDefaultAsync(x => x.Name == name && x.TypeId == typeId);
+            requestSearchPattern = requestSearchPattern.ToLower();
 
-            return result?.ToModel();
-        }
+            finalResult = await tagsWithTypes
+                .Where(x => x.Name.ToLower().Equals(requestSearchPattern))
+                .Take(requestLimit)
+                .ToListAsync();
 
-        public async Task<Tag?> Get(Guid id)
-        {
-            var result = await _lilinDbContext.Tags
-                .Include(x => x.Type)
-                .SingleOrDefaultAsync(x => x.Id == id);
-
-            return result?.ToModel();
-        }
-
-        public async Task<IReadOnlyCollection<Tag>> Search(string? requestSearchPattern, int requestLimit)
-        {
-            var tagsWithTypes = _lilinDbContext.Tags
-                .OrderByDescending(x => x.Count)
-                .Include(x => x.Type);
-
-            List<TagEntity> finalResult;
-            if (string.IsNullOrEmpty(requestSearchPattern))
+            if (finalResult.Count < requestLimit)
             {
-                finalResult = await tagsWithTypes.Take(requestLimit).ToListAsync();
-            }
-            else
-            {
-                requestSearchPattern = requestSearchPattern.ToLower();
-
-                finalResult = await tagsWithTypes
-                    .Where(x => x.Name.ToLower().Equals(requestSearchPattern))
+                var startsWith = await tagsWithTypes
+                    .Where(x => !x.Name.ToLower().Equals(requestSearchPattern))
+                    .Where(x => x.Name.ToLower().StartsWith(requestSearchPattern))
                     .Take(requestLimit)
                     .ToListAsync();
 
-                if (finalResult.Count < requestLimit)
-                {
-                    var startsWith = await tagsWithTypes
-                        .Where(x => !x.Name.ToLower().Equals(requestSearchPattern))
-                        .Where(x => x.Name.ToLower().StartsWith(requestSearchPattern))
-                        .Take(requestLimit)
-                        .ToListAsync();
-
-                    finalResult.AddRange(startsWith);
-                }
-
-                if (finalResult.Count < requestLimit)
-                {
-                    requestLimit -= finalResult.Count;
-
-                    var contains = await tagsWithTypes
-                        .Where(x => !x.Name.ToLower().Equals(requestSearchPattern))
-                        .Where(x => !x.Name.ToLower().StartsWith(requestSearchPattern))
-                        .Where(x => x.Name.ToLower().Contains(requestSearchPattern))
-                        .Take(requestLimit)
-                        .ToListAsync();
-
-                    finalResult.AddRange(contains);
-                }
+                finalResult.AddRange(startsWith);
             }
 
-            return finalResult.Select(x => x.ToModel()).ToArray();
-        }
-
-        public async Task Update(Tag tag)
-        {
-            var loadedTag = await _lilinDbContext.Tags.SingleAsync(x => x.Id == tag.Id);
-
-            loadedTag.HasValue = tag.HasValue;
-            loadedTag.SynonymsArray = tag.Synonyms;
-
-            await _lilinDbContext.SaveChangesAsync();
-        }
-
-        public async Task Create(Tag tag)
-        {
-            var newEntity = new TagEntity
+            if (finalResult.Count < requestLimit)
             {
-                Id = Guid.NewGuid(),
-                Name = tag.Name,
-                HasValue = tag.HasValue,
-                SynonymsArray = tag.Synonyms,
-                TypeId = tag.Type.Id
-            };
+                requestLimit -= finalResult.Count;
 
-            await _lilinDbContext.Tags.AddAsync(newEntity);
+                var contains = await tagsWithTypes
+                    .Where(x => !x.Name.ToLower().Equals(requestSearchPattern))
+                    .Where(x => !x.Name.ToLower().StartsWith(requestSearchPattern))
+                    .Where(x => x.Name.ToLower().Contains(requestSearchPattern))
+                    .Take(requestLimit)
+                    .ToListAsync();
 
-            await _lilinDbContext.SaveChangesAsync();
+                finalResult.AddRange(contains);
+            }
         }
 
-        public async Task UpdateTagsCounters()
+        return finalResult.Select(x => x.ToModel()).ToArray();
+    }
+
+    public async Task Update(Tag tag)
+    {
+        var loadedTag = await _lilinDbContext.Tags.SingleAsync(x => x.Id == tag.Id);
+
+        loadedTag.HasValue = tag.HasValue;
+        loadedTag.SynonymsArray = tag.Synonyms;
+
+        await _lilinDbContext.SaveChangesAsync();
+    }
+
+    public async Task Create(Tag tag)
+    {
+        var newEntity = new TagEntity
         {
-            var script = $@"
+            Id = Guid.NewGuid(),
+            Name = tag.Name,
+            HasValue = tag.HasValue,
+            SynonymsArray = tag.Synonyms,
+            TypeId = tag.Type.Id
+        };
+
+        await _lilinDbContext.Tags.AddAsync(newEntity);
+
+        await _lilinDbContext.SaveChangesAsync();
+    }
+
+    public async Task UpdateTagsCounters()
+    {
+        var script = $@"
                         UPDATE ""{nameof(LilinDbContext.Tags)}"" tags
                         SET ""{nameof(TagEntity.Count)}"" = usages.count
                         FROM
@@ -125,7 +125,6 @@ namespace ImoutoRebirth.Lilin.Infrastructure.Repositories
                         ) usages
                         WHERE tags.""{nameof(TagEntity.Id)}"" = usages.id";
 
-            await _lilinDbContext.Database.ExecuteSqlRawAsync(script);
-        }
+        await _lilinDbContext.Database.ExecuteSqlRawAsync(script);
     }
 }

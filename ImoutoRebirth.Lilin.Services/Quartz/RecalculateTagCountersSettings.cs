@@ -1,7 +1,6 @@
-﻿namespace ImoutoRebirth.Lilin.Services.Quartz
+﻿namespace ImoutoRebirth.Lilin.Services.Quartz;
+
+public class RecalculateTagCountersSettings
 {
-    public class RecalculateTagCountersSettings
-    {
-        public int RepeatEveryMinutes { get; set; } = 5;
-    }
+    public int RepeatEveryMinutes { get; set; } = 5;
 }

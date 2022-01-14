@@ -1,34 +1,33 @@
 ﻿using ImoutoRebirth.Common.Domain;
 
-namespace ImoutoRebirth.Lilin.Core
+namespace ImoutoRebirth.Lilin.Core;
+
+public class DomainResult
 {
-    public class DomainResult
+    protected readonly List<IDomainEvent> Events;
+
+    public IReadOnlyCollection<IDomainEvent> EventsCollection => Events;
+
+    public DomainResult()
     {
-        protected readonly List<IDomainEvent> Events;
-
-        public IReadOnlyCollection<IDomainEvent> EventsCollection => Events;
-
-        public DomainResult()
-        {
-            Events = new List<IDomainEvent>();
-        }
-
-        public void Add(IDomainEvent domainEvent) => Events.Add(domainEvent);
+        Events = new List<IDomainEvent>();
     }
 
-    public class DomainResult<T> : DomainResult
+    public void Add(IDomainEvent domainEvent) => Events.Add(domainEvent);
+}
+
+public class DomainResult<T> : DomainResult
+{
+    public T Result { get; }
+
+    public DomainResult(DomainResult domainResult, T result)
     {
-        public T Result { get; }
+        Result = result;
+        Events.AddRange(domainResult.EventsCollection);
+    }
 
-        public DomainResult(DomainResult domainResult, T result)
-        {
-            Result = result;
-            Events.AddRange(domainResult.EventsCollection);
-        }
-
-        public DomainResult(T result)
-        {
-            Result = result;
-        }
+    public DomainResult(T result)
+    {
+        Result = result;
     }
 }

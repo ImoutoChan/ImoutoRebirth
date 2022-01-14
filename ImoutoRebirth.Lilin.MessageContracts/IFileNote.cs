@@ -1,17 +1,16 @@
-﻿namespace ImoutoRebirth.Lilin.MessageContracts
+﻿namespace ImoutoRebirth.Lilin.MessageContracts;
+
+public interface IFileNote
 {
-    public interface IFileNote
-    {
-        int? SourceId { get; }
+    int? SourceId { get; }
 
-        string Label { get; }
+    string Label { get; }
 
-        int PositionFromLeft { get; }
+    int PositionFromLeft { get; }
 
-        int PositionFromTop { get; }
+    int PositionFromTop { get; }
 
-        int Width { get; }
+    int Width { get; }
 
-        int Height { get; }
-    }
+    int Height { get; }
 }

@@ -2,25 +2,24 @@
 using ImoutoRebirth.Lilin.Services.ApplicationServices;
 using MediatR;
 
-namespace ImoutoRebirth.Lilin.Services.CQRS.Commands
+namespace ImoutoRebirth.Lilin.Services.CQRS.Commands;
+
+public class UnbindTagCommandHandler : ICommandHandler<UnbindTagCommand>
 {
-    public class UnbindTagCommandHandler : ICommandHandler<UnbindTagCommand>
+    private readonly IFileInfoService _fileInfoService;
+
+    public UnbindTagCommandHandler(IFileInfoService fileInfoService)
     {
-        private readonly IFileInfoService _fileInfoService;
+        _fileInfoService = fileInfoService;
+    }
 
-        public UnbindTagCommandHandler(IFileInfoService fileInfoService)
-        {
-            _fileInfoService = fileInfoService;
-        }
+    public async Task<Unit> Handle(UnbindTagCommand request, CancellationToken cancellationToken)
+    {
+        var fileInfo = await _fileInfoService.LoadFileAggregate(request.FileTag.FileId);
 
-        public async Task<Unit> Handle(UnbindTagCommand request, CancellationToken cancellationToken)
-        {
-            var fileInfo = await _fileInfoService.LoadFileAggregate(request.FileTag.FileId);
+        fileInfo.RemoveFileTag(request.FileTag.TagId, request.FileTag.Source, request.FileTag.Value);
 
-            fileInfo.RemoveFileTag(request.FileTag.TagId, request.FileTag.Source, request.FileTag.Value);
-
-            await _fileInfoService.PersistFileAggregate(fileInfo);
-            return Unit.Value;
-        }
+        await _fileInfoService.PersistFileAggregate(fileInfo);
+        return Unit.Value;
     }
 }

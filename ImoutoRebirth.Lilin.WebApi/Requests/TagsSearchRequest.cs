@@ -1,9 +1,8 @@
-﻿namespace ImoutoRebirth.Lilin.WebApi.Requests
-{
-    public class TagsSearchRequest
-    {
-        public string? SearchPattern { get; set; }
+﻿namespace ImoutoRebirth.Lilin.WebApi.Requests;
 
-        public int? Count { get; set; }
-    }
+public class TagsSearchRequest
+{
+    public string? SearchPattern { get; set; }
+
+    public int? Count { get; set; }
 }

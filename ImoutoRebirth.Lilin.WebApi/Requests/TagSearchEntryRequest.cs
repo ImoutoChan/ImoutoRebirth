@@ -1,13 +1,12 @@
 ﻿using ImoutoRebirth.Lilin.Core.Models;
 
-namespace ImoutoRebirth.Lilin.WebApi.Requests
+namespace ImoutoRebirth.Lilin.WebApi.Requests;
+
+public class TagSearchEntryRequest
 {
-    public class TagSearchEntryRequest
-    {
-        public Guid TagId { get; set; }
+    public Guid TagId { get; set; }
 
-        public string? Value { get; set; }
+    public string? Value { get; set; }
 
-        public TagSearchScope TagSearchScope { get; set; }
-    }
+    public TagSearchScope TagSearchScope { get; set; }
 }

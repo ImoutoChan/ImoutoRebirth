@@ -11,37 +11,36 @@ using ImoutoRebirth.Lilin.WebApi;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace ImoutoRebirth.Lilin.Host
+namespace ImoutoRebirth.Lilin.Host;
+
+public class Startup : BaseStartup
 {
-    public class Startup : BaseStartup
+    private LilinSettings LilinSettings { get; }
+
+    public Startup(IConfiguration configuration) 
+        : base(configuration)
     {
-        private LilinSettings LilinSettings { get; }
+        LilinSettings = configuration.Get<LilinSettings>();
+    }
 
-        public Startup(IConfiguration configuration) 
-            : base(configuration)
-        {
-            LilinSettings = configuration.Get<LilinSettings>();
-        }
+    public override void ConfigureServices(IServiceCollection services)
+    {
+        services
+            .AddLilinInfrastructure()
+            .AddLilinServices(Configuration)
+            .AddLilinDataAccess(Configuration.GetConnectionString("LilinDatabase"))
+            .AddLilinCore();
 
-        public override void ConfigureServices(IServiceCollection services)
-        {
-            services
-                .AddLilinInfrastructure()
-                .AddLilinServices(Configuration)
-                .AddLilinDataAccess(Configuration.GetConnectionString("LilinDatabase"))
-                .AddLilinCore();
+        services
+            .AddAutoMapper(typeof(DtoAutoMapperProfile))
+            .AddTrueMassTransit(
+                LilinSettings.RabbitSettings,
+                ReceiverApp.Name,
+                с => с.AddLilinServicesForRabbit());
+    }
 
-            services
-                .AddAutoMapper(typeof(DtoAutoMapperProfile))
-                .AddTrueMassTransit(
-                    LilinSettings.RabbitSettings,
-                    ReceiverApp.Name,
-                    с => с.AddLilinServicesForRabbit());
-        }
-
-        public void Configure(IMapper mapper)
-        {
-            mapper.ConfigurationProvider.AssertConfigurationIsValid();
-        }
+    public void Configure(IMapper mapper)
+    {
+        mapper.ConfigurationProvider.AssertConfigurationIsValid();
     }
 }

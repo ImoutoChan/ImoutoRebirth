@@ -1,8 +1,7 @@
-﻿namespace ImoutoRebirth.Lilin.Core.Models.FileInfoAggregate
+﻿namespace ImoutoRebirth.Lilin.Core.Models.FileInfoAggregate;
+
+public enum SameTagHandleStrategy
 {
-    public enum SameTagHandleStrategy
-    {
-        ReplaceExistingValue,
-        AddNewFileTag
-    }
+    ReplaceExistingValue,
+    AddNewFileTag
 }

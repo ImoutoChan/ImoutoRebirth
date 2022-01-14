@@ -1,15 +1,14 @@
-﻿namespace ImoutoRebirth.Lilin.Services
+﻿namespace ImoutoRebirth.Lilin.Services;
+
+public static class AsyncEnumerableExtensions
 {
-    public static class AsyncEnumerableExtensions
+    public static async Task<IReadOnlyList<T>> ToReadOnlyListAsync<T>(this IAsyncEnumerable<T> asyncEnumerable)
     {
-        public static async Task<IReadOnlyList<T>> ToReadOnlyListAsync<T>(this IAsyncEnumerable<T> asyncEnumerable)
+        var result = new List<T>();
+        await foreach (var item in asyncEnumerable)
         {
-            var result = new List<T>();
-            await foreach (var item in asyncEnumerable)
-            {
-                result.Add(item);
-            }
-            return result;
+            result.Add(item);
         }
+        return result;
     }
 }
