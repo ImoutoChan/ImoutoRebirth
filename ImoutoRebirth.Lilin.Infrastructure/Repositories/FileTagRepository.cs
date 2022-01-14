@@ -33,9 +33,6 @@ namespace ImoutoRebirth.Lilin.Infrastructure.Repositories
         {
             var files = GetSearchFilesQueryable(tagSearchEntries);
 
-            // workaround for https://github.com/dotnet/efcore/issues/8523
-            files = files.OrderBy(x => x);
-
             files = files.Skip(offset);
 
             if (limit.HasValue)
