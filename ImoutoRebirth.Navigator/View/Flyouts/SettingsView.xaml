@@ -94,7 +94,7 @@
 
                 <controls:ToggleSwitch Margin="0,25,0,0"
                                        Header="Show preview on select"
-                                       IsChecked="{Binding ShowPreviewOnSelect}" />
+                                       IsOn="{Binding ShowPreviewOnSelect}" />
             </StackPanel>
         </ScrollViewer>
     </Grid>

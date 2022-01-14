@@ -96,20 +96,20 @@
                         <TextBox Text="{Binding Path, ValidatesOnDataErrors=True, UpdateSourceTrigger=PropertyChanged}" />
 
 
-                        <Controls:ToggleSwitch IsChecked="{Binding CheckNameHash}"
+                        <Controls:ToggleSwitch IsOn="{Binding CheckNameHash}"
                                                Content="Check hash in name"
                                                Margin="0,10,0,0" />
 
-                        <Controls:ToggleSwitch IsChecked="{Binding CheckFormat}"
+                        <Controls:ToggleSwitch IsOn="{Binding CheckFormat}"
                                                Content="Check format before save"
                                                Margin="0,10,0,0"
                                                Name="CheckFormatSwitch" />
 
-                        <Controls:ToggleSwitch IsChecked="{Binding TagsFromSubfolder}"
+                        <Controls:ToggleSwitch IsOn="{Binding TagsFromSubfolder}"
                                                Content="Add subfolders names as tags"
                                                Margin="0,10,0,0" />
 
-                        <Controls:ToggleSwitch IsChecked="{Binding AddTagFromFileName}"
+                        <Controls:ToggleSwitch IsOn="{Binding AddTagFromFileName}"
                                                Content="Add file name as tag"
                                                Margin="0,10,0,0" />
 
@@ -153,11 +153,11 @@
                         <TextBox Text="{Binding Path, ValidatesOnDataErrors=True, UpdateSourceTrigger=PropertyChanged}" />
 
 
-                        <Controls:ToggleSwitch IsChecked="{Binding NeedDevideImagesByHash}"
+                        <Controls:ToggleSwitch IsOn="{Binding NeedDevideImagesByHash}"
                                                Content="Create subfolders"
                                                Margin="0,10,0,0" />
 
-                        <Controls:ToggleSwitch IsChecked="{Binding NeedRename}"
+                        <Controls:ToggleSwitch IsOn="{Binding NeedRename}"
                                                Content="Change image name to hash"
                                                Margin="0,10,0,0" />
 

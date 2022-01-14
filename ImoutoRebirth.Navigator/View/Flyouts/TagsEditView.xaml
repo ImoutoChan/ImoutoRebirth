@@ -39,7 +39,7 @@
         <Border Grid.Column="0"
                 Grid.Row="1"
                 BorderThickness="1"
-                BorderBrush="{StaticResource MahApps.Brushes.White}"
+                BorderBrush="{DynamicResource MahApps.Brushes.ThemeForeground}"
                 Visibility="{Binding RecentlyTags.Count, Converter={StaticResource ConditionVisibilityConverter}, ConverterParameter=!0}">
             <ScrollViewer HorizontalScrollBarVisibility="Disabled"
                           VerticalScrollBarVisibility="Auto">
@@ -119,7 +119,7 @@
         <Border Grid.Column="4"
                 Grid.Row="1"
                 BorderThickness="1"
-                BorderBrush="{StaticResource MahApps.Brushes.White}">
+                BorderBrush="{DynamicResource MahApps.Brushes.ThemeForeground}">
             <ScrollViewer HorizontalScrollBarVisibility="Disabled"
                           VerticalScrollBarVisibility="Auto">
                 <ItemsControl ItemsSource="{Binding FoundTags}">
@@ -194,7 +194,7 @@
         <Border Grid.Column="6"
                 Grid.Row="1"
                 BorderThickness="1"
-                BorderBrush="{StaticResource MahApps.Brushes.White}">
+                BorderBrush="{DynamicResource MahApps.Brushes.ThemeForeground}">
             <ScrollViewer HorizontalScrollBarVisibility="Disabled"
                           VerticalScrollBarVisibility="Auto">
                 <ItemsControl ItemsSource="{Binding SelectedTags}">
@@ -243,12 +243,16 @@
                                                FontWeight="Bold"
                                                VerticalAlignment="Center">
                                         <TextBlock.ToolTip>
-                                            <MultiBinding StringFormat="{}{0} : {1}">
-                                                <Binding Path="Tag.Title" Mode="OneWay" />
-                                                <Binding Path="Value"
-                                                         FallbackValue="null" 
-                                                         Mode="OneWay" />
-                                            </MultiBinding>
+                                            <TextBlock>
+                                                <TextBlock.Text>
+                                                    <MultiBinding StringFormat="{}{0} : {1}">
+                                                        <Binding Path="Tag.Title" Mode="OneWay" />
+                                                        <Binding Path="Value"
+                                                                 FallbackValue="null"
+                                                                 Mode="OneWay" />
+                                                    </MultiBinding>
+                                                </TextBlock.Text>
+                                            </TextBlock>
                                         </TextBlock.ToolTip>
                                     </TextBlock>
                                 </Label.Content>

@@ -197,7 +197,7 @@
                                            Margin="5,5,5,5"
                                            Visibility="{Binding Path=Type, Converter={StaticResource ConditionVisibilityConverter}, ConverterParameter=Video}">
                                         <Label.Effect>
-                                            <DropShadowEffect Color="{Binding Source={StaticResource MahApps.Brushes.White}, Path=Color, Mode=OneTime}"
+                                            <DropShadowEffect Color="{Binding Source={StaticResource MahApps.Brushes.ThemeBackground}, Path=Color, Mode=OneTime}"
                                                               BlurRadius="5"
                                                               Opacity="0.9"
                                                               Direction="315"
@@ -219,7 +219,7 @@
                                            Margin="5,5,5,5"
                                            Visibility="{Binding Path=Type, Converter={StaticResource ConditionVisibilityConverter}, ConverterParameter=Gif}">
                                         <Label.Effect>
-                                            <DropShadowEffect Color="{Binding Source={StaticResource MahApps.Brushes.White}, Path=Color, Mode=OneTime}"
+                                            <DropShadowEffect Color="{Binding Source={StaticResource MahApps.Brushes.ThemeBackground}, Path=Color, Mode=OneTime}"
                                                               BlurRadius="5"
                                                               Opacity="0.9"
                                                               Direction="315"
@@ -241,7 +241,7 @@
                                            Margin="5,5,5,5"
                                            Visibility="{Binding Path=Type, Converter={StaticResource ConditionVisibilityConverter}, ConverterParameter=Ugoira}">
                                         <Label.Effect>
-                                            <DropShadowEffect Color="{Binding Source={StaticResource MahApps.Brushes.White}, Path=Color, Mode=OneTime}"
+                                            <DropShadowEffect Color="{Binding Source={StaticResource MahApps.Brushes.ThemeBackground}, Path=Color, Mode=OneTime}"
                                                               BlurRadius="5"
                                                               Opacity="0.9"
                                                               Direction="315"
@@ -263,7 +263,7 @@
                                            Margin="5,5,5,5"
                                            Visibility="{Binding Path=Type, Converter={StaticResource ConditionVisibilityConverter}, ConverterParameter=Ugoira}">
                                         <Label.Effect>
-                                            <DropShadowEffect Color="{Binding Source={StaticResource MahApps.Brushes.White}, Path=Color, Mode=OneTime}"
+                                            <DropShadowEffect Color="{Binding Source={StaticResource MahApps.Brushes.ThemeBackground}, Path=Color, Mode=OneTime}"
                                                               BlurRadius="5"
                                                               Opacity="0.9"
                                                               Direction="315"
@@ -288,7 +288,7 @@
                                                Margin="5,5,5,5"
                                                Visibility="{Binding Path=Rating, Converter={StaticResource ConditionVisibilityConverter}, ConverterParameter=4}">
                                             <Label.Effect>
-                                                <DropShadowEffect Color="{Binding Source={StaticResource MahApps.Brushes.White}, Path=Color, Mode=OneTime}"
+                                                <DropShadowEffect Color="{Binding Source={StaticResource MahApps.Brushes.ThemeBackground}, Path=Color, Mode=OneTime}"
                                                                   BlurRadius="5"
                                                                   Opacity="0.9"
                                                                   Direction="315"
@@ -311,7 +311,7 @@
                                                Margin="5,5,5,5"
                                                Visibility="{Binding Path=Rating, Converter={StaticResource ConditionVisibilityConverter}, ConverterParameter=5}">
                                             <Label.Effect>
-                                                <DropShadowEffect Color="{Binding Source={StaticResource MahApps.Brushes.White}, Path=Color, Mode=OneTime}"
+                                                <DropShadowEffect Color="{Binding Source={StaticResource MahApps.Brushes.ThemeBackground}, Path=Color, Mode=OneTime}"
                                                                   BlurRadius="5"
                                                                   Opacity="0.9"
                                                                   Direction="315"
@@ -334,7 +334,7 @@
                                                Margin="5,5,5,5"
                                                Visibility="{Binding Path=IsFavorite, Converter={StaticResource ConditionVisibilityConverter}, ConverterParameter=true}">
                                             <Label.Effect>
-                                                <DropShadowEffect Color="{Binding Source={StaticResource MahApps.Brushes.White}, Path=Color, Mode=OneTime}"
+                                                <DropShadowEffect Color="{Binding Source={StaticResource MahApps.Brushes.ThemeBackground}, Path=Color, Mode=OneTime}"
                                                                   BlurRadius="5"
                                                                   Opacity="0.9"
                                                                   Direction="315"

@@ -65,7 +65,7 @@
                 </DockPanel>
 
                 <!-- fav rate buttons -->
-                <StackPanel Grid.Row="3" Orientation="Horizontal" Background="White">
+                <StackPanel Grid.Row="3" Orientation="Horizontal">
                     <Button
                         Style="{StaticResource ButtonStyleDefault}"
                         Margin="4"

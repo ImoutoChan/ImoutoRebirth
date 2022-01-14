@@ -29,7 +29,7 @@ namespace ImoutoRebirth.Navigator.Utils
             _queue.Enqueue(action);
         }
 
-        private Func<Task> GetFromQueue()
+        private Func<Task>? GetFromQueue()
         {
             _queue.TryDequeue(out var result);
 

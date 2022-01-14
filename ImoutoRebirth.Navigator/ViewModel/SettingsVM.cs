@@ -4,6 +4,7 @@ using System.Linq;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media;
+using ControlzEx.Theming;
 using ImoutoRebirth.Navigator.Commands;
 using MahApps.Metro;
 
@@ -21,7 +22,7 @@ namespace ImoutoRebirth.Navigator.ViewModel
 
             public void ChangeAccent()
             {
-                ThemeManager.ChangeThemeColorScheme(Application.Current, Name);
+                ThemeManager.Current.ChangeThemeColorScheme(Application.Current, Name);
                 Settings.Default.AccentColorName = Name;
             }
         }
@@ -40,11 +41,15 @@ namespace ImoutoRebirth.Navigator.ViewModel
 
         public SettingsVM()
         {
-            AccentColors = ThemeManager.ColorSchemes.Select(a => new AccentColorMenuData
-                                                            {
-                                                                Name = a.Name,
-                                                                ColorBrush = a.ShowcaseBrush
-                                                            }).ToList();
+            AccentColors = ThemeManager.Current.Themes
+                .GroupBy(x => x.ColorScheme)
+                .OrderBy(x => x.Key)
+                .Select(a => new AccentColorMenuData
+                {
+                    Name = a.Key,
+                    ColorBrush = a.First().ShowcaseBrush
+                }).ToList();
+
             SelectedAccentColor = AccentColors.First(x => x.Name == Settings.Default.AccentColorName);
 
             SelectedIndexTheme = Settings.Default.ThemeIndex;
@@ -97,15 +102,15 @@ namespace ImoutoRebirth.Navigator.ViewModel
             set
             {
                 _selectedTheme = value;
-                var theme = ThemeManager.DetectTheme(Application.Current);
+                var theme = ThemeManager.Current.DetectTheme(Application.Current);
                 switch (value)
                 {
                     case 1:
-                        ThemeManager.ChangeThemeBaseColor(Application.Current, "Dark");
+                        ThemeManager.Current.ChangeThemeBaseColor(Application.Current, "Dark");
                         Settings.Default.ThemeIndex = 1;
                         break;
                     default:
-                        ThemeManager.ChangeThemeBaseColor(Application.Current, "Light");
+                        ThemeManager.Current.ChangeThemeBaseColor(Application.Current, "Light");
                         Settings.Default.ThemeIndex = 0;
                         break;
                 }

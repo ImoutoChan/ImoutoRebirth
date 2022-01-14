@@ -97,7 +97,7 @@
                                           Canvas.Left="19"
                                           Canvas.Top="38"
                                           Stretch="Fill"
-                                          Fill="{DynamicResource MahApps.Brushes.Black}"
+                                          Fill="{DynamicResource MahApps.Brushes.ThemeForeground}"
                                           Data="F1 M 19,38L 57,38L 57,44L 19,44L 19,38 Z "
                                           Name="Path1" />
                                 </Canvas>
@@ -270,14 +270,14 @@
                                     Style="{DynamicResource MahApps.Styles.Button.Circle}"
                                     HorizontalAlignment="Left"
                                     Command="{Binding UnbindCommand}"
-                                    Visibility="{Binding IsEditable, 
-                                                         Mode=OneWay, 
-                                                         Converter={StaticResource ConditionVisibilityConverter}, 
-                                                         ConverterParameter=true, 
+                                    Visibility="{Binding IsEditable,
+                                                         Mode=OneWay,
+                                                         Converter={StaticResource ConditionVisibilityConverter},
+                                                         ConverterParameter=true,
                                                          FallbackValue=Collapsed}">
-                                <iconPacks:PackIconModern 
-                                    Width="6" 
-                                    Height="6" 
+                                <iconPacks:PackIconModern
+                                    Width="6"
+                                    Height="6"
                                     Kind="Close">
                                 </iconPacks:PackIconModern>
                             </Button>
@@ -297,7 +297,7 @@
                 <DockPanel>
                     <Button DockPanel.Dock="Right"
                             Style="{DynamicResource MahApps.Styles.Button.Chromeless}"
-                            Command="{Binding Path=DataContext.RemoveTagFromSearch, 
+                            Command="{Binding Path=DataContext.RemoveTagFromSearch,
                                                 RelativeSource={RelativeSource AncestorType={x:Type Imouto.Navigator:MainWindow}}}"
                             CommandParameter="{Binding}">
                         <Button.Content>
@@ -326,7 +326,7 @@
                 Template="{StaticResource SelectableTagElementControlTemplate}">
             <Button.InputBindings>
                 <MouseBinding Gesture="LeftClick"
-                              Command="{Binding Path=DataContext.UnselectTagCommand, 
+                              Command="{Binding Path=DataContext.UnselectTagCommand,
                                                  RelativeSource={RelativeSource AncestorType={x:Type UserControl}}}"
                               CommandParameter="{Binding}" />
             </Button.InputBindings>
@@ -342,7 +342,7 @@
                     Width="30">
                 <Button.InputBindings>
                     <MouseBinding Gesture="LeftClick"
-                                  Command="{Binding Path=DataContext.InvertSearchTypeCommand, 
+                                  Command="{Binding Path=DataContext.InvertSearchTypeCommand,
                                                      RelativeSource={RelativeSource AncestorType={x:Type UserControl}}}"
                                   CommandParameter="{Binding}" />
                 </Button.InputBindings>
@@ -353,7 +353,7 @@
                     Template="{StaticResource SelectableBindedTagElementControlTemplate}">
                 <Button.InputBindings>
                     <MouseBinding Gesture="LeftClick"
-                                  Command="{Binding Path=DataContext.UnselectTagCommand, 
+                                  Command="{Binding Path=DataContext.UnselectTagCommand,
                                                      RelativeSource={RelativeSource AncestorType={x:Type UserControl}}}"
                                   CommandParameter="{Binding}" />
                 </Button.InputBindings>
@@ -474,7 +474,7 @@
                      TargetType="{x:Type Button}">
         <Rectangle Width="20"
                    Height="20"
-                   Fill="{StaticResource MahApps.Brushes.Black}">
+                   Fill="{StaticResource MahApps.Brushes.ThemeForeground}">
             <Rectangle.OpacityMask>
                 <VisualBrush Stretch="Fill"
                              Visual="{DynamicResource appbar_control_play}" />
@@ -486,7 +486,7 @@
                      TargetType="{x:Type Button}">
         <Rectangle Width="20"
                    Height="20"
-                   Fill="{StaticResource MahApps.Brushes.Black}">
+                   Fill="{StaticResource MahApps.Brushes.ThemeForeground}">
             <Rectangle.OpacityMask>
                 <VisualBrush Stretch="Fill"
                              Visual="{DynamicResource appbar_control_pause}" />
