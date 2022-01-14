@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using ImoutoRebirth.Lilin.Core.Events;
+﻿using ImoutoRebirth.Lilin.Core.Events;
 
 namespace ImoutoRebirth.Lilin.Core.Models.FileInfoAggregate
 {

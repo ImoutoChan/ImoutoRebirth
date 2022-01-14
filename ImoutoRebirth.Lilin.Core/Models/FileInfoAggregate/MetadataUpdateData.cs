@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using ImoutoRebirth.Common;
+﻿using ImoutoRebirth.Common;
 
 namespace ImoutoRebirth.Lilin.Core.Models.FileInfoAggregate
 {

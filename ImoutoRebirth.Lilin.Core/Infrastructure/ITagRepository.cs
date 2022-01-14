@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
-using ImoutoRebirth.Lilin.Core.Models;
+﻿using ImoutoRebirth.Lilin.Core.Models;
 
 namespace ImoutoRebirth.Lilin.Core.Infrastructure
 {

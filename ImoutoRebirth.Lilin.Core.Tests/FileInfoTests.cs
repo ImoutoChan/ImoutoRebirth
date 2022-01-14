@@ -1,5 +1,3 @@
-using System;
-using System.Linq;
 using FluentAssertions;
 using ImoutoRebirth.Lilin.Core.Events;
 using ImoutoRebirth.Lilin.Core.Models;

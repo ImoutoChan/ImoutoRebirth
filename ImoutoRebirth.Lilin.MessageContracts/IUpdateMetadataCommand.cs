@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace ImoutoRebirth.Lilin.MessageContracts
+﻿namespace ImoutoRebirth.Lilin.MessageContracts
 {
     public interface IUpdateMetadataCommand
     {

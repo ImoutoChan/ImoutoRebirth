@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 using ImoutoRebirth.Lilin.Core.Models.FileInfoAggregate;
 
 namespace ImoutoRebirth.Lilin.WebApi.Requests

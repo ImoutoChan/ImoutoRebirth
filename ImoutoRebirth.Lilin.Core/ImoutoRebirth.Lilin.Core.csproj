@@ -4,12 +4,17 @@
     <TargetFramework>net6.0</TargetFramework>
     <Nullable>enable</Nullable>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <ImplicitUsings>true</ImplicitUsings>
   </PropertyGroup>
 
   <ItemGroup>
     <PackageReference Include="ImoutoRebirth.Common" Version="3.9.1" />
     <PackageReference Include="ImoutoRebirth.Common.Domain" Version="3.9.1" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="6.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Using Remove="System.IO" />
   </ItemGroup>
 
 </Project>

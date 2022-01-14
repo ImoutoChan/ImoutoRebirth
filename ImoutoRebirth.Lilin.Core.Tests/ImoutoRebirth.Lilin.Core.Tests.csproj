@@ -4,6 +4,7 @@
     <TargetFramework>net6.0</TargetFramework>
     <Nullable>enable</Nullable>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <ImplicitUsings>true</ImplicitUsings>
     <IsPackable>false</IsPackable>
   </PropertyGroup>
 
@@ -23,6 +24,10 @@
 
   <ItemGroup>
     <ProjectReference Include="..\ImoutoRebirth.Lilin.Core\ImoutoRebirth.Lilin.Core.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Using Remove="System.IO" />
   </ItemGroup>
 
 </Project>

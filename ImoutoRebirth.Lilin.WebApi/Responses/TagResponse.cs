@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-
-namespace ImoutoRebirth.Lilin.WebApi.Responses
+﻿namespace ImoutoRebirth.Lilin.WebApi.Responses
 {
     public class TagResponse
     {

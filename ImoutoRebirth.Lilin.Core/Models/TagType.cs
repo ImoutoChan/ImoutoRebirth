@@ -1,5 +1,4 @@
-﻿using System;
-using ImoutoRebirth.Common;
+﻿using ImoutoRebirth.Common;
 
 namespace ImoutoRebirth.Lilin.Core.Models
 {

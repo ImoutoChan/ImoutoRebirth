@@ -1,5 +1,4 @@
-﻿using System.Threading.Tasks;
-using ImoutoRebirth.Common.Quartz;
+﻿using ImoutoRebirth.Common.Quartz;
 using ImoutoRebirth.Lilin.Services.CQRS.Commands;
 using MediatR;
 using Microsoft.Extensions.Options;

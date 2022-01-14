@@ -1,5 +1,4 @@
-﻿using System.Threading.Tasks;
-using ImoutoRebirth.Lilin.MessageContracts;
+﻿using ImoutoRebirth.Lilin.MessageContracts;
 using ImoutoRebirth.Lilin.Services.CQRS.Commands;
 using MassTransit;
 using IMediator = MediatR.IMediator;

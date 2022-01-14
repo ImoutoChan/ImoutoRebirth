@@ -1,5 +1,4 @@
-﻿using System.Threading.Tasks;
-using AutoMapper;
+﻿using AutoMapper;
 using ImoutoRebirth.Lilin.Services.CQRS.Queries;
 using ImoutoRebirth.Lilin.WebApi.Responses;
 using MediatR;

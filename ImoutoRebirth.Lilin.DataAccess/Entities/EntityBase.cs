@@ -1,5 +1,4 @@
-﻿using System;
-using System.ComponentModel.DataAnnotations.Schema;
+﻿using System.ComponentModel.DataAnnotations.Schema;
 using ImoutoRebirth.Common.EntityFrameworkCore.TimeTrack;
 
 namespace ImoutoRebirth.Lilin.DataAccess.Entities

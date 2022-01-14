@@ -1,7 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Threading.Tasks;
-
-namespace ImoutoRebirth.Lilin.Services
+﻿namespace ImoutoRebirth.Lilin.Services
 {
     public static class AsyncEnumerableExtensions
     {

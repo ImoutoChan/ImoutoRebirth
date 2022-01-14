@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace ImoutoRebirth.Lilin.Core.Models
+﻿namespace ImoutoRebirth.Lilin.Core.Models
 {
     public class FileTagInfo
     {

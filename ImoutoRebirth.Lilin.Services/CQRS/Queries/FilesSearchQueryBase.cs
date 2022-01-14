@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using ImoutoRebirth.Common;
+﻿using ImoutoRebirth.Common;
 using ImoutoRebirth.Lilin.Core.Models;
 
 namespace ImoutoRebirth.Lilin.Services.CQRS.Queries

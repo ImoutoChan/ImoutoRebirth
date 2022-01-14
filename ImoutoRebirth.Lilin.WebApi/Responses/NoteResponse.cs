@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace ImoutoRebirth.Lilin.WebApi.Responses
+﻿namespace ImoutoRebirth.Lilin.WebApi.Responses
 {
     public class NoteResponse
     {

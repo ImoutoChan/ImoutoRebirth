@@ -1,5 +1,4 @@
-﻿using System;
-using ImoutoRebirth.Lilin.Core.Models;
+﻿using ImoutoRebirth.Lilin.Core.Models;
 
 namespace ImoutoRebirth.Lilin.WebApi.Requests
 {

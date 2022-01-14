@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-
-namespace ImoutoRebirth.Lilin.Core.Models.FileInfoAggregate
+﻿namespace ImoutoRebirth.Lilin.Core.Models.FileInfoAggregate
 {
     public class FileInfoPack
     {

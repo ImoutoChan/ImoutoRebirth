@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using ImoutoRebirth.Common.Domain;
+﻿using ImoutoRebirth.Common.Domain;
 
 namespace ImoutoRebirth.Lilin.Core
 {

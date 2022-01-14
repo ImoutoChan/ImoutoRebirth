@@ -1,6 +1,4 @@
-﻿using System.Threading;
-using System.Threading.Tasks;
-using ImoutoRebirth.Common.Cqrs.Events;
+﻿using ImoutoRebirth.Common.Cqrs.Events;
 using ImoutoRebirth.Lilin.Core.Events;
 using ImoutoRebirth.Lilin.Core.Models;
 using ImoutoRebirth.Meido.MessageContracts;

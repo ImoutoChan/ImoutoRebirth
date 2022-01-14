@@ -1,5 +1,4 @@
-﻿using System.Threading.Tasks;
-using ImoutoRebirth.Common.EntityFrameworkCore;
+﻿using ImoutoRebirth.Common.EntityFrameworkCore;
 using ImoutoRebirth.Common.Host;
 using ImoutoRebirth.Common.Logging;
 using ImoutoRebirth.Common.Quartz.Extensions;
