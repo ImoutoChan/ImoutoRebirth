@@ -27,20 +27,29 @@ public class FileTagRepository : IFileTagRepository
         int? limit = 100,
         int offset = 0)
     {
-        var files = GetSearchFilesQueryable(tagSearchEntries);
+        var filteredFiles = GetSearchFilesQueryable(tagSearchEntries)
+            .GroupBy(x => x.FileId)
+            .Select(x => new { FileId = x.Key, FirstAppeared = x.Min(y => y.AddedOn) })
+            .Distinct()
+            .OrderBy(x => x.FirstAppeared);
 
-        files = files.Skip(offset);
+        var filteredFileIds = filteredFiles.Select(x => x.FileId);
+
+        filteredFileIds = filteredFileIds.Skip(offset);
 
         if (limit.HasValue)
-            files = files.Take(limit.Value);
+            filteredFileIds = filteredFileIds.Take(limit.Value);
 
-        return await files.ToArrayAsync();
+        return await filteredFileIds.ToArrayAsync();
     }
 
-    public async Task<int> SearchFilesCount(IReadOnlyCollection<TagSearchEntry> tagSearchEntries)
+    public Task<int> SearchFilesCount(IReadOnlyCollection<TagSearchEntry> tagSearchEntries)
     {
-        var files = GetSearchFilesQueryable(tagSearchEntries);
-        return await files.CountAsync();
+        return GetSearchFilesQueryable(tagSearchEntries)
+            .GroupBy(x => x.FileId)
+            .Select(x => x.Key)
+            .Distinct()
+            .CountAsync();
     }
 
     public async Task<IReadOnlyCollection<FileTag>> GetForFile(Guid fileId)
@@ -84,10 +93,10 @@ public class FileTagRepository : IFileTagRepository
         await _lilinDbContext.SaveChangesAsync();
     }
 
-    private IQueryable<Guid> GetSearchFilesQueryable(IReadOnlyCollection<TagSearchEntry> tagSearchEntries)
+    private IQueryable<FileTagEntity> GetSearchFilesQueryable(IReadOnlyCollection<TagSearchEntry> tagSearchEntries)
     {
         var fileTags = _lilinDbContext.FileTags;
-        var files = _lilinDbContext.FileTags.OrderBy(x => x.AddedOn).Select(x => x.FileId).Distinct();
+        IQueryable<FileTagEntity> files = _lilinDbContext.FileTags;
 
         // exclude tags
         var excludeFilters = tagSearchEntries
@@ -98,14 +107,14 @@ public class FileTagRepository : IFileTagRepository
         {
             var excludeFilter = MakeOrFilter(fileTags, excludeFilters);
 
-            files = files.Where(f => !excludeFilter.Contains(f));
+            files = files.Where(f => !excludeFilter.Contains(f.FileId));
         }
 
         // include tags
         foreach (var tagSearchEntry in tagSearchEntries.Where(x => x.TagSearchScope == TagSearchScope.Included))
         {
             var includeFilter = MakeOrFilter(fileTags, new[] {tagSearchEntry});
-            files = files.Where(f => includeFilter.Contains(f));
+            files = files.Where(f => includeFilter.Contains(f.FileId));
         }
 
         return files;
