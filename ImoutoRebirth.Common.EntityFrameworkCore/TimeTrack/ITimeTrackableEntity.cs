@@ -1,11 +1,12 @@
 ﻿using System;
+using NodaTime;
 
 namespace ImoutoRebirth.Common.EntityFrameworkCore.TimeTrack
 {
     public interface ITimeTrackableEntity
     {
-        DateTimeOffset AddedOn { get; set; }
+        Instant AddedOn { get; set; }
 
-        DateTimeOffset ModifiedOn { get; set; }
+        Instant ModifiedOn { get; set; }
     }
 }

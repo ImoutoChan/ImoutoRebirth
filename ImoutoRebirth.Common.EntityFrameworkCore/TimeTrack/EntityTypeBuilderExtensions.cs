@@ -1,5 +1,6 @@
 ﻿using System;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using NodaTime;
 
 namespace ImoutoRebirth.Common.EntityFrameworkCore.TimeTrack
 {
@@ -7,11 +8,11 @@ namespace ImoutoRebirth.Common.EntityFrameworkCore.TimeTrack
     {
         public static void AddShadowTimeTracking(this EntityTypeBuilder builder)
         {
-            builder.Property<DateTimeOffset>(TimeTrackingPropertyNames.AddedOn)
+            builder.Property<Instant>(TimeTrackingPropertyNames.AddedOn)
                    .IsRequired()
-                   .HasValueGenerator<CurrentDateTimeOffsetValueGenerator>();
+                   .HasValueGenerator<CurrentInstantValueGenerator>();
 
-            builder.Property<DateTimeOffset>(TimeTrackingPropertyNames.ModifiedOn)
+            builder.Property<Instant>(TimeTrackingPropertyNames.ModifiedOn)
                    .IsRequired();
         }
     }

@@ -2,6 +2,7 @@
 using System.Linq;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
+using NodaTime;
 
 namespace ImoutoRebirth.Common.EntityFrameworkCore.TimeTrack
 {
@@ -14,11 +15,11 @@ namespace ImoutoRebirth.Common.EntityFrameworkCore.TimeTrack
                 switch (entityEntry.State)
                 {
                     case EntityState.Added:
-                        entityEntry.Entity.AddedOn = DateTimeOffset.Now;
-                        entityEntry.Entity.ModifiedOn = DateTimeOffset.Now;
+                        entityEntry.Entity.AddedOn = SystemClock.Instance.GetCurrentInstant();
+                        entityEntry.Entity.ModifiedOn = SystemClock.Instance.GetCurrentInstant();
                         break;
                     case EntityState.Modified:
-                        entityEntry.Entity.ModifiedOn = DateTimeOffset.Now;
+                        entityEntry.Entity.ModifiedOn = SystemClock.Instance.GetCurrentInstant();
                         break;
                 }
             }
@@ -38,7 +39,7 @@ namespace ImoutoRebirth.Common.EntityFrameworkCore.TimeTrack
                     case EntityState.Modified:
                         entityEntry
                            .Property(TimeTrackingPropertyNames.ModifiedOn)
-                           .CurrentValue = DateTimeOffset.Now;
+                           .CurrentValue = SystemClock.Instance.GetCurrentInstant();
                         break;
                 }
             }
