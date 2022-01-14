@@ -1,15 +1,14 @@
 ﻿using System.Collections.ObjectModel;
 
-namespace ImoutoRebirth.Navigator.ViewModel
+namespace ImoutoRebirth.Navigator.ViewModel;
+
+class TagSourceVM : VMBase
 {
-    class TagSourceVM : VMBase
-    {
-        #region Properties
+    #region Properties
 
-        public string Title { get; set; }
+    public string Title { get; set; }
 
-        public ObservableCollection<BindedTagVM> Tags { get; set; }
+    public ObservableCollection<BindedTagVM> Tags { get; set; }
 
-        #endregion Properties
-    }
+    #endregion Properties
 }

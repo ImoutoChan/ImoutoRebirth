@@ -1,15 +1,14 @@
 ﻿using System.Windows.Controls;
 
-namespace ImoutoRebirth.Navigator.UserControls
+namespace ImoutoRebirth.Navigator.UserControls;
+
+/// <summary>
+/// Interaction logic for TagView.xaml
+/// </summary>
+public partial class TagView : UserControl
 {
-    /// <summary>
-    /// Interaction logic for TagView.xaml
-    /// </summary>
-    public partial class TagView : UserControl
+    public TagView()
     {
-        public TagView()
-        {
-            InitializeComponent();
-        }
+        InitializeComponent();
     }
 }

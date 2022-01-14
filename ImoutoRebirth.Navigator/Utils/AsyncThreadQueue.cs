@@ -1,69 +1,65 @@
-﻿using System;
-using System.Collections.Concurrent;
+﻿using System.Collections.Concurrent;
 using System.Diagnostics;
-using System.Threading;
-using System.Threading.Tasks;
 
-namespace ImoutoRebirth.Navigator.Utils
+namespace ImoutoRebirth.Navigator.Utils;
+
+public class AsyncThreadQueue : IDisposable
 {
-    public class AsyncThreadQueue : IDisposable
+    private readonly Task _task;
+    private ConcurrentQueue<Func<Task>> _queue;
+    private bool _isRunning = true;
+
+    public AsyncThreadQueue()
     {
-        private readonly Task _task;
-        private ConcurrentQueue<Func<Task>> _queue;
-        private bool _isRunning = true;
+        _queue = new ConcurrentQueue<Func<Task>>();
+        _task = Task.Run(ThreadMethod);
+    }
 
-        public AsyncThreadQueue()
+
+    public void ClearQueue()
+    {
+        _queue = new ConcurrentQueue<Func<Task>>();
+    }
+
+    public void Add(Func<Task> action)
+    {
+        _queue.Enqueue(action);
+    }
+
+    private Func<Task>? GetFromQueue()
+    {
+        _queue.TryDequeue(out var result);
+
+        return result;
+    }
+
+    private async Task ThreadMethod()
+    {
+        while (_isRunning)
         {
-            _queue = new ConcurrentQueue<Func<Task>>();
-            _task = Task.Run(ThreadMethod);
-        }
+            var action = GetFromQueue();
 
-
-        public void ClearQueue()
-        {
-            _queue = new ConcurrentQueue<Func<Task>>();
-        }
-
-        public void Add(Func<Task> action)
-        {
-            _queue.Enqueue(action);
-        }
-
-        private Func<Task>? GetFromQueue()
-        {
-            _queue.TryDequeue(out var result);
-
-            return result;
-        }
-
-        private async Task ThreadMethod()
-        {
-            while (_isRunning)
+            if (action != null)
             {
-                var action = GetFromQueue();
-
-                if (action != null)
+                try
                 {
-                    try
-                    {
-                        await action.Invoke();
-                    }
-                    catch (Exception ex)
-                    {
-                        Debug.WriteLine("Error in method: {0}", ex.Message);
-                    }
-
+                    await action.Invoke();
                 }
-                else
+                catch (Exception ex)
                 {
-                    SpinWait.SpinUntil(() => !_queue.IsEmpty);
+                    Debug.WriteLine("Error in method: {0}", ex.Message);
                 }
+
+            }
+            else
+            {
+                SpinWait.SpinUntil(() => !_queue.IsEmpty);
             }
         }
+    }
 
-        public void Dispose()
-        {
-            _isRunning = false;
-        }
+    public void Dispose()
+    {
+        _isRunning = false;
     }
 }

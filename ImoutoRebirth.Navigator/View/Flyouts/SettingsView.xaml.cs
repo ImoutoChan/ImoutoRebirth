@@ -1,15 +1,14 @@
 ﻿using System.Windows.Controls;
 
-namespace ImoutoRebirth.Navigator.View.Flyouts
+namespace ImoutoRebirth.Navigator.View.Flyouts;
+
+/// <summary>
+/// Interaction logic for SettingsView.xaml
+/// </summary>
+public partial class SettingsView : UserControl
 {
-    /// <summary>
-    /// Interaction logic for SettingsView.xaml
-    /// </summary>
-    public partial class SettingsView : UserControl
+    public SettingsView()
     {
-        public SettingsView()
-        {
-            InitializeComponent();
-        }
+        InitializeComponent();
     }
 }

@@ -1,129 +1,125 @@
-﻿using System;
-using System.Collections.ObjectModel;
+﻿using System.Collections.ObjectModel;
 using System.Diagnostics;
-using System.Linq;
-using System.Threading.Tasks;
 using System.Windows.Input;
 using ImoutoRebirth.Navigator.Services;
 using ImoutoRebirth.Navigator.Services.Collections;
 using ImoutoRebirth.Navigator.Utils;
 
-namespace ImoutoRebirth.Navigator.ViewModel
+namespace ImoutoRebirth.Navigator.ViewModel;
+
+internal class CollectionManagerVm : VMBase
 {
-    internal class CollectionManagerVm : VMBase
+    private readonly ICollectionService _collectionService;
+
+    private ICommand _removeCommand;
+    private CollectionVM _selectedCollection;
+
+    public CollectionManagerVm()
     {
-        private readonly ICollectionService _collectionService;
+        _collectionService = ServiceLocator.GetService<ICollectionService>();
+    }
 
-        private ICommand _removeCommand;
-        private CollectionVM _selectedCollection;
-
-        public CollectionManagerVm()
+    public async Task ReloadCollectionsAsync()
+    {
+        try
         {
-            _collectionService = ServiceLocator.GetService<ICollectionService>();
-        }
+            var sw = new Stopwatch();
+            sw.Start();
 
-        public async Task ReloadCollectionsAsync()
-        {
-            try
+            var collections = await _collectionService.GetAllCollectionsAsync();
+
+            sw.Stop();
+            Debug.WriteLine($"Collections reloaded in {sw.ElapsedMilliseconds}ms.");
+
+            Collections.Clear();
+
+            foreach (var collection in collections)
             {
-                var sw = new Stopwatch();
-                sw.Start();
-
-                var collections = await _collectionService.GetAllCollectionsAsync();
-
-                sw.Stop();
-                Debug.WriteLine($"Collections reloaded in {sw.ElapsedMilliseconds}ms.");
-
-                Collections.Clear();
-
-                foreach (var collection in collections)
-                {
-                    Collections.Add(new CollectionVM(collection.Id, collection.Name));
-                }
+                Collections.Add(new CollectionVM(collection.Id, collection.Name));
+            }
                 
-                foreach (var collectionVm in Collections)
-                {
-                    await collectionVm.LoadFolders();
-                }
-
-                SelectedCollection = Collections.FirstOrDefault();
-            }
-            catch (Exception ex)
+            foreach (var collectionVm in Collections)
             {
-                App.MainWindowVM?.SetStatusError("Can't reload collections", ex.Message);
-                Debug.WriteLine("Collections reload error: " + ex.Message);
+                await collectionVm.LoadFolders();
             }
+
+            SelectedCollection = Collections.FirstOrDefault();
         }
-
-        #region Properties
-
-        public ObservableCollection<CollectionVM> Collections { get; } = new ObservableCollection<CollectionVM>();
-
-        public CollectionVM SelectedCollection
+        catch (Exception ex)
         {
-            get { return _selectedCollection; }
-            set { OnPropertyChanged(ref _selectedCollection, value, () => this.SelectedCollection); }
+            App.MainWindowVM?.SetStatusError("Can't reload collections", ex.Message);
+            Debug.WriteLine("Collections reload error: " + ex.Message);
         }
+    }
 
-        #endregion Properties
+    #region Properties
 
-        #region Methods
-        public string Rename(object param)
+    public ObservableCollection<CollectionVM> Collections { get; } = new ObservableCollection<CollectionVM>();
+
+    public CollectionVM SelectedCollection
+    {
+        get { return _selectedCollection; }
+        set { OnPropertyChanged(ref _selectedCollection, value, () => this.SelectedCollection); }
+    }
+
+    #endregion Properties
+
+    #region Methods
+    public string Rename(object param)
+    {
+        try
         {
-            try
-            {
-                SelectedCollection?.Rename(param as string);
-                return null;
-            }
-            catch (Exception ex)
-            {
-                return ex.Message;
-            }
+            SelectedCollection?.Rename(param as string);
+            return null;
         }
-
-        public async Task<string> CreateCollection(string name)
+        catch (Exception ex)
         {
-            try
-            {
-                await _collectionService.CreateCollectionAsync(name);
-
-                await ReloadCollectionsAsync();
-
-                return null;
-            }
-            catch (Exception ex)
-            {
-                Debug.WriteLine("Cannot create collection: " + ex.Message);
-                return ex.Message;
-            }
+            return ex.Message;
         }
+    }
 
-        #endregion Methods
+    public async Task<string> CreateCollection(string name)
+    {
+        try
+        {
+            await _collectionService.CreateCollectionAsync(name);
 
-        #region Commands
+            await ReloadCollectionsAsync();
 
-        public ICommand RemoveCommand 
-            => _removeCommand ??= new AsyncCommand(Remove, CanDoCollectionCommand);
+            return null;
+        }
+        catch (Exception ex)
+        {
+            Debug.WriteLine("Cannot create collection: " + ex.Message);
+            return ex.Message;
+        }
+    }
 
-        #endregion Commands
+    #endregion Methods
 
-        #region Command Handlers
+    #region Commands
+
+    public ICommand RemoveCommand 
+        => _removeCommand ??= new AsyncCommand(Remove, CanDoCollectionCommand);
+
+    #endregion Commands
+
+    #region Command Handlers
         
 
-        private async Task Remove()
+    private async Task Remove()
+    {
+        if (SelectedCollection != null)
         {
-            if (SelectedCollection != null)
-            {
-                await SelectedCollection.Remove();
-                await ReloadCollectionsAsync();
-            }
+            await SelectedCollection.Remove();
+            await ReloadCollectionsAsync();
         }
-
-        private bool CanDoCollectionCommand()
-        {
-            return SelectedCollection != null;
-        }
-
-        #endregion Command Handlers
     }
+
+    private bool CanDoCollectionCommand()
+    {
+        return SelectedCollection != null;
+    }
+
+    #endregion Command Handlers
 }

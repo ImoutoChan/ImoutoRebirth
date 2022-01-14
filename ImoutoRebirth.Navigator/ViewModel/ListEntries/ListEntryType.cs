@@ -1,11 +1,10 @@
-﻿namespace ImoutoRebirth.Navigator.ViewModel.ListEntries
+﻿namespace ImoutoRebirth.Navigator.ViewModel.ListEntries;
+
+internal enum ListEntryType
 {
-    internal enum ListEntryType
-    {
-        Video,
-        Gif,
-        Image,
-        Ugoira,
-        Png
-    }
+    Video,
+    Gif,
+    Image,
+    Ugoira,
+    Png
 }

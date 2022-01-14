@@ -1,14 +1,10 @@
-﻿using System;
-using System.Threading.Tasks;
+﻿namespace ImoutoRebirth.Navigator.Services.Collections;
 
-namespace ImoutoRebirth.Navigator.Services.Collections
+public interface IDestinationFolderService
 {
-    public interface IDestinationFolderService
-    {
-        Task<DestinationFolder> GetDestinationFolderAsync(Guid collectionId);
+    Task<DestinationFolder> GetDestinationFolderAsync(Guid collectionId);
 
-        Task<DestinationFolder> AddOrUpdateDestinationFolderAsync(DestinationFolder destinationFolder);
+    Task<DestinationFolder> AddOrUpdateDestinationFolderAsync(DestinationFolder destinationFolder);
 
-        Task DeleteDestinationFolderAsync(Guid collectionId, Guid destinationFolderId);
-    }
+    Task DeleteDestinationFolderAsync(Guid collectionId, Guid destinationFolderId);
 }

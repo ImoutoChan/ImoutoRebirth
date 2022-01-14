@@ -1,93 +1,92 @@
 using System.Windows.Controls;
 using System.Windows.Input;
 
-namespace ImoutoRebirth.Navigator.UserControls
+namespace ImoutoRebirth.Navigator.UserControls;
+
+public class ExtScrollViewer : ScrollViewer
 {
-    public class ExtScrollViewer : ScrollViewer
+    //public bool IsNeedScrollHome { get; set; }
+
+    #region Constructors
+
+    public ExtScrollViewer()
     {
-        //public bool IsNeedScrollHome { get; set; }
+    }
 
-        #region Constructors
+    #endregion //Constructors
 
-        public ExtScrollViewer()
-        {
-        }
+    //#region Event handlers
 
-        #endregion //Constructors
+    //private void ExtScrollViewer_Loaded(object sender, RoutedEventArgs e)
+    //{
+    //    var content = Content as FrameworkElement;
+    //    if (content != null)
+    //    {
+    //        content.SizeChanged += ExtScrollViewer_SizeChanged;
+    //    }
+    //}
 
-        //#region Event handlers
+    //private void ExtScrollViewer_SizeChanged(object sender, SizeChangedEventArgs e)
+    //{
+    //    if (IsNeedScrollHome)
+    //    {
+    //        ScrollToHome();
+    //        IsNeedScrollHome = false;
+    //        return;
+    //    }
 
-        //private void ExtScrollViewer_Loaded(object sender, RoutedEventArgs e)
-        //{
-        //    var content = Content as FrameworkElement;
-        //    if (content != null)
-        //    {
-        //        content.SizeChanged += ExtScrollViewer_SizeChanged;
-        //    }
-        //}
+    //    double hZoomTo = Mouse.GetPosition(this).Y / ActualHeight; //0.5;
+    //    double wZoomTo = Mouse.GetPosition(this).X / ActualWidth; //0.5;
+    //    // Current view offset, range [0;1]
+    //    double hCVO = (VerticalOffset + ViewportHeight * hZoomTo) / ExtentHeight;
+    //    double wCVO = (HorizontalOffset + ViewportWidth * wZoomTo) / ExtentWidth;
 
-        //private void ExtScrollViewer_SizeChanged(object sender, SizeChangedEventArgs e)
-        //{
-        //    if (IsNeedScrollHome)
-        //    {
-        //        ScrollToHome();
-        //        IsNeedScrollHome = false;
-        //        return;
-        //    }
+    //    double hNewOffset = e.NewSize.Height * hCVO - ViewportHeight * hZoomTo;
+    //    double wNewOffset = e.NewSize.Width * wCVO - ViewportWidth * wZoomTo;
 
-        //    double hZoomTo = Mouse.GetPosition(this).Y / ActualHeight; //0.5;
-        //    double wZoomTo = Mouse.GetPosition(this).X / ActualWidth; //0.5;
-        //    // Current view offset, range [0;1]
-        //    double hCVO = (VerticalOffset + ViewportHeight * hZoomTo) / ExtentHeight;
-        //    double wCVO = (HorizontalOffset + ViewportWidth * wZoomTo) / ExtentWidth;
+    //    ScrollToVerticalOffset(hNewOffset);
+    //    ScrollToHorizontalOffset(wNewOffset);
+    //}
 
-        //    double hNewOffset = e.NewSize.Height * hCVO - ViewportHeight * hZoomTo;
-        //    double wNewOffset = e.NewSize.Width * wCVO - ViewportWidth * wZoomTo;
+    //#endregion //Event handlers
 
-        //    ScrollToVerticalOffset(hNewOffset);
-        //    ScrollToHorizontalOffset(wNewOffset);
-        //}
+    #region Methods
 
-        //#endregion //Event handlers
-
-        #region Methods
-
-        private void Scrolling(int delta)
-        {
-            //base.OnMouseWheel(e);
+    private void Scrolling(int delta)
+    {
+        //base.OnMouseWheel(e);
             
-            //if (this.HandlesMouseWheelScrolling)
+        //if (this.HandlesMouseWheelScrolling)
+        {
+            if (this.ScrollInfo != null)
             {
-                if (this.ScrollInfo != null)
+                if (delta < 0)
                 {
-                    if (delta < 0)
-                    {
-                        this.ScrollInfo.LineDown();
-                    }
-                    else
-                    {
-                        this.ScrollInfo.LineUp();
-                    }
+                    this.ScrollInfo.LineDown();
+                }
+                else
+                {
+                    this.ScrollInfo.LineUp();
                 }
             }
         }
+    }
 
-        #endregion Methods
+    #endregion Methods
 
-        #region Events
+    #region Events
 
-        protected override void OnMouseWheel(MouseWheelEventArgs e)
+    protected override void OnMouseWheel(MouseWheelEventArgs e)
+    {
+        if (!(Keyboard.IsKeyDown(Key.LeftCtrl) || Keyboard.IsKeyDown(Key.RightCtrl)) && !e.Handled)
         {
-            if (!(Keyboard.IsKeyDown(Key.LeftCtrl) || Keyboard.IsKeyDown(Key.RightCtrl)) && !e.Handled)
-            {
-                Scrolling(e.Delta);
-                e.Handled = true;
-                return;
-            }
-
-            e.Handled = false;
+            Scrolling(e.Delta);
+            e.Handled = true;
+            return;
         }
 
-        #endregion //Events
+        e.Handled = false;
     }
+
+    #endregion //Events
 }

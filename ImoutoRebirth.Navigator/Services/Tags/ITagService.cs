@@ -1,16 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
-using ImoutoRebirth.Navigator.Services.Tags.Model;
+﻿using ImoutoRebirth.Navigator.Services.Tags.Model;
 
-namespace ImoutoRebirth.Navigator.Services.Tags
+namespace ImoutoRebirth.Navigator.Services.Tags;
+
+internal interface ITagService
 {
-    internal interface ITagService
-    {
-        Task<IReadOnlyCollection<TagType>> GеtTypes();
+    Task<IReadOnlyCollection<TagType>> GеtTypes();
 
-        Task CreateTag(Guid typeId, string name, bool hasValue, IReadOnlyCollection<string> synonyms);
+    Task CreateTag(Guid typeId, string name, bool hasValue, IReadOnlyCollection<string> synonyms);
 
-        Task<IReadOnlyCollection<Tag>> SearchTags(string name, int count);
-    }
+    Task<IReadOnlyCollection<Tag>> SearchTags(string name, int count);
 }

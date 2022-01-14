@@ -1,19 +1,16 @@
-﻿using System;
+﻿namespace ImoutoRebirth.Navigator.Behavior;
 
-namespace ImoutoRebirth.Navigator.Behavior
+interface IDropable
 {
-    interface IDropable
-    {
-        /// <summary>
-        ///     Type of the data item
-        /// </summary>
-        Type DataType { get; }
+    /// <summary>
+    ///     Type of the data item
+    /// </summary>
+    Type DataType { get; }
 
-        /// <summary>
-        ///     Drop data into the collection.
-        /// </summary>
-        /// <param name="data">The data to be dropped</param>
-        /// <param name="index">optional: The index location to insert the data</param>
-        void Drop(object data, int index = -1);
-    }
+    /// <summary>
+    ///     Drop data into the collection.
+    /// </summary>
+    /// <param name="data">The data to be dropped</param>
+    /// <param name="index">optional: The index location to insert the data</param>
+    void Drop(object data, int index = -1);
 }

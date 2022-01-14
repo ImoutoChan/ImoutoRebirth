@@ -1,222 +1,220 @@
-﻿using System;
-using System.ComponentModel;
+﻿using System.ComponentModel;
 using System.IO;
 using System.Windows.Input;
 using ImoutoRebirth.Navigator.Commands;
 
-namespace ImoutoRebirth.Navigator.ViewModel
+namespace ImoutoRebirth.Navigator.ViewModel;
+
+class DestinationFolderVM : FolderVM, IDataErrorInfo
 {
-    class DestinationFolderVM : FolderVM, IDataErrorInfo
+    #region Fields
+
+    private bool _needDevideImagesByHash;
+    private bool _needRename;
+    private string _incorrectFormatSubpath;
+    private string _incorrectHashSubpath;
+    private string _nonHashSubpath;
+
+    #endregion Fields
+
+    #region Properties
+
+    public bool NeedDevideImagesByHash
     {
-        #region Fields
+        get { return _needDevideImagesByHash; }
+        set { OnPropertyChanged(ref _needDevideImagesByHash, value, () => this.NeedDevideImagesByHash); }
+    }
 
-        private bool _needDevideImagesByHash;
-        private bool _needRename;
-        private string _incorrectFormatSubpath;
-        private string _incorrectHashSubpath;
-        private string _nonHashSubpath;
+    public bool NeedRename
+    {
+        get { return _needRename; }
+        set { OnPropertyChanged(ref _needRename, value, () => this.NeedRename); }
+    }
 
-        #endregion Fields
-
-        #region Properties
-
-        public bool NeedDevideImagesByHash
+    public string IncorrectFormatSubpath
+    {
+        get { return _incorrectFormatSubpath; }
+        set
         {
-            get { return _needDevideImagesByHash; }
-            set { OnPropertyChanged(ref _needDevideImagesByHash, value, () => this.NeedDevideImagesByHash); }
-        }
-
-        public bool NeedRename
-        {
-            get { return _needRename; }
-            set { OnPropertyChanged(ref _needRename, value, () => this.NeedRename); }
-        }
-
-        public string IncorrectFormatSubpath
-        {
-            get { return _incorrectFormatSubpath; }
-            set
+            if (String.IsNullOrWhiteSpace(value))
             {
-                if (String.IsNullOrWhiteSpace(value))
-                {
-                    //value = "!IncorrectFormat";
-                }
-
-                OnPropertyChanged(ref _incorrectFormatSubpath, value, () => this.IncorrectFormatSubpath);
+                //value = "!IncorrectFormat";
             }
-        }
 
-        public string IncorrectHashSubpath
+            OnPropertyChanged(ref _incorrectFormatSubpath, value, () => this.IncorrectFormatSubpath);
+        }
+    }
+
+    public string IncorrectHashSubpath
+    {
+        get { return _incorrectHashSubpath; }
+        set
         {
-            get { return _incorrectHashSubpath; }
-            set
+            if (String.IsNullOrWhiteSpace(value))
             {
-                if (String.IsNullOrWhiteSpace(value))
-                {
-                    //value = "!IncorrectHash";
-                }
-                OnPropertyChanged(ref _incorrectHashSubpath, value, () => this.IncorrectHashSubpath);
+                //value = "!IncorrectHash";
             }
+            OnPropertyChanged(ref _incorrectHashSubpath, value, () => this.IncorrectHashSubpath);
         }
+    }
 
-        public string NonHashSubpath
+    public string NonHashSubpath
+    {
+        get { return _nonHashSubpath; }
+        set
         {
-            get { return _nonHashSubpath; }
-            set
+            if (String.IsNullOrWhiteSpace(value))
             {
-                if (String.IsNullOrWhiteSpace(value))
-                {
-                    //value = "!NonHash";
-                }
-                OnPropertyChanged(ref _nonHashSubpath, value, () => this.NonHashSubpath);
+                //value = "!NonHash";
             }
+            OnPropertyChanged(ref _nonHashSubpath, value, () => this.NonHashSubpath);
         }
+    }
 
-        #endregion Properties
+    #endregion Properties
 
-        #region Constructors
+    #region Constructors
 
-        public DestinationFolderVM(Guid? id,
-            string path,
-            bool needDevideImagesByHash,
-            bool needRename,
-            string incorrectFormatSubpath,
-            string incorrectHashSubpath,
-            string nonHashSubpath)
-            : base(id, path)
+    public DestinationFolderVM(Guid? id,
+        string path,
+        bool needDevideImagesByHash,
+        bool needRename,
+        string incorrectFormatSubpath,
+        string incorrectHashSubpath,
+        string nonHashSubpath)
+        : base(id, path)
+    {
+        NeedDevideImagesByHash = needDevideImagesByHash;
+        NeedRename = needRename;
+        IncorrectFormatSubpath = incorrectFormatSubpath;
+        IncorrectHashSubpath = incorrectHashSubpath;
+        NonHashSubpath = nonHashSubpath;
+    }
+
+    #endregion Constructors
+
+    #region Commands
+
+    private ICommand _removeCommand;
+    public ICommand RemoveCommand
+    {
+        get
         {
-            NeedDevideImagesByHash = needDevideImagesByHash;
-            NeedRename = needRename;
-            IncorrectFormatSubpath = incorrectFormatSubpath;
-            IncorrectHashSubpath = incorrectHashSubpath;
-            NonHashSubpath = nonHashSubpath;
+            return _removeCommand ?? (_removeCommand = new RelayCommand((s) => OnRemoveRequest()));
         }
+    }
+    private ICommand _saveCommand;
 
-        #endregion Constructors
-
-        #region Commands
-
-        private ICommand _removeCommand;
-        public ICommand RemoveCommand
+    public ICommand SaveCommand
+    {
+        get
         {
-            get
+            return _saveCommand ??
+                   (_saveCommand = new RelayCommand((s) => OnSaveRequest(), (s) => String.IsNullOrWhiteSpace(Error)));
+        }
+    }
+
+    #endregion Commands
+
+    #region Events
+
+    public event EventHandler RemoveRequest;
+    private void OnRemoveRequest()
+    {
+        var handler = RemoveRequest;
+        handler?.Invoke(this, new EventArgs());
+    }
+
+    #endregion Events
+
+    public string this[string columnName]
+    {
+        get
+        {
+            String errorMessage = String.Empty;
+            switch (columnName)
             {
-                return _removeCommand ?? (_removeCommand = new RelayCommand((s) => OnRemoveRequest()));
+                case "Path":
+                    if (String.IsNullOrWhiteSpace(Path))
+                    {
+                        errorMessage = "Path can't be empty";
+                    }
+                    else
+                    {
+                        try
+                        {
+                            var di = new DirectoryInfo(Path);
+                        }
+                        catch (Exception)
+                        {
+                            errorMessage = "Incorrect path format";
+                        }
+                    }
+                    break;
+                case "IncorrectFormatSubpath":
+                    if (String.IsNullOrWhiteSpace(IncorrectFormatSubpath))
+                    {
+                        errorMessage = "Can't be empty";
+                    }
+                    else
+                    {
+                        try
+                        {
+                            var di = new DirectoryInfo("C:\\" + IncorrectFormatSubpath);
+                        }
+                        catch (Exception)
+                        {
+                            errorMessage = "Incorrect path format";
+                        }
+                    }
+                    break;
+                case "IncorrectHashSubpath":
+                    if (String.IsNullOrWhiteSpace(IncorrectHashSubpath))
+                    {
+                        errorMessage = "Can't be empty";
+                    }
+                    else
+                    {
+                        try
+                        {
+                            var di = new DirectoryInfo("C:\\" + IncorrectHashSubpath);
+                        }
+                        catch (Exception)
+                        {
+                            errorMessage = "Incorrect path format";
+                        }
+                    }
+                    break;
+                case "NonHashSubpath":
+                    if (String.IsNullOrWhiteSpace(NonHashSubpath))
+                    {
+                        errorMessage = "Can't be empty";
+                    }
+                    else
+                    {
+                        try
+                        {
+                            var di = new DirectoryInfo("C:\\" + NonHashSubpath);
+                        }
+                        catch (Exception)
+                        {
+                            errorMessage = "Incorrect path format";
+                        }
+                    }
+                    break;
             }
+            return errorMessage;
         }
-        private ICommand _saveCommand;
+    }
 
-        public ICommand SaveCommand
+    public override string Error
+    {
+        get
         {
-            get
-            {
-                return _saveCommand ??
-                       (_saveCommand = new RelayCommand((s) => OnSaveRequest(), (s) => String.IsNullOrWhiteSpace(Error)));
-            }
-        }
-
-        #endregion Commands
-
-        #region Events
-
-        public event EventHandler RemoveRequest;
-        private void OnRemoveRequest()
-        {
-            var handler = RemoveRequest;
-            handler?.Invoke(this, new EventArgs());
-        }
-
-        #endregion Events
-
-        public string this[string columnName]
-        {
-            get
-            {
-                String errorMessage = String.Empty;
-                switch (columnName)
-                {
-                    case "Path":
-                        if (String.IsNullOrWhiteSpace(Path))
-                        {
-                            errorMessage = "Path can't be empty";
-                        }
-                        else
-                        {
-                            try
-                            {
-                                var di = new DirectoryInfo(Path);
-                            }
-                            catch (Exception)
-                            {
-                                errorMessage = "Incorrect path format";
-                            }
-                        }
-                        break;
-                    case "IncorrectFormatSubpath":
-                        if (String.IsNullOrWhiteSpace(IncorrectFormatSubpath))
-                        {
-                            errorMessage = "Can't be empty";
-                        }
-                        else
-                        {
-                            try
-                            {
-                                var di = new DirectoryInfo("C:\\" + IncorrectFormatSubpath);
-                            }
-                            catch (Exception)
-                            {
-                                errorMessage = "Incorrect path format";
-                            }
-                        }
-                        break;
-                    case "IncorrectHashSubpath":
-                        if (String.IsNullOrWhiteSpace(IncorrectHashSubpath))
-                        {
-                            errorMessage = "Can't be empty";
-                        }
-                        else
-                        {
-                            try
-                            {
-                                var di = new DirectoryInfo("C:\\" + IncorrectHashSubpath);
-                            }
-                            catch (Exception)
-                            {
-                                errorMessage = "Incorrect path format";
-                            }
-                        }
-                        break;
-                    case "NonHashSubpath":
-                        if (String.IsNullOrWhiteSpace(NonHashSubpath))
-                        {
-                            errorMessage = "Can't be empty";
-                        }
-                        else
-                        {
-                            try
-                            {
-                                var di = new DirectoryInfo("C:\\" + NonHashSubpath);
-                            }
-                            catch (Exception)
-                            {
-                                errorMessage = "Incorrect path format";
-                            }
-                        }
-                        break;
-                }
-                return errorMessage;
-            }
-        }
-
-        public override string Error
-        {
-            get
-            {
-                return this["Path"] + Environment.NewLine
-                       + this["IncorrectFormatSubpath"] + Environment.NewLine
-                       + this["IncorrectHashSubpath"] + Environment.NewLine
-                       + this["NonHashSubpath"] + Environment.NewLine;
-            } 
-        }
+            return this["Path"] + Environment.NewLine
+                                + this["IncorrectFormatSubpath"] + Environment.NewLine
+                                + this["IncorrectHashSubpath"] + Environment.NewLine
+                                + this["NonHashSubpath"] + Environment.NewLine;
+        } 
     }
 }

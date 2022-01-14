@@ -2,51 +2,50 @@
 using System.Windows.Input;
 using ImoutoRebirth.Navigator.ViewModel;
 
-namespace ImoutoRebirth.Navigator.View
+namespace ImoutoRebirth.Navigator.View;
+
+/// <summary>
+///     Interaction logic for TagsSearchView.xaml
+/// </summary>
+public partial class TagsSearchView : UserControl
 {
-    /// <summary>
-    ///     Interaction logic for TagsSearchView.xaml
-    /// </summary>
-    public partial class TagsSearchView : UserControl
+    public TagsSearchView()
     {
-        public TagsSearchView()
+        InitializeComponent();
+    }
+
+    private void TextBox_KeyDown(object sender, KeyEventArgs e)
+    {
+        if (e.Key == Key.Down)
         {
-            InitializeComponent();
+            if (HintListBox.SelectedIndex < HintListBox.Items.Count - 1)
+            {
+                HintListBox.SelectedIndex = HintListBox.SelectedIndex + 1;
+            }
+            else
+            {
+                HintListBox.SelectedIndex = 0;
+            }
+
+            e.Handled = true;
         }
-
-        private void TextBox_KeyDown(object sender, KeyEventArgs e)
+        else if (e.Key == Key.Up)
         {
-            if (e.Key == Key.Down)
+            if (HintListBox.SelectedIndex > 0)
             {
-                if (HintListBox.SelectedIndex < HintListBox.Items.Count - 1)
-                {
-                    HintListBox.SelectedIndex = HintListBox.SelectedIndex + 1;
-                }
-                else
-                {
-                    HintListBox.SelectedIndex = 0;
-                }
+                HintListBox.SelectedIndex = HintListBox.SelectedIndex - 1;
+            }
+            else
+            {
+                HintListBox.SelectedIndex = HintListBox.Items.Count - 1;
+            }
 
-                e.Handled = true;
-            }
-            else if (e.Key == Key.Up)
-            {
-                if (HintListBox.SelectedIndex > 0)
-                {
-                    HintListBox.SelectedIndex = HintListBox.SelectedIndex - 1;
-                }
-                else
-                {
-                    HintListBox.SelectedIndex = HintListBox.Items.Count - 1;
-                }
-
-                e.Handled = true;
-            }
-            else if (e.Key == Key.Enter)
-            {
-                (DataContext as TagSearchVM).SelectTagCommand.Execute(HintListBox.SelectedItem);
-                e.Handled = true;
-            }
+            e.Handled = true;
+        }
+        else if (e.Key == Key.Enter)
+        {
+            (DataContext as TagSearchVM).SelectTagCommand.Execute(HintListBox.SelectedItem);
+            e.Handled = true;
         }
     }
 }

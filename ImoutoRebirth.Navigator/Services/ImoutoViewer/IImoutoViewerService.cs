@@ -1,11 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using ImoutoRebirth.Navigator.Services.Tags.Model;
+﻿using ImoutoRebirth.Navigator.Services.Tags.Model;
 
-namespace ImoutoRebirth.Navigator.Services.ImoutoViewer
+namespace ImoutoRebirth.Navigator.Services.ImoutoViewer;
+
+internal interface IImoutoViewerService
 {
-    internal interface IImoutoViewerService
-    {
-        void OpenFile(string path, Guid collectionId, IEnumerable<SearchTag> searchTags);
-    }
+    void OpenFile(string path, Guid collectionId, IEnumerable<SearchTag> searchTags);
 }
