@@ -1,6 +1,4 @@
-﻿using System.Threading.Tasks;
-
-namespace ImoutoRebirth.Common.Domain;
+﻿namespace ImoutoRebirth.Common.Domain;
 
 public class EmptyTransaction : ITransaction
 {

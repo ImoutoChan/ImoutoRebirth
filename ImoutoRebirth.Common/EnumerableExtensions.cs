@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-
-namespace ImoutoRebirth.Common;
+﻿namespace ImoutoRebirth.Common;
 
 public static class EnumerableExtensions
 {

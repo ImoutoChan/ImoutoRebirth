@@ -1,6 +1,4 @@
-﻿using System;
-using System.IO;
-using System.Text.RegularExpressions;
+﻿using System.Text.RegularExpressions;
 using GreenPipes;
 using GreenPipes.Configurators;
 using Humanizer;

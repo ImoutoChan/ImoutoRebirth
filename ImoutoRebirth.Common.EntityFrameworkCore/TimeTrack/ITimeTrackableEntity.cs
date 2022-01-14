@@ -1,5 +1,4 @@
-﻿using System;
-using NodaTime;
+﻿using NodaTime;
 
 namespace ImoutoRebirth.Common.EntityFrameworkCore.TimeTrack;
 

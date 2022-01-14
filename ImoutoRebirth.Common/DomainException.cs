@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace ImoutoRebirth.Common;
+﻿namespace ImoutoRebirth.Common;
 
 public class DomainException : Exception
 {

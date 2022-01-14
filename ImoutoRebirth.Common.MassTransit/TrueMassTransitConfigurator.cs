@@ -1,5 +1,4 @@
-﻿using System;
-using MassTransit.RabbitMqTransport;
+﻿using MassTransit.RabbitMqTransport;
 
 namespace ImoutoRebirth.Common.MassTransit;
 

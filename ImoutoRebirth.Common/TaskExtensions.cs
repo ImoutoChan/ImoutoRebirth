@@ -1,8 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-
-namespace ImoutoRebirth.Common;
+﻿namespace ImoutoRebirth.Common;
 
 public static class ExtraTaskExtensions
 {

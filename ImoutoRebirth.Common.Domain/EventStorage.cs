@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-
-namespace ImoutoRebirth.Common.Domain;
+﻿namespace ImoutoRebirth.Common.Domain;
 
 public class EventStorage : IEventStorage
 {

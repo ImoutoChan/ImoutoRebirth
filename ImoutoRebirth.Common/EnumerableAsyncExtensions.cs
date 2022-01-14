@@ -1,7 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Threading.Tasks;
-
-namespace ImoutoRebirth.Common;
+﻿namespace ImoutoRebirth.Common;
 
 public static class EnumerableAsyncExtensions
 {

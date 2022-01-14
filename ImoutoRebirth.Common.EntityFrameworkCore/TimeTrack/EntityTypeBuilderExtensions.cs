@@ -1,5 +1,4 @@
-﻿using System;
-using Microsoft.EntityFrameworkCore.Metadata.Builders;
+﻿using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using NodaTime;
 
 namespace ImoutoRebirth.Common.EntityFrameworkCore.TimeTrack;

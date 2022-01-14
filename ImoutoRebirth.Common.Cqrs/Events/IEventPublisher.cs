@@ -1,6 +1,4 @@
-﻿using System.Threading;
-using System.Threading.Tasks;
-using ImoutoRebirth.Common.Domain;
+﻿using ImoutoRebirth.Common.Domain;
 
 namespace ImoutoRebirth.Common.Cqrs.Events;
 
