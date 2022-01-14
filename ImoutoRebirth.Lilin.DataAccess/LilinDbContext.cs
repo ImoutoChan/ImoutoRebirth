@@ -21,7 +21,7 @@ public class LilinDbContext : DbContext, IUnitOfWork
 
     public LilinDbContext(
         DbContextOptions<LilinDbContext> options,
-        IEventStorage eventStorage) 
+        IEventStorage eventStorage)
         : base(options)
     {
         _eventStorage = eventStorage;
@@ -35,14 +35,14 @@ public class LilinDbContext : DbContext, IUnitOfWork
                 .WithMany(x => x!.FileTags)
                 .IsRequired()
                 .OnDelete(DeleteBehavior.Restrict);
-                
+
             b.HasIndex(x => new {x.FileId});
             b.HasIndex(x => new {x.TagId});
             b.HasIndex(x => new {x.TagId, x.Value});
             b.HasIndex(x => new {x.Source, x.TagId});
-            b.HasIndex(x => new {x.FileId, x.TagId, x.Source}).IsUnique();
+            b.HasIndex(x => new {x.FileId, x.TagId, x.Source});
+            b.HasIndex(x => x.AddedOn);
         });
-
 
         modelBuilder.Entity<TagEntity>(b =>
         {

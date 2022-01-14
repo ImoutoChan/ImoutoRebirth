@@ -87,7 +87,7 @@ public class FileTagRepository : IFileTagRepository
     private IQueryable<Guid> GetSearchFilesQueryable(IReadOnlyCollection<TagSearchEntry> tagSearchEntries)
     {
         var fileTags = _lilinDbContext.FileTags;
-        var files = _lilinDbContext.FileTags.Select(x => x.FileId).Distinct();
+        var files = _lilinDbContext.FileTags.OrderBy(x => x.AddedOn).Select(x => x.FileId).Distinct();
 
         // exclude tags
         var excludeFilters = tagSearchEntries
