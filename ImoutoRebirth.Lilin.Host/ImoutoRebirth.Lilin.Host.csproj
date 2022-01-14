@@ -12,9 +12,9 @@
 
   <ItemGroup>
     <FrameworkReference Include="Microsoft.AspNetCore.App" />
-    <PackageReference Include="ImoutoRebirth.Common.EntityFrameworkCore" Version="3.9.1" />
-    <PackageReference Include="ImoutoRebirth.Common.Host" Version="3.9.1" />
-    <PackageReference Include="ImoutoRebirth.Common.Logging" Version="3.9.1" />
+    <PackageReference Include="ImoutoRebirth.Common.EntityFrameworkCore" Version="3.9.2" />
+    <PackageReference Include="ImoutoRebirth.Common.Host" Version="3.9.2" />
+    <PackageReference Include="ImoutoRebirth.Common.Logging" Version="3.9.2" />
     <PackageReference Include="Microsoft.Extensions.Hosting.WindowsServices" Version="6.0.0" />
     <PackageReference Include="AutoMapper" Version="11.0.0" />
     <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="11.0.0" />
