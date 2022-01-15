@@ -1,5 +1,6 @@
 ﻿using System.Collections.ObjectModel;
 using System.Diagnostics;
+using System.Net;
 using System.Windows.Input;
 using ImoutoRebirth.Navigator.Commands;
 using ImoutoRebirth.Navigator.Services;
@@ -26,12 +27,13 @@ class TagSearchVM : VMBase
     private string _selectedComparator;
     private KeyValuePair<string, Guid?> _selectedCollection;
 
-    private ICommand _enterValueOkCommand;
-    private ICommand _unselectTagCommand;
-    private ICommand _selectTagCommand;
-    private ICommand _selectStaticTagCommand;
-    private ICommand _invertSearchTypeCommand;
-    private ICommand _selectBindedTag;
+    private ICommand? _enterValueOkCommand;
+    private ICommand? _unselectTagCommand;
+    private ICommand? _selectTagCommand;
+    private ICommand? _selectStaticTagCommand;
+    private ICommand? _invertSearchTypeCommand;
+    private ICommand? _selectBindedTag;
+    private ICommand? _exploreTag;
     private int _rate;
     private Guid? _lastListEntryId = null;
     private bool _isRateSetted;
@@ -67,10 +69,9 @@ class TagSearchVM : VMBase
 
     #region Properties
 
-    public ObservableCollection<TagSourceVM> CurrentTagsSources { get; } = new ObservableCollection<TagSourceVM>();
+    public ObservableCollection<TagSourceVM> CurrentTagsSources { get; } = new();
 
-    public ObservableCollection<KeyValuePair<string, Guid?>> Collections { get; }
-        = new ObservableCollection<KeyValuePair<string, Guid?>>();
+    public ObservableCollection<KeyValuePair<string, Guid?>> Collections { get; } = new();
 
     public KeyValuePair<string, Guid?> SelectedCollection
     {
@@ -82,7 +83,7 @@ class TagSearchVM : VMBase
         }
     }
 
-    public ObservableCollection<Tag> HintBoxTags { get; } = new ObservableCollection<Tag>();
+    public ObservableCollection<Tag> HintBoxTags { get; } = new();
 
     public Tag SelectedHintBoxTag
     {
@@ -93,7 +94,7 @@ class TagSearchVM : VMBase
         }
     }
 
-    public ObservableCollection<SearchTagVM> SelectedBindedTags { get; } = new ObservableCollection<SearchTagVM>();
+    public ObservableCollection<SearchTagVM> SelectedBindedTags { get; } = new();
 
     public string SearchString
     {
@@ -218,6 +219,8 @@ class TagSearchVM : VMBase
 
     public ICommand SelectBindedTagCommand => _selectBindedTag ??= new RelayCommand(SelectBindedTag);
 
+    public ICommand ExploreTagCommand => _exploreTag ??= new RelayCommand(ExploreTag);
+
     #endregion Commands
 
     #region Public methods
@@ -337,6 +340,15 @@ class TagSearchVM : VMBase
 
         SearchString = string.Empty;
         OnSelectedTagsUpdated();
+    }
+
+    private void ExploreTag(object param)
+    {
+        if (param is not BindedTagVM tag)
+            return;
+
+        var tagName = WebUtility.UrlEncode(tag.Title);
+        Process.Start(new ProcessStartInfo($"https://danbooru.donmai.us/posts?tags={tagName}") { UseShellExecute = true });
     }
 
     private async void SelectStaticTag(object param)

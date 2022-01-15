@@ -38,7 +38,6 @@ class FileService : IFileService
             return _mapper.Map<IReadOnlyCollection<File>>(filesOnly);
         }
 
-
         var tagsSearch = await _lilinClient.Files
             .GetFilesByTagsAsync(
                 new FilesSearchRequest(

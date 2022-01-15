@@ -251,6 +251,12 @@
                                     <TextBlock TextWrapping="Wrap"
                                                ToolTip="{Binding Title}"
                                                VerticalAlignment="Center">
+                                        <TextBlock.InputBindings>
+                                            <MouseBinding Command="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}}, Path=DataContext.ExploreTagCommand}"
+                                                          CommandParameter="{Binding}"
+                                                          MouseAction="MiddleClick" />
+                                        </TextBlock.InputBindings>
+
                                         <Run Text="{Binding Title, Mode=OneWay}"
                                              Foreground="{Binding TypeBrush}"
                                              FontFamily="Comic Sans MS"
