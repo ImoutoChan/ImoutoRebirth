@@ -14,7 +14,7 @@
     <Company>ImoutoRebirth</Company>
     <Product>Imouto Navigator</Product>
     <Copyright>ImoutoChan © 2013-2022</Copyright>
-    <Version>1.3.0</Version>
+    <Version>1.4.0</Version>
   </PropertyGroup>
 
   <ItemGroup>

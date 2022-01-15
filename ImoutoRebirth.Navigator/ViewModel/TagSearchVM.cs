@@ -347,8 +347,9 @@ class TagSearchVM : VMBase
         if (param is not BindedTagVM tag)
             return;
 
-        var tagName = WebUtility.UrlEncode(tag.Title);
-        Process.Start(new ProcessStartInfo($"https://danbooru.donmai.us/posts?tags={tagName}") { UseShellExecute = true });
+        var tagName = WebUtility.UrlEncode(tag.Title.Replace(" ", "_"));
+        Process.Start(new ProcessStartInfo($"https://danbooru.donmai.us/posts?tags={tagName}")
+            { UseShellExecute = true });
     }
 
     private async void SelectStaticTag(object param)
