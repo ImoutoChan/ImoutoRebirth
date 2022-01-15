@@ -85,6 +85,24 @@
 
     <metroControl:MetroWindow.RightWindowCommands>
         <metroControl:WindowCommands>
+            <Button Content="Images on row 2"
+                    Command="{Binding ZoomToRowElementsCommand}"
+                    CommandParameter="2" />
+            <Button Content="3"
+                    Command="{Binding ZoomToRowElementsCommand}"
+                    CommandParameter="3" />
+            <Button Content="4"
+                    Command="{Binding ZoomToRowElementsCommand}"
+                    CommandParameter="4" />
+            <Button Content="5"
+                    Command="{Binding ZoomToRowElementsCommand}"
+                    CommandParameter="5" />
+            <Button Content="6"
+                    Command="{Binding ZoomToRowElementsCommand}"
+                    CommandParameter="6" />
+            <Button Content="7"
+                    Command="{Binding ZoomToRowElementsCommand}"
+                    CommandParameter="7" />
             <Button Content="Reverse"
                     Command="{Binding ReverseCommand}"/>
             <Button Content="Shuffle"

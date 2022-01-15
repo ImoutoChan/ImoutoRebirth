@@ -65,6 +65,8 @@ internal partial class MainWindow
 
     public IList SelectedItems => ListBoxElement.SelectedItems;
 
+    public double? ViewPortWidth => ScrollViewerElement?.ViewportWidth;
+
     private ScrollViewer? ScrollViewerElement
         => FindFirstVisualChildOfType<ScrollViewer>(ListBoxElement);
 

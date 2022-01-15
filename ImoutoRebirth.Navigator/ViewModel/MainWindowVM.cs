@@ -194,6 +194,8 @@ class MainWindowVM : VMBase
 
     public ICommand ZoomOutCommand { get; set; }
 
+    public ICommand ZoomToRowElementsCommand { get; set; }
+
     public ICommand LoadPreviewsCommand { get; set; }
 
     public ICommand RemoveImageCommand { get; set; }
@@ -225,6 +227,17 @@ class MainWindowVM : VMBase
                 return;
             }
             _previewSize = Convert.ToInt32(Math.Floor(_previewSize * 0.9));
+            UpdatePreviews();
+        });
+
+        ZoomToRowElementsCommand = new RelayCommand(x =>
+        {
+            var toElements = int.Parse(x as string);
+
+            var boxSize = _view.ViewPortWidth / toElements;
+
+            _previewSize = (int)(boxSize - 30);
+
             UpdatePreviews();
         });
 
