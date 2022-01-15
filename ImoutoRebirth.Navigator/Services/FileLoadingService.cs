@@ -1,6 +1,7 @@
 ﻿using System.Windows;
 using Imouto.Utils.Core;
 using ImoutoRebirth.Lilin.WebApi.Client;
+using ImoutoRebirth.Navigator.Extensions;
 using ImoutoRebirth.Navigator.Services.Tags;
 using ImoutoRebirth.Navigator.Services.Tags.Model;
 using ImoutoRebirth.Navigator.ViewModel;

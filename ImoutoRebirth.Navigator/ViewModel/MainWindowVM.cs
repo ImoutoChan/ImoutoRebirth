@@ -50,6 +50,7 @@ class MainWindowVM : VMBase
     private async Task LoadNew()
     {
         _appendNewContentTimer.Stop();
+        UpdatePreviews();
 
         var total = TotalCount;
 

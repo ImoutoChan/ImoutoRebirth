@@ -37,7 +37,7 @@ internal class CollectionManagerVm : VMBase
             {
                 Collections.Add(new CollectionVM(collection.Id, collection.Name));
             }
-                
+
             foreach (var collectionVm in Collections)
             {
                 await collectionVm.LoadFolders();
@@ -99,13 +99,13 @@ internal class CollectionManagerVm : VMBase
 
     #region Commands
 
-    public ICommand RemoveCommand 
+    public ICommand RemoveCommand
         => _removeCommand ??= new AsyncCommand(Remove, CanDoCollectionCommand);
 
     #endregion Commands
 
     #region Command Handlers
-        
+
 
     private async Task Remove()
     {

@@ -1,4 +1,4 @@
-﻿namespace ImoutoRebirth.Navigator.ViewModel;
+﻿namespace ImoutoRebirth.Navigator.Extensions;
 
 public static class EnumerableCancellationExtensions
 {
