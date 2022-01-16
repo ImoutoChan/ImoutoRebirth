@@ -20,7 +20,7 @@ public class CollectionFileRepository : ICollectionFileRepository
 
     public CollectionFileRepository(
         RoomDbContext roomDbContext,
-        IMapper mapper, 
+        IMapper mapper,
         ICollectionFileCacheService collectionFileCacheService,
         IMemoryCache cache)
     {
@@ -44,7 +44,7 @@ public class CollectionFileRepository : ICollectionFileRepository
         var key = collectionId + path;
         if (_cache.TryGetValue(key, out bool value) && value)
             return true;
-            
+
         var result = await CheckInDatabaseWithRemoved(collectionId, path);
 
         if (result)
@@ -92,20 +92,20 @@ public class CollectionFileRepository : ICollectionFileRepository
         var key = collectionId + md5;
         if (_cache.TryGetValue(key, out string path))
             return path;
-            
+
         var file = await _roomDbContext.CollectionFiles.FirstOrDefaultAsync(
             x => x.Md5 == md5 && x.CollectionId == collectionId);
 
         if (file != null)
             _cache.Set(key, file.OriginalPath);
-            
+
         return file?.OriginalPath;
     }
 
     private IQueryable<CollectionFileEntity> BuildFilesQuery(CollectionFilesQuery query)
     {
         var files = _roomDbContext.CollectionFiles.AsQueryable();
-            
+
         if (query.CollectionId.HasValue)
             files = files.Where(x => x.CollectionId == query.CollectionId.Value);
 
@@ -117,6 +117,8 @@ public class CollectionFileRepository : ICollectionFileRepository
 
         if (query.Md5 != null && query.Md5.Any())
             files = files.Where(x => query.Md5.Contains(x.Md5));
+
+        files = files.OrderBy(x => x.AddedOn);
 
         return files;
     }
