@@ -1,6 +1,4 @@
-﻿using System;
-using System.IO;
-using ImoutoRebirth.Room.DataAccess.Models.Abstract;
+﻿using ImoutoRebirth.Room.DataAccess.Models.Abstract;
 
 namespace ImoutoRebirth.Room.DataAccess.Models
 {

@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-
-namespace ImoutoRebirth.Room.DataAccess.Models
+﻿namespace ImoutoRebirth.Room.DataAccess.Models
 {
     public class SourceFolderUpdateData
     {

@@ -1,6 +1,4 @@
-﻿using System.Threading.Tasks;
-
-namespace ImoutoRebirth.Room.DataAccess
+﻿namespace ImoutoRebirth.Room.DataAccess
 {
     public interface IDbStateService
     {

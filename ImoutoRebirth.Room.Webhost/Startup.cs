@@ -8,10 +8,6 @@ using ImoutoRebirth.Room.Infrastructure;
 using ImoutoRebirth.Room.WebApi;
 using ImoutoRebirth.Room.Webhost.Quartz;
 using ImoutoRebirth.Room.Webhost.Settings;
-using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
 
 namespace ImoutoRebirth.Room.Webhost
 {

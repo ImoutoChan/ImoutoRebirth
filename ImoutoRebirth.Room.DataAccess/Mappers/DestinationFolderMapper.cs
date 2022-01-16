@@ -1,5 +1,4 @@
-﻿using System;
-using ImoutoRebirth.Room.DataAccess.Models;
+﻿using ImoutoRebirth.Room.DataAccess.Models;
 using ImoutoRebirth.Room.Database.Entities;
 
 namespace ImoutoRebirth.Room.DataAccess.Mappers

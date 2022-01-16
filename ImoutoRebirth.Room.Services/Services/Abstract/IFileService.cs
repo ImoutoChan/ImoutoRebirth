@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-using System.IO;
-using ImoutoRebirth.Room.Core.Models;
+﻿using ImoutoRebirth.Room.Core.Models;
 
 namespace ImoutoRebirth.Room.Core.Services.Abstract
 {

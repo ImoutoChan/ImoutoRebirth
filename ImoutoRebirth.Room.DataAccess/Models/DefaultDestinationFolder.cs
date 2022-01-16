@@ -1,7 +1,4 @@
-﻿using System;
-using System.IO;
-
-namespace ImoutoRebirth.Room.DataAccess.Models
+﻿namespace ImoutoRebirth.Room.DataAccess.Models
 {
     public class DefaultDestinationFolder : DestinationFolder
     {

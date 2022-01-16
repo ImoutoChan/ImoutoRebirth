@@ -1,5 +1,4 @@
-﻿using System;
-using AutoMapper;
+﻿using AutoMapper;
 using ImoutoRebirth.Room.DataAccess.Models;
 using ImoutoRebirth.Room.DataAccess.Repositories.Queries;
 using ImoutoRebirth.Room.WebApi.Requests;

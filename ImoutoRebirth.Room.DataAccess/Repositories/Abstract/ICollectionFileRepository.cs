@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
-using ImoutoRebirth.Room.DataAccess.Models;
+﻿using ImoutoRebirth.Room.DataAccess.Models;
 using ImoutoRebirth.Room.DataAccess.Repositories.Queries;
 
 namespace ImoutoRebirth.Room.DataAccess.Repositories.Abstract

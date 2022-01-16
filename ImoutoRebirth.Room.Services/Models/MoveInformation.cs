@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-
-namespace ImoutoRebirth.Room.Core.Models
+﻿namespace ImoutoRebirth.Room.Core.Models
 {
     public class MoveInformation
     {

@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace ImoutoRebirth.Room.DataAccess.Exceptions
+﻿namespace ImoutoRebirth.Room.DataAccess.Exceptions
 {
 
     public abstract class EntityNotFoundException : Exception

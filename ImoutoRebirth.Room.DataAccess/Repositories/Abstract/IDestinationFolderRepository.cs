@@ -1,6 +1,4 @@
-﻿using System;
-using System.Threading.Tasks;
-using ImoutoRebirth.Room.DataAccess.Models;
+﻿using ImoutoRebirth.Room.DataAccess.Models;
 
 namespace ImoutoRebirth.Room.DataAccess.Repositories.Abstract
 {

@@ -1,5 +1,4 @@
-﻿using System;
-using AutoMapper;
+﻿using AutoMapper;
 using ImoutoRebirth.Room.DataAccess.Models;
 using ImoutoRebirth.Room.Database.Entities;
 

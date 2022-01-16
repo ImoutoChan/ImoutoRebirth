@@ -1,6 +1,4 @@
-﻿using System.IO;
-
-namespace ImoutoRebirth.Room.Core.Models
+﻿namespace ImoutoRebirth.Room.Core.Models
 {
     public class SystemFile
     {

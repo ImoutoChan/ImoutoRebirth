@@ -1,9 +1,6 @@
 ﻿using ImoutoRebirth.Common.EntityFrameworkCore;
 using ImoutoRebirth.Common.Logging;
 using ImoutoRebirth.Room.Database;
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.Extensions.Hosting;
-using System.Threading.Tasks;
 using ImoutoRebirth.Common.Quartz.Extensions;
 using ImoutoRebirth.Common.Host;
 

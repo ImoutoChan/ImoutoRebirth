@@ -1,5 +1,4 @@
-﻿using System.IO;
-using ImoutoRebirth.Room.Core.Services.Abstract;
+﻿using ImoutoRebirth.Room.Core.Services.Abstract;
 using SixLabors.ImageSharp;
 
 namespace ImoutoRebirth.Room.Infrastructure.Service

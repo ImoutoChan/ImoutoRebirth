@@ -1,10 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using ImoutoRebirth.Lilin.MessageContracts;
+﻿using ImoutoRebirth.Lilin.MessageContracts;
 using ImoutoRebirth.Meido.MessageContracts;
-using ImoutoRebirth.Room.Core.Models;
 using ImoutoRebirth.Room.Core.Services.Abstract;
 using MassTransit;
 

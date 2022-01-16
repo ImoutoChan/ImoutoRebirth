@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 using ImoutoRebirth.Room.Database.Entities.Abstract;
 
 namespace ImoutoRebirth.Room.Database.Entities

@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace ImoutoRebirth.Room.DataAccess.Models.Abstract
+﻿namespace ImoutoRebirth.Room.DataAccess.Models.Abstract
 {
     public class ModelBase
     {

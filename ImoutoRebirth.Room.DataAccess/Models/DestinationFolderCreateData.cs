@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace ImoutoRebirth.Room.DataAccess.Models
+﻿namespace ImoutoRebirth.Room.DataAccess.Models
 {
     public class DestinationFolderCreateData
     {

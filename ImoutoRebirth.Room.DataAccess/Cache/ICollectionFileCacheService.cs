@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
-
-namespace ImoutoRebirth.Room.DataAccess.Cache
+﻿namespace ImoutoRebirth.Room.DataAccess.Cache
 {
     public interface ICollectionFileCacheService
     {

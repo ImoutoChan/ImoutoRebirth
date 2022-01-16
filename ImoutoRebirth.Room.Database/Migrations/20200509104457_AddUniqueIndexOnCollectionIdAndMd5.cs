@@ -1,5 +1,4 @@
-﻿using ImoutoRebirth.Room.Database.Entities;
-using Microsoft.EntityFrameworkCore.Migrations;
+﻿using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace ImoutoRebirth.Room.Database.Migrations
 {

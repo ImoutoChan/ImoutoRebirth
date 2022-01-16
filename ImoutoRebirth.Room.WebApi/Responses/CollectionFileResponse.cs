@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace ImoutoRebirth.Room.WebApi.Responses
+﻿namespace ImoutoRebirth.Room.WebApi.Responses
 {
     public class CollectionFileResponse
     {

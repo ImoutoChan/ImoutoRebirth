@@ -1,5 +1,4 @@
-﻿using System.Threading.Tasks;
-using ImoutoRebirth.Room.Database;
+﻿using ImoutoRebirth.Room.Database;
 
 namespace ImoutoRebirth.Room.DataAccess
 {

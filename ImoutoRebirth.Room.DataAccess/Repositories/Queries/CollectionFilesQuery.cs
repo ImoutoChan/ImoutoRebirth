@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-
-namespace ImoutoRebirth.Room.DataAccess.Repositories.Queries
+﻿namespace ImoutoRebirth.Room.DataAccess.Repositories.Queries
 {
     // ReSharper disable once ClassNeverInstantiated.Global
     // Automapper

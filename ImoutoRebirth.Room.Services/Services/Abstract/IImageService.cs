@@ -1,6 +1,4 @@
-﻿using System.IO;
-
-namespace ImoutoRebirth.Room.Core.Services.Abstract
+﻿namespace ImoutoRebirth.Room.Core.Services.Abstract
 {
     public interface IImageService
     {

@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-
-namespace ImoutoRebirth.Room.WebApi.Responses
+﻿namespace ImoutoRebirth.Room.WebApi.Responses
 {
     public class SourceFolderResponse
     {

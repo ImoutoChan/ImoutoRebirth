@@ -1,6 +1,4 @@
-﻿using System.Threading;
-using System.Threading.Tasks;
-using ImoutoRebirth.Common.EntityFrameworkCore.TimeTrack;
+﻿using ImoutoRebirth.Common.EntityFrameworkCore.TimeTrack;
 using ImoutoRebirth.Room.Database.Entities;
 using Microsoft.EntityFrameworkCore;
 

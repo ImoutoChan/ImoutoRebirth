@@ -1,5 +1,4 @@
-﻿using System.Threading.Tasks;
-using ImoutoRebirth.Common.Quartz;
+﻿using ImoutoRebirth.Common.Quartz;
 using ImoutoRebirth.Room.Core.Services.Abstract;
 using Quartz;
 
