@@ -81,15 +81,16 @@ namespace ImoutoRebirth.Room.Core.Services
         private async Task<DirectoryInfo> GetDeletedFolder(FileInfo fileToDelete, Guid collectionId)
         {
             var destinationFolderForFile = await _destinationFolderRepository.Get(collectionId);
+            var fileDirectory = fileToDelete.Directory!;
 
             if (destinationFolderForFile == null)
             {
                 _logger.LogInformation("Destination directory isn't found");
-                return fileToDelete.Directory.CreateSubdirectory(DeletedDirectoryName);
+                return fileDirectory.CreateSubdirectory(DeletedDirectoryName);
             }
 
             var destPath = destinationFolderForFile.GetDestinationDirectory();
-            var filePathLowerCase = fileToDelete.Directory.FullName.ToLowerInvariant();
+            var filePathLowerCase = fileDirectory.FullName.ToLowerInvariant();
             var destPathLowerCase = destPath.FullName.ToLowerInvariant();
 
             var isFileInDestinationDirectory = filePathLowerCase.Contains(destPathLowerCase);
@@ -104,7 +105,7 @@ namespace ImoutoRebirth.Room.Core.Services
                 destPathLowerCase,
                 filePathLowerCase);
 
-            return fileToDelete.Directory.CreateSubdirectory(DeletedDirectoryName);
+            return fileDirectory.CreateSubdirectory(DeletedDirectoryName);
         }
     }
 }

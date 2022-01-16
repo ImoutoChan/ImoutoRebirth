@@ -1,5 +1,5 @@
 version: 1.0.0-CI-{build}
-image: Visual Studio 2019 Preview
+image: Visual Studio 2022
 configuration: Release
 dotnet_csproj:
   patch: true

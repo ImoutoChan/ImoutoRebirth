@@ -8,7 +8,6 @@ using ImoutoRebirth.Room.Core.Models;
 using ImoutoRebirth.Room.Core.Services.Abstract;
 using ImoutoRebirth.Room.DataAccess.Models;
 using ImoutoRebirth.Room.DataAccess.Repositories.Abstract;
-using ImoutoRebirth.Common;
 using Microsoft.Extensions.Logging;
 
 namespace ImoutoRebirth.Room.Core.Services
@@ -68,7 +67,7 @@ namespace ImoutoRebirth.Room.Core.Services
             {
                 var prepared = await PrepareMove(forSourceFolder, systemFile);
 
-                if (prepared == null) 
+                if (prepared == null)
                     continue;
 
                 var duplicate = result.FirstOrDefault(x => x.SystemFile.Md5 == prepared.SystemFile.Md5);
@@ -123,7 +122,7 @@ namespace ImoutoRebirth.Room.Core.Services
                 _logger.LogWarning("File is not ready or was removed");
                 return null;
             }
-            
+
             var moveInformation = new MoveInformation(systemFile);
 
             moveInformation.MoveProblem = await FindProblems(sourceFolder, systemFile);
@@ -152,17 +151,17 @@ namespace ImoutoRebirth.Room.Core.Services
         {
             var existingFile = await _collectionFileRepository
                 .GetWithMd5(sourceDirectory.CollectionId, systemFile.Md5);
-            
+
             if (existingFile != null)
             {
                 _logger.LogWarning(
-                    "File with the same md5 {Md5} already presented in the database. " 
-                        + "NewFile: {NewFile}. " 
+                    "File with the same md5 {Md5} already presented in the database. "
+                        + "NewFile: {NewFile}. "
                         + "ExistingFile: {ExistingFile}.",
                     systemFile.Md5,
                     systemFile.File.FullName,
                     existingFile);
-                
+
                 return MoveProblem.AlreadyContains;
             }
 

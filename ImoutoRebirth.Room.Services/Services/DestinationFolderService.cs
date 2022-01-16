@@ -114,10 +114,12 @@ namespace ImoutoRebirth.Room.Core.Services
             ICollection<string> newPathParts)
         {
             var destDirectory = destinationFolder.GetDestinationDirectory();
+            var fileDirectory = moveInformation.SystemFile.File.DirectoryName;
 
             if (destDirectory == null)
             {
-                newPathParts.Add(moveInformation.SystemFile.File.DirectoryName);
+                if (fileDirectory != null)
+                    newPathParts.Add(fileDirectory);
             }
             else
             {

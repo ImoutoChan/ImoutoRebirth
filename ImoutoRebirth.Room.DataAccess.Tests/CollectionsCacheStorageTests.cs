@@ -8,9 +8,9 @@ namespace ImoutoRebirth.Room.DataAccess.Tests
 {
     public class CollectionsCacheStorageTests
     {
-        private const string _format = "C:\\Users\\pc\\Downloads\\aspnetboilerplate-samples-master\\aspnetboilerplate-samples-master\\IdentityServerDemo\\docker\\{0:D10}.jpg";
+        private const string Format = "C:\\Users\\pc\\Downloads\\aspnetboilerplate-samples-master\\aspnetboilerplate-samples-master\\IdentityServerDemo\\docker\\{0:D10}.jpg";
 
-        [Fact]
+        [Fact(Skip = "OneTime")]
         public void MemoryTest()
         {
             //var storage = new CollectionsCacheStorage();
@@ -36,15 +36,15 @@ namespace ImoutoRebirth.Room.DataAccess.Tests
         }
 
 
-        [Fact]
+        [Fact(Skip = "OneTime")]
         public void BloomMemoryTest()
         {
 
             var bloom = new BloomFilter<string>(200000);
 
-            Parallel.For(0, 200_000, i => 
+            Parallel.For(0, 200_000, i =>
             {
-                var path = string.Format(_format, i);
+                var path = string.Format(Format, i);
 
                 var parts = path;//.Split("\\").Select(string.Intern).ToArray();
 
@@ -53,14 +53,14 @@ namespace ImoutoRebirth.Room.DataAccess.Tests
 
             var random = new Random();
 
-            int misses = 0, 
+            int misses = 0,
                 successes = 0;
 
             for (int i = 0; i < 1_000_000; i++)
             {
                 var generated = random.Next(0, 1_000_000);
 
-                var result = bloom.Contains(string.Format(_format, generated));
+                var result = bloom.Contains(string.Format(Format, generated));
 
                 if (result)
                 {
