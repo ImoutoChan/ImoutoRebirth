@@ -14,7 +14,7 @@ public static class ServiceCollectionExtensions
         services.AddTransient(typeof(SoftDeleteDbContextHelper<>));
 
         services.AddDbContext<RoomDbContext>(builder
-            => builder.UseNpgsql(configuration.GetConnectionString("RoomDatabase")));
+            => builder.UseNpgsql(configuration.GetConnectionString("RoomDatabase"), x => x.UseNodaTime()));
 
         return services;
     }
