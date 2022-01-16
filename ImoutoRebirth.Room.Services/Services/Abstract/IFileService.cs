@@ -20,4 +20,6 @@ public interface IFileService
     /// <param name="newFile">Desired file location.</param>
     /// <returns>Should file be registered.</returns>
     bool MoveFile(SystemFile oldFile, ref FileInfo newFile);
+
+    void DeleteFile(SystemFile file);
 }

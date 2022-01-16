@@ -66,14 +66,14 @@ public class FileService : IFileService
     {
         if (string.Equals(oldFile.File.FullName, newFile.FullName, StringComparison.OrdinalIgnoreCase))
         {
-            _logger.LogInformation("File doesn't require moving.");
+            _logger.LogInformation("File doesn't require moving");
             return true;
         }
 
         if (!oldFile.File.Exists)
             throw new ArgumentException(nameof(oldFile));
 
-        if (newFile.Directory != null && !newFile.Directory.Exists)
+        if (newFile.Directory is { Exists: false })
         {
             _logger.LogInformation("Creating target directory {NewDirectory}", newFile.Directory);
             newFile.Directory.Create();
@@ -82,26 +82,32 @@ public class FileService : IFileService
         if (newFile.Exists)
             return MoveToExisted(oldFile, ref newFile);
 
-        _logger.LogInformation("Moving to {NewPath}.", newFile.FullName);
+        _logger.LogInformation("Moving to {NewPath}", newFile.FullName);
         oldFile.File.MoveTo(newFile.FullName);
 
         return true;
     }
 
+    public void DeleteFile(SystemFile file)
+    {
+        _logger.LogInformation("Deleting file {FileName}", file.File.FullName);
+        file.File.Delete();
+    }
+
     private bool MoveToExisted(SystemFile oldFile, ref FileInfo newFile)
     {
-        _logger.LogWarning("Destination file already exists.");
+        _logger.LogWarning("Destination file already exists");
 
         if (oldFile.Md5 == GetMd5Checksum(newFile))
         {
-            _logger.LogInformation("Files are identical. Removing file from source folder.");
+            _logger.LogInformation("Files are identical. Removing file from source folder");
 
             oldFile.File.Delete();
 
             return false;
         }
 
-        _logger.LogInformation("Files are different. Generating new name.");
+        _logger.LogInformation("Files are different. Generating new name");
 
         int counter = 0;
         FileInfo countedFile;
@@ -118,7 +124,7 @@ public class FileService : IFileService
         }
         while (countedFile.Exists);
 
-        _logger.LogInformation("Moving to {ChangeNewPath}.", countedFile.FullName);
+        _logger.LogInformation("Moving to {ChangeNewPath}", countedFile.FullName);
         oldFile.File.MoveTo(countedFile.FullName);
 
         newFile = countedFile;

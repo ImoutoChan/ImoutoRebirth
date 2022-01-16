@@ -67,22 +67,31 @@ public class CollectionFileService : ICollectionFileService
         var fileToDelete = new FileInfo(file.Path);
         var deletedDirectory = await GetDeletedFolder(fileToDelete, file.CollectionId);
 
-        var fileToDeleteDestination = new FileInfo(Path.Combine(deletedDirectory.FullName, fileToDelete.Name));
+        if (deletedDirectory != null)
+        {
+            var fileToDeleteDestination = new FileInfo(Path.Combine(deletedDirectory.FullName, fileToDelete.Name));
 
-        _fileService.MoveFile(
-            new SystemFile(fileToDelete, file.Md5, file.Size),
-            ref fileToDeleteDestination);
+            _fileService.MoveFile(
+                new SystemFile(fileToDelete, file.Md5, file.Size),
+                ref fileToDeleteDestination);
+        }
+        else
+        {
+            _fileService.DeleteFile(new SystemFile(fileToDelete, file.Md5, file.Size));
+        }
     }
 
-    private async Task<DirectoryInfo> GetDeletedFolder(FileInfo fileToDelete, Guid collectionId)
+    private async Task<DirectoryInfo?> GetDeletedFolder(FileInfo fileToDelete, Guid collectionId)
     {
         var destinationFolderForFile = await _destinationFolderRepository.Get(collectionId);
         var fileDirectory = fileToDelete.Directory!;
 
         if (destinationFolderForFile == null)
         {
+            // In collection without destination it's unwise to move files around.
+            // They will be just added again. So the only way is to delete them.
             _logger.LogInformation("Destination directory isn't found");
-            return fileDirectory.CreateSubdirectory(DeletedDirectoryName);
+            return null;
         }
 
         var destPath = destinationFolderForFile.GetDestinationDirectory();
