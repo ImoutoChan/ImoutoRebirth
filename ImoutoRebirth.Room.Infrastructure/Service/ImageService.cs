@@ -1,23 +1,22 @@
 ﻿using ImoutoRebirth.Room.Core.Services.Abstract;
 using SixLabors.ImageSharp;
 
-namespace ImoutoRebirth.Room.Infrastructure.Service
+namespace ImoutoRebirth.Room.Infrastructure.Service;
+
+public class ImageService : IImageService
 {
-    public class ImageService : IImageService
+    public bool IsImageCorrect(FileInfo fileInfo)
     {
-        public bool IsImageCorrect(FileInfo fileInfo)
+        try
         {
-            try
+            using (var image = Image.Load(fileInfo.FullName))
             {
-                using (var image = Image.Load(fileInfo.FullName))
-                {
-                }
-                return true;
             }
-            catch
-            {
-                return false;
-            }
+            return true;
+        }
+        catch
+        {
+            return false;
         }
     }
 }

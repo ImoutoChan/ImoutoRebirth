@@ -1,15 +1,14 @@
-﻿namespace ImoutoRebirth.Room.WebApi.Responses
+﻿namespace ImoutoRebirth.Room.WebApi.Responses;
+
+public class CollectionResponse
 {
-    public class CollectionResponse
+    public Guid Id { get; }
+
+    public string Name { get; }
+
+    public CollectionResponse(Guid id, string name)
     {
-        public Guid Id { get; }
-
-        public string Name { get; }
-
-        public CollectionResponse(Guid id, string name)
-        {
-            Id = id;
-            Name = name;
-        }
+        Id = id;
+        Name = name;
     }
 }

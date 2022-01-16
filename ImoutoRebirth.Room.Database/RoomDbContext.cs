@@ -2,92 +2,91 @@
 using ImoutoRebirth.Room.Database.Entities;
 using Microsoft.EntityFrameworkCore;
 
-namespace ImoutoRebirth.Room.Database
+namespace ImoutoRebirth.Room.Database;
+
+public class RoomDbContext : DbContext
 {
-    public class RoomDbContext : DbContext
+
+    public DbSet<CollectionEntity> Collections { get; set; } = default!;
+
+    public DbSet<SourceFolderEntity> SourceFolders { get; set; } = default!;
+
+    public DbSet<DestinationFolderEntity> DestinationFolders { get; set; } = default!;
+
+    public DbSet<CollectionFileEntity> CollectionFiles { get; set; } = default!;
+
+    public RoomDbContext(DbContextOptions options)
+        : base(options)
     {
+    }
 
-        public DbSet<CollectionEntity> Collections { get; set; } = default!;
+    protected override void OnModelCreating(ModelBuilder modelBuilder)
+    {
+        BuildSourceFolderEntity(modelBuilder);
+        BuildDestinationFolderEntity(modelBuilder);
+        BuildCollectionFileEntity(modelBuilder);
 
-        public DbSet<SourceFolderEntity> SourceFolders { get; set; } = default!;
+        base.OnModelCreating(modelBuilder);
+    }
 
-        public DbSet<DestinationFolderEntity> DestinationFolders { get; set; } = default!;
+    public override Task<int> SaveChangesAsync(
+        bool acceptAllChangesOnSuccess,
+        CancellationToken cancellationToken = new CancellationToken())
+    {
+        ChangeTracker.TrackImplicitTimeBeforeSaveChanges();
 
-        public DbSet<CollectionFileEntity> CollectionFiles { get; set; } = default!;
+        return base.SaveChangesAsync(acceptAllChangesOnSuccess, cancellationToken);
+    }
 
-        public RoomDbContext(DbContextOptions options)
-            : base(options)
-        {
-        }
+    private static void BuildDestinationFolderEntity(ModelBuilder modelBuilder)
+    {
+        modelBuilder
+            .Entity<DestinationFolderEntity>()
+            .Property(x => x.FormatErrorSubfolder)
+            .HasDefaultValue("!FormatError");
 
-        protected override void OnModelCreating(ModelBuilder modelBuilder)
-        {
-            BuildSourceFolderEntity(modelBuilder);
-            BuildDestinationFolderEntity(modelBuilder);
-            BuildCollectionFileEntity(modelBuilder);
+        modelBuilder
+            .Entity<DestinationFolderEntity>()
+            .Property(x => x.HashErrorSubfolder)
+            .HasDefaultValue("!HashError");
 
-            base.OnModelCreating(modelBuilder);
-        }
+        modelBuilder
+            .Entity<DestinationFolderEntity>()
+            .Property(x => x.WithoutHashErrorSubfolder)
+            .HasDefaultValue("!WithoutHashError");
+    }
 
-        public override Task<int> SaveChangesAsync(
-            bool acceptAllChangesOnSuccess,
-            CancellationToken cancellationToken = new CancellationToken())
-        {
-            ChangeTracker.TrackImplicitTimeBeforeSaveChanges();
+    private static void BuildSourceFolderEntity(ModelBuilder modelBuilder)
+    {
+        modelBuilder.Entity<SourceFolderEntity>()
+            .Property<string>("_supportedExtensions")
+            .HasColumnName("SupportedExtensions");
+    }
 
-            return base.SaveChangesAsync(acceptAllChangesOnSuccess, cancellationToken);
-        }
+    private static void BuildCollectionFileEntity(ModelBuilder modelBuilder)
+    {
+        modelBuilder.Entity<CollectionFileEntity>()
+            .HasIndex(entity => entity.Path);
 
-        private static void BuildDestinationFolderEntity(ModelBuilder modelBuilder)
-        {
-            modelBuilder
-               .Entity<DestinationFolderEntity>()
-               .Property(x => x.FormatErrorSubfolder)
-               .HasDefaultValue("!FormatError");
+        modelBuilder.Entity<CollectionFileEntity>()
+            .HasIndex(entity => entity.Md5);
 
-            modelBuilder
-               .Entity<DestinationFolderEntity>()
-               .Property(x => x.HashErrorSubfolder)
-               .HasDefaultValue("!HashError");
-
-            modelBuilder
-               .Entity<DestinationFolderEntity>()
-               .Property(x => x.WithoutHashErrorSubfolder)
-               .HasDefaultValue("!WithoutHashError");
-        }
-
-        private static void BuildSourceFolderEntity(ModelBuilder modelBuilder)
-        {
-            modelBuilder.Entity<SourceFolderEntity>()
-                        .Property<string>("_supportedExtensions")
-                        .HasColumnName("SupportedExtensions");
-        }
-
-        private static void BuildCollectionFileEntity(ModelBuilder modelBuilder)
-        {
-            modelBuilder.Entity<CollectionFileEntity>()
-                        .HasIndex(entity => entity.Path);
-
-            modelBuilder.Entity<CollectionFileEntity>()
-                        .HasIndex(entity => entity.Md5);
-
-            modelBuilder.Entity<CollectionFileEntity>()
-                        .HasIndex(entity => entity.IsRemoved);
+        modelBuilder.Entity<CollectionFileEntity>()
+            .HasIndex(entity => entity.IsRemoved);
             
-            modelBuilder.Entity<CollectionFileEntity>()
-                        .HasIndex(entity => new
-                        {
-                            entity.CollectionId, 
-                            entity.Md5, 
-                            entity.IsRemoved
-                        })
-                        .HasFilter($"NOT \"{nameof(CollectionFileEntity.IsRemoved)}\"")
-                        .IsUnique();
+        modelBuilder.Entity<CollectionFileEntity>()
+            .HasIndex(entity => new
+            {
+                entity.CollectionId, 
+                entity.Md5, 
+                entity.IsRemoved
+            })
+            .HasFilter($"NOT \"{nameof(CollectionFileEntity.IsRemoved)}\"")
+            .IsUnique();
 
-            // Maybe add IsRemoved + Fields indexes
+        // Maybe add IsRemoved + Fields indexes
 
-            modelBuilder.Entity<CollectionFileEntity>()
-                        .HasQueryFilter(x => !x.IsRemoved);
-        }
+        modelBuilder.Entity<CollectionFileEntity>()
+            .HasQueryFilter(x => !x.IsRemoved);
     }
 }

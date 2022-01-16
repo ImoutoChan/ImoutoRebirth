@@ -1,44 +1,43 @@
 ﻿using ImoutoRebirth.Room.Core.Services.Abstract;
 using ImoutoRebirth.Room.DataAccess.Models;
 
-namespace ImoutoRebirth.Room.Core.Services
+namespace ImoutoRebirth.Room.Core.Services;
+
+internal class SourceTagsProvider : ISourceTagsProvider
 {
-    internal class SourceTagsProvider : ISourceTagsProvider
+    public IReadOnlyCollection<string> GetTagsFromName(FileInfo fileInfo) 
+        => new[] {fileInfo.Name};
+
+    public IReadOnlyCollection<string> GetTagsFromPath(SourceFolder sourceDirectory, FileInfo fileInfo) 
+        => GetTags(sourceDirectory, fileInfo);
+
+    private static IReadOnlyCollection<string> GetTags(SourceFolder sourceDirectory, FileInfo fileInfo)
     {
-        public IReadOnlyCollection<string> GetTagsFromName(FileInfo fileInfo) 
-            => new[] {fileInfo.Name};
+        var sourcePathEntries = GetPathParts(new DirectoryInfo(sourceDirectory.Path));
+        var filePathEntries = GetPathParts(fileInfo);
 
-        public IReadOnlyCollection<string> GetTagsFromPath(SourceFolder sourceDirectory, FileInfo fileInfo) 
-            => GetTags(sourceDirectory, fileInfo);
+        return filePathEntries.Except(sourcePathEntries).ToArray();
+    }
 
-        private static IReadOnlyCollection<string> GetTags(SourceFolder sourceDirectory, FileInfo fileInfo)
+    private static IEnumerable<string> GetPathParts(DirectoryInfo directoryInfo)
+    {
+        var directory = directoryInfo;
+
+        while(directory != null)
         {
-            var sourcePathEntries = GetPathParts(new DirectoryInfo(sourceDirectory.Path));
-            var filePathEntries = GetPathParts(fileInfo);
-
-            return filePathEntries.Except(sourcePathEntries).ToArray();
+            yield return directory.Name;
+            directory = directory.Parent;
         }
+    }
 
-        private static IEnumerable<string> GetPathParts(DirectoryInfo directoryInfo)
-        {
-            var directory = directoryInfo;
-
-            while(directory != null)
-            {
-                yield return directory.Name;
-                directory = directory.Parent;
-            }
-        }
-
-        private static IEnumerable<string> GetPathParts(FileInfo fileInfo)
-        {
-            if (fileInfo.Directory == null)
-                yield break;
+    private static IEnumerable<string> GetPathParts(FileInfo fileInfo)
+    {
+        if (fileInfo.Directory == null)
+            yield break;
             
-            foreach (var directoryPart in GetPathParts(fileInfo.Directory))
-            {
-                yield return directoryPart;
-            }
+        foreach (var directoryPart in GetPathParts(fileInfo.Directory))
+        {
+            yield return directoryPart;
         }
     }
 }

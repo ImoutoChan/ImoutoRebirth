@@ -1,13 +1,12 @@
 ﻿using ImoutoRebirth.Room.DataAccess.Models;
 
-namespace ImoutoRebirth.Room.DataAccess.Repositories.Abstract
+namespace ImoutoRebirth.Room.DataAccess.Repositories.Abstract;
+
+public interface IDestinationFolderRepository
 {
-    public interface IDestinationFolderRepository
-    {
-        Task<CustomDestinationFolder?> Get(Guid collectionGuid);
+    Task<CustomDestinationFolder?> Get(Guid collectionGuid);
 
-        Task<CustomDestinationFolder> AddOrReplace(DestinationFolderCreateData createData);
+    Task<CustomDestinationFolder> AddOrReplace(DestinationFolderCreateData createData);
 
-        Task Remove(Guid guid);
-    }
+    Task Remove(Guid guid);
 }

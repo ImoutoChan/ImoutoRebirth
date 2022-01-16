@@ -1,7 +1,6 @@
-﻿namespace ImoutoRebirth.Room.Core.Services.Abstract
+﻿namespace ImoutoRebirth.Room.Core.Services.Abstract;
+
+public interface IImageService
 {
-    public interface IImageService
-    {
-        bool IsImageCorrect(FileInfo fileInfo);
-    }
+    bool IsImageCorrect(FileInfo fileInfo);
 }

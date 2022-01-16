@@ -1,7 +1,6 @@
-﻿namespace ImoutoRebirth.Room.Core.Services.Abstract
+﻿namespace ImoutoRebirth.Room.Core.Services.Abstract;
+
+public interface IOverseeService
 {
-    public interface IOverseeService
-    {
-        Task Oversee();
-    }
+    Task Oversee();
 }

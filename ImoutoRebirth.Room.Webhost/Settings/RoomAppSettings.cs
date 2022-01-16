@@ -1,9 +1,8 @@
 ﻿using ImoutoRebirth.Common.MassTransit;
 
-namespace ImoutoRebirth.Room.Webhost.Settings
+namespace ImoutoRebirth.Room.Webhost.Settings;
+
+public class RoomAppSettings
 {
-    public class RoomAppSettings
-    {
-        public RabbitSettings RabbitSettings { get; set; } = default!;
-    }
+    public RabbitSettings RabbitSettings { get; set; } = default!;
 }

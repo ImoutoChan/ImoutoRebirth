@@ -1,11 +1,10 @@
-﻿namespace ImoutoRebirth.Room.Core.Models
+﻿namespace ImoutoRebirth.Room.Core.Models;
+
+public enum MoveProblem
 {
-    public enum MoveProblem
-    {
-        None,
-        InvalidFormat,
-        WithoutHash,
-        IncorrectHash,
-        AlreadyContains
-    }
+    None,
+    InvalidFormat,
+    WithoutHash,
+    IncorrectHash,
+    AlreadyContains
 }

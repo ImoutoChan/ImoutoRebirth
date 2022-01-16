@@ -1,13 +1,12 @@
 ﻿using ImoutoRebirth.Room.Core.Models;
 
-namespace ImoutoRebirth.Room.Core.Services.Abstract
-{
-    public interface ICollectionFileService
-    {
-        Task<Guid> SaveNew(
-            MovedInformation movedInformation,
-            Guid collectionId);
+namespace ImoutoRebirth.Room.Core.Services.Abstract;
 
-        Task Delete(Guid id);
-    }
+public interface ICollectionFileService
+{
+    Task<Guid> SaveNew(
+        MovedInformation movedInformation,
+        Guid collectionId);
+
+    Task Delete(Guid id);
 }

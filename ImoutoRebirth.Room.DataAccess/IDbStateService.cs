@@ -1,7 +1,6 @@
-﻿namespace ImoutoRebirth.Room.DataAccess
+﻿namespace ImoutoRebirth.Room.DataAccess;
+
+public interface IDbStateService
 {
-    public interface IDbStateService
-    {
-        Task SaveChanges();
-    }
+    Task SaveChanges();
 }

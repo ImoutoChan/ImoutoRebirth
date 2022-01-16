@@ -3,54 +3,53 @@ using ImoutoRebirth.Room.DataAccess.Models;
 using ImoutoRebirth.Room.DataAccess.Repositories.Abstract;
 using Microsoft.Extensions.Logging;
 
-namespace ImoutoRebirth.Room.Core.Services
+namespace ImoutoRebirth.Room.Core.Services;
+
+public class OverseeService : IOverseeService
 {
-    public class OverseeService : IOverseeService
+    private readonly IFileSystemActualizationService _fileSystemActualizationService;
+    private readonly ICollectionRepository _collectionRepository;
+    private readonly ILogger _logger;
+    private static readonly SemaphoreSlim SemaphoreSlim = new(1);
+
+    public OverseeService(
+        IFileSystemActualizationService fileSystemActualizationService,
+        ICollectionRepository collectionRepository,
+        ILogger<OverseeService> logger)
     {
-        private readonly IFileSystemActualizationService _fileSystemActualizationService;
-        private readonly ICollectionRepository _collectionRepository;
-        private readonly ILogger _logger;
-        private static readonly SemaphoreSlim SemaphoreSlim = new(1);
+        _fileSystemActualizationService = fileSystemActualizationService;
+        _collectionRepository = collectionRepository;
+        _logger = logger;
+    }
 
-        public OverseeService(
-            IFileSystemActualizationService fileSystemActualizationService,
-            ICollectionRepository collectionRepository,
-            ILogger<OverseeService> logger)
+    public async Task Oversee()
+    {
+        if (!await SemaphoreSlim.WaitAsync(0))
         {
-            _fileSystemActualizationService = fileSystemActualizationService;
-            _collectionRepository = collectionRepository;
-            _logger = logger;
+            _logger.LogTrace("Oversee process have not finished yet");
+            return;
         }
 
-        public async Task Oversee()
+        try
         {
-            if (!await SemaphoreSlim.WaitAsync(0))
-            {
-                _logger.LogTrace("Oversee process have not finished yet");
-                return;
-            }
+            var collections = await LoadCollections();
 
-            try
-            {
-                var collections = await LoadCollections();
+            foreach (var oversawCollection in collections)
+                await _fileSystemActualizationService.PryCollection(oversawCollection);
 
-                foreach (var oversawCollection in collections)
-                    await _fileSystemActualizationService.PryCollection(oversawCollection);
-
-            }
-            catch (Exception e)
-            {
-                _logger.LogError(e, "Oversee process error");
-            }
-            finally
-            {
-                SemaphoreSlim.Release();
-            }
         }
-
-        private async Task<IReadOnlyCollection<OversawCollection>> LoadCollections()
+        catch (Exception e)
         {
-           return await _collectionRepository.GetAllOversaw();
+            _logger.LogError(e, "Oversee process error");
         }
+        finally
+        {
+            SemaphoreSlim.Release();
+        }
+    }
+
+    private async Task<IReadOnlyCollection<OversawCollection>> LoadCollections()
+    {
+        return await _collectionRepository.GetAllOversaw();
     }
 }

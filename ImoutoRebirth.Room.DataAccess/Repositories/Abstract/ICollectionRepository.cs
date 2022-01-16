@@ -1,17 +1,16 @@
 ﻿using ImoutoRebirth.Room.DataAccess.Models;
 
-namespace ImoutoRebirth.Room.DataAccess.Repositories.Abstract
+namespace ImoutoRebirth.Room.DataAccess.Repositories.Abstract;
+
+public interface ICollectionRepository
 {
-    public interface ICollectionRepository
-    {
-        Task<IReadOnlyCollection<OversawCollection>> GetAllOversaw();
+    Task<IReadOnlyCollection<OversawCollection>> GetAllOversaw();
 
-        Task<IReadOnlyCollection<Collection>> GetAll();
+    Task<IReadOnlyCollection<Collection>> GetAll();
 
-        Task<Collection> Add(CollectionCreateData collection);
+    Task<Collection> Add(CollectionCreateData collection);
 
-        Task Remove(Guid id);
+    Task Remove(Guid id);
 
-        Task Rename(Guid id, string newName);
-    }
+    Task Rename(Guid id, string newName);
 }

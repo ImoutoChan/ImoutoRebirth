@@ -3,20 +3,19 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace ImoutoRebirth.Room.Database
+namespace ImoutoRebirth.Room.Database;
+
+public static class ServiceCollectionExtensions
 {
-    public static class ServiceCollectionExtensions
+    public static IServiceCollection AddRoomDatabase(
+        this IServiceCollection services,
+        IConfiguration configuration)
     {
-        public static IServiceCollection AddRoomDatabase(
-            this IServiceCollection services,
-            IConfiguration configuration)
-        {
-            services.AddTransient(typeof(SoftDeleteDbContextHelper<>));
+        services.AddTransient(typeof(SoftDeleteDbContextHelper<>));
 
-            services.AddDbContext<RoomDbContext>(builder
-                => builder.UseNpgsql(configuration.GetConnectionString("RoomDatabase")));
+        services.AddDbContext<RoomDbContext>(builder
+            => builder.UseNpgsql(configuration.GetConnectionString("RoomDatabase")));
 
-            return services;
-        }
+        return services;
     }
 }

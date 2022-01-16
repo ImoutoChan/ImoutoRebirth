@@ -7,64 +7,63 @@ using ImoutoRebirth.Room.Database;
 using ImoutoRebirth.Room.Database.Entities;
 using Microsoft.EntityFrameworkCore;
 
-namespace ImoutoRebirth.Room.DataAccess.Repositories
+namespace ImoutoRebirth.Room.DataAccess.Repositories;
+
+public class DestinationFolderRepository : IDestinationFolderRepository
 {
-    public class DestinationFolderRepository : IDestinationFolderRepository
+    private readonly RoomDbContext _roomDbContext;
+    private readonly IMapper       _mapper;
+
+    public DestinationFolderRepository(RoomDbContext roomDbContext,
+        IMapper mapper)
     {
-        private readonly RoomDbContext _roomDbContext;
-        private readonly IMapper       _mapper;
+        _roomDbContext = roomDbContext;
+        _mapper = mapper;
+    }
 
-        public DestinationFolderRepository(RoomDbContext roomDbContext,
-                                           IMapper mapper)
+    public async Task<CustomDestinationFolder?> Get(Guid collectionGuid)
+    {
+        var destinationFolders = await _roomDbContext
+            .DestinationFolders
+            .Where(x => x.CollectionId == collectionGuid)
+            .FirstOrDefaultAsync();
+
+        return destinationFolders == null
+            ? null
+            : _mapper.Map<CustomDestinationFolder>(destinationFolders);
+    }
+
+    public async Task<CustomDestinationFolder> AddOrReplace(DestinationFolderCreateData createData)
+    {
+        var currentDestFolderEntity = await _roomDbContext
+            .DestinationFolders
+            .FirstOrDefaultAsync(x => x.CollectionId == createData.CollectionId);
+
+        DestinationFolderEntity entity;
+        if (currentDestFolderEntity != null)
         {
-            _roomDbContext = roomDbContext;
-            _mapper = mapper;
+            entity = createData.ToEntity(currentDestFolderEntity);
+        }
+        else
+        {
+            entity = createData.ToEntity();
+            await _roomDbContext.AddAsync(entity);
         }
 
-        public async Task<CustomDestinationFolder?> Get(Guid collectionGuid)
-        {
-            var destinationFolders = await _roomDbContext
-                                           .DestinationFolders
-                                           .Where(x => x.CollectionId == collectionGuid)
-                                           .FirstOrDefaultAsync();
+        await _roomDbContext.SaveChangesAsync();
 
-            return destinationFolders == null
-                ? null
-                : _mapper.Map<CustomDestinationFolder>(destinationFolders);
-        }
+        return _mapper.Map<CustomDestinationFolder>(entity);
+    }
 
-        public async Task<CustomDestinationFolder> AddOrReplace(DestinationFolderCreateData createData)
-        {
-            var currentDestFolderEntity = await _roomDbContext
-                                    .DestinationFolders
-                                    .FirstOrDefaultAsync(x => x.CollectionId == createData.CollectionId);
+    public async Task Remove(Guid id)
+    {
+        var folderEntity = await _roomDbContext.DestinationFolders.FirstOrDefaultAsync(x => x.Id == id);
 
-            DestinationFolderEntity entity;
-            if (currentDestFolderEntity != null)
-            {
-                entity = createData.ToEntity(currentDestFolderEntity);
-            }
-            else
-            {
-                entity = createData.ToEntity();
-                await _roomDbContext.AddAsync(entity);
-            }
+        if (folderEntity == null)
+            throw new EntityNotFoundException<DestinationFolderEntity>(id);
 
-            await _roomDbContext.SaveChangesAsync();
+        _roomDbContext.Remove(folderEntity);
 
-            return _mapper.Map<CustomDestinationFolder>(entity);
-        }
-
-        public async Task Remove(Guid id)
-        {
-            var folderEntity = await _roomDbContext.DestinationFolders.FirstOrDefaultAsync(x => x.Id == id);
-
-            if (folderEntity == null)
-                throw new EntityNotFoundException<DestinationFolderEntity>(id);
-
-            _roomDbContext.Remove(folderEntity);
-
-            await _roomDbContext.SaveChangesAsync();
-        }
+        await _roomDbContext.SaveChangesAsync();
     }
 }

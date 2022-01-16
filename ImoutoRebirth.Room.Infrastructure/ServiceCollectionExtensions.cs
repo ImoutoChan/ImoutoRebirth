@@ -7,22 +7,21 @@ using Microsoft.Extensions.DependencyInjection;
 using MeidoReceiverApp = ImoutoRebirth.Meido.MessageContracts.ReceiverApp;
 using LilinReceiverApp = ImoutoRebirth.Lilin.MessageContracts.ReceiverApp;
 
-namespace ImoutoRebirth.Room.Infrastructure
+namespace ImoutoRebirth.Room.Infrastructure;
+
+public static class ServiceCollectionExtensions
 {
-    public static class ServiceCollectionExtensions
+    public static IServiceCollection AddRoomServices(this IServiceCollection services)
     {
-        public static IServiceCollection AddRoomServices(this IServiceCollection services)
-        {
-            services.AddTransient<IFileService, FileService>();
-            services.AddTransient<IImageService, ImageService>();
-            services.AddTransient<IRemoteCommandService, RemoteCommandService>();
+        services.AddTransient<IFileService, FileService>();
+        services.AddTransient<IImageService, ImageService>();
+        services.AddTransient<IRemoteCommandService, RemoteCommandService>();
 
-            return services;
-        }
-
-        public static ITrueMassTransitConfigurator AddRoomServicesForRabbit(this ITrueMassTransitConfigurator builder)
-            => builder
-                .AddFireAndForget<INewFileCommand>(MeidoReceiverApp.Name)
-                .AddFireAndForget<IUpdateMetadataCommand>(LilinReceiverApp.Name);
+        return services;
     }
+
+    public static ITrueMassTransitConfigurator AddRoomServicesForRabbit(this ITrueMassTransitConfigurator builder)
+        => builder
+            .AddFireAndForget<INewFileCommand>(MeidoReceiverApp.Name)
+            .AddFireAndForget<IUpdateMetadataCommand>(LilinReceiverApp.Name);
 }

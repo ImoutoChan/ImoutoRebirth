@@ -3,42 +3,41 @@ using ImoutoRebirth.Meido.MessageContracts;
 using ImoutoRebirth.Room.Core.Services.Abstract;
 using MassTransit;
 
-namespace ImoutoRebirth.Room.Infrastructure.Service
+namespace ImoutoRebirth.Room.Infrastructure.Service;
+
+internal class RemoteCommandService : IRemoteCommandService
 {
-    internal class RemoteCommandService : IRemoteCommandService
+    private readonly IBus _bus;
+
+    public RemoteCommandService(IBus bus)
     {
-        private readonly IBus _bus;
-
-        public RemoteCommandService(IBus bus)
-        {
-            _bus = bus;
-        }
+        _bus = bus;
+    }
         
-        public async Task UpdateMetadataRequest(Guid fileId, string md5)
+    public async Task UpdateMetadataRequest(Guid fileId, string md5)
+    {
+        var command = new
         {
-            var command = new
-            {
-                Md5 = md5,
-                FileId = fileId
-            };
+            Md5 = md5,
+            FileId = fileId
+        };
 
-            await _bus.Send<INewFileCommand>(command);
-        }
+        await _bus.Send<INewFileCommand>(command);
+    }
 
-        public async Task SaveTags(Guid fileId, IReadOnlyCollection<string> tags)
+    public async Task SaveTags(Guid fileId, IReadOnlyCollection<string> tags)
+    {
+        var command = new
         {
-            var command = new
+            FileId = fileId,
+            MetadataSource = MetadataSource.Manual,
+            FileTags = tags.Select(x => new
             {
-                FileId = fileId,
-                MetadataSource = MetadataSource.Manual,
-                FileTags = tags.Select(x => new
-                {
-                    Type = "location",
-                    Name = x
-                }).ToArray()
-            };
+                Type = "location",
+                Name = x
+            }).ToArray()
+        };
 
-            await _bus.Send<IUpdateMetadataCommand>(command);
-        }
+        await _bus.Send<IUpdateMetadataCommand>(command);
     }
 }
