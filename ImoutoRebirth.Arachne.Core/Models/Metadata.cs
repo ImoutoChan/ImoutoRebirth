@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using ImoutoRebirth.Common;
+﻿using ImoutoRebirth.Common;
 
 namespace ImoutoRebirth.Arachne.Core.Models
 {

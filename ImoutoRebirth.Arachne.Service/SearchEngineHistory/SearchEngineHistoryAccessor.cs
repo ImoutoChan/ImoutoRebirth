@@ -1,5 +1,4 @@
 ﻿using System.Collections.Concurrent;
-using System.Threading;
 using ImoutoRebirth.Arachne.Core.Models;
 
 namespace ImoutoRebirth.Arachne.Service.SearchEngineHistory

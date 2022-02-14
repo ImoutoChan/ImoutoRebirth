@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using Imouto.BooruParser.Model.Danbooru.Json;
+﻿using Imouto.BooruParser.Model.Danbooru.Json;
 using ImoutoRebirth.Arachne.Core.Models;
 using Newtonsoft.Json;
 

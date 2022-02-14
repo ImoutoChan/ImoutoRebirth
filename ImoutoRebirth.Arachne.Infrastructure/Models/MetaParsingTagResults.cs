@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-
-namespace ImoutoRebirth.Arachne.Infrastructure.Models
+﻿namespace ImoutoRebirth.Arachne.Infrastructure.Models
 {
     internal record MetaParsingTagResults(
         string TagType,

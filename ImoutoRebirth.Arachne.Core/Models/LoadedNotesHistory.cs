@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace ImoutoRebirth.Arachne.Core.Models
+﻿namespace ImoutoRebirth.Arachne.Core.Models
 {
     public class LoadedNotesHistory
     {

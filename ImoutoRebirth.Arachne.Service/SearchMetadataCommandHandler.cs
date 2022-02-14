@@ -1,7 +1,4 @@
-﻿using System;
-using System.Diagnostics;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using System.Diagnostics;
 using ImoutoRebirth.Arachne.Core;
 using ImoutoRebirth.Arachne.Core.Models;
 using ImoutoRebirth.Arachne.MessageContracts;

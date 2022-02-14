@@ -1,6 +1,4 @@
-﻿using System;
-using System.Threading.Tasks;
-using ImoutoRebirth.Arachne.Core.Models;
+﻿using ImoutoRebirth.Arachne.Core.Models;
 
 namespace ImoutoRebirth.Arachne.Core.InfrastructureContracts
 {

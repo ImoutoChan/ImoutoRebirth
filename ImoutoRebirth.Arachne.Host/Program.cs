@@ -1,7 +1,4 @@
-﻿using System.IO;
-using System.Reflection;
-using System.Threading.Tasks;
-using ImoutoRebirth.Common.Host;
+﻿using ImoutoRebirth.Common.Host;
 using ImoutoRebirth.Common.Logging;
 using Microsoft.Extensions.Hosting;
 

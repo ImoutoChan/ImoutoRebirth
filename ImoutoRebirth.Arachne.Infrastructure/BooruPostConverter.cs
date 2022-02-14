@@ -1,7 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using Imouto.BooruParser.Model.Danbooru.Json;
-using ImoutoRebirth.Arachne.Core.Models;
+﻿using ImoutoRebirth.Arachne.Core.Models;
 using ImoutoRebirth.Arachne.Infrastructure.Abstract;
 using ImoutoRebirth.Arachne.Infrastructure.Models;
 using ImoutoRebirth.Common;

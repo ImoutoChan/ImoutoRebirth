@@ -1,5 +1,4 @@
-﻿using System;
-using ImoutoRebirth.Lilin.MessageContracts;
+﻿using ImoutoRebirth.Lilin.MessageContracts;
 
 namespace ImoutoRebirth.Arachne.Service.Commands
 {

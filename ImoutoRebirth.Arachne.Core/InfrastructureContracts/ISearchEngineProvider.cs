@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using ImoutoRebirth.Arachne.Core.Models;
+﻿using ImoutoRebirth.Arachne.Core.Models;
 
 namespace ImoutoRebirth.Arachne.Core.InfrastructureContracts
 {

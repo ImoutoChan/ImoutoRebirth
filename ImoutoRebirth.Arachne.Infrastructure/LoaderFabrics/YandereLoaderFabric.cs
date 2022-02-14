@@ -1,5 +1,4 @@
-﻿using System.Net.Http;
-using Imouto.BooruParser.Loaders;
+﻿using Imouto.BooruParser.Loaders;
 using ImoutoRebirth.Arachne.Core.Models;
 using ImoutoRebirth.Arachne.Infrastructure.Abstract;
 

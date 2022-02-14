@@ -1,6 +1,4 @@
-﻿using System;
-using System.Net.Http;
-using AspNetCoreInjection.TypedFactories;
+﻿using AspNetCoreInjection.TypedFactories;
 using ImoutoRebirth.Arachne.Core.InfrastructureContracts;
 using ImoutoRebirth.Arachne.Infrastructure.Abstract;
 using ImoutoRebirth.Arachne.Infrastructure.LoaderFabrics;

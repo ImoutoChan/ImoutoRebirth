@@ -1,5 +1,4 @@
-﻿using System.Threading.Tasks;
-using ImoutoRebirth.Arachne.MessageContracts;
+﻿using ImoutoRebirth.Arachne.MessageContracts;
 using MassTransit;
 using SearchEngineType = ImoutoRebirth.Arachne.Core.Models.SearchEngineType;
 

@@ -1,5 +1,4 @@
-﻿using System;
-using ImoutoRebirth.Arachne.Core.Models;
+﻿using ImoutoRebirth.Arachne.Core.Models;
 using ImoutoRebirth.Lilin.MessageContracts;
 
 namespace ImoutoRebirth.Arachne.Service.Extensions

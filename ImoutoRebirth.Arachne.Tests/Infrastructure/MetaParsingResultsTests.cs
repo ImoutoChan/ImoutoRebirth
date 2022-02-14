@@ -1,5 +1,3 @@
-using System;
-using System.Linq;
 using FluentAssertions;
 using Imouto.BooruParser.Model.Danbooru.Json;
 using ImoutoRebirth.Arachne.Core.Models;
