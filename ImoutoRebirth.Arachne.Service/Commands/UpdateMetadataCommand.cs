@@ -9,8 +9,8 @@ namespace ImoutoRebirth.Arachne.Service.Commands
 
         public MetadataSource MetadataSource { get; set; }
 
-        public IFileNote[] FileNotes { get; set; }
+        public IFileNote[] FileNotes { get; set; } = default!;
 
-        public IFileTag[] FileTags { get; set; }
+        public IFileTag[] FileTags { get; set; } = default!;
     }
 }

@@ -6,7 +6,7 @@ namespace ImoutoRebirth.Arachne.Service.Commands
     {
         public int? SourceId { get; set; }
 
-        public string Label { get; set; }
+        public string Label { get; set; } = default!;
 
         public int PositionFromLeft { get; set; }
 

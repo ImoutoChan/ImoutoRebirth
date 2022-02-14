@@ -12,11 +12,11 @@ namespace ImoutoRebirth.Arachne.Core.Models
 
         public string Name { get; }
 
-        public string Value { get; }
+        public string? Value { get; }
 
         public IReadOnlyCollection<string> Synonyms { get; }
 
-        public Tag(string type, string name, string value = null, IReadOnlyCollection<string> synonyms = null)
+        public Tag(string type, string name, string? value = null, IReadOnlyCollection<string>? synonyms = null)
         {
             ArgumentValidator.NotNull(() => type, () => name);
 

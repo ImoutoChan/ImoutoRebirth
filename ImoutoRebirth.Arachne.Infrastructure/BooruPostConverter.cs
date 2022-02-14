@@ -59,9 +59,9 @@ namespace ImoutoRebirth.Arachne.Infrastructure
                 post.UgoiraFrameData);
         }
 
-        private static (string, string) GetParentInfo(string postParentId)
+        private static (string?, string?) GetParentInfo(string postParentId)
         {
-            var (parentId, parentMd5) = ((string)null, (string)null);
+            var (parentId, parentMd5) = ((string?)null, (string?)null);
 
             if (!string.IsNullOrWhiteSpace(postParentId))
             {

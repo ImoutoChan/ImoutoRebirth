@@ -17,15 +17,15 @@ namespace ImoutoRebirth.Arachne.Infrastructure.Models
 
         public string PostedDateTime { get; }
 
-        public string PostedById { get; }
+        public string? PostedById { get; }
 
-        public string PostedByUsername { get; }
+        public string? PostedByUsername { get; }
 
         public string Rating { get; }
 
-        public string ParentId { get; }
+        public string? ParentId { get; }
 
-        public string ParentMd5 { get; }
+        public string? ParentMd5 { get; }
 
         public IReadOnlyCollection<string> Childs { get; }
 
@@ -43,11 +43,11 @@ namespace ImoutoRebirth.Arachne.Infrastructure.Models
             string booruLastUpdate,
             string md5,
             string postedDateTime,
-            string postedById,
-            string postedByUsername,
+            string? postedById,
+            string? postedByUsername,
             string rating,
-            string parentId,
-            string parentMd5,
+            string? parentId,
+            string? parentMd5,
             IReadOnlyCollection<string> childs,
             IReadOnlyCollection<string> pools,
             IReadOnlyCollection<MetaParsingTagResults> tags,

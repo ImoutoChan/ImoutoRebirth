@@ -48,7 +48,7 @@ namespace ImoutoRebirth.Arachne.Service
 
             public SearchStatus ResultStatus { get; set; }
 
-            public string ErrorText { get; set; }
+            public string? ErrorText { get; set; }
 
             public int? FileIdFromSource { get; set; }
         }

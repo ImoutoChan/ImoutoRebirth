@@ -2,9 +2,9 @@
 {
     public class SankakuSettings
     {
-        public string Login { get; set; }
+        public string Login { get; set; } = default!;
 
-        public string PassHash { get; set; }
+        public string PassHash { get; set; } = default!;
 
         public int Delay { get; set; }
     }
