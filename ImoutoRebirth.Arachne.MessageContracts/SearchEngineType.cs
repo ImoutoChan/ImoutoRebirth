@@ -1,9 +1,8 @@
-﻿namespace ImoutoRebirth.Arachne.MessageContracts
+﻿namespace ImoutoRebirth.Arachne.MessageContracts;
+
+public enum SearchEngineType : byte
 {
-    public enum SearchEngineType : byte
-    {
-        Yandere,
-        Danbooru,
-        Sankaku
-    }
+    Yandere,
+    Danbooru,
+    Sankaku
 }

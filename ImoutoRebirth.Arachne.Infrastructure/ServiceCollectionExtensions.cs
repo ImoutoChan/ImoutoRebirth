@@ -7,43 +7,42 @@ using Microsoft.Extensions.DependencyInjection;
 using Polly;
 using Polly.Extensions.Http;
 
-namespace ImoutoRebirth.Arachne.Infrastructure
+namespace ImoutoRebirth.Arachne.Infrastructure;
+
+public static class ServiceCollectionExtensions
 {
-    public static class ServiceCollectionExtensions
+    public static IServiceCollection AddArachneInfrastructure(
+        this IServiceCollection services, 
+        DanbooruSettings danbooruSettings, 
+        SankakuSettings sankakuSettings)
     {
-        public static IServiceCollection AddArachneInfrastructure(
-            this IServiceCollection services, 
-            DanbooruSettings danbooruSettings, 
-            SankakuSettings sankakuSettings)
-        {
-            // singleton: contains cache of loaders (ensure delays and such)
-            services.AddSingleton<ISearchEngineProvider, SearchEngineProvider>();
+        // singleton: contains cache of loaders (ensure delays and such)
+        services.AddSingleton<ISearchEngineProvider, SearchEngineProvider>();
 
-            // todo find all ifactory and register them
-            services.RegisterTypedFactory<BooruSearchEngine.IFactory>().ForConcreteType<BooruSearchEngine>();
+        // todo find all ifactory and register them
+        services.RegisterTypedFactory<BooruSearchEngine.IFactory>().ForConcreteType<BooruSearchEngine>();
 
-            var policy 
-                = HttpPolicyExtensions.HandleTransientHttpError()
-                                      .WaitAndRetryAsync(2, i => TimeSpan.FromMilliseconds(100 * Math.Pow(10, i)));
+        var policy 
+            = HttpPolicyExtensions.HandleTransientHttpError()
+                .WaitAndRetryAsync(2, i => TimeSpan.FromMilliseconds(100 * Math.Pow(10, i)));
 
-            services.AddHttpClient<YandereLoaderFabric>()
-                    .AddPolicyHandler(policy);
-            services.AddHttpClient<DanbooruLoaderFabric>()
-                    .AddPolicyHandler(policy);
-            services.AddHttpClient<SankakuLoaderFabric>()
-                    .AddPolicyHandler(policy);
+        services.AddHttpClient<YandereLoaderFabric>()
+            .AddPolicyHandler(policy);
+        services.AddHttpClient<DanbooruLoaderFabric>()
+            .AddPolicyHandler(policy);
+        services.AddHttpClient<SankakuLoaderFabric>()
+            .AddPolicyHandler(policy);
 
-            services.AddTransient<IBooruLoaderFabric>(provider => provider.GetRequiredService<YandereLoaderFabric>());
-            services.AddTransient<IBooruLoaderFabric>(provider => provider.GetRequiredService<DanbooruLoaderFabric>());
-            services.AddTransient<IBooruLoaderFabric>(provider => provider.GetRequiredService<SankakuLoaderFabric>());
+        services.AddTransient<IBooruLoaderFabric>(provider => provider.GetRequiredService<YandereLoaderFabric>());
+        services.AddTransient<IBooruLoaderFabric>(provider => provider.GetRequiredService<DanbooruLoaderFabric>());
+        services.AddTransient<IBooruLoaderFabric>(provider => provider.GetRequiredService<SankakuLoaderFabric>());
             
 
-            services.AddTransient<DanbooruSettings>(x => danbooruSettings);
-            services.AddTransient<SankakuSettings>(x => sankakuSettings);
+        services.AddTransient<DanbooruSettings>(x => danbooruSettings);
+        services.AddTransient<SankakuSettings>(x => sankakuSettings);
 
-            services.AddTransient<IBooruPostConverter, BooruPostConverter>();
+        services.AddTransient<IBooruPostConverter, BooruPostConverter>();
 
-            return services;
-        }
+        return services;
     }
 }

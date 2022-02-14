@@ -1,17 +1,16 @@
 ﻿using ImoutoRebirth.Common;
 
-namespace ImoutoRebirth.Arachne.Core.Models
+namespace ImoutoRebirth.Arachne.Core.Models;
+
+public class SearchError : SearchResult
 {
-    public class SearchError : SearchResult
+    public string Error { get; }
+
+    public SearchError(Image image, SearchEngineType source, string error) 
+        : base(image, source)
     {
-        public string Error { get; }
+        ArgumentValidator.NotNull(() => image, () => error);
 
-        public SearchError(Image image, SearchEngineType source, string error) 
-            : base(image, source)
-        {
-            ArgumentValidator.NotNull(() => image, () => error);
-
-            Error = error;
-        }
+        Error = error;
     }
 }

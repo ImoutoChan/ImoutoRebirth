@@ -1,6 +1,5 @@
-﻿namespace ImoutoRebirth.Arachne.Service.SearchEngineHistory
+﻿namespace ImoutoRebirth.Arachne.Service.SearchEngineHistory;
+
+internal class TagsSearchEngineHistoryAccessor : SearchEngineHistoryAccessor
 {
-    internal class TagsSearchEngineHistoryAccessor : SearchEngineHistoryAccessor
-    {
-    }
 }

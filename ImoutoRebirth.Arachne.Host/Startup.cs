@@ -8,28 +8,27 @@ using ImoutoRebirth.Common.MassTransit;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace ImoutoRebirth.Arachne.Host
+namespace ImoutoRebirth.Arachne.Host;
+
+public class Startup : BaseStartup
 {
-    public class Startup : BaseStartup
+    public ArachneSettings ArachneSettings { get; }
+
+    public Startup(IConfiguration configuration) 
+        : base(configuration)
     {
-        public ArachneSettings ArachneSettings { get; }
+        ArachneSettings = configuration.Get<ArachneSettings>();
+    }
 
-        public Startup(IConfiguration configuration) 
-            : base(configuration)
-        {
-            ArachneSettings = configuration.Get<ArachneSettings>();
-        }
+    public override void ConfigureServices(IServiceCollection services)
+    {
+        services.AddArachneCore()
+            .AddArachneServices()
+            .AddArachneInfrastructure(ArachneSettings.DanbooruSettings, ArachneSettings.SankakuSettings);
 
-        public override void ConfigureServices(IServiceCollection services)
-        {
-            services.AddArachneCore()
-                    .AddArachneServices()
-                    .AddArachneInfrastructure(ArachneSettings.DanbooruSettings, ArachneSettings.SankakuSettings);
-
-            services.AddTrueMassTransit(
-                ArachneSettings.RabbitSettings,
-                ReceiverApp.Name,
-                с => с.AddArachneServicesForRabbit());
-        }
+        services.AddTrueMassTransit(
+            ArachneSettings.RabbitSettings,
+            ReceiverApp.Name,
+            с => с.AddArachneServicesForRabbit());
     }
 }

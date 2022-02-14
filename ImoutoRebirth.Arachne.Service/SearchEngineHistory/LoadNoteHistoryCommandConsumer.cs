@@ -6,70 +6,69 @@ using ImoutoRebirth.Meido.MessageContracts;
 using MassTransit;
 using Microsoft.Extensions.Logging;
 
-namespace ImoutoRebirth.Arachne.Service.SearchEngineHistory
+namespace ImoutoRebirth.Arachne.Service.SearchEngineHistory;
+
+internal class LoadNoteHistoryCommandConsumer : IConsumer<ILoadNoteHistoryCommand>
 {
-    internal class LoadNoteHistoryCommandConsumer : IConsumer<ILoadNoteHistoryCommand>
+    private readonly ILogger<LoadTagHistoryCommandConsumer> _logger;
+    private readonly IArachneSearchService _arachneSearchService;
+    private readonly SearchEngineHistoryAccessor _searchEngineHistoryAccessor;
+    private readonly IBus _bus;
+
+    public LoadNoteHistoryCommandConsumer(
+        ILogger<LoadTagHistoryCommandConsumer> logger,
+        IArachneSearchService arachneSearchService,
+        NotesSearchEngineHistoryAccessor searchEngineHistoryAccessor,
+        IBus bus)
     {
-        private readonly ILogger<LoadTagHistoryCommandConsumer> _logger;
-        private readonly IArachneSearchService _arachneSearchService;
-        private readonly SearchEngineHistoryAccessor _searchEngineHistoryAccessor;
-        private readonly IBus _bus;
+        _logger = logger;
+        _arachneSearchService = arachneSearchService;
+        _searchEngineHistoryAccessor = searchEngineHistoryAccessor;
+        _bus = bus;
+    }
 
-        public LoadNoteHistoryCommandConsumer(
-            ILogger<LoadTagHistoryCommandConsumer> logger,
-            IArachneSearchService arachneSearchService,
-            NotesSearchEngineHistoryAccessor searchEngineHistoryAccessor,
-            IBus bus)
+    public async Task Consume(ConsumeContext<ILoadNoteHistoryCommand> context)
+    {
+        var lastProcessedNoteUpdateAt = context.Message.LastProcessedNoteUpdateAt;
+        var searchEngineType = context.Message.SearchEngineType.ToModel();
+
+        if (!_searchEngineHistoryAccessor.GainAccess(searchEngineType))
         {
-            _logger = logger;
-            _arachneSearchService = arachneSearchService;
-            _searchEngineHistoryAccessor = searchEngineHistoryAccessor;
-            _bus = bus;
-        }
-
-        public async Task Consume(ConsumeContext<ILoadNoteHistoryCommand> context)
-        {
-            var lastProcessedNoteUpdateAt = context.Message.LastProcessedNoteUpdateAt;
-            var searchEngineType = context.Message.SearchEngineType.ToModel();
-
-            if (!_searchEngineHistoryAccessor.GainAccess(searchEngineType))
-            {
-                _logger.LogWarning(
-                    "Note history requested after {LastProcessedNoteUpdate} in {SearchEngine}, "
-                    + "but last request hasn't been completed yet.",
-                    lastProcessedNoteUpdateAt,
-                    searchEngineType);
-                return;
-            }
-            try
-            {
-                await ConsumeInternal(lastProcessedNoteUpdateAt, searchEngineType);
-            }
-            finally
-            {
-                _searchEngineHistoryAccessor.ReleaseAccess(searchEngineType);
-            }
-        }
-
-        private async Task ConsumeInternal(DateTimeOffset lastProcessedNoteUpdateAt, SearchEngineType searchEngineType)
-        {
-            _logger.LogTrace(
-                "Note history requested after {LastProcessedNoteUpdate} in {SearchEngine}",
+            _logger.LogWarning(
+                "Note history requested after {LastProcessedNoteUpdate} in {SearchEngine}, "
+                + "but last request hasn't been completed yet.",
                 lastProcessedNoteUpdateAt,
                 searchEngineType);
-
-            var (changedPostIds, lastNoteUpdateDate) = await _arachneSearchService.LoadChangesForNotesSince(
-                                                      lastProcessedNoteUpdateAt,
-                                                      searchEngineType);
-
-            var command = new
-            {
-                SourceId = (int)searchEngineType,
-                PostIds = changedPostIds,
-                LastNoteUpdateDate = lastNoteUpdateDate
-            };
-
-            await _bus.Send<INotesUpdatedCommand>(command);
+            return;
         }
+        try
+        {
+            await ConsumeInternal(lastProcessedNoteUpdateAt, searchEngineType);
+        }
+        finally
+        {
+            _searchEngineHistoryAccessor.ReleaseAccess(searchEngineType);
+        }
+    }
+
+    private async Task ConsumeInternal(DateTimeOffset lastProcessedNoteUpdateAt, SearchEngineType searchEngineType)
+    {
+        _logger.LogTrace(
+            "Note history requested after {LastProcessedNoteUpdate} in {SearchEngine}",
+            lastProcessedNoteUpdateAt,
+            searchEngineType);
+
+        var (changedPostIds, lastNoteUpdateDate) = await _arachneSearchService.LoadChangesForNotesSince(
+            lastProcessedNoteUpdateAt,
+            searchEngineType);
+
+        var command = new
+        {
+            SourceId = (int)searchEngineType,
+            PostIds = changedPostIds,
+            LastNoteUpdateDate = lastNoteUpdateDate
+        };
+
+        await _bus.Send<INotesUpdatedCommand>(command);
     }
 }

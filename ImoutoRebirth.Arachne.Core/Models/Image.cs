@@ -1,12 +1,11 @@
-﻿namespace ImoutoRebirth.Arachne.Core.Models
-{
-    public class Image
-    {
-        public string Md5 { get; }
+﻿namespace ImoutoRebirth.Arachne.Core.Models;
 
-        public Image(string md5)
-        {
-            Md5 = md5;
-        }
+public class Image
+{
+    public string Md5 { get; }
+
+    public Image(string md5)
+    {
+        Md5 = md5;
     }
 }

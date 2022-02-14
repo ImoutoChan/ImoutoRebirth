@@ -2,100 +2,99 @@
 using ImoutoRebirth.Arachne.Core.Models;
 using Newtonsoft.Json;
 
-namespace ImoutoRebirth.Arachne.Infrastructure.Models
+namespace ImoutoRebirth.Arachne.Infrastructure.Models;
+
+internal class MetaParsingResults
 {
-    internal class MetaParsingResults
-    {
-        public string Source { get; }
+    public string Source { get; }
 
-        public string BooruPostId { get; }
+    public string BooruPostId { get; }
         
-        public string BooruLastUpdate { get; }
+    public string BooruLastUpdate { get; }
 
-        public string Md5 { get; }
+    public string Md5 { get; }
 
-        public string PostedDateTime { get; }
+    public string PostedDateTime { get; }
 
-        public string? PostedById { get; }
+    public string? PostedById { get; }
 
-        public string? PostedByUsername { get; }
+    public string? PostedByUsername { get; }
 
-        public string Rating { get; }
+    public string Rating { get; }
 
-        public string? ParentId { get; }
+    public string? ParentId { get; }
 
-        public string? ParentMd5 { get; }
+    public string? ParentMd5 { get; }
 
-        public IReadOnlyCollection<string> Childs { get; }
+    public IReadOnlyCollection<string> Childs { get; }
 
-        public IReadOnlyCollection<string> Pools { get; }
+    public IReadOnlyCollection<string> Pools { get; }
 
-        public IReadOnlyCollection<MetaParsingTagResults> Tags { get; }
+    public IReadOnlyCollection<MetaParsingTagResults> Tags { get; }
 
-        public IReadOnlyCollection<Note> Notes { get; }
+    public IReadOnlyCollection<Note> Notes { get; }
 
-        public UgoiraFrameData UgoiraFrameData { get; }
+    public UgoiraFrameData UgoiraFrameData { get; }
 
-        public MetaParsingResults(
-            string source,
-            string booruPostId,
-            string booruLastUpdate,
-            string md5,
-            string postedDateTime,
-            string? postedById,
-            string? postedByUsername,
-            string rating,
-            string? parentId,
-            string? parentMd5,
-            IReadOnlyCollection<string> childs,
-            IReadOnlyCollection<string> pools,
-            IReadOnlyCollection<MetaParsingTagResults> tags,
-            IReadOnlyCollection<Note> notes,
-            UgoiraFrameData ugoiraFrameData)
+    public MetaParsingResults(
+        string source,
+        string booruPostId,
+        string booruLastUpdate,
+        string md5,
+        string postedDateTime,
+        string? postedById,
+        string? postedByUsername,
+        string rating,
+        string? parentId,
+        string? parentMd5,
+        IReadOnlyCollection<string> childs,
+        IReadOnlyCollection<string> pools,
+        IReadOnlyCollection<MetaParsingTagResults> tags,
+        IReadOnlyCollection<Note> notes,
+        UgoiraFrameData ugoiraFrameData)
+    {
+        Source = source;
+        BooruPostId = booruPostId;
+        BooruLastUpdate = booruLastUpdate;
+        Md5 = md5;
+        PostedDateTime = postedDateTime;
+        PostedById = postedById;
+        PostedByUsername = postedByUsername;
+        Rating = rating;
+        ParentId = parentId;
+        ParentMd5 = parentMd5;
+        Childs = childs;
+        Pools = pools;
+        Tags = tags;
+        Notes = notes;
+        UgoiraFrameData = ugoiraFrameData;
+    }
+
+    public IEnumerable<(string TagType, string Tag, string Value)> GetMetaTags()
+    {
+        const string tagType = "LocalMeta";
+
+        var props = typeof(MetaParsingResults).GetProperties();
+        foreach (var propertyInfo in props)
         {
-            Source = source;
-            BooruPostId = booruPostId;
-            BooruLastUpdate = booruLastUpdate;
-            Md5 = md5;
-            PostedDateTime = postedDateTime;
-            PostedById = postedById;
-            PostedByUsername = postedByUsername;
-            Rating = rating;
-            ParentId = parentId;
-            ParentMd5 = parentMd5;
-            Childs = childs;
-            Pools = pools;
-            Tags = tags;
-            Notes = notes;
-            UgoiraFrameData = ugoiraFrameData;
-        }
+            var tag = propertyInfo.Name;
 
-        public IEnumerable<(string TagType, string Tag, string Value)> GetMetaTags()
-        {
-            const string tagType = "LocalMeta";
+            if (tag == nameof(Tags) || tag == nameof(Notes))
+                continue;
 
-            var props = typeof(MetaParsingResults).GetProperties();
-            foreach (var propertyInfo in props)
+            switch (propertyInfo.GetValue(this))
             {
-                var tag = propertyInfo.Name;
-
-                if (tag == nameof(Tags) || tag == nameof(Notes))
-                    continue;
-
-                switch (propertyInfo.GetValue(this))
-                {
-                    case string strValue:
-                        yield return (tagType, tag, strValue);
-                        break;
-                    case UgoiraFrameData ugoira:
-                        yield return (tagType, tag, JsonConvert.SerializeObject(ugoira));
-                        break;
-                    case IReadOnlyCollection<string> collectionValue:
-                        tag = tag.Trim('s');
-                        foreach (var value in collectionValue)
-                            yield return (tagType, tag, value);
-                        break;
-                }
+                case string strValue:
+                    yield return (tagType, tag, strValue);
+                    break;
+                case UgoiraFrameData ugoira:
+                    yield return (tagType, tag, JsonConvert.SerializeObject(ugoira));
+                    break;
+                case IReadOnlyCollection<string> collectionValue:
+                    tag = tag.Trim('s');
+                    foreach (var value in collectionValue)
+                        yield return (tagType, tag, value);
+                    break;
             }
         }
     }

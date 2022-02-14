@@ -1,6 +1,5 @@
-﻿namespace ImoutoRebirth.Arachne.MessageContracts.Commands
+﻿namespace ImoutoRebirth.Arachne.MessageContracts.Commands;
+
+public interface IYandereSearchMetadataCommand : ISearchMetadataCommand
 {
-    public interface IYandereSearchMetadataCommand : ISearchMetadataCommand
-    {
-    }
 }

@@ -2,12 +2,11 @@
 using ImoutoRebirth.Arachne.MessageContracts;
 using MassTransit;
 
-namespace ImoutoRebirth.Arachne.Service
+namespace ImoutoRebirth.Arachne.Service;
+
+public interface IMeidoReporter
 {
-    public interface IMeidoReporter
-    {
-        Task ReportSearchResultsToHeadMaid(
-            ConsumeContext<ISearchMetadataCommand> context,
-            SearchResult searchResults);
-    }
+    Task ReportSearchResultsToHeadMaid(
+        ConsumeContext<ISearchMetadataCommand> context,
+        SearchResult searchResults);
 }

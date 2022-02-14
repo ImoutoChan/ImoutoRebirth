@@ -1,19 +1,18 @@
 ﻿using ImoutoRebirth.Common;
 
-namespace ImoutoRebirth.Arachne.Core.Models
+namespace ImoutoRebirth.Arachne.Core.Models;
+
+public abstract class SearchResult
 {
-    public abstract class SearchResult
+    public Image Image { get; }
+
+    public SearchEngineType Source { get; }
+
+    protected SearchResult(Image image, SearchEngineType source)
     {
-        public Image Image { get; }
+        ArgumentValidator.NotNull(() => image);
 
-        public SearchEngineType Source { get; }
-
-        protected SearchResult(Image image, SearchEngineType source)
-        {
-            ArgumentValidator.NotNull(() => image);
-
-            Image = image;
-            Source = source;
-        }
+        Image = image;
+        Source = source;
     }
 }

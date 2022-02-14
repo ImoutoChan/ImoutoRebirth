@@ -1,9 +1,8 @@
-﻿namespace ImoutoRebirth.Arachne.MessageContracts.Commands
-{
-    public interface ILoadTagHistoryCommand
-    {
-        SearchEngineType SearchEngineType { get; }
+﻿namespace ImoutoRebirth.Arachne.MessageContracts.Commands;
 
-        int LastProcessedTagHistoryId { get; }
-    }
+public interface ILoadTagHistoryCommand
+{
+    SearchEngineType SearchEngineType { get; }
+
+    int LastProcessedTagHistoryId { get; }
 }

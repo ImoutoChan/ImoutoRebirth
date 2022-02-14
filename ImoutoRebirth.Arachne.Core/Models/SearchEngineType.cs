@@ -1,9 +1,8 @@
-﻿namespace ImoutoRebirth.Arachne.Core.Models
+﻿namespace ImoutoRebirth.Arachne.Core.Models;
+
+public enum SearchEngineType : byte
 {
-    public enum SearchEngineType : byte
-    {
-        Yandere,
-        Danbooru,
-        Sankaku
-    }
+    Yandere,
+    Danbooru,
+    Sankaku
 }

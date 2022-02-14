@@ -1,15 +1,14 @@
 ﻿using ImoutoRebirth.Arachne.Core.Models;
 
-namespace ImoutoRebirth.Arachne.Core.InfrastructureContracts
+namespace ImoutoRebirth.Arachne.Core.InfrastructureContracts;
+
+public interface ISearchEngine
 {
-    public interface ISearchEngine
-    {
-        SearchEngineType SearchEngineType { get; }
+    SearchEngineType SearchEngineType { get; }
 
-        Task<SearchResult> Search(Image image);
+    Task<SearchResult> Search(Image image);
 
-        Task<LoadedTagsHistory> LoadChangesForTagsSinceHistoryId(int historyId);
+    Task<LoadedTagsHistory> LoadChangesForTagsSinceHistoryId(int historyId);
 
-        Task<LoadedNotesHistory> LoadChangesForNotesSince(DateTimeOffset lastProcessedNoteUpdateAt);
-    }
+    Task<LoadedNotesHistory> LoadChangesForNotesSince(DateTimeOffset lastProcessedNoteUpdateAt);
 }

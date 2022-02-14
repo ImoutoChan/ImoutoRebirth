@@ -1,12 +1,11 @@
 ﻿using Imouto.BooruParser.Loaders;
 using ImoutoRebirth.Arachne.Core.Models;
 
-namespace ImoutoRebirth.Arachne.Infrastructure.Abstract
-{
-    internal interface IBooruLoaderFabric
-    {
-        SearchEngineType ForType { get; }
+namespace ImoutoRebirth.Arachne.Infrastructure.Abstract;
 
-        IBooruAsyncLoader Create();
-    }
+internal interface IBooruLoaderFabric
+{
+    SearchEngineType ForType { get; }
+
+    IBooruAsyncLoader Create();
 }

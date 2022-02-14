@@ -1,11 +1,10 @@
 ﻿using System;
 
-namespace ImoutoRebirth.Arachne.MessageContracts.Commands
-{
-    public interface ILoadNoteHistoryCommand
-    {
-        SearchEngineType SearchEngineType { get; }
+namespace ImoutoRebirth.Arachne.MessageContracts.Commands;
 
-        DateTimeOffset LastProcessedNoteUpdateAt { get; }
-    }
+public interface ILoadNoteHistoryCommand
+{
+    SearchEngineType SearchEngineType { get; }
+
+    DateTimeOffset LastProcessedNoteUpdateAt { get; }
 }
