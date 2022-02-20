@@ -1,4 +1,5 @@
 ﻿using Imouto.BooruParser.Loaders;
+using Imouto.BooruParser.Model.Danbooru;
 using ImoutoRebirth.Arachne.Core.Models;
 using ImoutoRebirth.Arachne.Infrastructure.Abstract;
 
@@ -10,10 +11,7 @@ internal class YandereLoaderFabric : IBooruLoaderFabric
 
     public SearchEngineType ForType => SearchEngineType.Yandere;
 
-    public YandereLoaderFabric(HttpClient httpClient)
-    {
-        _httpClient = httpClient;
-    }
+    public YandereLoaderFabric(HttpClient httpClient) => _httpClient = httpClient;
 
-    public IBooruAsyncLoader Create() => new YandereLoader(_httpClient);
+    public IBooruAsyncLoader Create() => new ExtendedYandereLoader(new YandereLoader(_httpClient));
 }
