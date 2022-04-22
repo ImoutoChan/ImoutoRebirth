@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc.Controllers;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.OpenApi.Models;
+using Swashbuckle.AspNetCore.SwaggerGen;
 
 namespace ImoutoRebirth.Common.WebApi;
 
@@ -10,7 +11,8 @@ public static class ServiceCollectionExtensions
     public static IServiceCollection AddSwagger(
         this IServiceCollection services, 
         string swaggerTitle,
-        Assembly? assemblyWithControllers = null)
+        Assembly? assemblyWithControllers = null,
+        Action<SwaggerGenOptions>? configure = null)
     {
         assemblyWithControllers ??= Assembly.GetCallingAssembly();
 
@@ -34,6 +36,8 @@ public static class ServiceCollectionExtensions
             var xmlFile = $"{assemblyWithControllers.GetName().Name}.xml";
             var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
             c.IncludeXmlComments(xmlPath);
+            
+            configure?.Invoke(c);
         });
 
         return services;
