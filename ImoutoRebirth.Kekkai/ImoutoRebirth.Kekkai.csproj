@@ -1,7 +1,11 @@
 <Project Sdk="Microsoft.NET.Sdk.Web">
 
     <PropertyGroup>
+        <OutputType>Exe</OutputType>
         <TargetFramework>net6.0</TargetFramework>
+        <RuntimeIdentifier>win7-x64</RuntimeIdentifier>
+        <SelfContained>false</SelfContained>
+        
         <Nullable>enable</Nullable>
         <ImplicitUsings>enable</ImplicitUsings>
         <TreatWarningsAsErrors>true</TreatWarningsAsErrors>

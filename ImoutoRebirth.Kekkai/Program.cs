@@ -54,15 +54,17 @@ public class WebApiStartup
     }
 
     public void ConfigureServices(IServiceCollection services)
-    {
+    {     
         services.AddTransient<IImoutoRebirthLilinWebApiClient>(_ =>
-            new ImoutoRebirthLilinWebApiClient(new Uri("http://localhost:11302")));
+            new ImoutoRebirthLilinWebApiClient(new Uri(Configuration.GetValue<string>("LilinUrl"))));
         
         services.AddTransient<IImoutoRebirthRoomWebApiClient>(_ =>
-            new ImoutoRebirthRoomWebApiClient(new Uri("http://localhost:11301")));
+            new ImoutoRebirthRoomWebApiClient(new Uri(Configuration.GetValue<string>("RoomUrl"))));
         
         services.AddMediatR(typeof(FilesStatusesQueryHandler));
         services.AddLoggingBehavior();
+
+        services.AddTransient<SimpleAuthMiddleware>();
         
         services
             .AddControllers()
@@ -79,12 +81,14 @@ public class WebApiStartup
             
         app.UseRouting();
 
-        app.UseEndpoints(endpoints => endpoints.MapControllers());
-
         app.UseSwagger();
         app.UseSwaggerUI(c =>
         {
             c.SwaggerEndpoint("/swagger/v1.0/swagger.json", "Kekkai API");
         });
+
+        app.UseMiddleware<SimpleAuthMiddleware>();
+        
+        app.UseEndpoints(endpoints => endpoints.MapControllers());
     }
 }
