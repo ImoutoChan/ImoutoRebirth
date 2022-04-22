@@ -1,0 +1,1 @@
+namespace ImoutoRebirth.Kekkai.Controllers;
