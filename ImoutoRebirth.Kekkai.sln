@@ -1,6 +1,6 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ImoutoRebirth.Kekkai", "ImoutoRebirth.Kekkai.csproj", "{FF151B5C-B915-4313-82AF-22C4FCA01195}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ImoutoRebirth.Kekkai\ImoutoRebirth.Kekkai", "ImoutoRebirth.Kekkai\ImoutoRebirth.Kekkai.csproj", "{FF151B5C-B915-4313-82AF-22C4FCA01195}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
