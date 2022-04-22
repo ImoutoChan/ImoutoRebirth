@@ -1,1 +1,1 @@
-namespace ImoutoRebirth.Kekkai.Controllers;
+namespace ImoutoRebirth.Kekkai.Controllers.Dto;

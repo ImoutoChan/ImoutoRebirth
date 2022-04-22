@@ -4,6 +4,7 @@ using ImoutoRebirth.Common.Host;
 using ImoutoRebirth.Common.Logging;
 using ImoutoRebirth.Common.WebApi;
 using ImoutoRebirth.Kekkai.Application;
+using ImoutoRebirth.Kekkai.Auth;
 using ImoutoRebirth.Lilin.WebApi.Client;
 using ImoutoRebirth.Room.WebApi.Client;
 using MediatR;
@@ -69,7 +70,10 @@ public class WebApiStartup
         services
             .AddControllers()
             .AddJsonOptions(options => options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter()));
-        services.AddSwagger("Kekkai API", typeof(WebApiStartup).Assembly);
+        services.AddSwagger("Kekkai API", typeof(WebApiStartup).Assembly, c =>
+        {
+            c.OperationFilter<AddAuthTokenOperationFilter>();
+        });
     }
 
     public void Configure(IApplicationBuilder app, IWebHostEnvironment env)

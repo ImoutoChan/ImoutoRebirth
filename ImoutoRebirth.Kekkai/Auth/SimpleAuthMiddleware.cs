@@ -1,4 +1,4 @@
-namespace ImoutoRebirth.Kekkai;
+namespace ImoutoRebirth.Kekkai.Auth;
 
 public class SimpleAuthMiddleware : IMiddleware
 {
