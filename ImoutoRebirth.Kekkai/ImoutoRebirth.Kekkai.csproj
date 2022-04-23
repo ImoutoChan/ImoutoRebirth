@@ -23,7 +23,7 @@
         <PackageReference Include="ImoutoRebirth.Common.Logging" Version="3.9.4" />
         <PackageReference Include="ImoutoRebirth.Common.Cqrs" Version="3.9.4" />
         <PackageReference Include="Swashbuckle.AspNetCore" Version="6.3.0" />
-        <PackageReference Include="ImoutoRebirth.Lilin.WebApi.Client" Version="2.4.1" />
+        <PackageReference Include="ImoutoRebirth.Lilin.WebApi.Client" Version="2.4.3" />
         <PackageReference Include="ImoutoRebirth.Room.WebApi.Client" Version="1.16.1" />
         <PackageReference Include="MediatR" Version="10.0.1" />
         <PackageReference Include="MediatR.Extensions.Microsoft.DependencyInjection" Version="10.0.1" />

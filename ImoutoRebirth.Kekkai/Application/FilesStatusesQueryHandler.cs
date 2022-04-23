@@ -54,7 +54,7 @@ internal class FilesStatusesQueryHandler : IQueryHandler<FilesStatusesQuery, IRe
 
         return response.ToDictionary(
             x => x.Hash!,
-            x => x.RelativesType == null
+            x => x.RelativeType == null
                 ? FileStatus.NotFound
                 : FileStatus.RelativePresent);
     }
