@@ -1,5 +1,5 @@
 ﻿using ImoutoRebirth.Common.Cqrs.Abstract;
-using ImoutoRebirth.Lilin.WebApi.Client;
+using ImoutoRebirth.LilinService.WebApi.Client;
 using ImoutoRebirth.Room.WebApi.Client;
 using ImoutoRebirth.Room.WebApi.Client.Models;
 
@@ -7,27 +7,23 @@ namespace ImoutoRebirth.Kekkai.Application;
 
 internal class FilesStatusesQueryHandler : IQueryHandler<FilesStatusesQuery, IReadOnlyCollection<FileStatusResult>>
 {
-    private readonly IImoutoRebirthLilinWebApiClient _lilinWebApiClient;
+    private readonly FilesClient _filesLilinClient;
     private readonly IImoutoRebirthRoomWebApiClient _roomWebApiClient;
 
-    public FilesStatusesQueryHandler(
-        IImoutoRebirthRoomWebApiClient roomWebApiClient,
-        IImoutoRebirthLilinWebApiClient lilinWebApiClient)
+    public FilesStatusesQueryHandler(FilesClient filesLilinClient, IImoutoRebirthRoomWebApiClient roomWebApiClient)
     {
+        _filesLilinClient = filesLilinClient;
         _roomWebApiClient = roomWebApiClient;
-        _lilinWebApiClient = lilinWebApiClient;
     }
 
     public async Task<IReadOnlyCollection<FileStatusResult>> Handle(FilesStatusesQuery request, CancellationToken ct)
     {
-        var roomFilesTask = GetFromRoomAsync(request.Hashes, ct);
+        var roomFiles = await GetFromRoomAsync(request.Hashes, ct);
+        var notFoundInRoom = roomFiles.Where(x => x.Value == FileStatus.NotFound).Select(x => x.Key).ToList();
 
-        var lilinFilesTask = GetFromLilinAsync(request.Hashes, ct);
-        await Task.WhenAll(roomFilesTask, lilinFilesTask);
+        var lilinFiles = await GetFromLilinAsync(notFoundInRoom, ct);
 
-        var lilinFiles = lilinFilesTask.Result;
-
-        return roomFilesTask.Result
+        return roomFiles
             .Select(x => new FileStatusResult(
                 x.Key,
                 x.Value != FileStatus.NotFound ? x.Value : lilinFiles[x.Key]))
@@ -54,12 +50,12 @@ internal class FilesStatusesQueryHandler : IQueryHandler<FilesStatusesQuery, IRe
         IReadOnlyCollection<string> hashes,
         CancellationToken ct)
     {
-        var tasks = hashes.Select(x => (Hash: x, Task: _lilinWebApiClient.Files.GetRelativesAsync(x, ct))).ToList();
+        var response = await _filesLilinClient.GetRelativesBatchAsync(hashes, ct);
 
-        await Task.WhenAll(tasks.Select(x => x.Task));
-
-        return tasks.ToDictionary(
-            x => x.Hash,
-            x => x.Task.Result.Any() ? FileStatus.RelativePresent : FileStatus.NotFound);
+        return response.ToDictionary(
+            x => x.Hash!,
+            x => x.RelativesType == null
+                ? FileStatus.NotFound
+                : FileStatus.RelativePresent);
     }
 }

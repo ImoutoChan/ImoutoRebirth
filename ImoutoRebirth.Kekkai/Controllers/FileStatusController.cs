@@ -15,6 +15,6 @@ public class FileStatusController : ControllerBase
     [HttpPost]
     public async Task<IReadOnlyCollection<FileStatusResult>> GetAsync(IReadOnlyCollection<string> hashes)
     {
-        return await _mediator.Send(new FilesStatusesQuery(hashes));
+        return await _mediator.Send(new FilesStatusesQuery(hashes.Distinct().ToList()));
     }
 }

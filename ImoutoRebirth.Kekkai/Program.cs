@@ -55,9 +55,8 @@ public class WebApiStartup
     }
 
     public void ConfigureServices(IServiceCollection services)
-    {     
-        services.AddTransient<IImoutoRebirthLilinWebApiClient>(_ =>
-            new ImoutoRebirthLilinWebApiClient(new Uri(Configuration.GetValue<string>("LilinUrl"))));
+    {
+        services.AddLilinWebApiClients(Configuration.GetValue<string>("LilinUrl"));
         
         services.AddTransient<IImoutoRebirthRoomWebApiClient>(_ =>
             new ImoutoRebirthRoomWebApiClient(new Uri(Configuration.GetValue<string>("RoomUrl"))));
