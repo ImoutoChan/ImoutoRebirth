@@ -1586,13 +1586,13 @@ namespace ImoutoRebirth.LilinService.WebApi.Client
     {
         [System.Text.Json.Serialization.JsonConstructor]
 
-        public RelativeShortResponse(string? @hash, RelativeShortResponseRelativesType? @relativesType)
+        public RelativeShortResponse(string? @hash, RelativeShortResponseRelativeType? @relativeType)
 
         {
 
             this.Hash = @hash;
 
-            this.RelativesType = @relativesType;
+            this.RelativeType = @relativeType;
 
         }    /// <summary>
         /// Requested md5 hash.
@@ -1605,9 +1605,9 @@ namespace ImoutoRebirth.LilinService.WebApi.Client
         /// Type of relative with md5 from request.
         /// </summary>
 
-        [System.Text.Json.Serialization.JsonPropertyName("relativesType")]
+        [System.Text.Json.Serialization.JsonPropertyName("relativeType")]
         [System.Text.Json.Serialization.JsonConverter(typeof(System.Text.Json.Serialization.JsonStringEnumConverter))]
-        public RelativeShortResponseRelativesType? RelativesType { get; }
+        public RelativeShortResponseRelativeType? RelativeType { get; }
 
     }
 
@@ -1858,7 +1858,7 @@ namespace ImoutoRebirth.LilinService.WebApi.Client
     }
 
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "13.15.9.0 (NJsonSchema v10.6.8.0 (Newtonsoft.Json v13.0.0.0))")]
-    public enum RelativeShortResponseRelativesType
+    public enum RelativeShortResponseRelativeType
     {
 
         [System.Runtime.Serialization.EnumMember(Value = @"Child")]

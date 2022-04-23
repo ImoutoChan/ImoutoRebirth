@@ -12,11 +12,11 @@ public class RelativeShortResponse
     /// <summary>
     ///     Type of relative with md5 from request.
     /// </summary>
-    public RelativeType? RelativesType { get; }
+    public RelativeType? RelativeType { get; }
 
-    public RelativeShortResponse(string hash, RelativeType relativesType)
+    public RelativeShortResponse(string hash, RelativeType relativeType)
     {
         Hash = hash;
-        RelativesType = relativesType;
+        RelativeType = relativeType;
     }
 }
