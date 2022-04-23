@@ -8,6 +8,7 @@ using ImoutoRebirth.Lilin.Infrastructure.ExpressionHelpers;
 using ImoutoRebirth.Lilin.Infrastructure.Mappers;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
+using NinjaNye.SearchExtensions;
 
 namespace ImoutoRebirth.Lilin.Infrastructure.Repositories;
 
@@ -22,6 +23,27 @@ public class FileTagRepository : IFileTagRepository
         _logger = logger;
     }
 
+    public async Task<List<(string x, RelativeType?)>> SearchHashesInTags(IReadOnlyCollection<string> hashes)
+    {
+        var fileTags = await _lilinDbContext.FileTags
+            .Search(x => x.Value).Containing(hashes.ToArray())
+            .Include(x => x.Tag)
+            .ToListAsync();
+        
+        return hashes.Select(x =>
+        {
+            var tags = fileTags.Where(y => y.Value?.Contains(x) == true).ToList();
+            
+            if (tags.Any(x => x.Tag?.Name == "ParentMd5"))
+                return (x, RelativeType.Parent);
+            
+            if (tags.Any(x => x.Tag?.Name == "Child"))
+                return (x, RelativeType.Child);
+            
+            return (x, (RelativeType?)null);
+        }).ToList();
+    }
+    
     public async Task<Guid[]> SearchFiles(
         IReadOnlyCollection<TagSearchEntry> tagSearchEntries,
         int? limit = 100,

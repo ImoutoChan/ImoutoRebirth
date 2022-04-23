@@ -41,5 +41,6 @@ public class DtoAutoMapperProfile : Profile
         CreateMap<Tag, TagResponse>();
         CreateMap<TagType, TagTypeResponse>();
         CreateMap<RelativeInfo, RelativeResponse>();
+        CreateMap<RelativeShortInfo, RelativeShortResponse>();
     }
 }

@@ -47,6 +47,19 @@ public class FilesController : ControllerBase
     }
 
     /// <summary>
+    ///     Check all parent and child tags in the database to see if there are related images for given md5 hash.
+    /// </summary>
+    /// <returns>
+    ///     The collection of relatives types for file and correspondent file info with their tags and notes.
+    /// </returns>
+    [HttpPost("relatives/batch")]
+    public async Task<ActionResult<RelativeShortResponse[]>> GetRelativesBatch(IReadOnlyCollection<string> md5)
+    {
+        var found = await _mediator.Send(new RelativesBatchQuery(md5));
+        return _mapper.Map<RelativeShortResponse[]>(found);
+    }
+
+    /// <summary>
     ///     Get all files that's contains certain tags and values.
     /// </summary>
     /// <returns>
