@@ -27,17 +27,21 @@ public class FileTagRepository : IFileTagRepository
     {
         var fileTags = await _lilinDbContext.FileTags
             .Search(x => x.Value).Containing(hashes.ToArray())
-            .Include(x => x.Tag)
+            .Select(x => new
+            {
+                Value = x.Value,
+                TagName = x.Tag!.Name
+            })
             .ToListAsync();
         
         return hashes.Select(x =>
         {
-            var tags = fileTags.Where(y => y.Value?.Contains(x) == true).ToList();
+            var tags = fileTags.Where(y => y.Value?.Contains(x) == true);
             
-            if (tags.Any(x => x.Tag?.Name == "ParentMd5"))
+            if (tags.Any(y => y.TagName == "ParentMd5"))
                 return (x, RelativeType.Parent);
             
-            if (tags.Any(x => x.Tag?.Name == "Child"))
+            if (tags.Any(y => y.TagName == "Child"))
                 return (x, RelativeType.Child);
             
             return (x, (RelativeType?)null);

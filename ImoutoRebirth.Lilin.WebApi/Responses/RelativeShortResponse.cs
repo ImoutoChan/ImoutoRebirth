@@ -14,7 +14,7 @@ public class RelativeShortResponse
     /// </summary>
     public RelativeType? RelativeType { get; }
 
-    public RelativeShortResponse(string hash, RelativeType relativeType)
+    public RelativeShortResponse(string hash, RelativeType? relativeType)
     {
         Hash = hash;
         RelativeType = relativeType;
