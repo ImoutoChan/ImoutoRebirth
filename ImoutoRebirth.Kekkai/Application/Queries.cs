@@ -2,7 +2,7 @@
 
 namespace ImoutoRebirth.Kekkai.Application;
 
-public record FilesStatusesQuery(IReadOnlyCollection<string> Hashes) : IQuery<IReadOnlyCollection<FileStatusResult>>;
+public record FilesStatusesQuery(IReadOnlyCollection<string> Hashes) : IQuery<IAsyncEnumerable<FileStatusResult>>;
 
 public record FileStatusResult(string Hash, FileStatus Status);
 

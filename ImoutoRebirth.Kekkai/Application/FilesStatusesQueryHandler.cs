@@ -1,4 +1,4 @@
-﻿using System.Collections.Immutable;
+﻿using System.Runtime.CompilerServices;
 using ImoutoRebirth.Common.Cqrs.Abstract;
 using ImoutoRebirth.LilinService.WebApi.Client;
 using ImoutoRebirth.Room.WebApi.Client;
@@ -6,7 +6,7 @@ using ImoutoRebirth.Room.WebApi.Client.Models;
 
 namespace ImoutoRebirth.Kekkai.Application;
 
-internal class FilesStatusesQueryHandler : IQueryHandler<FilesStatusesQuery, IReadOnlyCollection<FileStatusResult>>
+internal class FilesStatusesQueryHandler : IQueryHandler<FilesStatusesQuery, IAsyncEnumerable<FileStatusResult>>
 {
     private readonly FilesClient _filesLilinClient;
     private readonly IImoutoRebirthRoomWebApiClient _roomWebApiClient;
@@ -17,20 +17,29 @@ internal class FilesStatusesQueryHandler : IQueryHandler<FilesStatusesQuery, IRe
         _roomWebApiClient = roomWebApiClient;
     }
 
-    public async Task<IReadOnlyCollection<FileStatusResult>> Handle(FilesStatusesQuery request, CancellationToken ct)
+    public Task<IAsyncEnumerable<FileStatusResult>> Handle(FilesStatusesQuery request, CancellationToken ct)
+    {
+        return Task.FromResult(LoadAsync(request, ct));
+    }
+
+    private async IAsyncEnumerable<FileStatusResult> LoadAsync(
+        FilesStatusesQuery request,
+        [EnumeratorCancellation] CancellationToken ct)
     {
         var roomFiles = await GetFromRoomAsync(request.Hashes, ct);
+
+        foreach (var roomFile in roomFiles.Where(x => x.Value != FileStatus.NotFound))
+            yield return new FileStatusResult(roomFile.Key, roomFile.Value);
+
         var notFoundInRoom = roomFiles.Where(x => x.Value == FileStatus.NotFound).Select(x => x.Key).ToList();
 
-        var lilinFiles = notFoundInRoom.Any()
-            ? await GetFromLilinAsync(notFoundInRoom, ct)
-            : ImmutableDictionary<string, FileStatus>.Empty;
+        if (!notFoundInRoom.Any())
+            yield break;
 
-        return roomFiles
-            .Select(x => new FileStatusResult(
-                x.Key,
-                x.Value != FileStatus.NotFound ? x.Value : lilinFiles[x.Key]))
-            .ToList();
+        var lilinFiles = await GetFromLilinAsync(notFoundInRoom, ct);
+
+        foreach (var lilinFile in lilinFiles)
+            yield return new FileStatusResult(lilinFile.Key, lilinFile.Value);
     }
 
     private async Task<IReadOnlyDictionary<string, FileStatus>> GetFromRoomAsync(

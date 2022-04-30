@@ -13,8 +13,6 @@ public class FileStatusController : ControllerBase
     public FileStatusController(IMediator mediator) => _mediator = mediator;
 
     [HttpPost]
-    public async Task<IReadOnlyCollection<FileStatusResult>> GetAsync(IReadOnlyCollection<string> hashes)
-    {
-        return await _mediator.Send(new FilesStatusesQuery(hashes.Distinct().ToList()));
-    }
+    public IAsyncEnumerable<FileStatusResult> GetAsync(IReadOnlyCollection<string> hashes) 
+        => _mediator.Send(new FilesStatusesQuery(hashes.Distinct().ToList())).Result;
 }
