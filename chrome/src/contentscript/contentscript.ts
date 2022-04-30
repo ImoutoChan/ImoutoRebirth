@@ -1,5 +1,4 @@
 import './contentscript.scss';
-import { log } from 'util';
 
 const hashesResult: HashResult[] = [];
 let disableApp = false;
@@ -34,7 +33,7 @@ function requestImagesInfo(): void {
 }
 
 function saveResults(results: HashResult[]): void {
-    log(JSON.stringify(results));
+    console.log(JSON.stringify(results));
 
     for (const result of results) {
         const existed = hashesResult.find(x => x.hash === result.hash);
