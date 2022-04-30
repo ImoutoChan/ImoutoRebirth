@@ -1,4 +1,5 @@
-﻿using ImoutoRebirth.Common.Cqrs.Abstract;
+﻿using System.Collections.Immutable;
+using ImoutoRebirth.Common.Cqrs.Abstract;
 using ImoutoRebirth.LilinService.WebApi.Client;
 using ImoutoRebirth.Room.WebApi.Client;
 using ImoutoRebirth.Room.WebApi.Client.Models;
@@ -21,7 +22,9 @@ internal class FilesStatusesQueryHandler : IQueryHandler<FilesStatusesQuery, IRe
         var roomFiles = await GetFromRoomAsync(request.Hashes, ct);
         var notFoundInRoom = roomFiles.Where(x => x.Value == FileStatus.NotFound).Select(x => x.Key).ToList();
 
-        var lilinFiles = await GetFromLilinAsync(notFoundInRoom, ct);
+        var lilinFiles = notFoundInRoom.Any()
+            ? await GetFromLilinAsync(notFoundInRoom, ct)
+            : ImmutableDictionary<string, FileStatus>.Empty;
 
         return roomFiles
             .Select(x => new FileStatusResult(
