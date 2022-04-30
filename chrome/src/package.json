@@ -1,6 +1,6 @@
 {
   "name": "imouto-extension",
-  "version": "3.0.0",
+  "version": "4.0.0",
   "description": "",
   "main": "background.js",
   "scripts": {
@@ -31,5 +31,9 @@
     "typescript": "^3.8.3",
     "webpack": "^4.43.0",
     "webpack-cli": "^3.3.11"
+  },
+  "dependencies": {
+    "@types/oboe": "^2.1.1",
+    "oboe": "^2.1.5"
   }
 }
