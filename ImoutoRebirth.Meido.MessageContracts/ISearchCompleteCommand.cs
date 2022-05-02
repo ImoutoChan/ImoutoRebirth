@@ -10,7 +10,7 @@ namespace ImoutoRebirth.Meido.MessageContracts
 
         SearchStatus ResultStatus { get; }
 
-        string ErrorText { get; }
+        string? ErrorText { get; }
 
         int? FileIdFromSource { get; }
     }

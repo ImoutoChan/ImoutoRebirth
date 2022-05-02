@@ -12,7 +12,7 @@ namespace ImoutoRebirth.Meido.Core.ParsingStatus
             Guid fileId,
             SearchStatus resultStatus,
             int? fileIdFromSource,
-            string errorText);
+            string? errorText);
 
         Task MarkAsSaved(Guid fileId, int sourceId);
     }

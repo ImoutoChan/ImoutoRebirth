@@ -47,7 +47,7 @@ namespace ImoutoRebirth.Meido.Core.ParsingStatus
             Guid fileId,
             SearchStatus resultStatus,
             int? fileIdFromSource,
-            string errorText)
+            string? errorText)
         {
             ArgumentValidator.IsEnumDefined(() => resultStatus);
             ArgumentValidator.Requires(() => fileId != default, nameof(fileId));
@@ -64,7 +64,7 @@ namespace ImoutoRebirth.Meido.Core.ParsingStatus
                     parsingStatus.SetSearchFound(fileIdFromSource.Value);
                     break;
                 case SearchStatus.Error:
-                    parsingStatus.SetSearchFailed(errorText);
+                    parsingStatus.SetSearchFailed(errorText!);
                     break;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(resultStatus), resultStatus, null);

@@ -10,7 +10,7 @@ namespace ImoutoRebirth.Meido.Services.Cqrs.Commands
             int sourceId,
             Guid fileId, 
             SearchStatus resultStatus, 
-            string errorText, 
+            string? errorText, 
             int? fileIdFromSource)
         {
             SourceId = sourceId;
@@ -26,7 +26,7 @@ namespace ImoutoRebirth.Meido.Services.Cqrs.Commands
 
         public SearchStatus ResultStatus { get; }
 
-        public string ErrorText { get; }
+        public string? ErrorText { get; }
 
         public int? FileIdFromSource { get; }
     }
