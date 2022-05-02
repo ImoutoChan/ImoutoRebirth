@@ -23,16 +23,44 @@ public class FileTagRepository : IFileTagRepository
         _logger = logger;
     }
 
+    // public async Task<List<(string x, RelativeType?)>> SearchHashesInTags(IReadOnlyCollection<string> hashes)
+    // {
+    //     var request = _lilinDbContext.FileTags
+    //         .Search(x => x.Value).Containing(hashes.ToArray())
+    //         .Select(x => new
+    //         {
+    //             Value = x.Value,
+    //             TagName = x.Tag!.Name
+    //         });
+    //     
+    //     var fileTags = await request.ToListAsync();
+    //     
+    //     return hashes.Select(x =>
+    //     {
+    //         var tags = fileTags.Where(y => y.Value?.Contains(x) == true);
+    //         
+    //         if (tags.Any(y => y.TagName == "ParentMd5"))
+    //             return (x, RelativeType.Parent);
+    //         
+    //         if (tags.Any(y => y.TagName == "Child"))
+    //             return (x, RelativeType.Child);
+    //         
+    //         return (x, (RelativeType?)null);
+    //     }).ToList();
+    // }
+
     public async Task<List<(string x, RelativeType?)>> SearchHashesInTags(IReadOnlyCollection<string> hashes)
     {
-        var fileTags = await _lilinDbContext.FileTags
+        var request = _lilinDbContext.FileTags
+            .Where(x => x.Tag!.Name == "ParentMd5" || x.Tag.Name == "Child")
             .Search(x => x.Value).Containing(hashes.ToArray())
             .Select(x => new
             {
                 Value = x.Value,
                 TagName = x.Tag!.Name
-            })
-            .ToListAsync();
+            });
+        
+        var fileTags = await request.ToListAsync();
         
         return hashes.Select(x =>
         {
