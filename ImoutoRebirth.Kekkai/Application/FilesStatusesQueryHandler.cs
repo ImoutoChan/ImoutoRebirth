@@ -6,7 +6,7 @@ using ImoutoRebirth.Room.WebApi.Client.Models;
 
 namespace ImoutoRebirth.Kekkai.Application;
 
-internal class FilesStatusesQueryHandler : IQueryHandler<FilesStatusesQuery, IAsyncEnumerable<FileStatusResult>>
+internal class FilesStatusesQueryHandler : IStreamQueryHandler<FilesStatusesQuery, FileStatusResult>
 {
     private readonly FilesClient _filesLilinClient;
     private readonly IImoutoRebirthRoomWebApiClient _roomWebApiClient;
@@ -17,12 +17,7 @@ internal class FilesStatusesQueryHandler : IQueryHandler<FilesStatusesQuery, IAs
         _roomWebApiClient = roomWebApiClient;
     }
 
-    public Task<IAsyncEnumerable<FileStatusResult>> Handle(FilesStatusesQuery request, CancellationToken ct)
-    {
-        return Task.FromResult(LoadAsync(request, ct));
-    }
-
-    private async IAsyncEnumerable<FileStatusResult> LoadAsync(
+    public async IAsyncEnumerable<FileStatusResult> Handle(
         FilesStatusesQuery request,
         [EnumeratorCancellation] CancellationToken ct)
     {
