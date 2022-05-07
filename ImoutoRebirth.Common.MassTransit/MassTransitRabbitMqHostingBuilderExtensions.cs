@@ -1,9 +1,6 @@
 ﻿using System.Text.RegularExpressions;
-using GreenPipes;
-using GreenPipes.Configurators;
 using Humanizer;
 using MassTransit;
-using MassTransit.RabbitMqTransport;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace ImoutoRebirth.Common.MassTransit;
@@ -32,8 +29,6 @@ public static class MassTransitExtensions
 
                         configureAction?.Invoke(new TrueMassTransitConfigurator(cfg, innerServices));
                     })));
-
-        services.AddMassTransitHostedService();
 
         return services;
     }

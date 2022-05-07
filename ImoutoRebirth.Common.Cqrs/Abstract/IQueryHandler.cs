@@ -6,3 +6,8 @@ public interface IQueryHandler<in TQuery, TResult> : IRequestHandler<TQuery, TRe
     where TQuery : IQuery<TResult>
 {
 }
+
+public interface IStreamQueryHandler<in TQuery, out TResult> : IStreamRequestHandler<TQuery, TResult>
+    where TQuery : IStreamQuery<TResult>
+{
+}

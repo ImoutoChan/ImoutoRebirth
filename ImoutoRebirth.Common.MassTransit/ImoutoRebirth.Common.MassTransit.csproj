@@ -13,9 +13,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Humanizer.Core" Version="2.13.14" />
-    <PackageReference Include="MassTransit.AspNetCore" Version="7.3.0" />
-    <PackageReference Include="MassTransit.RabbitMQ" Version="7.3.0" />
+    <PackageReference Include="Humanizer.Core" Version="2.14.1" />
+    <PackageReference Include="MassTransit.RabbitMQ" Version="8.0.2" />
   </ItemGroup>
 
 </Project>

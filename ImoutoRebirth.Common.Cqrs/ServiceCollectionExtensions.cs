@@ -18,6 +18,7 @@ public static class ServiceCollectionExtensions
     public static IServiceCollection AddLoggingBehavior(this IServiceCollection services)
     {
         services.AddTransient(typeof(IPipelineBehavior<,>), typeof(LoggingBehavior<,>));
+        services.AddTransient(typeof(IStreamPipelineBehavior<,>), typeof(LoggingStreamBehavior<,>));
 
         return services;
     }
