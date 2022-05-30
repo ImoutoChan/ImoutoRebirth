@@ -8,7 +8,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="ImoutoRebirth.Common" Version="3.9.4" />
+    <PackageReference Include="ImoutoRebirth.Common" Version="3.10.0" />
     <PackageReference Include="Mackiovello.Maybe" Version="1.0.0" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="6.0.0" />
   </ItemGroup>

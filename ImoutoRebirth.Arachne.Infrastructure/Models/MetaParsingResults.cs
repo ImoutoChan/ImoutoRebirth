@@ -21,6 +21,8 @@ internal class MetaParsingResults
     public string? PostedByUsername { get; }
 
     public string Rating { get; }
+    
+    public string RatingSafeLevel { get; }
 
     public string? ParentId { get; }
 
@@ -45,6 +47,7 @@ internal class MetaParsingResults
         string? postedById,
         string? postedByUsername,
         string rating,
+        string ratingSafeLevel,
         string? parentId,
         string? parentMd5,
         IReadOnlyCollection<string> childs,
@@ -61,6 +64,7 @@ internal class MetaParsingResults
         PostedById = postedById;
         PostedByUsername = postedByUsername;
         Rating = rating;
+        RatingSafeLevel = ratingSafeLevel;
         ParentId = parentId;
         ParentMd5 = parentMd5;
         Childs = childs;

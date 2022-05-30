@@ -47,6 +47,7 @@ internal class BooruPostConverter : IBooruPostConverter
             post.PostedUser?.Id?.ToString(),
             post.PostedUser?.Name,
             post.ImageRating.ToString(),
+            post.RatingSafeLevel.ToString(),
             parentId,
             parentMd5,
             post.ChildrenIds,

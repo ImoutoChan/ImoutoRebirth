@@ -11,7 +11,7 @@ public class MetaParsingResultsTests
     [Fact]
     public void ShouldReturnAllSimpleTags()
     {
-        var generatedTags = Enumerable.Range(0, 10).Select(x => $"tag{x}").ToArray();
+        var generatedTags = Enumerable.Range(0, 11).Select(x => $"tag{x}").ToArray();
 
         var obj = new MetaParsingResults(
             source: generatedTags[0],
@@ -22,6 +22,7 @@ public class MetaParsingResultsTests
             postedById: generatedTags[5],
             postedByUsername: generatedTags[6],
             rating: generatedTags[7],
+            ratingSafeLevel: generatedTags[10],
             parentId: generatedTags[8],
             parentMd5: generatedTags[9],
             childs: Array.Empty<string>(),
@@ -54,6 +55,7 @@ public class MetaParsingResultsTests
             postedById: "",
             postedByUsername: "",
             rating: "",
+            ratingSafeLevel: "",
             parentId: default,
             parentMd5: default,
             childs: Array.Empty<string>(),
@@ -84,6 +86,7 @@ public class MetaParsingResultsTests
             postedById: default,
             postedByUsername: default,
             rating: "",
+            ratingSafeLevel: "",
             parentId: default,
             parentMd5: default,
             childs: generatedTags,
@@ -114,6 +117,7 @@ public class MetaParsingResultsTests
             postedById: "",
             postedByUsername: default,
             rating: "",
+            ratingSafeLevel: "",
             parentId: default,
             parentMd5: default,
             childs: generatedTags,
