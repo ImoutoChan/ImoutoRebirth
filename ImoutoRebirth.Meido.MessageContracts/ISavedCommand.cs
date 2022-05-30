@@ -1,11 +1,10 @@
 ﻿using System;
 
-namespace ImoutoRebirth.Meido.MessageContracts
-{
-    public interface ISavedCommand
-    {
-        Guid FileId { get; }
+namespace ImoutoRebirth.Meido.MessageContracts;
 
-        int SourceId { get; }
-    }
+public interface ISavedCommand
+{
+    Guid FileId { get; }
+
+    int SourceId { get; }
 }

@@ -1,11 +1,10 @@
-﻿namespace ImoutoRebirth.Meido.MessageContracts
+﻿namespace ImoutoRebirth.Meido.MessageContracts;
+
+public interface ITagsUpdatedCommand
 {
-    public interface ITagsUpdatedCommand
-    {
-        int SourceId { get; }
+    int SourceId { get; }
 
-        int[] PostIds { get; }
+    int[] PostIds { get; }
 
-        int LastHistoryId { get; }
-    }
+    int LastHistoryId { get; }
 }

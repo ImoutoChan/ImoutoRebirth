@@ -1,18 +1,16 @@
-﻿using System;
-using ImoutoRebirth.Common.Cqrs.Abstract;
+﻿using ImoutoRebirth.Common.Cqrs.Abstract;
 
-namespace ImoutoRebirth.Meido.Services.Cqrs.Commands
+namespace ImoutoRebirth.Meido.Services.Cqrs.Commands;
+
+internal class MarkMetadataSavedCommand : ICommand
 {
-    internal class MarkMetadataSavedCommand : ICommand
+    public MarkMetadataSavedCommand(Guid fileId, int sourceId)
     {
-        public MarkMetadataSavedCommand(Guid fileId, int sourceId)
-        {
-            FileId = fileId;
-            SourceId = sourceId;
-        }
-
-        public Guid FileId { get; }
-
-        public int SourceId { get; }
+        FileId = fileId;
+        SourceId = sourceId;
     }
+
+    public Guid FileId { get; }
+
+    public int SourceId { get; }
 }

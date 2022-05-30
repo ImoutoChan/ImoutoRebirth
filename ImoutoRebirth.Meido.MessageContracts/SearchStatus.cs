@@ -1,9 +1,8 @@
-﻿namespace ImoutoRebirth.Meido.MessageContracts
+﻿namespace ImoutoRebirth.Meido.MessageContracts;
+
+public enum SearchStatus
 {
-    public enum SearchStatus
-    {
-        NotFound,
-        Success,
-        Error
-    }
+    NotFound,
+    Success,
+    Error
 }

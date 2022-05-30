@@ -1,25 +1,22 @@
-﻿using System;
-using System.Threading.Tasks;
-using ImoutoRebirth.Arachne.MessageContracts.Commands;
+﻿using ImoutoRebirth.Arachne.MessageContracts.Commands;
 using ImoutoRebirth.Meido.Core;
 using MassTransit;
 
-namespace ImoutoRebirth.Meido.Services.MetadataRequest
+namespace ImoutoRebirth.Meido.Services.MetadataRequest;
+
+public class SankakuMetadataRequester : IMetadataRequester
 {
-    public class SankakuMetadataRequester : IMetadataRequester
+    private readonly IBus _bus;
+
+    public SankakuMetadataRequester(IBus bus)
     {
-        private readonly IBus _bus;
+        _bus = bus;
+    }
 
-        public SankakuMetadataRequester(IBus bus)
-        {
-            _bus = bus;
-        }
+    public MetadataSource Source => MetadataSource.Sankaku;
 
-        public MetadataSource Source => MetadataSource.Sankaku;
-
-        public async Task SendRequestCommand(Guid fileId, string md5)
-        {
-            await _bus.Send<ISankakuSearchMetadataCommand>(new {FileId = fileId, Md5 = md5});
-        }
+    public async Task SendRequestCommand(Guid fileId, string md5)
+    {
+        await _bus.Send<ISankakuSearchMetadataCommand>(new {FileId = fileId, Md5 = md5});
     }
 }

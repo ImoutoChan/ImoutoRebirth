@@ -1,9 +1,8 @@
 ﻿using ImoutoRebirth.Meido.Core;
 
-namespace ImoutoRebirth.Meido.Services.MetadataRequest
+namespace ImoutoRebirth.Meido.Services.MetadataRequest;
+
+public interface IMetadataRequesterProvider
 {
-    public interface IMetadataRequesterProvider
-    {
-        IMetadataRequester Get(MetadataSource source);
-    }
+    IMetadataRequester Get(MetadataSource source);
 }

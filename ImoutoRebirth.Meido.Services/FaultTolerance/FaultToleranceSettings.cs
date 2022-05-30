@@ -1,9 +1,8 @@
-﻿namespace ImoutoRebirth.Meido.Services.FaultTolerance
-{
-    public class FaultToleranceSettings
-    {
-        public bool IsEnabled { get; set; } = false;
+﻿namespace ImoutoRebirth.Meido.Services.FaultTolerance;
 
-        public int RepeatEveryMinutes { get; set; } = 60 * 24;
-    }
+public class FaultToleranceSettings
+{
+    public bool IsEnabled { get; set; } = false;
+
+    public int RepeatEveryMinutes { get; set; } = 60 * 24;
 }

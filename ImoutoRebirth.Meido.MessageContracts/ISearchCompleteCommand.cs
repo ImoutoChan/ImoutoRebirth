@@ -1,17 +1,16 @@
 ﻿using System;
 
-namespace ImoutoRebirth.Meido.MessageContracts
+namespace ImoutoRebirth.Meido.MessageContracts;
+
+public interface ISearchCompleteCommand
 {
-    public interface ISearchCompleteCommand
-    {
-        Guid FileId { get; }
+    Guid FileId { get; }
 
-        int SourceId { get; }
+    int SourceId { get; }
 
-        SearchStatus ResultStatus { get; }
+    SearchStatus ResultStatus { get; }
 
-        string? ErrorText { get; }
+    string? ErrorText { get; }
 
-        int? FileIdFromSource { get; }
-    }
+    int? FileIdFromSource { get; }
 }

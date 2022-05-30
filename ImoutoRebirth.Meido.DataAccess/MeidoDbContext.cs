@@ -9,55 +9,54 @@ using ImoutoRebirth.Meido.Core.ParsingStatus;
 using ImoutoRebirth.Meido.Core.SourceActualizingState;
 using Microsoft.EntityFrameworkCore;
 
-namespace ImoutoRebirth.Meido.DataAccess
+namespace ImoutoRebirth.Meido.DataAccess;
+
+public class MeidoDbContext : DbContext, IUnitOfWork
 {
-    public class MeidoDbContext : DbContext, IUnitOfWork
+    private readonly IEventStorage _eventStorage;
+
+    public DbSet<ParsingStatus> ParsingStatuses { get; set; } = default!;
+
+    public DbSet<SourceActualizingState> SourceActualizingStates { get; set; } = default!;
+
+    public MeidoDbContext(
+        DbContextOptions<MeidoDbContext> options,
+        IEventStorage eventStorage)
+        : base(options)
     {
-        private readonly IEventStorage _eventStorage;
+        _eventStorage = eventStorage;
+    }
 
-        public DbSet<ParsingStatus> ParsingStatuses { get; set; } = default!;
+    protected override void OnModelCreating(ModelBuilder modelBuilder)
+    {
+        modelBuilder.ApplyConfigurationsFromAssembly(typeof(MeidoDbContext).Assembly);
+    }
 
-        public DbSet<SourceActualizingState> SourceActualizingStates { get; set; } = default!;
+    public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
+    {
+        ChangeTracker.TrackShadowedTimeBeforeSaveChanges();
+        return base.SaveChangesAsync(cancellationToken);
+    }
 
-        public MeidoDbContext(
-            DbContextOptions<MeidoDbContext> options,
-            IEventStorage eventStorage)
-            : base(options)
+    public async Task SaveEntitiesAsync(CancellationToken cancellationToken = default)
+    {
+        await SaveChangesAsync(cancellationToken);
+
+        foreach (var domainEvent in ChangeTracker
+                     .Entries()
+                     .Select(x => x.Entity)
+                     .OfType<Entity>()
+                     .SelectMany(x => x.Events))
         {
-            _eventStorage = eventStorage;
+            _eventStorage.Add(domainEvent);
         }
+    }
 
-        protected override void OnModelCreating(ModelBuilder modelBuilder)
-        {
-            modelBuilder.ApplyConfigurationsFromAssembly(typeof(MeidoDbContext).Assembly);
-        }
+    public async Task<ITransaction> CreateTransactionAsync(IsolationLevel isolationLevel)
+    {
+        if (Database.CurrentTransaction != null)
+            return new EmptyTransaction();
 
-        public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
-        {
-            ChangeTracker.TrackShadowedTimeBeforeSaveChanges();
-            return base.SaveChangesAsync(cancellationToken);
-        }
-
-        public async Task SaveEntitiesAsync(CancellationToken cancellationToken = default)
-        {
-            await SaveChangesAsync(cancellationToken);
-
-            foreach (var domainEvent in ChangeTracker
-                                        .Entries()
-                                        .Select(x => x.Entity)
-                                        .OfType<Entity>()
-                                        .SelectMany(x => x.Events))
-            {
-                _eventStorage.Add(domainEvent);
-            }
-        }
-
-        public async Task<ITransaction> CreateTransactionAsync(IsolationLevel isolationLevel)
-        {
-            if (Database.CurrentTransaction != null)
-                return new EmptyTransaction();
-
-            return new DbTransaction(await Database.BeginTransactionAsync(isolationLevel));
-        }
+        return new DbTransaction(await Database.BeginTransactionAsync(isolationLevel));
     }
 }

@@ -1,13 +1,12 @@
 ﻿using System;
 
-namespace ImoutoRebirth.Meido.MessageContracts
+namespace ImoutoRebirth.Meido.MessageContracts;
+
+public interface INotesUpdatedCommand
 {
-    public interface INotesUpdatedCommand
-    {
-        int SourceId { get; }
+    int SourceId { get; }
 
-        int[] PostIds { get; }
+    int[] PostIds { get; }
 
-        DateTimeOffset LastNoteUpdateDate { get; }
-    }
+    DateTimeOffset LastNoteUpdateDate { get; }
 }

@@ -1,27 +1,23 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using ImoutoRebirth.Meido.Core;
+﻿using ImoutoRebirth.Meido.Core;
 
-namespace ImoutoRebirth.Meido.Services.MetadataRequest
+namespace ImoutoRebirth.Meido.Services.MetadataRequest;
+
+public class MetadataRequesterProvider : IMetadataRequesterProvider
 {
-    public class MetadataRequesterProvider : IMetadataRequesterProvider
+    private readonly IEnumerable<IMetadataRequester> _requesters;
+
+    public MetadataRequesterProvider(IEnumerable<IMetadataRequester> requesters)
     {
-        private readonly IEnumerable<IMetadataRequester> _requesters;
+        _requesters = requesters;
+    }
 
-        public MetadataRequesterProvider(IEnumerable<IMetadataRequester> requesters)
-        {
-            _requesters = requesters;
-        }
+    public IMetadataRequester Get(MetadataSource source)
+    {
+        var requester = _requesters.FirstOrDefault(x => x.Source == source);
 
-        public IMetadataRequester Get(MetadataSource source)
-        {
-            var requester = _requesters.FirstOrDefault(x => x.Source == source);
+        if (requester == null)
+            throw new NotImplementedException($"Metadata requester for source {source} was not found.");
 
-            if (requester == null)
-                throw new NotImplementedException($"Metadata requester for source {source} was not found.");
-
-            return requester;
-        }
+        return requester;
     }
 }

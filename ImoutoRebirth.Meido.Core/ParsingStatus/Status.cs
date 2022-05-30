@@ -1,16 +1,15 @@
-﻿namespace ImoutoRebirth.Meido.Core.ParsingStatus
+﻿namespace ImoutoRebirth.Meido.Core.ParsingStatus;
+
+public enum Status
 {
-    public enum Status
-    {
-        SearchRequested = 0,
+    SearchRequested = 0,
 
-        SearchFound = 1,
-        SearchNotFound = 2,
-        SearchFailed = 3,
+    SearchFound = 1,
+    SearchNotFound = 2,
+    SearchFailed = 3,
 
-        OriginalRequested = 4,
-        SearchSaved = 5,
+    OriginalRequested = 4,
+    SearchSaved = 5,
 
-        UpdateRequested = 6
-    }
+    UpdateRequested = 6
 }

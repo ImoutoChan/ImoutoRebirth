@@ -1,25 +1,22 @@
-﻿using System.Threading;
-using System.Threading.Tasks;
-using ImoutoRebirth.Common.Cqrs.Abstract;
+﻿using ImoutoRebirth.Common.Cqrs.Abstract;
 using ImoutoRebirth.Meido.Core.ParsingStatus;
 using MediatR;
 
-namespace ImoutoRebirth.Meido.Services.Cqrs.Commands
+namespace ImoutoRebirth.Meido.Services.Cqrs.Commands;
+
+internal class AddNewFileCommandHandler : ICommandHandler<AddNewFileCommand>
 {
-    internal class AddNewFileCommandHandler : ICommandHandler<AddNewFileCommand>
+    private readonly IParsingService _parsingService;
+
+    public AddNewFileCommandHandler(IParsingService parsingService)
     {
-        private readonly IParsingService _parsingService;
+        _parsingService = parsingService;
+    }
 
-        public AddNewFileCommandHandler(IParsingService parsingService)
-        {
-            _parsingService = parsingService;
-        }
+    public async Task<Unit> Handle(AddNewFileCommand request, CancellationToken cancellationToken)
+    {
+        await _parsingService.CreateParsingStatusesForNewFile(request.FileId, request.Md5);
 
-        public async Task<Unit> Handle(AddNewFileCommand request, CancellationToken cancellationToken)
-        {
-            await _parsingService.CreateParsingStatusesForNewFile(request.FileId, request.Md5);
-
-            return Unit.Value;
-        }
+        return Unit.Value;
     }
 }

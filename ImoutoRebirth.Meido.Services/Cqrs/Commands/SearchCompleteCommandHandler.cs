@@ -1,30 +1,27 @@
-﻿using System.Threading;
-using System.Threading.Tasks;
-using ImoutoRebirth.Common.Cqrs.Abstract;
+﻿using ImoutoRebirth.Common.Cqrs.Abstract;
 using ImoutoRebirth.Meido.Core.ParsingStatus;
 using MediatR;
 
-namespace ImoutoRebirth.Meido.Services.Cqrs.Commands
+namespace ImoutoRebirth.Meido.Services.Cqrs.Commands;
+
+internal class SearchCompleteCommandHandler : ICommandHandler<SearchCompleteCommand>
 {
-    internal class SearchCompleteCommandHandler : ICommandHandler<SearchCompleteCommand>
+    private readonly IParsingService _parsingService;
+
+    public SearchCompleteCommandHandler(IParsingService parsingService)
     {
-        private readonly IParsingService _parsingService;
+        _parsingService = parsingService;
+    }
 
-        public SearchCompleteCommandHandler(IParsingService parsingService)
-        {
-            _parsingService = parsingService;
-        }
+    public async Task<Unit> Handle(SearchCompleteCommand request, CancellationToken cancellationToken)
+    {
+        await _parsingService.SaveSearchResult(
+            request.SourceId, 
+            request.FileId, 
+            (SearchStatus)request.ResultStatus, 
+            request.FileIdFromSource, 
+            request.ErrorText);
 
-        public async Task<Unit> Handle(SearchCompleteCommand request, CancellationToken cancellationToken)
-        {
-            await _parsingService.SaveSearchResult(
-                request.SourceId, 
-                request.FileId, 
-                (SearchStatus)request.ResultStatus, 
-                request.FileIdFromSource, 
-                request.ErrorText);
-
-            return Unit.Value;
-        }
+        return Unit.Value;
     }
 }

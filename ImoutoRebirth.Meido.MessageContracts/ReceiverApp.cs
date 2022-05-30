@@ -1,7 +1,6 @@
-﻿namespace ImoutoRebirth.Meido.MessageContracts
+﻿namespace ImoutoRebirth.Meido.MessageContracts;
+
+public static class ReceiverApp
 {
-    public static class ReceiverApp
-    {
-        public static string Name => "imoutorebirth_meido";
-    }
+    public static string Name => "imoutorebirth_meido";
 }

@@ -1,9 +1,8 @@
-﻿namespace ImoutoRebirth.Meido.Core.ParsingStatus
+﻿namespace ImoutoRebirth.Meido.Core.ParsingStatus;
+
+public enum SearchStatus
 {
-    public enum SearchStatus
-    {
-        NotFound,
-        Success,
-        Error
-    }
+    NotFound,
+    Success,
+    Error
 }

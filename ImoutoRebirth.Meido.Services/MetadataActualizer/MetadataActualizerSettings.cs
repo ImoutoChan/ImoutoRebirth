@@ -1,12 +1,10 @@
-﻿using System;
-using ImoutoRebirth.Meido.Core;
+﻿using ImoutoRebirth.Meido.Core;
 
-namespace ImoutoRebirth.Meido.Services.MetadataActualizer
+namespace ImoutoRebirth.Meido.Services.MetadataActualizer;
+
+public class MetadataActualizerSettings
 {
-    public class MetadataActualizerSettings
-    {
-        public int RepeatEveryMinutes { get; set; }
+    public int RepeatEveryMinutes { get; set; }
 
-        public MetadataSource[] ActiveSources { get; set; } = Array.Empty<MetadataSource>();
-    }
+    public MetadataSource[] ActiveSources { get; set; } = Array.Empty<MetadataSource>();
 }

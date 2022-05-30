@@ -1,11 +1,10 @@
 ﻿using System;
 
-namespace ImoutoRebirth.Meido.MessageContracts
-{
-    public interface INewFileCommand
-    {
-        string Md5 { get; }
+namespace ImoutoRebirth.Meido.MessageContracts;
 
-        Guid FileId { get; }
-    }
+public interface INewFileCommand
+{
+    string Md5 { get; }
+
+    Guid FileId { get; }
 }

@@ -1,9 +1,8 @@
-﻿namespace ImoutoRebirth.Meido.Core
+﻿namespace ImoutoRebirth.Meido.Core;
+
+public enum MetadataSource
 {
-    public enum MetadataSource
-    {
-        Yandere = 0,
-        Danbooru = 1,
-        Sankaku = 2
-    }
+    Yandere = 0,
+    Danbooru = 1,
+    Sankaku = 2
 }

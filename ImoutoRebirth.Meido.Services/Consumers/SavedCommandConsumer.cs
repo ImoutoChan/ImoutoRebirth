@@ -1,25 +1,23 @@
-﻿using System.Threading.Tasks;
-using ImoutoRebirth.Meido.MessageContracts;
+﻿using ImoutoRebirth.Meido.MessageContracts;
 using ImoutoRebirth.Meido.Services.Cqrs.Commands;
 using MassTransit;
 using MediatR;
 
-namespace ImoutoRebirth.Meido.Services.Consumers
+namespace ImoutoRebirth.Meido.Services.Consumers;
+
+public class SavedCommandConsumer : IConsumer<ISavedCommand>
 {
-    public class SavedCommandConsumer : IConsumer<ISavedCommand>
+    private readonly IMediator _mediator;
+
+    public SavedCommandConsumer(IMediator mediator)
     {
-        private readonly IMediator _mediator;
+        _mediator = mediator;
+    }
 
-        public SavedCommandConsumer(IMediator mediator)
-        {
-            _mediator = mediator;
-        }
+    public async Task Consume(ConsumeContext<ISavedCommand> context)
+    {
+        var command = new MarkMetadataSavedCommand(context.Message.FileId, context.Message.SourceId);
 
-        public async Task Consume(ConsumeContext<ISavedCommand> context)
-        {
-            var command = new MarkMetadataSavedCommand(context.Message.FileId, context.Message.SourceId);
-
-            await _mediator.Send(command);
-        }
+        await _mediator.Send(command);
     }
 }

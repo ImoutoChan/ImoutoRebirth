@@ -3,14 +3,13 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using ImoutoRebirth.Common.Domain.Specifications;
 
-namespace ImoutoRebirth.Meido.Core.ParsingStatus
+namespace ImoutoRebirth.Meido.Core.ParsingStatus;
+
+public interface IParsingStatusRepository
 {
-    public interface IParsingStatusRepository
-    {
-        ValueTask Add(ParsingStatus parsingStatus);
+    ValueTask Add(ParsingStatus parsingStatus);
 
-        ValueTask<ParsingStatus?> Get(Guid fileId, MetadataSource source);
+    ValueTask<ParsingStatus?> Get(Guid fileId, MetadataSource source);
 
-        Task<IReadOnlyCollection<ParsingStatus>> Find(Specification<ParsingStatus> specification);
-    }
+    Task<IReadOnlyCollection<ParsingStatus>> Find(Specification<ParsingStatus> specification);
 }

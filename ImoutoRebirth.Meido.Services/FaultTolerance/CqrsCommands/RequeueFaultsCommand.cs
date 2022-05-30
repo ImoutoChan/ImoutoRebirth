@@ -1,8 +1,7 @@
 ﻿using ImoutoRebirth.Common.Cqrs.Abstract;
 
-namespace ImoutoRebirth.Meido.Services.FaultTolerance.CqrsCommands
+namespace ImoutoRebirth.Meido.Services.FaultTolerance.CqrsCommands;
+
+internal class RequeueFaultsCommand : ICommand
 {
-    internal class RequeueFaultsCommand : ICommand
-    {
-    }
 }
