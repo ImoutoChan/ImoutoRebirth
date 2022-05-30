@@ -3,6 +3,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using ImoutoRebirth.Common;
 using ImoutoRebirth.Meido.Core.ParsingStatus;
+using NodaTime;
 
 namespace ImoutoRebirth.Meido.Core.SourceActualizingState
 {
@@ -10,24 +11,28 @@ namespace ImoutoRebirth.Meido.Core.SourceActualizingState
     {
         private readonly ISourceActualizingStateRepository _sourceActualizingStateRepository;
         private readonly IParsingStatusRepository _parsingStatusRepository;
+        private readonly IClock _clock;
 
         public SourceActualizerService(
             ISourceActualizingStateRepository sourceActualizingStateRepository,
-            IParsingStatusRepository parsingStatusRepository)
+            IParsingStatusRepository parsingStatusRepository,
+            IClock clock)
         {
             _sourceActualizingStateRepository = sourceActualizingStateRepository;
             _parsingStatusRepository = parsingStatusRepository;
+            _clock = clock;
         }
 
         public async Task RequestActualization(MetadataSource[] activeSources)
         {
+            var now = _clock.GetCurrentInstant();
             var states = await _sourceActualizingStateRepository.GetAll();
 
             var activeStates = states.Where(x => activeSources.Contains(x.Source));
 
             foreach (var state in activeStates)
             {
-                state.RequestActualization();
+                state.RequestActualization(now);
             }
         }
 
@@ -38,18 +43,19 @@ namespace ImoutoRebirth.Meido.Core.SourceActualizingState
         {
             ArgumentValidator.Requires(postIds.Any, nameof(postIds));
 
+            var now = _clock.GetCurrentInstant();
             var source = (MetadataSource)sourceId;
             var currentState = await GetStateForSource(source);
 
             await RequestUpdatesForExisting(postIds, source);
 
-            currentState.SetLastTagUpdate(lastHistoryId);
+            currentState.SetLastTagUpdate(lastHistoryId, now);
         }
 
         public async Task MarkNotesUpdated(
             int sourceId, 
             int[] postIds, 
-            DateTimeOffset lastNoteUpdateDate)
+            Instant lastNoteUpdateDate)
         {
             ArgumentValidator.Requires(postIds.Any, nameof(postIds));
 
@@ -69,13 +75,14 @@ namespace ImoutoRebirth.Meido.Core.SourceActualizingState
 
         private async Task RequestUpdatesForExisting(int[] postIds, MetadataSource source)
         {
+            var now = _clock.GetCurrentInstant();
             var posts = await _parsingStatusRepository.Find(new AllWithPostIdFromListSpecification(postIds, source));
 
             if (posts.Any())
             {
                 foreach (var parsingStatus in posts)
                 {
-                    parsingStatus.RequestMetadataUpdate();
+                    parsingStatus.RequestMetadataUpdate(now);
                 }
             }
         }

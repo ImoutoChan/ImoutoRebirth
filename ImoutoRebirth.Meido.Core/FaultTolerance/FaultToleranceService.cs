@@ -1,6 +1,7 @@
 ﻿using System.Threading.Tasks;
 using ImoutoRebirth.Meido.Core.ParsingStatus;
 using Microsoft.Extensions.Logging;
+using NodaTime;
 
 namespace ImoutoRebirth.Meido.Core.FaultTolerance
 {
@@ -8,13 +9,16 @@ namespace ImoutoRebirth.Meido.Core.FaultTolerance
     {
         private readonly IParsingStatusRepository _parsingStatusRepository;
         private readonly ILogger<FaultToleranceService> _logger;
+        private readonly IClock _clock;
 
         public FaultToleranceService(
             IParsingStatusRepository parsingStatusRepository, 
-            ILogger<FaultToleranceService> logger)
+            ILogger<FaultToleranceService> logger,
+            IClock clock)
         {
             _parsingStatusRepository = parsingStatusRepository;
             _logger = logger;
+            _clock = clock;
         }
 
         public async Task RequeueFaults()
@@ -25,7 +29,7 @@ namespace ImoutoRebirth.Meido.Core.FaultTolerance
 
             foreach (var parsingStatus in faultedParsingStatuses)
             {
-                parsingStatus.RequestMetadataUpdate();
+                parsingStatus.RequestMetadataUpdate(_clock.GetCurrentInstant());
             }
         }
     }

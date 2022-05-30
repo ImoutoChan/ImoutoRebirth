@@ -7,7 +7,9 @@ namespace ImoutoRebirth.Meido.DataAccess
     {
         public static IServiceCollection AddMeidoDataAccess(this IServiceCollection services, string connectionString)
         {
-            services.AddDbContext<MeidoDbContext>(o => o.UseNpgsql(connectionString));
+            services.AddDbContext<MeidoDbContext>(
+                o => o.UseNpgsql(connectionString,
+                builder => builder.UseNodaTime()));
 
             return services;
         }

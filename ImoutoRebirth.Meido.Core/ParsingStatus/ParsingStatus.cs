@@ -2,6 +2,7 @@
 using ImoutoRebirth.Common;
 using ImoutoRebirth.Common.Domain;
 using ImoutoRebirth.Meido.Core.ParsingStatus.Events;
+using NodaTime;
 
 namespace ImoutoRebirth.Meido.Core.ParsingStatus
 {
@@ -15,7 +16,7 @@ namespace ImoutoRebirth.Meido.Core.ParsingStatus
 
         public int? FileIdFromSource { get; private set; }
 
-        public DateTimeOffset UpdatedAt { get; private set; }
+        public Instant UpdatedAt { get; private set; }
 
         public Status Status { get; private set; }
 
@@ -25,7 +26,7 @@ namespace ImoutoRebirth.Meido.Core.ParsingStatus
             Guid fileId,
             string md5,
             MetadataSource source,
-            DateTimeOffset updatedAt,
+            Instant updatedAt,
             Status status)
         {
             FileId = fileId;
@@ -35,39 +36,39 @@ namespace ImoutoRebirth.Meido.Core.ParsingStatus
             Source = source;
         }
 
-        public static ParsingStatus Create(Guid fileId, string md5, MetadataSource source)
+        public static ParsingStatus Create(Guid fileId, string md5, MetadataSource source, Instant now)
         {
             ArgumentValidator.Requires(() => fileId != default, nameof(fileId));
             ArgumentValidator.NotNullOrWhiteSpace(() => md5);
             ArgumentValidator.IsEnumDefined(() => source);
 
-            var created = new ParsingStatus(fileId, md5, source, DateTimeOffset.Now, Status.SearchRequested);
+            var created = new ParsingStatus(fileId, md5, source, now, Status.SearchRequested);
             created.Add(new ParsingStatusCreated(created));
             return created;
         }
 
-        public void SetSearchFound(int fileIdFromSource)
+        public void SetSearchFound(int fileIdFromSource, Instant now)
         {
             if (!ValidateStatus(Status.SearchFound))
                 return;
 
             Status = Status.SearchFound;
             FileIdFromSource = fileIdFromSource;
-            UpdatedAt = DateTimeOffset.Now;
+            UpdatedAt = now;
         }
 
-        public void SetSearchNotFound()
+        public void SetSearchNotFound(Instant now)
         {
             if (!ValidateStatus(Status.SearchNotFound))
                 return;
 
             Status = Status.SearchNotFound;
-            UpdatedAt = DateTimeOffset.Now;
+            UpdatedAt = now;
 
             Add(new MetadataNotFound(this));
         }
 
-        public void SetSearchFailed(string errorMessage)
+        public void SetSearchFailed(string errorMessage, Instant now)
         {
             ArgumentValidator.NotNullOrWhiteSpace(() => errorMessage);
 
@@ -76,34 +77,34 @@ namespace ImoutoRebirth.Meido.Core.ParsingStatus
 
             Status = Status.SearchFailed;
             ErrorMessage = errorMessage;
-            UpdatedAt = DateTimeOffset.Now;
+            UpdatedAt = now;
         }
 
-        public void SetOriginalRequested()
+        public void SetOriginalRequested(Instant now)
         {
             if (!ValidateStatus(Status.OriginalRequested))
                 return;
 
             Status = Status.OriginalRequested;
-            UpdatedAt = DateTimeOffset.Now;
+            UpdatedAt = now;
         }
 
-        public void SetSearchSaved()
+        public void SetSearchSaved(Instant now)
         {
             if (!ValidateStatus(Status.SearchSaved))
                 return;
 
             Status = Status.SearchSaved;
-            UpdatedAt = DateTimeOffset.Now;
+            UpdatedAt = now;
         }
 
-        public void RequestMetadataUpdate()
+        public void RequestMetadataUpdate(Instant now)
         {
             if (!ValidateStatus(Status.UpdateRequested))
                 return;
 
             Status = Status.UpdateRequested;
-            UpdatedAt = DateTimeOffset.Now;
+            UpdatedAt = now;
             Add(new UpdateRequested(this));
         }
 

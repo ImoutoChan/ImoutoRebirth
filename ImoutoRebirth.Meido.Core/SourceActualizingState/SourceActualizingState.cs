@@ -1,6 +1,7 @@
 ﻿using System;
 using ImoutoRebirth.Common;
 using ImoutoRebirth.Common.Domain;
+using NodaTime;
 
 namespace ImoutoRebirth.Meido.Core.SourceActualizingState
 {
@@ -9,8 +10,8 @@ namespace ImoutoRebirth.Meido.Core.SourceActualizingState
         private SourceActualizingState(
             MetadataSource source,
             int lastProcessedTagHistoryId,
-            DateTimeOffset lastProcessedTagUpdateAt,
-            DateTimeOffset lastProcessedNoteUpdateAt)
+            Instant lastProcessedTagUpdateAt,
+            Instant lastProcessedNoteUpdateAt)
         {
             Source = source;
             LastProcessedTagHistoryId = lastProcessedTagHistoryId;
@@ -22,33 +23,33 @@ namespace ImoutoRebirth.Meido.Core.SourceActualizingState
 
         public int LastProcessedTagHistoryId { get; private set; }
 
-        public DateTimeOffset LastProcessedTagUpdateAt { get; private set; }
+        public Instant LastProcessedTagUpdateAt { get; private set; }
 
-        public DateTimeOffset LastProcessedNoteUpdateAt { get; private set; }
+        public Instant LastProcessedNoteUpdateAt { get; private set; }
 
-        public DateTimeOffset LastRequested { get; private set; }
+        public Instant LastRequested { get; private set; }
 
-        public SourceActualizingState Create(MetadataSource source)
+        public SourceActualizingState Create(MetadataSource source, Instant now)
         {
             ArgumentValidator.IsEnumDefined(() => source);
 
-            return new SourceActualizingState(source, 0, DateTimeOffset.Now, DateTimeOffset.Now);
+            return new SourceActualizingState(source, 0, now, now);
         }
 
-        public void SetLastTagUpdate(int lastProcessedTagUpdateId)
+        public void SetLastTagUpdate(int lastProcessedTagUpdateId, Instant now)
         {
             LastProcessedTagHistoryId = lastProcessedTagUpdateId;
-            LastProcessedTagUpdateAt = DateTimeOffset.Now;
+            LastProcessedTagUpdateAt = now;
         }
 
-        public void SetLastNoteUpdate(DateTimeOffset lastProcessedNoteUpdateAt)
+        public void SetLastNoteUpdate(Instant lastProcessedNoteUpdateAt)
         {
             LastProcessedNoteUpdateAt = lastProcessedNoteUpdateAt;
         }
 
-        public void RequestActualization()
+        public void RequestActualization(Instant now)
         {
-            LastRequested = DateTimeOffset.Now;
+            LastRequested = now;
             Add(new ActualizationRequested(this));
         }
     }

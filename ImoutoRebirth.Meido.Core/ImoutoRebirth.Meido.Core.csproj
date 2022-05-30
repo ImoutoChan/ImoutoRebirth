@@ -13,6 +13,7 @@
     <PackageReference Include="ImoutoRebirth.Common" Version="3.10.2" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="6.0.0" />
     <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="6.0.1" />
+    <PackageReference Include="NodaTime" Version="3.1.0" />
   </ItemGroup>
 
 </Project>

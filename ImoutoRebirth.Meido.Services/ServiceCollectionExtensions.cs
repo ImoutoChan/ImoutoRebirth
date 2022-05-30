@@ -12,6 +12,7 @@ using ImoutoRebirth.Meido.Services.MetadataRequest;
 using MediatR;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using NodaTime;
 using MeidoReceiverApp =  ImoutoRebirth.Meido.MessageContracts.ReceiverApp;
 using ReceiverApp = ImoutoRebirth.Arachne.MessageContracts.ReceiverApp;
 
@@ -39,6 +40,8 @@ namespace ImoutoRebirth.Meido.Services
             services.AddQuartzJob<MetaActualizerJob, MetaActualizerJob.Description>();
             services.AddQuartzJob<FaultToleranceJob, FaultToleranceJob.Description>();
 
+            services.AddTransient<IClock>(_ => SystemClock.Instance);
+            
             return services;
         }
 

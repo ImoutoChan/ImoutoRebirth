@@ -1,5 +1,4 @@
-﻿using System;
-using System.Threading.Tasks;
+﻿using NodaTime;
 
 namespace ImoutoRebirth.Meido.Core.SourceActualizingState
 {
@@ -9,6 +8,6 @@ namespace ImoutoRebirth.Meido.Core.SourceActualizingState
 
         Task MarkTagsUpdated(int sourceId, int[] postIds, int lastHistoryId);
 
-        Task MarkNotesUpdated(int sourceId, int[] postIds, DateTimeOffset lastNoteUpdateDate);
+        Task MarkNotesUpdated(int sourceId, int[] postIds, Instant lastNoteUpdateDate);
     }
 }
