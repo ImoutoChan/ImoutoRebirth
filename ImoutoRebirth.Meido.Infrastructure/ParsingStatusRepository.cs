@@ -7,7 +7,6 @@ using ImoutoRebirth.Meido.Core;
 using ImoutoRebirth.Meido.Core.ParsingStatus;
 using ImoutoRebirth.Meido.DataAccess;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.ChangeTracking;
 
 namespace ImoutoRebirth.Meido.Infrastructure
 {
@@ -24,7 +23,7 @@ namespace ImoutoRebirth.Meido.Infrastructure
             => await _meidoDbContext.ParsingStatuses
                                     .AddAsync(parsingStatus);
 
-        public ValueTask<ParsingStatus> Get(Guid fileId, MetadataSource source)
+        public ValueTask<ParsingStatus?> Get(Guid fileId, MetadataSource source)
             => _meidoDbContext.ParsingStatuses
                               .FindAsync(fileId, source);
 

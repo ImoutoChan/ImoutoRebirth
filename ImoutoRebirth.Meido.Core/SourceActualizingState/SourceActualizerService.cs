@@ -64,8 +64,7 @@ namespace ImoutoRebirth.Meido.Core.SourceActualizingState
         private async Task<SourceActualizingState> GetStateForSource(MetadataSource source)
         {
             var states = await _sourceActualizingStateRepository.GetAll();
-            var currentState = states.FirstOrDefault(x => x.Source == source);
-            return currentState;
+            return states.First(x => x.Source == source);
         }
 
         private async Task RequestUpdatesForExisting(int[] postIds, MetadataSource source)

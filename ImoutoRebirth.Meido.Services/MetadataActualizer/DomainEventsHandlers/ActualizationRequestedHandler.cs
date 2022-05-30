@@ -25,7 +25,7 @@ namespace ImoutoRebirth.Meido.Services.MetadataActualizer.DomainEventsHandlers
             var searchEngineType = (SearchEngineType) domainEvent.State.Source;
 
             _logger.LogInformation(
-                "Sending request to update tags and notes history from {MetadataSource}.",
+                "Sending request to update tags and notes history from {MetadataSource}",
                 searchEngineType);
 
             var tagCommand

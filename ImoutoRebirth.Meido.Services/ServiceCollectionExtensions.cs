@@ -12,6 +12,7 @@ using ImoutoRebirth.Meido.Services.MetadataRequest;
 using MediatR;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using MeidoReceiverApp =  ImoutoRebirth.Meido.MessageContracts.ReceiverApp;
 using ReceiverApp = ImoutoRebirth.Arachne.MessageContracts.ReceiverApp;
 
 namespace ImoutoRebirth.Meido.Services
@@ -57,11 +58,11 @@ namespace ImoutoRebirth.Meido.Services
         public static ITrueMassTransitConfigurator AddMeidoServicesForRabbit(
             this ITrueMassTransitConfigurator builder)
         {
-            builder.AddConsumer<NewFileCommandConsumer, INewFileCommand>()
-                   .AddConsumer<SearchCompleteCommandConsumer, ISearchCompleteCommand>()
-                   .AddConsumer<SavedCommandConsumer, ISavedCommand>()
-                   .AddConsumer<TagsUpdatedCommandConsumer, ITagsUpdatedCommand>()
-                   .AddConsumer<NotesUpdatedCommandConsumer, INotesUpdatedCommand>()
+            builder.AddConsumer<NewFileCommandConsumer, INewFileCommand>(MeidoReceiverApp.Name)
+                   .AddConsumer<SearchCompleteCommandConsumer, ISearchCompleteCommand>(MeidoReceiverApp.Name)
+                   .AddConsumer<SavedCommandConsumer, ISavedCommand>(MeidoReceiverApp.Name)
+                   .AddConsumer<TagsUpdatedCommandConsumer, ITagsUpdatedCommand>(MeidoReceiverApp.Name)
+                   .AddConsumer<NotesUpdatedCommandConsumer, INotesUpdatedCommand>(MeidoReceiverApp.Name)
                    .AddFireAndForget<IYandereSearchMetadataCommand>(ReceiverApp.Name)
                    .AddFireAndForget<IDanbooruSearchMetadataCommand>(ReceiverApp.Name)
                    .AddFireAndForget<ISankakuSearchMetadataCommand>(ReceiverApp.Name)

@@ -52,8 +52,12 @@ namespace ImoutoRebirth.Meido.Core.ParsingStatus
             ArgumentValidator.IsEnumDefined(() => resultStatus);
             ArgumentValidator.Requires(() => fileId != default, nameof(fileId));
 
-            var parsingStatus = await _parsingStatusRepository.Get(fileId, (MetadataSource)sourceId);
+            var parsingStatus = await _parsingStatusRepository
+                .Get(fileId, (MetadataSource)sourceId);
 
+            if (parsingStatus == null)
+                throw new DomainException("ParsingStatus should not be null");
+            
             switch (resultStatus)
             {
                 case SearchStatus.NotFound:
@@ -77,6 +81,9 @@ namespace ImoutoRebirth.Meido.Core.ParsingStatus
             ArgumentValidator.Requires(() => sourceId >= 0 && sourceId <= 2, nameof(sourceId));
 
             var parsingStatus = await _parsingStatusRepository.Get(fileId, (MetadataSource)sourceId);
+
+            if (parsingStatus == null)
+                throw new DomainException("ParsingStatus should not be null");
 
             parsingStatus.SetSearchSaved();
         }
