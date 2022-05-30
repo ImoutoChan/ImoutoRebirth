@@ -1,8 +1,7 @@
 ﻿using ImoutoRebirth.Common.Cqrs.Abstract;
 
-namespace ImoutoRebirth.Harpy.Services.SaveFavorites.Commands
+namespace ImoutoRebirth.Harpy.Services.SaveFavorites.Commands;
+
+internal class FavoritesSaveCommand : ICommand
 {
-    internal class FavoritesSaveCommand : ICommand
-    {
-    }
 }

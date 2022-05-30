@@ -1,43 +1,41 @@
-﻿using System.Threading.Tasks;
-using ImoutoRebirth.Common.Quartz;
+﻿using ImoutoRebirth.Common.Quartz;
 using ImoutoRebirth.Harpy.Services.SaveFavorites.Commands;
 using MediatR;
 using Microsoft.Extensions.Options;
 using Quartz;
 
-namespace ImoutoRebirth.Harpy.Services.SaveFavorites.Quartz
+namespace ImoutoRebirth.Harpy.Services.SaveFavorites.Quartz;
+
+[DisallowConcurrentExecution]
+internal class FavoritesSaveJob : IJob
 {
-    [DisallowConcurrentExecution]
-    internal class FavoritesSaveJob : IJob
+    private readonly IMediator _mediator;
+
+    public FavoritesSaveJob(IMediator mediator)
     {
-        private readonly IMediator _mediator;
+        _mediator = mediator;
+    }
 
-        public FavoritesSaveJob(IMediator mediator)
+    public Task Execute(IJobExecutionContext context) => _mediator.Send(new FavoritesSaveCommand());
+
+    public class Description : IQuartzJobDescription
+    {
+        private readonly int _repeatEveryMinutes;
+
+        public Description(IOptions<FavoritesSaveJobSettings> options)
         {
-            _mediator = mediator;
+            _repeatEveryMinutes = options.Value.RepeatEveryMinutes;
         }
 
-        public Task Execute(IJobExecutionContext context) => _mediator.Send(new FavoritesSaveCommand());
+        public IJobDetail GetJobDetails()
+            => JobBuilder.Create<FavoritesSaveJob>()
+                .WithIdentity("Save favorites")
+                .Build();
 
-        public class Description : IQuartzJobDescription
-        {
-            private readonly int _repeatEveryMinutes;
-
-            public Description(IOptions<FavoritesSaveJobSettings> options)
-            {
-                _repeatEveryMinutes = options.Value.RepeatEveryMinutes;
-            }
-
-            public IJobDetail GetJobDetails()
-                => JobBuilder.Create<FavoritesSaveJob>()
-                    .WithIdentity("Save favorites")
-                    .Build();
-
-            public ITrigger GetJobTrigger()
-                => TriggerBuilder.Create()
-                    .WithIdentity("Save favorites trigger")
-                    .WithSchedule(SimpleScheduleBuilder.RepeatMinutelyForever(_repeatEveryMinutes))
-                    .Build();
-        }
+        public ITrigger GetJobTrigger()
+            => TriggerBuilder.Create()
+                .WithIdentity("Save favorites trigger")
+                .WithSchedule(SimpleScheduleBuilder.RepeatMinutelyForever(_repeatEveryMinutes))
+                .Build();
     }
 }

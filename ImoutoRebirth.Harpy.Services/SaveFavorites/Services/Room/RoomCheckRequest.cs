@@ -1,10 +1,9 @@
 ﻿using System.Text.Json.Serialization;
 
-namespace ImoutoRebirth.Harpy.Services.SaveFavorites.Services.Room
+namespace ImoutoRebirth.Harpy.Services.SaveFavorites.Services.Room;
+
+internal class RoomCheckRequest
 {
-    internal class RoomCheckRequest
-    {
-        [JsonPropertyName("md5")]
-        public string[] Md5Hashes { get; set; } = default!;
-    }
+    [JsonPropertyName("md5")]
+    public string[] Md5Hashes { get; set; } = default!;
 }

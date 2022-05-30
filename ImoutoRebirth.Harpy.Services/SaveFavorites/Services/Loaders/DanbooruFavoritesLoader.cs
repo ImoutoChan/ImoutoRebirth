@@ -1,44 +1,39 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net.Http;
-using System.Text.Json;
+﻿using System.Text.Json;
 using Microsoft.Extensions.Options;
 
-namespace ImoutoRebirth.Harpy.Services.SaveFavorites.Services.Loaders
+namespace ImoutoRebirth.Harpy.Services.SaveFavorites.Services.Loaders;
+
+internal class DanbooruFavoritesLoader
 {
-    internal class DanbooruFavoritesLoader
+    private const string FavoritesUrl =
+        "https://danbooru.donmai.us/posts.json?tags=ordfav%3A{0}&login={0}&api_key={1}";
+
+    private readonly BooruConfiguration _booruConfiguration;
+    private readonly HttpClient _httpClient;
+
+    public DanbooruFavoritesLoader(HttpClient httpClient, IOptions<DanbooruBooruConfiguration> booruConfiguration)
     {
-        private const string FavoritesUrl =
-            "https://danbooru.donmai.us/posts.json?tags=ordfav%3A{0}&login={0}&api_key={1}";
+        _httpClient = httpClient;
+        _booruConfiguration = booruConfiguration.Value;
+    }
 
-        private readonly BooruConfiguration _booruConfiguration;
-        private readonly HttpClient _httpClient;
-
-        public DanbooruFavoritesLoader(HttpClient httpClient, IOptions<DanbooruBooruConfiguration> booruConfiguration)
+    public async IAsyncEnumerable<Post> GetFavoritesUrls()
+    {
+        Post[] posts;
+        var page = 1;
+        var url = string.Format(FavoritesUrl, _booruConfiguration.Login, _booruConfiguration.ApiKey);
+        do
         {
-            _httpClient = httpClient;
-            _booruConfiguration = booruConfiguration.Value;
-        }
+            var result = await _httpClient.GetStringAsync(url + $"&page={page}");
+            posts = JsonSerializer.Deserialize<Post[]>(result) ?? Array.Empty<Post>();
 
-        public async IAsyncEnumerable<Post> GetFavoritesUrls()
-        {
-            Post[] posts;
-            var page = 1;
-            var url = string.Format(FavoritesUrl, _booruConfiguration.Login, _booruConfiguration.ApiKey);
-            do
+            foreach (var post in posts
+                         .Where(x => x.Md5 != null && x.FileUrl != null))
             {
-                var result = await _httpClient.GetStringAsync(url + $"&page={page}");
-                posts = JsonSerializer.Deserialize<Post[]>(result) ?? Array.Empty<Post>();
+                yield return post;
+            }
 
-                foreach (var post in posts
-                    .Where(x => x.Md5 != null && x.FileUrl != null))
-                {
-                    yield return post;
-                }
-
-                page++;
-            } while (posts.Any());
-        }
+            page++;
+        } while (posts.Any());
     }
 }

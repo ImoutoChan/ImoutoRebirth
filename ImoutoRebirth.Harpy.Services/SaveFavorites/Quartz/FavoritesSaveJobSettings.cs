@@ -1,7 +1,6 @@
-﻿namespace ImoutoRebirth.Harpy.Services.SaveFavorites.Quartz
+﻿namespace ImoutoRebirth.Harpy.Services.SaveFavorites.Quartz;
+
+internal class FavoritesSaveJobSettings
 {
-    internal class FavoritesSaveJobSettings
-    {
-        public int RepeatEveryMinutes { get; set; } = 5;
-    }
+    public int RepeatEveryMinutes { get; set; } = 5;
 }
