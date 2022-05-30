@@ -17,14 +17,14 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="ImoutoRebirth.Common.WebApi" Version="3.10.0" />
+        <PackageReference Include="ImoutoRebirth.Common.WebApi" Version="3.10.2" />
         <PackageReference Include="Microsoft.Extensions.Hosting.WindowsServices" Version="6.0.0" />
-        <PackageReference Include="ImoutoRebirth.Common.Host" Version="3.10.0" />
-        <PackageReference Include="ImoutoRebirth.Common.Logging" Version="3.10.0" />
-        <PackageReference Include="ImoutoRebirth.Common.Cqrs" Version="3.10.0" />
+        <PackageReference Include="ImoutoRebirth.Common.Host" Version="3.10.2" />
+        <PackageReference Include="ImoutoRebirth.Common.Logging" Version="3.10.2" />
+        <PackageReference Include="ImoutoRebirth.Common.Cqrs" Version="3.10.2" />
         <PackageReference Include="Swashbuckle.AspNetCore" Version="6.3.1" />
-        <PackageReference Include="ImoutoRebirth.Lilin.WebApi.Client" Version="2.4.5" />
-        <PackageReference Include="ImoutoRebirth.Room.WebApi.Client" Version="1.16.1" />
+        <PackageReference Include="ImoutoRebirth.Lilin.WebApi.Client" Version="2.4.6" />
+        <PackageReference Include="ImoutoRebirth.Room.WebApi.Client" Version="1.16.2" />
         <PackageReference Include="MediatR.Extensions.Microsoft.DependencyInjection" Version="10.0.1" />
     </ItemGroup>
 
