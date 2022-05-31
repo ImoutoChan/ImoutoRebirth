@@ -37,7 +37,7 @@ public class ActualizationRequestedHandler : DomainEventNotificationHandler<Actu
             = new
             {
                 SearchEngineType = searchEngineType,
-                LastProcessedNoteUpdateAt = domainEvent.State.LastProcessedNoteUpdateAt
+                LastProcessedNoteUpdateAt = domainEvent.State.LastProcessedNoteUpdateAt.ToDateTimeOffset()
             };
 
         await _bus.Send<ILoadTagHistoryCommand>(tagCommand, cancellationToken);
