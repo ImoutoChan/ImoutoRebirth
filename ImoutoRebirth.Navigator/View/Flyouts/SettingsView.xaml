@@ -104,6 +104,22 @@
                          controls:TextBoxHelper.Watermark="Format: art->ART;;;tag->TAG"
                          controls:TextBoxHelper.UseFloatingWatermark="True"
                          Margin="0,0,0,5" />
+
+                <TextBlock Margin="0,25,0,0"
+                           Text="Room Host" />
+                
+                <TextBox Text="{Binding RoomHost, UpdateSourceTrigger=PropertyChanged}"
+                         controls:TextBoxHelper.Watermark="http://miyu:11301/"
+                         controls:TextBoxHelper.UseFloatingWatermark="True"
+                         Margin="0,0,0,5" />
+
+                <TextBlock Margin="0,25,0,0"
+                           Text="Lilin Host" />
+                
+                <TextBox Text="{Binding LilinHost, UpdateSourceTrigger=PropertyChanged}"
+                         controls:TextBoxHelper.Watermark="http://miyu:11302/"
+                         controls:TextBoxHelper.UseFloatingWatermark="True"
+                         Margin="0,0,0,5" />
             </StackPanel>
         </ScrollViewer>
     </Grid>

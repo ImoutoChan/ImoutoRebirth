@@ -34,7 +34,7 @@ public static class ServiceLocator
         sc.AddRoomClient();
 
         sc.AddSingleton<ImoutoRebirthLilinWebApiClient>(x 
-            => new ImoutoRebirthLilinWebApiClient(new Uri("http://miyu:11302/")));
+            => new ImoutoRebirthLilinWebApiClient(new Uri(Settings.Default.LilinHost)));
 
         sc.AddAutoMapper(typeof(ServiceLocator));
 
@@ -44,7 +44,7 @@ public static class ServiceLocator
     private static IServiceCollection AddRoomClient(this IServiceCollection sc)
     {
         sc.AddSingleton<ImoutoRebirthRoomWebApiClient>(x 
-            => new ImoutoRebirthRoomWebApiClient(new Uri("http://miyu:11301/")));
+            => new ImoutoRebirthRoomWebApiClient(new Uri(Settings.Default.RoomHost)));
         sc.AddTransient<ICollections, Room.WebApi.Client.Collections>();
         sc.AddTransient<IDestinationFolder, Room.WebApi.Client.DestinationFolder>();
         sc.AddTransient<ISourceFolders, Room.WebApi.Client.SourceFolders>();

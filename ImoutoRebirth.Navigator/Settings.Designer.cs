@@ -70,5 +70,29 @@ namespace ImoutoRebirth.Navigator {
                 this["PathOverrides"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("http://miyu:11302/")]
+        public string LilinHost {
+            get {
+                return ((string)(this["LilinHost"]));
+            }
+            set {
+                this["LilinHost"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("http://miyu:11301/")]
+        public string RoomHost {
+            get {
+                return ((string)(this["RoomHost"]));
+            }
+            set {
+                this["RoomHost"] = value;
+            }
+        }
     }
 }

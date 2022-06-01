@@ -115,7 +115,6 @@ class SettingsVM : VMBase
         }
     }
     
-    
     /// <summary>
     /// Format: "path1pattern->path1new;;;path2pattern->path2new"
     /// </summary>
@@ -129,17 +128,23 @@ class SettingsVM : VMBase
         }
     }
 
+    public string LilinHost
+    {
+        get => Settings.Default.LilinHost;
+        set => Settings.Default.LilinHost = value;
+    }
+
+    public string RoomHost
+    {
+        get => Settings.Default.RoomHost;
+        set => Settings.Default.RoomHost = value;
+    }
+
     #endregion Properties
 
     #region Commands
 
-    public ICommand SaveCommand
-    {
-        get
-        {
-            return _saveCommand ?? (_saveCommand = new RelayCommand(x => Save()));
-        }
-    }
+    public ICommand SaveCommand => _saveCommand ??= new RelayCommand(x => Save());
 
     private void Save()
     {
@@ -155,7 +160,7 @@ class SettingsVM : VMBase
     private void OnShowPreviewOnSelectChanged()
     {
         var handler = ShowPreviewOnSelectChanged;
-        handler?.Invoke(this, new EventArgs());
+        handler?.Invoke(this, EventArgs.Empty);
     }
 
     #endregion Events
