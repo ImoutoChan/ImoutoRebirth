@@ -1,10 +1,5 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections;
 using System.IO;
-using System.Linq;
-using System.Windows;
-using Imouto.Utils.Core;
 using ImoutoViewer.Extensions;
 
 namespace ImoutoViewer.Model;

@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-
-namespace ImoutoViewer.ImoutoRebirth.Services.Tags.Model;
+﻿namespace ImoutoViewer.ImoutoRebirth.Services.Tags.Model;
 
 internal class Tag
 {

@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-
-namespace ImoutoRebirth.Navigator.Services.Collections;
+﻿namespace ImoutoRebirth.Navigator.Services.Collections;
 
 public class SourceFolder
 {

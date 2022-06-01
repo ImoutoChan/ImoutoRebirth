@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using ImoutoViewer.Model;
+﻿using ImoutoViewer.Model;
 
 namespace ImoutoViewer.ViewModel.SettingsModels;
 

@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
-using AutoMapper;
-using ImoutoRebirth.Lilin.WebApi.Client;
-
-namespace ImoutoRebirth.Navigator.Services.Tags;
+﻿namespace ImoutoRebirth.Navigator.Services.Tags;
 
 //interface IFileNoteService
 //{

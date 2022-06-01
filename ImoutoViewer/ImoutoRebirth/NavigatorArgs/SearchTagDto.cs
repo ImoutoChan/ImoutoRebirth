@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace ImoutoViewer.ImoutoRebirth.NavigatorArgs;
+﻿namespace ImoutoViewer.ImoutoRebirth.NavigatorArgs;
 
 internal class SearchTagDto
 {

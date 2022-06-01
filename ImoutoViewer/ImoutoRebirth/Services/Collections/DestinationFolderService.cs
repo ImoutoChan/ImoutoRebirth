@@ -1,7 +1,5 @@
 ﻿#nullable enable
-using System;
 using System.Net;
-using System.Threading.Tasks;
 using AutoMapper;
 using ImoutoRebirth.Room.WebApi.Client;
 using ImoutoRebirth.Room.WebApi.Client.Models;

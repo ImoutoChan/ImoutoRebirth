@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace ImoutoRebirth.Navigator.Services.Collections;
+﻿namespace ImoutoRebirth.Navigator.Services.Collections;
 
 public class Collection
 {

@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-
-namespace ImoutoViewer.ViewModel.SettingsModels;
+﻿namespace ImoutoViewer.ViewModel.SettingsModels;
 
 public static class SupportedFormatsExtensions
 {

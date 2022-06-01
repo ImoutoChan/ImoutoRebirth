@@ -1,5 +1,3 @@
-using System;
-
 namespace ImoutoViewer.Model;
 
 [Serializable]

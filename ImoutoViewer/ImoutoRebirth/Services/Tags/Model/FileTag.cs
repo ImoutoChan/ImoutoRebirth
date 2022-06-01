@@ -1,6 +1,4 @@
 ﻿#nullable enable
-using System;
-
 namespace ImoutoViewer.ImoutoRebirth.Services.Tags.Model;
 
 internal class FileTag

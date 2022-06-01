@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace ImoutoViewer.Model;
+﻿namespace ImoutoViewer.Model;
 
 [Serializable]
 enum SortMethod

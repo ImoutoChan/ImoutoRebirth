@@ -1,7 +1,5 @@
-﻿using System;
-using System.Windows.Input;
+﻿using System.Windows.Input;
 using System.Windows.Media;
-using Imouto.Utils.Core;
 using ImoutoViewer.Commands;
 using ImoutoViewer.Extensions;
 using ImoutoViewer.ImoutoRebirth.Services.Tags.Model;

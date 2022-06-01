@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-
-namespace ImoutoViewer.ImoutoRebirth.NavigatorArgs;
+﻿namespace ImoutoViewer.ImoutoRebirth.NavigatorArgs;
 
 internal class ImoutoViewerArgs
 {

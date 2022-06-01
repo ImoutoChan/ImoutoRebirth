@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
-
-namespace ImoutoRebirth.Navigator.Services.Collections;
+﻿namespace ImoutoRebirth.Navigator.Services.Collections;
 
 public interface ICollectionService
 {

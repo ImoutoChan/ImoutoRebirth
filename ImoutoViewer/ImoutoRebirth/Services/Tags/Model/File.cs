@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace ImoutoViewer.ImoutoRebirth.Services.Tags.Model;
+﻿namespace ImoutoViewer.ImoutoRebirth.Services.Tags.Model;
 
 public class File
 {

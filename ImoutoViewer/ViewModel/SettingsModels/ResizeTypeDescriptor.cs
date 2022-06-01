@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-
-namespace ImoutoViewer.ViewModel.SettingsModels;
+﻿namespace ImoutoViewer.ViewModel.SettingsModels;
 
 class ResizeTypeDescriptor
 {

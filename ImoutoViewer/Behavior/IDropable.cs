@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-
-namespace ImoutoViewer.Behavior;
+﻿namespace ImoutoViewer.Behavior;
 
 interface IDropable
 {

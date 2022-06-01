@@ -1,5 +1,4 @@
-﻿using System;
-using AutoMapper;
+﻿using AutoMapper;
 using ImoutoRebirth.Lilin.WebApi.Client.Models;
 using ImoutoRebirth.Room.WebApi.Client.Models;
 using ImoutoViewer.ImoutoRebirth.NavigatorArgs;
