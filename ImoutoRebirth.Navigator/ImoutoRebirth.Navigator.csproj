@@ -14,7 +14,7 @@
     <Company>ImoutoRebirth</Company>
     <Product>Imouto Navigator</Product>
     <Copyright>ImoutoChan © 2013-2022</Copyright>
-    <Version>1.4.0</Version>
+    <Version>1.6.0</Version>
   </PropertyGroup>
 
   <ItemGroup>
@@ -23,13 +23,13 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="AutoMapper" Version="11.0.0" />
+    <PackageReference Include="AutoMapper" Version="11.0.1" />
     <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="11.0.0" />
     <PackageReference Include="Imouto.Utils.Core" Version="2.0.0" />
     <PackageReference Include="ImoutoRebirth.ApngWpfPlayer" Version="1.1.0" />
-    <PackageReference Include="ImoutoRebirth.Common" Version="3.9.0" />
-    <PackageReference Include="ImoutoRebirth.Lilin.WebApi.Client" Version="2.1.4" />
-    <PackageReference Include="ImoutoRebirth.Room.WebApi.Client" Version="1.7.0" />
+    <PackageReference Include="ImoutoRebirth.Common" Version="3.10.2" />
+    <PackageReference Include="ImoutoRebirth.Lilin.WebApi.Client" Version="2.4.6" />
+    <PackageReference Include="ImoutoRebirth.Room.WebApi.Client" Version="1.16.2" />
     <PackageReference Include="MahApps.Metro" Version="2.4.9" />
     <PackageReference Include="MahApps.Metro.IconPacks" Version="4.11.0" />
     <PackageReference Include="Microsoft-WindowsAPICodePack-Core" Version="1.1.4" />
@@ -37,7 +37,7 @@
     <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="6.0.0" />
     <PackageReference Include="Microsoft.Xaml.Behaviors.Wpf" Version="1.1.39" />
     <PackageReference Include="SharedModelLibrary.Core" Version="2.0.0" />
-    <PackageReference Include="VideoLAN.LibVLC.Windows" Version="3.0.16" />
+    <PackageReference Include="VideoLAN.LibVLC.Windows" Version="3.0.17.4" />
     <PackageReference Include="Vlc.DotNet.Wpf" Version="3.1.0" />
     <PackageReference Include="WpfAnimatedGif" Version="2.0.2" />
   </ItemGroup>
