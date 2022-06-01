@@ -10,7 +10,7 @@ using ImoutoViewer.Model;
 
 namespace ImoutoViewer.ViewModel;
 
-class TagsVM : VMBase
+internal class TagsVM : VMBase
 {
     #region Fields
 

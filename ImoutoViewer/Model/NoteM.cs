@@ -1,6 +1,6 @@
 ﻿namespace ImoutoViewer.Model;
 
-class NoteM
+internal class NoteM
 {
     private readonly string _noteString;
 

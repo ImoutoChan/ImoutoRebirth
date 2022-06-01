@@ -4,7 +4,7 @@ using Microsoft.Xaml.Behaviors;
 
 namespace ImoutoViewer.Behavior;
 
-class FrameworkElementDragBehavior : Behavior<FrameworkElement>
+internal class FrameworkElementDragBehavior : Behavior<FrameworkElement>
 {
     private bool _isMouseClicked;
 
@@ -16,17 +16,17 @@ class FrameworkElementDragBehavior : Behavior<FrameworkElement>
         AssociatedObject.MouseLeave += AssociatedObject_MouseLeave;
     }
 
-    void AssociatedObject_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+    private void AssociatedObject_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
     {
         _isMouseClicked = true;
     }
 
-    void AssociatedObject_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
+    private void AssociatedObject_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
     {
         _isMouseClicked = false;
     }
 
-    void AssociatedObject_MouseLeave(object sender, MouseEventArgs e)
+    private void AssociatedObject_MouseLeave(object sender, MouseEventArgs e)
     {
         if (_isMouseClicked)
         {

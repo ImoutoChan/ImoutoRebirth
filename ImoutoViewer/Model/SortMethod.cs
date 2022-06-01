@@ -1,7 +1,7 @@
 ﻿namespace ImoutoViewer.Model;
 
 [Serializable]
-enum SortMethod
+internal enum SortMethod
 {
     ByName,
     ByCreateDate,

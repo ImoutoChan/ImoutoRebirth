@@ -4,7 +4,7 @@ using System.Windows.Input;
 
 namespace ImoutoViewer.UserControls;
 
-class ExtScrollViewer : ScrollViewer
+internal class ExtScrollViewer : ScrollViewer
 {
     public bool IsNeedScrollHome { get; set; }
 

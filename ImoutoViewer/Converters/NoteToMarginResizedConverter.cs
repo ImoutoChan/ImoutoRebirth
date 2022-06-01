@@ -5,7 +5,7 @@ using ImoutoViewer.Model;
 
 namespace ImoutoViewer.Converters;
 
-class NoteToMarginResizedConverter : IMultiValueConverter
+internal class NoteToMarginResizedConverter : IMultiValueConverter
 {
     public object Convert(object[] values, Type targetType, object parameter, CultureInfo culture)
     {

@@ -4,7 +4,7 @@ using ImoutoViewer.Extensions;
 
 namespace ImoutoViewer.Converters;
 
-class ConditionVisibilityConverter : IValueConverter
+internal class ConditionVisibilityConverter : IValueConverter
 {
     public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
     {

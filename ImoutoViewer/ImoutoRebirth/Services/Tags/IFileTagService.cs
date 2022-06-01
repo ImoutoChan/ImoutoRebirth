@@ -3,7 +3,7 @@ using ImoutoViewer.ImoutoRebirth.Services.Tags.Model;
 
 namespace ImoutoRebirth.Navigator.Services.Tags;
 
-interface IFileTagService
+internal interface IFileTagService
 {
     Task SetRate(Guid fileId, Rate rate);
 

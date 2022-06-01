@@ -2,7 +2,7 @@
 
 namespace ImoutoViewer.ViewModel.SettingsModels;
 
-class SortingDescriptor
+internal class SortingDescriptor
 {
     #region Properties
 

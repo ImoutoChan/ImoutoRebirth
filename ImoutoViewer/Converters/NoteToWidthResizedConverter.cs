@@ -3,7 +3,7 @@ using ImoutoViewer.Model;
 
 namespace ImoutoViewer.Converters;
 
-class NoteToWidthResizedConverter : IMultiValueConverter
+internal class NoteToWidthResizedConverter : IMultiValueConverter
 {
     public object Convert(object[] values, Type targetType, object parameter, System.Globalization.CultureInfo culture)
     {

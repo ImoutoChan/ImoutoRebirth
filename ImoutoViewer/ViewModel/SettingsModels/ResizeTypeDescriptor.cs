@@ -1,6 +1,6 @@
 ﻿namespace ImoutoViewer.ViewModel.SettingsModels;
 
-class ResizeTypeDescriptor
+internal class ResizeTypeDescriptor
 {
     #region Properties
 

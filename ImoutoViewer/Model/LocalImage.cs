@@ -6,7 +6,7 @@ using Size = System.Windows.Size;
 
 namespace ImoutoViewer.Model;
 
-class LocalImage
+internal class LocalImage
 {
     private const ResizeType DefaultResizeType = ResizeType.DownscaleToViewPort;
 

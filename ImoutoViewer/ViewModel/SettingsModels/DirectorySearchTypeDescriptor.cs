@@ -3,7 +3,7 @@ using ImoutoViewer.Model;
 
 namespace ImoutoViewer.ViewModel.SettingsModels;
 
-class DirectorySearchTypeDescriptor
+internal class DirectorySearchTypeDescriptor
 {
     #region Fields
 

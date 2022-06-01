@@ -1,6 +1,6 @@
 ﻿namespace ImoutoViewer.Behavior;
 
-interface IDropable
+internal interface IDropable
 {
     /// <summary>
     /// Dropable types of data.

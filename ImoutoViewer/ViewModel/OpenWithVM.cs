@@ -5,7 +5,7 @@ using Microsoft.Win32;
 
 namespace ImoutoViewer.ViewModel;
 
-class OpenWithVM
+internal class OpenWithVM
 {
     #region Constructors
 
@@ -20,7 +20,7 @@ class OpenWithVM
 
 }
 
-class EditProgram
+internal class EditProgram
 {
     #region Constructors
 

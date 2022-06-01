@@ -1,6 +1,6 @@
 ﻿namespace ImoutoViewer.Model;
 
-static class Extentions
+internal static class Extentions
 {
     public static IOrderedEnumerable<TSource> OrderByWithDirection<TSource, TKey>
     (this IEnumerable<TSource> source,

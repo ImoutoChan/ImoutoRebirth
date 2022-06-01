@@ -13,7 +13,7 @@ using ImoutoViewer.ViewModel.SettingsModels;
 
 namespace ImoutoViewer.ViewModel;
 
-class MainWindowVM : VMBase, IDragable, IDropable
+internal class MainWindowVM : VMBase, IDragable, IDropable
 {
     #region Fields
 

@@ -4,7 +4,7 @@ using System.Windows.Data;
 namespace ImoutoViewer.Converters;
 
 [ValueConversion(typeof(Visibility), typeof(Boolean))]
-class BooleanToVisibilityConverter : IValueConverter
+internal class BooleanToVisibilityConverter : IValueConverter
 {
     public BooleanToVisibilityConverter()
     {

@@ -3,7 +3,7 @@ using Microsoft.Xaml.Behaviors;
 
 namespace ImoutoViewer.Behavior;
 
-class FrameworkElementDropBehavior : Behavior<FrameworkElement>
+internal class FrameworkElementDropBehavior : Behavior<FrameworkElement>
 {
     private List<string> _allowDataTypes; //the type of the data that can be dropped into this control
 
@@ -28,7 +28,7 @@ class FrameworkElementDropBehavior : Behavior<FrameworkElement>
         AssociatedObject.Drop += AssociatedObject_Drop;
     }
 
-    void AssociatedObject_Drop(object sender, DragEventArgs e)
+    private void AssociatedObject_Drop(object sender, DragEventArgs e)
     {
         foreach (var item in AllowDataTypes.Where(item => e.Data.GetDataPresent(item)))
         {

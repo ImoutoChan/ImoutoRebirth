@@ -5,7 +5,7 @@ using ImoutoViewer.ImoutoRebirth.Services.Tags.Model;
 
 namespace ImoutoViewer.ViewModel;
 
-class CreateTagVM : VMBase
+internal class CreateTagVM : VMBase
 {
     private MainWindowVM _parent;
     private bool _tagTypesLoaded = false;

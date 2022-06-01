@@ -4,7 +4,7 @@ using ImoutoViewer.Extensions;
 
 namespace ImoutoViewer.Model;
 
-class LocalImageList : IEnumerable
+internal class LocalImageList : IEnumerable
 {
     #region Static members
 

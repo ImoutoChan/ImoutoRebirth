@@ -2,7 +2,7 @@
 
 namespace ImoutoViewer.UserControls;
 
-class MouseWheelGesture : MouseGesture
+internal class MouseWheelGesture : MouseGesture
 {
     private WheelDirection Direction { get; set; }
 

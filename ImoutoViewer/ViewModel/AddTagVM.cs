@@ -6,7 +6,7 @@ using ImoutoViewer.ImoutoRebirth.Services.Tags.Model;
 
 namespace ImoutoViewer.ViewModel;
 
-class AddTagVM : VMBase
+internal class AddTagVM : VMBase
 {
     private MainWindowVM _parent;
 

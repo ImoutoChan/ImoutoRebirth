@@ -13,7 +13,7 @@ using MahApps.Metro.Controls.Dialogs;
 
 namespace ImoutoViewer.ViewModel;
 
-class SettingsVM : VMBase
+internal class SettingsVM : VMBase
 {
     #region Fields
 

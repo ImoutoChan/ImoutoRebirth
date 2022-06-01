@@ -6,7 +6,7 @@ using ImoutoViewer.ImoutoRebirth.Services.Tags.Model;
 
 namespace ImoutoViewer.ViewModel;
 
-class BindedTagVM : VMBase
+internal class BindedTagVM : VMBase
 {
     private TagsVM _parantVM;
     private FileTag _modelTag;

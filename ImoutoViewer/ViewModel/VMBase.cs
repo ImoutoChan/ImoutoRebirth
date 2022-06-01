@@ -4,7 +4,7 @@ using System.Linq.Expressions;
 
 namespace ImoutoViewer.ViewModel;
 
-class VMBase : INotifyPropertyChanged
+internal class VMBase : INotifyPropertyChanged
 {
     #region Constructors
 

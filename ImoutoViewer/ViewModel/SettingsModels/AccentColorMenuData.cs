@@ -4,7 +4,7 @@ using ControlzEx.Theming;
 
 namespace ImoutoViewer.ViewModel.SettingsModels;
 
-class AccentColorMenuData
+internal class AccentColorMenuData
 {
     public string Name { get; set; }
     public Brush ColorBrush { get; set; }

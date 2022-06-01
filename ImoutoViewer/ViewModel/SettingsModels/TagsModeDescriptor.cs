@@ -1,6 +1,6 @@
 ﻿namespace ImoutoViewer.ViewModel.SettingsModels;
 
-class TagsModeDescriptor
+internal class TagsModeDescriptor
 {
     #region Properties
 

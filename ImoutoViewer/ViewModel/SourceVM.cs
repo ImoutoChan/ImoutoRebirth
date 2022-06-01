@@ -2,7 +2,7 @@
 
 namespace ImoutoViewer.ViewModel;
 
-class SourceVM : VMBase
+internal class SourceVM : VMBase
 {
     public string Title { get; set; }
 

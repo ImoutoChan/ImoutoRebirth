@@ -2,7 +2,7 @@
 
 namespace ImoutoViewer.Behavior;
 
-interface IDragable
+internal interface IDragable
 {
     /// <summary>
     /// The data item.
