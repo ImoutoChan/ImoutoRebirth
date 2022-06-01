@@ -2,8 +2,7 @@
 using System.Diagnostics;
 using System.IO;
 using Imouto.Utils.Core;
-using ImoutoRebirth.Navigator.Services;
-using ImoutoRebirth.Navigator.Services.Tags;
+using ImoutoViewer.ImoutoRebirth.Services;
 using ImoutoViewer.ImoutoRebirth.Services.Tags;
 using ImoutoViewer.ImoutoRebirth.Services.Tags.Model;
 using ImoutoViewer.Model;
@@ -211,11 +210,14 @@ internal class TagsVM : VMBase
         var file = files.First();
 
         var tags = await _fileTagService.GetFileTags(file.Id);
+        var notes = await _fileTagService.GetFileNotes(file.Id);
+        var notesModels = notes.Select(x => new NoteM(x.Note.Id, x.Note.Label, x.Note.PositionFromLeft,
+            x.Note.PositionFromTop, x.Note.Width, x.Note.Height)).ToList();
 
         return
         (
             tags,
-            Array.Empty<NoteM>().ToList()
+            notesModels
         );
     }
 

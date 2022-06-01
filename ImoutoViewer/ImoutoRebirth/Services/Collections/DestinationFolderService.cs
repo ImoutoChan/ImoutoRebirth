@@ -5,7 +5,7 @@ using ImoutoRebirth.Room.WebApi.Client;
 using ImoutoRebirth.Room.WebApi.Client.Models;
 using Microsoft.Rest;
 
-namespace ImoutoRebirth.Navigator.Services.Collections;
+namespace ImoutoViewer.ImoutoRebirth.Services.Collections;
 
 internal class DestinationFolderService : IDestinationFolderService
 {

@@ -1,7 +1,7 @@
 ﻿using AutoMapper;
 using ImoutoRebirth.Room.WebApi.Client.Models;
 
-namespace ImoutoRebirth.Navigator.Services.Collections;
+namespace ImoutoViewer.ImoutoRebirth.Services.Collections;
 
 internal class AutoMapperProfile : Profile
 {

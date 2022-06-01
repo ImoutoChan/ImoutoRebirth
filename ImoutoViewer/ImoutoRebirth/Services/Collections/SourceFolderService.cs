@@ -2,7 +2,7 @@
 using ImoutoRebirth.Room.WebApi.Client;
 using ImoutoRebirth.Room.WebApi.Client.Models;
 
-namespace ImoutoRebirth.Navigator.Services.Collections;
+namespace ImoutoViewer.ImoutoRebirth.Services.Collections;
 
 internal class SourceFolderService : ISourceFolderService
 {

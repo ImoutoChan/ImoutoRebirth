@@ -1,6 +1,6 @@
 ﻿using ImoutoViewer.ImoutoRebirth.Services.Tags.Model;
 
-namespace ImoutoRebirth.Navigator.Services.Tags;
+namespace ImoutoViewer.ImoutoRebirth.Services.Tags;
 
 internal interface ITagService
 {

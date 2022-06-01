@@ -1,4 +1,4 @@
-﻿namespace ImoutoRebirth.Navigator.Services.Tags;
+﻿namespace ImoutoViewer.ImoutoRebirth.Services.Tags;
 
 //interface IFileNoteService
 //{

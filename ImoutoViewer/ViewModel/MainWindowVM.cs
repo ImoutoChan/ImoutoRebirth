@@ -3,7 +3,6 @@ using System.Windows.Input;
 using System.Windows.Media.Imaging;
 using System.Windows.Threading;
 using AutoMapper;
-using ImoutoRebirth.Navigator.Services;
 using ImoutoViewer.Behavior;
 using ImoutoViewer.Commands;
 using ImoutoViewer.ImoutoRebirth.Services;

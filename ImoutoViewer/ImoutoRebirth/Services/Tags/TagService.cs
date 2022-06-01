@@ -3,7 +3,7 @@ using ImoutoRebirth.Lilin.WebApi.Client;
 using ImoutoRebirth.Lilin.WebApi.Client.Models;
 using ImoutoViewer.ImoutoRebirth.Services.Tags.Model;
 
-namespace ImoutoRebirth.Navigator.Services.Tags;
+namespace ImoutoViewer.ImoutoRebirth.Services.Tags;
 
 internal class TagService : ITagService
 {

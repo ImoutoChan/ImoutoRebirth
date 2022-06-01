@@ -3,7 +3,7 @@ using ImoutoRebirth.Lilin.WebApi.Client;
 using ImoutoRebirth.Lilin.WebApi.Client.Models;
 using ImoutoViewer.ImoutoRebirth.Services.Tags.Model;
 
-namespace ImoutoRebirth.Navigator.Services.Tags;
+namespace ImoutoViewer.ImoutoRebirth.Services.Tags;
 
 internal class FileTagService : IFileTagService
 {
@@ -74,6 +74,13 @@ internal class FileTagService : IFileTagService
         var info = await _lilinClient.Files.GetFileInfoAsync(fileId);
 
         return _mapper.Map<IReadOnlyCollection<FileTag>>(info.Tags);
+    }
+
+    public async Task<IReadOnlyCollection<FileNote>> GetFileNotes(Guid fileId)
+    {
+        var info = await _lilinClient.Files.GetFileInfoAsync(fileId);
+
+        return _mapper.Map<IReadOnlyCollection<FileNote>>(info.Notes);
     }
 
     private async Task<Tag> GetOrCreateTag(string name, string typeName, bool hasValue)

@@ -1,4 +1,4 @@
-﻿namespace ImoutoRebirth.Navigator.Services.Collections;
+﻿namespace ImoutoViewer.ImoutoRebirth.Services.Collections;
 
 public class Collection
 {

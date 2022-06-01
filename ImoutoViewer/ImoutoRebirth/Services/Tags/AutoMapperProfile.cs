@@ -5,7 +5,7 @@ using ImoutoViewer.ImoutoRebirth.NavigatorArgs;
 using ImoutoViewer.ImoutoRebirth.Services.Tags.Model;
 using SearchType = ImoutoViewer.ImoutoRebirth.Services.Tags.Model.SearchType;
 
-namespace ImoutoRebirth.Navigator.Services.Tags;
+namespace ImoutoViewer.ImoutoRebirth.Services.Tags;
 
 internal class AutoMapperProfile : Profile
 {
@@ -29,6 +29,10 @@ internal class AutoMapperProfile : Profile
                     _ => throw new NotImplementedException(x.ToString())
                 });
 
+        CreateMap<FileNoteResponse, FileNote>();
+
+        CreateMap<FileNoteResponseNote, Note>();
+
         CreateMap<FileTagSource, MetadataSource>()
             .ConvertUsing(
                 (x, _) => x switch
@@ -37,6 +41,17 @@ internal class AutoMapperProfile : Profile
                     FileTagSource.Danbooru => MetadataSource.Danbooru,
                     FileTagSource.Sankaku => MetadataSource.Sankaku,
                     FileTagSource.Manual => MetadataSource.Manual,
+                    _ => throw new NotImplementedException(x.ToString())
+                });
+
+        CreateMap<MetadataSource, FileTagSource>()
+            .ConvertUsing(
+                (x, _) => x switch
+                {
+                     MetadataSource.Yandere => FileTagSource.Yandere,
+                     MetadataSource.Danbooru => FileTagSource.Danbooru,
+                     MetadataSource.Sankaku => FileTagSource.Sankaku,
+                     MetadataSource.Manual => FileTagSource.Manual,
                     _ => throw new NotImplementedException(x.ToString())
                 });
 

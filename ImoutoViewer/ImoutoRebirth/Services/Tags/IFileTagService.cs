@@ -1,7 +1,7 @@
 ﻿#nullable enable
 using ImoutoViewer.ImoutoRebirth.Services.Tags.Model;
 
-namespace ImoutoRebirth.Navigator.Services.Tags;
+namespace ImoutoViewer.ImoutoRebirth.Services.Tags;
 
 internal interface IFileTagService
 {
@@ -14,4 +14,6 @@ internal interface IFileTagService
     Task UnbindTag(Guid fileId, Guid tagId, FileTagSource source);
 
     Task<IReadOnlyCollection<FileTag>> GetFileTags(Guid fileId);
+    
+    Task<IReadOnlyCollection<FileNote>> GetFileNotes(Guid fileId);
 }

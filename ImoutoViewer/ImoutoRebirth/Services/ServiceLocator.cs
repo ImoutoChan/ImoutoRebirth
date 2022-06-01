@@ -1,12 +1,10 @@
 ﻿using ImoutoRebirth.Lilin.WebApi.Client;
-using ImoutoRebirth.Navigator.Services.Collections;
-using ImoutoRebirth.Navigator.Services.Tags;
 using ImoutoRebirth.Room.WebApi.Client;
-using ImoutoViewer.ImoutoRebirth.Services;
+using ImoutoViewer.ImoutoRebirth.Services.Collections;
 using ImoutoViewer.ImoutoRebirth.Services.Tags;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace ImoutoRebirth.Navigator.Services;
+namespace ImoutoViewer.ImoutoRebirth.Services;
 
 public static class ServiceLocator
 {
@@ -45,9 +43,9 @@ public static class ServiceLocator
     {
         sc.AddSingleton<ImoutoRebirthRoomWebApiClient>(x 
             => new ImoutoRebirthRoomWebApiClient(new Uri("http://miyu:11301/")));
-        sc.AddTransient<ICollections, Room.WebApi.Client.Collections>();
-        sc.AddTransient<IDestinationFolder, Room.WebApi.Client.DestinationFolder>();
-        sc.AddTransient<ISourceFolders, Room.WebApi.Client.SourceFolders>();
+        sc.AddTransient<ICollections, global::ImoutoRebirth.Room.WebApi.Client.Collections>();
+        sc.AddTransient<IDestinationFolder, global::ImoutoRebirth.Room.WebApi.Client.DestinationFolder>();
+        sc.AddTransient<ISourceFolders, global::ImoutoRebirth.Room.WebApi.Client.SourceFolders>();
 
         return sc;
     }
