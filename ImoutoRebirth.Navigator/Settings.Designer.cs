@@ -58,5 +58,17 @@ namespace ImoutoRebirth.Navigator {
                 this["ActivatePreviewOnSelect"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string PathOverrides {
+            get {
+                return ((string)(this["PathOverrides"]));
+            }
+            set {
+                this["PathOverrides"] = value;
+            }
+        }
     }
 }

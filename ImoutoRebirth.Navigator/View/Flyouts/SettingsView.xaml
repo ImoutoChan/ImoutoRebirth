@@ -4,9 +4,11 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:controls="http://metro.mahapps.com/winfx/xaml/controls"
+             xmlns:viewModel="clr-namespace:ImoutoRebirth.Navigator.ViewModel"
              mc:Ignorable="d"
              d:DesignHeight="300"
-             d:DesignWidth="300">
+             d:DesignWidth="300" 
+             d:DataContext="{d:DesignInstance viewModel:SettingsVM, IsDesignTimeCreatable=False}">
     <Grid Margin="20">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
@@ -91,10 +93,17 @@
                     </StackPanel>
                 </DockPanel>
 
-
                 <controls:ToggleSwitch Margin="0,25,0,0"
                                        Header="Show preview on select"
                                        IsOn="{Binding ShowPreviewOnSelect}" />
+
+                <TextBlock Margin="0,25,0,0"
+                           Text="Path Overrides" />
+                
+                <TextBox Text="{Binding PathOverrides, UpdateSourceTrigger=PropertyChanged}"
+                         controls:TextBoxHelper.Watermark="Format: art->ART;;;tag->TAG"
+                         controls:TextBoxHelper.UseFloatingWatermark="True"
+                         Margin="0,0,0,5" />
             </StackPanel>
         </ScrollViewer>
     </Grid>

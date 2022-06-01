@@ -30,6 +30,7 @@ class SettingsVM : VMBase
     private AccentColorMenuData _selectedAccentColor;
     private int _selectedTheme;
     private ICommand _saveCommand;
+    private string _pathOverrides;
 
     #endregion Fileds
 
@@ -51,6 +52,7 @@ class SettingsVM : VMBase
         SelectedIndexTheme = Settings.Default.ThemeIndex;
 
         ShowPreviewOnSelect = Settings.Default.ActivatePreviewOnSelect;
+        PathOverrides = Settings.Default.PathOverrides;
     }
 
     #endregion Constructors
@@ -112,6 +114,20 @@ class SettingsVM : VMBase
             }
         }
     }
+    
+    
+    /// <summary>
+    /// Format: "path1pattern->path1new;;;path2pattern->path2new"
+    /// </summary>
+    public string PathOverrides
+    {
+        get => _pathOverrides;
+        set
+        {
+            _pathOverrides = value;
+            Settings.Default.PathOverrides = value;
+        }
+    }
 
     #endregion Properties
 
@@ -144,3 +160,5 @@ class SettingsVM : VMBase
 
     #endregion Events
 }
+
+public record PathOverride(string OldPathPattern, string NewPathPart);
