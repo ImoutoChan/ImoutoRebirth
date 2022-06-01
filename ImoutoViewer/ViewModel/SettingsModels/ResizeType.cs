@@ -1,12 +1,11 @@
-﻿namespace ImoutoViewer.ViewModel.SettingsModels
+﻿namespace ImoutoViewer.ViewModel.SettingsModels;
+
+public enum ResizeType
 {
-    public enum ResizeType
-    {
-        FitToViewPort,
-        DownscaleToViewPort,
-        FitToViewPortWidth,
-        DownscaleToViewPortWidth,
-        NoResize,
-        Default
-    }
+    FitToViewPort,
+    DownscaleToViewPort,
+    FitToViewPortWidth,
+    DownscaleToViewPortWidth,
+    NoResize,
+    Default
 }

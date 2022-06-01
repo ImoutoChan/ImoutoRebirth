@@ -1,109 +1,108 @@
 ﻿using System.Windows.Input;
 
-namespace ImoutoViewer.UserControls
+namespace ImoutoViewer.UserControls;
+
+class MouseWheelGesture : MouseGesture
 {
-    class MouseWheelGesture : MouseGesture
+    private WheelDirection Direction { get; set; }
+
+    public static MouseWheelGesture Up
     {
-        private WheelDirection Direction { get; set; }
-
-        public static MouseWheelGesture Up
+        get
         {
-            get
-            {
-                return new MouseWheelGesture { Direction = WheelDirection.Up };
-            }
+            return new MouseWheelGesture { Direction = WheelDirection.Up };
         }
+    }
 
-        public static MouseWheelGesture Down
+    public static MouseWheelGesture Down
+    {
+        get
         {
-            get
-            {
-                return new MouseWheelGesture { Direction = WheelDirection.Down };
-            }
+            return new MouseWheelGesture { Direction = WheelDirection.Down };
         }
+    }
 
-        public static MouseWheelGesture CtrlUp
+    public static MouseWheelGesture CtrlUp
+    {
+        get
         {
-            get
-            {
-                return new MouseWheelGesture(ModifierKeys.Control) { Direction = WheelDirection.Up };
-            }
+            return new MouseWheelGesture(ModifierKeys.Control) { Direction = WheelDirection.Up };
         }
+    }
 
-        public static MouseWheelGesture CtrlDown
+    public static MouseWheelGesture CtrlDown
+    {
+        get
         {
-            get
-            {
-                return new MouseWheelGesture(ModifierKeys.Control) { Direction = WheelDirection.Down };
-            }
+            return new MouseWheelGesture(ModifierKeys.Control) { Direction = WheelDirection.Down };
         }
+    }
 
-        public static MouseWheelGesture AltUp
+    public static MouseWheelGesture AltUp
+    {
+        get
         {
-            get
-            {
-                return new MouseWheelGesture(ModifierKeys.Alt) { Direction = WheelDirection.Up };
-            }
+            return new MouseWheelGesture(ModifierKeys.Alt) { Direction = WheelDirection.Up };
         }
+    }
 
-        public static MouseWheelGesture AltDown
+    public static MouseWheelGesture AltDown
+    {
+        get
         {
-            get
-            {
-                return new MouseWheelGesture(ModifierKeys.Alt) { Direction = WheelDirection.Down };
-            }
+            return new MouseWheelGesture(ModifierKeys.Alt) { Direction = WheelDirection.Down };
         }
+    }
 
-        public static MouseWheelGesture ShiftUp
+    public static MouseWheelGesture ShiftUp
+    {
+        get
         {
-            get
-            {
-                return new MouseWheelGesture(ModifierKeys.Shift) { Direction = WheelDirection.Up };
-            }
+            return new MouseWheelGesture(ModifierKeys.Shift) { Direction = WheelDirection.Up };
         }
+    }
 
-        public static MouseWheelGesture ShiftDown
+    public static MouseWheelGesture ShiftDown
+    {
+        get
         {
-            get
-            {
-                return new MouseWheelGesture(ModifierKeys.Shift) { Direction = WheelDirection.Down };
-            }
+            return new MouseWheelGesture(ModifierKeys.Shift) { Direction = WheelDirection.Down };
         }
+    }
 
-        public MouseWheelGesture()
-            : base(MouseAction.WheelClick)
-        { }
+    public MouseWheelGesture()
+        : base(MouseAction.WheelClick)
+    { }
 
-        public MouseWheelGesture(ModifierKeys modifiers)
-            : base(MouseAction.WheelClick, modifiers)
-        { }
+    public MouseWheelGesture(ModifierKeys modifiers)
+        : base(MouseAction.WheelClick, modifiers)
+    { }
 
-        public override bool Matches(object targetElement, InputEventArgs inputEventArgs)
+    public override bool Matches(object targetElement, InputEventArgs inputEventArgs)
+    {
+        if (!base.Matches(targetElement, inputEventArgs)
+            || !(inputEventArgs is MouseWheelEventArgs))
+            return false;
+
+        var args = (MouseWheelEventArgs)inputEventArgs;
+
+        switch (Direction)
         {
-            if (!base.Matches(targetElement, inputEventArgs)
-                || !(inputEventArgs is MouseWheelEventArgs))
+            case WheelDirection.None:
+                return args.Delta == 0;
+            case WheelDirection.Up:
+                return args.Delta > 0;
+            case WheelDirection.Down:
+                return args.Delta < 0;
+            default:
                 return false;
-
-            var args = (MouseWheelEventArgs)inputEventArgs;
-
-            switch (Direction)
-            {
-                case WheelDirection.None:
-                    return args.Delta == 0;
-                case WheelDirection.Up:
-                    return args.Delta > 0;
-                case WheelDirection.Down:
-                    return args.Delta < 0;
-                default:
-                    return false;
-            }
         }
+    }
 
-        private enum WheelDirection
-        {
-            None,
-            Up,
-            Down,
-        }
+    private enum WheelDirection
+    {
+        None,
+        Up,
+        Down,
     }
 }

@@ -1,17 +1,16 @@
-﻿namespace ImoutoViewer.ViewModel.SettingsModels
+﻿namespace ImoutoViewer.ViewModel.SettingsModels;
+
+public enum VideoFormat
 {
-    public enum VideoFormat
-    {
-        WEBM,
-        MP4,
-        WMV,
-        MOV,
-        M2TS,
-        MPG,
-        MPEG,
-        MKV,
-        F4V,
-        FLV,
-        AVI
-    }
+    WEBM,
+    MP4,
+    WMV,
+    MOV,
+    M2TS,
+    MPG,
+    MPEG,
+    MKV,
+    F4V,
+    FLV,
+    AVI
 }

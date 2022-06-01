@@ -1,11 +1,10 @@
 ﻿using System.Collections.ObjectModel;
 
-namespace ImoutoViewer.ViewModel
-{
-    class SourceVM : VMBase
-    {
-        public string Title { get; set; }
+namespace ImoutoViewer.ViewModel;
 
-        public ObservableCollection<BindedTagVM> TagsCollection { get; } = new ObservableCollection<BindedTagVM>();
-    }
+class SourceVM : VMBase
+{
+    public string Title { get; set; }
+
+    public ObservableCollection<BindedTagVM> TagsCollection { get; } = new ObservableCollection<BindedTagVM>();
 }

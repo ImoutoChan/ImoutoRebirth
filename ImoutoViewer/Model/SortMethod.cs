@@ -1,13 +1,12 @@
 ﻿using System;
 
-namespace ImoutoViewer.Model
+namespace ImoutoViewer.Model;
+
+[Serializable]
+enum SortMethod
 {
-    [Serializable]
-    enum SortMethod
-    {
-        ByName,
-        ByCreateDate,
-        ByUpdateDate,
-        BySize
-    }
+    ByName,
+    ByCreateDate,
+    ByUpdateDate,
+    BySize
 }

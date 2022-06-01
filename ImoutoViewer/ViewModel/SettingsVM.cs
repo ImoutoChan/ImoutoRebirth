@@ -16,373 +16,372 @@ using ImoutoViewer.Properties;
 using ImoutoViewer.ViewModel.SettingsModels;
 using MahApps.Metro.Controls.Dialogs;
 
-namespace ImoutoViewer.ViewModel
+namespace ImoutoViewer.ViewModel;
+
+class SettingsVM : VMBase
 {
-    class SettingsVM : VMBase
+    #region Fields
+
+    private ResizeTypeDescriptor _selectedResizeType;
+    private SortingDescriptor _selectedFilesSorting;
+    private SortingDescriptor _selectedFoldersSorting;
+    private bool _isSelectedFoldersSortingDescending;
+    private bool _isSelectedFilesSortingDescending;
+    private AccentColorMenuData _selectedAccentColor;
+    private int _selectedTheme;
+    private bool _showTags;
+    private bool _showNotes;
+
+    #endregion Fileds
+
+    #region Constructors
+
+    public SettingsVM()
     {
-        #region Fields
+        ResizeTypes = ResizeTypeDescriptor.GetList();
+        SelectedResizeType = ResizeTypes.First(x => x.Type == Settings.Default.ResizeType);
 
-        private ResizeTypeDescriptor _selectedResizeType;
-        private SortingDescriptor _selectedFilesSorting;
-        private SortingDescriptor _selectedFoldersSorting;
-        private bool _isSelectedFoldersSortingDescending;
-        private bool _isSelectedFilesSortingDescending;
-        private AccentColorMenuData _selectedAccentColor;
-        private int _selectedTheme;
-        private bool _showTags;
-        private bool _showNotes;
-
-        #endregion Fileds
-
-        #region Constructors
-
-        public SettingsVM()
+        DirectorySearchTypes = DirectorySearchTypeDescriptor.GetList();
+        foreach (var item in DirectorySearchTypes)
         {
-            ResizeTypes = ResizeTypeDescriptor.GetList();
-            SelectedResizeType = ResizeTypes.First(x => x.Type == Settings.Default.ResizeType);
-
-            DirectorySearchTypes = DirectorySearchTypeDescriptor.GetList();
-            foreach (var item in DirectorySearchTypes)
-            {
-                item.SelectedChanged += item_SelectedChanged;
-            }
-
-            FilesSortingMethods = SortingDescriptor.GetListForFiles();
-            FoldersSortingMethods = SortingDescriptor.GetListForFolders();
-
-            SelectedFoldersSorting = FoldersSortingMethods.First(x => x.Method == Settings.Default.FoldersSorting);
-            SelectedFilesSorting = FilesSortingMethods.First(x => x.Method == Settings.Default.FilesSorting);
-
-            IsSelectedFilesSortingDescending = Settings.Default.FilesSortingDesc;
-            IsSelectedFoldersSortingDescending = Settings.Default.FoldersSortingDesc;
-
-            AccentColors = ThemeManager.Current.Themes
-                                .Select(a => new AccentColorMenuData
-                                {
-                                    Name = a.Name.Split('.').Last(),
-                                    ColorBrush = a.ShowcaseBrush
-                                })
-                                .ToList();
-            SelectedAccentColor = AccentColors.First(x => x.Name == Settings.Default.AccentColorName);
-
-            SelectedIndexTheme = Settings.Default.ThemeIndex;
-
-            SaveCommand = new RelayCommand(x => Save());
-
-            ShowTags = Settings.Default.ShowTags;
-
-            ShowNotes = Settings.Default.ShowNotes;
-
-            SetFileAssociationsCommand = new RelayCommand(param => SetFileAssociations());
+            item.SelectedChanged += item_SelectedChanged;
         }
 
-        #endregion Constructors
+        FilesSortingMethods = SortingDescriptor.GetListForFiles();
+        FoldersSortingMethods = SortingDescriptor.GetListForFolders();
 
-        #region Properties
+        SelectedFoldersSorting = FoldersSortingMethods.First(x => x.Method == Settings.Default.FoldersSorting);
+        SelectedFilesSorting = FilesSortingMethods.First(x => x.Method == Settings.Default.FilesSorting);
 
-        public int SlideshowDelay
+        IsSelectedFilesSortingDescending = Settings.Default.FilesSortingDesc;
+        IsSelectedFoldersSortingDescending = Settings.Default.FoldersSortingDesc;
+
+        AccentColors = ThemeManager.Current.Themes
+            .Select(a => new AccentColorMenuData
+            {
+                Name = a.Name.Split('.').Last(),
+                ColorBrush = a.ShowcaseBrush
+            })
+            .ToList();
+        SelectedAccentColor = AccentColors.First(x => x.Name == Settings.Default.AccentColorName);
+
+        SelectedIndexTheme = Settings.Default.ThemeIndex;
+
+        SaveCommand = new RelayCommand(x => Save());
+
+        ShowTags = Settings.Default.ShowTags;
+
+        ShowNotes = Settings.Default.ShowNotes;
+
+        SetFileAssociationsCommand = new RelayCommand(param => SetFileAssociations());
+    }
+
+    #endregion Constructors
+
+    #region Properties
+
+    public int SlideshowDelay
+    {
+        get
         {
-            get
+            return Settings.Default.SlideshowDelay;
+        }
+        set
+        {
+            Settings.Default.SlideshowDelay = value;
+            OnPropertyChanged("SlideshowDelay");
+        }
+    }
+
+    public List<ResizeTypeDescriptor> ResizeTypes { get; private set; }
+    public ResizeTypeDescriptor SelectedResizeType
+    {
+        get
+        {
+            return _selectedResizeType;
+        }
+        set
+        {
+            _selectedResizeType = value;
+            Settings.Default.ResizeType = value.Type;
+            OnSelectedResizeTypeChanged();
+        }
+    }
+
+    public ObservableCollection<DirectorySearchTypeDescriptor> DirectorySearchTypes { get; private set; }
+    public DirectorySearchFlags DirectorySearchFlags
+    {
+        get
+        {
+            return DirectorySearchTypes.Where(item => item.IsSelected).Aggregate(DirectorySearchFlags.None, (current, item) => current | item.Type);
+        }
+    }
+
+    public List<SortingDescriptor> FilesSortingMethods { get; set; }
+
+    public List<SortingDescriptor> FoldersSortingMethods { get; set; }
+
+    public SortingDescriptor SelectedFoldersSorting
+    {
+        get { return _selectedFoldersSorting; }
+        set
+        {
+            _selectedFoldersSorting = value;
+            Settings.Default.FoldersSorting = value.Method;
+            OnSelectedFoldersSortingChanged();
+        }
+    }
+
+    public bool IsSelectedFoldersSortingDescending
+    {
+        get { return _isSelectedFoldersSortingDescending; }
+        set
+        {
+            _isSelectedFoldersSortingDescending = value;
+            Settings.Default.FoldersSortingDesc = value;
+            OnSelectedFoldersSortingChanged();
+        }
+    }
+
+    public SortingDescriptor SelectedFilesSorting
+    {
+        get { return _selectedFilesSorting; }
+        set
+        {
+            _selectedFilesSorting = value;
+            Settings.Default.FilesSorting = value.Method;
+            OnSelectedFilesSortingChanged();
+        }
+    }
+
+    public bool IsSelectedFilesSortingDescending
+    {
+        get { return _isSelectedFilesSortingDescending; }
+        set
+        {
+            _isSelectedFilesSortingDescending = value;
+            Settings.Default.FilesSortingDesc = value;
+            OnSelectedFilesSortingChanged();
+        }
+    }
+
+    public List<AccentColorMenuData> AccentColors { get; private set; }
+
+    public AccentColorMenuData SelectedAccentColor
+    {
+        get
+        {
+            return _selectedAccentColor;
+        }
+        set
+        {
+            _selectedAccentColor = value;
+            _selectedAccentColor.ChangeAccent();
+        }
+    }
+
+    /// <summary>
+    /// Index of the selected theme. 0 - light, 1 - dark.
+    /// </summary>
+    public int SelectedIndexTheme
+    {
+        get
+        {
+            return _selectedTheme;
+        }
+        set
+        {
+            _selectedTheme = value;
+            switch (value)
             {
-                return Settings.Default.SlideshowDelay;
-            }
-            set
-            {
-                Settings.Default.SlideshowDelay = value;
-                OnPropertyChanged("SlideshowDelay");
+                case 1:
+                    ThemeManager.Current.ChangeThemeBaseColor(Application.Current, "Dark");
+                    Settings.Default.ThemeIndex = 1;
+                    break;
+                default:
+                    ThemeManager.Current.ChangeThemeBaseColor(Application.Current, "Light");
+                    Settings.Default.ThemeIndex = 0;
+                    break;
             }
         }
+    }
 
-        public List<ResizeTypeDescriptor> ResizeTypes { get; private set; }
-        public ResizeTypeDescriptor SelectedResizeType
+    public bool ShowTags
+    {
+        get
         {
-            get
-            {
-                return _selectedResizeType;
-            }
-            set
-            {
-                _selectedResizeType = value;
-                Settings.Default.ResizeType = value.Type;
-                OnSelectedResizeTypeChanged();
-            }
+            return _showTags;
         }
-
-        public ObservableCollection<DirectorySearchTypeDescriptor> DirectorySearchTypes { get; private set; }
-        public DirectorySearchFlags DirectorySearchFlags
+        set
         {
-            get
-            {
-                return DirectorySearchTypes.Where(item => item.IsSelected).Aggregate(DirectorySearchFlags.None, (current, item) => current | item.Type);
-            }
+            OnPropertyChanged(ref _showTags, value, () => ShowTags);
+            Settings.Default.ShowTags = _showTags;
+            OnSelectedTagsModeChanged();
         }
+    }
 
-        public List<SortingDescriptor> FilesSortingMethods { get; set; }
-
-        public List<SortingDescriptor> FoldersSortingMethods { get; set; }
-
-        public SortingDescriptor SelectedFoldersSorting
+    public bool ShowNotes
+    {
+        get
         {
-            get { return _selectedFoldersSorting; }
-            set
-            {
-                _selectedFoldersSorting = value;
-                Settings.Default.FoldersSorting = value.Method;
-                OnSelectedFoldersSortingChanged();
-            }
+            return _showNotes;
         }
-
-        public bool IsSelectedFoldersSortingDescending
+        set
         {
-            get { return _isSelectedFoldersSortingDescending; }
-            set
-            {
-                _isSelectedFoldersSortingDescending = value;
-                Settings.Default.FoldersSortingDesc = value;
-                OnSelectedFoldersSortingChanged();
-            }
+            OnPropertyChanged(ref _showNotes, value, () => ShowNotes);
+            Settings.Default.ShowNotes = _showNotes;
+            OnSelectedNotesModeChanged();
         }
+    }
 
-        public SortingDescriptor SelectedFilesSorting
+    #endregion Properties
+
+    #region Commands
+
+    public ICommand SaveCommand { get; set; }
+
+    private void Save()
+    {
+        Settings.Default.Save();
+    }
+
+    public ICommand SetFileAssociationsCommand { get; private set; }
+
+    #endregion Commands
+
+    #region Methods
+
+    private static async Task SetFileAssociations()
+    {
+        try
         {
-            get { return _selectedFilesSorting; }
-            set
+            using (var mgr = new FileAssociationManager())
             {
-                _selectedFilesSorting = value;
-                Settings.Default.FilesSorting = value.Method;
-                OnSelectedFilesSortingChanged();
-            }
-        }
-
-        public bool IsSelectedFilesSortingDescending
-        {
-            get { return _isSelectedFilesSortingDescending; }
-            set
-            {
-                _isSelectedFilesSortingDescending = value;
-                Settings.Default.FilesSortingDesc = value;
-                OnSelectedFilesSortingChanged();
-            }
-        }
-
-        public List<AccentColorMenuData> AccentColors { get; private set; }
-
-        public AccentColorMenuData SelectedAccentColor
-        {
-            get
-            {
-                return _selectedAccentColor;
-            }
-            set
-            {
-                _selectedAccentColor = value;
-                _selectedAccentColor.ChangeAccent();
-            }
-        }
-
-        /// <summary>
-        /// Index of the selected theme. 0 - light, 1 - dark.
-        /// </summary>
-        public int SelectedIndexTheme
-        {
-            get
-            {
-                return _selectedTheme;
-            }
-            set
-            {
-                _selectedTheme = value;
-                switch (value)
+                foreach (
+                    var ext in SupportedFormatsExtensions.GetSupportedFormatsList(typeof(ImageFormat)).Select(x => x.Substring(1)))
                 {
-                    case 1:
-                        ThemeManager.Current.ChangeThemeBaseColor(Application.Current, "Dark");
-                        Settings.Default.ThemeIndex = 1;
-                        break;
-                    default:
-                        ThemeManager.Current.ChangeThemeBaseColor(Application.Current, "Light");
-                        Settings.Default.ThemeIndex = 0;
-                        break;
+                    Associate(mgr, ext);
                 }
             }
+
+            await MainWindow.CurrentWindow.ShowMessageAsync("File association",
+                "Associations are successfully set.",
+                MessageDialogStyle.AffirmativeAndNegative);
         }
-
-        public bool ShowTags
+        catch (UnauthorizedAccessException e)
         {
-            get
+            var result = await MainWindow.CurrentWindow.ShowMessageAsync("File association", 
+                "You need administrative rigths to set associations. Application will be restarted with administrative rights.",
+                MessageDialogStyle.AffirmativeAndNegative);
+
+            if (result == MessageDialogResult.Affirmative)
             {
-                return _showTags;
-            }
-            set
-            {
-                OnPropertyChanged(ref _showTags, value, () => ShowTags);
-                Settings.Default.ShowTags = _showTags;
-                OnSelectedTagsModeChanged();
-            }
-        }
-
-        public bool ShowNotes
-        {
-            get
-            {
-                return _showNotes;
-            }
-            set
-            {
-                OnPropertyChanged(ref _showNotes, value, () => ShowNotes);
-                Settings.Default.ShowNotes = _showNotes;
-                OnSelectedNotesModeChanged();
-            }
-        }
-
-        #endregion Properties
-
-        #region Commands
-
-        public ICommand SaveCommand { get; set; }
-
-        private void Save()
-        {
-            Settings.Default.Save();
-        }
-
-        public ICommand SetFileAssociationsCommand { get; private set; }
-
-        #endregion Commands
-
-        #region Methods
-
-        private static async Task SetFileAssociations()
-        {
-            try
-            {
-                using (var mgr = new FileAssociationManager())
+                // Launch itself as administrator 
+                var proc = new ProcessStartInfo
                 {
-                    foreach (
-                        var ext in SupportedFormatsExtensions.GetSupportedFormatsList(typeof(ImageFormat)).Select(x => x.Substring(1)))
-                    {
-                        Associate(mgr, ext);
-                    }
+                    UseShellExecute = true,
+                    WorkingDirectory = Environment.CurrentDirectory,
+                    FileName = Assembly.GetExecutingAssembly().Location,
+                    Verb = "runas"
+                };
+
+
+                try
+                {
+                    Process.Start(proc);
+                }
+                catch
+                {
+                    return;
                 }
 
-                await MainWindow.CurrentWindow.ShowMessageAsync("File association",
-                    "Associations are successfully set.",
-                    MessageDialogStyle.AffirmativeAndNegative);
-            }
-            catch (UnauthorizedAccessException e)
-            {
-                var result = await MainWindow.CurrentWindow.ShowMessageAsync("File association", 
-                    "You need administrative rigths to set associations. Application will be restarted with administrative rights.",
-                    MessageDialogStyle.AffirmativeAndNegative);
 
-                if (result == MessageDialogResult.Affirmative)
-                {
-                    // Launch itself as administrator 
-                    var proc = new ProcessStartInfo
-                    {
-                        UseShellExecute = true,
-                        WorkingDirectory = Environment.CurrentDirectory,
-                        FileName = Assembly.GetExecutingAssembly().Location,
-                        Verb = "runas"
-                    };
-
-
-                    try
-                    {
-                        Process.Start(proc);
-                    }
-                    catch
-                    {
-                        return;
-                    }
-
-
-                    Application.Current.Shutdown();
-                }
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine(e);
+                Application.Current.Shutdown();
             }
         }
-
-        private static void Associate(FileAssociationManager mgr, string extension)
+        catch (Exception e)
         {
-            string executablePath = Assembly.GetExecutingAssembly().Location;
-
-            using (var ext = mgr.RegisterFileAssociation(extension))
-            {
-                ext.DefaultIcon = new ApplicationIcon(executablePath);
-                ext.ShellOpenCommand = executablePath;
-                ext.Associated = true;
-            }
+            Console.WriteLine(e);
         }
+    }
 
-        #endregion Methods
+    private static void Associate(FileAssociationManager mgr, string extension)
+    {
+        string executablePath = Assembly.GetExecutingAssembly().Location;
 
-        #region Event handlers
-
-        private void item_SelectedChanged(object sender, EventArgs e)
+        using (var ext = mgr.RegisterFileAssociation(extension))
         {
-            OnSelectedDirectorySearchTypeChanged();
+            ext.DefaultIcon = new ApplicationIcon(executablePath);
+            ext.ShellOpenCommand = executablePath;
+            ext.Associated = true;
         }
+    }
 
-        #endregion  Event handlers
+    #endregion Methods
 
-        #region Events
+    #region Event handlers
 
-        public event EventHandler SelectedResizeTypeChanged;
-        private void OnSelectedResizeTypeChanged()
+    private void item_SelectedChanged(object sender, EventArgs e)
+    {
+        OnSelectedDirectorySearchTypeChanged();
+    }
+
+    #endregion  Event handlers
+
+    #region Events
+
+    public event EventHandler SelectedResizeTypeChanged;
+    private void OnSelectedResizeTypeChanged()
+    {
+        if (SelectedResizeTypeChanged != null)
         {
-            if (SelectedResizeTypeChanged != null)
-            {
-                SelectedResizeTypeChanged(this, null);
-            }
+            SelectedResizeTypeChanged(this, null);
         }
+    }
 
-        public event EventHandler SelectedDirectorySearchTypeChanged;
-        private void OnSelectedDirectorySearchTypeChanged()
+    public event EventHandler SelectedDirectorySearchTypeChanged;
+    private void OnSelectedDirectorySearchTypeChanged()
+    {
+        if (SelectedDirectorySearchTypeChanged != null)
         {
-            if (SelectedDirectorySearchTypeChanged != null)
-            {
-                SelectedDirectorySearchTypeChanged(this, null);
-            }
+            SelectedDirectorySearchTypeChanged(this, null);
         }
+    }
 
-        public event EventHandler SelectedFilesSortingChanged;
-        private void OnSelectedFilesSortingChanged()
+    public event EventHandler SelectedFilesSortingChanged;
+    private void OnSelectedFilesSortingChanged()
+    {
+        if (SelectedFilesSortingChanged != null)
         {
-            if (SelectedFilesSortingChanged != null)
-            {
-                SelectedFilesSortingChanged(this, null);
-            }
+            SelectedFilesSortingChanged(this, null);
         }
+    }
 
-        public event EventHandler SelectedFoldersSortingChanged;
-        private void OnSelectedFoldersSortingChanged()
+    public event EventHandler SelectedFoldersSortingChanged;
+    private void OnSelectedFoldersSortingChanged()
+    {
+        if (SelectedFoldersSortingChanged != null)
         {
-            if (SelectedFoldersSortingChanged != null)
-            {
-                SelectedFoldersSortingChanged(this, null);
-            }
+            SelectedFoldersSortingChanged(this, null);
         }
+    }
 
-        public event EventHandler SelectedTagsModeChanged;
-        private void OnSelectedTagsModeChanged()
+    public event EventHandler SelectedTagsModeChanged;
+    private void OnSelectedTagsModeChanged()
+    {
+        if (SelectedTagsModeChanged != null)
         {
-            if (SelectedTagsModeChanged != null)
-            {
-                SelectedTagsModeChanged(this, null);
-            }
+            SelectedTagsModeChanged(this, null);
         }
+    }
 
-        public event EventHandler SelectedNotesModeChanged;
-        private void OnSelectedNotesModeChanged()
-        {
-            var handler = SelectedNotesModeChanged;
-            handler?.Invoke(this, null);
-        }
+    public event EventHandler SelectedNotesModeChanged;
+    private void OnSelectedNotesModeChanged()
+    {
+        var handler = SelectedNotesModeChanged;
+        handler?.Invoke(this, null);
+    }
 
         
-        #endregion Events
-    }
+    #endregion Events
 }

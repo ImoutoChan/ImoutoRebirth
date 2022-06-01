@@ -1,10 +1,9 @@
-﻿namespace ImoutoViewer.ImoutoRebirth.Services.Tags.Model
+﻿namespace ImoutoViewer.ImoutoRebirth.Services.Tags.Model;
+
+internal enum FileTagSource
 {
-    internal enum FileTagSource
-    {
-        Yandere = 0,
-        Danbooru = 1,
-        Sankaku = 2,
-        Manual = 3
-    }
+    Yandere = 0,
+    Danbooru = 1,
+    Sankaku = 2,
+    Manual = 3
 }

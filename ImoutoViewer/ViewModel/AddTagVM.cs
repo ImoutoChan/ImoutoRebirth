@@ -8,210 +8,209 @@ using System.Windows.Input;
 using ImoutoViewer.Commands;
 using ImoutoViewer.ImoutoRebirth.Services.Tags.Model;
 
-namespace ImoutoViewer.ViewModel
+namespace ImoutoViewer.ViewModel;
+
+class AddTagVM : VMBase
 {
-    class AddTagVM : VMBase
+    private MainWindowVM _parent;
+
+    public AddTagVM(MainWindowVM _mainWindow)
     {
-        private MainWindowVM _parent;
+        _parent = _mainWindow;
+    }
 
-        public AddTagVM(MainWindowVM _mainWindow)
+    #region Properties
+
+    private bool _isEnable;
+    public bool IsEnabled
+    {
+        get
         {
-            _parent = _mainWindow;
+            return _isEnable;
         }
-
-        #region Properties
-
-        private bool _isEnable;
-        public bool IsEnabled
+        set
         {
-            get
-            {
-                return _isEnable;
-            }
-            set
-            {
-                OnPropertyChanged(ref _isEnable, value, () => IsEnabled);
-            }
+            OnPropertyChanged(ref _isEnable, value, () => IsEnabled);
         }
+    }
 
-        private string _searchText = "";
-        public string SearchText
+    private string _searchText = "";
+    public string SearchText
+    {
+        get
         {
-            get
-            {
-                return _searchText;
-            }
-            set
-            {
-                OnPropertyChanged(ref _searchText, value, () => SearchText);
-                SearchTagsAsync();
-            }
+            return _searchText;
         }
-
-        private ObservableCollection<Tag> _foundTags = new ObservableCollection<Tag>();
-        public ObservableCollection<Tag> FoundTags
+        set
         {
-            get
-            {
-                return _foundTags;
-            }
+            OnPropertyChanged(ref _searchText, value, () => SearchText);
+            SearchTagsAsync();
         }
+    }
 
-        private Tag _selectedTag;
-        public Tag SelectedTag
+    private ObservableCollection<Tag> _foundTags = new ObservableCollection<Tag>();
+    public ObservableCollection<Tag> FoundTags
+    {
+        get
         {
-            get
-            {
-                return _selectedTag;
-            }
-            set
-            {
-                OnPropertyChanged(ref _selectedTag, value, () => SelectedTag);
-            }
+            return _foundTags;
         }
+    }
 
-        private string _value = "";
-        public string Value
+    private Tag _selectedTag;
+    public Tag SelectedTag
+    {
+        get
         {
-            get
-            {
-                return _value;
-            }
-            set
-            {
-                OnPropertyChanged(ref _value, value, () => Value);
-            }
+            return _selectedTag;
         }
-
-        #endregion Properties
-
-        #region Commands
-
-        #region Save command
-
-        private ICommand _saveCommand;
-        public ICommand SaveCommand
+        set
         {
-            get
-            {
-                return _saveCommand ?? (_saveCommand = new RelayCommand(Save, CanSave));
-            }
+            OnPropertyChanged(ref _selectedTag, value, () => SelectedTag);
         }
+    }
 
-        private bool CanSave(object obj)
+    private string _value = "";
+    public string Value
+    {
+        get
         {
-            return SelectedTag != null && (!SelectedTag.HasValue || !String.IsNullOrWhiteSpace(Value));
+            return _value;
         }
-
-        private void Save(object obj)
+        set
         {
-            _parent.Tags.BindTagAsync(this);
+            OnPropertyChanged(ref _value, value, () => Value);
         }
+    }
 
-        #endregion Save command
+    #endregion Properties
 
-        #region Reset command
+    #region Commands
 
-        private ICommand _resetCommand;
-        public ICommand ResetCommand
+    #region Save command
+
+    private ICommand _saveCommand;
+    public ICommand SaveCommand
+    {
+        get
         {
-            get
-            {
-                return _resetCommand ?? (_resetCommand = new RelayCommand(Reset));
-            }
+            return _saveCommand ?? (_saveCommand = new RelayCommand(Save, CanSave));
         }
+    }
 
-        private void Reset(object obj)
+    private bool CanSave(object obj)
+    {
+        return SelectedTag != null && (!SelectedTag.HasValue || !String.IsNullOrWhiteSpace(Value));
+    }
+
+    private void Save(object obj)
+    {
+        _parent.Tags.BindTagAsync(this);
+    }
+
+    #endregion Save command
+
+    #region Reset command
+
+    private ICommand _resetCommand;
+    public ICommand ResetCommand
+    {
+        get
         {
-            SearchText = "";
-            FoundTags.Clear();
-            SelectedTag = null;
-            Value = "";
-            IsEnabled = true;
+            return _resetCommand ?? (_resetCommand = new RelayCommand(Reset));
         }
+    }
 
-        #endregion Reset command
+    private void Reset(object obj)
+    {
+        SearchText = "";
+        FoundTags.Clear();
+        SelectedTag = null;
+        Value = "";
+        IsEnabled = true;
+    }
 
-        #region CreateTag Command
+    #endregion Reset command
 
-        private ICommand _createTagCommand;
-        public ICommand CreateTagCommand
+    #region CreateTag Command
+
+    private ICommand _createTagCommand;
+    public ICommand CreateTagCommand
+    {
+        get
         {
-            get
-            {
-                return _createTagCommand ?? (_createTagCommand = new RelayCommand(CreateTag));
-            }
+            return _createTagCommand ?? (_createTagCommand = new RelayCommand(CreateTag));
         }
+    }
 
-        private void CreateTag(object obj)
+    private void CreateTag(object obj)
+    {
+        _parent.View.ShowCreateTagFlyout();
+    }
+
+    #endregion CreateTag Command
+
+    #endregion Commands
+
+    #region Methods
+
+    private async void SearchTagsAsync()
+    {
+        string searchPattern;
+        lock (_searchText)
         {
-            _parent.View.ShowCreateTagFlyout();
+            searchPattern = _searchText;
         }
-
-        #endregion CreateTag Command
-
-        #endregion Commands
-
-        #region Methods
-
-        private async void SearchTagsAsync()
+        try
         {
-            string searchPattern;
+            var tags = await LoadTagsTask(searchPattern);
+
             lock (_searchText)
             {
-                searchPattern = _searchText;
-            }
-            try
-            {
-                var tags = await LoadTagsTask(searchPattern);
-
-                lock (_searchText)
+                if (_searchText == searchPattern)
                 {
-                    if (_searchText == searchPattern)
-                    {
-                        ReloadFoundTags(tags);
-                    }
+                    ReloadFoundTags(tags);
                 }
             }
-            catch (Exception ex)
-            {
-                Debug.WriteLine("Tags load error: " + ex.Message);
-            }
         }
-
-        private void ReloadFoundTags(List<Tag> tags)
+        catch (Exception ex)
         {
-            var prevSelected = SelectedTag;
-            FoundTags.Clear();
-
-            foreach (var tag in tags)
-            {
-                FoundTags.Add(tag);
-            }
-
-            var newSelected = FoundTags.FirstOrDefault(x => x.Id == prevSelected.Id);
-            if (newSelected != null)
-            {
-                SelectedTag = newSelected;
-            }
+            Debug.WriteLine("Tags load error: " + ex.Message);
         }
-
-        private Task<List<Tag>> LoadTagsTask(string searchPattern)
-        {
-            // TODO load tags
-            //return Task.Run(() =>
-            //{
-            //    var tags = ImoutoService.Use(imoutoService =>
-            //    {
-            //        return imoutoService.SearchTags(searchPattern);
-            //    });
-
-            //    return tags;
-            //});
-
-            return Task.FromResult(Array.Empty<Tag>().ToList());
-        }
-
-        #endregion Methods
     }
+
+    private void ReloadFoundTags(List<Tag> tags)
+    {
+        var prevSelected = SelectedTag;
+        FoundTags.Clear();
+
+        foreach (var tag in tags)
+        {
+            FoundTags.Add(tag);
+        }
+
+        var newSelected = FoundTags.FirstOrDefault(x => x.Id == prevSelected.Id);
+        if (newSelected != null)
+        {
+            SelectedTag = newSelected;
+        }
+    }
+
+    private Task<List<Tag>> LoadTagsTask(string searchPattern)
+    {
+        // TODO load tags
+        //return Task.Run(() =>
+        //{
+        //    var tags = ImoutoService.Use(imoutoService =>
+        //    {
+        //        return imoutoService.SearchTags(searchPattern);
+        //    });
+
+        //    return tags;
+        //});
+
+        return Task.FromResult(Array.Empty<Tag>().ToList());
+    }
+
+    #endregion Methods
 }

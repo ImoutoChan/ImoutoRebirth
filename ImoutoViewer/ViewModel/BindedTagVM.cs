@@ -6,89 +6,88 @@ using ImoutoViewer.Commands;
 using ImoutoViewer.Extensions;
 using ImoutoViewer.ImoutoRebirth.Services.Tags.Model;
 
-namespace ImoutoViewer.ViewModel
+namespace ImoutoViewer.ViewModel;
+
+class BindedTagVM : VMBase
 {
-    class BindedTagVM : VMBase
+    private TagsVM _parantVM;
+    private FileTag _modelTag;
+    private Brush _typeBrush;
+    private ICommand _unbindCommand;
+
+    public BindedTagVM(FileTag tag, TagsVM tagsVM)
     {
-        private TagsVM _parantVM;
-        private FileTag _modelTag;
-        private Brush _typeBrush;
-        private ICommand _unbindCommand;
+        _modelTag = tag;
+        _parantVM = tagsVM;
+    }
 
-        public BindedTagVM(FileTag tag, TagsVM tagsVM)
+    public string Title
+    {
+        get
         {
-            _modelTag = tag;
-            _parantVM = tagsVM;
-        }
+            var tag = _modelTag.Tag.Title;
 
-        public string Title
-        {
-            get
+            if (_modelTag.Tag.HasValue)
             {
-                var tag = _modelTag.Tag.Title;
-
-                if (_modelTag.Tag.HasValue)
-                {
-                    return tag + " : " + _modelTag.Value;
-                }
-                else
-                {
-                    return tag;
-                }
+                return tag + " : " + _modelTag.Value;
+            }
+            else
+            {
+                return tag;
             }
         }
+    }
 
-        public Guid Id
+    public Guid Id
+    {
+        get
         {
-            get
-            {
-                return _modelTag.Tag.Id;
-            }
+            return _modelTag.Tag.Id;
         }
+    }
 
-        public Brush TypeBrush
+    public Brush TypeBrush
+    {
+        get
         {
-            get
-            {
-                return _typeBrush ?? (_typeBrush = new SolidColorBrush(ColorExtensions.ToColor(_modelTag.Tag.Type.Color)));
-            }
+            return _typeBrush ?? (_typeBrush = new SolidColorBrush(ColorExtensions.ToColor(_modelTag.Tag.Type.Color)));
         }
+    }
 
-        public string Source
+    public string Source
+    {
+        get
         {
-            get
-            {
-                return _modelTag.Source.ToString();
-            }
+            return _modelTag.Source.ToString();
         }
+    }
 
-        public bool IsEditable
+    public bool IsEditable
+    {
+        get
         {
-            get
-            {
-                return _modelTag.IsEditable;
-            }
+            return _modelTag.IsEditable;
         }
+    }
 
-        public int Count
+    public int Count
+    {
+        get
         {
-            get
-            {
-                return _modelTag.Tag.Count;
-            }
+            return _modelTag.Tag.Count;
         }
+    }
 
-        public ICommand UnbindCommand
+    public ICommand UnbindCommand
+    {
+        get
         {
-            get
-            {
-                return _unbindCommand ?? (_unbindCommand = new RelayCommand(Unbind));
-            }
+            return _unbindCommand ?? (_unbindCommand = new RelayCommand(Unbind));
         }
+    }
 
-        private void Unbind(object obj)
-        {
-            _parantVM.UnbindTagAsync(this);
-        }
+    private void Unbind(object obj)
+    {
+        _parantVM.UnbindTagAsync(this);
     }
 }

@@ -3,47 +3,46 @@ using System.IO;
 using System.IO.Compression;
 using System.Text;
 
-namespace ImoutoViewer.ImoutoRebirth.NavigatorArgs
+namespace ImoutoViewer.ImoutoRebirth.NavigatorArgs;
+
+public static class StringCompression
 {
-    public static class StringCompression
+    /// <summary>
+    /// Compresses a string and returns a deflate compressed, Base64 encoded string.
+    /// </summary>
+    /// <param name="uncompressedString">String to compress</param>
+    public static string Compress(this string uncompressedString)
     {
-        /// <summary>
-        /// Compresses a string and returns a deflate compressed, Base64 encoded string.
-        /// </summary>
-        /// <param name="uncompressedString">String to compress</param>
-        public static string Compress(this string uncompressedString)
+        using var uncompressedStream = new MemoryStream(Encoding.UTF8.GetBytes(uncompressedString));
+        using var compressedStream = new MemoryStream();
+        // setting the leaveOpen parameter to true to ensure that compressedStream will not be closed when compressorStream is disposed
+        // this allows compressorStream to close and flush its buffers to compressedStream and guarantees that compressedStream.ToArray() can be called afterward
+        // although MSDN documentation states that ToArray() can be called on a closed MemoryStream, I don't want to rely on that very odd behavior should it ever change
+        using (var compressorStream = new DeflateStream(compressedStream, CompressionLevel.Fastest, true))
         {
-            using var uncompressedStream = new MemoryStream(Encoding.UTF8.GetBytes(uncompressedString));
-            using var compressedStream = new MemoryStream();
-            // setting the leaveOpen parameter to true to ensure that compressedStream will not be closed when compressorStream is disposed
-            // this allows compressorStream to close and flush its buffers to compressedStream and guarantees that compressedStream.ToArray() can be called afterward
-            // although MSDN documentation states that ToArray() can be called on a closed MemoryStream, I don't want to rely on that very odd behavior should it ever change
-            using (var compressorStream = new DeflateStream(compressedStream, CompressionLevel.Fastest, true))
-            {
-                uncompressedStream.CopyTo(compressorStream);
-            }
-
-            // call compressedStream.ToArray() after the enclosing DeflateStream has closed and flushed its buffer to compressedStream
-            var compressedBytes = compressedStream.ToArray();
-
-            return Convert.ToBase64String(compressedBytes);
+            uncompressedStream.CopyTo(compressorStream);
         }
 
-        /// <summary>
-        /// Decompresses a deflate compressed, Base64 encoded string and returns an uncompressed string.
-        /// </summary>
-        /// <param name="compressedString">String to decompress.</param>
-        public static string Decompress(this string compressedString)
-        {
-            var compressedStream = new MemoryStream(Convert.FromBase64String(compressedString));
+        // call compressedStream.ToArray() after the enclosing DeflateStream has closed and flushed its buffer to compressedStream
+        var compressedBytes = compressedStream.ToArray();
 
-            using var decompressorStream = new DeflateStream(compressedStream, CompressionMode.Decompress);
-            using var decompressedStream = new MemoryStream();
+        return Convert.ToBase64String(compressedBytes);
+    }
 
-            decompressorStream.CopyTo(decompressedStream);
-            var decompressedBytes = decompressedStream.ToArray();
+    /// <summary>
+    /// Decompresses a deflate compressed, Base64 encoded string and returns an uncompressed string.
+    /// </summary>
+    /// <param name="compressedString">String to decompress.</param>
+    public static string Decompress(this string compressedString)
+    {
+        var compressedStream = new MemoryStream(Convert.FromBase64String(compressedString));
 
-            return Encoding.UTF8.GetString(decompressedBytes);
-        }
+        using var decompressorStream = new DeflateStream(compressedStream, CompressionMode.Decompress);
+        using var decompressedStream = new MemoryStream();
+
+        decompressorStream.CopyTo(decompressedStream);
+        var decompressedBytes = decompressedStream.ToArray();
+
+        return Encoding.UTF8.GetString(decompressedBytes);
     }
 }

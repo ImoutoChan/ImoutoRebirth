@@ -1,21 +1,20 @@
 ﻿using AutoMapper;
 using ImoutoRebirth.Room.WebApi.Client.Models;
 
-namespace ImoutoRebirth.Navigator.Services.Collections
+namespace ImoutoRebirth.Navigator.Services.Collections;
+
+internal class AutoMapperProfile : Profile
 {
-    internal class AutoMapperProfile : Profile
+    public AutoMapperProfile()
     {
-        public AutoMapperProfile()
-        {
-            CreateMap<CollectionResponse, Collection>();
+        CreateMap<CollectionResponse, Collection>();
 
-            CreateMap<DestinationFolderResponse, DestinationFolder>();
+        CreateMap<DestinationFolderResponse, DestinationFolder>();
 
-            CreateMap<DestinationFolder, DestinationFolderCreateRequest>();
+        CreateMap<DestinationFolder, DestinationFolderCreateRequest>();
 
-            CreateMap<SourceFolderResponse, SourceFolder>();
+        CreateMap<SourceFolderResponse, SourceFolder>();
 
-            CreateMap<SourceFolder, SourceFolderCreateRequest>();
-        }
+        CreateMap<SourceFolder, SourceFolderCreateRequest>();
     }
 }

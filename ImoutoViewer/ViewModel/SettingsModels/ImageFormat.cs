@@ -1,12 +1,11 @@
-﻿namespace ImoutoViewer.ViewModel.SettingsModels
+﻿namespace ImoutoViewer.ViewModel.SettingsModels;
+
+public enum ImageFormat
 {
-    public enum ImageFormat
-    {
-        JPEG,
-        JPG,
-        PNG,
-        BMP,
-        TIFF,
-        GIF
-    }
+    JPEG,
+    JPG,
+    PNG,
+    BMP,
+    TIFF,
+    GIF
 }

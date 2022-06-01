@@ -1,17 +1,16 @@
 ﻿using System;
 
-namespace ImoutoViewer.ImoutoRebirth.Services.Tags.Model
+namespace ImoutoViewer.ImoutoRebirth.Services.Tags.Model;
+
+public struct Rate
 {
-    public struct Rate
+    public int Rating { get; }
+
+    public Rate(int value)
     {
-        public int Rating { get; }
+        if (value < 0 || value > 5)
+            throw new ArgumentOutOfRangeException(nameof(value));
 
-        public Rate(int value)
-        {
-            if (value < 0 || value > 5)
-                throw new ArgumentOutOfRangeException(nameof(value));
-
-            Rating = value;
-        }
+        Rating = value;
     }
 }
