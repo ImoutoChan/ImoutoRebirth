@@ -62,6 +62,10 @@ function updateView(): void {
         img.classList.remove("imoutoExtRelativeHide");
         img.classList.remove("imoutoExtNoHide");  
 
+        if (disableApp) {
+            continue;
+        }
+
         switch (hashResult.result) {
             case ImgStatus.Contains:
                 img.classList.add("imoutoExtHide");      
