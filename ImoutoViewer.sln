@@ -1,9 +1,9 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 14
-VisualStudioVersion = 14.0.22310.1
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.30803.129
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ImoutoViewer", "ImoutoViewer\ImoutoViewer.csproj", "{94CB919F-F3C9-4470-AF91-A2878CC8DF4A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ImoutoViewer", "ImoutoViewer\ImoutoViewer.csproj", "{94CB919F-F3C9-4470-AF91-A2878CC8DF4A}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -18,5 +18,8 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {52F4FF3A-9EFD-4839-A30B-ABC0356DD157}
 	EndGlobalSection
 EndGlobal
