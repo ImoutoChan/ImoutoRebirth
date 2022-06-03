@@ -106,7 +106,7 @@ internal class MainWindowVM : VMBase, IDragable, IDropable
             }
             if (value)
             {
-                _timer = new DispatcherTimer() { Interval = new TimeSpan(0, 0, Settings.SlideshowDelay) };
+                _timer = new DispatcherTimer() { Interval = new TimeSpan(0, 0, 0, 0, Settings.SlideshowDelay) };
                 _timer.Tick += (sender, args) => NextImage();
                 _timer.Start();
             }

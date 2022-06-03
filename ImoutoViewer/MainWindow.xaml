@@ -266,12 +266,24 @@
                                         Margin="0,25,0,5">
                                 <TextBlock Text="Slideshow delay: " />
                                 <TextBlock Text="{Binding Value, ElementName=Slider}" />
+                                <TextBlock Text=" ms" />
                             </StackPanel>
 
                             <Slider Minimum="0"
-                                    Maximum="100"
+                                    Maximum="100000"
+                                    metroControl:SliderHelper.ChangeValueBy="LargeChange"
+                                    metroControl:SliderHelper.EnableMouseWheel="MouseHover"
+                                    SmallChange="1"
+                                    LargeChange="100"
+                                    TickFrequency="1000"
                                     x:Name="Slider"
                                     Value="{Binding SlideshowDelay}" />
+
+                            <TextBox Margin="0,25,0,5"
+                                     metroControl:TextBoxHelper.Watermark="SlideshowDelay (ms)"
+                                     metroControl:TextBoxHelper.UseFloatingWatermark="True"
+                                     Text="{Binding SlideshowDelay}"
+                                     />
 
                             <CheckBox Margin="0,25,0,0"
                                       Content="Show tags"

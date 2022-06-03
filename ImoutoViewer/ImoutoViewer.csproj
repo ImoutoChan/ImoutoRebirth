@@ -47,6 +47,7 @@
     <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
     <PackageReference Include="rfc1459.AssociationManager" Version="1.1.1" />
     <PackageReference Include="WpfAnimatedGif" Version="2.0.2" />
+    <PackageReference Include="GihanSoft.String.NaturalComparer" Version="2.1.0" />
   </ItemGroup>
 
   <ItemGroup>

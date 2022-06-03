@@ -60,7 +60,10 @@ internal class LocalImageList : IEnumerable
             }
             #endregion
 
-            foreach (DirectoryInfo folder in source.GetDirectories().OrderByWithDirection(GetDirectoryOrderProperty, IsFoldersSortMethodDescending))
+            var folders = source.GetDirectories()
+                .OrderByWithDirection(GetDirectoryOrderProperty, IsFoldersSortMethodDescending);
+            
+            foreach (DirectoryInfo folder in folders)
             {
                 result.Add(folder);
 
@@ -353,7 +356,8 @@ internal class LocalImageList : IEnumerable
 
     internal void ResortFiles()
     {
-        _imageList = new List<LocalImage>(_imageList.OrderByWithDirection(x => GetFilesOrderProperty(x.Path), IsFilesSortMethodDescending));
+        var ordered = _imageList.OrderByWithDirection(x => GetFilesOrderProperty(x.Path), IsFilesSortMethodDescending);
+        _imageList = new List<LocalImage>(ordered);
     }
 
     #endregion Public methods
