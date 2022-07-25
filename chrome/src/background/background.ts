@@ -12,7 +12,7 @@ export interface KekkaiResponse {
 
 const token = "";
 
-const remoteKekkai = "https://kekkai.imouto.pink/FileStatus?token=" + token;
+const remoteKekkai = "http://localhost:11303/FileStatus?token=" + token;
 let logEnabled = true;
 let disabledApp = false;
 let loadingCounter: number = 0;
