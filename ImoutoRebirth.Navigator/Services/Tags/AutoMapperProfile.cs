@@ -1,5 +1,5 @@
 ﻿using AutoMapper;
-using ImoutoRebirth.Lilin.WebApi.Client.Models;
+using ImoutoRebirth.LilinService.WebApi.Client;
 using ImoutoRebirth.Navigator.Services.Tags.Model;
 using ImoutoRebirth.Room.WebApi.Client.Models;
 
@@ -10,31 +10,31 @@ internal class AutoMapperProfile : Profile
     public AutoMapperProfile()
     {
         CreateMap<SearchTag, TagSearchEntryRequest>()
-            .ForMember(x => x.TagId, o => o.MapFrom(x => x.Tag.Id))
-            .ForMember(x => x.Value, o => o.MapFrom(x => x.Value))
-            .ForMember(x => x.TagSearchScope, o => o.MapFrom(x => x.SearchType));
+            .ForCtorParam("TagId", o => o.MapFrom(x => x.Tag.Id))
+            .ForCtorParam("Value", o => o.MapFrom(x => x.Value))
+            .ForCtorParam("TagSearchScope", o => o.MapFrom(x => x.SearchType));
 
         CreateMap<FileTag, FileTagRequest>()
             .ForMember(x => x.TagId, o => o.MapFrom(x => x.Tag.Id))
             .ForMember(x => x.Value, o => o.MapFrom(x => x.Value));
 
-        CreateMap<SearchType, TagSearchScope>()
+        CreateMap<SearchType, TagSearchEntryRequestTagSearchScope>()
             .ConvertUsing(
                 (x, _) => x switch
                 {
-                    SearchType.Include => TagSearchScope.Included,
-                    SearchType.Exclude => TagSearchScope.Excluded,
+                    SearchType.Include => TagSearchEntryRequestTagSearchScope.Included,
+                    SearchType.Exclude => TagSearchEntryRequestTagSearchScope.Excluded,
                     _ => throw new NotImplementedException(x.ToString())
                 });
 
-        CreateMap<FileTagSource, MetadataSource>()
+        CreateMap<FileTagSource, FileTagRequestSource>()
             .ConvertUsing(
                 (x, _) => x switch
                 {
-                    FileTagSource.Yandere => MetadataSource.Yandere,
-                    FileTagSource.Danbooru => MetadataSource.Danbooru,
-                    FileTagSource.Sankaku => MetadataSource.Sankaku,
-                    FileTagSource.Manual => MetadataSource.Manual,
+                    FileTagSource.Yandere => FileTagRequestSource.Yandere,
+                    FileTagSource.Danbooru => FileTagRequestSource.Danbooru,
+                    FileTagSource.Sankaku => FileTagRequestSource.Sankaku,
+                    FileTagSource.Manual => FileTagRequestSource.Manual,
                     _ => throw new NotImplementedException(x.ToString())
                 });
 
@@ -49,28 +49,28 @@ internal class AutoMapperProfile : Profile
         CreateMap<TagResponse, Tag>()
             .ForCtorParam("title", o => o.MapFrom(x => x.Name))
             .ForCtorParam("synonymsCollection", o => o.MapFrom(x => x.Synonyms));
-        CreateMap<FileTagResponseTag, Tag>()
-            .ForCtorParam("title", o => o.MapFrom(x => x.Name))
-            .ForCtorParam("synonymsCollection", o => o.MapFrom(x => x.Synonyms));
+        // CreateMap<FileTagResponseTag, Tag>()
+        //     .ForCtorParam("title", o => o.MapFrom(x => x.Name))
+        //     .ForCtorParam("synonymsCollection", o => o.MapFrom(x => x.Synonyms));
 
         CreateMap<TagTypeResponse, TagType>()
             .ForCtorParam("title", o => o.MapFrom(x => x.Name));
-        CreateMap<TagResponseType, TagType>()
-            .ForCtorParam("title", o => o.MapFrom(x => x.Name));
+        // CreateMap<TagResponseType, TagType>()
+        //     .ForCtorParam("title", o => o.MapFrom(x => x.Name));
     }
 
     private void CreateFileTagMaps()
     {
         CreateMap<FileTagResponse, FileTag>();
 
-        CreateMap<MetadataSource, FileTagSource>()
+        CreateMap<FileTagRequestSource, FileTagSource>()
             .ConvertUsing(
                 (x, _) => x switch
                 {
-                    MetadataSource.Danbooru => FileTagSource.Danbooru,
-                    MetadataSource.Yandere => FileTagSource.Yandere,
-                    MetadataSource.Sankaku => FileTagSource.Sankaku,
-                    MetadataSource.Manual => FileTagSource.Manual,
+                    FileTagRequestSource.Danbooru => FileTagSource.Danbooru,
+                    FileTagRequestSource.Yandere => FileTagSource.Yandere,
+                    FileTagRequestSource.Sankaku => FileTagSource.Sankaku,
+                    FileTagRequestSource.Manual => FileTagSource.Manual,
                     _ => throw new NotImplementedException(x.ToString())
                 });
     }

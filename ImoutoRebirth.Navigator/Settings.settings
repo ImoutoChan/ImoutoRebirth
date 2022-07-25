@@ -15,10 +15,10 @@
       <Value Profile="(Default)" />
     </Setting>
     <Setting Name="LilinHost" Type="System.String" Scope="User">
-      <Value Profile="(Default)">http://miyu:11302/</Value>
+      <Value Profile="(Default)">http://localhost:11302/</Value>
     </Setting>
     <Setting Name="RoomHost" Type="System.String" Scope="User">
-      <Value Profile="(Default)">http://miyu:11301/</Value>
+      <Value Profile="(Default)">http://localhost:11301/</Value>
     </Setting>
   </Settings>
 </SettingsFile>

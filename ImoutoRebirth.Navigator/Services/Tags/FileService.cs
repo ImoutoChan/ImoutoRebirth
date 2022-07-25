@@ -1,6 +1,5 @@
 ﻿using AutoMapper;
-using ImoutoRebirth.Lilin.WebApi.Client;
-using ImoutoRebirth.Lilin.WebApi.Client.Models;
+using ImoutoRebirth.LilinService.WebApi.Client;
 using ImoutoRebirth.Navigator.Services.Tags.Model;
 using ImoutoRebirth.Room.WebApi.Client;
 using ImoutoRebirth.Room.WebApi.Client.Models;
@@ -9,18 +8,18 @@ namespace ImoutoRebirth.Navigator.Services.Tags;
 
 class FileService : IFileService
 {
-    private readonly IImoutoRebirthLilinWebApiClient _lilinClient;
+    private readonly FilesClient _filesClient;
     private readonly IMapper _mapper;
     private readonly IImoutoRebirthRoomWebApiClient _roomClient;
 
     public FileService(
-        IImoutoRebirthLilinWebApiClient lilinClient,
         IImoutoRebirthRoomWebApiClient roomClient,
-        IMapper mapper)
+        IMapper mapper,
+        FilesClient filesClient)
     {
-        _lilinClient = lilinClient;
         _roomClient = roomClient;
         _mapper = mapper;
+        _filesClient = filesClient;
     }
 
     public async Task<IReadOnlyCollection<File>> SearchFiles(
@@ -38,14 +37,17 @@ class FileService : IFileService
             return _mapper.Map<IReadOnlyCollection<File>>(filesOnly);
         }
 
-        var tagsSearch = await _lilinClient.Files
+        var tagsSearch = await _filesClient
             .GetFilesByTagsAsync(
                 new FilesSearchRequest(
-                    _mapper.Map<List<TagSearchEntryRequest>>(tags), take, skip),
+                    take, skip,
+                    _mapper.Map<List<TagSearchEntryRequest>>(tags)),
                 token);
 
         var filesSearch = await _roomClient.CollectionFiles
-            .SearchAsync(new CollectionFilesRequest(collectionId, tagsSearch), token);
+            .SearchAsync(
+                new CollectionFilesRequest(collectionId, tagsSearch.Cast<Guid?>().ToList()),
+                token);
 
         return _mapper.Map<IReadOnlyCollection<File>>(filesSearch);
     }
@@ -63,11 +65,13 @@ class FileService : IFileService
             return result.Value;
         }
 
-        return (await _lilinClient.Files
+        return await _filesClient
             .GetFilesCountByTagsAsync(
                 new FilesSearchRequest(
+                    int.MaxValue,
+                    0,
                     _mapper.Map<List<TagSearchEntryRequest>>(tags)),
-                cancellationToken)).Value;
+                cancellationToken);
     }
 
     public Task RemoveFile(Guid fileId) => _roomClient.CollectionFiles.RemoveAsync(fileId);

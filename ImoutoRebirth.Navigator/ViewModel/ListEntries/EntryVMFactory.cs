@@ -3,7 +3,7 @@ using System.Runtime.InteropServices;
 using System.Text;
 using System.Windows;
 using Imouto;
-using ImoutoRebirth.Lilin.WebApi.Client;
+using ImoutoRebirth.LilinService.WebApi.Client;
 
 namespace ImoutoRebirth.Navigator.ViewModel.ListEntries;
 
@@ -12,7 +12,7 @@ internal static class EntryVMFactory
     public static INavigatorListEntry? CreateListEntry(
         string path,
         Size initPreviewSize,
-        IImoutoRebirthLilinWebApiClient lilinWebApiClient,
+        FilesClient filesClient,
         Guid? dbId = null)
     {
         // todo disk replacement
@@ -21,16 +21,16 @@ internal static class EntryVMFactory
         path = OverridePath(path);
 
         if (path.IsImage())
-            return new ImageEntryVM(path, lilinWebApiClient, initPreviewSize, dbId);
+            return new ImageEntryVM(path, filesClient, initPreviewSize, dbId);
 
         if (!FileExists(path))
             return null;
 
         if (path.IsVideo() || path.EndsWith(".m4v"))
-            return new VideoEntryVM(path, lilinWebApiClient, initPreviewSize, dbId);
+            return new VideoEntryVM(path, filesClient, initPreviewSize, dbId);
 
         if (path.EndsWith(".zip"))
-            return new UgoiraEntryVM(path, lilinWebApiClient, initPreviewSize, dbId);
+            return new UgoiraEntryVM(path, filesClient, initPreviewSize, dbId);
 
         return null;
     }

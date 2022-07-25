@@ -1,6 +1,7 @@
 using System.Windows;
 using System.Windows.Media.Imaging;
 using ImoutoRebirth.Lilin.WebApi.Client;
+using ImoutoRebirth.LilinService.WebApi.Client;
 using Microsoft.WindowsAPICodePack.Shell;
 
 namespace ImoutoRebirth.Navigator.ViewModel.ListEntries;
@@ -21,10 +22,10 @@ internal class VideoEntryVM: BaseEntryVM, INavigatorListEntry
 
     public VideoEntryVM(
         string path,
-        IImoutoRebirthLilinWebApiClient lilinWebApiClient,
+        FilesClient filesClient,
         Size initPreviewSize,
         Guid? dbId)
-        : base(dbId, lilinWebApiClient)
+        : base(dbId, filesClient)
     {
         Path = path;
         Type = ListEntryType.Video;

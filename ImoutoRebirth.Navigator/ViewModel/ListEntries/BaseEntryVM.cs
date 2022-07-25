@@ -1,4 +1,4 @@
-using ImoutoRebirth.Lilin.WebApi.Client;
+using ImoutoRebirth.LilinService.WebApi.Client;
 
 namespace ImoutoRebirth.Navigator.ViewModel.ListEntries;
 
@@ -7,16 +7,16 @@ internal abstract class BaseEntryVM : VMBase
     private static readonly SemaphoreSlim RatingLoaderLocker = new(1);
 
     private readonly Guid? _dbId;
-    private readonly IImoutoRebirthLilinWebApiClient _lilinWebApiClient;
+    private readonly FilesClient _filesClient;
 
     private bool _isFavorite;
     private int _rating;
     private bool _isLoaded = false;
 
-    protected BaseEntryVM(Guid? dbId, IImoutoRebirthLilinWebApiClient lilinWebApiClient)
+    protected BaseEntryVM(Guid? dbId, FilesClient filesClient)
     {
         _dbId = dbId;
-        _lilinWebApiClient = lilinWebApiClient;
+        _filesClient = filesClient;
     }
 
     protected async Task LoadRating()
@@ -30,7 +30,7 @@ internal abstract class BaseEntryVM : VMBase
             if (_isLoaded)
                 return;
 
-            var info = await _lilinWebApiClient.Files.GetFileInfoAsync(_dbId.Value);
+            var info = await _filesClient.GetFileInfoAsync(_dbId.Value);
 
             IsFavorite = info.Tags.FirstOrDefault(x => x.Tag.Name == "Favorite") != null;
             var rateValue = info.Tags.FirstOrDefault(x => x.Tag.Name == "Rate")?.Value;

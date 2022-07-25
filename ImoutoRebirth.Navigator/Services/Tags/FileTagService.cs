@@ -1,23 +1,22 @@
 ﻿using AutoMapper;
-using ImoutoRebirth.Lilin.WebApi.Client;
-using ImoutoRebirth.Lilin.WebApi.Client.Models;
+using ImoutoRebirth.LilinService.WebApi.Client;
 using ImoutoRebirth.Navigator.Services.Tags.Model;
 
 namespace ImoutoRebirth.Navigator.Services.Tags;
 
 internal class FileTagService : IFileTagService
 {
-    private readonly IImoutoRebirthLilinWebApiClient _lilinClient;
+    private readonly FilesClient _filesClient;
     private readonly ITagService _tagService;
     private readonly IMapper _mapper;
 
     public FileTagService(
-        IImoutoRebirthLilinWebApiClient lilinClient, 
         IMapper mapper, 
-        ITagService tagService)
+        ITagService tagService,
+        FilesClient filesClient)
     {
-        _lilinClient = lilinClient;
         _tagService = tagService;
+        _filesClient = filesClient;
         _mapper = mapper;
     }
 
@@ -25,13 +24,13 @@ internal class FileTagService : IFileTagService
     {
         var rateTag = await GetOrCreateTag("Rate", "LocalMeta", true);
 
-        await _lilinClient.Files.BindTagsToFilesAsync(
+        await _filesClient.BindTagsToFilesAsync(
             new BindTagsRequest(
                 new List<FileTagRequest>
                 {
-                    new FileTagRequest(rateTag.Id, fileId, MetadataSource.Manual, rate.Rating.ToString())
+                    new(fileId, FileTagRequestSource.Manual, rateTag.Id, rate.Rating.ToString())
                 },
-                SameTagHandleStrategy.ReplaceExistingValue));
+                BindTagsRequestSameTagHandleStrategy.ReplaceExistingValue));
     }
 
     public async Task SetFavorite(Guid fileId, bool value)
@@ -41,37 +40,41 @@ internal class FileTagService : IFileTagService
 
         if (value)
         {
-            await _lilinClient.Files.BindTagsToFilesAsync(
+            await _filesClient.BindTagsToFilesAsync(
                 new BindTagsRequest(
-                    new[] {new FileTagRequest(favTag.Id, fileId, MetadataSource.Manual)},
-                    SameTagHandleStrategy.ReplaceExistingValue));
+                    new List<FileTagRequest>
+                    {
+                        new(fileId, FileTagRequestSource.Manual, favTag.Id, default)
+                    },
+                    BindTagsRequestSameTagHandleStrategy.ReplaceExistingValue));
         }
         else
         {
-            await _lilinClient.Files.UnbindTagFromFileAsync(
-                new UnbindTagRequest(new UnbindTagRequestFileTag(favTag.Id, fileId, MetadataSource.Manual)));
+            await _filesClient.UnbindTagFromFileAsync(
+                new UnbindTagRequest(new FileTagRequest(fileId, FileTagRequestSource.Manual,
+                    favTag.Id, default)));
         }
     }
 
     public async Task BindTags(IReadOnlyCollection<FileTag> fileTags)
     {
-        var requests = _mapper.Map<IList<FileTagRequest>>(fileTags);
+        var requests = _mapper.Map<IReadOnlyCollection<FileTagRequest>>(fileTags);
 
-        await _lilinClient.Files.BindTagsToFilesAsync(
-            new BindTagsRequest(requests, SameTagHandleStrategy.AddNewFileTag));
+        await _filesClient.BindTagsToFilesAsync(
+            new BindTagsRequest(requests, BindTagsRequestSameTagHandleStrategy.AddNewFileTag));
     }
 
     public async Task UnbindTag(Guid fileId, Guid tagId, FileTagSource source)
     {
-        var metadataSource = _mapper.Map<MetadataSource>(source);
+        var metadataSource = _mapper.Map<FileTagRequestSource>(source);
 
-        await _lilinClient.Files.UnbindTagFromFileAsync(
-            new UnbindTagRequest(new UnbindTagRequestFileTag(tagId, fileId, metadataSource)));
+        await _filesClient.UnbindTagFromFileAsync(
+            new UnbindTagRequest(new FileTagRequest(fileId, FileTagRequestSource.Manual, tagId, default)));
     }
 
     public async Task<IReadOnlyCollection<FileTag>> GetFileTags(Guid fileId)
     {
-        var info = await _lilinClient.Files.GetFileInfoAsync(fileId);
+        var info = await _filesClient.GetFileInfoAsync(fileId);
 
         return _mapper.Map<IReadOnlyCollection<FileTag>>(info.Tags);
     }

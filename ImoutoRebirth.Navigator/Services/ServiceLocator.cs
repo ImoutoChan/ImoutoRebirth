@@ -28,13 +28,11 @@ public static class ServiceLocator
         sc.AddTransient<IFileLoadingService, FileLoadingService>();
         sc.AddTransient<IImoutoRebirthRoomWebApiClient>(x 
             => x.GetRequiredService<ImoutoRebirthRoomWebApiClient>());
-        sc.AddTransient<IImoutoRebirthLilinWebApiClient>(x 
-            => x.GetRequiredService<ImoutoRebirthLilinWebApiClient>());
 
         sc.AddRoomClient();
+        sc.AddLilinWebApiClients(Settings.Default.LilinHost);
 
-        sc.AddSingleton<ImoutoRebirthLilinWebApiClient>(x 
-            => new ImoutoRebirthLilinWebApiClient(new Uri(Settings.Default.LilinHost)));
+        sc.AddRoomClient();
 
         sc.AddAutoMapper(typeof(ServiceLocator));
 
@@ -52,5 +50,6 @@ public static class ServiceLocator
         return sc;
     }
 
-    public static T GetService<T>() => ServiceProvider.GetService<T>();
+    public static T GetService<T>() where T : notnull 
+        => ServiceProvider.GetRequiredService<T>();
 }
