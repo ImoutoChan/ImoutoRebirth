@@ -46,7 +46,7 @@ internal class FileLoadingService : IFileLoadingService
             searchTags,
             cancellationToken);
 
-        return found.Select(x => x.Path).Select(x => "Q" + x.Substring(1)).ToList();
+        return found.Select(x => x.Path).ToList();
     }
 
     private async Task<int> GetCount(
