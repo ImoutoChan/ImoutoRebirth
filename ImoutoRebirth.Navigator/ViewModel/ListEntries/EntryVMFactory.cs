@@ -20,7 +20,7 @@ internal static class EntryVMFactory
         
         path = OverridePath(path);
 
-        if (path.IsImage())
+        if (path.IsImage() || path.EndsWith(".webp") || path.EndsWith(".jfif"))
             return new ImageEntryVM(path, filesClient, initPreviewSize, dbId);
 
         if (!FileExists(path))

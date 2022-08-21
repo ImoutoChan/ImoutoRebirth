@@ -69,7 +69,7 @@ internal class ImageEntryVM : BaseEntryVM, INavigatorListEntry
 
     public async void Load()
     {
-        ImageEntry.DoLoadAsyns();
+        ImageEntry.DoLoadAsync();
         LoadRating();
     }
 

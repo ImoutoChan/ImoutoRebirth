@@ -19,6 +19,9 @@
   <ItemGroup>
     <None Remove="Resources\Entypo.ttf" />
     <None Remove="Resources\Icon\49a7b0a953e5106e5942169f3cb0c237.ico" />
+    <None Update="libwebp.dll">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
 
   <ItemGroup>
@@ -39,6 +42,7 @@
     <PackageReference Include="VideoLAN.LibVLC.Windows" Version="3.0.17.4" />
     <PackageReference Include="Vlc.DotNet.Wpf" Version="3.1.0" />
     <PackageReference Include="WpfAnimatedGif" Version="2.0.2" />
+    <PackageReference Include="Imazen.WebP" Version="10.0.1" />
   </ItemGroup>
 
   <ItemGroup>

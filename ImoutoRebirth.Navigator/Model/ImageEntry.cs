@@ -14,12 +14,10 @@ internal class ImageEntry
     private Size? _frameSize;
     private readonly string _path;
     private readonly FileInfo _imageFileInfo;
-    private BitmapSource _image;
+    private BitmapSource? _image;
     private Size _viewPort;
     private bool _isLoading; //TODO MAKE COMMON ENUM STATUS NOT FLAGS
     private bool _isLoaded;
-
-    #region Constructors
 
     public ImageEntry(string path, Size viewPort = new Size())
     {
@@ -32,10 +30,8 @@ internal class ImageEntry
         IsError = false;
     }
 
-    #endregion //Constructors
-
-    #region Properties
-
+    public bool IsWebp => this._path.EndsWith(".webp", StringComparison.OrdinalIgnoreCase);
+    
     public BitmapSource Image
     {
         get
@@ -52,65 +48,27 @@ internal class ImageEntry
 
     public string ErrorMessage { get; private set; }
 
-    public Size ImageSize
-    {
-        get
+    public Size ImageSize => new Size(Image.PixelWidth, Image.PixelHeight);
+
+    public Size ViewPort => _viewPort;
+
+    public ImageFormat ImageFormat =>
+        _imageFileInfo.Extension.ToLower() switch
         {
-            return new Size(Image.PixelWidth, Image.PixelHeight);
-        }
-    }
+            ".jpeg" => ImageFormat.JPEG,
+            ".jpg" => ImageFormat.JPG,
+            ".gif" => ImageFormat.GIF,
+            ".bmp" => ImageFormat.BMP,
+            ".tiff" => ImageFormat.TIFF,
+            ".png" => ImageFormat.PNG,
+            _ => ImageFormat.JPG
+        };
 
-    public Size ViewPort
-    {
-        get
-        {
-            return _viewPort;
-        }
-    }
+    public string Name => _imageFileInfo.Name;
 
-    public ImageFormat ImageFormat
-    {
-        get
-        {
-            switch (_imageFileInfo.Extension.ToLower())
-            {
-                case ".jpeg":
-                    return ImageFormat.JPEG;
-                case ".jpg":
-                    return ImageFormat.JPG;
-                case ".gif":
-                    return ImageFormat.GIF;
-                case ".bmp":
-                    return ImageFormat.BMP;
-                case ".tiff":
-                    return ImageFormat.TIFF;
-                case ".png":
-                    return ImageFormat.PNG;
-                default:
-                    return ImageFormat.JPG;
-            }
-        }
-    }
+    public string FullName => _imageFileInfo.FullName;
 
-    public string Name
-    {
-        get { return _imageFileInfo.Name; }
-    }
-
-    public string FullName
-    {
-        get
-        { return _imageFileInfo.FullName; }
-    }
-
-    public bool IsLoading
-    {
-        get { return _isLoading; }
-    }
-
-    #endregion //Properties
-
-    #region Public methods
+    public bool IsLoading => _isLoading;
 
     public void FreeMemory()
     {
@@ -135,17 +93,11 @@ internal class ImageEntry
         OnImageChanged();
     }
 
-    public void DoLoadAsyns()
+    public void DoLoadAsync()
     {
-        if (!_isLoaded)
-        {
+        if (!_isLoaded) 
             LoadAsync();
-        }
     }
-
-    #endregion //Public methods
-
-    #region Methods
 
     private async void LoadAsync()
     {
@@ -173,7 +125,7 @@ internal class ImageEntry
             {
                 if (_viewPort.Width != 0 && _viewPort.Height != 0)
                 {
-                    if (_frameSize == null)
+                    if (_frameSize == null && !IsWebp)
                     {
                         var decoder =
                             BitmapDecoder.Create(
@@ -183,6 +135,14 @@ internal class ImageEntry
                         var frame = decoder.Frames[0];
 
                         _frameSize = new Size(frame.PixelWidth, frame.PixelHeight);
+                    }
+                    else if (_frameSize == null)
+                    {
+                        var decoder = new Imazen.WebP.SimpleDecoder();
+                        var bytes = await File.ReadAllBytesAsync(_path);
+                        var bitmap = decoder.DecodeFromBytes(bytes, bytes.Length);
+
+                        _frameSize = new Size(bitmap.Width, bitmap.Height);
                     }
 
 
@@ -222,6 +182,18 @@ internal class ImageEntry
         return await Task.Run(
             () =>
             {
+                using var stream = new MemoryStream();
+                var useStream = false;
+                if (IsWebp)
+                {
+                    var decoder = new Imazen.WebP.SimpleDecoder();
+                    var bytes = File.ReadAllBytes(_path);
+                    var bitmap = decoder.DecodeFromBytes(bytes, bytes.Length);
+                    bitmap.Save(stream, System.Drawing.Imaging.ImageFormat.Png);
+                    stream.Seek(0, SeekOrigin.Begin);
+                    useStream = true;
+                }
+
                 var bi = new BitmapImage();
                 bi.BeginInit();
 
@@ -234,7 +206,12 @@ internal class ImageEntry
                 }
 
                 bi.CacheOption = BitmapCacheOption.OnLoad;
-                bi.UriSource = new Uri(_path);
+
+                if (useStream)
+                    bi.StreamSource = stream;
+                else
+                    bi.UriSource = new Uri(_path);
+
                 bi.EndInit();
                 bi.Freeze();
 
@@ -243,48 +220,23 @@ internal class ImageEntry
             cancellationToken);
     }
 
-    #endregion //Methods
-
-    #region Events
-
     public event EventHandler ImageChanged;
 
     private void OnImageChanged()
     {
-        if (ImageChanged != null)
-        {
-            ImageChanged(this, new EventArgs());
-        }
+        ImageChanged?.Invoke(this, EventArgs.Empty);
     }
-
-    #endregion //Events
-
-    #region Static methods
 
     private static Size ResizeImage(Size original, Size viewPort, ResizeType type)
     {
-        Size result;
-
-        switch (type)
+        return type switch
         {
-            case ResizeType.DownscaleToViewPort:
-                result = DownscaleToViewPort(original, viewPort);
-                break;
-            case ResizeType.DownscaleToViewPortWidth:
-                result = DownscaleToViewPortWidth(original, viewPort);
-                break;
-            case ResizeType.FitToViewPort:
-                result = FitToViewPort(original, viewPort);
-                break;
-            case ResizeType.FitToViewPortWidth:
-                result = FitToViewPortWidth(original, viewPort);
-                break;
-            default:
-                result = original;
-                break;
-        }
-
-        return result;
+            ResizeType.DownscaleToViewPort => DownscaleToViewPort(original, viewPort),
+            ResizeType.DownscaleToViewPortWidth => DownscaleToViewPortWidth(original, viewPort),
+            ResizeType.FitToViewPort => FitToViewPort(original, viewPort),
+            ResizeType.FitToViewPortWidth => FitToViewPortWidth(original, viewPort),
+            _ => original
+        };
     }
 
     /// <summary>
@@ -396,6 +348,4 @@ internal class ImageEntry
 
         return formats.Split('|').Any(item => file.EndsWith(item, true, ci));
     }
-
-    #endregion //Static methods
 }
