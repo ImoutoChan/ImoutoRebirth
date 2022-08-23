@@ -11,7 +11,7 @@
     <PackageReference Include="ImoutoRebirth.Common.Cqrs" Version="3.10.2" />
     <PackageReference Include="ImoutoRebirth.Common.MassTransit" Version="3.10.2" />
     <PackageReference Include="ImoutoRebirth.Common.Quartz" Version="3.10.2" />
-    <PackageReference Include="ImoutoRebirth.Meido.MessageContracts" Version="1.4.0" />
+    <PackageReference Include="ImoutoRebirth.Meido.MessageContracts" Version="1.5.1" />
     <PackageReference Include="MediatR" Version="10.0.1" />
     <PackageReference Include="MediatR.Extensions.Microsoft.DependencyInjection" Version="10.0.1" />
     <PackageReference Include="Microsoft.Extensions.Caching.Abstractions" Version="6.0.0" />
