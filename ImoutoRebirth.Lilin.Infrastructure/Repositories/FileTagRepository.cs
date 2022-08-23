@@ -120,17 +120,19 @@ public class FileTagRepository : IFileTagRepository
 
     public async Task<IReadOnlyCollection<Tag>> GetPopularUserTagIds(int requestLimit)
     {
-        var result = await _lilinDbContext.FileTags
+        var tags = _lilinDbContext.FileTags
             .Include(x => x.Tag)
             .ThenInclude(x => x!.Type)
-            .Where(x => x.Source == MetadataSource.Manual)
-            .GroupBy(x => new { x.TagId, x.Tag } )
-            .Select(x => new { Tag = x.Key, Count = x.Count() })
+            .Where(x => x.Source == MetadataSource.Manual && x.Tag!.Type!.Name == "General")
+            .GroupBy(x => new { x.TagId } )
+            .Select(x => new { x.Key.TagId, Count = x.Count() })
             .OrderByDescending(x => x.Count)
             .Take(requestLimit)
-            .ToArrayAsync();
+            .Select(x => x.TagId);
 
-        return result.Select(x => x.Tag.Tag!.ToModel()).ToArray();
+        var result = await _lilinDbContext.Tags.Where(x => tags.Contains(x.Id)).ToListAsync();
+
+        return result.Select(x => x.ToModel()).ToArray();
     }
 
     public async Task Add(FileTag fileTag)
