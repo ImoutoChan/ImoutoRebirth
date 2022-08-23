@@ -130,7 +130,9 @@ public class FileTagRepository : IFileTagRepository
             .Take(requestLimit)
             .Select(x => x.TagId);
 
-        var result = await _lilinDbContext.Tags.Where(x => tags.Contains(x.Id)).ToListAsync();
+        var result = await _lilinDbContext.Tags
+            .Include(x => x.Type)
+            .Where(x => tags.Contains(x.Id)).ToListAsync();
 
         return result.Select(x => x.ToModel()).ToArray();
     }
