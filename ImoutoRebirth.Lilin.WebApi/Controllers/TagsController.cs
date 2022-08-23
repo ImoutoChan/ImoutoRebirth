@@ -31,6 +31,17 @@ public class TagsController : ControllerBase
         var tags = await _mediator.Send(new TagsSearchQuery(request.SearchPattern, request.Count));
         return _mapper.Map<TagResponse[]>(tags);
     }
+
+    /// <summary>
+    ///     Search for popular user tags.
+    /// </summary>
+    /// <returns>The collection of found tags.</returns>
+    [HttpGet("popular")]
+    public async Task<ActionResult<TagResponse[]>> GetPopularUserTags(int limit)
+    {
+        var tags = await _mediator.Send(new PopularUserTagsQuery(limit));
+        return _mapper.Map<TagResponse[]>(tags);
+    }
         
     /// <summary>
     ///     Create a tag.

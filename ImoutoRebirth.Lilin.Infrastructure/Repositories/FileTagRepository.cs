@@ -118,6 +118,21 @@ public class FileTagRepository : IFileTagRepository
         return results.Select(x => x.ToModel()).ToArray();
     }
 
+    public async Task<IReadOnlyCollection<Tag>> GetPopularUserTagIds(int requestLimit)
+    {
+        var result = await _lilinDbContext.FileTags
+            .Include(x => x.Tag)
+            .ThenInclude(x => x!.Type)
+            .Where(x => x.Source == MetadataSource.Manual)
+            .GroupBy(x => new { x.TagId, x.Tag } )
+            .Select(x => new { Tag = x.Key, Count = x.Count() })
+            .OrderByDescending(x => x.Count)
+            .Take(requestLimit)
+            .ToArrayAsync();
+
+        return result.Select(x => x.Tag.Tag!.ToModel()).ToArray();
+    }
+
     public async Task Add(FileTag fileTag)
     {
         var entity = fileTag.ToEntity();

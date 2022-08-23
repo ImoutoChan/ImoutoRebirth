@@ -15,6 +15,8 @@ public interface IFileTagRepository
     Task<int> SearchFilesCount(IReadOnlyCollection<TagSearchEntry> tagSearchEntries);
 
     Task<IReadOnlyCollection<FileTag>> GetForFile(Guid fileId);
+
+    Task<IReadOnlyCollection<Tag>> GetPopularUserTagIds(int requestLimit);
         
     Task Add(FileTag fileTag);
         
