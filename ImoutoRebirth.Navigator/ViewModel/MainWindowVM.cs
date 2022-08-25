@@ -6,7 +6,6 @@ using System.IO;
 using System.Text;
 using System.Windows;
 using System.Windows.Input;
-using System.Windows.Shapes;
 using System.Windows.Threading;
 using ImoutoRebirth.Navigator.Commands;
 using ImoutoRebirth.Navigator.Model;
@@ -15,7 +14,6 @@ using ImoutoRebirth.Navigator.Services.ImoutoViewer;
 using ImoutoRebirth.Navigator.Services.Tags;
 using ImoutoRebirth.Navigator.ViewModel.ListEntries;
 using MahApps.Metro.Controls.Dialogs;
-using Path = System.Windows.Shapes.Path;
 
 namespace ImoutoRebirth.Navigator.ViewModel;
 
@@ -250,17 +248,17 @@ class MainWindowVM : VMBase
 
         CopyCommand = new RelayCommand(CopySelected);
 
-        OpenFileCommand = new RelayCommand<INavigatorListEntry>(async x => await OpenFile(x));
+        OpenFileCommand = new RelayCommand<INavigatorListEntry>(x => OpenFile(x));
     }
 
-    private async Task OpenFile(INavigatorListEntry navigatorListEntry)
+    private void OpenFile(INavigatorListEntry? navigatorListEntry)
     {
         switch (navigatorListEntry)
         {
             case ImageEntryVM image:
                 _imoutoViewerService.OpenFile(
                     image.Path,
-                    CollectionManager.SelectedCollection.Id,
+                    TagSearchVM.SelectedCollection.Value!.Value,
                     TagSearchVM.SelectedBindedTags.Select(x => x.Model));
                 break;
             case VideoEntryVM video:
@@ -290,7 +288,7 @@ class MainWindowVM : VMBase
                 break;
             }
             default:
-                Debug.WriteLine("Can't open unsupported entry type" + navigatorListEntry.GetType().FullName);
+                Debug.WriteLine("Can't open unsupported entry type" + navigatorListEntry?.GetType().FullName);
                 break;
         }
     }
