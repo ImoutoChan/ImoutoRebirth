@@ -6,7 +6,7 @@ namespace ImoutoRebirth.Navigator.Services.ImoutoViewer;
 
 internal class ImoutoViewerService : IImoutoViewerService
 {
-    public void OpenFile(string path, Guid collectionId, IEnumerable<SearchTag> searchTags)
+    public void OpenFile(string path, Guid? collectionId, IEnumerable<SearchTag> searchTags)
     {
         var args = new ImoutoViewerArgs(
             collectionId, 

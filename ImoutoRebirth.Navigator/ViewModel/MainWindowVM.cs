@@ -258,7 +258,7 @@ class MainWindowVM : VMBase
             case ImageEntryVM image:
                 _imoutoViewerService.OpenFile(
                     image.Path,
-                    TagSearchVM.SelectedCollection.Value!.Value,
+                    TagSearchVM.SelectedCollection.Value,
                     TagSearchVM.SelectedBindedTags.Select(x => x.Model));
                 break;
             case VideoEntryVM video:
