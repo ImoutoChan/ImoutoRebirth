@@ -9,4 +9,6 @@ internal interface ITagService
     Task CreateTag(Guid typeId, string name, bool hasValue, IReadOnlyCollection<string> synonyms);
 
     Task<IReadOnlyCollection<Tag>> SearchTags(string name, int count);
+    
+    Task<IReadOnlyCollection<Tag>> GetPopularUserTags(int count);
 }

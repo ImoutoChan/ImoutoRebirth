@@ -253,7 +253,9 @@ class TagSearchVM : VMBase
             CurrentTagsSources.Add(new TagSourceVM
             {
                 Title = "User",
-                Tags = new ObservableCollection<BindedTagVM>(userTags)
+                Tags = new ObservableCollection<BindedTagVM>(userTags
+                    .OrderBy(x => x.TypePriority)
+                    .ThenBy(x => x.Tag.Title))
             });
         }
 

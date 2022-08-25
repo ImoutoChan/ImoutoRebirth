@@ -16,6 +16,9 @@
             <!-- 0 --><ColumnDefinition Width="200" />
             <!-- 1 --><ColumnDefinition Width="*"
                                         MinWidth="15" />
+            <!-- 2 --><ColumnDefinition Width="200" />
+            <!-- 2 --><ColumnDefinition Width="*"
+                                        MinWidth="15" />
             <!-- 2 --><ColumnDefinition Width="Auto" />
             <!-- 3 --><ColumnDefinition Width="15" />
             <!-- 4 --><ColumnDefinition Width="200" />
@@ -94,7 +97,65 @@
             </ScrollViewer>
         </Border>
 
-        <TextBlock Grid.Column="2"
+        <Border Grid.Column="2"
+                Grid.Row="1"
+                BorderThickness="1"
+                BorderBrush="{DynamicResource MahApps.Brushes.ThemeForeground}"
+                Visibility="{Binding UsersTopTags.Count, Converter={StaticResource ConditionVisibilityConverter}, ConverterParameter=!0}">
+            <ScrollViewer HorizontalScrollBarVisibility="Disabled"
+                          VerticalScrollBarVisibility="Auto">
+                <ItemsControl ItemsSource="{Binding UsersTopTags}">
+                    <ItemsControl.ItemContainerStyle>
+                        <Style TargetType="ContentPresenter">
+                            <Setter Property="HorizontalAlignment"
+                                    Value="Stretch" />
+                        </Style>
+                    </ItemsControl.ItemContainerStyle>
+
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <Label Name="Label"
+                                   HorizontalContentAlignment="Stretch"
+                                   Padding="10,4,5,2">
+                                <Label.Style>
+                                    <Style TargetType="Label">
+                                        <Setter Property="Background"
+                                                Value="Transparent" />
+                                        <Style.Triggers>
+                                            <Trigger Property="IsMouseOver"
+                                                     Value="True">
+                                                <Setter Property="Background"
+                                                        Value="{StaticResource MahApps.Brushes.Accent3}" />
+                                            </Trigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </Label.Style>
+
+                                <Label.InputBindings>
+                                    <MouseBinding Gesture="LeftClick"
+                                                  Command="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}}, Path=DataContext.AddTagsCommand}"
+                                                  CommandParameter="{Binding}" />
+                                </Label.InputBindings>
+
+                                <Label.Content>
+                                    <TextBlock Text="{Binding Tag.Title}"
+                                               TextAlignment="Left"
+                                               Foreground="{Binding Tag.Type.Color, Converter={StaticResource IntToColorConverter}}"
+                                               FontFamily="Comic Sans MS"
+                                               FontSize="13"
+                                               FontWeight="Bold"
+                                               VerticalAlignment="Center"
+                                               ToolTip="{Binding Hint}">
+                                    </TextBlock>
+                                </Label.Content>
+                            </Label>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+            </ScrollViewer>
+        </Border>
+
+        <TextBlock Grid.Column="4"
                    Grid.Row="0"
                    Text="Creating tag"
                    Margin="0,0,0,5"
@@ -102,21 +163,21 @@
                    FontSize="16"
                    Visibility="{Binding CreateTagVM, Converter={StaticResource ConditionVisibilityConverter}, ConverterParameter=!null}" />
 
-        <Border Grid.Column="2"
+        <Border Grid.Column="4"
                 Grid.Row="1"
                 Grid.RowSpan="2"
                 Visibility="{Binding CreateTagVM, Converter={StaticResource ConditionVisibilityConverter}, ConverterParameter=!null}">
             <flyouts:CreateTagView DataContext="{Binding CreateTagVM}" />
         </Border>
 
-        <TextBox Grid.Column="4"
+        <TextBox Grid.Column="6"
                  Grid.Row="0"
                  Text="{Binding SearchText, UpdateSourceTrigger=PropertyChanged}"
                  controls:TextBoxHelper.Watermark="Search tag..."
                  controls:TextBoxHelper.UseFloatingWatermark="True"
                  Margin="0,0,0,5" />
 
-        <Border Grid.Column="4"
+        <Border Grid.Column="6"
                 Grid.Row="1"
                 BorderThickness="1"
                 BorderBrush="{DynamicResource MahApps.Brushes.ThemeForeground}">
@@ -176,7 +237,7 @@
             </ScrollViewer>
         </Border>
 
-        <Grid Grid.Column="4"
+        <Grid Grid.Column="6"
               Grid.Row="2">
             <Button Content="Create"
                     HorizontalAlignment="Left"
@@ -185,13 +246,13 @@
                     Command="{Binding CreateTagCommand}" />
         </Grid>
 
-        <TextBlock Grid.Column="6"
+        <TextBlock Grid.Column="8"
                    Grid.Row="0"
                    Text="Selected tags"
                    Margin="0,0,0,5"
                    FontSize="16" />
 
-        <Border Grid.Column="6"
+        <Border Grid.Column="8"
                 Grid.Row="1"
                 BorderThickness="1"
                 BorderBrush="{DynamicResource MahApps.Brushes.ThemeForeground}">
@@ -263,7 +324,7 @@
             </ScrollViewer>
         </Border>
 
-        <Grid Grid.Column="6"
+        <Grid Grid.Column="8"
               Grid.Row="2"
               Height="25"
               Margin="0,5,0,0">
@@ -290,7 +351,7 @@
                     Command="{Binding SaveCommand}" />
         </Grid>
 
-        <TextBlock Grid.Column="8"
+        <TextBlock Grid.Column="10"
                    Grid.Row="0"
                    FontSize="16"
                    TextTrimming="CharacterEllipsis"
@@ -302,7 +363,7 @@
                  Foreground="{Binding Path=TagInfoContext.TypeBrush, Mode=OneWay}" />
         </TextBlock>
 
-        <Grid Grid.Column="8"
+        <Grid Grid.Column="10"
               Grid.Row="1"
               Width="200"
               HorizontalAlignment="Stretch"

@@ -2,8 +2,11 @@
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.Diagnostics;
+using System.IO;
+using System.Text;
 using System.Windows;
 using System.Windows.Input;
+using System.Windows.Shapes;
 using System.Windows.Threading;
 using ImoutoRebirth.Navigator.Commands;
 using ImoutoRebirth.Navigator.Model;
@@ -12,6 +15,7 @@ using ImoutoRebirth.Navigator.Services.ImoutoViewer;
 using ImoutoRebirth.Navigator.Services.Tags;
 using ImoutoRebirth.Navigator.ViewModel.ListEntries;
 using MahApps.Metro.Controls.Dialogs;
+using Path = System.Windows.Shapes.Path;
 
 namespace ImoutoRebirth.Navigator.ViewModel;
 
@@ -246,10 +250,10 @@ class MainWindowVM : VMBase
 
         CopyCommand = new RelayCommand(CopySelected);
 
-        OpenFileCommand = new RelayCommand<INavigatorListEntry>(x => OpenFile(x));
+        OpenFileCommand = new RelayCommand<INavigatorListEntry>(async x => await OpenFile(x));
     }
 
-    private void OpenFile(INavigatorListEntry navigatorListEntry)
+    private async Task OpenFile(INavigatorListEntry navigatorListEntry)
     {
         switch (navigatorListEntry)
         {
@@ -262,21 +266,54 @@ class MainWindowVM : VMBase
             case VideoEntryVM video:
             {
                 video.Pause();
-                var process = new Process
-                {
-                    StartInfo = new ProcessStartInfo(video.Path)
-                    {
-                        UseShellExecute = true
-                    }
-                };
 
-                process.Start();
+                var mpcHcExe = new FileInfo(@"C:\Program Files\MPC-HC\mpc-hc64.exe");
+                if (mpcHcExe.Exists)
+                {
+                    var videos = NavigatorList.Where(x => x.Type == ListEntryType.Video).Select(x => x.Path).ToList();
+                    var pathToPlaylist = CreatePlayList(videos, video.Path);
+
+                    new Process
+                    {
+                        StartInfo = new ProcessStartInfo(mpcHcExe.FullName, @$"""{pathToPlaylist}"" /play /new")
+                    }.Start();
+                }
+                else
+                {
+                    var process = new Process
+                    {
+                        StartInfo = new ProcessStartInfo(video.Path) { UseShellExecute = true }
+                    };
+
+                    process.Start();
+                }
                 break;
             }
             default:
                 Debug.WriteLine("Can't open unsupported entry type" + navigatorListEntry.GetType().FullName);
                 break;
         }
+    }
+
+    private static string CreatePlayList(IList<string> videos, string videoPath)
+    {
+        var startIndex = videos.IndexOf(videoPath);
+
+        var playlist = new StringBuilder();
+        playlist.AppendLine("MPCPLAYLIST");
+        for (int i = 0; i < videos.Count; i++)
+        {
+            var currentVideoIndex = (i + startIndex) % videos.Count;
+            var currentVideoPath = videos[currentVideoIndex];
+            playlist.AppendLine($"{i + 1},type,0");
+            playlist.AppendLine($"{i + 1},filename,{currentVideoPath}");
+        }
+
+        playlist.AppendLine();
+
+        var tempPath = System.IO.Path.GetTempFileName() + ".mpcpl";
+        File.WriteAllText(tempPath, playlist.ToString());
+        return tempPath;
     }
 
     private void ShuffleNavigatorList()

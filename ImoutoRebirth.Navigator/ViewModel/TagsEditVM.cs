@@ -47,6 +47,7 @@ class TagsEditVM : VMBase, IDropable
 
         _fileTagService = ServiceLocator.GetService<IFileTagService>();
         _tagService = ServiceLocator.GetService<ITagService>();
+        UpdateUsersTopTags();
     }
 
     #endregion Constructor
@@ -60,6 +61,8 @@ class TagsEditVM : VMBase, IDropable
     public ObservableCollection<SearchTagVM> SelectedTags { get; } = new ObservableCollection<SearchTagVM>();
 
     public ObservableCollection<SearchTagVM> RecentlyTags { get; } = new ObservableCollection<SearchTagVM>();
+    
+    public ObservableCollection<SearchTagVM> UsersTopTags { get; } = new ObservableCollection<SearchTagVM>();
 
     #endregion Collections
 
@@ -291,6 +294,15 @@ class TagsEditVM : VMBase, IDropable
             }
 
         }
+    }
+
+    private async Task UpdateUsersTopTags()
+    {
+        var popular = await _tagService.GetPopularUserTags(20);
+        
+        UsersTopTags.Clear();
+        foreach (var tag in popular) 
+            UsersTopTags.Add(new SearchTagVM(new SearchTag(tag, null)));
     }
 
     public ICommand SetTagInfoContextCommand => _setTagInfoContextCommand ??= new RelayCommand(SetTagInfoContext);
