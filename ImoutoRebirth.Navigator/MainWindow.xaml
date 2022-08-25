@@ -29,7 +29,7 @@
                           Title="{Binding Title}"
                           WindowState="Maximized"
                           WindowButtonCommandsOverlayBehavior="Never"
-                          ResizeBorderThickness="0">
+                          ResizeBorderThickness="5">
 
     <metroControl:MetroWindow.Resources>
         <converters:ConditionVisibilityConverter x:Key="ConditionVisibilityConverter" />
