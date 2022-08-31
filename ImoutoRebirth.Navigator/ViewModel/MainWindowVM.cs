@@ -31,6 +31,7 @@ class MainWindowVM : VMBase
     private readonly IFileLoadingService _fileLoadingService;
     private readonly IImoutoViewerService _imoutoViewerService;
     private readonly DispatcherTimer _appendNewContentTimer = new() { Interval = TimeSpan.FromSeconds(5) };
+    private int _volume = 100;
 
     #endregion Fields
 
@@ -131,6 +132,12 @@ class MainWindowVM : VMBase
     #endregion Constructors
 
     #region Properties
+
+    public int Volume
+    {
+        get => _volume;
+        set => OnPropertyChanged(ref _volume, value, () => Volume);
+    }
 
     public Size SlotSize => new(_previewSize + 30, _previewSize + 30);
 

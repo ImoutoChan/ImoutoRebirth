@@ -155,6 +155,30 @@ public partial class PlayerControl
         }
     }
 
+    public int Volume
+    {
+        get => (int) GetValue(VolumeProperty);
+        set => SetValue(VolumeProperty, value);
+    }
+
+    public static readonly DependencyProperty VolumeProperty 
+        = DependencyProperty.Register(
+            "Volume", 
+            typeof (int), 
+            typeof (PlayerControl), 
+            new UIPropertyMetadata(0, OnVolumeChanged));
+
+    private static void OnVolumeChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+    {
+        var volume = (int) e.NewValue;
+        var control = (PlayerControl) d;
+
+        var provider = control._control.SourceProvider;
+
+        if (provider != null)
+            provider.MediaPlayer.Audio.Volume = volume;
+    }
+
     private void PlayButton_OnClick(object sender, RoutedEventArgs e)
     {
         IsPlayed = !IsPlayed;
