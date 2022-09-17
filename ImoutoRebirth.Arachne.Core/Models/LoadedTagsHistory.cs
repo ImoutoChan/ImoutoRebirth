@@ -2,17 +2,17 @@
 
 public class LoadedTagsHistory
 {
-    public LoadedTagsHistory(int[] changedPostIds, int lastHistoryId)
+    public LoadedTagsHistory(IReadOnlyCollection<int> changedPostIds, int lastHistoryId)
     {
         ChangedPostIds = changedPostIds;
         LastHistoryId = lastHistoryId;
     }
 
-    public int[] ChangedPostIds { get; }
+    public IReadOnlyCollection<int> ChangedPostIds { get; }
 
     public int LastHistoryId { get; }
 
-    public void Deconstruct(out int[] changedPostIds, out int lastHistoryId)
+    public void Deconstruct(out IReadOnlyCollection<int> changedPostIds, out int lastHistoryId)
     {
         changedPostIds = ChangedPostIds;
         lastHistoryId = LastHistoryId;

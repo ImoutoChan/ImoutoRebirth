@@ -56,21 +56,27 @@ internal class BooruSearchEngine : ISearchEngine
             {
                 var lastHistoryId = first.UpdateId;
                 var postIds = history.Select(x => x.PostId).ToArray();
+                var parentPostIds = history
+                    .Where(x => x.ParentChanged && x.ParentId != null)
+                    .Select(x => x.ParentId!.Value)
+                    .ToArray();
+
+                var changedPostIds = postIds.Union(parentPostIds).ToList();
 
                 _logger.LogInformation(
-                    "Requested tags history loaded with {PostTagUpdatesCount} for {SearchEngine}.",
+                    "Requested tags history loaded with {PostTagUpdatesCount} for {SearchEngine}",
                     history.Count,
                     SearchEngineType);
 
-                return new LoadedTagsHistory(postIds, lastHistoryId);
+                return new LoadedTagsHistory(changedPostIds, lastHistoryId);
             }
                 
-            _logger.LogWarning("Requested tags history is empty.");
+            _logger.LogWarning("Requested tags history is empty");
             return new LoadedTagsHistory(Array.Empty<int>(), historyId);
         }
         catch (Exception e)
         {
-            _logger.LogError(e, "Exception occured while loading tags history update.");
+            _logger.LogError(e, "Exception occured while loading tags history update");
             throw;
         }
     }
@@ -88,19 +94,19 @@ internal class BooruSearchEngine : ISearchEngine
                 var postIds = history.Select(x => x.PostId).ToArray();
 
                 _logger.LogInformation(
-                    "Requested notes history loaded with {PostTagUpdatesCount} for {SearchEngine}.",
+                    "Requested notes history loaded with {PostTagUpdatesCount} for {SearchEngine}",
                     history.Count,
                     SearchEngineType);
 
                 return new LoadedNotesHistory(postIds, lastDate);
             }
 
-            _logger.LogWarning("Requested notes history is empty.");
+            _logger.LogWarning("Requested notes history is empty");
             return new LoadedNotesHistory(Array.Empty<int>(), lastProcessedNoteUpdateAt);
         }
         catch (Exception e)
         {
-            _logger.LogError(e, "Exception occured while loading notes history update.");
+            _logger.LogError(e, "Exception occured while loading notes history update");
             throw;
         }
     }

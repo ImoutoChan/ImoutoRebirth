@@ -36,7 +36,7 @@ internal class LoadTagHistoryCommandConsumer : IConsumer<ILoadTagHistoryCommand>
         {
             _logger.LogWarning(
                 "Tag history requested from history id {HistoryId} in {SearchEngine}, " 
-                + "but last request hasn't been completed yet.",
+                + "but last request hasn't been completed yet",
                 lastProcessedTagHistoryId,
                 searchEngineType);
             return;
