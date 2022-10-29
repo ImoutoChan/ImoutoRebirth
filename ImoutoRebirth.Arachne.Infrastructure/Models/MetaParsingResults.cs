@@ -1,12 +1,15 @@
-﻿using Imouto.BooruParser.Model.Danbooru.Json;
-using ImoutoRebirth.Arachne.Core.Models;
+﻿using ImoutoRebirth.Arachne.Core.Models;
 using Newtonsoft.Json;
 
 namespace ImoutoRebirth.Arachne.Infrastructure.Models;
 
+public record FrameData(int Delay, string File);
+
+public record UgoiraFrameData(string ContentType, IReadOnlyCollection<FrameData> Data);
+
 internal class MetaParsingResults
 {
-    public string Source { get; }
+    public string? Source { get; }
 
     public string BooruPostId { get; }
         
@@ -36,10 +39,10 @@ internal class MetaParsingResults
 
     public IReadOnlyCollection<Note> Notes { get; }
 
-    public UgoiraFrameData UgoiraFrameData { get; }
+    public UgoiraFrameData? UgoiraFrameData { get; }
 
     public MetaParsingResults(
-        string source,
+        string? source,
         string booruPostId,
         string booruLastUpdate,
         string md5,
@@ -54,7 +57,7 @@ internal class MetaParsingResults
         IReadOnlyCollection<string> pools,
         IReadOnlyCollection<MetaParsingTagResults> tags,
         IReadOnlyCollection<Note> notes,
-        UgoiraFrameData ugoiraFrameData)
+        UgoiraFrameData? ugoiraFrameData)
     {
         Source = source;
         BooruPostId = booruPostId;
@@ -83,7 +86,7 @@ internal class MetaParsingResults
         {
             var tag = propertyInfo.Name;
 
-            if (tag == nameof(Tags) || tag == nameof(Notes))
+            if (tag is nameof(Tags) or nameof(Notes))
                 continue;
 
             switch (propertyInfo.GetValue(this))

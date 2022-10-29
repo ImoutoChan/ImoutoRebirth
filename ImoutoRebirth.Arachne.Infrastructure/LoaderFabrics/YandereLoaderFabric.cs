@@ -1,17 +1,21 @@
-﻿using Imouto.BooruParser.Loaders;
-using Imouto.BooruParser.Model.Danbooru;
+﻿using Flurl.Http.Configuration;
+using Imouto.BooruParser;
+using Imouto.BooruParser.Implementations.Yandere;
 using ImoutoRebirth.Arachne.Core.Models;
 using ImoutoRebirth.Arachne.Infrastructure.Abstract;
+using Microsoft.Extensions.Options;
 
 namespace ImoutoRebirth.Arachne.Infrastructure.LoaderFabrics;
 
 internal class YandereLoaderFabric : IBooruLoaderFabric
 {
-    private readonly HttpClient _httpClient;
+    private readonly IFlurlClientFactory _flurlClientFactory;
 
     public SearchEngineType ForType => SearchEngineType.Yandere;
 
-    public YandereLoaderFabric(HttpClient httpClient) => _httpClient = httpClient;
+    public YandereLoaderFabric(IFlurlClientFactory flurlClientFactory) => _flurlClientFactory = flurlClientFactory;
 
-    public IBooruAsyncLoader Create() => new ExtendedYandereLoader(new YandereLoader(_httpClient));
+    public IBooruApiLoader Create() => new YandereApiLoader(
+        _flurlClientFactory,
+        Options.Create(new YandereSettings { PauseBetweenRequestsInMs = 1 }));
 }

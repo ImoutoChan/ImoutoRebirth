@@ -10,13 +10,13 @@ namespace ImoutoRebirth.Arachne.Service.SearchEngineHistory;
 
 internal class LoadNoteHistoryCommandConsumer : IConsumer<ILoadNoteHistoryCommand>
 {
-    private readonly ILogger<LoadTagHistoryCommandConsumer> _logger;
+    private readonly ILogger<LoadNoteHistoryCommandConsumer> _logger;
     private readonly IArachneSearchService _arachneSearchService;
     private readonly SearchEngineHistoryAccessor _searchEngineHistoryAccessor;
     private readonly IBus _bus;
 
     public LoadNoteHistoryCommandConsumer(
-        ILogger<LoadTagHistoryCommandConsumer> logger,
+        ILogger<LoadNoteHistoryCommandConsumer> logger,
         IArachneSearchService arachneSearchService,
         NotesSearchEngineHistoryAccessor searchEngineHistoryAccessor,
         IBus bus)

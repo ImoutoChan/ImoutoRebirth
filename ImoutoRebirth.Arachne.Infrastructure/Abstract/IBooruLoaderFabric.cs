@@ -1,4 +1,4 @@
-﻿using Imouto.BooruParser.Loaders;
+﻿using Imouto.BooruParser;
 using ImoutoRebirth.Arachne.Core.Models;
 
 namespace ImoutoRebirth.Arachne.Infrastructure.Abstract;
@@ -7,5 +7,5 @@ internal interface IBooruLoaderFabric
 {
     SearchEngineType ForType { get; }
 
-    IBooruAsyncLoader Create();
+    IBooruApiLoader Create();
 }

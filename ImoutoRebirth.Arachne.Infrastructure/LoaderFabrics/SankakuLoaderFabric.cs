@@ -1,27 +1,36 @@
-﻿using Imouto.BooruParser.Loaders;
+﻿using Flurl.Http.Configuration;
+using Imouto.BooruParser;
+using Imouto.BooruParser.Implementations.Sankaku;
 using ImoutoRebirth.Arachne.Core.Models;
 using ImoutoRebirth.Arachne.Infrastructure.Abstract;
-using ImoutoRebirth.Arachne.Infrastructure.Models.Settings;
+using Microsoft.Extensions.Options;
+using SankakuSettings = ImoutoRebirth.Arachne.Infrastructure.Models.Settings.SankakuSettings;
 
 namespace ImoutoRebirth.Arachne.Infrastructure.LoaderFabrics;
 
 internal class SankakuLoaderFabric : IBooruLoaderFabric
 {
     private readonly SankakuSettings _settings;
-    private readonly HttpClient      _httpClient;
+    private readonly ISankakuAuthManager _sankakuAuthManager;
+    private readonly IFlurlClientFactory _flurlClientFactory;
 
     public SearchEngineType ForType => SearchEngineType.Sankaku;
 
-    public SankakuLoaderFabric(HttpClient httpClient, SankakuSettings settings)
+    public SankakuLoaderFabric(
+        SankakuSettings settings,
+        ISankakuAuthManager sankakuAuthManager,
+        IFlurlClientFactory flurlClientFactory)
     {
-        _httpClient = httpClient;
         _settings = settings;
+        _sankakuAuthManager = sankakuAuthManager;
+        _flurlClientFactory = flurlClientFactory;
     }
-
-    public IBooruAsyncLoader Create() 
-        => new SankakuLoader(
-            _settings.Login, 
-            _settings.PassHash, 
-            _settings.Delay, 
-            _httpClient);
+    
+    public IBooruApiLoader Create() => new SankakuApiLoader(
+        _flurlClientFactory,
+        Options.Create(new Imouto.BooruParser.Implementations.Sankaku.SankakuSettings()
+        {
+            PauseBetweenRequestsInMs = _settings.Delay
+        }),
+        _sankakuAuthManager);
 }

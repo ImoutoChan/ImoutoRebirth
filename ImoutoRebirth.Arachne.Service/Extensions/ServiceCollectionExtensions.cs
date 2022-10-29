@@ -31,8 +31,7 @@ public static class ServiceCollectionExtensions
     public static ITrueMassTransitConfigurator AddArachneServicesForRabbit(
         this ITrueMassTransitConfigurator builder)
         => builder
-            .AddConsumer<EverywhereSearchMetadataCommandConsumer, IEverywhereSearchMetadataCommand>(
-                ReceiverApp.Name)
+            .AddConsumer<EverywhereSearchMetadataCommandConsumer, IEverywhereSearchMetadataCommand>(ReceiverApp.Name)
             .AddConsumer<YandereSearchMetadataCommandConsumer, IYandereSearchMetadataCommand>(ReceiverApp.Name)
             .AddConsumer<DanbooruSearchMetadataCommandConsumer, IDanbooruSearchMetadataCommand>(ReceiverApp.Name)
             .AddConsumer<SankakuSearchMetadataCommandConsumer, ISankakuSearchMetadataCommand>(ReceiverApp.Name)

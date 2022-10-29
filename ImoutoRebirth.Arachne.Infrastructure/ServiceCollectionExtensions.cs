@@ -1,4 +1,5 @@
 ﻿using AspNetCoreInjection.TypedFactories;
+using Imouto.BooruParser;
 using ImoutoRebirth.Arachne.Core.InfrastructureContracts;
 using ImoutoRebirth.Arachne.Infrastructure.Abstract;
 using ImoutoRebirth.Arachne.Infrastructure.LoaderFabrics;
@@ -26,12 +27,9 @@ public static class ServiceCollectionExtensions
             = HttpPolicyExtensions.HandleTransientHttpError()
                 .WaitAndRetryAsync(2, i => TimeSpan.FromMilliseconds(100 * Math.Pow(10, i)));
 
-        services.AddHttpClient<YandereLoaderFabric>()
-            .AddPolicyHandler(policy);
-        services.AddHttpClient<DanbooruLoaderFabric>()
-            .AddPolicyHandler(policy);
-        services.AddHttpClient<SankakuLoaderFabric>()
-            .AddPolicyHandler(policy);
+        services.AddTransient<YandereLoaderFabric>();
+        services.AddTransient<DanbooruLoaderFabric>();
+        services.AddTransient<SankakuLoaderFabric>();
 
         services.AddTransient<IBooruLoaderFabric>(provider => provider.GetRequiredService<YandereLoaderFabric>());
         services.AddTransient<IBooruLoaderFabric>(provider => provider.GetRequiredService<DanbooruLoaderFabric>());
@@ -42,6 +40,9 @@ public static class ServiceCollectionExtensions
         services.AddTransient<SankakuSettings>(x => sankakuSettings);
 
         services.AddTransient<IBooruPostConverter, BooruPostConverter>();
+
+        services.AddMemoryCache();
+        services.AddBooruParsers();
 
         return services;
     }

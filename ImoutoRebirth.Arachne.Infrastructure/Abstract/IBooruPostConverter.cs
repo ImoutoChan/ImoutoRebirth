@@ -1,5 +1,5 @@
 ﻿using ImoutoRebirth.Arachne.Core.Models;
-using ParserPost = Imouto.BooruParser.Model.Base.Post;
+using ParserPost = Imouto.BooruParser.Post;
 using SearchResult = ImoutoRebirth.Arachne.Core.Models.SearchResult;
 
 namespace ImoutoRebirth.Arachne.Infrastructure.Abstract;

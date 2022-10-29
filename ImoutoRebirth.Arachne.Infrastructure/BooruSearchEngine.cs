@@ -1,5 +1,6 @@
-﻿using Imouto.BooruParser.Loaders;
-using Imouto.BooruParser.Model.Base;
+﻿using Imouto.BooruParser;
+using Imouto.BooruParser.Extensions;
+using Imouto.BooruParser.Implementations;
 using ImoutoRebirth.Arachne.Core.InfrastructureContracts;
 using ImoutoRebirth.Arachne.Core.Models;
 using ImoutoRebirth.Arachne.Infrastructure.Abstract;
@@ -11,14 +12,14 @@ namespace ImoutoRebirth.Arachne.Infrastructure;
 
 internal class BooruSearchEngine : ISearchEngine
 {
-    private readonly IBooruAsyncLoader   _booruLoader;
+    private readonly IBooruApiLoader _booruLoader;
     private readonly IBooruPostConverter _postConverter;
     private readonly ILogger<BooruSearchEngine> _logger;
 
     public SearchEngineType SearchEngineType { get; }
 
     public BooruSearchEngine(
-        IBooruAsyncLoader loader, 
+        IBooruApiLoader loader, 
         SearchEngineType searchEngineType,
         IBooruPostConverter postConverter,
         ILogger<BooruSearchEngine> logger)
@@ -54,7 +55,7 @@ internal class BooruSearchEngine : ISearchEngine
             var first = history.FirstOrDefault();
             if (first != null)
             {
-                var lastHistoryId = first.UpdateId;
+                var lastHistoryId = first.HistoryId;
                 var postIds = history.Select(x => x.PostId).ToArray();
                 var parentPostIds = history
                     .Where(x => x.ParentChanged && x.ParentId != null)
@@ -90,7 +91,7 @@ internal class BooruSearchEngine : ISearchEngine
             var first = history.FirstOrDefault();
             if (first != null)
             {
-                var lastDate = first.Date;
+                var lastDate = first.UpdatedAt;
                 var postIds = history.Select(x => x.PostId).ToArray();
 
                 _logger.LogInformation(
@@ -111,31 +112,24 @@ internal class BooruSearchEngine : ISearchEngine
         }
     }
 
-    private Task<List<NoteUpdateEntry>> LoadNoteHistory(DateTimeOffset lastProcessedNoteUpdateAt)
-        => _booruLoader.LoadNotesHistoryAsync(lastProcessedNoteUpdateAt.DateTime);
+    private Task<IReadOnlyCollection<NoteHistoryEntry>> LoadNoteHistory(DateTimeOffset lastProcessedNoteUpdateAt)
+        => _booruLoader.GetNoteHistoryToDateTimeAsync(lastProcessedNoteUpdateAt).ToListAsync();
 
-    private Task<List<PostUpdateEntry>> LoadTagHistory(int historyId)
+    private Task<IReadOnlyCollection<TagHistoryEntry>> LoadTagHistory(int historyId)
         => historyId == default
-            ? _booruLoader.LoadFirstTagHistoryPageAsync()
-            : _booruLoader.LoadTagHistoryFromAsync(historyId);
+            ? _booruLoader.GetTagHistoryFirstPageAsync()
+            : _booruLoader.GetTagHistoryFromIdToPresentAsync(historyId).ToListAsync();
 
     private async Task<Maybe<Post>> FindPost(string md5)
     {
-        var searchResult = await _booruLoader.LoadSearchResultAsync($"md5:{md5}");
-
-        if (!searchResult.NotEmpty)
-            return Maybe<Post>.Nothing;
-            
-        var foundPost = searchResult.Results.First();
-        var post = await _booruLoader.LoadPostAsync(foundPost.Id);
-
-        return post.ToMaybe();
+        var post = await _booruLoader.GetPostByMd5Async(md5);
+        return post!.ToMaybe();
     }
 
     public interface IFactory
     {
         BooruSearchEngine Create(
-            IBooruAsyncLoader loader,
+            IBooruApiLoader loader,
             SearchEngineType  searchEngineType);
     }
 }

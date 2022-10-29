@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net6.0</TargetFramework>
+    <TargetFramework>net7.0</TargetFramework>
     <Nullable>enable</Nullable>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
     <ImplicitUsings>true</ImplicitUsings>
@@ -11,7 +11,7 @@
     <PackageReference Include="ImoutoRebirth.Lilin.MessageContracts" Version="2.5.0" />
     <PackageReference Include="ImoutoRebirth.Meido.MessageContracts" Version="1.5.1" />
     <PackageReference Include="ImoutoRebirth.Common.MassTransit" Version="3.10.2" />
-    <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="6.0.0" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="7.0.0-rc.2.22472.3" />
   </ItemGroup>
 
   <ItemGroup>

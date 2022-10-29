@@ -1,5 +1,4 @@
 using FluentAssertions;
-using Imouto.BooruParser.Model.Danbooru.Json;
 using ImoutoRebirth.Arachne.Core.Models;
 using ImoutoRebirth.Arachne.Infrastructure.Models;
 using Xunit;
@@ -29,7 +28,7 @@ public class MetaParsingResultsTests
             pools: Array.Empty<string>(),
             tags: Array.Empty<MetaParsingTagResults>(),
             notes: Array.Empty<Note>(),
-            new UgoiraFrameData());
+            null);
 
         var metaTags = obj.GetMetaTags().ToList();
 
@@ -62,7 +61,7 @@ public class MetaParsingResultsTests
             pools: generatedTags,
             tags: Array.Empty<MetaParsingTagResults>(),
             notes: Array.Empty<Note>(),
-            new UgoiraFrameData());
+            null);
 
         var resultTagsValues = obj.GetMetaTags().ToArray();
 
@@ -93,7 +92,7 @@ public class MetaParsingResultsTests
             pools: Array.Empty<string>(),
             tags: Array.Empty<MetaParsingTagResults>(),
             notes: Array.Empty<Note>(),
-            new UgoiraFrameData());
+            null);
             
         var resultTagsValues = obj.GetMetaTags().ToArray();
 
@@ -124,15 +123,7 @@ public class MetaParsingResultsTests
             pools: Array.Empty<string>(),
             tags: Array.Empty<MetaParsingTagResults>(),
             notes: Array.Empty<Note>(),
-            new UgoiraFrameData
-            {
-                ContentType = "jpeg",
-                Data = new []{ new FrameData()
-                {
-                    Delay = 10,
-                    File = "file"
-                }}
-            });
+            new UgoiraFrameData("jpeg", new[] { new FrameData(10, "file") }));
             
         var tags = obj.GetMetaTags().ToArray();
 

@@ -17,7 +17,7 @@ public class Startup : BaseStartup
     public Startup(IConfiguration configuration) 
         : base(configuration)
     {
-        ArachneSettings = configuration.Get<ArachneSettings>();
+        ArachneSettings = configuration.Get<ArachneSettings>()!;
     }
 
     public override void ConfigureServices(IServiceCollection services)

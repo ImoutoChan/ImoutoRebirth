@@ -1,4 +1,5 @@
 using FluentAssertions;
+using Flurl.Http.Configuration;
 using ImoutoRebirth.Arachne.Infrastructure.LoaderFabrics;
 using Xunit;
 
@@ -10,22 +11,16 @@ public class YandereLoaderTests
     public async Task ShouldHaveMd5OnChildren()
     {
         // arrange
-        var fabric = new YandereLoaderFabric(new HttpClient());
+        var fabric = new YandereLoaderFabric(new PerBaseUrlFlurlClientFactory());
         var loader = fabric.Create();
         
         // act
-        var post = await loader.LoadPostAsync(801490);
+        var post = await loader.GetPostAsync(801490);
 
         // assert
-        var children = post.ChildrenIds
-            .Select(x => x.Split(':'))
-            .Where(x => x.Length == 2)
-            .Select(x => (Id: x.First(), Md5: x.Last()))
-            .ToList();
-
-        children.Count.Should().Be(3);
-        children.Select(x => x.Id).Should().BeEquivalentTo("709435", "753883", "801669");
-        children.Select(x => x.Md5).Should().BeEquivalentTo("c1c4a14d4e058fe164482e86b8ea9b6b",
+        post.ChildrenIds.Count.Should().Be(3);
+        post.ChildrenIds.Select(x => x.Id).Should().BeEquivalentTo(new []{ 709435, 753883, 801669 });
+        post.ChildrenIds.Select(x => x.Md5Hash).Should().BeEquivalentTo("c1c4a14d4e058fe164482e86b8ea9b6b",
             "6a0e99ff9d228e0155ee5fd80f5217cb", "e038ea4fb55807d03f89e81df062409c");
     }
     
@@ -33,33 +28,30 @@ public class YandereLoaderTests
     public async Task ShouldHaveMd5OnParentPost()
     {
         // arrange
-        var fabric = new YandereLoaderFabric(new HttpClient());
+        var fabric = new YandereLoaderFabric(new PerBaseUrlFlurlClientFactory());
         var loader = fabric.Create();
         
         // act
-        var post = await loader.LoadPostAsync(753883);
+        var post = await loader.GetPostAsync(753883);
 
         // assert
-        var parentInfo = post.ParentId.Split(':');
-        var parentId = parentInfo[0];
-        var parentMd5 = parentInfo[1];
-
-        parentId.Should().Be("801490");
-        parentMd5.Should().Be("67da0e3e0466397a72a714f895cd1024");
+        post.Parent.Should().NotBeNull();
+        post.Parent!.Id.Should().Be(801490);
+        post.Parent.Md5Hash.Should().Be("67da0e3e0466397a72a714f895cd1024");
     }
     
     [Fact]
     public async Task ShouldWorkWithPostWithoutSiblings()
     {
         // arrange
-        var fabric = new YandereLoaderFabric(new HttpClient());
+        var fabric = new YandereLoaderFabric(new PerBaseUrlFlurlClientFactory());
         var loader = fabric.Create();
         
         // act
-        var post = await loader.LoadPostAsync(931867);
+        var post = await loader.GetPostAsync(931867);
 
         // assert
-        post.ParentId.Should().BeNull();
+        post.Parent.Should().BeNull();
         post.ChildrenIds.Should().BeEmpty();
     }
 }
