@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net6.0</TargetFramework>
+    <TargetFramework>net7.0</TargetFramework>
     <LangVersion>latest</LangVersion>
     <Nullable>enable</Nullable>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
@@ -9,7 +9,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="ImoutoRebirth.Arachne.MessageContracts" Version="1.6.1" />
+    <PackageReference Include="ImoutoRebirth.Arachne.MessageContracts" Version="1.8.0" />
     <PackageReference Include="ImoutoRebirth.Common.Cqrs" Version="3.10.2" />
     <PackageReference Include="ImoutoRebirth.Common.MassTransit" Version="3.10.2" />
     <PackageReference Include="ImoutoRebirth.Common.Quartz" Version="3.10.2" />

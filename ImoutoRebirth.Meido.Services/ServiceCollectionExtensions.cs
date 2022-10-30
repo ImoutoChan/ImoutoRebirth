@@ -36,6 +36,7 @@ public static class ServiceCollectionExtensions
         services.AddTransient<IMetadataRequester, YandereMetadataRequester>();
         services.AddTransient<IMetadataRequester, DanbooruMetadataRequester>();
         services.AddTransient<IMetadataRequester, SankakuMetadataRequester>();
+        services.AddTransient<IMetadataRequester, GelbooruMetadataRequester>();
 
         services.AddQuartzJob<MetaActualizerJob, MetaActualizerJob.Description>();
         services.AddQuartzJob<FaultToleranceJob, FaultToleranceJob.Description>();
@@ -68,6 +69,7 @@ public static class ServiceCollectionExtensions
             .AddConsumer<NotesUpdatedCommandConsumer, INotesUpdatedCommand>(MeidoReceiverApp.Name)
             .AddFireAndForget<IYandereSearchMetadataCommand>(ReceiverApp.Name)
             .AddFireAndForget<IDanbooruSearchMetadataCommand>(ReceiverApp.Name)
+            .AddFireAndForget<IGelbooruSearchMetadataCommand>(ReceiverApp.Name)
             .AddFireAndForget<ISankakuSearchMetadataCommand>(ReceiverApp.Name)
             .AddFireAndForget<ILoadTagHistoryCommand>(
                 ReceiverApp.Name,

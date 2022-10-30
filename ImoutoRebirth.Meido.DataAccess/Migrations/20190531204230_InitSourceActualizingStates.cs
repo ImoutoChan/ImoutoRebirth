@@ -11,6 +11,7 @@ public partial class InitSourceActualizingStates : Migration
         InsertInitial(migrationBuilder, MetadataSource.Yandere);
         InsertInitial(migrationBuilder, MetadataSource.Danbooru);
         InsertInitial(migrationBuilder, MetadataSource.Sankaku);
+        InsertInitial(migrationBuilder, MetadataSource.Gelbooru);
     }
 
     protected override void Down(MigrationBuilder migrationBuilder)
@@ -18,6 +19,7 @@ public partial class InitSourceActualizingStates : Migration
         migrationBuilder.DeleteData("SourceActualizingStates", "Source", 0);
         migrationBuilder.DeleteData("SourceActualizingStates", "Source", 1);
         migrationBuilder.DeleteData("SourceActualizingStates", "Source", 2);
+        migrationBuilder.DeleteData("SourceActualizingStates", "Source", 4);
     }
 
     private static void InsertInitial(MigrationBuilder migrationBuilder, MetadataSource source)

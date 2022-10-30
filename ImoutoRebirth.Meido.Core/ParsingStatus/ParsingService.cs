@@ -83,7 +83,7 @@ public class ParsingService : IParsingService
     public async Task MarkAsSaved(Guid fileId, int sourceId)
     {
         ArgumentValidator.Requires(() => fileId != default, nameof(fileId));
-        ArgumentValidator.Requires(() => sourceId >= 0 && sourceId <= 2, nameof(sourceId));
+        ArgumentValidator.Requires(() => sourceId != 3, nameof(sourceId));
 
         var now = _clock.GetCurrentInstant();
         var parsingStatus = await _parsingStatusRepository.Get(fileId, (MetadataSource)sourceId);

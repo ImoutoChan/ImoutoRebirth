@@ -1,6 +1,4 @@
-﻿using System;
-using System.Linq;
-using System.Linq.Expressions;
+﻿using System.Linq.Expressions;
 using ImoutoRebirth.Common.Domain.Specifications;
 using ImoutoRebirth.Meido.Core.ParsingStatus;
 using NodaTime;
@@ -14,7 +12,6 @@ public class AllFaultedStatusesSpecification : Specification<ParsingStatus.Parsi
 
     public override Expression<Func<ParsingStatus.ParsingStatus, bool>> ToExpression()
     {
-        return x => StatusSet.AllFaulted.Contains(x.Status)
-                    && x.UpdatedAt < CheckDate;
+        return x => StatusSet.AllFaulted.Contains(x.Status) && x.UpdatedAt < CheckDate;
     }
 }
