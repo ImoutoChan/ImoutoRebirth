@@ -4,5 +4,6 @@ public enum SearchEngineType : byte
 {
     Yandere,
     Danbooru,
-    Sankaku
+    Sankaku,
+    Gelbooru
 }

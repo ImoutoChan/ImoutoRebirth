@@ -15,6 +15,8 @@ internal static class SearchEngineTypeExtensions
                 return MetadataSource.Danbooru;
             case SearchEngineType.Sankaku:
                 return MetadataSource.Sankaku;
+            case SearchEngineType.Gelbooru:
+                return MetadataSource.Gelbooru;
             default:
                 throw new ArgumentOutOfRangeException(nameof(searchEngineType), searchEngineType, null);
         }
@@ -30,6 +32,8 @@ internal static class SearchEngineTypeExtensions
                 return SearchEngineType.Danbooru;
             case MessageContracts.SearchEngineType.Sankaku:
                 return SearchEngineType.Sankaku;
+            case MessageContracts.SearchEngineType.Gelbooru:
+                return SearchEngineType.Gelbooru;
             default:
                 throw new ArgumentOutOfRangeException(nameof(searchEngineType), searchEngineType, null);
         }
