@@ -1944,6 +1944,9 @@ namespace ImoutoRebirth.LilinService.WebApi.Client
         [System.Runtime.Serialization.EnumMember(Value = @"Manual")]
         Manual = 3,
 
+        [System.Runtime.Serialization.EnumMember(Value = @"Gelbooru")]
+        Gelbooru = 4,
+
     }
 
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "13.16.1.0 (NJsonSchema v10.7.2.0 (Newtonsoft.Json v13.0.0.0))")]
@@ -1962,6 +1965,9 @@ namespace ImoutoRebirth.LilinService.WebApi.Client
         [System.Runtime.Serialization.EnumMember(Value = @"Manual")]
         Manual = 3,
 
+        [System.Runtime.Serialization.EnumMember(Value = @"Gelbooru")]
+        Gelbooru = 4,
+
     }
 
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "13.16.1.0 (NJsonSchema v10.7.2.0 (Newtonsoft.Json v13.0.0.0))")]
@@ -1979,6 +1985,9 @@ namespace ImoutoRebirth.LilinService.WebApi.Client
 
         [System.Runtime.Serialization.EnumMember(Value = @"Manual")]
         Manual = 3,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"Gelbooru")]
+        Gelbooru = 4,
 
     }
 
