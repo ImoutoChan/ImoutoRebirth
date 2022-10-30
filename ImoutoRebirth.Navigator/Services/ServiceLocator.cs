@@ -26,28 +26,13 @@ public static class ServiceLocator
         sc.AddTransient<IFileTagService, FileTagService>();
         sc.AddTransient<ITagService, TagService>();
         sc.AddTransient<IFileLoadingService, FileLoadingService>();
-        sc.AddTransient<IImoutoRebirthRoomWebApiClient>(x 
-            => x.GetRequiredService<ImoutoRebirthRoomWebApiClient>());
 
-        sc.AddRoomClient();
+        sc.AddRoomWebApiClients(Settings.Default.RoomHost);
         sc.AddLilinWebApiClients(Settings.Default.LilinHost);
-
-        sc.AddRoomClient();
 
         sc.AddAutoMapper(typeof(ServiceLocator));
 
         ServiceProvider = sc.BuildServiceProvider();
-    }
-
-    private static IServiceCollection AddRoomClient(this IServiceCollection sc)
-    {
-        sc.AddSingleton<ImoutoRebirthRoomWebApiClient>(x 
-            => new ImoutoRebirthRoomWebApiClient(new Uri(Settings.Default.RoomHost)));
-        sc.AddTransient<ICollections, Room.WebApi.Client.Collections>();
-        sc.AddTransient<IDestinationFolder, Room.WebApi.Client.DestinationFolder>();
-        sc.AddTransient<ISourceFolders, Room.WebApi.Client.SourceFolders>();
-
-        return sc;
     }
 
     public static T GetService<T>() where T : notnull 

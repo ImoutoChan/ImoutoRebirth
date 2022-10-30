@@ -73,7 +73,7 @@ namespace ImoutoRebirth.Navigator {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("http://miyu:11302/")]
+        [global::System.Configuration.DefaultSettingValueAttribute("http://localhost:11302/")]
         public string LilinHost {
             get {
                 return ((string)(this["LilinHost"]));
@@ -85,7 +85,7 @@ namespace ImoutoRebirth.Navigator {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("http://miyu:11301/")]
+        [global::System.Configuration.DefaultSettingValueAttribute("http://localhost:11301/")]
         public string RoomHost {
             get {
                 return ((string)(this["RoomHost"]));

@@ -2,7 +2,7 @@
 
 public interface IDestinationFolderService
 {
-    Task<DestinationFolder> GetDestinationFolderAsync(Guid collectionId);
+    Task<DestinationFolder?> GetDestinationFolderAsync(Guid collectionId);
 
     Task<DestinationFolder> AddOrUpdateDestinationFolderAsync(DestinationFolder destinationFolder);
 

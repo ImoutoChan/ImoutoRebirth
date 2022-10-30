@@ -13,7 +13,7 @@
     <Company>ImoutoRebirth</Company>
     <Product>Imouto Navigator</Product>
     <Copyright>ImoutoChan © 2013-2022</Copyright>
-    <Version>1.8.1</Version>
+    <Version>1.8.2</Version>
   </PropertyGroup>
 
   <ItemGroup>
@@ -31,7 +31,7 @@
     <PackageReference Include="ImoutoRebirth.ApngWpfPlayer" Version="1.1.0" />
     <PackageReference Include="ImoutoRebirth.Common" Version="3.10.2" />
     <PackageReference Include="ImoutoRebirth.Lilin.WebApi.Client" Version="2.5.4" />
-    <PackageReference Include="ImoutoRebirth.Room.WebApi.Client" Version="1.16.2" />
+    <PackageReference Include="ImoutoRebirth.Room.WebApi.Client" Version="1.16.3" />
     <PackageReference Include="MahApps.Metro" Version="2.4.9" />
     <PackageReference Include="MahApps.Metro.IconPacks" Version="4.11.0" />
     <PackageReference Include="Microsoft-WindowsAPICodePack-Core" Version="1.1.4" />
@@ -43,6 +43,7 @@
     <PackageReference Include="Vlc.DotNet.Wpf" Version="3.1.0" />
     <PackageReference Include="WpfAnimatedGif" Version="2.0.2" />
     <PackageReference Include="Imazen.WebP" Version="10.0.1" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
   </ItemGroup>
 
   <ItemGroup>
