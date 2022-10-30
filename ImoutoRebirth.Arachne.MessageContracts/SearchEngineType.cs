@@ -2,8 +2,8 @@
 
 public enum SearchEngineType : byte
 {
-    Yandere,
-    Danbooru,
-    Sankaku,
-    Gelbooru
+    Yandere = 0,
+    Danbooru = 1,
+    Sankaku = 2,
+    Gelbooru = 4
 }
