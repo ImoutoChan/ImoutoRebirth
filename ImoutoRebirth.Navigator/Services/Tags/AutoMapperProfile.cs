@@ -35,6 +35,7 @@ internal class AutoMapperProfile : Profile
                     FileTagSource.Danbooru => FileTagRequestSource.Danbooru,
                     FileTagSource.Sankaku => FileTagRequestSource.Sankaku,
                     FileTagSource.Manual => FileTagRequestSource.Manual,
+                    FileTagSource.Gelbooru => FileTagRequestSource.Gelbooru,
                     _ => throw new NotImplementedException(x.ToString())
                 });
 
@@ -71,6 +72,7 @@ internal class AutoMapperProfile : Profile
                     FileTagRequestSource.Yandere => FileTagSource.Yandere,
                     FileTagRequestSource.Sankaku => FileTagSource.Sankaku,
                     FileTagRequestSource.Manual => FileTagSource.Manual,
+                    FileTagRequestSource.Gelbooru => FileTagSource.Gelbooru,
                     _ => throw new NotImplementedException(x.ToString())
                 });
     }
