@@ -4,7 +4,7 @@
       "commandName": "Project",
       "environmentVariables": {
         "ASP_ENVIRONMENT": "Development",
-        "ARACHNE_SankakuSettings__Login": "LOOOL"
+        "ARACHNE_Serilog__Properties__Application": "ImoutoRebirth.Arachne"
       }
     }
   }
