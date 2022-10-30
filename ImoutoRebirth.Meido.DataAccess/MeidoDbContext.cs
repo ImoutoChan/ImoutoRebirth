@@ -1,7 +1,4 @@
 ﻿using System.Data;
-using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
 using ImoutoRebirth.Common.Domain;
 using ImoutoRebirth.Common.Domain.EntityFrameworkCore;
 using ImoutoRebirth.Common.EntityFrameworkCore.TimeTrack;

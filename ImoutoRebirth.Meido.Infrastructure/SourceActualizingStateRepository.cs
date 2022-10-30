@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Threading.Tasks;
-using ImoutoRebirth.Meido.Core.SourceActualizingState;
+﻿using ImoutoRebirth.Meido.Core.SourceActualizingState;
 using ImoutoRebirth.Meido.DataAccess;
 using Microsoft.EntityFrameworkCore;
 

@@ -1,7 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Threading.Tasks;
-
-namespace ImoutoRebirth.Meido.Core.SourceActualizingState;
+﻿namespace ImoutoRebirth.Meido.Core.SourceActualizingState;
 
 public interface ISourceActualizingStateRepository
 {

@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace ImoutoRebirth.Meido.MessageContracts;
+﻿namespace ImoutoRebirth.Meido.MessageContracts;
 
 public interface INewFileCommand
 {

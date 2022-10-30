@@ -1,7 +1,4 @@
-﻿using System;
-using System.Threading.Tasks;
-
-namespace ImoutoRebirth.Meido.Core.ParsingStatus;
+﻿namespace ImoutoRebirth.Meido.Core.ParsingStatus;
 
 public interface IParsingService
 {

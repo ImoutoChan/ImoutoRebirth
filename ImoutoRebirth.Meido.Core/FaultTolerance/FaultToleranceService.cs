@@ -1,5 +1,4 @@
-﻿using System.Threading.Tasks;
-using ImoutoRebirth.Meido.Core.ParsingStatus;
+﻿using ImoutoRebirth.Meido.Core.ParsingStatus;
 using Microsoft.Extensions.Logging;
 using NodaTime;
 

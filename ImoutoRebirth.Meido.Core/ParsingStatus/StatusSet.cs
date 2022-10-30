@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-
-namespace ImoutoRebirth.Meido.Core.ParsingStatus;
+﻿namespace ImoutoRebirth.Meido.Core.ParsingStatus;
 
 public static class StatusSet
 {

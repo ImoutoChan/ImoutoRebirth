@@ -1,7 +1,4 @@
-﻿using System;
-using System.Linq;
-using System.Threading.Tasks;
-using ImoutoRebirth.Common;
+﻿using ImoutoRebirth.Common;
 using ImoutoRebirth.Meido.Core.ParsingStatus;
 using NodaTime;
 
