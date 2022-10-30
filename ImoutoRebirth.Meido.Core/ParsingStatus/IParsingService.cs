@@ -2,6 +2,8 @@
 
 public interface IParsingService
 {
+    Task CreateGelbooruParsingStatus(Guid fileId);
+
     Task CreateParsingStatusesForNewFile(Guid fileId, string md5);
 
     Task SaveSearchResult(

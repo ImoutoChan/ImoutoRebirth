@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using ImoutoRebirth.Common.Domain.Specifications;
+﻿using ImoutoRebirth.Common.Domain.Specifications;
 using ImoutoRebirth.Meido.Core;
 using ImoutoRebirth.Meido.Core.ParsingStatus;
 using ImoutoRebirth.Meido.DataAccess;

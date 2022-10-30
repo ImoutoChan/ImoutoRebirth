@@ -1,4 +1,5 @@
 ﻿using ImoutoRebirth.Common.Cqrs.Abstract;
+using ImoutoRebirth.Meido.Core;
 using ImoutoRebirth.Meido.Core.ParsingStatus;
 using MediatR;
 
@@ -15,12 +16,19 @@ internal class SearchCompleteCommandHandler : ICommandHandler<SearchCompleteComm
 
     public async Task<Unit> Handle(SearchCompleteCommand request, CancellationToken cancellationToken)
     {
+        var source = (MetadataSource)request.SourceId; 
+        
         await _parsingService.SaveSearchResult(
             request.SourceId, 
             request.FileId, 
             (SearchStatus)request.ResultStatus, 
             request.FileIdFromSource, 
             request.ErrorText);
+
+        if (source == MetadataSource.Danbooru && (SearchStatus)request.ResultStatus == SearchStatus.NotFound)
+        {
+            await _parsingService.CreateGelbooruParsingStatus(request.FileId);
+        }
 
         return Unit.Value;
     }

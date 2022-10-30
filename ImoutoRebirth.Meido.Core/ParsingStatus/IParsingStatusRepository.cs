@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
-using ImoutoRebirth.Common.Domain.Specifications;
+﻿using ImoutoRebirth.Common.Domain.Specifications;
 
 namespace ImoutoRebirth.Meido.Core.ParsingStatus;
 
