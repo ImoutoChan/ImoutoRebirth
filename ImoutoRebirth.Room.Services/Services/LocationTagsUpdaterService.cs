@@ -9,7 +9,7 @@ namespace ImoutoRebirth.Room.Core.Services;
 public class LocationTagsUpdaterService : ILocationTagsUpdaterService
 {
     private readonly ICollectionRepository _collectionRepository;
-    private readonly ILogger _logger;
+    private readonly ILogger<LocationTagsUpdaterService> _logger;
     private readonly ISourceTagsProvider _sourceTagsProvider;
     private readonly ICollectionFileRepository _collectionFileRepository;
     private readonly IFileService _fileService;
@@ -17,7 +17,7 @@ public class LocationTagsUpdaterService : ILocationTagsUpdaterService
 
     public LocationTagsUpdaterService(
         ICollectionRepository collectionRepository,
-        ILogger<OverseeService> logger,
+        ILogger<LocationTagsUpdaterService> logger,
         ISourceTagsProvider sourceTagsProvider,
         ICollectionFileRepository collectionFileRepository,
         IFileService fileService,
