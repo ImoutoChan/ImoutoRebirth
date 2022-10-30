@@ -162,6 +162,9 @@ internal class FrameworkElementCustomToolTipBehavior : Behavior<FrameworkElement
     private void PlaceToolTip(UIElement target)
     {
         var mainWindow = UiHelper.FindVisualParent<Window>(target);
+        if (mainWindow == null)
+            return;
+
         var area = (UIElement) mainWindow.FindName("GridParent");
 
         if (!_sizeChangeSubscribed)

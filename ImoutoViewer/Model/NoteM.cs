@@ -1,8 +1,10 @@
-﻿namespace ImoutoViewer.Model;
+﻿using ImoutoViewer.ImoutoRebirth.Services.Tags.Model;
+
+namespace ImoutoViewer.Model;
 
 internal class NoteM
 {
-    public NoteM(Guid id, string noteString, int positionX, int positionY, int width, int height)
+    public NoteM(Guid id, string noteString, int positionX, int positionY, int width, int height, FileTagSource source)
     {
         Id = id;
         NoteString = noteString;
@@ -10,6 +12,7 @@ internal class NoteM
         PositionY = positionY;
         Width = width;
         Height = height;
+        Source = source;
     }
 
     public Guid Id { get; }
@@ -23,4 +26,6 @@ internal class NoteM
     public int Width { get; }
         
     public int Height { get; }
+    
+    public FileTagSource Source { get; }
 }

@@ -14,6 +14,7 @@
                           xmlns:view="clr-namespace:ImoutoViewer.View"
                           xmlns:Imouto.Viewer="clr-namespace:ImoutoViewer"
                           xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
+                          xmlns:model="clr-namespace:ImoutoViewer.Model"
                           mc:Ignorable="d"
                           d:DataContext="{d:DesignInstance viewModel:MainWindowVM, IsDesignTimeCreatable=False}"
                           Title="{Binding Path=Title}"
@@ -440,10 +441,10 @@
                             <converters:StringToInlineCollectionConverter x:Key="StringToInlineCollectionConverter" />
                         </ItemsControl.Resources>
                         <ItemsControl.ItemTemplate>
-                            <DataTemplate>
-                                <Border BorderBrush="{DynamicResource AccentColorBrush4}"
+                            <DataTemplate DataType="{x:Type model:NoteM}">
+                                <Border BorderBrush="{DynamicResource MahApps.Brushes.Accent4}"
                                         BorderThickness="2"
-                                        Background="{DynamicResource AccentColorBrush2}"
+                                        Background="{DynamicResource MahApps.Brushes.Accent2}"
                                         Name="NoteItemsControl"
                                         HorizontalAlignment="Left"
                                         VerticalAlignment="Top"
@@ -553,7 +554,7 @@
                                                             Width="20"
                                                             Height="20"
                                                             Margin="0, 0, 0, 0"
-                                                            Style="{DynamicResource MetroCircleButtonStyle}"
+                                                            Style="{DynamicResource MahApps.Styles.Button.Circle}"
                                                             HorizontalAlignment="Left"
                                                             Command="{Binding UnbindCommand}"
                                                             Visibility="{Binding IsEditable, Mode=OneWay, Converter={StaticResource ConditionVisibilityConverter}, ConverterParameter=true, FallbackValue=Collapsed}">

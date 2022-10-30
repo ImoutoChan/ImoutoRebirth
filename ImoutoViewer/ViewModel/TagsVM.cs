@@ -212,7 +212,7 @@ internal class TagsVM : VMBase
         var tags = await _fileTagService.GetFileTags(file.Id);
         var notes = await _fileTagService.GetFileNotes(file.Id);
         var notesModels = notes.Select(x => new NoteM(x.Note.Id, x.Note.Label, x.Note.PositionFromLeft,
-            x.Note.PositionFromTop, x.Note.Width, x.Note.Height)).ToList();
+            x.Note.PositionFromTop, x.Note.Width, x.Note.Height, x.Source)).ToList();
 
         return
         (
@@ -239,6 +239,14 @@ internal class TagsVM : VMBase
 
     private void NotesReload(IReadOnlyCollection<NoteM> notes)
     {
+        notes = notes.GroupBy(x => x.Source).MinBy(x => x.Key switch
+        {
+            FileTagSource.Danbooru => 0,
+            FileTagSource.Yandere => 1,
+            FileTagSource.Sankaku => 2,
+            _ => 3
+        })?.ToArray() ?? Array.Empty<NoteM>();
+        
         NotesCollection.Clear();
 
         foreach (var note in notes)
