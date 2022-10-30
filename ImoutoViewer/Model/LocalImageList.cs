@@ -84,19 +84,15 @@ internal class LocalImageList : IEnumerable
         return (flags & value) == value;
     }
 
-    private static object GetFilesOrderProperty(string imagePath)
+    private static object GetFilesOrderProperty(FileInfo file)
     {
-        switch (FilesSortMethod)
+        return FilesSortMethod switch
         {
-            default:
-                return imagePath.Split('\\').Last();
-            case SortMethod.ByCreateDate:
-                return (new FileInfo(imagePath)).CreationTimeUtc;
-            case SortMethod.ByUpdateDate:
-                return (new FileInfo(imagePath)).LastWriteTimeUtc;
-            case SortMethod.BySize:
-                return (new FileInfo(imagePath)).Length;
-        }
+            SortMethod.ByCreateDate => file.CreationTimeUtc,
+            SortMethod.ByUpdateDate => file.LastWriteTimeUtc,
+            SortMethod.BySize => file.Length,
+            _ => file.Name
+        };
     }
 
     private static object GetDirectoryOrderProperty(DirectoryInfo dirPath)
@@ -356,7 +352,8 @@ internal class LocalImageList : IEnumerable
 
     internal void ResortFiles()
     {
-        var ordered = _imageList.OrderByWithDirection(x => GetFilesOrderProperty(x.Path), IsFilesSortMethodDescending);
+        var ordered = _imageList
+            .OrderByWithDirection(x => GetFilesOrderProperty(new FileInfo(x.Path)), IsFilesSortMethodDescending);
         _imageList = new List<LocalImage>(ordered);
     }
 
@@ -367,36 +364,30 @@ internal class LocalImageList : IEnumerable
     private void LoadImages(IEnumerable<string> imagePaths)
     {
 
-        var images = imagePaths.Where(x => ImageExtensions.IsImage(x));
+        var images = imagePaths.Where(x => ImageExtensions.IsImage(x)).Select(x => new FileInfo(x));
         if (!ApplicationProperties.BoundToNavigatorSearch)
         {
             images = images.OrderByWithDirection(GetFilesOrderProperty, IsFilesSortMethodDescending);
         }
 
-        _imageList.AddRange(images.Select(x => new LocalImage(x)));
+        _imageList.AddRange(images.Select(x => new LocalImage(x.FullName)));
     }
 
     private void LoadImages(DirectoryInfo sourceFolder)
     {
         if (!sourceFolder.Exists)
-        {
             throw new Exception("Directory not found.");
-        }
 
-        var files = Directory.GetFiles(sourceFolder.FullName, "*.*")
-            .Where(x => ImageExtensions.IsImage(x))
+        var files = sourceFolder.GetFiles("*.*")
+            .Where(x => x.FullName.IsImage())
             .OrderByWithDirection(GetFilesOrderProperty, IsFilesSortMethodDescending)
-            .Select(x => new LocalImage(x));
+            .Select(x => new LocalImage(x.FullName))
+            .ToList();
 
-        var localImages = files as IList<LocalImage> ?? files.ToList();
-
-        if (!localImages.Any())
-        {
+        if (!files.Any())
             throw new Exception("There are no image files in directory.");
-        }
 
-        _imageList = new List<LocalImage>();
-        _imageList.AddRange(localImages);
+        _imageList = new List<LocalImage>(files);
     }
 
     private void LoadDirectories(DirectoryInfo sourceFolder, DirectorySearchFlags flags)

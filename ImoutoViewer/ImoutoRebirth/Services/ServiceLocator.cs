@@ -24,34 +24,17 @@ public static class ServiceLocator
         sc.AddTransient<IFileTagService, FileTagService>();
         sc.AddTransient<ITagService, TagService>();
         //sc.AddTransient<IFileLoadingService, FileLoadingService>();
-        sc.AddTransient<IImoutoRebirthRoomWebApiClient>(x 
-            => x.GetRequiredService<ImoutoRebirthRoomWebApiClient>());
-        sc.AddTransient<IImoutoRebirthLilinWebApiClient>(x 
-            => x.GetRequiredService<ImoutoRebirthLilinWebApiClient>());
 
-        sc.AddRoomClient();
-
-        sc.AddSingleton<ImoutoRebirthLilinWebApiClient>(x 
-            => new ImoutoRebirthLilinWebApiClient(new Uri("http://localhost:11302/")));
+        sc.AddLilinWebApiClients("http://localhost:11302/");
+        sc.AddRoomWebApiClients("http://localhost:11301/");
 
         sc.AddAutoMapper(typeof(ServiceLocator));
 
         ServiceProvider = sc.BuildServiceProvider();
     }
 
-    private static IServiceCollection AddRoomClient(this IServiceCollection sc)
-    {
-        sc.AddSingleton<ImoutoRebirthRoomWebApiClient>(x 
-            => new ImoutoRebirthRoomWebApiClient(new Uri("http://localhost:11301/")));
-        sc.AddTransient<ICollections, global::ImoutoRebirth.Room.WebApi.Client.Collections>();
-        sc.AddTransient<IDestinationFolder, global::ImoutoRebirth.Room.WebApi.Client.DestinationFolder>();
-        sc.AddTransient<ISourceFolders, global::ImoutoRebirth.Room.WebApi.Client.SourceFolders>();
+    public static T? GetService<T>() => ServiceProvider.GetService<T>();
 
-        return sc;
-    }
-
-    public static T GetService<T>() => ServiceProvider.GetService<T>();
-
-    public static T GetRequiredService<T>() 
-        => ServiceProvider.GetService<T>() ?? throw new ArgumentException($"Cannot create type {typeof(T).Name}");
+    public static T GetRequiredService<T>() where T : notnull 
+        => ServiceProvider.GetRequiredService<T>();
 }

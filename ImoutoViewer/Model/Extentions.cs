@@ -9,22 +9,19 @@ internal static class Extentions
         Func<TSource, TKey> keySelector,
         bool descending)
     {
-        var enumerable = source.ToList();
-        var first = enumerable.FirstOrDefault();
-        
-        if (first is string)
-        {
-            return descending
-                ? enumerable.OrderByDescending(
-                    x => (string)(object)keySelector(x)!,
-                    NaturalComparer.InvariantCultureIgnoreCase)
-                : enumerable.OrderBy(
-                    x => (string)(object)keySelector(x)!, 
-                    NaturalComparer.InvariantCultureIgnoreCase);
-        }
+        // if (typeof(TSource) == typeof(string))
+        // {
+        //     return descending
+        //         ? source.OrderByDescending(
+        //             x => (string)(object)keySelector(x)!,
+        //             NaturalComparer.InvariantCultureIgnoreCase)
+        //         : source.OrderBy(
+        //             x => (string)(object)keySelector(x)!, 
+        //             NaturalComparer.InvariantCultureIgnoreCase);
+        // }
         
         return descending
-            ? enumerable.OrderByDescending(keySelector)
-            : enumerable.OrderBy(keySelector);
+            ? source.OrderByDescending(keySelector)
+            : source.OrderBy(keySelector);
     }
 }

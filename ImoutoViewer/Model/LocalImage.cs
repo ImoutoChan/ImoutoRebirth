@@ -1,4 +1,5 @@
-﻿using System.Windows;
+﻿using System.IO;
+using System.Windows;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using ImoutoViewer.ViewModel.SettingsModels;
@@ -229,13 +230,7 @@ internal class LocalImage
 
     public string ErrorMessage { get; private set; }
 
-    public Size ResizedSize
-    {
-        get
-        {
-            return new Size(Image.PixelWidth * Zoom, Image.PixelHeight * Zoom);
-        }
-    }
+    public Size ResizedSize => new Size(Image.PixelWidth * Zoom, Image.PixelHeight * Zoom);
 
     public ImageFormat ImageFormat
     {
@@ -260,26 +255,11 @@ internal class LocalImage
         }
     }
 
-    public string Name
-    {
-        get
-        {
-            return _filePath.Split('\\')[_filePath.Split('\\').Length - 1];
-        }
-    }
+    public string Name => _filePath.Split('\\')[_filePath.Split('\\').Length - 1];
 
-    public string Path
-    {
-        get
-        {
-            return _filePath;
-        }
-    }
+    public string Path => _filePath;
 
-    public double Zoom
-    {
-        get { return LocalZoom * _autoResized * StaticZoom; }
-    }
+    public double Zoom => LocalZoom * _autoResized * StaticZoom;
 
     #endregion Properties
 

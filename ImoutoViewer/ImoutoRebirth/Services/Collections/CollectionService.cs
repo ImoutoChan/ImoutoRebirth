@@ -1,41 +1,40 @@
 ﻿using AutoMapper;
-using ImoutoRebirth.Room.WebApi.Client;
-using ImoutoRebirth.Room.WebApi.Client.Models;
+using ImoutoRebirth.RoomService.WebApi.Client;
 
 namespace ImoutoViewer.ImoutoRebirth.Services.Collections;
 
 internal class CollectionService : ICollectionService
 {
-    private readonly ICollections _collectionsHttpService;
+    private readonly CollectionsClient _collectionsClient;
     private readonly IMapper _mapper;
 
-    public CollectionService(ICollections collectionsHttpService, IMapper mapper)
+    public CollectionService(IMapper mapper, CollectionsClient collectionsClient)
     {
-        _collectionsHttpService = collectionsHttpService;
         _mapper = mapper;
+        _collectionsClient = collectionsClient;
     }
 
     public async Task<IReadOnlyCollection<Collection>> GetAllCollectionsAsync()
     {
-        var result = await _collectionsHttpService.GetAllAsync();
+        var result = await _collectionsClient.GetAllAsync();
 
         return result.Select(x => new Collection(x.Id, x.Name)).ToArray();
     }
 
     public async Task<Collection> CreateCollectionAsync(string name)
     {
-        var result = await _collectionsHttpService.CreateAsync(new CollectionCreateRequest(name));
+        var result = await _collectionsClient.CreateAsync(new CollectionCreateRequest(name));
 
         return _mapper.Map<Collection>(result);
     }
 
     public Task RenameCollection(Guid collectionId, string name)
     {
-        return _collectionsHttpService.RenameAsync(collectionId, name);
+        return _collectionsClient.RenameAsync(collectionId, name);
     }
 
     public async Task DeleteCollectionAsync(Guid guid)
     {
-        await _collectionsHttpService.DeleteAsync(guid);
+        await _collectionsClient.DeleteAsync(guid);
     }
 }

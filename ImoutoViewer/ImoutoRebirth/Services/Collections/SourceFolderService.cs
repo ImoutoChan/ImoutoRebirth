@@ -1,15 +1,14 @@
 ﻿using AutoMapper;
-using ImoutoRebirth.Room.WebApi.Client;
-using ImoutoRebirth.Room.WebApi.Client.Models;
+using ImoutoRebirth.RoomService.WebApi.Client;
 
 namespace ImoutoViewer.ImoutoRebirth.Services.Collections;
 
 internal class SourceFolderService : ISourceFolderService
 {
-    private readonly ISourceFolders _sourceFolders;
+    private readonly SourceFoldersClient _sourceFolders;
     private readonly IMapper _mapper;
 
-    public SourceFolderService(ISourceFolders sourceFolders, IMapper mapper)
+    public SourceFolderService(SourceFoldersClient sourceFolders, IMapper mapper)
     {
         _sourceFolders = sourceFolders;
         _mapper = mapper;
@@ -31,7 +30,7 @@ internal class SourceFolderService : ISourceFolderService
     public async Task<SourceFolder> UpdateSourceFolderAsync(SourceFolder sourceFolder)
     {
         if (!sourceFolder.Id.HasValue)
-            throw new ArgumentException("Can't update new collection.", nameof(sourceFolder));
+            throw new ArgumentException("Can't update new collection", nameof(sourceFolder));
 
         var request = _mapper.Map<SourceFolderCreateRequest>(sourceFolder);
         var result = await _sourceFolders.UpdateAsync(sourceFolder.CollectionId, sourceFolder.Id.Value, request);

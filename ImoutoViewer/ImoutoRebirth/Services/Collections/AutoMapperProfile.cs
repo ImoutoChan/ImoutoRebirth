@@ -1,5 +1,5 @@
 ﻿using AutoMapper;
-using ImoutoRebirth.Room.WebApi.Client.Models;
+using ImoutoRebirth.RoomService.WebApi.Client;
 
 namespace ImoutoViewer.ImoutoRebirth.Services.Collections;
 

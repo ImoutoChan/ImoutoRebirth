@@ -1,7 +1,7 @@
 ﻿using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.IO;
-using Imouto.Utils.Core;
+using System.Security.Cryptography;
 using ImoutoViewer.ImoutoRebirth.Services;
 using ImoutoViewer.ImoutoRebirth.Services.Tags;
 using ImoutoViewer.ImoutoRebirth.Services.Tags.Model;
@@ -195,7 +195,7 @@ internal class TagsVM : VMBase
 
     private async Task<(IReadOnlyCollection<FileTag> Tags, IReadOnlyCollection<NoteM> Notes)> LoadTagsTask(string path)
     {
-        var md5Hash = await new FileInfo(path).GetMd5ChecksumAsync();
+        var md5Hash = GetMd5Checksum(new FileInfo(path));
         var files = await _fileService.SearchFiles(md5Hash);
 
         if (!files.Any())
@@ -343,6 +343,14 @@ internal class TagsVM : VMBase
         //});
 
         return Task.CompletedTask;
+    }
+
+    private static string GetMd5Checksum(FileInfo fileInfo)
+    {
+        using var md5 = MD5.Create();
+        using var stream = fileInfo.OpenRead();
+
+        return BitConverter.ToString(md5.ComputeHash(stream)).Replace("-", "").ToLower();
     }
 
     #endregion Private methods

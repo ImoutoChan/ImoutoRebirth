@@ -8,7 +8,6 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-using Imouto;
 using ImoutoViewer.ViewModel;
 using ImoutoViewer.ViewModel.SettingsModels;
 
