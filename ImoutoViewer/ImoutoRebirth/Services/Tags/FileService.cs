@@ -49,7 +49,7 @@ internal class FileService : IFileService
                 new FilesSearchRequest(
                     default, 
                     default,
-                    _mapper.Map<List<TagSearchEntryRequest>>(tags)),
+                    _mapper.Map<IReadOnlyCollection<TagSearchEntryRequest>>(tags)),
                 cancellationToken);
             
         if (files == null || !files.Any())

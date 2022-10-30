@@ -12,9 +12,9 @@ internal class AutoMapperProfile : Profile
     public AutoMapperProfile()
     {
         CreateMap<SearchTag, TagSearchEntryRequest>()
-            .ForMember(x => x.TagId, o => o.MapFrom(x => x.TagId))
-            .ForMember(x => x.Value, o => o.MapFrom(x => x.Value))
-            .ForMember(x => x.TagSearchScope, o => o.MapFrom(x => x.SearchType));
+            .ForCtorParam("tagId", o => o.MapFrom(x => x.TagId))
+            .ForCtorParam("value", o => o.MapFrom(x => x.Value))
+            .ForCtorParam("tagSearchScope", o => o.MapFrom(x => x.SearchType));
 
         CreateMap<FileTag, FileTagRequest>()
             .ForMember(x => x.TagId, o => o.MapFrom(x => x.Tag.Id))
