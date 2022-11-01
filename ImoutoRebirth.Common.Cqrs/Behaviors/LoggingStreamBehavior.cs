@@ -12,8 +12,8 @@ public class LoggingStreamBehavior<TRequest, TResponse> : IStreamPipelineBehavio
 
     public IAsyncEnumerable<TResponse> Handle(
         TRequest request, 
-        CancellationToken cancellationToken, 
-        StreamHandlerDelegate<TResponse> next)
+        StreamHandlerDelegate<TResponse> next, 
+        CancellationToken cancellationToken)
     {
         _logger.LogTrace("Handling {RequestName}", typeof(TRequest).Name);
         try

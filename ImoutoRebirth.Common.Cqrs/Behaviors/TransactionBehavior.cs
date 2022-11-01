@@ -22,9 +22,9 @@ public class TransactionBehavior<TRequest, TResponse> : IPipelineBehavior<TReque
     }
 
     public async Task<TResponse> Handle(
-        TRequest request,
-        CancellationToken cancellationToken,
-        RequestHandlerDelegate<TResponse> next)
+        TRequest request, 
+        RequestHandlerDelegate<TResponse> next, 
+        CancellationToken cancellationToken)
     {
         var isolationLevel = typeof(TRequest).GetIsolationLevel();
 
