@@ -9,8 +9,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="ImoutoRebirth.Common.Domain" Version="3.10.2" />
-    <PackageReference Include="ImoutoRebirth.Common" Version="3.10.2" />
+    <PackageReference Include="ImoutoRebirth.Common.Domain" Version="3.10.4" />
+    <PackageReference Include="ImoutoRebirth.Common" Version="3.10.4" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="6.0.0" />
     <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="6.0.2" />
     <PackageReference Include="NodaTime" Version="3.1.5" />

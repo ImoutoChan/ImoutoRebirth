@@ -12,9 +12,9 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="ImoutoRebirth.Common.EntityFrameworkCore" Version="3.10.2" />
-    <PackageReference Include="ImoutoRebirth.Common.Host" Version="3.10.2" />
-    <PackageReference Include="ImoutoRebirth.Common.Logging" Version="3.10.2" />
+    <PackageReference Include="ImoutoRebirth.Common.EntityFrameworkCore" Version="3.10.4" />
+    <PackageReference Include="ImoutoRebirth.Common.Host" Version="3.10.4" />
+    <PackageReference Include="ImoutoRebirth.Common.Logging" Version="3.10.4" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="6.0.10">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
