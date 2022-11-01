@@ -28,7 +28,8 @@
         "*://*.donmai.us/*",
         "*://donmai.us/*",
         "*://yande.re/*",
-        "*://konachan.com/*"
+        "*://konachan.com/*",
+        "*://gelbooru.com/*"
       ],
       "css": [ "contentscript.css" ],
       "js": [ "contentscript.js" ]
