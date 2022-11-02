@@ -17,5 +17,5 @@ internal class YandereLoaderFabric : IBooruLoaderFabric
 
     public IBooruApiLoader Create() => new YandereApiLoader(
         _flurlClientFactory,
-        Options.Create(new YandereSettings { PauseBetweenRequestsInMs = 1 }));
+        Options.Create(new YandereSettings { PauseBetweenRequestsInMs = 0 }));
 }

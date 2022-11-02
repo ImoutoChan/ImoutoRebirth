@@ -55,7 +55,7 @@ internal class BooruSearchEngine : ISearchEngine
             var first = history.FirstOrDefault();
             if (first != null)
             {
-                var lastHistoryId = first.HistoryId;
+                var lastHistoryId = history.MaxBy(x => x.HistoryId)!.HistoryId;
                 var postIds = history.Select(x => x.PostId).ToArray();
                 var parentPostIds = history
                     .Where(x => x.ParentChanged && x.ParentId != null)
