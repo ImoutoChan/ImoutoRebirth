@@ -91,7 +91,7 @@ internal class BooruSearchEngine : ISearchEngine
             var first = history.FirstOrDefault();
             if (first != null)
             {
-                var lastDate = first.UpdatedAt;
+                var lastDate = history.MaxBy(x => x.UpdatedAt)!.UpdatedAt;
                 var postIds = history.Select(x => x.PostId).ToArray();
 
                 _logger.LogInformation(
