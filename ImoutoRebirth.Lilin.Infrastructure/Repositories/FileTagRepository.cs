@@ -83,11 +83,11 @@ public class FileTagRepository : IFileTagRepository
     {
         var filteredFiles = GetSearchFilesQueryable(tagSearchEntries)
             .GroupBy(x => x.FileId)
-            .Select(x => new { FileId = x.Key, FirstAppeared = x.Min(y => y.AddedOn) })
-            .Distinct()
-            .OrderBy(x => x.FirstAppeared);
+            .OrderBy(x => x.Min(y => y.AddedOn))
+            .Select(x => x.Key)
+            .Distinct();
 
-        var filteredFileIds = filteredFiles.Select(x => x.FileId);
+        var filteredFileIds = filteredFiles.Select(x => x);
 
         filteredFileIds = filteredFileIds.Skip(offset);
 
