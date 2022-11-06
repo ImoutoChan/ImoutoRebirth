@@ -20,7 +20,8 @@ public class Startup : BaseStartup
     public Startup(IConfiguration configuration) 
         : base(configuration)
     {
-        LilinSettings = configuration.Get<LilinSettings>();
+        LilinSettings = configuration.Get<LilinSettings>() 
+                        ?? throw new Exception("Configuration is empty");
     }
 
     public override void ConfigureServices(IServiceCollection services)
@@ -28,7 +29,8 @@ public class Startup : BaseStartup
         services
             .AddLilinInfrastructure()
             .AddLilinServices(Configuration)
-            .AddLilinDataAccess(Configuration.GetConnectionString("LilinDatabase"))
+            .AddLilinDataAccess(Configuration.GetConnectionString("LilinDatabase") 
+                                ?? throw new Exception("ConnectionString is empty"))
             .AddLilinCore();
 
         services
