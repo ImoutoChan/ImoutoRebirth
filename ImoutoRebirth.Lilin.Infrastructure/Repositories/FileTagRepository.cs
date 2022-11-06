@@ -23,7 +23,9 @@ public class FileTagRepository : IFileTagRepository
         _logger = logger;
     }
 
-    public async Task<List<(string x, RelativeType?)>> SearchHashesInTags(IReadOnlyCollection<string> hashes)
+    public async Task<List<(string x, RelativeType?)>> SearchHashesInTags(
+        IReadOnlyCollection<string> hashes, 
+        CancellationToken ct)
     {
         var request = _lilinDbContext.FileTags
             .Where(x => x.Tag!.Name == "ParentMd5" || x.Tag.Name == "Child")
@@ -34,7 +36,7 @@ public class FileTagRepository : IFileTagRepository
                 TagName = x.Tag!.Name
             });
         
-        var fileTags = await request.ToListAsync();
+        var fileTags = await request.ToListAsync(cancellationToken: ct);
         
         return hashes.Select(x =>
         {
@@ -52,45 +54,48 @@ public class FileTagRepository : IFileTagRepository
     
     public async Task<Guid[]> SearchFiles(
         IReadOnlyCollection<TagSearchEntry> tagSearchEntries,
-        int? limit = 100,
-        int offset = 0)
+        int? limit,
+        int offset, 
+        CancellationToken ct)
     {
         var filteredFiles = GetSearchFilesQueryable(tagSearchEntries)
-            .Select(x => x.FileId)
-            .Distinct();
+            .GroupBy(x => x.FileId)
+            .Select(x => new { FileId = x.Key, FirstAppeared = x.Min(y => y.AddedOn) })
+            .Distinct()
+            .OrderBy(x => x.FirstAppeared);
 
-        var filteredFileIds = filteredFiles.Select(x => x);
+        var filteredFileIds = filteredFiles.Select(x => x.FileId);
 
         filteredFileIds = filteredFileIds.Skip(offset);
 
         if (limit.HasValue)
             filteredFileIds = filteredFileIds.Take(limit.Value);
 
-        return await filteredFileIds.ToArrayAsync();
+        return await filteredFileIds.ToArrayAsync(cancellationToken: ct);
     }
 
-    public Task<int> SearchFilesCount(IReadOnlyCollection<TagSearchEntry> tagSearchEntries)
+    public Task<int> SearchFilesCount(IReadOnlyCollection<TagSearchEntry> tagSearchEntries, CancellationToken ct)
     {
         return GetSearchFilesQueryable(tagSearchEntries)
             .GroupBy(x => x.FileId)
             .Select(x => x.Key)
             .Distinct()
-            .CountAsync();
+            .CountAsync(cancellationToken: ct);
     }
 
-    public async Task<IReadOnlyCollection<FileTag>> GetForFile(Guid fileId)
+    public async Task<IReadOnlyCollection<FileTag>> GetForFile(Guid fileId, CancellationToken ct)
     {
         var results = await _lilinDbContext.FileTags
             .Include(x => x.Tag)
             .ThenInclude(x => x!.Type)
             .Where(x => x.FileId == fileId)
             .AsNoTracking()
-            .ToArrayAsync();
+            .ToArrayAsync(cancellationToken: ct);
 
         return results.Select(x => x.ToModel()).ToArray();
     }
 
-    public async Task<IReadOnlyCollection<Tag>> GetPopularUserTagIds(int requestLimit)
+    public async Task<IReadOnlyCollection<Tag>> GetPopularUserTagIds(int requestLimit, CancellationToken ct)
     {
         var tags = _lilinDbContext.FileTags
             .Include(x => x.Tag)
@@ -104,9 +109,21 @@ public class FileTagRepository : IFileTagRepository
 
         var result = await _lilinDbContext.Tags
             .Include(x => x.Type)
-            .Where(x => tags.Contains(x.Id)).ToListAsync();
+            .Where(x => tags.Contains(x.Id)).ToListAsync(cancellationToken: ct);
 
         return result.Select(x => x.ToModel()).ToArray();
+    }
+
+    public async Task<Guid[]> FilterFiles(
+        IReadOnlyCollection<TagSearchEntry> tagSearchEntries, 
+        IReadOnlyCollection<Guid> fileIds,
+        CancellationToken ct)
+    {
+        return await GetSearchFilesQueryable(tagSearchEntries)
+            .Where(x => fileIds.Contains(x.FileId))
+            .Select(x => x.FileId)
+            .Distinct()
+            .ToArrayAsync(ct);
     }
 
     public async Task Add(FileTag fileTag)

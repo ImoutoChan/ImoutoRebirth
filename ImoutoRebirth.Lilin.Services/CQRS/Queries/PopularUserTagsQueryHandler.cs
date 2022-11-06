@@ -10,6 +10,6 @@ public class PopularUserTagsQueryHandler : IQueryHandler<PopularUserTagsQuery, I
 
     public PopularUserTagsQueryHandler(IFileTagRepository fileTagRepository) => _fileTagRepository = fileTagRepository;
 
-    public Task<IReadOnlyCollection<Tag>> Handle(PopularUserTagsQuery request, CancellationToken cancellationToken) 
-        => _fileTagRepository.GetPopularUserTagIds(request.Limit);
+    public Task<IReadOnlyCollection<Tag>> Handle(PopularUserTagsQuery request, CancellationToken ct) 
+        => _fileTagRepository.GetPopularUserTagIds(request.Limit, ct);
 }

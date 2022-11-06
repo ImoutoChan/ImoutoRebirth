@@ -22,7 +22,7 @@ public class FileNoteRepository : IFileNoteRepository
         await _lilinDbContext.SaveChangesAsync();
     }
 
-    public async Task<IReadOnlyCollection<FileNote>> GetForFile(Guid fileId)
+    public async Task<IReadOnlyCollection<FileNote>> GetForFile(Guid fileId, CancellationToken cancellationToken)
     {
         var results = await _lilinDbContext.Notes
             .Where(x => x.FileId == fileId)

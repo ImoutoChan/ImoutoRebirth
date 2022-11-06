@@ -12,6 +12,6 @@ public class FilesSearchQueryCountHandler : IQueryHandler<FilesSearchQueryCount,
         _fileTagRepository = fileTagRepository;
     }
 
-    public Task<int> Handle(FilesSearchQueryCount request, CancellationToken cancellationToken)
-        => _fileTagRepository.SearchFilesCount(request.TagSearchEntries);
+    public Task<int> Handle(FilesSearchQueryCount request, CancellationToken ct)
+        => _fileTagRepository.SearchFilesCount(request.TagSearchEntries, ct);
 }

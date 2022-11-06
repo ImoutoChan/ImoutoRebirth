@@ -15,9 +15,9 @@ public class CreateTagCommandHandler : ICommandHandler<CreateTagCommand, Tag>
         _tagTypeRepository = tagTypeRepository;
     }
 
-    public async Task<Tag> Handle(CreateTagCommand request, CancellationToken cancellationToken)
+    public async Task<Tag> Handle(CreateTagCommand request, CancellationToken ct)
     {
-        var tag = await _tagRepository.Get(request.Name, request.TypeId);
+        var tag = await _tagRepository.Get(request.Name, request.TypeId, ct);
 
         if (tag != null)
         {
@@ -30,7 +30,7 @@ public class CreateTagCommandHandler : ICommandHandler<CreateTagCommand, Tag>
         }
         else
         {
-            var tagType = await _tagTypeRepository.Get(request.TypeId);
+            var tagType = await _tagTypeRepository.Get(request.TypeId, default);
 
             if (tagType == null)
                 throw new ApplicationException($"TagType not found id: {request.TypeId}.");
@@ -40,7 +40,7 @@ public class CreateTagCommandHandler : ICommandHandler<CreateTagCommand, Tag>
             await _tagRepository.Create(tag);
         }
 
-        var resultTag = await _tagRepository.Get(request.Name, request.TypeId);
+        var resultTag = await _tagRepository.Get(request.Name, request.TypeId, default);
 
         if (resultTag == null)
             throw new ApplicationException($"Tag was not created.");

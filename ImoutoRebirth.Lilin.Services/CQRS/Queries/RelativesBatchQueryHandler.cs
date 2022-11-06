@@ -15,9 +15,9 @@ public class RelativesBatchQueryHandler : IQueryHandler<RelativesBatchQuery, IRe
 
     public async Task<IReadOnlyCollection<RelativeShortInfo>> Handle(
         RelativesBatchQuery request,
-        CancellationToken cancellationToken)
+        CancellationToken ct)
     {
-        var found = await _fileTagRepository.SearchHashesInTags(request.Md5);
+        var found = await _fileTagRepository.SearchHashesInTags(request.Md5, ct);
         return found.Select(x => new RelativeShortInfo(x.x, x.Item2)).ToList();
     }
 }

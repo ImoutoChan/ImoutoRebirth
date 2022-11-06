@@ -24,7 +24,7 @@ public class BindTagsCommandHandler : ICommandHandler<BindTagsCommand>
         _tagRepository = tagRepository;
     }
 
-    public async Task<Unit> Handle(BindTagsCommand request, CancellationToken cancellationToken)
+    public async Task<Unit> Handle(BindTagsCommand request, CancellationToken ct)
     {
         if (!request.FileTags.Any())
         {
@@ -32,8 +32,8 @@ public class BindTagsCommandHandler : ICommandHandler<BindTagsCommand>
             return Unit.Value;
         }
 
-        var tags = await LoadTags(request);
-        var fileInfos = await LoadFileInfos(request);
+        var tags = await LoadTags(request, ct);
+        var fileInfos = await LoadFileInfos(request, ct);
 
         var newFileTags = request
             .FileTags
@@ -57,7 +57,7 @@ public class BindTagsCommandHandler : ICommandHandler<BindTagsCommand>
         return Unit.Value;
     }
 
-    private async Task<IReadOnlyCollection<FileInfo>> LoadFileInfos(BindTagsCommand request)
+    private async Task<IReadOnlyCollection<FileInfo>> LoadFileInfos(BindTagsCommand request, CancellationToken ct)
     {
         var fileIds = request
             .FileTags
@@ -68,14 +68,14 @@ public class BindTagsCommandHandler : ICommandHandler<BindTagsCommand>
         var fileInfos = new List<FileInfo>(fileIds.Length);
         foreach (var fileId in fileIds)
         {
-            var fileInfo = await _fileInfoService.LoadFileAggregate(fileId);
+            var fileInfo = await _fileInfoService.LoadFileAggregate(fileId, ct);
             fileInfos.Add(fileInfo);
         }
             
         return fileInfos;
     }
 
-    private async Task<Dictionary<Guid, Tag>> LoadTags(BindTagsCommand request)
+    private async Task<Dictionary<Guid, Tag>> LoadTags(BindTagsCommand request, CancellationToken ct)
     {
         var tagIds = request
             .FileTags
@@ -86,7 +86,7 @@ public class BindTagsCommandHandler : ICommandHandler<BindTagsCommand>
         var tags = new Dictionary<Guid, Tag>(tagIds.Length);
         foreach (var tagId in tagIds)
         {
-            var tag = await _tagRepository.Get(tagId);
+            var tag = await _tagRepository.Get(tagId, ct);
             if (tag == null)
                 throw new ApplicationException($"Tag with id {tagId} is not found");
 

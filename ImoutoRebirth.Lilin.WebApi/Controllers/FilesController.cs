@@ -29,7 +29,7 @@ public class FilesController : ControllerBase
     [HttpGet("{fileId}")]
     public async Task<ActionResult<FileInfoResponse>> GetFileInfo(Guid fileId)
     {
-        var fileInfo = await _mediator.Send(new FileInfoQuery(fileId));
+        var fileInfo = await _mediator.Send(new FileInfoQuery(fileId), HttpContext.RequestAborted);
         return _mapper.Map<FileInfoResponse>(fileInfo);
     }
 
@@ -42,7 +42,7 @@ public class FilesController : ControllerBase
     [HttpGet("relatives")]
     public async Task<ActionResult<RelativeResponse[]>> GetRelatives([BindRequired] string md5)
     {
-        var fileInfo = await _mediator.Send(new RelativesQuery(md5));
+        var fileInfo = await _mediator.Send(new RelativesQuery(md5), HttpContext.RequestAborted);
         return _mapper.Map<RelativeResponse[]>(fileInfo);
     }
 
@@ -55,7 +55,7 @@ public class FilesController : ControllerBase
     [HttpPost("relatives/batch")]
     public async Task<ActionResult<RelativeShortResponse[]>> GetRelativesBatch(IReadOnlyCollection<string> md5)
     {
-        var found = await _mediator.Send(new RelativesBatchQuery(md5));
+        var found = await _mediator.Send(new RelativesBatchQuery(md5), HttpContext.RequestAborted);
         return _mapper.Map<RelativeShortResponse[]>(found);
     }
 
@@ -70,7 +70,23 @@ public class FilesController : ControllerBase
     {
         var query = _mapper.Map<FilesSearchQuery>(request);
 
-        var fileIds = await _mediator.Send(query);
+        var fileIds = await _mediator.Send(query, HttpContext.RequestAborted);
+
+        return fileIds;
+    }
+
+    /// <summary>
+    ///     Get all files that's contains certain tags and values out of requested FileIds.
+    /// </summary>
+    /// <returns>
+    ///     The collection of all found files.
+    /// </returns>
+    [HttpPost("filter")]
+    public async Task<ActionResult<Guid[]>> FilterFilesBasedOnTags([FromBody] FilesFilterRequest request)
+    {
+        var query = _mapper.Map<FilesFilterQuery>(request);
+
+        var fileIds = await _mediator.Send(query, HttpContext.RequestAborted);
 
         return fileIds;
     }
@@ -85,7 +101,7 @@ public class FilesController : ControllerBase
     public async Task<ActionResult<int>> GetFilesCountByTags([FromBody] FilesSearchRequest request)
     {
         var query = _mapper.Map<FilesSearchQueryCount>(request);
-        return await _mediator.Send(query);
+        return await _mediator.Send(query, HttpContext.RequestAborted);
     }
 
     /// <summary>

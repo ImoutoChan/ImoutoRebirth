@@ -15,10 +15,10 @@ public class FileInfoQueryHandler : IQueryHandler<FileInfoQuery, FileInfo>
         _fileNoteRepository = fileNoteRepository;
     }
 
-    public async Task<FileInfo> Handle(FileInfoQuery request, CancellationToken cancellationToken)
+    public async Task<FileInfo> Handle(FileInfoQuery request, CancellationToken ct)
     {
-        var tags = await _fileTagRepository.GetForFile(request.FileId);
-        var notes = await _fileNoteRepository.GetForFile(request.FileId);
+        var tags = await _fileTagRepository.GetForFile(request.FileId, ct);
+        var notes = await _fileNoteRepository.GetForFile(request.FileId, ct);
 
         return new FileInfo(tags, notes, request.FileId);
     }

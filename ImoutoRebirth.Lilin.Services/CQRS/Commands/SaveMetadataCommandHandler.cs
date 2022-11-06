@@ -1,4 +1,5 @@
-﻿using ImoutoRebirth.Common.Cqrs.Abstract;
+﻿using System.Runtime.CompilerServices;
+using ImoutoRebirth.Common.Cqrs.Abstract;
 using ImoutoRebirth.Common.Domain;
 using ImoutoRebirth.Lilin.Core.Infrastructure;
 using ImoutoRebirth.Lilin.Core.Models;
@@ -30,14 +31,14 @@ public class SaveMetadataCommandHandler : ICommandHandler<SaveMetadataCommand>
         _fileInfoService = fileInfoService;
     }
 
-    public async Task<Unit> Handle(SaveMetadataCommand request, CancellationToken cancellationToken)
+    public async Task<Unit> Handle(SaveMetadataCommand request, CancellationToken ct)
     {
         var source = request.MqCommand.MetadataSource.Convert();
         var fileId = request.MqCommand.FileId;
 
-        var file = await _fileInfoService.LoadFileAggregate(fileId);
+        var file = await _fileInfoService.LoadFileAggregate(fileId, ct);
 
-        var newTags = await LoadTags(fileId, source, request.MqCommand.FileTags).ToReadOnlyListAsync();
+        var newTags = await LoadTags(fileId, source, request.MqCommand.FileTags, ct).ToReadOnlyListAsync();
         var newNotes = LoadNotes(fileId, source, request.MqCommand.FileNotes).ToList();
                 
         var metadataUpdateData = new MetadataUpdateData(fileId, newTags, newNotes, source);
@@ -77,7 +78,8 @@ public class SaveMetadataCommandHandler : ICommandHandler<SaveMetadataCommand>
     private async IAsyncEnumerable<FileTag> LoadTags(
         Guid fileId, 
         MetadataSource source, 
-        IEnumerable<IFileTag> mqCommandFileTags)
+        IEnumerable<IFileTag> mqCommandFileTags, 
+        [EnumeratorCancellation] CancellationToken ct)
     {
         var commandFileTags = mqCommandFileTags as IFileTag[] 
                               ?? mqCommandFileTags?.ToArray() 
@@ -87,7 +89,7 @@ public class SaveMetadataCommandHandler : ICommandHandler<SaveMetadataCommand>
 
         foreach (var fileTag in commandFileTags)
         {
-            var type = await _tagTypeRepository.Get(fileTag.Type) 
+            var type = await _tagTypeRepository.Get(fileTag.Type, ct) 
                        ?? await _tagTypeRepository.Create(fileTag.Type);
 
             var tag = await GetAndUpdateTag(fileTag, type) 
@@ -99,7 +101,7 @@ public class SaveMetadataCommandHandler : ICommandHandler<SaveMetadataCommand>
 
     private async Task<Tag?> GetAndUpdateTag(IFileTag fileTag, TagType type)
     {
-        var tag = await _tagRepository.Get(fileTag.Name, type.Id);
+        var tag = await _tagRepository.Get(fileTag.Name, type.Id, default);
 
         if (tag == null)
             return null;
@@ -119,7 +121,7 @@ public class SaveMetadataCommandHandler : ICommandHandler<SaveMetadataCommand>
         var newTag = Tag.CreateNew(type, fileTag.Name, hasValue, fileTag.Synonyms);
         await _tagRepository.Create(newTag);
 
-        return await _tagRepository.Get(fileTag.Name, type.Id)
+        return await _tagRepository.Get(fileTag.Name, type.Id, default)
                ?? throw new ApplicationException("Tag was not created");
     }
 }

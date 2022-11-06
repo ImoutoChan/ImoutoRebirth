@@ -11,6 +11,6 @@ public class TagTypesQueryHandler : IQueryHandler<TagTypesQuery, IReadOnlyCollec
     public TagTypesQueryHandler(ITagTypeRepository tagTypeRepository) 
         => _tagTypeRepository = tagTypeRepository;
 
-    public async Task<IReadOnlyCollection<TagType>> Handle(TagTypesQuery _, CancellationToken cancellationToken) 
-        => await _tagTypeRepository.GetAll();
+    public async Task<IReadOnlyCollection<TagType>> Handle(TagTypesQuery _, CancellationToken ct) 
+        => await _tagTypeRepository.GetAll(ct);
 }

@@ -25,6 +25,7 @@ public class DtoAutoMapperProfile : Profile
             .ForCtorParam("offset", o => o.MapFrom(x => x.Skip ?? 0))
             .ForCtorParam("limit", o => o.MapFrom(x => x.Count));
         CreateMap<FilesSearchRequest, FilesSearchQueryCount>();
+        CreateMap<FilesFilterRequest, FilesFilterQuery>();
 
         CreateMap<BindTagsRequest, BindTagsCommand>();
         CreateMap<UnbindTagRequest, UnbindTagCommand>();

@@ -12,6 +12,6 @@ public class FilesSearchQueryHandler : IQueryHandler<FilesSearchQuery, Guid[]>
         _fileTagRepository = fileTagRepository;
     }
 
-    public Task<Guid[]> Handle(FilesSearchQuery request, CancellationToken cancellationToken) 
-        => _fileTagRepository.SearchFiles(request.TagSearchEntries, request.Limit, request.Offset);
+    public Task<Guid[]> Handle(FilesSearchQuery request, CancellationToken ct) 
+        => _fileTagRepository.SearchFiles(request.TagSearchEntries, request.Limit, request.Offset, ct);
 }

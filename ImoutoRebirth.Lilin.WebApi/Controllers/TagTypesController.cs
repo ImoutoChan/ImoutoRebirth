@@ -26,7 +26,7 @@ public class TagTypesController : ControllerBase
     [HttpGet]
     public async Task<ActionResult<TagTypeResponse[]>> GetAll()
     {
-        var tagTypes = await _mediator.Send(new TagTypesQuery());
+        var tagTypes = await _mediator.Send(new TagTypesQuery(), HttpContext.RequestAborted);
         return _mapper.Map<TagTypeResponse[]>(tagTypes);
     }
 }

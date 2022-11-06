@@ -14,10 +14,10 @@ public class FileInfoService : IFileInfoService
         _fileNoteRepository = fileNoteRepository;
     }
 
-    public async Task<FileInfo> LoadFileAggregate(Guid fileId)
+    public async Task<FileInfo> LoadFileAggregate(Guid fileId, CancellationToken ct)
     {
-        var tags = await _fileTagRepository.GetForFile(fileId);
-        var notes = await _fileNoteRepository.GetForFile(fileId);
+        var tags = await _fileTagRepository.GetForFile(fileId, ct);
+        var notes = await _fileNoteRepository.GetForFile(fileId, ct);
 
         return new FileInfo(tags, notes, fileId);
     }
@@ -30,7 +30,7 @@ public class FileInfoService : IFileInfoService
 
     private async Task PersistNotes(FileInfo file)
     {
-        var existingNotes = (await _fileNoteRepository.GetForFile(file.Id)).ToList();
+        var existingNotes = (await _fileNoteRepository.GetForFile(file.Id, default)).ToList();
         foreach (var newNote in file.Notes)
         {
             var existedNote = existingNotes.FirstOrDefault(x => x.IsSameIdentity(newNote));
@@ -54,7 +54,7 @@ public class FileInfoService : IFileInfoService
 
     private async Task PersistTags(FileInfo file)
     {
-        var existingTags = (await _fileTagRepository.GetForFile(file.Id)).ToList();
+        var existingTags = (await _fileTagRepository.GetForFile(file.Id, default)).ToList();
         foreach (var newTag in file.Tags)
         {
             var existedTag = existingTags.FirstOrDefault(x => x.Equals(newTag));

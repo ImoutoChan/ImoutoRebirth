@@ -28,7 +28,9 @@ public class TagsController : ControllerBase
     [HttpPost("search")]
     public async Task<ActionResult<TagResponse[]>> Search([FromBody] TagsSearchRequest request)
     {
-        var tags = await _mediator.Send(new TagsSearchQuery(request.SearchPattern, request.Count));
+        var tags = await _mediator.Send(
+            new TagsSearchQuery(request.SearchPattern, request.Count), 
+            HttpContext.RequestAborted);
         return _mapper.Map<TagResponse[]>(tags);
     }
 
@@ -39,7 +41,7 @@ public class TagsController : ControllerBase
     [HttpGet("popular")]
     public async Task<ActionResult<TagResponse[]>> GetPopularUserTags(int limit)
     {
-        var tags = await _mediator.Send(new PopularUserTagsQuery(limit));
+        var tags = await _mediator.Send(new PopularUserTagsQuery(limit), HttpContext.RequestAborted);
         return _mapper.Map<TagResponse[]>(tags);
     }
         

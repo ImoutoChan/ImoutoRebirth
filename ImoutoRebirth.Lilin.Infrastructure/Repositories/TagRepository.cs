@@ -11,30 +11,30 @@ public class TagRepository : ITagRepository
 {
     private readonly LilinDbContext _lilinDbContext;
 
-    public TagRepository(LilinDbContext lilinDbContext)
-    {
-        _lilinDbContext = lilinDbContext;
-    }
+    public TagRepository(LilinDbContext lilinDbContext) => _lilinDbContext = lilinDbContext;
 
-    public async Task<Tag?> Get(string name, Guid typeId)
+    public async Task<Tag?> Get(string name, Guid typeId, CancellationToken ct)
     {
         var result = await _lilinDbContext.Tags
             .Include(x => x.Type)
-            .SingleOrDefaultAsync(x => x.Name == name && x.TypeId == typeId);
+            .SingleOrDefaultAsync(x => x.Name == name && x.TypeId == typeId, cancellationToken: ct);
 
         return result?.ToModel();
     }
 
-    public async Task<Tag?> Get(Guid id)
+    public async Task<Tag?> Get(Guid id, CancellationToken ct)
     {
         var result = await _lilinDbContext.Tags
             .Include(x => x.Type)
-            .SingleOrDefaultAsync(x => x.Id == id);
+            .SingleOrDefaultAsync(x => x.Id == id, cancellationToken: ct);
 
         return result?.ToModel();
     }
 
-    public async Task<IReadOnlyCollection<Tag>> Search(string? requestSearchPattern, int requestLimit)
+    public async Task<IReadOnlyCollection<Tag>> Search(
+        string? requestSearchPattern, 
+        int requestLimit, 
+        CancellationToken ct)
     {
         var tagsWithTypes = _lilinDbContext.Tags
             .OrderByDescending(x => x.Count)
@@ -43,7 +43,7 @@ public class TagRepository : ITagRepository
         List<TagEntity> finalResult;
         if (string.IsNullOrEmpty(requestSearchPattern))
         {
-            finalResult = await tagsWithTypes.Take(requestLimit).ToListAsync();
+            finalResult = await tagsWithTypes.Take(requestLimit).ToListAsync(cancellationToken: ct);
         }
         else
         {
@@ -52,7 +52,7 @@ public class TagRepository : ITagRepository
             finalResult = await tagsWithTypes
                 .Where(x => x.Name.ToLower().Equals(requestSearchPattern))
                 .Take(requestLimit)
-                .ToListAsync();
+                .ToListAsync(cancellationToken: ct);
 
             if (finalResult.Count < requestLimit)
             {
@@ -60,7 +60,7 @@ public class TagRepository : ITagRepository
                     .Where(x => !x.Name.ToLower().Equals(requestSearchPattern))
                     .Where(x => x.Name.ToLower().StartsWith(requestSearchPattern))
                     .Take(requestLimit)
-                    .ToListAsync();
+                    .ToListAsync(cancellationToken: ct);
 
                 finalResult.AddRange(startsWith);
             }
@@ -74,7 +74,7 @@ public class TagRepository : ITagRepository
                     .Where(x => !x.Name.ToLower().StartsWith(requestSearchPattern))
                     .Where(x => x.Name.ToLower().Contains(requestSearchPattern))
                     .Take(requestLimit)
-                    .ToListAsync();
+                    .ToListAsync(cancellationToken: ct);
 
                 finalResult.AddRange(contains);
             }
@@ -111,19 +111,21 @@ public class TagRepository : ITagRepository
 
     public async Task UpdateTagsCounters()
     {
-        var script = $@"
-                        UPDATE ""{nameof(LilinDbContext.Tags)}"" tags
-                        SET ""{nameof(TagEntity.Count)}"" = usages.count
-                        FROM
-                        (
-                            SELECT id, count(*) AS count
-                            FROM (
-                                SELECT ""{nameof(FileTagEntity.TagId)}"" AS id, ""{nameof(FileTagEntity.FileId)}"" AS fileId
-                                FROM ""{nameof(LilinDbContext.FileTags)}""
-                                GROUP BY id, fileId) as inn
-                            GROUP BY id
-                        ) usages
-                        WHERE tags.""{nameof(TagEntity.Id)}"" = usages.id";
+        var script =
+            $"""
+            UPDATE "{nameof(LilinDbContext.Tags)}" tags
+            SET "{nameof(TagEntity.Count)}" = usages.count
+            FROM
+            (
+                SELECT id, count(*) AS count
+                FROM (
+                    SELECT "{nameof(FileTagEntity.TagId)}" AS id, "{nameof(FileTagEntity.FileId)}" AS fileId
+                    FROM "{nameof(LilinDbContext.FileTags)}"
+                    GROUP BY id, fileId) as inn
+                GROUP BY id
+            ) usages
+            WHERE tags."{nameof(TagEntity.Id)}" = usages.id
+            """;
 
         await _lilinDbContext.Database.ExecuteSqlRawAsync(script);
     }

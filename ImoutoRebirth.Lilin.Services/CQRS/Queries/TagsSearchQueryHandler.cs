@@ -13,6 +13,6 @@ public class TagsSearchQueryHandler : IQueryHandler<TagsSearchQuery, IReadOnlyCo
         _tagRepository = tagRepository;
     }
 
-    public Task<IReadOnlyCollection<Tag>> Handle(TagsSearchQuery request, CancellationToken cancellationToken) 
-        => _tagRepository.Search(request.SearchPattern, request.Limit);
+    public Task<IReadOnlyCollection<Tag>> Handle(TagsSearchQuery request, CancellationToken ct) 
+        => _tagRepository.Search(request.SearchPattern, request.Limit, ct);
 }
