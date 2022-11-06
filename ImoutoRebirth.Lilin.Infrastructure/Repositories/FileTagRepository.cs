@@ -23,32 +23,6 @@ public class FileTagRepository : IFileTagRepository
         _logger = logger;
     }
 
-    // public async Task<List<(string x, RelativeType?)>> SearchHashesInTags(IReadOnlyCollection<string> hashes)
-    // {
-    //     var request = _lilinDbContext.FileTags
-    //         .Search(x => x.Value).Containing(hashes.ToArray())
-    //         .Select(x => new
-    //         {
-    //             Value = x.Value,
-    //             TagName = x.Tag!.Name
-    //         });
-    //     
-    //     var fileTags = await request.ToListAsync();
-    //     
-    //     return hashes.Select(x =>
-    //     {
-    //         var tags = fileTags.Where(y => y.Value?.Contains(x) == true);
-    //         
-    //         if (tags.Any(y => y.TagName == "ParentMd5"))
-    //             return (x, RelativeType.Parent);
-    //         
-    //         if (tags.Any(y => y.TagName == "Child"))
-    //             return (x, RelativeType.Child);
-    //         
-    //         return (x, (RelativeType?)null);
-    //     }).ToList();
-    // }
-
     public async Task<List<(string x, RelativeType?)>> SearchHashesInTags(IReadOnlyCollection<string> hashes)
     {
         var request = _lilinDbContext.FileTags
@@ -82,12 +56,10 @@ public class FileTagRepository : IFileTagRepository
         int offset = 0)
     {
         var filteredFiles = GetSearchFilesQueryable(tagSearchEntries)
-            .GroupBy(x => x.FileId)
-            .Select(x => new { FileId = x.Key, FirstAppeared = x.Min(y => y.AddedOn) })
-            .Distinct()
-            .OrderBy(x => x.FirstAppeared);
+            .Select(x => x.FileId)
+            .Distinct();
 
-        var filteredFileIds = filteredFiles.Select(x => x.FileId);
+        var filteredFileIds = filteredFiles.Select(x => x);
 
         filteredFileIds = filteredFileIds.Skip(offset);
 
@@ -288,13 +260,13 @@ public class FileTagRepository : IFileTagRepository
     ///     '!asd' => false, 'asd'
     ///     '=asd' => true, 'asd'
     /// </summary>
-    private static (bool flag, string value) ExtractEqualityFlag(string source)
-        => (source[0], source[1]) switch
+    private static (bool flag, string value) ExtractEqualityFlag(string tagValue)
+        => (tagValue[0], tagValue[1]) switch
         {
-            ('=', _) => (true, source.Substring(1)),
-            ('!', '=') => (false, source.Substring(2)),
-            ('!', _) => (false, source.Substring(1)),
-            _ => (true, source)
+            ('=', _) => (true, tagValue.Substring(1)),
+            ('!', '=') => (false, tagValue.Substring(2)),
+            ('!', _) => (false, tagValue.Substring(1)),
+            _ => (true, tagValue)
         };
 
     private enum AsteriskPlace
