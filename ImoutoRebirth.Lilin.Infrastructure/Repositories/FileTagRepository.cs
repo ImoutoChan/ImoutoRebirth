@@ -119,11 +119,25 @@ public class FileTagRepository : IFileTagRepository
         IReadOnlyCollection<Guid> fileIds,
         CancellationToken ct)
     {
-        return await GetSearchFilesQueryable(tagSearchEntries)
+        var withoutTags = new List<Guid>();
+        if (tagSearchEntries.All(x => x.TagSearchScope == TagSearchScope.Excluded))
+        {
+            var allFilesWithTags = await _lilinDbContext.FileTags
+                .Where(x => fileIds.Contains(x.FileId))
+                .Select(x => x.FileId)
+                .ToListAsync(cancellationToken: ct);
+            withoutTags = fileIds.Except(allFilesWithTags).ToList();
+        }
+        
+        var withTags = await GetSearchFilesQueryable(tagSearchEntries)
             .Where(x => fileIds.Contains(x.FileId))
             .Select(x => x.FileId)
             .Distinct()
             .ToArrayAsync(ct);
+
+        return withTags
+            .Union(withoutTags)
+            .ToArray();
     }
 
     public async Task Add(FileTag fileTag)
