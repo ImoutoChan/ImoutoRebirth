@@ -8,8 +8,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="ImoutoRebirth.Common.Domain.EntityFrameworkCore" Version="3.10.4" />
-    <PackageReference Include="ImoutoRebirth.Common.EntityFrameworkCore" Version="3.10.4" />
+    <PackageReference Include="ImoutoRebirth.Common.Domain.EntityFrameworkCore" Version="3.10.5" />
+    <PackageReference Include="ImoutoRebirth.Common.EntityFrameworkCore" Version="3.10.5" />
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="6.0.10" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="6.0.10">
       <PrivateAssets>all</PrivateAssets>
