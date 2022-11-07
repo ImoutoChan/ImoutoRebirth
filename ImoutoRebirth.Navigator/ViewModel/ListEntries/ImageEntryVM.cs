@@ -1,7 +1,6 @@
 ﻿using System.Windows;
 using System.Windows.Media.Imaging;
 using Imouto;
-using ImoutoRebirth.Lilin.WebApi.Client;
 using ImoutoRebirth.LilinService.WebApi.Client;
 using ImoutoRebirth.Navigator.Model;
 

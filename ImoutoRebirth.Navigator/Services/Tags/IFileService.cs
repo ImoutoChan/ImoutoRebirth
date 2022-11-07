@@ -4,7 +4,7 @@ namespace ImoutoRebirth.Navigator.Services.Tags;
 
 interface IFileService
 {
-    Task<IReadOnlyCollection<File>> SearchFiles(
+    Task<(IReadOnlyCollection<File> Files, bool Continue)> SearchFiles(
         Guid? collectionId,
         IReadOnlyCollection<SearchTag> tags,
         int take,

@@ -21,7 +21,7 @@ class FileService : IFileService
         _collectionFilesClient = collectionFilesClient;
     }
 
-    public async Task<IReadOnlyCollection<File>> SearchFiles(
+    public async Task<(IReadOnlyCollection<File> Files, bool Continue)> SearchFiles(
         Guid? collectionId,
         IReadOnlyCollection<SearchTag> tags,
         int take,
@@ -33,22 +33,29 @@ class FileService : IFileService
             var filesOnly = await _collectionFilesClient
                 .SearchAsync(new CollectionFilesRequest(default, collectionId, take, default, default, skip), token);
 
-            return _mapper.Map<IReadOnlyCollection<File>>(filesOnly);
+            var filesMapped = _mapper.Map<IReadOnlyCollection<File>>(filesOnly);
+            return (filesMapped, filesOnly.Any());
         }
 
-        var tagsSearch = await _filesClient
-            .GetFilesByTagsAsync(
-                new FilesSearchRequest(
-                    take, skip,
+        var roomFiles = await _collectionFilesClient
+            .SearchAsync(new CollectionFilesRequest(default, collectionId, take, default, default, skip), token);
+
+        var roomFilesIds = roomFiles.Select(x => x.Id).ToList();
+        
+        var lilinFilesThatSatisfyConditions = await _filesClient
+            .FilterFilesBasedOnTagsAsync(
+                new FilesFilterRequest(
+                    roomFilesIds,
                     _mapper.Map<List<TagSearchEntryRequest>>(tags)),
                 token);
 
-        var filesSearch = await _collectionFilesClient
-            .SearchAsync(
-                new CollectionFilesRequest(tagsSearch.ToList(), collectionId, default, default, default, default),
-                token);
+        var lilinFilesThatSatisfyConditionsHashSet = lilinFilesThatSatisfyConditions.ToHashSet();
 
-        return _mapper.Map<IReadOnlyCollection<File>>(filesSearch);
+        var satisfiedRoomFiles = roomFiles.Where(x => lilinFilesThatSatisfyConditionsHashSet.Contains(x.Id)).ToList();
+        
+        var files = _mapper.Map<IReadOnlyCollection<File>>(satisfiedRoomFiles);
+
+        return (files, roomFilesIds.Any());
     }
 
     public async Task<int> CountFiles(

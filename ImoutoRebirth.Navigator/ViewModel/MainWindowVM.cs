@@ -383,7 +383,7 @@ class MainWindowVM : VMBase
         try
         {
             await _fileLoadingService.LoadFiles(
-                10_000,
+                10_000_000,
                 _previewSize,
                 TagSearchVM.SelectedCollection.Value,
                 TagSearchVM.SelectedBindedTags.Select(x => x.Model).ToList(),

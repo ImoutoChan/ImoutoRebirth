@@ -1,11 +1,9 @@
 ﻿using System.Windows;
 using Imouto.Utils.Core;
-using ImoutoRebirth.Lilin.WebApi.Client;
 using ImoutoRebirth.LilinService.WebApi.Client;
 using ImoutoRebirth.Navigator.Extensions;
 using ImoutoRebirth.Navigator.Services.Tags;
 using ImoutoRebirth.Navigator.Services.Tags.Model;
-using ImoutoRebirth.Navigator.ViewModel;
 using ImoutoRebirth.Navigator.ViewModel.ListEntries;
 
 namespace ImoutoRebirth.Navigator.Services;
@@ -52,20 +50,14 @@ internal class FileLoadingService : IFileLoadingService
 
             initAction();
 
-            var count = await GetCount(collectionId, searchTags, token);
-            counterUpdater(count);
+            var counterTask = UpdateCounter(collectionId, searchTags, counterUpdater, token);
+            var loadTask = BulkLoadEntries(bulkFactor, previewSize, collectionId, searchTags, entryUpdater, skip, token);
 
-            if (count == 0)
-            {
-                finishAction();
-                return;
-            }
-
-            await BulkLoadEntries(bulkFactor, count, previewSize, collectionId, searchTags, entryUpdater, skip, token);
+            await Task.WhenAll(counterTask, loadTask);
 
             finishAction();
         }
-        catch (Exception ex) when (ex is TaskCanceledException || ex is OperationCanceledException)
+        catch (Exception ex) when (ex is TaskCanceledException or OperationCanceledException)
         {
             rollbackAction();
         }
@@ -75,9 +67,19 @@ internal class FileLoadingService : IFileLoadingService
         }
     }
 
+    private async Task<int> UpdateCounter(
+        Guid? collectionId,
+        IReadOnlyCollection<SearchTag> searchTags,
+        Action<int> counterUpdater,
+        CancellationToken token)
+    {
+        var count = await GetCount(collectionId, searchTags, token);
+        counterUpdater(count);
+        return count;
+    }
+
     private async Task BulkLoadEntries(
         int bulkFactor,
-        int totalCount,
         int previewSize,
         Guid? collectionId,
         IReadOnlyCollection<SearchTag> searchTags,
@@ -85,23 +87,29 @@ internal class FileLoadingService : IFileLoadingService
         int skip,
         CancellationToken token)
     {
-        for (var i = totalCount - skip; i > 0; i -= bulkFactor)
+        var page = 0;
+        bool cont;
+
+        do
         {
             token.ThrowIfCancellationRequested();
 
             var entries = await LoadNewEntries(
                 count: bulkFactor,
-                skip: totalCount - i,
+                skip: page * bulkFactor,
                 previewSize: previewSize,
                 collectionId: collectionId,
                 searchTags: searchTags,
                 token: token);
 
-            entryUpdater(entries, token);
-        }
+            page++;
+            cont = entries.Continue;
+
+            entryUpdater(entries.Item1, token);
+        } while (cont);
     }
 
-    private async Task<IReadOnlyCollection<INavigatorListEntry>> LoadNewEntries(
+    private async Task<(IReadOnlyCollection<INavigatorListEntry> Files, bool Continue)> LoadNewEntries(
         int count,
         int skip,
         int previewSize,
@@ -113,16 +121,16 @@ internal class FileLoadingService : IFileLoadingService
 
         return entries;
 
-        async Task<List<INavigatorListEntry>> NavigatorListEntries(CancellationToken ct)
+        async Task<(List<INavigatorListEntry> Files, bool Continue)> NavigatorListEntries(CancellationToken ct)
         {
-            var found = await _fileService.SearchFiles(
+            var result = await _fileService.SearchFiles(
                 collectionId,
                 searchTags,
                 count,
                 skip,
                 ct);
 
-            var navigatorListEntries = found
+            var navigatorListEntries = result.Files
                 .Select(
                     x => EntryVMFactory.CreateListEntry(
                         x.Path,
@@ -134,7 +142,7 @@ internal class FileLoadingService : IFileLoadingService
                 .WithCancellation(ct)
                 .ToList();
 
-            return navigatorListEntries;
+            return (navigatorListEntries, result.Continue);
         }
     }
 
