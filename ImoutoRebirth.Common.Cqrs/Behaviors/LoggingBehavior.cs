@@ -34,6 +34,11 @@ public class LoggingBehavior<TRequest, TResponse> : IPipelineBehavior<TRequest, 
                 sw.ElapsedMilliseconds);
             return response;
         }
+        catch (OperationCanceledException e)
+        {
+            _logger.LogWarning(e, "Handling cancelled for {RequestName}", typeof(TRequest).Name);
+            throw;
+        }
         catch (Exception e)
         {
             _logger.LogError(e, "Error in handling {RequestName}", typeof(TRequest).Name);
