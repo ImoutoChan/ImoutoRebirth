@@ -15,9 +15,6 @@ internal static class EntryVMFactory
         FilesClient filesClient,
         Guid? dbId = null)
     {
-        // todo disk replacement
-        // path = "Q" + path.Substring(1);
-        
         path = OverridePath(path);
 
         if (path.IsImage() || path.EndsWith(".webp") || path.EndsWith(".jfif"))
@@ -26,7 +23,7 @@ internal static class EntryVMFactory
         if (!FileExists(path))
             return null;
 
-        if (path.IsVideo() || path.EndsWith(".m4v"))
+        if (path.IsVideo() || path.EndsWith(".m4v") || path.EndsWith(".swf"))
             return new VideoEntryVM(path, filesClient, initPreviewSize, dbId);
 
         if (path.EndsWith(".zip"))
