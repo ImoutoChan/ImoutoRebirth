@@ -30,7 +30,7 @@
                           WindowState="Maximized"
                           WindowButtonCommandsOverlayBehavior="Never"
                           ResizeBorderThickness="5"
-                          Icon="pack://application:,,,/ImoutoRebirth.Navigator;component/Resources/Icon/windowicon.ico"
+                          Icon="pack://application:,,,/ImoutoRebirth.Navigator;component/Resources/Icon/window-icon.ico"
                           ShowIconOnTitleBar="False">
     <metroControl:MetroWindow.Resources>
         <converters:ConditionVisibilityConverter x:Key="ConditionVisibilityConverter" />

@@ -14,19 +14,17 @@
     <Product>Imouto Navigator</Product>
     <Copyright>ImoutoChan © 2013-2022</Copyright>
     <Version>1.8.4</Version>
-    <ApplicationIcon>Resources\Icon\windowicon.ico</ApplicationIcon>
+    <ApplicationIcon>Resources\Icon\window-icon.ico</ApplicationIcon>
   </PropertyGroup>
 
   <ItemGroup>
     <None Remove="Resources\Entypo.ttf" />
     <None Remove="Resources\Icon\49a7b0a953e5106e5942169f3cb0c237.ico" />
+    <None Remove="Resources\Icon\window-icon.ico" />
     <None Update="libwebp.dll">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Update="ImoutoRebirth.Navigator.VisualElementsManifest.xml">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="Resources\Icon\appicon.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
   </ItemGroup>
@@ -56,9 +54,7 @@
   <ItemGroup>
     <Resource Include="Resources\Entypo.ttf" />
     <Resource Include="Resources\Icon\49a7b0a953e5106e5942169f3cb0c237.ico" />
-    <None Remove="Resources\Icon\candidate 01.ico" />
-    <Resource Include="Resources\Icon\candidate 01.ico" />
-    <Resource Include="Resources\Icon\windowicon.ico" />
+    <Resource Include="Resources\Icon\window-icon.ico" />
   </ItemGroup>
 
   <ItemGroup>
@@ -103,6 +99,9 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Update="Resources\Icon\appicon.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Update="Settings.settings">
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
       <Generator>SettingsSingleFileGenerator</Generator>
