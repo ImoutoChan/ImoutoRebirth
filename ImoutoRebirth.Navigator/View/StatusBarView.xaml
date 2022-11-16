@@ -3,11 +3,12 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:viewModel="clr-namespace:ImoutoRebirth.Navigator.ViewModel"
              mc:Ignorable="d"
-             d:DesignWidth="600">
+             d:DesignWidth="600" d:DataContext="{d:DesignInstance viewModel:MainWindowVM}">
     <Grid>
         <StatusBar Background="{DynamicResource MahApps.Brushes.Accent}"
-                   Grid.Row="1"
+                   Grid.Row="2"
                    Grid.ColumnSpan="2"
                    Height="25">
             <StatusBar.Resources>
@@ -39,8 +40,8 @@
             
             <StatusBarItem Grid.Column="2">
                 <Slider 
-                    Margin="5,-6,5,-6"
-                    Height="15" 
+                    Margin="5,-20,5,-20"
+                    Height="25" 
                     Width="100" 
                     Minimum="0" 
                     Maximum="100" 
@@ -71,6 +72,5 @@
                 </StackPanel>
             </StatusBarItem>
         </StatusBar>
-
     </Grid>
 </UserControl>

@@ -4,7 +4,7 @@ namespace ImoutoRebirth.Navigator.Utils;
 
 public static class Converts
 {
-    public static T To<T>(object value, bool enableException = false)
+    public static T? To<T>(object value, bool enableException = false)
     {
         Type t = typeof(T);
 

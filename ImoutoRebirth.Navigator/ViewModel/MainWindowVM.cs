@@ -32,6 +32,7 @@ class MainWindowVM : VMBase
     private readonly IImoutoViewerService _imoutoViewerService;
     private readonly DispatcherTimer _appendNewContentTimer = new() { Interval = TimeSpan.FromSeconds(5) };
     private int _volume = 100;
+    private bool _showTags = true;
 
     #endregion Fields
 
@@ -138,6 +139,12 @@ class MainWindowVM : VMBase
         get => _volume;
         set => OnPropertyChanged(ref _volume, value, () => Volume);
     }
+    
+    public bool ShowTags
+    {
+        get => _showTags;
+        set => OnPropertyChanged(ref _showTags, value, () => ShowTags);
+    }
 
     public Size SlotSize => new(_previewSize + 30, _previewSize + 30);
 
@@ -213,6 +220,8 @@ class MainWindowVM : VMBase
 
     public ICommand OpenFileCommand { get; set; }
 
+    public ICommand ToggleShowTagsCommand { get; set; }
+
     #endregion Commands
 
     #region Methods
@@ -256,6 +265,8 @@ class MainWindowVM : VMBase
         CopyCommand = new RelayCommand(CopySelected);
 
         OpenFileCommand = new RelayCommand<INavigatorListEntry>(x => OpenFile(x));
+
+        ToggleShowTagsCommand = new RelayCommand(_ => ShowTags = !ShowTags);
     }
 
     private void OpenFile(INavigatorListEntry? navigatorListEntry)

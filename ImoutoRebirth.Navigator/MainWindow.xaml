@@ -34,6 +34,7 @@
                           ShowIconOnTitleBar="False">
     <metroControl:MetroWindow.Resources>
         <converters:ConditionVisibilityConverter x:Key="ConditionVisibilityConverter" />
+        <converters:MultiBooleanVisibilityConverter x:Key="MultiBooleanVisibilityConverter" />
 
         <dialog:CustomDialog x:Key="SuccessCreateCollectionDialog"
                              Title="Create collection"
@@ -86,6 +87,9 @@
 
     <metroControl:MetroWindow.RightWindowCommands>
         <metroControl:WindowCommands>
+            
+            <Button Content="Tags"
+                    Command="{Binding Path=ToggleShowTagsCommand}" />
             <Button Content="Images on row 2"
                     Command="{Binding ZoomToRowElementsCommand}"
                     CommandParameter="2" />
@@ -127,10 +131,9 @@
           x:Name="Client">
         <Grid>
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="*"
-                                  MinWidth="200"
+                <ColumnDefinition Width="auto" 
                                   MaxWidth="300" />
-                <ColumnDefinition Width="3*" />
+                <ColumnDefinition Width="*" />
             </Grid.ColumnDefinitions>
 
             <Grid.RowDefinitions>
@@ -706,15 +709,32 @@
                           ShowsPreview="True"
                           Background="{DynamicResource MahApps.Brushes.Accent}" />
 
-            <view:TagsSearchView Grid.Column="0"
-                                 DataContext="{Binding TagSearchVM}" />
+            <view:TagsSearchView Grid.Row="0"
+                                 Grid.Column="0"
+                                 MinWidth="200"
+                                 DataContext="{Binding TagSearchVM}"
+                                 Visibility="{Binding 
+                                    Path=DataContext.ShowTags, 
+                                    RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type metroControl:MetroWindow}},
+                                    Converter={StaticResource ConditionVisibilityConverter},
+                                    ConverterParameter=true}"
+                                 />
 
             <view:FileInfoView Grid.Column="0"
                                Grid.Row="1"
-                               DataContext="{Binding FileInfoVM}"
-                               Visibility="{Binding HasValue, Converter={StaticResource ConditionVisibilityConverter}, ConverterParameter=true}"/>
+                               DataContext="{Binding FileInfoVM}">
+                <view:FileInfoView.Visibility>
+                    <MultiBinding Converter="{StaticResource MultiBooleanVisibilityConverter}">
+                        <Binding Path="HasValue" Mode="OneWay" />
+                        <Binding Path="DataContext.ShowTags"
+                                 RelativeSource="{RelativeSource Mode=FindAncestor, AncestorType={x:Type metroControl:MetroWindow}}"
+                                 Mode="OneWay" />
+                    </MultiBinding>
+                </view:FileInfoView.Visibility>
+            </view:FileInfoView>
 
             <view:StatusBarView Grid.Row="2"
+                                Grid.Column="0"
                                 Grid.ColumnSpan="2" />
         </Grid>
     </Grid>
