@@ -17,6 +17,8 @@ public static class ServiceCollectionExtensions
         this IServiceCollection services,
         IConfiguration configuration)
     {
+        const string userAgent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/92.0.4515.131 Safari/537.36";
+        
         services.AddMediatR(typeof(FavoritesSaveCommand));
         services.AddLoggingBehavior();
 
@@ -29,10 +31,14 @@ public static class ServiceCollectionExtensions
         services.Configure<DanbooruBooruConfiguration>(configuration.GetSection("Danbooru"));
         services.Configure<YandereBooruConfiguration>(configuration.GetSection("Yandere"));
 
-        services.AddHttpClient<DanbooruFavoritesLoader>();
+        services.AddHttpClient<DanbooruFavoritesLoader>(x => x.DefaultRequestHeaders.Add("User-Agent", userAgent));
         services.AddHttpClient<YandereFavoritesLoader>();
         services.AddHttpClient<RoomSavedChecker>();
-        services.AddHttpClient<PostSaver>().ConfigureHttpClient(x => x.Timeout = TimeSpan.FromMinutes(5));
+        services.AddHttpClient<PostSaver>().ConfigureHttpClient(x =>
+        {
+            x.DefaultRequestHeaders.Add("User-Agent", userAgent);
+            x.Timeout = TimeSpan.FromMinutes(5);
+        });
 
         return services;
     }
