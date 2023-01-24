@@ -712,6 +712,7 @@
             <view:TagsSearchView Grid.Row="0"
                                  Grid.Column="0"
                                  MinWidth="200"
+                                 MaxWidth="300"
                                  DataContext="{Binding TagSearchVM}"
                                  Visibility="{Binding 
                                     Path=DataContext.ShowTags, 
