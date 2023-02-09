@@ -26,7 +26,7 @@ public class ImoutoPicsUploader : IImoutoPicsUploader
         {
             await using var fileStream = File.OpenRead(filePath);
             var content = new MultipartFormDataContent();
-            content.Add(new StreamContent(fileStream), "file", Path.GetFileName(filePath));
+            content.Add(new StreamContent(fileStream), "files", Path.GetFileName(filePath));
 
             using var response = await _httpClient.PostAsync(_imoutoPicsUploadUrl, content);
             response.EnsureSuccessStatusCode();
