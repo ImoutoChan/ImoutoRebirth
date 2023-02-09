@@ -18,7 +18,7 @@ public class Startup
     public Startup(IConfiguration configuration)
     {
         Configuration = configuration;
-        RoomSettings = configuration.Get<RoomAppSettings>();
+        RoomSettings = configuration.Get<RoomAppSettings>() ?? throw new Exception("Wrong configuration");
     }
 
     public IConfiguration Configuration { get; }

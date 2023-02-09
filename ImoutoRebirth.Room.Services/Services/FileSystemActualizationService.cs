@@ -14,6 +14,7 @@ public class FileSystemActualizationService : IFileSystemActualizationService
     private readonly ICollectionFileService _collectionFileService;
     private readonly IDbStateService _dbStateService;
     private readonly IRemoteCommandService _remoteCommandService;
+    private readonly IImoutoPicsUploader _imoutoPicsUploader;
     private readonly ILogger<FileSystemActualizationService> _logger;
 
     public FileSystemActualizationService(
@@ -22,7 +23,8 @@ public class FileSystemActualizationService : IFileSystemActualizationService
         ICollectionFileService collectionFileService,
         IDbStateService dbStateService,
         IRemoteCommandService remoteCommandService,
-        ILogger<FileSystemActualizationService> logger)
+        ILogger<FileSystemActualizationService> logger,
+        IImoutoPicsUploader imoutoPicsUploader)
     {
         _sourceFolderService = sourceFolderService;
         _destinationFolderService = destinationFolderService;
@@ -30,6 +32,7 @@ public class FileSystemActualizationService : IFileSystemActualizationService
         _dbStateService = dbStateService;
         _remoteCommandService = remoteCommandService;
         _logger = logger;
+        _imoutoPicsUploader = imoutoPicsUploader;
     }
 
     public async Task PryCollection(OversawCollection oversawCollection)
@@ -72,6 +75,10 @@ public class FileSystemActualizationService : IFileSystemActualizationService
         await movedFiles
             .Select(
                 x => _remoteCommandService.UpdateMetadataRequest(x.FileId, x.MovedInformation.SystemFile.Md5))
+            .WhenAll();
+        
+        await movedFiles
+            .Select(x => _imoutoPicsUploader.UploadFile(x.MovedInformation.SystemFile.File.FullName))
             .WhenAll();
 
         _logger.LogDebug("Update metadata requests are sent");

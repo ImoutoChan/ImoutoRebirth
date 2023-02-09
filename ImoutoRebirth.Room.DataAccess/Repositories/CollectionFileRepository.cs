@@ -90,7 +90,7 @@ public class CollectionFileRepository : ICollectionFileRepository
     public async Task<string?> GetWithMd5(Guid collectionId, string md5)
     {
         var key = collectionId + md5;
-        if (_cache.TryGetValue(key, out string path))
+        if (_cache.TryGetValue(key, out string? path))
             return path;
 
         var file = await _roomDbContext.CollectionFiles.FirstOrDefaultAsync(
