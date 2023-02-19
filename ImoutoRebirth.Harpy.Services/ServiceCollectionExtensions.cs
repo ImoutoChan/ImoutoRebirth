@@ -17,7 +17,7 @@ public static class ServiceCollectionExtensions
         this IServiceCollection services,
         IConfiguration configuration)
     {
-        const string userAgent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/92.0.4515.131 Safari/537.36";
+        var userAgent = configuration.GetSection("Danbooru").GetValue<string>("BotUserAgent");
         
         services.AddMediatR(typeof(FavoritesSaveCommand));
         services.AddLoggingBehavior();
@@ -26,7 +26,7 @@ public static class ServiceCollectionExtensions
 
         services.Configure<FavoritesSaveJobSettings>(
             configuration.GetSection(nameof(FavoritesSaveJobSettings)));
-
+        
         services.Configure<SaverConfiguration>(configuration.GetSection("Saver"));
         services.Configure<DanbooruBooruConfiguration>(configuration.GetSection("Danbooru"));
         services.Configure<YandereBooruConfiguration>(configuration.GetSection("Yandere"));
