@@ -27,6 +27,7 @@ internal class DanbooruLoaderFabric : IBooruLoaderFabric
         {
             ApiKey = _settings.ApiKey,
             Login = _settings.Login,
-            PauseBetweenRequestsInMs = _settings.Delay
+            PauseBetweenRequestsInMs = _settings.Delay,
+            BotUserAgent = _settings.BotUserAgent
         }));
 }
