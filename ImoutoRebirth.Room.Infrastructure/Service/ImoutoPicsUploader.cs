@@ -22,6 +22,14 @@ public class ImoutoPicsUploader : IImoutoPicsUploader
 
     public async Task UploadFile(string filePath)
     {
+        var isImage = filePath.EndsWith(".jpg")
+                      || filePath.EndsWith(".png")
+                      || filePath.EndsWith(".jpeg")
+                      || filePath.EndsWith(".gif");
+        
+        if (!isImage)
+            return;
+
         try
         {
             await using var fileStream = File.OpenRead(filePath);
