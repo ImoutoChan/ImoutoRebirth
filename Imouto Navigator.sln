@@ -3,8 +3,6 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.29721.120
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ImoutoNavigator", "ImoutoNavigator\ImoutoNavigator.csproj", "{6BE0B3DE-7FB8-4542-8D88-14A0FD0AC406}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ImoutoRebirth.Navigator", "ImoutoRebirth.Navigator\ImoutoRebirth.Navigator.csproj", "{6E92A6B5-CF5E-41D4-9DDD-0B1D1725CA16}"
 EndProject
 Global
@@ -17,18 +15,6 @@ Global
 		Release|x86 = Release|x86
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{6BE0B3DE-7FB8-4542-8D88-14A0FD0AC406}.Debug|Any CPU.ActiveCfg = Debug|x86
-		{6BE0B3DE-7FB8-4542-8D88-14A0FD0AC406}.Debug|Any CPU.Build.0 = Debug|x86
-		{6BE0B3DE-7FB8-4542-8D88-14A0FD0AC406}.Debug|x64.ActiveCfg = Debug|x64
-		{6BE0B3DE-7FB8-4542-8D88-14A0FD0AC406}.Debug|x64.Build.0 = Debug|x64
-		{6BE0B3DE-7FB8-4542-8D88-14A0FD0AC406}.Debug|x86.ActiveCfg = Debug|x86
-		{6BE0B3DE-7FB8-4542-8D88-14A0FD0AC406}.Debug|x86.Build.0 = Debug|x86
-		{6BE0B3DE-7FB8-4542-8D88-14A0FD0AC406}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{6BE0B3DE-7FB8-4542-8D88-14A0FD0AC406}.Release|Any CPU.Build.0 = Release|Any CPU
-		{6BE0B3DE-7FB8-4542-8D88-14A0FD0AC406}.Release|x64.ActiveCfg = Release|x64
-		{6BE0B3DE-7FB8-4542-8D88-14A0FD0AC406}.Release|x64.Build.0 = Release|x64
-		{6BE0B3DE-7FB8-4542-8D88-14A0FD0AC406}.Release|x86.ActiveCfg = Release|x86
-		{6BE0B3DE-7FB8-4542-8D88-14A0FD0AC406}.Release|x86.Build.0 = Release|x86
 		{6E92A6B5-CF5E-41D4-9DDD-0B1D1725CA16}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{6E92A6B5-CF5E-41D4-9DDD-0B1D1725CA16}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6E92A6B5-CF5E-41D4-9DDD-0B1D1725CA16}.Debug|x64.ActiveCfg = Debug|Any CPU
