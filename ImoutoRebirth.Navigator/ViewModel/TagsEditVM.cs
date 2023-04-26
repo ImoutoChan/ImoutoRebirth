@@ -324,6 +324,12 @@ class TagsEditVM : VMBase, IDropable
 
     #region Methods
 
+    public void DraftAddTag(BindedTagVM tag)
+    {
+        var searchTagVm = new SearchTagVM(new SearchTag(tag.Tag, null));
+        SelectedTags.Add(searchTagVm);
+    }
+    
     private async void SearchTagsAsync()
     {
         string searchPattern;

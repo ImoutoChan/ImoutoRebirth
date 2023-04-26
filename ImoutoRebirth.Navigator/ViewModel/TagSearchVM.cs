@@ -34,6 +34,7 @@ class TagSearchVM : VMBase
     private ICommand? _invertSearchTypeCommand;
     private ICommand? _selectBindedTag;
     private ICommand? _exploreTag;
+    private ICommand? _draftAddTag;
     private int _rate;
     private Guid? _lastListEntryId = null;
     private bool _isRateSetted;
@@ -79,7 +80,7 @@ class TagSearchVM : VMBase
         set
         {
             OnPropertyChanged(ref _selectedCollection, value, () => SelectedCollection);
-            OnSelectedCollectionCahnged();
+            OnSelectedCollectionChanged();
         }
     }
 
@@ -221,6 +222,8 @@ class TagSearchVM : VMBase
 
     public ICommand ExploreTagCommand => _exploreTag ??= new RelayCommand(ExploreTag);
 
+    public ICommand DraftAddTagCommand => _draftAddTag ??= new RelayCommand<BindedTagVM>(DraftAddTag);
+
     #endregion Commands
 
     #region Public methods
@@ -352,6 +355,12 @@ class TagSearchVM : VMBase
         var tagName = WebUtility.UrlEncode(tag.Title.Replace(" ", "_"));
         Process.Start(new ProcessStartInfo($"https://danbooru.donmai.us/posts?tags={tagName}")
             { UseShellExecute = true });
+    }
+
+    private void DraftAddTag(BindedTagVM? tag)
+    {
+        if (tag != null)
+            OnDraftAddRequested(tag);
     }
 
     private async void SelectStaticTag(object param)
@@ -599,12 +608,20 @@ class TagSearchVM : VMBase
         handler?.Invoke(this, new EventArgs());
     }
 
-    public event EventHandler SelectedCollectionCahnged;
+    public event EventHandler SelectedCollectionChanged;
 
-    private void OnSelectedCollectionCahnged()
+    private void OnSelectedCollectionChanged()
     {
-        var handler = SelectedCollectionCahnged;
-        handler?.Invoke(this, new EventArgs());
+        var handler = SelectedCollectionChanged;
+        handler?.Invoke(this, EventArgs.Empty);
+    }
+
+    public event EventHandler<BindedTagVM> DraftAddRequested;
+
+    private void OnDraftAddRequested(BindedTagVM tag)
+    {
+        var handler = DraftAddRequested;
+        handler?.Invoke(this, tag);
     }
 
     #endregion Events

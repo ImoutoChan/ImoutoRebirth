@@ -104,7 +104,8 @@ class MainWindowVM : VMBase
 
         TagSearchVM = new TagSearchVM(CollectionManager.Collections);
         TagSearchVM.SelectedTagsUpdated += TagSearchVM_SelectedTagsUpdated;
-        TagSearchVM.SelectedCollectionCahnged += TagSearchVMOnSelectedCollectionChanged;
+        TagSearchVM.SelectedCollectionChanged += TagSearchVMOnSelectedCollectionChanged;
+        TagSearchVM.DraftAddRequested += TagSearchVMOnDraftAddRequested;
 
         Settings.ShowPreviewOnSelectChanged += Settings_ShowPreviewOnSelectChanged;
 
@@ -522,6 +523,8 @@ class MainWindowVM : VMBase
     private async void TagSearchVM_SelectedTagsUpdated(object sender, EventArgs e) => await Reload();
 
     private async void TagSearchVMOnSelectedCollectionChanged(object sender, EventArgs eventArgs) => await Reload();
+
+    private async void TagSearchVMOnDraftAddRequested(object sender, BindedTagVM tag) => this.TagsEdit.DraftAddTag(tag);
 
     private void Settings_ShowPreviewOnSelectChanged(object sender, EventArgs e) => OnPropertyChanged(() => ShowPreview);
 

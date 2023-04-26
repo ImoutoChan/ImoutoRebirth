@@ -255,6 +255,10 @@
                                             <MouseBinding Command="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}}, Path=DataContext.ExploreTagCommand}"
                                                           CommandParameter="{Binding}"
                                                           MouseAction="MiddleClick" />
+                                            <MouseBinding Command="{Binding 
+                                                RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}}, Path=DataContext.DraftAddTagCommand}"
+                                                          CommandParameter="{Binding}"
+                                                          MouseAction="RightClick" />
                                         </TextBlock.InputBindings>
 
                                         <Run Text="{Binding Title, Mode=OneWay}"
