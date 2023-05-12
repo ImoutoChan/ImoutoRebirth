@@ -2,13 +2,13 @@
 
     <PropertyGroup>
         <OutputType>Exe</OutputType>
-        <TargetFramework>net7.0</TargetFramework>
         <RuntimeIdentifier>win7-x64</RuntimeIdentifier>
         <SelfContained>false</SelfContained>
-        
+
+        <TargetFramework>net7.0</TargetFramework>
         <Nullable>enable</Nullable>
-        <ImplicitUsings>enable</ImplicitUsings>
         <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+        <ImplicitUsings>true</ImplicitUsings>
     </PropertyGroup>
 
     <PropertyGroup>
@@ -17,15 +17,15 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="ImoutoRebirth.Common.WebApi" Version="3.10.5" />
-        <PackageReference Include="Microsoft.Extensions.Hosting.WindowsServices" Version="7.0.0" />
-        <PackageReference Include="ImoutoRebirth.Common.Host" Version="3.10.5" />
-        <PackageReference Include="ImoutoRebirth.Common.Logging" Version="3.10.5" />
-        <PackageReference Include="ImoutoRebirth.Common.Cqrs" Version="3.10.5" />
-        <PackageReference Include="Swashbuckle.AspNetCore" Version="6.5.0" />
-        <PackageReference Include="ImoutoRebirth.Lilin.WebApi.Client" Version="2.6.2" />
-        <PackageReference Include="ImoutoRebirth.Room.WebApi.Client" Version="1.16.3" />
-        <PackageReference Include="MediatR.Extensions.Microsoft.DependencyInjection" Version="11.1.0" />
+        <PackageReference Include="ImoutoRebirth.Common.WebApi" Version="3.10.5"/>
+        <PackageReference Include="Microsoft.Extensions.Hosting.WindowsServices" Version="7.0.0"/>
+        <PackageReference Include="ImoutoRebirth.Common.Host" Version="3.10.5"/>
+        <PackageReference Include="ImoutoRebirth.Common.Logging" Version="3.10.5"/>
+        <PackageReference Include="ImoutoRebirth.Common.Cqrs" Version="3.10.5"/>
+        <PackageReference Include="Swashbuckle.AspNetCore" Version="6.5.0"/>
+        <PackageReference Include="ImoutoRebirth.Lilin.WebApi.Client" Version="2.6.2"/>
+        <PackageReference Include="ImoutoRebirth.Room.WebApi.Client" Version="1.16.3"/>
+        <PackageReference Include="MediatR.Extensions.Microsoft.DependencyInjection" Version="11.1.0"/>
     </ItemGroup>
 
 </Project>

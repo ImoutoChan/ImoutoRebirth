@@ -10,6 +10,6 @@ internal class Startup : BaseStartup
     {
     }
 
-    public override void ConfigureServices(IServiceCollection services) 
+    public override void ConfigureServices(IServiceCollection services)
         => services.AddHarpyServices(Configuration);
 }

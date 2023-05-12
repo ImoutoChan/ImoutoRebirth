@@ -1,27 +1,26 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
-    <TargetFramework>net7.0</TargetFramework>
-    <LangVersion>latest</LangVersion>
-    <Nullable>enable</Nullable>
-    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
-    <ImplicitUsings>enable</ImplicitUsings>
-  </PropertyGroup>
+    <PropertyGroup>
+        <TargetFramework>net7.0</TargetFramework>
+        <Nullable>enable</Nullable>
+        <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+        <ImplicitUsings>true</ImplicitUsings>
+    </PropertyGroup>
 
-  <ItemGroup>
-    <PackageReference Include="ImoutoRebirth.Arachne.MessageContracts" Version="1.8.2" />
-    <PackageReference Include="ImoutoRebirth.Common.Cqrs" Version="3.10.4" />
-    <PackageReference Include="ImoutoRebirth.Common.MassTransit" Version="3.10.4" />
-    <PackageReference Include="ImoutoRebirth.Common.Quartz" Version="3.10.4" />
-    <PackageReference Include="MediatR" Version="11.0.0" />
-    <PackageReference Include="MediatR.Extensions.Microsoft.DependencyInjection" Version="11.0.0" />
-    <PackageReference Include="Microsoft.Extensions.Options.ConfigurationExtensions" Version="6.0.0" />
-  </ItemGroup>
+    <ItemGroup>
+        <PackageReference Include="ImoutoRebirth.Arachne.MessageContracts" Version="1.8.2"/>
+        <PackageReference Include="ImoutoRebirth.Common.Cqrs" Version="3.10.4"/>
+        <PackageReference Include="ImoutoRebirth.Common.MassTransit" Version="3.10.4"/>
+        <PackageReference Include="ImoutoRebirth.Common.Quartz" Version="3.10.4"/>
+        <PackageReference Include="MediatR" Version="11.0.0"/>
+        <PackageReference Include="MediatR.Extensions.Microsoft.DependencyInjection" Version="11.0.0"/>
+        <PackageReference Include="Microsoft.Extensions.Options.ConfigurationExtensions" Version="6.0.0"/>
+    </ItemGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\ImoutoRebirth.Meido.Core\ImoutoRebirth.Meido.Core.csproj" />
-    <ProjectReference Include="..\ImoutoRebirth.Meido.DataAccess\ImoutoRebirth.Meido.DataAccess.csproj" />
-    <ProjectReference Include="..\ImoutoRebirth.Meido.MessageContracts\ImoutoRebirth.Meido.MessageContracts.csproj" />
-  </ItemGroup>
+    <ItemGroup>
+        <ProjectReference Include="..\ImoutoRebirth.Meido.Core\ImoutoRebirth.Meido.Core.csproj"/>
+        <ProjectReference Include="..\ImoutoRebirth.Meido.DataAccess\ImoutoRebirth.Meido.DataAccess.csproj"/>
+        <ProjectReference Include="..\ImoutoRebirth.Meido.MessageContracts\ImoutoRebirth.Meido.MessageContracts.csproj"/>
+    </ItemGroup>
 
 </Project>

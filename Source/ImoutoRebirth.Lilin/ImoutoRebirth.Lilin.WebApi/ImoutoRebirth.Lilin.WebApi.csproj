@@ -1,31 +1,31 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
-    <TargetFramework>net7.0</TargetFramework>
-    <Nullable>enable</Nullable>
-    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
-    <ImplicitUsings>true</ImplicitUsings>
-  </PropertyGroup>
+    <PropertyGroup>
+        <TargetFramework>net7.0</TargetFramework>
+        <Nullable>enable</Nullable>
+        <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+        <ImplicitUsings>true</ImplicitUsings>
+    </PropertyGroup>
 
-  <PropertyGroup>
-    <GenerateDocumentationFile>true</GenerateDocumentationFile>
-    <NoWarn>$(NoWarn);1591</NoWarn>
-  </PropertyGroup>
+    <PropertyGroup>
+        <GenerateDocumentationFile>true</GenerateDocumentationFile>
+        <NoWarn>$(NoWarn);1591</NoWarn>
+    </PropertyGroup>
 
-  <ItemGroup>
-    <PackageReference Include="ImoutoRebirth.Common.WebApi" Version="3.10.5" />
-    <FrameworkReference Include="Microsoft.AspNetCore.App" />
-    <PackageReference Include="AutoMapper" Version="12.0.0" />
-    <PackageReference Include="MediatR" Version="11.0.0" />
-    <PackageReference Include="Swashbuckle.AspNetCore" Version="6.4.0" />
-  </ItemGroup>
+    <ItemGroup>
+        <PackageReference Include="ImoutoRebirth.Common.WebApi" Version="3.10.5"/>
+        <FrameworkReference Include="Microsoft.AspNetCore.App"/>
+        <PackageReference Include="AutoMapper" Version="12.0.0"/>
+        <PackageReference Include="MediatR" Version="11.0.0"/>
+        <PackageReference Include="Swashbuckle.AspNetCore" Version="6.4.0"/>
+    </ItemGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\ImoutoRebirth.Lilin.Services\ImoutoRebirth.Lilin.Services.csproj" />
-  </ItemGroup>
+    <ItemGroup>
+        <ProjectReference Include="..\ImoutoRebirth.Lilin.Services\ImoutoRebirth.Lilin.Services.csproj"/>
+    </ItemGroup>
 
-  <ItemGroup>
-    <Using Remove="System.IO" />
-  </ItemGroup>
+    <ItemGroup>
+        <Using Remove="System.IO"/>
+    </ItemGroup>
 
 </Project>

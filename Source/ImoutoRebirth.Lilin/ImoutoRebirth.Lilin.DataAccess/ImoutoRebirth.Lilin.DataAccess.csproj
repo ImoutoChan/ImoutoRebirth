@@ -1,32 +1,32 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
-    <TargetFramework>net7.0</TargetFramework>
-    <Nullable>enable</Nullable>
-    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
-    <ImplicitUsings>true</ImplicitUsings>
-  </PropertyGroup>
+    <PropertyGroup>
+        <TargetFramework>net7.0</TargetFramework>
+        <Nullable>enable</Nullable>
+        <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+        <ImplicitUsings>true</ImplicitUsings>
+    </PropertyGroup>
 
-  <ItemGroup>
-    <PackageReference Include="ImoutoRebirth.Common.Domain.EntityFrameworkCore" Version="3.10.5" />
-    <PackageReference Include="ImoutoRebirth.Common.EntityFrameworkCore" Version="3.10.5" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="6.0.10" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="6.0.10">
-      <PrivateAssets>all</PrivateAssets>
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
-    </PackageReference>
-    <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="6.0.7" />
-    <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL.NodaTime" Version="6.0.7" />
-  </ItemGroup>
+    <ItemGroup>
+        <PackageReference Include="ImoutoRebirth.Common.Domain.EntityFrameworkCore" Version="3.10.5"/>
+        <PackageReference Include="ImoutoRebirth.Common.EntityFrameworkCore" Version="3.10.5"/>
+        <PackageReference Include="Microsoft.EntityFrameworkCore" Version="6.0.10"/>
+        <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="6.0.10">
+            <PrivateAssets>all</PrivateAssets>
+            <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
+        </PackageReference>
+        <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="6.0.7"/>
+        <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL.NodaTime" Version="6.0.7"/>
+    </ItemGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\ImoutoRebirth.Lilin.Core\ImoutoRebirth.Lilin.Core.csproj" />
-  </ItemGroup>
+    <ItemGroup>
+        <ProjectReference Include="..\ImoutoRebirth.Lilin.Core\ImoutoRebirth.Lilin.Core.csproj"/>
+    </ItemGroup>
 
-  <ItemGroup>
-    <Compile Update="Migrations\20190124193525_Init.Designer.cs">
-      <DependentUpon>20190124193525_Init.cs</DependentUpon>
-    </Compile>
-  </ItemGroup>
+    <ItemGroup>
+        <Compile Update="Migrations\20190124193525_Init.Designer.cs">
+            <DependentUpon>20190124193525_Init.cs</DependentUpon>
+        </Compile>
+    </ItemGroup>
 
 </Project>

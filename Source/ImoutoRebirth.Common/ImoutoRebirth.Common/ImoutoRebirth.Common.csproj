@@ -1,19 +1,10 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
-    <TargetFramework>net6.0</TargetFramework>
-    <Nullable>enable</Nullable>
-    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
-    <ImplicitUsings>true</ImplicitUsings>
-    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-    <Description>A common libraries that are used across ImoutoRebirth solution</Description>
-    <PackageProjectUrl>https://github.com/ImoutoRebirth/ImoutoRebirth.Common</PackageProjectUrl>
-    <Company>ImoutoRebirth</Company>
-    <Authors>ImoutoChan</Authors>
-  </PropertyGroup>
-
-  <PropertyGroup>
-    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
-  </PropertyGroup>
+    <PropertyGroup>
+        <TargetFramework>net7.0</TargetFramework>
+        <Nullable>enable</Nullable>
+        <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+        <ImplicitUsings>true</ImplicitUsings>
+    </PropertyGroup>
 
 </Project>
