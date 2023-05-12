@@ -1,4 +1,0 @@
-directive:
-- from: swagger-document
-  where: $..*[?(@.additionalProperties == false)]
-  transform: $.additionalProperties = undefined;
