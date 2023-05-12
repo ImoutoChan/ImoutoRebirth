@@ -22,7 +22,7 @@ public static class ServiceCollectionExtensions
 {
     public static IServiceCollection AddMeidoServices(this IServiceCollection services)
     {
-        services.AddMediatR(typeof(AddNewFileCommand));
+        services.AddMediatR(x => x.RegisterServicesFromAssemblyContaining<AddNewFileCommand>());
         services.AddLoggingBehavior();
         services.AddTransactionBehavior();
 

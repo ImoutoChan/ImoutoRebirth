@@ -24,12 +24,12 @@ public class BindTagsCommandHandler : ICommandHandler<BindTagsCommand>
         _tagRepository = tagRepository;
     }
 
-    public async Task<Unit> Handle(BindTagsCommand request, CancellationToken ct)
+    public async Task Handle(BindTagsCommand request, CancellationToken ct)
     {
         if (!request.FileTags.Any())
         {
             _logger.LogWarning("Trying to batch add {FileTagCount} new FileTags", request.FileTags.Count);
-            return Unit.Value;
+            return;
         }
 
         var tags = await LoadTags(request, ct);
@@ -54,7 +54,6 @@ public class BindTagsCommandHandler : ICommandHandler<BindTagsCommand>
         }
 
         _logger.LogInformation("Batch added {FileTagCount} new FileTags", request.FileTags.Count);
-        return Unit.Value;
     }
 
     private async Task<IReadOnlyCollection<FileInfo>> LoadFileInfos(BindTagsCommand request, CancellationToken ct)

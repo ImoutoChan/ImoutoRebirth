@@ -13,10 +13,8 @@ internal class AddNewFileCommandHandler : ICommandHandler<AddNewFileCommand>
         _parsingService = parsingService;
     }
 
-    public async Task<Unit> Handle(AddNewFileCommand request, CancellationToken cancellationToken)
+    public async Task Handle(AddNewFileCommand request, CancellationToken cancellationToken)
     {
         await _parsingService.CreateParsingStatusesForNewFile(request.FileId, request.Md5);
-
-        return Unit.Value;
     }
 }

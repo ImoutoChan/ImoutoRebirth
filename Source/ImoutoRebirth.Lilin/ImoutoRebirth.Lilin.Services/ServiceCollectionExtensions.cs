@@ -20,7 +20,7 @@ public static class ServiceCollectionExtensions
         this IServiceCollection services,
         IConfiguration configuration)
     {
-        services.AddMediatR(typeof(SaveMetadataCommand));
+        services.AddMediatR(x => x.RegisterServicesFromAssemblyContaining<SaveMetadataCommand>());
         services.AddLoggingBehavior();
         services.AddTransactionBehavior();
 

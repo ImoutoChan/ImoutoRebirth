@@ -13,13 +13,12 @@ public class UnbindTagCommandHandler : ICommandHandler<UnbindTagCommand>
         _fileInfoService = fileInfoService;
     }
 
-    public async Task<Unit> Handle(UnbindTagCommand request, CancellationToken ct)
+    public async Task Handle(UnbindTagCommand request, CancellationToken ct)
     {
         var fileInfo = await _fileInfoService.LoadFileAggregate(request.FileTag.FileId, ct);
 
         fileInfo.RemoveFileTag(request.FileTag.TagId, request.FileTag.Source, request.FileTag.Value);
 
         await _fileInfoService.PersistFileAggregate(fileInfo);
-        return Unit.Value;
     }
 }

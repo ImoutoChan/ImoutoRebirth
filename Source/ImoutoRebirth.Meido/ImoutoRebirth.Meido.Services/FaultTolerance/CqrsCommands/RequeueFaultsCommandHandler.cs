@@ -13,10 +13,8 @@ internal class RequeueFaultsCommandHandler : ICommandHandler<RequeueFaultsComman
         _faultToleranceService = faultToleranceService;
     }
         
-    public async Task<Unit> Handle(RequeueFaultsCommand request, CancellationToken cancellationToken)
+    public async Task Handle(RequeueFaultsCommand request, CancellationToken cancellationToken)
     {
         await _faultToleranceService.RequeueFaults();
-
-        return Unit.Value;
     }
 }

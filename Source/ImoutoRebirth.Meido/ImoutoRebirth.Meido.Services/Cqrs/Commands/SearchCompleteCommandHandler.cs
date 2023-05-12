@@ -14,7 +14,7 @@ internal class SearchCompleteCommandHandler : ICommandHandler<SearchCompleteComm
         _parsingService = parsingService;
     }
 
-    public async Task<Unit> Handle(SearchCompleteCommand request, CancellationToken cancellationToken)
+    public async Task Handle(SearchCompleteCommand request, CancellationToken cancellationToken)
     {
         var source = (MetadataSource)request.SourceId; 
         
@@ -29,7 +29,5 @@ internal class SearchCompleteCommandHandler : ICommandHandler<SearchCompleteComm
         {
             await _parsingService.CreateGelbooruParsingStatus(request.FileId);
         }
-
-        return Unit.Value;
     }
 }

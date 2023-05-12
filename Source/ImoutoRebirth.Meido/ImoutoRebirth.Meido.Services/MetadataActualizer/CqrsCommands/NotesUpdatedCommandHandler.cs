@@ -14,13 +14,11 @@ internal class NotesUpdatedCommandHandler : ICommandHandler<NotesUpdatedCommand>
         _sourceActualizerService = sourceActualizerService;
     }
 
-    public async Task<Unit> Handle(NotesUpdatedCommand request, CancellationToken cancellationToken)
+    public async Task Handle(NotesUpdatedCommand request, CancellationToken cancellationToken)
     {
         await _sourceActualizerService.MarkNotesUpdated(
             request.SourceId,
             request.PostIds,
             request.LastNoteUpdateDate.ToInstant());
-
-        return Unit.Value;
     }
 }

@@ -18,12 +18,10 @@ internal class ActualizeSourcesCommandHandler : ICommandHandler<ActualizeSources
         _actualizerSettings = actualizerSettings.Value;
     }
 
-    public async Task<Unit> Handle(
+    public async Task Handle(
         ActualizeSourcesCommand request, 
         CancellationToken cancellationToken)
     {
         await _sourceActualizerService.RequestActualization(_actualizerSettings.ActiveSources);
-
-        return Unit.Value;
     }
 }

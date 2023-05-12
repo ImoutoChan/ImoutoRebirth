@@ -13,10 +13,8 @@ internal class MarkMetadataSavedCommandHandler : ICommandHandler<MarkMetadataSav
         _parsingService = parsingService;
     }
 
-    public async Task<Unit> Handle(MarkMetadataSavedCommand request, CancellationToken cancellationToken)
+    public async Task Handle(MarkMetadataSavedCommand request, CancellationToken cancellationToken)
     {
         await _parsingService.MarkAsSaved(request.FileId, request.SourceId);
-
-        return Unit.Value;
     }
 }

@@ -13,10 +13,8 @@ public class UpdateTagsCountersCommandHandler : ICommandHandler<UpdateTagsCounte
         _tagRepository = tagRepository;
     }
 
-    public async Task<Unit> Handle(UpdateTagsCountersCommand request, CancellationToken cancellationToken)
+    public async Task Handle(UpdateTagsCountersCommand request, CancellationToken cancellationToken)
     {
         await _tagRepository.UpdateTagsCounters();
-
-        return Unit.Value;
     }
 }

@@ -35,7 +35,7 @@ internal class FavoritesSaveCommandHandler : ICommandHandler<FavoritesSaveComman
         _postSaver = postSaver;
     }
 
-    public async Task<Unit> Handle(FavoritesSaveCommand request, CancellationToken cancellationToken)
+    public async Task Handle(FavoritesSaveCommand request, CancellationToken cancellationToken)
     {
         _logger.LogInformation("Loading favorite posts");
 
@@ -57,8 +57,6 @@ internal class FavoritesSaveCommandHandler : ICommandHandler<FavoritesSaveComman
         await _postSaver.SavePosts(postsToSave, _saverOptions.Value.SaveToPath);
 
         _logger.LogInformation("Saved {PostsCount} favorite posts", postsToSave.Count);
-
-        return Unit.Value;
     }
 
     private async Task<IReadOnlyCollection<Post>> GetNewPostsFromBooru(

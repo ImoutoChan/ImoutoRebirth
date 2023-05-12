@@ -13,10 +13,8 @@ internal class TagsUpdatedCommandHandler : ICommandHandler<TagsUpdatedCommand>
         _sourceActualizerService = sourceActualizerService;
     }
 
-    public async Task<Unit> Handle(TagsUpdatedCommand request, CancellationToken cancellationToken)
+    public async Task Handle(TagsUpdatedCommand request, CancellationToken cancellationToken)
     {
         await _sourceActualizerService.MarkTagsUpdated(request.SourceId, request.PostIds, request.LastHistoryId);
-
-        return Unit.Value;
     }
 }

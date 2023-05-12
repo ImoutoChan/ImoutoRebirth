@@ -8,11 +8,11 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="Microsoft.EntityFrameworkCore" Version="6.0.10"/>
+        <PackageReference Include="Microsoft.EntityFrameworkCore" Version="7.0.5" />
     </ItemGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\ImoutoRebirth.Common.Domain\ImoutoRebirth.Common.Domain.csproj"/>
+        <ProjectReference Include="..\ImoutoRebirth.Common.Domain\ImoutoRebirth.Common.Domain.csproj" />
     </ItemGroup>
 
 </Project>

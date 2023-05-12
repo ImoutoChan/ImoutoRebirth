@@ -31,7 +31,7 @@ public class SaveMetadataCommandHandler : ICommandHandler<SaveMetadataCommand>
         _fileInfoService = fileInfoService;
     }
 
-    public async Task<Unit> Handle(SaveMetadataCommand request, CancellationToken ct)
+    public async Task Handle(SaveMetadataCommand request, CancellationToken ct)
     {
         var source = request.MqCommand.MetadataSource.Convert();
         var fileId = request.MqCommand.FileId;
@@ -47,8 +47,6 @@ public class SaveMetadataCommandHandler : ICommandHandler<SaveMetadataCommand>
         _eventStorage.AddRange(domainResult.EventsCollection);
             
         await _fileInfoService.PersistFileAggregate(file);
-
-        return Unit.Value;
     }
 
     private static IEnumerable<FileNote> LoadNotes(

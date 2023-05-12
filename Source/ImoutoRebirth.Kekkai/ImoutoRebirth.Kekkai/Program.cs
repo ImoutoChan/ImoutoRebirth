@@ -61,7 +61,7 @@ public class WebApiStartup
         services.AddRoomWebApiClients(
             Configuration.GetValue<string>("RoomUrl") ?? throw new ArgumentException("Unable to retrieve RoomUrl"));
         
-        services.AddMediatR(typeof(FilesStatusesQueryHandler));
+        services.AddMediatR(x => x.RegisterServicesFromAssemblyContaining<FilesStatusesQueryHandler>());
         services.AddLoggingBehavior();
 
         services.AddTransient<SimpleAuthMiddleware>();
