@@ -11,13 +11,13 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="ImoutoRebirth.Common.Host" Version="3.10.5"/>
-        <PackageReference Include="ImoutoRebirth.Common.Logging" Version="3.10.5"/>
-        <PackageReference Include="Microsoft.Extensions.Hosting.WindowsServices" Version="7.0.0"/>
+        <PackageReference Include="Microsoft.Extensions.Hosting.WindowsServices" Version="7.0.0" />
     </ItemGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\ImoutoRebirth.Harpy.Services\ImoutoRebirth.Harpy.Services.csproj"/>
+        <ProjectReference Include="..\..\ImoutoRebirth.Common\ImoutoRebirth.Common.Host\ImoutoRebirth.Common.Host.csproj" />
+        <ProjectReference Include="..\..\ImoutoRebirth.Common\ImoutoRebirth.Common.Logging\ImoutoRebirth.Common.Logging.csproj" />
+        <ProjectReference Include="..\ImoutoRebirth.Harpy.Services\ImoutoRebirth.Harpy.Services.csproj" />
     </ItemGroup>
 
 </Project>

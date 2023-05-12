@@ -8,13 +8,16 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="ImoutoRebirth.Common.Cqrs" Version="3.10.5"/>
-        <PackageReference Include="ImoutoRebirth.Common.Quartz" Version="3.10.5"/>
         <PackageReference Include="MediatR" Version="11.1.0"/>
         <PackageReference Include="MediatR.Extensions.Microsoft.DependencyInjection" Version="11.0.0"/>
         <PackageReference Include="Microsoft.Extensions.Options.ConfigurationExtensions" Version="7.0.0"/>
         <PackageReference Include="Microsoft.Extensions.Http" Version="7.0.0"/>
         <PackageReference Include="System.Linq.Async" Version="6.0.1"/>
+    </ItemGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="..\..\ImoutoRebirth.Common\ImoutoRebirth.Common.Cqrs\ImoutoRebirth.Common.Cqrs.csproj"/>
+        <ProjectReference Include="..\..\ImoutoRebirth.Common\ImoutoRebirth.Common.Quartz\ImoutoRebirth.Common.Quartz.csproj"/>
     </ItemGroup>
 
 </Project>

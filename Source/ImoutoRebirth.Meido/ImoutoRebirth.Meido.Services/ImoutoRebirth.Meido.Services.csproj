@@ -8,19 +8,19 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="ImoutoRebirth.Arachne.MessageContracts" Version="1.8.2"/>
-        <PackageReference Include="ImoutoRebirth.Common.Cqrs" Version="3.10.4"/>
-        <PackageReference Include="ImoutoRebirth.Common.MassTransit" Version="3.10.4"/>
-        <PackageReference Include="ImoutoRebirth.Common.Quartz" Version="3.10.4"/>
         <PackageReference Include="MediatR" Version="11.0.0"/>
         <PackageReference Include="MediatR.Extensions.Microsoft.DependencyInjection" Version="11.0.0"/>
         <PackageReference Include="Microsoft.Extensions.Options.ConfigurationExtensions" Version="6.0.0"/>
     </ItemGroup>
 
     <ItemGroup>
+        <ProjectReference Include="..\..\ImoutoRebirth.Arachne\ImoutoRebirth.Arachne.MessageContracts\ImoutoRebirth.Arachne.MessageContracts.csproj"/>
+        <ProjectReference Include="..\..\ImoutoRebirth.Common\ImoutoRebirth.Common.Cqrs\ImoutoRebirth.Common.Cqrs.csproj"/>
+        <ProjectReference Include="..\..\ImoutoRebirth.Common\ImoutoRebirth.Common.MassTransit\ImoutoRebirth.Common.MassTransit.csproj"/>
         <ProjectReference Include="..\ImoutoRebirth.Meido.Core\ImoutoRebirth.Meido.Core.csproj"/>
         <ProjectReference Include="..\ImoutoRebirth.Meido.DataAccess\ImoutoRebirth.Meido.DataAccess.csproj"/>
         <ProjectReference Include="..\ImoutoRebirth.Meido.MessageContracts\ImoutoRebirth.Meido.MessageContracts.csproj"/>
+        <ProjectReference Include="..\..\ImoutoRebirth.Common\ImoutoRebirth.Common.Quartz\ImoutoRebirth.Common.Quartz.csproj"/>
     </ItemGroup>
 
 </Project>

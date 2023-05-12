@@ -11,26 +11,25 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="AutoMapper" Version="12.0.1"/>
-        <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="12.0.0"/>
-        <PackageReference Include="CacheManager.Microsoft.Extensions.Caching.Memory" Version="2.0.0-beta-1629"/>
-        <PackageReference Include="CacheManager.Serialization.Json" Version="2.0.0-beta-1629"/>
-        <PackageReference Include="ImoutoRebirth.Common.EntityFrameworkCore" Version="3.10.2"/>
-        <PackageReference Include="ImoutoRebirth.Common.Quartz" Version="3.10.2"/>
-        <PackageReference Include="ImoutoRebirth.Common.Host" Version="3.10.2"/>
-        <PackageReference Include="ImoutoRebirth.Common.Logging" Version="3.10.2"/>
+        <PackageReference Include="AutoMapper" Version="12.0.1" />
+        <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="12.0.0" />
+        <PackageReference Include="CacheManager.Microsoft.Extensions.Caching.Memory" Version="2.0.0-beta-1629" />
+        <PackageReference Include="CacheManager.Serialization.Json" Version="2.0.0-beta-1629" />
         <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="7.0.2">
             <PrivateAssets>all</PrivateAssets>
             <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
         </PackageReference>
-        <PackageReference Include="Microsoft.Extensions.Hosting" Version="7.0.0"/>
-        <PackageReference Include="Microsoft.Extensions.Hosting.WindowsServices" Version="7.0.0"/>
+        <PackageReference Include="Microsoft.Extensions.Hosting" Version="7.0.0" />
+        <PackageReference Include="Microsoft.Extensions.Hosting.WindowsServices" Version="7.0.0" />
     </ItemGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\ImoutoRebirth.Room.Infrastructure\ImoutoRebirth.Room.Infrastructure.csproj"/>
-        <ProjectReference Include="..\ImoutoRebirth.Room.Services\ImoutoRebirth.Room.Core.csproj"/>
-        <ProjectReference Include="..\ImoutoRebirth.Room.WebApi\ImoutoRebirth.Room.WebApi.csproj"/>
+        <ProjectReference Include="..\..\ImoutoRebirth.Common\ImoutoRebirth.Common.Host\ImoutoRebirth.Common.Host.csproj" />
+        <ProjectReference Include="..\..\ImoutoRebirth.Common\ImoutoRebirth.Common.Logging\ImoutoRebirth.Common.Logging.csproj" />
+        <ProjectReference Include="..\..\ImoutoRebirth.Common\ImoutoRebirth.Common.Quartz\ImoutoRebirth.Common.Quartz.csproj" />
+        <ProjectReference Include="..\ImoutoRebirth.Room.Infrastructure\ImoutoRebirth.Room.Infrastructure.csproj" />
+        <ProjectReference Include="..\ImoutoRebirth.Room.Services\ImoutoRebirth.Room.Core.csproj" />
+        <ProjectReference Include="..\ImoutoRebirth.Room.WebApi\ImoutoRebirth.Room.WebApi.csproj" />
     </ItemGroup>
 
     <ItemGroup>

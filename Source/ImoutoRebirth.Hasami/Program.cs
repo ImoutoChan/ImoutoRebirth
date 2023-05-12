@@ -1,8 +1,5 @@
-﻿// See https://aka.ms/new-console-template for more information
-
-using System.Security.Cryptography;
-using ImoutoRebirth.Room.WebApi.Client;
-using ImoutoRebirth.Room.WebApi.Client.Models;
+﻿using System.Security.Cryptography;
+using ImoutoRebirth.RoomService.WebApi.Client;
 
 var sourcePath = new DirectoryInfo(@"F:\income\NEW\!playground\traps");
 var targetFoundPath = new DirectoryInfo(Path.Combine(sourcePath.FullName, "!found"));
@@ -14,13 +11,8 @@ var hashesOnly = hashes.Select(x => x.MD5).ToList();
 
 // calculate md5
 
-var roomClient = new ImoutoRebirthRoomWebApiClient(new Uri("http://localhost:11301"));
-var found = await roomClient.CollectionFiles.SearchAsync(new CollectionFilesRequest()
-{
-    Md5 = hashesOnly,
-    Count = int.MaxValue,
-    Skip = 0
-});
+var roomClient = new CollectionFilesClient("http://localhost:11301", new HttpClient());
+var found = await roomClient.SearchAsync(new CollectionFilesRequest(null, null, int.MaxValue, hashesOnly, null, 0));
 
 targetFoundPath.Create();
 targetMissPath.Create();
