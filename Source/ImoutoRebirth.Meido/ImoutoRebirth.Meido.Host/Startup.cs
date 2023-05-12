@@ -15,17 +15,14 @@ public class Startup : BaseStartup
 {
     public MeidoSettings MeidoSettings { get; }
 
-    public Startup(IConfiguration configuration)
-        : base(configuration)
-    {
-        MeidoSettings = configuration.Get<MeidoSettings>();
-    }
+    public Startup(IConfiguration configuration) : base(configuration) 
+        => MeidoSettings = configuration.GetRequired<MeidoSettings>();
 
     public override void ConfigureServices(IServiceCollection services)
     {
         services.AddMeidoServices()
             .ConfigureMeidoServices(Configuration)
-            .AddMeidoDataAccess(Configuration.GetConnectionString("MeidoDatabase"))
+            .AddMeidoDataAccess(Configuration.GetRequiredConnectionString("MeidoDatabase"))
             .AddMeidoDomain()
             .AddMeidoInfrastructure();
 
