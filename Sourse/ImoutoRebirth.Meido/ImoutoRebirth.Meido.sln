@@ -1,0 +1,60 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.28527.54
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ImoutoRebirth.Meido.Core", "ImoutoRebirth.Meido.Core\ImoutoRebirth.Meido.Core.csproj", "{B571C564-E38C-4A0A-8D56-6DF618F58856}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ImoutoRebirth.Meido.MessageContracts", "ImoutoRebirth.Meido.MessageContracts\ImoutoRebirth.Meido.MessageContracts.csproj", "{60EB308F-8FA0-4AE2-95A7-0D27845073CD}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ImoutoRebirth.Meido.Services", "ImoutoRebirth.Meido.Services\ImoutoRebirth.Meido.Services.csproj", "{2C55539A-6AA6-4BE2-A4D1-25104FE2D8C7}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ImoutoRebirth.Meido.DataAccess", "ImoutoRebirth.Meido.DataAccess\ImoutoRebirth.Meido.DataAccess.csproj", "{86CA6E3A-96DD-4B85-B816-1948C7C38352}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ImoutoRebirth.Meido.Host", "ImoutoRebirth.Meido.Host\ImoutoRebirth.Meido.Host.csproj", "{37734070-4BF0-48E2-BA50-B06560D4783E}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ImoutoRebirth.Meido.Infrastructure", "ImoutoRebirth.Meido.Infrastructure\ImoutoRebirth.Meido.Infrastructure.csproj", "{2E9EACF7-3683-456C-BD3A-C0EB6A47BE66}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{E4126232-047F-4951-8C43-771A551B6AF4}"
+	ProjectSection(SolutionItems) = preProject
+		appveyor.yml = appveyor.yml
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{B571C564-E38C-4A0A-8D56-6DF618F58856}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B571C564-E38C-4A0A-8D56-6DF618F58856}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B571C564-E38C-4A0A-8D56-6DF618F58856}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B571C564-E38C-4A0A-8D56-6DF618F58856}.Release|Any CPU.Build.0 = Release|Any CPU
+		{60EB308F-8FA0-4AE2-95A7-0D27845073CD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{60EB308F-8FA0-4AE2-95A7-0D27845073CD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{60EB308F-8FA0-4AE2-95A7-0D27845073CD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{60EB308F-8FA0-4AE2-95A7-0D27845073CD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2C55539A-6AA6-4BE2-A4D1-25104FE2D8C7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2C55539A-6AA6-4BE2-A4D1-25104FE2D8C7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2C55539A-6AA6-4BE2-A4D1-25104FE2D8C7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2C55539A-6AA6-4BE2-A4D1-25104FE2D8C7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{86CA6E3A-96DD-4B85-B816-1948C7C38352}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{86CA6E3A-96DD-4B85-B816-1948C7C38352}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{86CA6E3A-96DD-4B85-B816-1948C7C38352}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{86CA6E3A-96DD-4B85-B816-1948C7C38352}.Release|Any CPU.Build.0 = Release|Any CPU
+		{37734070-4BF0-48E2-BA50-B06560D4783E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{37734070-4BF0-48E2-BA50-B06560D4783E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{37734070-4BF0-48E2-BA50-B06560D4783E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{37734070-4BF0-48E2-BA50-B06560D4783E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2E9EACF7-3683-456C-BD3A-C0EB6A47BE66}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2E9EACF7-3683-456C-BD3A-C0EB6A47BE66}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2E9EACF7-3683-456C-BD3A-C0EB6A47BE66}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2E9EACF7-3683-456C-BD3A-C0EB6A47BE66}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {79434B94-FC32-4449-BB94-D00242CFE133}
+	EndGlobalSection
+EndGlobal
