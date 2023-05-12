@@ -1,0 +1,21 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net6.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <ImplicitUsings>true</ImplicitUsings>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <Description>A common libraries that are used across ImoutoRebirth solution</Description>
+    <PackageProjectUrl>https://github.com/ImoutoRebirth/ImoutoRebirth.Common</PackageProjectUrl>
+    <Company>ImoutoRebirth</Company>
+    <Authors>ImoutoChan</Authors>
+    <NoWarn>$(NoWarn);NU5104</NoWarn>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Humanizer.Core" Version="2.14.1" />
+    <PackageReference Include="MassTransit.RabbitMQ" Version="8.0.7" />
+  </ItemGroup>
+
+</Project>

@@ -1,0 +1,79 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.28407.52
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ImoutoRebirth.Common", "ImoutoRebirth.Common\ImoutoRebirth.Common.csproj", "{78C6FE75-D989-4F64-96CA-EDBFAC352F5A}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ImoutoRebirth.Common.Host", "ImoutoRebirth.Common.Host\ImoutoRebirth.Common.Host.csproj", "{D7A5BC18-13A7-4628-8095-FDE2E59E4CAD}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ImoutoRebirth.Common.MassTransit", "ImoutoRebirth.Common.MassTransit\ImoutoRebirth.Common.MassTransit.csproj", "{97F1318A-3E7B-47B1-B37D-B7B82A65DF4F}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ImoutoRebirth.Common.Quartz", "ImoutoRebirth.Common.Quartz\ImoutoRebirth.Common.Quartz.csproj", "{D11B67C1-EDB2-4410-BF8C-3D988FA36D02}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ImoutoRebirth.Common.EntityFrameworkCore", "ImoutoRebirth.Common.EntityFrameworkCore\ImoutoRebirth.Common.EntityFrameworkCore.csproj", "{DE321452-F727-45DB-9ED8-D55544D833BD}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ImoutoRebirth.Common.Logging", "ImoutoRebirth.Common.Logging\ImoutoRebirth.Common.Logging.csproj", "{5104AEED-883B-4456-A3C5-4A5CCF367ADE}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ImoutoRebirth.Common.Cqrs", "ImoutoRebirth.Common.Cqrs\ImoutoRebirth.Common.Cqrs.csproj", "{E8ED0B52-F5A8-41A7-A4E5-6352344C17F8}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ImoutoRebirth.Common.Domain", "ImoutoRebirth.Common.Domain\ImoutoRebirth.Common.Domain.csproj", "{D90AF729-4CDC-4637-84AF-581ACD9BB116}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ImoutoRebirth.Common.WebApi", "ImoutoRebirth.Common.WebApi\ImoutoRebirth.Common.WebApi.csproj", "{1BFF8F85-50F4-443B-AFEA-66056BD78AE8}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ImoutoRebirth.Common.Domain.EntityFrameworkCore", "ImoutoRebirth.Common.Domain.EntityFrameworkCore\ImoutoRebirth.Common.Domain.EntityFrameworkCore.csproj", "{DB6F1ED3-4F0F-42C4-A67D-3A87B8C0F607}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{78C6FE75-D989-4F64-96CA-EDBFAC352F5A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{78C6FE75-D989-4F64-96CA-EDBFAC352F5A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{78C6FE75-D989-4F64-96CA-EDBFAC352F5A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{78C6FE75-D989-4F64-96CA-EDBFAC352F5A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D7A5BC18-13A7-4628-8095-FDE2E59E4CAD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D7A5BC18-13A7-4628-8095-FDE2E59E4CAD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D7A5BC18-13A7-4628-8095-FDE2E59E4CAD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D7A5BC18-13A7-4628-8095-FDE2E59E4CAD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{97F1318A-3E7B-47B1-B37D-B7B82A65DF4F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{97F1318A-3E7B-47B1-B37D-B7B82A65DF4F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{97F1318A-3E7B-47B1-B37D-B7B82A65DF4F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{97F1318A-3E7B-47B1-B37D-B7B82A65DF4F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D11B67C1-EDB2-4410-BF8C-3D988FA36D02}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D11B67C1-EDB2-4410-BF8C-3D988FA36D02}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D11B67C1-EDB2-4410-BF8C-3D988FA36D02}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D11B67C1-EDB2-4410-BF8C-3D988FA36D02}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DE321452-F727-45DB-9ED8-D55544D833BD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DE321452-F727-45DB-9ED8-D55544D833BD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DE321452-F727-45DB-9ED8-D55544D833BD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DE321452-F727-45DB-9ED8-D55544D833BD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5104AEED-883B-4456-A3C5-4A5CCF367ADE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5104AEED-883B-4456-A3C5-4A5CCF367ADE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5104AEED-883B-4456-A3C5-4A5CCF367ADE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5104AEED-883B-4456-A3C5-4A5CCF367ADE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E8ED0B52-F5A8-41A7-A4E5-6352344C17F8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E8ED0B52-F5A8-41A7-A4E5-6352344C17F8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E8ED0B52-F5A8-41A7-A4E5-6352344C17F8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E8ED0B52-F5A8-41A7-A4E5-6352344C17F8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D90AF729-4CDC-4637-84AF-581ACD9BB116}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D90AF729-4CDC-4637-84AF-581ACD9BB116}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D90AF729-4CDC-4637-84AF-581ACD9BB116}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D90AF729-4CDC-4637-84AF-581ACD9BB116}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1BFF8F85-50F4-443B-AFEA-66056BD78AE8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1BFF8F85-50F4-443B-AFEA-66056BD78AE8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1BFF8F85-50F4-443B-AFEA-66056BD78AE8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1BFF8F85-50F4-443B-AFEA-66056BD78AE8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DB6F1ED3-4F0F-42C4-A67D-3A87B8C0F607}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DB6F1ED3-4F0F-42C4-A67D-3A87B8C0F607}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DB6F1ED3-4F0F-42C4-A67D-3A87B8C0F607}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DB6F1ED3-4F0F-42C4-A67D-3A87B8C0F607}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {BF560E27-01B8-4F6F-8218-ED5EB69A52A4}
+	EndGlobalSection
+EndGlobal

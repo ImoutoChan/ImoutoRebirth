@@ -1,0 +1,25 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net6.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <ImplicitUsings>true</ImplicitUsings>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <Description>A common libraries that are used across ImoutoRebirth solution</Description>
+    <PackageProjectUrl>https://github.com/ImoutoRebirth/ImoutoRebirth.Common</PackageProjectUrl>
+    <Company>ImoutoRebirth</Company>
+    <Authors>ImoutoChan</Authors>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="MediatR" Version="11.0.0" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="6.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="6.0.2" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\ImoutoRebirth.Common.Domain\ImoutoRebirth.Common.Domain.csproj" />
+  </ItemGroup>
+
+</Project>
