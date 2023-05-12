@@ -1,20 +1,19 @@
 ﻿using System.Runtime.CompilerServices;
 using ImoutoRebirth.Common.Cqrs.Abstract;
 using ImoutoRebirth.LilinService.WebApi.Client;
-using ImoutoRebirth.Room.WebApi.Client;
-using ImoutoRebirth.Room.WebApi.Client.Models;
+using ImoutoRebirth.RoomService.WebApi.Client;
 
 namespace ImoutoRebirth.Kekkai.Application;
 
 internal class FilesStatusesQueryHandler : IStreamQueryHandler<FilesStatusesQuery, FileStatusResult>
 {
     private readonly FilesClient _filesLilinClient;
-    private readonly IImoutoRebirthRoomWebApiClient _roomWebApiClient;
+    private readonly CollectionFilesClient _collectionFilesClient;
 
-    public FilesStatusesQueryHandler(FilesClient filesLilinClient, IImoutoRebirthRoomWebApiClient roomWebApiClient)
+    public FilesStatusesQueryHandler(FilesClient filesLilinClient, CollectionFilesClient collectionFilesClient)
     {
         _filesLilinClient = filesLilinClient;
-        _roomWebApiClient = roomWebApiClient;
+        _collectionFilesClient = collectionFilesClient;
     }
 
     public async IAsyncEnumerable<FileStatusResult> Handle(
@@ -42,8 +41,14 @@ internal class FilesStatusesQueryHandler : IStreamQueryHandler<FilesStatusesQuer
         CancellationToken ct)
     {
         var loaded =
-            await _roomWebApiClient.CollectionFiles.SearchAsync(
-                new CollectionFilesRequest(md5: hashes.ToList()), ct);
+            await _collectionFilesClient.SearchAsync(
+                new CollectionFilesRequest(
+                    null,
+                    null,
+                    null,
+                    hashes.ToList(),
+                    null,
+                    null), ct);
 
         var loadedHashset = loaded.Select(x => x.Md5).ToHashSet();
 

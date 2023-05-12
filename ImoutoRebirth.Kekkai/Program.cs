@@ -56,10 +56,10 @@ public class WebApiStartup
 
     public void ConfigureServices(IServiceCollection services)
     {
-        services.AddLilinWebApiClients(Configuration.GetValue<string>("LilinUrl"));
-        
-        services.AddTransient<IImoutoRebirthRoomWebApiClient>(_ =>
-            new ImoutoRebirthRoomWebApiClient(new Uri(Configuration.GetValue<string>("RoomUrl"))));
+        services.AddLilinWebApiClients(
+            Configuration.GetValue<string>("LilinUrl") ?? throw new ArgumentException("Unable to retrieve LilinUrl"));
+        services.AddRoomWebApiClients(
+            Configuration.GetValue<string>("RoomUrl") ?? throw new ArgumentException("Unable to retrieve RoomUrl"));
         
         services.AddMediatR(typeof(FilesStatusesQueryHandler));
         services.AddLoggingBehavior();
