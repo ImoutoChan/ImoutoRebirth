@@ -1,0 +1,79 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.28917.182
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ImoutoRebirth.Room.Database", "ImoutoRebirth.Room.Database\ImoutoRebirth.Room.Database.csproj", "{DEB49522-7FB3-4882-84DF-D3DA16FBC0D0}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ImoutoRebirth.Room.Core", "ImoutoRebirth.Room.Services\ImoutoRebirth.Room.Core.csproj", "{20206CFA-2D56-4E7E-ABC2-DCAF20F418DC}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ImoutoRebirth.Room.Infrastructure", "ImoutoRebirth.Room.Infrastructure\ImoutoRebirth.Room.Infrastructure.csproj", "{E46CED5E-509D-4844-95A1-04E6B12A47F1}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ImoutoRebirth.Room.DataAccess", "ImoutoRebirth.Room.DataAccess\ImoutoRebirth.Room.DataAccess.csproj", "{6DD2577A-AA41-42B9-AC40-E16626A90321}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{6F1BAB82-464B-461F-99B5-021DD1CE16AB}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ImoutoRebirth.Room.Webhost", "ImoutoRebirth.Room.Webhost\ImoutoRebirth.Room.Webhost.csproj", "{3B1C86BC-B180-4588-93E2-1D43A0A5B09A}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ImoutoRebirth.Room.WebApi", "ImoutoRebirth.Room.WebApi\ImoutoRebirth.Room.WebApi.csproj", "{4B4A7E83-FC07-4341-B02F-4B9ACB3421E9}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ImoutoRebirth.Room.DataAccess.Tests", "ImoutoRebirth.Room.DataAccess.Tests\ImoutoRebirth.Room.DataAccess.Tests.csproj", "{6E4ED239-3D3D-4DF0-B451-EB45461ED2DE}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{C2A196E6-30A7-4680-990B-88FE3BDE7FC1}"
+	ProjectSection(SolutionItems) = preProject
+		appveyor.yml = appveyor.yml
+		AutoRest\autorest-configuration.yml = AutoRest\autorest-configuration.yml
+		AutoRest\generate-client.ps1 = AutoRest\generate-client.ps1
+	EndProjectSection
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ImoutoRebirth.Room.WebApi.Client", "ImoutoRebirth.Room.WebApi.Client\ImoutoRebirth.Room.WebApi.Client.csproj", "{81524C3B-C2EE-47BD-995E-C611682C2CEE}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{DEB49522-7FB3-4882-84DF-D3DA16FBC0D0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DEB49522-7FB3-4882-84DF-D3DA16FBC0D0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DEB49522-7FB3-4882-84DF-D3DA16FBC0D0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DEB49522-7FB3-4882-84DF-D3DA16FBC0D0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{20206CFA-2D56-4E7E-ABC2-DCAF20F418DC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{20206CFA-2D56-4E7E-ABC2-DCAF20F418DC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{20206CFA-2D56-4E7E-ABC2-DCAF20F418DC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{20206CFA-2D56-4E7E-ABC2-DCAF20F418DC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E46CED5E-509D-4844-95A1-04E6B12A47F1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E46CED5E-509D-4844-95A1-04E6B12A47F1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E46CED5E-509D-4844-95A1-04E6B12A47F1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E46CED5E-509D-4844-95A1-04E6B12A47F1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6DD2577A-AA41-42B9-AC40-E16626A90321}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6DD2577A-AA41-42B9-AC40-E16626A90321}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6DD2577A-AA41-42B9-AC40-E16626A90321}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6DD2577A-AA41-42B9-AC40-E16626A90321}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3B1C86BC-B180-4588-93E2-1D43A0A5B09A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3B1C86BC-B180-4588-93E2-1D43A0A5B09A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3B1C86BC-B180-4588-93E2-1D43A0A5B09A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3B1C86BC-B180-4588-93E2-1D43A0A5B09A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4B4A7E83-FC07-4341-B02F-4B9ACB3421E9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4B4A7E83-FC07-4341-B02F-4B9ACB3421E9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4B4A7E83-FC07-4341-B02F-4B9ACB3421E9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4B4A7E83-FC07-4341-B02F-4B9ACB3421E9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6E4ED239-3D3D-4DF0-B451-EB45461ED2DE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6E4ED239-3D3D-4DF0-B451-EB45461ED2DE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6E4ED239-3D3D-4DF0-B451-EB45461ED2DE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6E4ED239-3D3D-4DF0-B451-EB45461ED2DE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{81524C3B-C2EE-47BD-995E-C611682C2CEE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{81524C3B-C2EE-47BD-995E-C611682C2CEE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{81524C3B-C2EE-47BD-995E-C611682C2CEE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{81524C3B-C2EE-47BD-995E-C611682C2CEE}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{6E4ED239-3D3D-4DF0-B451-EB45461ED2DE} = {6F1BAB82-464B-461F-99B5-021DD1CE16AB}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {5DF9BBEB-D2ED-417A-B12C-A72B1AD77DA3}
+	EndGlobalSection
+EndGlobal
