@@ -1,0 +1,742 @@
+﻿<metroControl:MetroWindow x:Class="ImoutoRebirth.Navigator.MainWindow"
+                          x:ClassModifier="internal"
+                          xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                          xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                          xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+                          xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+                          xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
+                          xmlns:metroControl="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
+                          xmlns:dialog="clr-namespace:MahApps.Metro.Controls.Dialogs;assembly=MahApps.Metro"
+                          xmlns:gif="http://wpfanimatedgif.codeplex.com"
+                          xmlns:wpfHelpers="clr-namespace:ImoutoRebirth.Navigator.Utils.Wpf"
+                          xmlns:b="http://schemas.microsoft.com/xaml/behaviors"
+                          xmlns:viewModel="clr-namespace:ImoutoRebirth.Navigator.ViewModel"
+                          xmlns:converters="clr-namespace:ImoutoRebirth.Navigator.Converters"
+                          xmlns:flyouts="clr-namespace:ImoutoRebirth.Navigator.View.Flyouts"
+                          xmlns:userControl="clr-namespace:ImoutoRebirth.Navigator.UserControls"
+                          xmlns:behavior="clr-namespace:ImoutoRebirth.Navigator.Behavior"
+                          xmlns:view="clr-namespace:ImoutoRebirth.Navigator.View"
+                          xmlns:listEntries="clr-namespace:ImoutoRebirth.Navigator.ViewModel.ListEntries"
+                          xmlns:apngPlayer="clr-namespace:ImoutoRebirth.Navigator.ApngWpfPlayer.ApngPlayer;assembly=ImoutoRebirth.Navigator.ApngWpfPlayer"
+                          d:DataContext="{d:DesignInstance viewModel:MainWindowVM, IsDesignTimeCreatable=False}"
+                          mc:Ignorable="d"
+                          WindowStartupLocation="CenterScreen"
+                          BorderBrush="{DynamicResource MahApps.Brushes.Accent}"
+                          BorderThickness="2"
+                          Height="720"
+                          Width="1280"
+                          TitleCharacterCasing="Upper"
+                          Title="{Binding Title}"
+                          WindowState="Maximized"
+                          WindowButtonCommandsOverlayBehavior="Never"
+                          ResizeBorderThickness="5"
+                          Icon="pack://application:,,,/ImoutoRebirth.Navigator;component/Resources/Icon/window-icon.ico"
+                          ShowIconOnTitleBar="False">
+    <metroControl:MetroWindow.Resources>
+        <converters:ConditionVisibilityConverter x:Key="ConditionVisibilityConverter" />
+        <converters:MultiBooleanVisibilityConverter x:Key="MultiBooleanVisibilityConverter" />
+
+        <dialog:CustomDialog x:Key="SuccessCreateCollectionDialog"
+                             Title="Create collection"
+                             x:Name="SuccessCreateCollectionDialog">
+            <TextBlock Height="30"
+                       Text="Collection has been successfully created!"
+                       Foreground="{DynamicResource MahApps.Brushes.Accent}" />
+        </dialog:CustomDialog>
+
+        <wpfHelpers:BindingProxy x:Key="DataContextProxy"
+                                 Data="{Binding}" />
+    </metroControl:MetroWindow.Resources>
+
+    <metroControl:MetroWindow.Flyouts>
+        <metroControl:FlyoutsControl>
+            <metroControl:Flyout x:Name="CollectionsFlyOut"
+                                 Width="400"
+                                 Header="Collections"
+                                 Position="Right"
+                                 DataContext="{Binding Path=CollectionManager}"
+                                 Theme="Inverse">
+                <flyouts:CollectionsView />
+            </metroControl:Flyout>
+
+            <metroControl:Flyout x:Name="SettingFlyout"
+                                 Width="250"
+                                 Header="Settings"
+                                 Position="Right"
+                                 DataContext="{Binding Path=Settings}"
+                                 Theme="Inverse">
+                <b:Interaction.Triggers>
+                    <b:EventTrigger EventName="IsOpenChanged">
+                        <b:InvokeCommandAction Command="{Binding SaveCommand}" />
+                    </b:EventTrigger>
+                </b:Interaction.Triggers>
+
+                <flyouts:SettingsView />
+            </metroControl:Flyout>
+
+            <metroControl:Flyout x:Name="TagsEditFlyout"
+                                 Height="360"
+                                 Header="Add tags"
+                                 Position="Bottom"
+                                 DataContext="{Binding Path=TagsEdit}"
+                                 Theme="Inverse">
+                <flyouts:TagsEditView />
+            </metroControl:Flyout>
+        </metroControl:FlyoutsControl>
+    </metroControl:MetroWindow.Flyouts>
+
+    <metroControl:MetroWindow.RightWindowCommands>
+        <metroControl:WindowCommands>
+            
+            <Button Content="Tags"
+                    Command="{Binding Path=ToggleShowTagsCommand}" />
+            <Button Content="Images on row 2"
+                    Command="{Binding ZoomToRowElementsCommand}"
+                    CommandParameter="2" />
+            <Button Content="3"
+                    Command="{Binding ZoomToRowElementsCommand}"
+                    CommandParameter="3" />
+            <Button Content="4"
+                    Command="{Binding ZoomToRowElementsCommand}"
+                    CommandParameter="4" />
+            <Button Content="5"
+                    Command="{Binding ZoomToRowElementsCommand}"
+                    CommandParameter="5" />
+            <Button Content="6"
+                    Command="{Binding ZoomToRowElementsCommand}"
+                    CommandParameter="6" />
+            <Button Content="7"
+                    Command="{Binding ZoomToRowElementsCommand}"
+                    CommandParameter="7" />
+            <Button Content="Reverse"
+                    Command="{Binding ReverseCommand}"/>
+            <Button Content="Shuffle"
+                    Command="{Binding ShuffleCommand}"/>
+            <Button Content="Collections"
+                    Click="Button_Click"
+                    Tag="{Binding ElementName=CollectionsFlyOut}" />
+            <Button Content="Settings"
+                    Click="Button_Click"
+                    Tag="{Binding ElementName=SettingFlyout}" />
+        </metroControl:WindowCommands>
+    </metroControl:MetroWindow.RightWindowCommands>
+
+    <metroControl:MetroWindow.InputBindings>
+        <KeyBinding Modifiers="Control"
+                    Key="C"
+                    Command="{Binding CopyCommand}" />
+    </metroControl:MetroWindow.InputBindings>
+
+    <Grid MouseLeftButtonUp="Grid_MouseLeftButtonUp"
+          x:Name="Client">
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="auto" 
+                                  MaxWidth="300" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+            </Grid.RowDefinitions>
+
+            <metroControl:ProgressRing IsActive="{Binding Path=IsLoading, Mode=OneWay}"
+                                       Grid.Column="1"
+                                       Grid.RowSpan="2"
+                                       Visibility="{Binding Path=IsLoading, Converter={StaticResource ConditionVisibilityConverter}, ConverterParameter=true, Mode=OneWay}" />
+
+            <ListBox x:Name="ListBoxElement"
+                     Grid.Row="0"
+                     Grid.Column="1"
+                     Grid.RowSpan="2"
+                     ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                     ItemsSource="{Binding Path=NavigatorList, UpdateSourceTrigger=PropertyChanged}"
+                     SelectionMode="Extended"
+                     Visibility="{Binding Path=IsLoading, Converter={StaticResource ConditionVisibilityConverter}, ConverterParameter=false, Mode=OneWay}"
+                     ItemContainerStyle="{DynamicResource ListBoxItemStyle}"
+                     KeyUp="UIElement_OnKeyUp">
+                <ListBox.InputBindings>
+                    <MouseBinding Command="{Binding Path=ZoomOutCommand}"
+                                  Gesture="{x:Static userControl:MouseWheelGesture.CtrlDown}" />
+
+                    <MouseBinding Command="{Binding Path=ZoomInCommand}"
+                                  Gesture="{x:Static userControl:MouseWheelGesture.CtrlUp}" />
+                </ListBox.InputBindings>
+
+                <ListBox.Template>
+                    <ControlTemplate TargetType="ListBox">
+                        <userControl:ExtScrollViewer x:Name="ScrollViewer"
+                                                     Padding="{TemplateBinding Padding}"
+                                                     Background="{TemplateBinding Background}"
+                                                     BorderBrush="Transparent"
+                                                     BorderThickness="0"
+                                                     CanContentScroll="True">
+                            <ItemsPresenter />
+                        </userControl:ExtScrollViewer>
+                    </ControlTemplate>
+                </ListBox.Template>
+
+                <ListBox.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <userControl:VirtualizingWrapPanel IsItemsHost="True"
+                                                           Orientation="Horizontal"
+                                                           ItemWidth="{Binding SlotSize.Width}"
+                                                           ItemHeight="{Binding SlotSize.Height}" />
+                    </ItemsPanelTemplate>
+                </ListBox.ItemsPanel>
+
+                <ListBox.Resources>
+                    <DataTemplate x:Key="PreviewListBoxItemTemplate"
+                                  DataType="{x:Type listEntries:INavigatorListEntry}">
+                        <Border Margin="0,11,0,11">
+                            <b:Interaction.Behaviors>
+                                <behavior:FrameworkElementDragBehavior />
+                            </b:Interaction.Behaviors>
+
+                            <Border.Effect>
+                                <DropShadowEffect />
+                            </Border.Effect>
+
+                            <Grid Width="{Binding Path=ViewPortSize.Width}"
+                                  Height="{Binding Path=ViewPortSize.Height}">
+                                <Grid>
+                                    <Ellipse Width="10"
+                                             Height="10"
+                                             Fill="{DynamicResource MahApps.Brushes.Gray10}"
+                                             Visibility="{Binding Path=IsLoading,
+                                                                  Converter={StaticResource ConditionVisibilityConverter},
+                                                                  ConverterParameter=true}" />
+
+                                    <Image Source="{Binding Path=Image}"
+                                           Visibility="{Binding Path=IsLoading,
+                                                                Converter={StaticResource ConditionVisibilityConverter},
+                                                                ConverterParameter=false}" />
+
+                                    <Label HorizontalAlignment="Left"
+                                           VerticalAlignment="Top"
+                                           Margin="5,5,5,5"
+                                           Visibility="{Binding Path=Type, Converter={StaticResource ConditionVisibilityConverter}, ConverterParameter=Video}">
+                                        <Label.Effect>
+                                            <DropShadowEffect Color="{Binding Source={StaticResource MahApps.Brushes.ThemeBackground}, Path=Color, Mode=OneTime}"
+                                                              BlurRadius="5"
+                                                              Opacity="0.9"
+                                                              Direction="315"
+                                                              ShadowDepth="3" />
+                                        </Label.Effect>
+                                        <Label.Template>
+                                            <ControlTemplate>
+                                                <iconPacks:PackIconModern
+                                                    Width="19"
+                                                    Height="19"
+                                                    Kind="MovieClapper">
+                                                </iconPacks:PackIconModern>
+                                            </ControlTemplate>
+                                        </Label.Template>
+                                    </Label>
+
+                                    <Label HorizontalAlignment="Left"
+                                           VerticalAlignment="Top"
+                                           Margin="5,5,5,5"
+                                           Visibility="{Binding Path=Type, Converter={StaticResource ConditionVisibilityConverter}, ConverterParameter=Gif}">
+                                        <Label.Effect>
+                                            <DropShadowEffect Color="{Binding Source={StaticResource MahApps.Brushes.ThemeBackground}, Path=Color, Mode=OneTime}"
+                                                              BlurRadius="5"
+                                                              Opacity="0.9"
+                                                              Direction="315"
+                                                              ShadowDepth="3" />
+                                        </Label.Effect>
+                                        <Label.Template>
+                                            <ControlTemplate>
+                                                <iconPacks:PackIconModern
+                                                    Width="19"
+                                                    Height="19"
+                                                    Kind="ImageExport">
+                                                </iconPacks:PackIconModern>
+                                            </ControlTemplate>
+                                        </Label.Template>
+                                    </Label>
+
+                                    <Label HorizontalAlignment="Left"
+                                           VerticalAlignment="Top"
+                                           Margin="5,5,5,5"
+                                           Visibility="{Binding Path=Type, Converter={StaticResource ConditionVisibilityConverter}, ConverterParameter=Ugoira}">
+                                        <Label.Effect>
+                                            <DropShadowEffect Color="{Binding Source={StaticResource MahApps.Brushes.ThemeBackground}, Path=Color, Mode=OneTime}"
+                                                              BlurRadius="5"
+                                                              Opacity="0.9"
+                                                              Direction="315"
+                                                              ShadowDepth="3" />
+                                        </Label.Effect>
+                                        <Label.Template>
+                                            <ControlTemplate>
+                                                <iconPacks:PackIconModern
+                                                    Width="19"
+                                                    Height="19"
+                                                    Kind="ImageMultiple">
+                                                </iconPacks:PackIconModern>
+                                            </ControlTemplate>
+                                        </Label.Template>
+                                    </Label>
+
+                                    <Label HorizontalAlignment="Left"
+                                           VerticalAlignment="Top"
+                                           Margin="5,5,5,5"
+                                           Visibility="{Binding Path=Type, Converter={StaticResource ConditionVisibilityConverter}, ConverterParameter=Ugoira}">
+                                        <Label.Effect>
+                                            <DropShadowEffect Color="{Binding Source={StaticResource MahApps.Brushes.ThemeBackground}, Path=Color, Mode=OneTime}"
+                                                              BlurRadius="5"
+                                                              Opacity="0.9"
+                                                              Direction="315"
+                                                              ShadowDepth="3" />
+                                        </Label.Effect>
+                                        <Label.Template>
+                                            <ControlTemplate>
+                                                <iconPacks:PackIconModern
+                                                    Width="19"
+                                                    Height="19"
+                                                    Kind="ImageMultiple">
+                                                </iconPacks:PackIconModern>
+                                            </ControlTemplate>
+                                        </Label.Template>
+                                    </Label>
+
+                                    <StackPanel HorizontalAlignment="Right"
+                                                VerticalAlignment="Bottom"
+                                                Orientation="Horizontal">
+                                        <Label HorizontalAlignment="Left"
+                                               VerticalAlignment="Bottom"
+                                               Margin="5,5,5,5"
+                                               Visibility="{Binding Path=Rating, Converter={StaticResource ConditionVisibilityConverter}, ConverterParameter=4}">
+                                            <Label.Effect>
+                                                <DropShadowEffect Color="{Binding Source={StaticResource MahApps.Brushes.ThemeBackground}, Path=Color, Mode=OneTime}"
+                                                                  BlurRadius="5"
+                                                                  Opacity="0.9"
+                                                                  Direction="315"
+                                                                  ShadowDepth="3" />
+                                            </Label.Effect>
+                                            <Label.Template>
+                                                <ControlTemplate>
+                                                    <iconPacks:PackIconModern
+                                                        Width="25"
+                                                        Height="25"
+                                                        Kind="Star"
+                                                        Foreground="Silver">
+                                                    </iconPacks:PackIconModern>
+                                                </ControlTemplate>
+                                            </Label.Template>
+                                        </Label>
+
+                                        <Label HorizontalAlignment="Left"
+                                               VerticalAlignment="Bottom"
+                                               Margin="5,5,5,5"
+                                               Visibility="{Binding Path=Rating, Converter={StaticResource ConditionVisibilityConverter}, ConverterParameter=5}">
+                                            <Label.Effect>
+                                                <DropShadowEffect Color="{Binding Source={StaticResource MahApps.Brushes.ThemeBackground}, Path=Color, Mode=OneTime}"
+                                                                  BlurRadius="5"
+                                                                  Opacity="0.9"
+                                                                  Direction="315"
+                                                                  ShadowDepth="3" />
+                                            </Label.Effect>
+                                            <Label.Template>
+                                                <ControlTemplate>
+                                                    <iconPacks:PackIconModern
+                                                        Width="25"
+                                                        Height="25"
+                                                        Kind="Star"
+                                                        Foreground="Goldenrod">
+                                                    </iconPacks:PackIconModern>
+                                                </ControlTemplate>
+                                            </Label.Template>
+                                        </Label>
+
+                                        <Label HorizontalAlignment="Right"
+                                               VerticalAlignment="Bottom"
+                                               Margin="5,5,5,5"
+                                               Visibility="{Binding Path=IsFavorite, Converter={StaticResource ConditionVisibilityConverter}, ConverterParameter=true}">
+                                            <Label.Effect>
+                                                <DropShadowEffect Color="{Binding Source={StaticResource MahApps.Brushes.ThemeBackground}, Path=Color, Mode=OneTime}"
+                                                                  BlurRadius="5"
+                                                                  Opacity="0.9"
+                                                                  Direction="315"
+                                                                  ShadowDepth="3" />
+                                            </Label.Effect>
+                                            <Label.Template>
+                                                <ControlTemplate>
+                                                    <iconPacks:PackIconModern
+                                                        Width="23"
+                                                        Height="23"
+                                                        Kind="Heart"
+                                                        Foreground="PaleVioletRed">
+                                                    </iconPacks:PackIconModern>
+                                                </ControlTemplate>
+                                            </Label.Template>
+                                        </Label>
+                                    </StackPanel>
+                                </Grid>
+                            </Grid>
+                        </Border>
+                    </DataTemplate>
+
+                    <DataTemplate x:Key="PngListBoxItemTemplate"
+                                  DataType="{x:Type listEntries:ImageEntryVM}">
+                        <Border Margin="0,11,0,11">
+                            <b:Interaction.Behaviors>
+                                <behavior:FrameworkElementDragBehavior />
+                            </b:Interaction.Behaviors>
+
+                            <Border.Effect>
+                                <DropShadowEffect />
+                            </Border.Effect>
+
+                            <Grid Width="{Binding Path=ViewPortSize.Width}"
+                                  Height="{Binding Path=ViewPortSize.Height}">
+                                <apngPlayer:ApngPlayer Source="{Binding Path}" />
+                            </Grid>
+                        </Border>
+                    </DataTemplate>
+
+                    <DataTemplate x:Key="GifListBoxItemTemplate"
+                                  DataType="{x:Type listEntries:ImageEntryVM}">
+                        <Border Margin="0,11,0,11">
+                            <b:Interaction.Behaviors>
+                                <behavior:FrameworkElementDragBehavior />
+                            </b:Interaction.Behaviors>
+
+                            <Border.Effect>
+                                <DropShadowEffect />
+                            </Border.Effect>
+
+                            <Grid Width="{Binding Path=ViewPortSize.Width}"
+                                  Height="{Binding Path=ViewPortSize.Height}">
+                                <Ellipse Width="10"
+                                         Height="10"
+                                         Fill="{DynamicResource MahApps.Brushes.Gray10}"
+                                         Visibility="{Binding Path=IsLoading,
+                                                            Converter={StaticResource ConditionVisibilityConverter},
+                                                            ConverterParameter=true}" />
+
+                                <Image gif:ImageBehavior.AnimatedSource="{Binding Image}"
+                                       Visibility="{Binding Path=IsLoading,
+                                                            Converter={StaticResource ConditionVisibilityConverter},
+                                                            ConverterParameter=false}" />
+                            </Grid>
+                        </Border>
+                    </DataTemplate>
+
+                    <DataTemplate x:Key="VideoListBoxItemTemplate"
+                                  DataType="{x:Type listEntries:VideoEntryVM}">
+                        <Border Margin="0,11,0,11">
+                            <b:Interaction.Behaviors>
+                                <behavior:FrameworkElementDragBehavior />
+                            </b:Interaction.Behaviors>
+
+                            <Border.Effect>
+                                <DropShadowEffect />
+                            </Border.Effect>
+
+                             <Grid Width="{Binding Path=ViewPortSize.Width}"
+                                  Height="{Binding Path=ViewPortSize.Height}">
+                                <!-- todo: implement video control -->
+                                <userControl:PlayerControl 
+                                    Source="{Binding Path}" 
+                                    ShouldPause="{Binding ShouldPause}" 
+                                    Volume="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type Window}},
+                                                                            Path=DataContext.Volume}" />
+                            </Grid>
+                        </Border>
+                    </DataTemplate>
+
+                    <DataTemplate x:Key="UgoiraListBoxItemTemplate"
+                                  DataType="{x:Type listEntries:UgoiraEntryVM}">
+                        <Border Margin="0,11,0,11">
+                            <b:Interaction.Behaviors>
+                                <behavior:FrameworkElementDragBehavior />
+                            </b:Interaction.Behaviors>
+
+                            <Border.Effect>
+                                <DropShadowEffect />
+                            </Border.Effect>
+
+                            <Grid Width="{Binding Path=ViewPortSize.Width}"
+                                  Height="{Binding Path=ViewPortSize.Height}">
+                                <userControl:UgoiraPlayer
+                                    Source="{Binding Path}"
+                                    FrameDelays="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type Window}}, Path=DataContext.TagSearchVM.UgoiraFrameDelays}" />
+                            </Grid>
+                        </Border>
+                    </DataTemplate>
+
+                    <Style x:Key="ListBoxItemStyle"
+                           TargetType="{x:Type ListBoxItem}">
+                        <Setter Property="Template">
+                            <Setter.Value>
+                                <ControlTemplate TargetType="{x:Type ListBoxItem}">
+                                    <Border x:Name="Bd"
+                                            Background="Transparent"
+                                            BorderBrush="Transparent"
+                                            BorderThickness="1"
+                                            Padding="4"
+                                            SnapsToDevicePixels="True"
+                                            Margin="2">
+                                        <Border.InputBindings>
+                                            <MouseBinding Command="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type Window}},
+                                                                            Path=DataContext.OpenFileCommand}"
+                                                          CommandParameter="{Binding}"
+                                                          Gesture="LeftDoubleClick" />
+                                        </Border.InputBindings>
+
+                                        <ContentControl Name="ContentControl"
+                                                        Content="{Binding}"
+                                                        HorizontalAlignment="Center"
+                                                        VerticalAlignment="Center"
+                                                        SnapsToDevicePixels="True" />
+                                    </Border>
+
+                                    <ControlTemplate.Triggers>
+                                        <!-- Data template selection -->
+
+                                        <!-- !Selected -->
+                                        <Trigger Property="IsSelected"
+                                                 Value="False">
+                                            <Setter Property="ContentTemplate"
+                                                    Value="{StaticResource PreviewListBoxItemTemplate}"
+                                                    TargetName="ContentControl" />
+                                        </Trigger>
+
+                                        <!-- Selected && !ShowPreview -->
+                                        <MultiDataTrigger>
+                                            <MultiDataTrigger.Conditions>
+                                                <Condition Binding="{Binding RelativeSource={RelativeSource Self}, Path=IsSelected}"
+                                                           Value="True" />
+
+                                                <Condition Binding="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type Window}}, Path=DataContext.ShowPreview}"
+                                                           Value="False" />
+                                            </MultiDataTrigger.Conditions>
+
+                                            <MultiDataTrigger.Setters>
+                                                <Setter Property="ContentTemplate"
+                                                        Value="{StaticResource PreviewListBoxItemTemplate}"
+                                                        TargetName="ContentControl" />
+                                            </MultiDataTrigger.Setters>
+                                        </MultiDataTrigger>
+
+                                        <!-- Selected && Gif && ShowPreview -->
+                                        <MultiDataTrigger>
+                                            <MultiDataTrigger.Conditions>
+                                                <Condition Binding="{Binding RelativeSource={RelativeSource Self}, Path=IsSelected}"
+                                                           Value="True" />
+
+                                                <Condition Binding="{Binding Type}"
+                                                           Value="{x:Static listEntries:ListEntryType.Gif}" />
+
+                                                <Condition Binding="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type Window}}, Path=DataContext.ShowPreview}"
+                                                           Value="True" />
+                                            </MultiDataTrigger.Conditions>
+
+                                            <MultiDataTrigger.Setters>
+                                                <Setter Property="ContentTemplate"
+                                                        Value="{StaticResource GifListBoxItemTemplate}"
+                                                        TargetName="ContentControl" />
+                                            </MultiDataTrigger.Setters>
+                                        </MultiDataTrigger>
+
+                                        <!-- Selected && Png && ShowPreview -->
+                                        <MultiDataTrigger>
+                                            <MultiDataTrigger.Conditions>
+                                                <Condition Binding="{Binding RelativeSource={RelativeSource Self}, Path=IsSelected}"
+                                                           Value="True" />
+
+                                                <Condition Binding="{Binding Type}"
+                                                           Value="{x:Static listEntries:ListEntryType.Png}" />
+
+                                                <Condition Binding="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type Window}}, Path=DataContext.ShowPreview}"
+                                                           Value="True" />
+                                            </MultiDataTrigger.Conditions>
+
+                                            <MultiDataTrigger.Setters>
+                                                <Setter Property="ContentTemplate"
+                                                        Value="{StaticResource PngListBoxItemTemplate}"
+                                                        TargetName="ContentControl" />
+                                            </MultiDataTrigger.Setters>
+                                        </MultiDataTrigger>
+
+                                        <!-- Selected && Video && ShowPreview -->
+                                        <MultiDataTrigger>
+                                            <MultiDataTrigger.Conditions>
+                                                <Condition Binding="{Binding RelativeSource={RelativeSource Self}, Path=IsSelected}"
+                                                           Value="True" />
+
+                                                <Condition Binding="{Binding Type}"
+                                                           Value="{x:Static listEntries:ListEntryType.Video}" />
+
+                                                <Condition Binding="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type Window}}, Path=DataContext.ShowPreview}"
+                                                           Value="True" />
+                                            </MultiDataTrigger.Conditions>
+
+                                            <MultiDataTrigger.Setters>
+                                                <Setter Property="ContentTemplate"
+                                                        Value="{StaticResource VideoListBoxItemTemplate}"
+                                                        TargetName="ContentControl" />
+                                            </MultiDataTrigger.Setters>
+                                        </MultiDataTrigger>
+
+                                        <!-- Selected && Ugoira && ShowPreview -->
+                                        <MultiDataTrigger>
+                                            <MultiDataTrigger.Conditions>
+                                                <Condition Binding="{Binding RelativeSource={RelativeSource Self}, Path=IsSelected}"
+                                                           Value="True" />
+
+                                                <Condition Binding="{Binding Type}"
+                                                           Value="{x:Static listEntries:ListEntryType.Ugoira}" />
+
+                                                <Condition Binding="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type Window}}, Path=DataContext.ShowPreview}"
+                                                           Value="True" />
+                                            </MultiDataTrigger.Conditions>
+
+                                            <MultiDataTrigger.Setters>
+                                                <Setter Property="ContentTemplate"
+                                                        Value="{StaticResource UgoiraListBoxItemTemplate}"
+                                                        TargetName="ContentControl" />
+                                            </MultiDataTrigger.Setters>
+                                        </MultiDataTrigger>
+
+                                        <!-- Selected && Image && ShowPreview -->
+                                        <MultiDataTrigger>
+                                            <MultiDataTrigger.Conditions>
+                                                <Condition Binding="{Binding RelativeSource={RelativeSource Self}, Path=IsSelected}"
+                                                           Value="True" />
+
+                                                <Condition Binding="{Binding Type}"
+                                                           Value="{x:Static listEntries:ListEntryType.Image}" />
+
+                                                <Condition Binding="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type Window}}, Path=DataContext.ShowPreview}"
+                                                           Value="True" />
+                                            </MultiDataTrigger.Conditions>
+
+                                            <MultiDataTrigger.Setters>
+                                                <Setter Property="ContentTemplate"
+                                                        Value="{StaticResource PreviewListBoxItemTemplate}"
+                                                        TargetName="ContentControl" />
+                                            </MultiDataTrigger.Setters>
+                                        </MultiDataTrigger>
+
+                                        <!-- /Data template selection -->
+
+
+                                        <!-- Visual -->
+                                        <MultiTrigger>
+                                            <MultiTrigger.Conditions>
+                                                <Condition Property="IsMouseOver"
+                                                           Value="True" />
+                                            </MultiTrigger.Conditions>
+
+                                            <Setter TargetName="Bd"
+                                                    Property="Background"
+                                                    Value="{DynamicResource MahApps.Brushes.Accent4}" />
+
+                                            <Setter TargetName="Bd"
+                                                    Property="BorderBrush"
+                                                    Value="{DynamicResource MahApps.Brushes.Accent2}" />
+                                        </MultiTrigger>
+
+                                        <MultiTrigger>
+                                            <MultiTrigger.Conditions>
+                                                <Condition Property="Selector.IsSelectionActive"
+                                                           Value="False" />
+
+                                                <Condition Property="IsSelected"
+                                                           Value="True" />
+                                            </MultiTrigger.Conditions>
+
+                                            <Setter TargetName="Bd"
+                                                    Property="Background"
+                                                    Value="{DynamicResource MahApps.Brushes.Accent3}" />
+
+                                            <Setter TargetName="Bd"
+                                                    Property="BorderBrush"
+                                                    Value="{DynamicResource MahApps.Brushes.Accent}" />
+                                        </MultiTrigger>
+
+                                        <MultiTrigger>
+                                            <MultiTrigger.Conditions>
+                                                <Condition Property="Selector.IsSelectionActive"
+                                                           Value="True" />
+
+                                                <Condition Property="IsSelected"
+                                                           Value="True" />
+                                            </MultiTrigger.Conditions>
+
+                                            <Setter TargetName="Bd"
+                                                    Property="Background"
+                                                    Value="{DynamicResource MahApps.Brushes.Accent3}" />
+
+                                            <Setter TargetName="Bd"
+                                                    Property="BorderBrush"
+                                                    Value="{DynamicResource MahApps.Brushes.Accent}" />
+                                        </MultiTrigger>
+
+                                        <Trigger Property="IsEnabled"
+                                                 Value="False">
+                                            <Setter TargetName="Bd"
+                                                    Property="TextElement.Foreground"
+                                                    Value="{DynamicResource {x:Static SystemColors.GrayTextBrushKey}}" />
+                                        </Trigger>
+                                        <!-- Visual -->
+                                    </ControlTemplate.Triggers>
+                                </ControlTemplate>
+                            </Setter.Value>
+                        </Setter>
+
+                        <Setter Property="ContextMenu">
+                            <Setter.Value>
+                                <ContextMenu DataContext="{Binding Source={StaticResource DataContextProxy}}"
+                                             Tag="{Binding RelativeSource={RelativeSource Mode=Self}, Path=PlacementTarget}">
+                                    <MenuItem Header="Remove from collection"
+                                              Command="{Binding Data.RemoveImageCommand}"
+                                              CommandParameter="{Binding Path=Tag.DataContext, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type ContextMenu}}}" />
+                                </ContextMenu>
+                            </Setter.Value>
+                        </Setter>
+                    </Style>
+                </ListBox.Resources>
+            </ListBox>
+
+            <GridSplitter Grid.Column="0"
+                          Grid.RowSpan="2"
+                          Width="0"
+                          ShowsPreview="True"
+                          Background="{DynamicResource MahApps.Brushes.Accent}" />
+
+            <view:TagsSearchView Grid.Row="0"
+                                 Grid.Column="0"
+                                 MinWidth="200"
+                                 MaxWidth="300"
+                                 DataContext="{Binding TagSearchVM}"
+                                 Visibility="{Binding 
+                                    Path=DataContext.ShowTags, 
+                                    RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type metroControl:MetroWindow}},
+                                    Converter={StaticResource ConditionVisibilityConverter},
+                                    ConverterParameter=true}"
+                                 />
+
+            <view:FileInfoView Grid.Column="0"
+                               Grid.Row="1"
+                               DataContext="{Binding FileInfoVM}">
+                <view:FileInfoView.Visibility>
+                    <MultiBinding Converter="{StaticResource MultiBooleanVisibilityConverter}">
+                        <Binding Path="HasValue" Mode="OneWay" />
+                        <Binding Path="DataContext.ShowTags"
+                                 RelativeSource="{RelativeSource Mode=FindAncestor, AncestorType={x:Type metroControl:MetroWindow}}"
+                                 Mode="OneWay" />
+                    </MultiBinding>
+                </view:FileInfoView.Visibility>
+            </view:FileInfoView>
+
+            <view:StatusBarView Grid.Row="2"
+                                Grid.Column="0"
+                                Grid.ColumnSpan="2" />
+        </Grid>
+    </Grid>
+</metroControl:MetroWindow>

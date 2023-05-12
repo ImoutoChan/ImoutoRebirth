@@ -1,0 +1,8 @@
+<Application xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'>
+    <VisualElements
+            ShowNameOnSquare150x150Logo='off'
+            Square150x150Logo='Resources\Icon\appicon.png'
+            Square70x70Logo='Resources\Icon\appicon.png'
+            ForegroundText='dark'
+            BackgroundColor='#323232'/>
+</Application>

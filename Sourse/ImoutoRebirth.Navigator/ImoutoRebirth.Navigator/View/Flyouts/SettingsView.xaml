@@ -1,0 +1,126 @@
+﻿<UserControl x:Class="ImoutoRebirth.Navigator.View.Flyouts.SettingsView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:controls="http://metro.mahapps.com/winfx/xaml/controls"
+             xmlns:viewModel="clr-namespace:ImoutoRebirth.Navigator.ViewModel"
+             mc:Ignorable="d"
+             d:DesignHeight="300"
+             d:DesignWidth="300" 
+             d:DataContext="{d:DesignInstance viewModel:SettingsVM, IsDesignTimeCreatable=False}">
+    <Grid Margin="20">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+
+        <ScrollViewer Grid.Row="1"
+                      VerticalScrollBarVisibility="Auto">
+            <StackPanel Orientation="Vertical">
+
+                <DockPanel LastChildFill="False"
+                           Margin="0,25,0,0">
+                    <StackPanel DockPanel.Dock="Left">
+                        <TextBlock Text="Accent" />
+
+                        <ComboBox Margin="0,5,0,0"
+                                  ItemsSource="{Binding AccentColors, Mode=OneWay}"
+                                  SelectedItem="{Binding SelectedAccentColor, Mode=TwoWay}">
+                            <ComboBox.ItemTemplate>
+                                <DataTemplate>
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="20" />
+                                            <ColumnDefinition Width="*" />
+                                        </Grid.ColumnDefinitions>
+
+                                        <Ellipse Grid.Column="0"
+                                                 Width="16"
+                                                 Height="16"
+                                                 Fill="{Binding ColorBrush, Mode=OneWay}" />
+
+                                        <Label Grid.Column="1"
+                                               Content="{Binding Name, Mode=OneWay}" />
+                                    </Grid>
+                                </DataTemplate>
+                            </ComboBox.ItemTemplate>
+                        </ComboBox>
+                    </StackPanel>
+
+                    <StackPanel DockPanel.Dock="Right">
+                        <TextBlock Text="Theme" />
+
+                        <ComboBox SelectedIndex="{Binding SelectedIndexTheme, Mode=TwoWay}"
+                                  Margin="0,5,0,0">
+                            <ComboBoxItem>
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="20" />
+                                        <ColumnDefinition Width="*" />
+                                    </Grid.ColumnDefinitions>
+                                    <Ellipse Grid.Column="0"
+                                             Width="16"
+                                             Height="16"
+                                             StrokeThickness="1"
+                                             Stroke="Black"
+                                             Fill="White" />
+
+                                    <Label Grid.Column="1"
+                                           Content="Light" />
+                                </Grid>
+                            </ComboBoxItem>
+
+                            <ComboBoxItem>
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="20" />
+                                        <ColumnDefinition Width="*" />
+                                    </Grid.ColumnDefinitions>
+                                    <Ellipse Grid.Column="0"
+                                             Width="16"
+                                             Height="16"
+                                             StrokeThickness="1"
+                                             Stroke="Black"
+                                             Fill="Black" />
+
+                                    <Label Grid.Column="1"
+                                           Content="Night" />
+                                </Grid>
+                            </ComboBoxItem>
+                        </ComboBox>
+                    </StackPanel>
+                </DockPanel>
+
+                <controls:ToggleSwitch Margin="0,25,0,0"
+                                       Header="Show preview on select"
+                                       IsOn="{Binding ShowPreviewOnSelect}" />
+
+                <TextBlock Margin="0,25,0,0"
+                           Text="Path Overrides" />
+                
+                <TextBox Text="{Binding PathOverrides, UpdateSourceTrigger=PropertyChanged}"
+                         controls:TextBoxHelper.Watermark="Format: art->ART;;;tag->TAG"
+                         controls:TextBoxHelper.UseFloatingWatermark="True"
+                         Margin="0,0,0,5" />
+
+                <TextBlock Margin="0,25,0,0"
+                           Text="Room Host" />
+                
+                <TextBox Text="{Binding RoomHost, UpdateSourceTrigger=PropertyChanged}"
+                         controls:TextBoxHelper.Watermark="http://miyu:11301/"
+                         controls:TextBoxHelper.UseFloatingWatermark="True"
+                         Margin="0,0,0,5" />
+
+                <TextBlock Margin="0,25,0,0"
+                           Text="Lilin Host" />
+                
+                <TextBox Text="{Binding LilinHost, UpdateSourceTrigger=PropertyChanged}"
+                         controls:TextBoxHelper.Watermark="http://miyu:11302/"
+                         controls:TextBoxHelper.UseFloatingWatermark="True"
+                         Margin="0,0,0,5" />
+            </StackPanel>
+        </ScrollViewer>
+    </Grid>
+</UserControl>
