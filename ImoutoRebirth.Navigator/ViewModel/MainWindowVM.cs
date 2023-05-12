@@ -476,7 +476,9 @@ class MainWindowVM : VMBase
         {
             AffirmativeButtonText = "Yes",
             NegativeButtonText = "No",
-            ColorScheme = MetroDialogColorScheme.Accented
+            ColorScheme = MetroDialogColorScheme.Accented,
+            AnimateShow = false,
+            AnimateHide = false
         };
         var result = await _view.ShowMessageDialog(
             "Remove Element",
@@ -487,18 +489,23 @@ class MainWindowVM : VMBase
         if (result != MessageDialogResult.Affirmative)
             return;
 
-        await _fileService.RemoveFile(dbId.Value);
+        try
+        {
+            await _fileService.RemoveFile(dbId.Value);
+        }
+        catch (Exception e)
+        {
+            SetStatusError(e.Message, "Unable to delete");
+            await _view.ShowMessageDialog(
+                "Remove Element",
+                "Unable to remove",
+                MessageDialogStyle.Affirmative,
+                new MetroDialogSettings());
+            return;
+        }
 
         NavigatorList.Remove(selectedItem!);
-
-        await _view.ShowMessageDialog(
-            "Remove Element",
-            "Element successfully removed.",
-            MessageDialogStyle.Affirmative,
-            new MetroDialogSettings
-            {
-                ColorScheme = MetroDialogColorScheme.Accented
-            });
+        Status = "File successfully removed";
     }
 
     private void CopySelected(object o)

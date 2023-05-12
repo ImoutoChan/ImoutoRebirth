@@ -243,7 +243,7 @@ class TagSearchVM : VMBase
 
         _lastListEntryId = id;
 
-        var tagVmsCollection = tags.Where(x => x.Tag.Type.Title != "LocalMeta")
+        var tagVmsCollection = tags
             .Select(x => new BindedTagVM(x, listEntry.DbId))
             .ToList();
 
@@ -271,7 +271,9 @@ class TagSearchVM : VMBase
             CurrentTagsSources.Add(new TagSourceVM
             {
                 Title = parsedSource.ToString(),
-                Tags = new ObservableCollection<BindedTagVM>(tagVmsCollection.Where(x => x.Model.Source == parsedSource)
+                Tags = new ObservableCollection<BindedTagVM>(tagVmsCollection
+                    //.Where(x => x.Tag.Type.Title != "LocalMeta")
+                    .Where(x => x.Model.Source == parsedSource)
                     .OrderBy(x => x.TypePriority)
                     .ThenBy(x => x.Tag.Title))
             });
@@ -293,6 +295,16 @@ class TagSearchVM : VMBase
 
         try
         {
+            if (int.TryParse(searchString, out var number))
+            {
+                if (!ValueEnterMode)
+                {
+                    HintBoxTags.SortList(await SearchTagsAsyncTask("BooruPostId"));
+                }
+                
+                return;
+            }
+            
             var tags = await SearchTagsAsyncTask(searchString);
 
             if (!ValueEnterMode)
@@ -307,10 +319,8 @@ class TagSearchVM : VMBase
         }
     }
 
-    private Task<IReadOnlyCollection<Tag>> SearchTagsAsyncTask(string searchString)
-    {
-        return _tagService.SearchTags(searchString, 50);
-    }
+    private Task<IReadOnlyCollection<Tag>> SearchTagsAsyncTask(string searchString) 
+        => _tagService.SearchTags(searchString, 50);
 
     private void SelectTag(object param)
     {
@@ -321,6 +331,23 @@ class TagSearchVM : VMBase
             return;
         }
 
+        if (tag.Title == "BooruPostId" && int.TryParse(SearchString, out var number))
+        {
+            var value = number.ToString();
+
+            SelectedBindedTags.Add(
+                new SearchTagVM(
+                    new SearchTag(
+                        tag,
+                        value)));
+            
+            SearchString = string.Empty;
+            OnSelectedTagsUpdated();
+            
+            return;
+        }
+            
+        
         if (tag.HasValue
             && !ValueEnterMode)
         {
