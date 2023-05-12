@@ -1,0 +1,11 @@
+{
+  "profiles": {
+    "ImoutoRebirth.Arachne.Host": {
+      "commandName": "Project",
+      "environmentVariables": {
+        "ASP_ENVIRONMENT": "Development",
+        "ARACHNE_Serilog__Properties__Application": "ImoutoRebirth.Arachne"
+      }
+    }
+  }
+}

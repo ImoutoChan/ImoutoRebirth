@@ -1,0 +1,38 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net7.0</TargetFramework>
+    <RuntimeIdentifier>win7-x64</RuntimeIdentifier>
+    <SelfContained>false</SelfContained>
+    <Nullable>enable</Nullable>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <ImplicitUsings>true</ImplicitUsings>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="AspNetCoreInjection.TypedFactories" Version="1.2.0" />
+    <PackageReference Include="ImoutoRebirth.Common.Host" Version="3.10.5" />
+    <PackageReference Include="ImoutoRebirth.Common.Logging" Version="3.10.5" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.EnvironmentVariables" Version="7.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="7.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Hosting" Version="7.0.1" />
+    <PackageReference Include="Microsoft.Extensions.Hosting.WindowsServices" Version="7.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\ImoutoRebirth.Arachne.Core\ImoutoRebirth.Arachne.Core.csproj" />
+    <ProjectReference Include="..\ImoutoRebirth.Arachne.Infrastructure\ImoutoRebirth.Arachne.Infrastructure.csproj" />
+    <ProjectReference Include="..\ImoutoRebirth.Arachne.Service\ImoutoRebirth.Arachne.Service.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="appSettings.Development.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="appSettings.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
+</Project>

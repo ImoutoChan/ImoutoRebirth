@@ -1,0 +1,22 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net7.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <ImplicitUsings>true</ImplicitUsings>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="ImoutoRebirth.Lilin.MessageContracts" Version="2.6.2" />
+    <PackageReference Include="ImoutoRebirth.Meido.MessageContracts" Version="1.6.3" />
+    <PackageReference Include="ImoutoRebirth.Common.MassTransit" Version="3.10.5" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="7.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\ImoutoRebirth.Arachne.Core\ImoutoRebirth.Arachne.Core.csproj" />
+    <ProjectReference Include="..\ImoutoRebirth.Arachne.MessageContracts\ImoutoRebirth.Arachne.MessageContracts.csproj" />
+  </ItemGroup>
+
+</Project>
