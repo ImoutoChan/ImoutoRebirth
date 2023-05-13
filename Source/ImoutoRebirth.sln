@@ -107,6 +107,15 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ImoutoRebirth.Lilin.WebApi"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ImoutoRebirth.Room.WebApi", "ImoutoRebirth.Room\ImoutoRebirth.Room.WebApi\ImoutoRebirth.Room.WebApi.csproj", "{FDB32AFC-5A5E-434C-8393-A95B17937EA6}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tools", "Tools", "{2438D898-F22E-4AD1-950B-4686D50817B3}"
+	ProjectSection(SolutionItems) = preProject
+		Directory.Build.props = Directory.Build.props
+		global.json = global.json
+		NuGet.config = NuGet.config
+	EndProjectSection
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NukeBuild", "..\Tools\NukeBuild\NukeBuild.csproj", "{DBC3E098-5984-4FD6-9F83-18FBE9A23683}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -116,6 +125,8 @@ Global
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{DBC3E098-5984-4FD6-9F83-18FBE9A23683}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DBC3E098-5984-4FD6-9F83-18FBE9A23683}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{9BC327CE-D36E-4926-9830-DCEB0CB73884}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{9BC327CE-D36E-4926-9830-DCEB0CB73884}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9BC327CE-D36E-4926-9830-DCEB0CB73884}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -337,5 +348,6 @@ Global
 		{FCE7486D-7AAA-43FF-8E4C-29E307385D3A} = {5198DC62-EAAC-4A81-8728-349F06201287}
 		{DAAC4859-2DDB-4A6F-9291-D3A764A3ACD9} = {9DD31146-A822-409B-B6B7-EE16337740D3}
 		{FDB32AFC-5A5E-434C-8393-A95B17937EA6} = {5198DC62-EAAC-4A81-8728-349F06201287}
+		{DBC3E098-5984-4FD6-9F83-18FBE9A23683} = {2438D898-F22E-4AD1-950B-4686D50817B3}
 	EndGlobalSection
 EndGlobal

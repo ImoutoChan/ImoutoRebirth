@@ -1,0 +1,20 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <OutputType>Exe</OutputType>
+        <TargetFramework>net7.0</TargetFramework>
+        <NoWarn>CS0649;CS0169</NoWarn>
+        <NukeRootDirectory>..\..</NukeRootDirectory>
+        <NukeTelemetryVersion>1</NukeTelemetryVersion>
+        <RootNamespace></RootNamespace>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <PackageReference Include="Nuke.Common" Version="7.0.0"/>
+    </ItemGroup>
+
+    <ItemGroup>
+        <PackageDownload Include="GitVersion.Tool" Version="[5.12.0]"/>
+    </ItemGroup>
+
+</Project>
