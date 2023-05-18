@@ -14,14 +14,14 @@
         <Company>ImoutoRebirth</Company>
         <Product>Imouto Navigator</Product>
         <Copyright>ImoutoChan © 2013-2023</Copyright>
-        <Version>1.12.0</Version>
+        <Version>1.12.1</Version>
         <ApplicationIcon>Resources\Icon\window-icon.ico</ApplicationIcon>
     </PropertyGroup>
 
     <ItemGroup>
-        <None Remove="Resources\Entypo.ttf"/>
-        <None Remove="Resources\Icon\49a7b0a953e5106e5942169f3cb0c237.ico"/>
-        <None Remove="Resources\Icon\window-icon.ico"/>
+        <None Remove="Resources\Entypo.ttf" />
+        <None Remove="Resources\Icon\49a7b0a953e5106e5942169f3cb0c237.ico" />
+        <None Remove="Resources\Icon\window-icon.ico" />
         <None Update="libwebp.dll">
             <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
         </None>
@@ -31,28 +31,28 @@
     </ItemGroup>
 
     <ItemGroup>
-        <PackageReference Include="AutoMapper" Version="12.0.1"/>
-        <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="12.0.1"/>
-        <PackageReference Include="Imouto.Utils.Core" Version="2.0.0"/>
-        <PackageReference Include="ImoutoRebirth.ApngWpfPlayer" Version="1.1.2"/>
-        <PackageReference Include="MahApps.Metro" Version="2.4.9"/>
-        <PackageReference Include="MahApps.Metro.IconPacks" Version="4.11.0"/>
-        <PackageReference Include="Microsoft-WindowsAPICodePack-Core" Version="1.1.4"/>
-        <PackageReference Include="Microsoft-WindowsAPICodePack-Shell" Version="1.1.4"/>
-        <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="7.0.0"/>
-        <PackageReference Include="Microsoft.Xaml.Behaviors.Wpf" Version="1.1.39"/>
-        <PackageReference Include="SharedModelLibrary.Core" Version="2.0.0"/>
-        <PackageReference Include="VideoLAN.LibVLC.Windows" Version="3.0.18"/>
-        <PackageReference Include="Vlc.DotNet.Wpf" Version="3.1.0"/>
-        <PackageReference Include="WpfAnimatedGif" Version="2.0.2"/>
-        <PackageReference Include="Imazen.WebP" Version="10.0.1"/>
-        <PackageReference Include="Newtonsoft.Json" Version="13.0.3"/>
+        <PackageReference Include="AutoMapper" Version="12.0.1" />
+        <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="12.0.1" />
+        <PackageReference Include="Imouto.Utils.Core" Version="2.0.0" />
+        <PackageReference Include="ImoutoRebirth.ApngWpfPlayer" Version="1.2.0" />
+        <PackageReference Include="MahApps.Metro" Version="2.4.9" />
+        <PackageReference Include="MahApps.Metro.IconPacks" Version="4.11.0" />
+        <PackageReference Include="Microsoft-WindowsAPICodePack-Core" Version="1.1.4" />
+        <PackageReference Include="Microsoft-WindowsAPICodePack-Shell" Version="1.1.4" />
+        <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="7.0.0" />
+        <PackageReference Include="Microsoft.Xaml.Behaviors.Wpf" Version="1.1.39" />
+        <PackageReference Include="SharedModelLibrary.Core" Version="2.0.0" />
+        <PackageReference Include="VideoLAN.LibVLC.Windows" Version="3.0.18" />
+        <PackageReference Include="Vlc.DotNet.Wpf" Version="3.1.0" />
+        <PackageReference Include="WpfAnimatedGif" Version="2.0.2" />
+        <PackageReference Include="Imazen.WebP" Version="10.0.1" />
+        <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
     </ItemGroup>
 
     <ItemGroup>
-        <Resource Include="Resources\Entypo.ttf"/>
-        <Resource Include="Resources\Icon\49a7b0a953e5106e5942169f3cb0c237.ico"/>
-        <Resource Include="Resources\Icon\window-icon.ico"/>
+        <Resource Include="Resources\Entypo.ttf" />
+        <Resource Include="Resources\Icon\49a7b0a953e5106e5942169f3cb0c237.ico" />
+        <Resource Include="Resources\Icon\window-icon.ico" />
     </ItemGroup>
 
     <ItemGroup>
@@ -155,8 +155,8 @@
     </ItemGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\..\ImoutoRebirth.Lilin\ImoutoRebirth.Lilin.WebApi.Client\ImoutoRebirth.Lilin.WebApi.Client.csproj"/>
-        <ProjectReference Include="..\..\ImoutoRebirth.Room\ImoutoRebirth.Room.WebApi.Client\ImoutoRebirth.Room.WebApi.Client.csproj"/>
+        <ProjectReference Include="..\..\ImoutoRebirth.Lilin\ImoutoRebirth.Lilin.WebApi.Client\ImoutoRebirth.Lilin.WebApi.Client.csproj" />
+        <ProjectReference Include="..\..\ImoutoRebirth.Room\ImoutoRebirth.Room.WebApi.Client\ImoutoRebirth.Room.WebApi.Client.csproj" />
     </ItemGroup>
 
 </Project>
