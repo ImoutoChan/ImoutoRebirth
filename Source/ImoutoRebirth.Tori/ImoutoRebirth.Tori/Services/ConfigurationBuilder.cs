@@ -1,6 +1,6 @@
 ﻿using System.Text.Json;
 
-namespace ImoutoRebirth.Tori;
+namespace ImoutoRebirth.Tori.Services;
 
 public interface IConfigurationBuilder
 {
@@ -111,34 +111,6 @@ public class ConfigurationBuilder : IConfigurationBuilder
 
     private void ValidateConfigurationValues()
     {
-        var i = """
-                {
-                  "RabbitMqUrl": "",
-                  "RabbitMqUsername": "",
-                  "RabbitMqPassword": "",
-                  "DanbooruLogin": "",
-                  "DanbooruApiKey": "",
-                  "SankakuLogin": "",
-                  "SankakuPassHash": "",
-                  "YandereLogin": "",
-                  "YandereApiKey": "",
-                  "ElasticUrl": "",
-                  "RoomPort": "",
-                  "KekkaiPort": "",
-                  "LilinPort": "",
-                  "HarpySavePath": "",
-                  "HarpyFavoritesSaveJobRepeatEveryMinutes": "",
-                  "KekkaiAuthToken": "",
-                  "LilinConnectionString": "",
-                  "MeidoConnectionString": "",
-                  "RoomConnectionString": "",
-                  "MeidoMetadataActualizerRepeatEveryMinutes": "",
-                  "MeidoFaultToleranceRepeatEveryMinutes": "",
-                  "MeidoFaultToleranceIsEnabled": "",
-                  "RoomImoutoPicsUploadUrl": ""
-                }
-                """;
-
         var keys = new[]
         {
             "RabbitMqUrl",

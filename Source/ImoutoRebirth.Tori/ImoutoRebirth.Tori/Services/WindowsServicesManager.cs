@@ -20,6 +20,64 @@ public interface IWindowsServicesManager
 }
 
 [SuppressMessage("Interoperability", "CA1416:Validate platform compatibility")]
+public class FakeWindowsServicesManager : IWindowsServicesManager
+{
+    private readonly ILogger<WindowsServiceUpdater> _logger;
+
+    public FakeWindowsServicesManager(ILogger<WindowsServiceUpdater> logger) => _logger = logger;
+    
+    public void LogServices()
+    {
+        var installedServicesString = GetServices().JoinStrings(x => $"({x.Name} {x.Status})", ", ");
+        _logger.LogInformation("Installed services: {InstalledServices}", installedServicesString);
+    }
+
+    public void StopServices()
+    {
+        var services = GetWindowsServices().ToList();
+        
+        foreach (var service in services)
+        {
+            _logger.LogInformation("Stopping {ServiceName}", service.ServiceName);
+        }
+
+        foreach (var service in services)
+        {
+            _logger.LogInformation("Stopped {ServiceName}", service.ServiceName);
+        }
+    }
+
+    public void DeleteServices()
+    {
+        var services = GetWindowsServices().ToList();
+
+        foreach (var service in services)
+        {
+            _logger.LogInformation("Deleting {ServiceName}", service.ServiceName);
+            _logger.LogInformation("RUN sc delete {ServiceName}", service.ServiceName);
+            _logger.LogInformation("Deleted {ServiceName}", service.ServiceName);
+        }
+    }
+
+    public void CreateServices(IReadOnlyCollection<(string Name, string ExePath)> newServices)
+    {
+        foreach (var service in newServices)
+        {
+            _logger.LogInformation("Creating {ServiceName} with exe {ServiceExe}", service.Name, service.ExePath);
+            _logger.LogInformation("RUN sc create {ServiceName} binPath= \"{ServiceExe}\"", service.Name, service.ExePath);
+            _logger.LogInformation("Created {ServiceName}", service.Name);
+        }
+    }
+
+    private static IEnumerable<ServiceController> GetWindowsServices()
+        => ServiceController.GetServices()
+            .Where(x => x.ServiceName.StartsWith("ImoutoRebirth"));
+    
+    private static IEnumerable<WindowsService> GetServices() 
+        => GetWindowsServices().Select(x => new WindowsService(x.ServiceName, x.Status.ToString()));
+}
+
+[SuppressMessage("Interoperability", "CA1416:Validate platform compatibility")]
 public class WindowsServicesManager : IWindowsServicesManager
 {
     private readonly ILogger<WindowsServiceUpdater> _logger;

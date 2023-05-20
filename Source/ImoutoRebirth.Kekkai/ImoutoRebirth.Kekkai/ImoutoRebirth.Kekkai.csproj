@@ -2,8 +2,7 @@
 
     <PropertyGroup>
         <OutputType>Exe</OutputType>
-        <RuntimeIdentifier>win7-x64</RuntimeIdentifier>
-        <SelfContained>false</SelfContained>
+        <RuntimeIdentifier>win-x64</RuntimeIdentifier>
 
         <TargetFramework>net7.0</TargetFramework>
         <Nullable>enable</Nullable>

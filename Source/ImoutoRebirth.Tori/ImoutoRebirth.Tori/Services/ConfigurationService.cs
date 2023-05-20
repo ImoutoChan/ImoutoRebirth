@@ -1,7 +1,7 @@
 ﻿using ImoutoRebirth.Common;
 using Microsoft.Extensions.Logging;
 
-namespace ImoutoRebirth.Tori;
+namespace ImoutoRebirth.Tori.Services;
 
 public interface IConfigurationService
 {

@@ -1,8 +1,8 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
     <PropertyGroup>
-        <RuntimeIdentifier>win7-x64</RuntimeIdentifier>
-        <SelfContained>true</SelfContained>
+        <OutputType>Exe</OutputType>
+        <RuntimeIdentifier>win-x64</RuntimeIdentifier>
 
         <TargetFramework>net7.0</TargetFramework>
         <Nullable>enable</Nullable>

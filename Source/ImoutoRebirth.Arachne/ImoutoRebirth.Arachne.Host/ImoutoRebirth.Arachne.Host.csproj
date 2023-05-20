@@ -2,8 +2,7 @@
 
     <PropertyGroup>
         <OutputType>Exe</OutputType>
-        <RuntimeIdentifier>win7-x64</RuntimeIdentifier>
-        <SelfContained>false</SelfContained>
+        <RuntimeIdentifier>win-x64</RuntimeIdentifier>
 
         <TargetFramework>net7.0</TargetFramework>
         <Nullable>enable</Nullable>
@@ -12,19 +11,19 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="AspNetCoreInjection.TypedFactories" Version="1.2.0" />
-        <PackageReference Include="Microsoft.Extensions.Configuration.EnvironmentVariables" Version="7.0.0" />
-        <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="7.0.0" />
-        <PackageReference Include="Microsoft.Extensions.Hosting" Version="7.0.1" />
-        <PackageReference Include="Microsoft.Extensions.Hosting.WindowsServices" Version="7.0.0" />
+        <PackageReference Include="AspNetCoreInjection.TypedFactories" Version="1.2.0"/>
+        <PackageReference Include="Microsoft.Extensions.Configuration.EnvironmentVariables" Version="7.0.0"/>
+        <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="7.0.0"/>
+        <PackageReference Include="Microsoft.Extensions.Hosting" Version="7.0.1"/>
+        <PackageReference Include="Microsoft.Extensions.Hosting.WindowsServices" Version="7.0.0"/>
     </ItemGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\..\ImoutoRebirth.Common\ImoutoRebirth.Common.Host\ImoutoRebirth.Common.Host.csproj" />
-        <ProjectReference Include="..\..\ImoutoRebirth.Common\ImoutoRebirth.Common.Logging\ImoutoRebirth.Common.Logging.csproj" />
-        <ProjectReference Include="..\ImoutoRebirth.Arachne.Core\ImoutoRebirth.Arachne.Core.csproj" />
-        <ProjectReference Include="..\ImoutoRebirth.Arachne.Infrastructure\ImoutoRebirth.Arachne.Infrastructure.csproj" />
-        <ProjectReference Include="..\ImoutoRebirth.Arachne.Service\ImoutoRebirth.Arachne.Service.csproj" />
+        <ProjectReference Include="..\..\ImoutoRebirth.Common\ImoutoRebirth.Common.Host\ImoutoRebirth.Common.Host.csproj"/>
+        <ProjectReference Include="..\..\ImoutoRebirth.Common\ImoutoRebirth.Common.Logging\ImoutoRebirth.Common.Logging.csproj"/>
+        <ProjectReference Include="..\ImoutoRebirth.Arachne.Core\ImoutoRebirth.Arachne.Core.csproj"/>
+        <ProjectReference Include="..\ImoutoRebirth.Arachne.Infrastructure\ImoutoRebirth.Arachne.Infrastructure.csproj"/>
+        <ProjectReference Include="..\ImoutoRebirth.Arachne.Service\ImoutoRebirth.Arachne.Service.csproj"/>
     </ItemGroup>
 
     <ItemGroup>

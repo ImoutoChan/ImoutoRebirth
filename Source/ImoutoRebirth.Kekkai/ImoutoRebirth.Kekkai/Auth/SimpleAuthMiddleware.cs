@@ -22,7 +22,7 @@ public class SimpleAuthMiddleware : IMiddleware
             await next(context);
             return;
         }
-        
+
         context.Response.StatusCode = 401;
         await context.Response.WriteAsync("Unauthorized");
     }

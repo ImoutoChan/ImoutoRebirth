@@ -1,8 +1,7 @@
 ﻿using ImoutoRebirth.Common;
-using ImoutoRebirth.Tori.Services;
 using Microsoft.Extensions.Logging;
 
-namespace ImoutoRebirth.Tori;
+namespace ImoutoRebirth.Tori.Services;
 
 public interface IWindowsServiceUpdater
 {
@@ -42,7 +41,7 @@ public class WindowsServiceUpdater : IWindowsServiceUpdater
         foreach (var newServiceDirectory in serviceDirectories)
         {
             var serviceName = newServiceDirectory.Name;
-            var oldServiceDirectory = installLocation.CombineToDirectory(serviceName);
+            var oldServiceDirectory = installLocation.CombineToDirectory(serviceName[14..]);
             
             _logger.LogInformation("{ServiceName} | Cleaning existing service directory", serviceName);            
             if (oldServiceDirectory.Exists) 
@@ -73,7 +72,7 @@ public class WindowsServiceUpdater : IWindowsServiceUpdater
             if (WindowsServiceNames.Contains(serviceName))
             {
                 var exeName = oldServiceDirectory.GetFiles("*", SearchOption.AllDirectories)
-                    .First(x => x.Extension == "exe" && x.Name.Contains(serviceName)).FullName;
+                    .First(x => x.Extension == ".exe" && x.Name.Contains(serviceName)).FullName;
 
                 _logger.LogInformation(
                     "{ServiceName} | Preparing to create service with exe {ServiceExe}", 

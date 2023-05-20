@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Threading.Tasks;
 using Nuke.Common;
 using Nuke.Common.IO;
 using Nuke.Common.ProjectModel;
@@ -77,19 +78,20 @@ class Build : NukeBuild
         .DependsOn(Test)
         .Executes(() =>
         {
-            OutputDirectory.CreateOrCleanDirectory();
+            var output = OutputDirectory / GitVersion.NuGetVersionV2; 
+            output.CreateOrCleanDirectory();
 
             var apps = Solution.AllProjects.Where(p => ApplicationProjects.Contains(p.Name));
 
-            foreach (var project in apps)
+            Parallel.ForEach(apps, project =>
             {
                 DotNetPublish(s => s
                     .SetConfiguration(Configuration)
                     .SetAssemblyVersion(GitVersion.AssemblySemVer)
                     .SetVersion(GitVersion.NuGetVersionV2)
-                    .SetOutput(OutputDirectory / GitVersion.NuGetVersionV2 / project.Directory.Parent!.Name)
+                    .SetOutput(output / project.Directory.Parent!.Name)
                     .SetProject(project));
-            }
+            });
 
             var configFilePath = BuildAssemblyDirectory / "configuration.json";
             var targetConfigFilePath = OutputDirectory / GitVersion.NuGetVersionV2 / "configuration.json";
