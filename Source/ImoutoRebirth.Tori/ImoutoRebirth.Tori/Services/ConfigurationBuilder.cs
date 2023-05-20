@@ -71,7 +71,7 @@ public class ConfigurationBuilder : IConfigurationBuilder
         _meidoConnectionString = _configuration["MeidoConnectionString"];
         _roomConnectionString = _configuration["RoomConnectionString"];
 
-        _harpySavePath = _configuration["HarpySavePath"];
+        _harpySavePath = _configuration["HarpySavePath"].Replace(@"\", @"\\");
         _harpyFavoritesSaveJobRepeatEveryMinutes = _configuration["HarpyFavoritesSaveJobRepeatEveryMinutes"];
 
         _kekkaiAuthToken = _configuration["KekkaiAuthToken"];

@@ -17,6 +17,8 @@ public interface IWindowsServicesManager
     void DeleteServices();
 
     void CreateServices(IReadOnlyCollection<(string Name, string ExePath)> newServices);
+
+    void StartServices();
 }
 
 [SuppressMessage("Interoperability", "CA1416:Validate platform compatibility")]
@@ -69,6 +71,16 @@ public class FakeWindowsServicesManager : IWindowsServicesManager
         }
     }
 
+    public void StartServices()
+    {
+        var services = GetWindowsServices().ToList();
+        
+        foreach (var service in services)
+        {
+            _logger.LogInformation("Starting {ServiceName}", service.ServiceName);
+        }
+    }
+
     private static IEnumerable<ServiceController> GetWindowsServices()
         => ServiceController.GetServices()
             .Where(x => x.ServiceName.StartsWith("ImoutoRebirth"));
@@ -94,16 +106,27 @@ public class WindowsServicesManager : IWindowsServicesManager
     {
         var services = GetWindowsServices().ToList();
         
-        foreach (var service in services)
+        foreach (var service in services.Where(x => x.Status != ServiceControllerStatus.Stopped))
         {
             _logger.LogInformation("Stopping {ServiceName}", service.ServiceName);
             service.Stop();
         }
 
-        foreach (var service in services)
+        foreach (var service in services.Where(x => x.Status == ServiceControllerStatus.StopPending))
         {
             service.WaitForStatus(ServiceControllerStatus.Stopped);
             _logger.LogInformation("Stopped {ServiceName}", service.ServiceName);
+        }
+    }
+
+    public void StartServices()
+    {
+        var services = GetWindowsServices().ToList();
+        
+        foreach (var service in services)
+        {
+            _logger.LogInformation("Starting {ServiceName}", service.ServiceName);
+            service.Start();
         }
     }
 
@@ -147,7 +170,7 @@ public class WindowsServicesManager : IWindowsServicesManager
             _logger.LogInformation("Creating {ServiceName} with exe {ServiceExe}", service.Name, service.ExePath);
             using var process = new Process();
             process.StartInfo.FileName = "sc";
-            process.StartInfo.Arguments = $"create {service.Name} binPath= \"{service.ExePath}\"";
+            process.StartInfo.Arguments = $"create {service.Name} start= delayed-auto binPath= \"{service.ExePath}\"";
             process.Start();
             process.WaitForExit();
             _logger.LogInformation("Created {ServiceName}", service.Name);

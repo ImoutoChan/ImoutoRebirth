@@ -11,8 +11,8 @@ services.AddTransient<IConfigurationService, ConfigurationService>();
 services.AddTransient<IRegistryService, RegistryService>();
 services.AddTransient<IVersionService, VersionService>();
 
-// services.AddTransient<IWindowsServicesManager, WindowsServicesManager>();
-services.AddTransient<IWindowsServicesManager, FakeWindowsServicesManager>();
+services.AddTransient<IWindowsServicesManager, WindowsServicesManager>();
+//services.AddTransient<IWindowsServicesManager, FakeWindowsServicesManager>();
 
 services.AddTransient<IWindowsServiceUpdater, WindowsServiceUpdater>();
 services.AddTransient<IInstaller, Installer>();

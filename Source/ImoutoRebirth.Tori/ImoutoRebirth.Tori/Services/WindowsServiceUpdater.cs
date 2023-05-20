@@ -87,5 +87,6 @@ public class WindowsServiceUpdater : IWindowsServiceUpdater
         }
         
         _windowsServicesManager.CreateServices(windowsServicesToCreate);
+        _windowsServicesManager.StartServices();
     }
 }
