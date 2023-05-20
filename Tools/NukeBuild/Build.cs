@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using Nuke.Common;
 using Nuke.Common.IO;
@@ -89,5 +90,9 @@ class Build : NukeBuild
                     .SetOutput(OutputDirectory / GitVersion.NuGetVersionV2 / project.Directory.Parent!.Name)
                     .SetProject(project));
             }
+
+            var configFilePath = BuildAssemblyDirectory / "configuration.json";
+            var targetConfigFilePath = OutputDirectory / GitVersion.NuGetVersionV2 / "configuration.json";
+            File.Copy(configFilePath, targetConfigFilePath, overwrite: true);
         });
 }

@@ -13,4 +13,7 @@ public static class EnumerableExtensions
                 yield return item;
         }
     }
+
+    public static string JoinStrings<T>(this IEnumerable<T> source, Func<T, string> stringSelector, string separator) 
+        => string.Join(separator, source.Select(stringSelector));
 }
