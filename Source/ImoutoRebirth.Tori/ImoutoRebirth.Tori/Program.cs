@@ -30,6 +30,6 @@ var updaterLocation = new DirectoryInfo(args[0]);
 if (!updaterLocation.Exists)
     Console.WriteLine("Unable to find updater location, please pass it as first argument");
 
-installer.EasyInstallOrUpdate(updaterLocation);
+var force = args.Contains("force");
 
-Console.ReadKey();
+installer.EasyInstallOrUpdate(updaterLocation, force);

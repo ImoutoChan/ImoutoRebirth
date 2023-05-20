@@ -6,7 +6,7 @@ namespace ImoutoRebirth.Tori;
 
 public interface IInstaller
 {
-    void EasyInstallOrUpdate(DirectoryInfo updaterLocation);
+    void EasyInstallOrUpdate(DirectoryInfo updaterLocation, bool forceUpdate = false);
 }
 
 public class Installer : IInstaller
@@ -31,7 +31,7 @@ public class Installer : IInstaller
         _windowsServiceUpdater = windowsServiceUpdater;
     }
 
-    public void EasyInstallOrUpdate(DirectoryInfo updaterLocation)
+    public void EasyInstallOrUpdate(DirectoryInfo updaterLocation, bool forceUpdate)
     {
         _logger.LogInformation("Installing ImoutoRebirth app family");
         var isInstalled = _registryService.IsInstalled(out var installLocation);
@@ -39,7 +39,7 @@ public class Installer : IInstaller
         if (isInstalled)
         {
             _logger.LogInformation("Local version was found, updating");
-            EasyUpdate(installLocation!, updaterLocation);
+            EasyUpdate(installLocation!, updaterLocation, forceUpdate);
         }
         else
         {
@@ -48,13 +48,13 @@ public class Installer : IInstaller
         }
     }
 
-    private void EasyUpdate(DirectoryInfo installLocation, DirectoryInfo updaterLocation)
+    private void EasyUpdate(DirectoryInfo installLocation, DirectoryInfo updaterLocation, bool forceUpdate)
     {
         var newVersion = _versionService.GetNewVersion();
         var localVersion = _versionService.GetLocalVersion(installLocation);
         _logger.LogInformation("New version {NewVersion}", newVersion);
         
-        if (localVersion == newVersion)
+        if (localVersion == newVersion && !forceUpdate)
         {
             _logger.LogInformation("Everything is up to date");
         }
