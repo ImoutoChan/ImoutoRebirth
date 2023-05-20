@@ -41,6 +41,10 @@ public class WindowsServiceUpdater : IWindowsServiceUpdater
         foreach (var newServiceDirectory in serviceDirectories)
         {
             var serviceName = newServiceDirectory.Name;
+            
+            if (newServiceDirectory.Name == "ImoutoRebirth.Tori")
+                continue;
+            
             var oldServiceDirectory = installLocation.CombineToDirectory(serviceName[14..]);
             
             _logger.LogInformation("{ServiceName} | Cleaning existing service directory", serviceName);            

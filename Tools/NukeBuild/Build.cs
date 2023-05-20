@@ -22,6 +22,7 @@ class Build : NukeBuild
         "ImoutoRebirth.Meido.Host",
         "ImoutoRebirth.Navigator",
         "ImoutoRebirth.Room.Webhost",
+        "ImoutoRebirth.Tori",
     };
 
     public static int Main () => Execute<Build>(x => x.Publish);
@@ -96,5 +97,9 @@ class Build : NukeBuild
             var configFilePath = BuildAssemblyDirectory / "configuration.json";
             var targetConfigFilePath = OutputDirectory / GitVersion.NuGetVersionV2 / "configuration.json";
             File.Copy(configFilePath, targetConfigFilePath, overwrite: true);
+
+            var installFilePath = BuildAssemblyDirectory / "install-update.ps1";
+            var targetInstallFilePath = OutputDirectory / GitVersion.NuGetVersionV2 / "install-update.ps1";
+            File.Copy(installFilePath, targetInstallFilePath, overwrite: true);
         });
 }

@@ -4,7 +4,6 @@ using ImoutoRebirth.Tori;
 using ImoutoRebirth.Tori.Services;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Logging.Console;
 
 var services = new ServiceCollection();
 
@@ -26,7 +25,11 @@ var container = services.BuildServiceProvider();
 
 var installer = container.GetRequiredService<IInstaller>();
 
-// var updaterLocation = new DirectoryInfo(Assembly.GetEntryAssembly()!.Location).Parent!;
-var updaterLocation = new DirectoryInfo(@"E:\Code\Private\ImoutoRebirth.MonoRepository\Artifacts\4.0.1");
+var updaterLocation = new DirectoryInfo(args[0]);
+
+if (!updaterLocation.Exists)
+    Console.WriteLine("Unable to find updater location, please pass it as first argument");
 
 installer.EasyInstallOrUpdate(updaterLocation);
+
+Console.ReadKey();
