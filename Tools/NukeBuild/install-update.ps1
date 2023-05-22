@@ -1,1 +1,1 @@
-.\ImoutoRebirth.Tori\ImoutoRebirth.Tori.exe .\
+.\ImoutoRebirth.Tori\ImoutoRebirth.Tori.exe .\ force

@@ -105,14 +105,16 @@ public class WindowsServicesManager : IWindowsServicesManager
     public void StopServices()
     {
         var services = GetWindowsServices().ToList();
+
+        var runningServices = services.Where(x => x.Status != ServiceControllerStatus.Stopped).ToList();
         
-        foreach (var service in services.Where(x => x.Status != ServiceControllerStatus.Stopped))
+        foreach (var service in runningServices)
         {
             _logger.LogInformation("Stopping {ServiceName}", service.ServiceName);
             service.Stop();
         }
 
-        foreach (var service in services.Where(x => x.Status == ServiceControllerStatus.StopPending))
+        foreach (var service in runningServices)
         {
             service.WaitForStatus(ServiceControllerStatus.Stopped);
             _logger.LogInformation("Stopped {ServiceName}", service.ServiceName);

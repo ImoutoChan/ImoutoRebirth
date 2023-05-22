@@ -79,7 +79,7 @@ class Build : NukeBuild
         .DependsOn(Test)
         .Executes(() =>
         {
-            var output = OutputDirectory / GitVersion.NuGetVersionV2; 
+            var output = OutputDirectory / "latest"; 
             output.CreateOrCleanDirectory();
 
             var apps = Solution.AllProjects.Where(p => ApplicationProjects.Contains(p.Name));
@@ -95,11 +95,11 @@ class Build : NukeBuild
             });
 
             var configFilePath = BuildAssemblyDirectory / "configuration.json";
-            var targetConfigFilePath = OutputDirectory / GitVersion.NuGetVersionV2 / "configuration.json";
+            var targetConfigFilePath = output / "configuration.json";
             File.Copy(configFilePath, targetConfigFilePath, overwrite: true);
 
             var installFilePath = BuildAssemblyDirectory / "install-update.ps1";
-            var targetInstallFilePath = OutputDirectory / GitVersion.NuGetVersionV2 / "install-update.ps1";
+            var targetInstallFilePath = output / "install-update.ps1";
             File.Copy(installFilePath, targetInstallFilePath, overwrite: true);
         });
 }
