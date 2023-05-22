@@ -50,10 +50,14 @@ public static class SerilogExtensions
         var applicationName = hostEnvironment.ApplicationName.ToLower().Replace('.', '-');
 
         configuration.Enrich.WithProperty("Application", hostEnvironment.ApplicationName);
+
+        var indexFormat = hostEnvironment.IsProduction()
+            ? $$"""{{applicationName}}-{0:yyyy.MM}"""
+            : $$"""dev-{{applicationName}}-{0:yyyy.MM}""";
         
         return configuration.WriteTo.OpenSearch(
             nodeUris: url,
-            indexFormat: $$"""{{applicationName}}-{0:yyyy.MM}""",
+            indexFormat: indexFormat,
             restrictedToMinimumLevel: LogEventLevel.Verbose);
     }
 }
