@@ -25,12 +25,12 @@ public class Program
             .UseQuartz()
             .UseConfiguration(ServicePrefix)
             .ConfigureSerilog(
-                (loggerBuilder, appConfiguration) 
+                (loggerBuilder, appConfiguration, hostEnvironment) 
                     => loggerBuilder
                         .WithoutDefaultLoggers()
                         .WithConsole()
                         .WithAllRollingFile()
                         .WithInformationRollingFile()
-                        .PatchWithConfiguration(appConfiguration))
+                        .WithOpenSearch(appConfiguration, hostEnvironment))
             .ConfigureWebHostDefaults(builder => builder.UseStartup<Startup>());
 }

@@ -14,7 +14,6 @@ public class ConfigurationBuilder : IConfigurationBuilder
     private readonly Dictionary<string, string> _configuration;
     private readonly string _danbooruApiKey;
     private readonly string _danbooruLogin;
-    private readonly string _elasticUrl;
     private readonly FileInfo _globalConfigurationFile;
     private readonly string _harpyFavoritesSaveJobRepeatEveryMinutes;
     private readonly string _harpySavePath;
@@ -27,6 +26,7 @@ public class ConfigurationBuilder : IConfigurationBuilder
     private readonly string _meidoFaultToleranceIsEnabled;
     private readonly string _meidoFaultToleranceRepeatEveryMinutes;
     private readonly string _meidoMetadataActualizerRepeatEveryMinutes;
+    private readonly string _openSearchUri;
     private readonly string _rabbitPassword;
     private readonly string _rabbitUrl;
     private readonly string _rabbitUsername;
@@ -62,7 +62,7 @@ public class ConfigurationBuilder : IConfigurationBuilder
         _yandereLogin = _configuration["YandereLogin"];
         _yandereApiKey = _configuration["YandereApiKey"];
 
-        _elasticUrl = _configuration["ElasticUrl"];
+        _openSearchUri = _configuration["OpenSearchUri"];
 
         _roomPort = _configuration["RoomPort"];
         _kekkaiPort = _configuration["KekkaiPort"];
@@ -103,6 +103,15 @@ public class ConfigurationBuilder : IConfigurationBuilder
             if (configuration == null)
                 continue;
 
+            try
+            {
+                JsonSerializer.Deserialize<dynamic>(configuration);
+            }
+            catch (Exception e)
+            {
+                throw new Exception("Unable to parse built configuration for {serviceDirectory.Name}", e);
+            }
+
             File.WriteAllText(Path.Combine(serviceDirectory.FullName, "appsettings.Production.json"), configuration);
         }
     }
@@ -122,7 +131,7 @@ public class ConfigurationBuilder : IConfigurationBuilder
             "SankakuPassHash",
             "YandereLogin",
             "YandereApiKey",
-            "ElasticUrl",
+            "OpenSearchUri",
             "RoomPort",
             "KekkaiPort",
             "LilinPort",
@@ -165,21 +174,7 @@ public class ConfigurationBuilder : IConfigurationBuilder
                 "Username": "{{_rabbitUsername}}",
                 "Password": "{{_rabbitPassword}}"
               },
-              "Serilog": {
-                "WriteTo": [
-                  {
-                    "Name": "Elasticsearch",
-                    "Args": {
-                      "nodeUris": "{{_elasticUrl}}",
-                      "indexFormat": "imoutorebirth-arachne-{0:yyyy.MM}",
-                      "restrictedToMinimumLevel": "Information"
-                    }
-                  }
-                ],
-                "Properties": {
-                  "Application": "ImoutoRebirth.Arachne"
-                }
-              }
+              "OpenSearchUri": "{{_openSearchUri}}"
             }
             """;
     }
@@ -205,21 +200,7 @@ public class ConfigurationBuilder : IConfigurationBuilder
               "FavoritesSaveJobSettings": {
                 "RepeatEveryMinutes": {{_harpyFavoritesSaveJobRepeatEveryMinutes}}
               },
-              "Serilog": {
-                "WriteTo": [
-                  {
-                    "Name": "Elasticsearch",
-                    "Args": {
-                      "nodeUris": "{{_elasticUrl}}",
-                      "indexFormat": "imoutorebirth-harpy-{0:yyyy.MM}",
-                      "restrictedToMinimumLevel": "Information"
-                    }
-                  }
-                ],
-                "Properties": {
-                  "Application": "ImoutoRebirth.Harpy"
-                }
-              }
+              "OpenSearchUri": "{{_openSearchUri}}"
             }
             """;
     }
@@ -235,21 +216,7 @@ public class ConfigurationBuilder : IConfigurationBuilder
                 "Username": "{{_rabbitUsername}}",
                 "Password": "{{_rabbitPassword}}"
               },
-              "Serilog": {
-                "WriteTo": [
-                  {
-                    "Name": "Elasticsearch",
-                    "Args": {
-                      "nodeUris": "{{_elasticUrl}}",
-                      "indexFormat": "imoutorebirth-kekkai-{0:yyyy.MM}",
-                      "restrictedToMinimumLevel": "Information"
-                    }
-                  }
-                ],
-                "Properties": {
-                  "Application": "ImoutoRebirth.Kekkai"
-                }
-              },
+              "OpenSearchUri": "{{_openSearchUri}}",
               "Kestrel": {
                 "EndPoints": {
                   "Http": {
@@ -274,21 +241,7 @@ public class ConfigurationBuilder : IConfigurationBuilder
                 "Username": "{{_rabbitUsername}}",
                 "Password": "{{_rabbitPassword}}"
               },
-              "Serilog": {
-                "WriteTo": [
-                  {
-                    "Name": "Elasticsearch",
-                    "Args": {
-                      "nodeUris": "{{_elasticUrl}}",
-                      "indexFormat": "imoutorebirth-lilin-{0:yyyy.MM}",
-                      "restrictedToMinimumLevel": "Information"
-                    }
-                  }
-                ],
-                "Properties": {
-                  "Application": "ImoutoRebirth.Lilin"
-                }
-              },
+              "OpenSearchUri": "{{_openSearchUri}}",
               "Kestrel": {
                 "EndPoints": {
                   "Http": {
@@ -313,21 +266,7 @@ public class ConfigurationBuilder : IConfigurationBuilder
                 "Username": "{{_rabbitUsername}}",
                 "Password": "{{_rabbitPassword}}"
               },
-              "Serilog": {
-                "WriteTo": [
-                  {
-                    "Name": "Elasticsearch",
-                    "Args": {
-                      "nodeUris": "{{_elasticUrl}}",
-                      "indexFormat": "imoutorebirth-meido-{0:yyyy.MM}",
-                      "restrictedToMinimumLevel": "Information"
-                    }
-                  }
-                ],
-                "Properties": {
-                  "Application": "ImoutoRebirth.Meido"
-                }
-              },
+              "OpenSearchUri": "{{_openSearchUri}}",
               "MetadataActualizerSettings": {
                 "RepeatEveryMinutes": {{_meidoMetadataActualizerRepeatEveryMinutes}},
                 "ActiveSources": [
@@ -362,18 +301,7 @@ public class ConfigurationBuilder : IConfigurationBuilder
                 "Username": "{{_rabbitUsername}}",
                 "Password": "{{_rabbitPassword}}"
               },
-              "Serilog": {
-                "WriteTo": [
-                  {
-                    "Name": "Elasticsearch",
-                    "Args": {
-                      "nodeUris": "{{_elasticUrl}}",
-                      "indexFormat": "imoutorebirth-room-{0:yyyy.MM}",
-                      "restrictedToMinimumLevel": "Information"
-                    }
-                  }
-                ]
-              },
+              "OpenSearchUri": "{{_openSearchUri}}",
               "ImoutoPicsUploadUrl": "{{_roomImoutoPicsUploadUrl}}"
             }
             """;

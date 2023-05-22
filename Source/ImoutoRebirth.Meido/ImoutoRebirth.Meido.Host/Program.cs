@@ -25,13 +25,13 @@ internal class Program
             .UseEnvironmentFromEnvironmentVariable(ServicePrefix)
             .UseConfiguration(ServicePrefix)
             .ConfigureSerilog(
-                (loggerBuilder, appConfiguration) 
+                (loggerBuilder, appConfiguration, hostEnvironment) 
                     => loggerBuilder
                         .WithoutDefaultLoggers()
                         .WithConsole()
                         .WithAllRollingFile()
                         .WithInformationRollingFile()
-                        .PatchWithConfiguration(appConfiguration))
+                        .WithOpenSearch(appConfiguration, hostEnvironment))
             .UseQuartz()
             .UseStartup(x => new Startup(x))
             .Build();

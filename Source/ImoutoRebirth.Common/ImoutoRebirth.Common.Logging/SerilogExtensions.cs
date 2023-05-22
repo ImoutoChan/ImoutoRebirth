@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Hosting;
 using Serilog;
 using Serilog.Events;
 
@@ -6,9 +7,9 @@ namespace ImoutoRebirth.Common.Logging;
 
 public static class SerilogExtensions
 {
-    private const string _fileTemplate
+    private const string FileTemplate
         = "{Timestamp:yyyy-MM-dd HH:mm:ss.fff zzz} [{Level}] <s:{SourceContext}> {Message}{NewLine}{Exception}";
-    private const string _consoleTemplate
+    private const string ConsoleTemplate
         = "[{Timestamp:HH:mm:ss} {Level:u3}] <s:{SourceContext}> {Message:lj}{NewLine}{Exception}";
 
 
@@ -19,27 +20,40 @@ public static class SerilogExtensions
 
     public static LoggerConfiguration WithConsole(this LoggerConfiguration configuration)
         => configuration.WriteTo.Console(
-            outputTemplate: _consoleTemplate,
+            outputTemplate: ConsoleTemplate,
             restrictedToMinimumLevel: LogEventLevel.Verbose);
 
     public static LoggerConfiguration WithAllRollingFile(
         this LoggerConfiguration configuration,
-        string pathFormat = "logs/{Date}-all.log")
+        string pathFormat = "logs/all.log")
         => configuration.WriteTo.File(
             pathFormat,
-            outputTemplate: _fileTemplate,
+            outputTemplate: FileTemplate,
+            rollingInterval: RollingInterval.Day,
             restrictedToMinimumLevel: LogEventLevel.Verbose);
 
     public static LoggerConfiguration WithInformationRollingFile(
         this LoggerConfiguration configuration,
-        string pathFormat = "logs/{Date}-information.log")
+        string pathFormat = "logs/information.log")
         => configuration.WriteTo.File(
             pathFormat,
-            outputTemplate: _fileTemplate,
-            restrictedToMinimumLevel: LogEventLevel.Information);
-
-    public static LoggerConfiguration PatchWithConfiguration(
+            outputTemplate: FileTemplate,
+            rollingInterval: RollingInterval.Day,
+            restrictedToMinimumLevel: LogEventLevel.Information);    
+    
+    public static LoggerConfiguration WithOpenSearch(
         this LoggerConfiguration configuration,
-        IConfiguration appConfiguration)
-        => configuration.ReadFrom.Configuration(appConfiguration);
+        IConfiguration appConfiguration,
+        IHostEnvironment hostEnvironment)
+    {
+        var url = appConfiguration.GetValue<string>("OpenSearchUri") ?? "http://localhost:9200/";
+        var applicationName = hostEnvironment.ApplicationName.ToLower().Replace('.', '-');
+
+        configuration.Enrich.WithProperty("Application", hostEnvironment.ApplicationName);
+        
+        return configuration.WriteTo.OpenSearch(
+            nodeUris: url,
+            indexFormat: $$"""{{applicationName}}-{0:yyyy.MM}""",
+            restrictedToMinimumLevel: LogEventLevel.Verbose);
+    }
 }

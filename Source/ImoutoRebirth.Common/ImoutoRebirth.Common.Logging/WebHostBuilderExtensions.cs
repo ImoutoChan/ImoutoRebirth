@@ -10,27 +10,28 @@ public static class HostBuilderExtensions
 {
     public static IHostBuilder ConfigureSerilog(
         this IHostBuilder hostBuilder,
-        Action<LoggerConfiguration, IConfiguration>? configureLogger = null)
+        Action<LoggerConfiguration, IConfiguration, IHostEnvironment>? configureLogger = null)
     {
         hostBuilder.ConfigureLogging((context, builder) =>
         {
             builder.ClearProviders();
             builder.AddSerilog(
                 dispose: true, 
-                logger: GetSerilogLogger(context.Configuration, configureLogger));
+                logger: GetSerilogLogger(context.Configuration, context.HostingEnvironment, configureLogger));
         });
 
         return hostBuilder;
     }
 
     private static Logger GetSerilogLogger(
-        IConfiguration configuration,
-        Action<LoggerConfiguration, IConfiguration>? configureLogger)
+        IConfiguration configuration, 
+        IHostEnvironment hostEnvironment,
+        Action<LoggerConfiguration, IConfiguration, IHostEnvironment>? configureLogger)
     {
         var loggerBuilder = new LoggerConfiguration()
             .Enrich.FromLogContext();
 
-        configureLogger?.Invoke(loggerBuilder, configuration);
+        configureLogger?.Invoke(loggerBuilder, configuration, hostEnvironment);
 
         return loggerBuilder.CreateLogger();
     }

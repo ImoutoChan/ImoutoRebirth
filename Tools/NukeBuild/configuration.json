@@ -8,7 +8,6 @@
   "SankakuPassHash": "",
   "YandereLogin": "",
   "YandereApiKey": "",
-  "ElasticUrl": "http://localhost:9200",
   "RoomPort": "11301",
   "LilinPort": "11302",
   "KekkaiPort": "11303",
@@ -22,5 +21,6 @@
   "MeidoFaultToleranceRepeatEveryMinutes": "10080",
   "MeidoFaultToleranceIsEnabled": "true",
   "RoomImoutoPicsUploadUrl": "",
-  "InstallLocation": "C:\\Program Files\\Imouto"
+  "InstallLocation": "C:\\Program Files\\Imouto",
+  "OpenSearchUri": "http://localhost:9200/"
 }
