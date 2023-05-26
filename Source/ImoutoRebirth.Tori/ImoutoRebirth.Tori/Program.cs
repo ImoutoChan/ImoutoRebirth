@@ -10,6 +10,7 @@ var services = new ServiceCollection();
 services.AddTransient<IConfigurationService, ConfigurationService>();
 services.AddTransient<IRegistryService, RegistryService>();
 services.AddTransient<IVersionService, VersionService>();
+services.AddTransient<IShortcutService, ShortcutService>();
 
 services.AddTransient<IWindowsServicesManager, WindowsServicesManager>();
 //services.AddTransient<IWindowsServicesManager, FakeWindowsServicesManager>();

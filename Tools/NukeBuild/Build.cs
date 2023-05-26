@@ -1,4 +1,6 @@
+using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
@@ -9,6 +11,7 @@ using Nuke.Common.Tooling;
 using Nuke.Common.Tools.DotNet;
 using Nuke.Common.Tools.GitVersion;
 using Nuke.Common.Utilities.Collections;
+using Serilog.Events;
 using static Nuke.Common.Tools.DotNet.DotNetTasks;
 
 class Build : NukeBuild
@@ -94,12 +97,52 @@ class Build : NukeBuild
                     .SetProject(project));
             });
 
-            var configFilePath = BuildAssemblyDirectory / "configuration.json";
-            var targetConfigFilePath = output / "configuration.json";
-            File.Copy(configFilePath, targetConfigFilePath, overwrite: true);
+            CopyFileToOutput("configuration.json");
+            CopyFileToOutput("install-update.ps1");
+            CopyFileToOutput("install-dependencies.ps1");
 
-            var installFilePath = BuildAssemblyDirectory / "install-update.ps1";
-            var targetInstallFilePath = output / "install-update.ps1";
-            File.Copy(installFilePath, targetInstallFilePath, overwrite: true);
+            ArchiveAs7Z(output);
+            
+            return;
+
+            void ArchiveAs7Z(AbsolutePath output)
+            {
+                var strCmdText =
+                    $"""
+                    &'C:\Program Files\7-Zip\7z.exe' a -sfx '{output.Parent}\ImoutoRebirth.exe' '{output}\*'
+                    """;
+                
+                Serilog.Log.Warning("CommandToArchive: {Command}", strCmdText);
+                
+                var psi = new ProcessStartInfo
+                {
+                    FileName = "powershell.exe",
+                    Arguments = $"-Command \"{strCmdText}\"",
+                    UseShellExecute = false,
+                    RedirectStandardOutput = true,
+                    CreateNoWindow = true,
+                    RedirectStandardError = true
+                };
+
+                var process = Process.Start(psi);
+                var error = process!.StandardError.ReadToEnd();
+                process.WaitForExit();
+
+                if (!string.IsNullOrEmpty(error))
+                {
+                    Serilog.Log.Error(error);
+                }
+                else
+                {
+                    Serilog.Log.Information("Archive created");
+                }
+            }
+
+            void CopyFileToOutput(string fileName)
+            {
+                var configFilePath = BuildAssemblyDirectory / fileName;
+                var targetConfigFilePath = output / fileName;
+                File.Copy(configFilePath, targetConfigFilePath, overwrite: true);
+            }
         });
 }

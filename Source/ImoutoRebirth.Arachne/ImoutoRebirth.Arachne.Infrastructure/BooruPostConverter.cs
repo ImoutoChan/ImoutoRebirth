@@ -96,7 +96,7 @@ internal class BooruPostConverter : IBooruPostConverter
             "Artist",
             "Circle",
             "Medium",
-            "location"
+            "Location"
         };
 
         if (allowed.Contains(tag.Type))

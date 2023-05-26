@@ -19,14 +19,24 @@ public class WindowsServiceUpdater : IWindowsServiceUpdater
         "ImoutoRebirth.Meido",
         "ImoutoRebirth.Room",
     };
+    
+    private static readonly IReadOnlyCollection<string> CreateShortcuts = new[]
+    {
+        "ImoutoRebirth.Navigator",
+    };
 
     private readonly IWindowsServicesManager _windowsServicesManager;
+    private readonly IShortcutService _shortcutService;
     private readonly ILogger<WindowsServiceUpdater> _logger;
 
-    public WindowsServiceUpdater(IWindowsServicesManager windowsServicesManager, ILogger<WindowsServiceUpdater> logger)
+    public WindowsServiceUpdater(
+        IWindowsServicesManager windowsServicesManager,
+        ILogger<WindowsServiceUpdater> logger,
+        IShortcutService shortcutService)
     {
         _windowsServicesManager = windowsServicesManager;
         _logger = logger;
+        _shortcutService = shortcutService;
     }
 
     public void UpdateService(DirectoryInfo installLocation, DirectoryInfo updaterLocation)
@@ -83,6 +93,14 @@ public class WindowsServiceUpdater : IWindowsServiceUpdater
                     serviceName,
                     exeName);
                 windowsServicesToCreate.Add((serviceName, exeName));
+            }
+
+            if (CreateShortcuts.Contains(serviceName))
+            {
+                var exeName = oldServiceDirectory.GetFiles("*", SearchOption.AllDirectories)
+                    .First(x => x.Extension == ".exe" && x.Name.Contains(serviceName)).FullName;
+                
+                _shortcutService.CreateShortcutToDesktop(exeName, serviceName);
             }
         }
         

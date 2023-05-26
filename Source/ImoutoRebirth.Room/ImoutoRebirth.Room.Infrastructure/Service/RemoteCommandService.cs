@@ -33,7 +33,7 @@ internal class RemoteCommandService : IRemoteCommandService
             MetadataSource = MetadataSource.Manual,
             FileTags = tags.Select(x => new
             {
-                Type = "location",
+                Type = "Location",
                 Name = x
             }).ToArray()
         };
