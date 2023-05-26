@@ -23,7 +23,64 @@ cd "path to the extracted latest folder"
 ```
 
 # Configuration
-## configuration.json
-```json
 
+## configuration.json
+
+Template and default values
+
+```json
+{
+  "RabbitMqUrl": "rabbitmq://localhost:5672",
+  "RabbitMqUsername": "guest",
+  "RabbitMqPassword": "guest",
+  "DanbooruLogin": "",
+  "DanbooruApiKey": "",
+  "SankakuLogin": "",
+  "SankakuPassHash": "",
+  "YandereLogin": "",
+  "YandereApiKey": "",
+  "RoomPort": "11301",
+  "LilinPort": "11302",
+  "KekkaiPort": "11303",
+  "HarpySavePath": "",
+  "HarpyFavoritesSaveJobRepeatEveryMinutes": "1",
+  "KekkaiAuthToken": "",
+  "LilinConnectionString": "Server=localhost;Port=5432;Database=LilinProd;User Id=postgres;Password=postgres;",
+  "MeidoConnectionString": "Server=localhost;Port=5432;Database=MeidoProd;User Id=postgres;Password=postgres;",
+  "RoomConnectionString": "Server=localhost;Port=5432;Database=RoomProd;User Id=postgres;Password=postgres;",
+  "MeidoMetadataActualizerRepeatEveryMinutes": "5",
+  "MeidoFaultToleranceRepeatEveryMinutes": "10080",
+  "MeidoFaultToleranceIsEnabled": "true",
+  "RoomImoutoPicsUploadUrl": "",
+  "InstallLocation": "C:\\Program Files\\Imouto",
+  "OpenSearchUri": "http://localhost:9200/"
+}
 ```
+
+| Parameter                                 | Required | Comment                                                                                                                                                                                    |
+|-------------------------------------------|----------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| RabbitMqUrl                               | *        | RabbitMQ host                                                                                                                                                                              |
+| RabbitMqUsername                          | *        | RabbitMQ username                                                                                                                                                                          |
+| RabbitMqPassword                          | *        | RabbitMQ password                                                                                                                                                                          |
+| DanbooruLogin                             |          | Optional but recommended, only if you want ImoutoRebirth to search tags for your files in danbooru                                                                                         |
+| DanbooruApiKey                            |          | Optional but recommended, you can find it at the end of your danbooru profile page, API Key row                                                                                            |
+| SankakuLogin                              |          | Optional, your sankaku login                                                                                                                                                               |
+| SankakuPassHash                           |          | Optional, your sankaku pass_hash, you can find this value in cookies after login on their old site                                                                                         |
+| YandereLogin                              |          | Optional but recommended, only if you want ImoutoRebirth to search tags for your files in yandere                                                                                          |
+| YandereApiKey                             |          | Optional but recommended, you can find it in Profile / Settings                                                                                                                            |
+| RoomPort                                  | *        | Room service will be exposed through this port                                                                                                                                             |
+| LilinPort                                 | *        | Lilin service will be exposed through this port                                                                                                                                            |
+| KekkaiPort                                | *        | Kekkai service will be exposed through this port                                                                                                                                           |
+| HarpySavePath                             |          | Optional, Service will automatically save your likes from configured boorus to this path. If you point it to your collection from Room, you will get liked images from booru automatically |
+| HarpyFavoritesSaveJobRepeatEveryMinutes   | *        | Interval in minutes, in which the service will check for new liked images                                                                                                                  |
+| KekkaiAuthToken                           | *        | Place here random string (you can generate new guid or something)                                                                                                                          |
+| LilinConnectionString                     | *        | Connection string for Lilin service to the postgres database                                                                                                                               |
+| MeidoConnectionString                     | *        | Connection string for Meido service to the postgres database                                                                                                                               |
+| RoomConnectionString                      | *        | Connection string for Room service to the postgres database                                                                                                                                |
+| MeidoMetadataActualizerRepeatEveryMinutes | *        | Meido service will request actualization from Danbooru and Yandere in specified interval                                                                                                   |
+| MeidoFaultToleranceRepeatEveryMinutes     | *        | Meido service will request tags for failed files in specified interval                                                                                                                     |
+| MeidoFaultToleranceIsEnabled              | *        | Meido service will repeat tag request for failed file                                                                                                                                      |
+| RoomImoutoPicsUploadUrl                   |          | Optional, callback that will be called for every saved file                                                                                                                                |
+| InstallLocation                           | *        | Installation location for ImoutoRebirth                                                                                                                                                    |
+| OpenSearchUri                             |          | Optional, logging to open search                                                                                                                                                           |
+
