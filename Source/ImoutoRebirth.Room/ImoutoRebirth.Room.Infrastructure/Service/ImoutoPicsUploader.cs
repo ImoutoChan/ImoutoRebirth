@@ -7,21 +7,25 @@ namespace ImoutoRebirth.Room.Infrastructure.Service;
 public class ImoutoPicsUploader : IImoutoPicsUploader
 {
     private readonly HttpClient _httpClient;
-    private readonly string _imoutoPicsUploadUrl;
+    private readonly string? _imoutoPicsUploadUrl;
     private readonly ILogger<ImoutoPicsUploader> _logger;
+    private readonly bool _enabled;
 
     public ImoutoPicsUploader(HttpClient httpClient, ILogger<ImoutoPicsUploader> logger, IConfiguration configuration)
     {
         _httpClient = httpClient;
         _logger = logger;
 
-        _imoutoPicsUploadUrl
-            = configuration.GetValue<string>("ImoutoPicsUploadUrl") ??
-              throw new Exception("Missing ImoutoPicsUploadUrl");
+        _imoutoPicsUploadUrl = configuration.GetValue<string>("ImoutoPicsUploadUrl");
+
+        _enabled = !string.IsNullOrWhiteSpace(_imoutoPicsUploadUrl);
     }
 
     public async Task UploadFile(string filePath)
     {
+        if (!_enabled)
+            return;
+        
         var isImage = filePath.EndsWith(".jpg")
                       || filePath.EndsWith(".png")
                       || filePath.EndsWith(".jpeg")
