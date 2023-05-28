@@ -46,7 +46,11 @@ public static class SerilogExtensions
         IConfiguration appConfiguration,
         IHostEnvironment hostEnvironment)
     {
-        var url = appConfiguration.GetValue<string>("OpenSearchUri") ?? "http://localhost:9200/";
+        var url = appConfiguration.GetValue<string>("OpenSearchUri");
+
+        if (string.IsNullOrWhiteSpace(url))
+            return configuration;
+        
         var applicationName = hostEnvironment.ApplicationName.ToLower().Replace('.', '-');
 
         configuration.Enrich.WithProperty("Application", hostEnvironment.ApplicationName);

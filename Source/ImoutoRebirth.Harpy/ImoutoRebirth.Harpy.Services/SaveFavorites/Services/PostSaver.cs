@@ -6,10 +6,7 @@ internal class PostSaver
 {
     private readonly HttpClient _httpClient;
 
-    public PostSaver(HttpClient httpClient)
-    {
-        _httpClient = httpClient;
-    }
+    public PostSaver(HttpClient httpClient) => _httpClient = httpClient;
 
     public async Task SavePosts(IReadOnlyCollection<Post> posts, string saveDirectoryPath)
     {

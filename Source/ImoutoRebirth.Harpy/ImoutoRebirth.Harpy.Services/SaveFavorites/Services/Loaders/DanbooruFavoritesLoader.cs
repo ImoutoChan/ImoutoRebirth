@@ -10,15 +10,22 @@ internal class DanbooruFavoritesLoader
 
     private readonly BooruConfiguration _booruConfiguration;
     private readonly HttpClient _httpClient;
+    private readonly bool _enabled;
 
     public DanbooruFavoritesLoader(HttpClient httpClient, IOptions<DanbooruBooruConfiguration> booruConfiguration)
     {
         _httpClient = httpClient;
         _booruConfiguration = booruConfiguration.Value;
+
+        _enabled = !(string.IsNullOrWhiteSpace(_booruConfiguration.Login) ||
+                    string.IsNullOrWhiteSpace(_booruConfiguration.BotUserAgent));
     }
 
     public async IAsyncEnumerable<Post> GetFavoritesUrls()
     {
+        if (!_enabled)
+            yield break;
+
         Post[] posts;
         var page = 1;
         var url = string.Format(FavoritesUrl, _booruConfiguration.Login, _booruConfiguration.ApiKey);
@@ -27,11 +34,10 @@ internal class DanbooruFavoritesLoader
             var result = await _httpClient.GetStringAsync(url + $"&page={page}");
             posts = JsonSerializer.Deserialize<Post[]>(result) ?? Array.Empty<Post>();
 
-            foreach (var post in posts
-                         .Where(x => x.Md5 != null && x.FileUrl != null))
-            {
+            var notEmptyPosts = posts.Where(x => x is { Md5: not null, FileUrl: not null });
+            
+            foreach (var post in notEmptyPosts)
                 yield return post;
-            }
 
             page++;
         } while (posts.Any());

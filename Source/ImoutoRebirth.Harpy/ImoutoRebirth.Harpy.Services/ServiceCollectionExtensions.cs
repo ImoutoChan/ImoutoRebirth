@@ -31,12 +31,18 @@ public static class ServiceCollectionExtensions
         services.Configure<DanbooruBooruConfiguration>(configuration.GetSection("Danbooru"));
         services.Configure<YandereBooruConfiguration>(configuration.GetSection("Yandere"));
 
-        services.AddHttpClient<DanbooruFavoritesLoader>(x => x.DefaultRequestHeaders.Add("User-Agent", userAgent));
+        services.AddHttpClient<DanbooruFavoritesLoader>(x =>
+        {
+            if (!string.IsNullOrWhiteSpace(userAgent))
+                x.DefaultRequestHeaders.Add("User-Agent", userAgent);
+        });
         services.AddHttpClient<YandereFavoritesLoader>();
         services.AddHttpClient<RoomSavedChecker>();
         services.AddHttpClient<PostSaver>().ConfigureHttpClient(x =>
         {
-            x.DefaultRequestHeaders.Add("User-Agent", userAgent);
+            if (!string.IsNullOrWhiteSpace(userAgent))
+                x.DefaultRequestHeaders.Add("User-Agent", userAgent);
+
             x.Timeout = TimeSpan.FromMinutes(5);
         });
 

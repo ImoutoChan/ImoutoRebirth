@@ -2,7 +2,6 @@
 using ImoutoRebirth.Harpy.Services.SaveFavorites.Services;
 using ImoutoRebirth.Harpy.Services.SaveFavorites.Services.Loaders;
 using ImoutoRebirth.Harpy.Services.SaveFavorites.Services.Room;
-using MediatR;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 
@@ -18,6 +17,7 @@ internal class FavoritesSaveCommandHandler : ICommandHandler<FavoritesSaveComman
     private readonly YandereFavoritesLoader _yandereFavoritesLoader;
     private readonly RoomSavedChecker _roomSavedChecker;
     private readonly PostSaver _postSaver;
+    private readonly bool _enabled;
 
     public FavoritesSaveCommandHandler(
         ILogger<FavoritesSaveCommandHandler> logger,
@@ -33,10 +33,19 @@ internal class FavoritesSaveCommandHandler : ICommandHandler<FavoritesSaveComman
         _yandereFavoritesLoader = yandereFavoritesLoader;
         _roomSavedChecker = roomSavedChecker;
         _postSaver = postSaver;
+
+        _enabled = !string.IsNullOrWhiteSpace(_saverOptions.Value.SaveToPath)
+                   && !string.IsNullOrWhiteSpace(_saverOptions.Value.RoomUrl);
     }
 
     public async Task Handle(FavoritesSaveCommand request, CancellationToken cancellationToken)
     {
+        if (!_enabled)
+        {
+            _logger.LogInformation("Loading favorite posts disabled, please check configuration");
+            return;
+        }
+        
         _logger.LogInformation("Loading favorite posts");
 
         var checkedDanbooruPosts = await GetNewPostsFromBooru(
