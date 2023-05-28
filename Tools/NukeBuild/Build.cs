@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
@@ -11,7 +10,6 @@ using Nuke.Common.Tooling;
 using Nuke.Common.Tools.DotNet;
 using Nuke.Common.Tools.GitVersion;
 using Nuke.Common.Utilities.Collections;
-using Serilog.Events;
 using static Nuke.Common.Tools.DotNet.DotNetTasks;
 
 class Build : NukeBuild
@@ -100,6 +98,22 @@ class Build : NukeBuild
             CopyFileToOutput("configuration.json");
             CopyFileToOutput("install-update.ps1");
             CopyFileToOutput("install-dependencies.ps1");
+            
+            return;
+
+            void CopyFileToOutput(string fileName)
+            {
+                var configFilePath = BuildAssemblyDirectory / fileName;
+                var targetConfigFilePath = output / fileName;
+                File.Copy(configFilePath, targetConfigFilePath, overwrite: true);
+            }
+        });
+    
+    Target Pack7ZSfx => _ => _
+        .DependsOn(Publish)
+        .Executes(() =>
+        {
+            var output = OutputDirectory / "latest"; 
 
             ArchiveAs7Z(output);
             
@@ -136,13 +150,6 @@ class Build : NukeBuild
                 {
                     Serilog.Log.Information("Archive created");
                 }
-            }
-
-            void CopyFileToOutput(string fileName)
-            {
-                var configFilePath = BuildAssemblyDirectory / fileName;
-                var targetConfigFilePath = output / fileName;
-                File.Copy(configFilePath, targetConfigFilePath, overwrite: true);
             }
         });
 }
