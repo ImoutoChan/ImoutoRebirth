@@ -28,7 +28,7 @@ public class OverseeJob : IJob
         public ITrigger GetJobTrigger()
             => TriggerBuilder.Create()
                 .WithIdentity("Oversee trigger")
-                .WithSchedule(SimpleScheduleBuilder.RepeatSecondlyForever(15))
+                .WithSchedule(SimpleScheduleBuilder.RepeatSecondlyForever(5))
                 .Build();
     }
 }
