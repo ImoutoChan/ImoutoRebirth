@@ -2,6 +2,4 @@
 
 namespace ImoutoRebirth.Harpy.Services.SaveFavorites.Commands;
 
-internal class FavoritesSaveCommand : ICommand
-{
-}
+internal record FavoritesSaveCommand : ICommand<bool>;

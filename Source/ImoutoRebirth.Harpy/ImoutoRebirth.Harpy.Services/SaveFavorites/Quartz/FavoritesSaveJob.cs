@@ -10,13 +10,37 @@ namespace ImoutoRebirth.Harpy.Services.SaveFavorites.Quartz;
 internal class FavoritesSaveJob : IJob
 {
     private readonly IMediator _mediator;
+    public static readonly SemaphoreSlim Lock = new(1, 1);
 
-    public FavoritesSaveJob(IMediator mediator)
+    public FavoritesSaveJob(IMediator mediator) => _mediator = mediator;
+
+    public async Task Execute(IJobExecutionContext context)
     {
-        _mediator = mediator;
-    }
+        if (!await Lock.WaitAsync(0))
+            return;
 
-    public Task Execute(IJobExecutionContext context) => _mediator.Send(new FavoritesSaveCommand());
+        try
+        {
+            var somethingNewWasSaved = await _mediator.Send(new FavoritesSaveCommand());
+
+            if (!somethingNewWasSaved)
+                return;
+
+            await context.Scheduler.ScheduleJob(
+                JobBuilder.Create<AdditionalFavoritesSaveJob>()
+                    .WithIdentity(nameof(AdditionalFavoritesSaveJob))
+                    .Build(),
+                TriggerBuilder.Create()
+                    .WithIdentity(nameof(AdditionalFavoritesSaveJob))
+                    .StartAt(DateBuilder.FutureDate(5, IntervalUnit.Second))
+                    .WithSimpleSchedule(x => x.WithIntervalInSeconds(5).WithRepeatCount(12))
+                    .Build());
+        }
+        finally
+        {
+            Lock.Release();
+        }
+    }
 
     public class Description : IQuartzJobDescription
     {

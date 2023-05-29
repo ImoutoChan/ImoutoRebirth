@@ -23,6 +23,7 @@ public static class ServiceCollectionExtensions
         services.AddLoggingBehavior();
 
         services.AddQuartzJob<FavoritesSaveJob, FavoritesSaveJob.Description>();
+        services.AddTransient<AdditionalFavoritesSaveJob>();
 
         services.Configure<FavoritesSaveJobSettings>(
             configuration.GetSection(nameof(FavoritesSaveJobSettings)));

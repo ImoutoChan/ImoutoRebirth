@@ -1,4 +1,5 @@
-﻿using ImoutoRebirth.Common.Cqrs.Abstract;
+﻿using System.Diagnostics.SymbolStore;
+using ImoutoRebirth.Common.Cqrs.Abstract;
 using ImoutoRebirth.Harpy.Services.SaveFavorites.Services;
 using ImoutoRebirth.Harpy.Services.SaveFavorites.Services.Loaders;
 using ImoutoRebirth.Harpy.Services.SaveFavorites.Services.Room;
@@ -7,7 +8,7 @@ using Microsoft.Extensions.Options;
 
 namespace ImoutoRebirth.Harpy.Services.SaveFavorites.Commands;
 
-internal class FavoritesSaveCommandHandler : ICommandHandler<FavoritesSaveCommand>
+internal class FavoritesSaveCommandHandler : ICommandHandler<FavoritesSaveCommand, bool>
 {
     private const int CheckPostsBatchSize = 20;
 
@@ -38,12 +39,12 @@ internal class FavoritesSaveCommandHandler : ICommandHandler<FavoritesSaveComman
                    && !string.IsNullOrWhiteSpace(_saverOptions.Value.RoomUrl);
     }
 
-    public async Task Handle(FavoritesSaveCommand request, CancellationToken cancellationToken)
+    public async Task<bool> Handle(FavoritesSaveCommand request, CancellationToken cancellationToken)
     {
         if (!_enabled)
         {
             _logger.LogInformation("Loading favorite posts disabled, please check configuration");
-            return;
+            return false;
         }
         
         _logger.LogInformation("Loading favorite posts");
@@ -66,6 +67,8 @@ internal class FavoritesSaveCommandHandler : ICommandHandler<FavoritesSaveComman
         await _postSaver.SavePosts(postsToSave, _saverOptions.Value.SaveToPath);
 
         _logger.LogInformation("Saved {PostsCount} favorite posts", postsToSave.Count);
+
+        return postsToSave.Any();
     }
 
     private async Task<IReadOnlyCollection<Post>> GetNewPostsFromBooru(
