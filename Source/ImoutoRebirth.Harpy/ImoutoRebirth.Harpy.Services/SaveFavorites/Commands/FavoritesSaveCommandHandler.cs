@@ -59,24 +59,22 @@ internal class FavoritesSaveCommandHandler : ICommandHandler<FavoritesSaveComman
 
         var postsToSave = checkedDanbooruPosts.Reverse().Union(checkedYanderePosts.Reverse()).ToList();
 
-        if (postsToSave.Any())
+        if (!postsToSave.Any())
         {
-            _logger.LogInformation(
-                "Found new posts: Danbooru {DanbooruPostsCount} Yandere {YanderePostsCount}",
-                checkedDanbooruPosts.Count,
-                checkedYanderePosts.Count);
-
-            await _postSaver.SavePosts(postsToSave, _saverOptions.Value.SaveToPath);
-
-            _logger.LogInformation("Saved {PostsCount} favorite posts", postsToSave.Count);
-
-            return true;
-        }
-        else
-        {
-            _logger.LogTrace("No new posts in danbooru or yandere found");
+            _logger.LogTrace("No new posts were found in danbooru or yandere");
             return false;
         }
+
+        _logger.LogInformation(
+            "Found new posts: Danbooru {DanbooruPostsCount} Yandere {YanderePostsCount}",
+            checkedDanbooruPosts.Count,
+            checkedYanderePosts.Count);
+
+        await _postSaver.SavePosts(postsToSave, _saverOptions.Value.SaveToPath);
+
+        _logger.LogInformation("Saved {PostsCount} favorite posts", postsToSave.Count);
+
+        return true;
     }
 
     private async Task<IReadOnlyCollection<Post>> GetNewPostsFromBooru(

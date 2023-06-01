@@ -53,7 +53,7 @@ public static class SerilogExtensions
         
         var applicationName = hostEnvironment.ApplicationName.ToLower().Replace('.', '-');
 
-        configuration.Enrich.WithProperty("Application", hostEnvironment.ApplicationName);
+        configuration.Enrich.WithProperty("Application", GetApplicationName(hostEnvironment));
 
         var indexFormat = hostEnvironment.IsProduction()
             ? $$"""{{applicationName}}-{0:yyyy.MM}"""
@@ -64,4 +64,23 @@ public static class SerilogExtensions
             indexFormat: indexFormat,
             restrictedToMinimumLevel: LogEventLevel.Verbose);
     }
+
+    private static string GetApplicationName(IHostEnvironment hostEnvironment)
+    {
+        var appName = hostEnvironment.ApplicationName;
+
+        if (appName.EndsWith(".Host"))
+            appName = appName[..^5];
+
+        if (appName.EndsWith(".Webhost"))
+            appName = appName[..^8];
+
+        if (appName.EndsWith(".WebApi"))
+            appName = appName[..^7];
+
+        if (appName.StartsWith("ImoutoRebirth."))
+            appName = appName[14..];
+
+        return appName;
+    }   
 }
