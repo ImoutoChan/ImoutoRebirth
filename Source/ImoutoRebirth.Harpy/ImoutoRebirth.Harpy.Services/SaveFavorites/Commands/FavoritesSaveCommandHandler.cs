@@ -47,7 +47,7 @@ internal class FavoritesSaveCommandHandler : ICommandHandler<FavoritesSaveComman
             return false;
         }
         
-        _logger.LogInformation("Loading favorite posts");
+        _logger.LogTrace("Loading favorite posts");
 
         var checkedDanbooruPosts = await GetNewPostsFromBooru(
             _danbooruFavoritesLoader.GetFavoritesUrls(),
@@ -57,18 +57,26 @@ internal class FavoritesSaveCommandHandler : ICommandHandler<FavoritesSaveComman
             _yandereFavoritesLoader.GetFavoritesUrls(),
             cancellationToken);
 
-        _logger.LogInformation(
-            "Found new posts: Danbooru {DanbooruPostsCount} Yandere {YanderePostsCount}",
-            checkedDanbooruPosts.Count,
-            checkedYanderePosts.Count);
-
         var postsToSave = checkedDanbooruPosts.Reverse().Union(checkedYanderePosts.Reverse()).ToList();
 
-        await _postSaver.SavePosts(postsToSave, _saverOptions.Value.SaveToPath);
+        if (postsToSave.Any())
+        {
+            _logger.LogInformation(
+                "Found new posts: Danbooru {DanbooruPostsCount} Yandere {YanderePostsCount}",
+                checkedDanbooruPosts.Count,
+                checkedYanderePosts.Count);
 
-        _logger.LogInformation("Saved {PostsCount} favorite posts", postsToSave.Count);
+            await _postSaver.SavePosts(postsToSave, _saverOptions.Value.SaveToPath);
 
-        return postsToSave.Any();
+            _logger.LogInformation("Saved {PostsCount} favorite posts", postsToSave.Count);
+
+            return true;
+        }
+        else
+        {
+            _logger.LogTrace("No new posts in danbooru or yandere found");
+            return false;
+        }
     }
 
     private async Task<IReadOnlyCollection<Post>> GetNewPostsFromBooru(
