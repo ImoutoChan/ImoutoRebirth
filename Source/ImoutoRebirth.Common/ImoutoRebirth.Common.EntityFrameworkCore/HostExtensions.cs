@@ -17,11 +17,21 @@ public static class HostExtensions
         var logger = services.GetRequiredService<ILogger<TDbContext>>();
         var context = services.GetRequiredService<TDbContext>();
 
+        
+        var beforeMigrations = context.Database.GetAppliedMigrations().ToHashSet();
+        
         context.Database.Migrate();
 
-        var migrations = context.Database.GetAppliedMigrations();
-        foreach (var migration in migrations)
-            logger.LogInformation("Migrated to {Migration}", migration);
+        var afterMigrations = context.Database.GetAppliedMigrations();
+        
+        foreach (var migration in afterMigrations)
+        {
+            var logMessage = beforeMigrations.Contains(migration)
+                ? "Migration {Migration} was applied earlier"
+                : "Migration {Migration} was applied just now";
+            
+            logger.LogInformation(logMessage, migration);
+        }
 
         return host;
     }
