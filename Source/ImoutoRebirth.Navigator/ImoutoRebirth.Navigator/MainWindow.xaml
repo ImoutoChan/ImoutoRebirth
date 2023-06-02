@@ -693,6 +693,9 @@
                             <Setter.Value>
                                 <ContextMenu DataContext="{Binding Source={StaticResource DataContextProxy}}"
                                              Tag="{Binding RelativeSource={RelativeSource Mode=Self}, Path=PlacementTarget}">
+                                    <MenuItem Header="Set as Wallpaper"
+                                              Command="{Binding Data.SetAsWallpaperCommand}"
+                                              CommandParameter="{Binding Path=Tag.DataContext, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type ContextMenu}}}" />
                                     <MenuItem Header="Remove from collection"
                                               Command="{Binding Data.RemoveImageCommand}"
                                               CommandParameter="{Binding Path=Tag.DataContext, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type ContextMenu}}}" />

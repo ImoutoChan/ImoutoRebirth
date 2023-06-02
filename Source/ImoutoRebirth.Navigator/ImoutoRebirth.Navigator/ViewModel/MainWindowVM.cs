@@ -217,6 +217,8 @@ class MainWindowVM : VMBase
 
     public ICommand RemoveImageCommand { get; set; }
 
+    public ICommand SetAsWallpaperCommand { get; set; }
+
     public ICommand CopyCommand { get; set; }
 
     public ICommand OpenFileCommand { get; set; }
@@ -261,11 +263,12 @@ class MainWindowVM : VMBase
         });
 
         LoadPreviewsCommand = new RelayCommand(_ => LoadPreviews());
-        RemoveImageCommand = new RelayCommand(o => RemoveImage(o));
+        RemoveImageCommand = new RelayCommand(RemoveImage);
+        SetAsWallpaperCommand = new RelayCommand(SetAsWallpaper);
 
         CopyCommand = new RelayCommand(CopySelected);
 
-        OpenFileCommand = new RelayCommand<INavigatorListEntry>(x => OpenFile(x));
+        OpenFileCommand = new RelayCommand<INavigatorListEntry>(OpenFile);
 
         ToggleShowTagsCommand = new RelayCommand(_ => ShowTags = !ShowTags);
     }
@@ -506,6 +509,21 @@ class MainWindowVM : VMBase
 
         NavigatorList.Remove(selectedItem!);
         Status = "File successfully removed";
+    }
+
+    private void SetAsWallpaper(object o)
+    {
+        var selectedItem = o as INavigatorListEntry;
+
+        var path = selectedItem?.Path;
+        if (path == null)
+            return;
+
+        if (selectedItem is not { Type: ListEntryType.Image or ListEntryType.Png }) 
+            return;
+        
+        WindowsDesktopService.SetWallpaper(path);
+        Status = "Wallpaper set";
     }
 
     private void CopySelected(object o)
