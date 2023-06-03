@@ -61,10 +61,7 @@ class SettingsVM : VMBase
 
     public bool ShowPreviewOnSelect
     {
-        get
-        {
-            return Settings.Default.ActivatePreviewOnSelect;
-        }
+        get => Settings.Default.ActivatePreviewOnSelect;
         set
         {
             Settings.Default.ActivatePreviewOnSelect = value;
@@ -73,14 +70,21 @@ class SettingsVM : VMBase
         }
     }
 
+    public bool ShowSystemTags
+    {
+        get => Settings.Default.ShowSystemTags;
+        set
+        {
+            Settings.Default.ShowSystemTags = value;
+            OnPropertyChanged(() => ShowSystemTags);
+        }
+    }
+
     public List<AccentColorMenuData> AccentColors { get; }
 
     public AccentColorMenuData SelectedAccentColor
     {
-        get
-        {
-            return _selectedAccentColor;
-        }
+        get => _selectedAccentColor;
         set
         {
             _selectedAccentColor = value;
@@ -93,10 +97,7 @@ class SettingsVM : VMBase
     /// </summary>
     public int SelectedIndexTheme
     {
-        get
-        {
-            return _selectedTheme;
-        }
+        get => _selectedTheme;
         set
         {
             _selectedTheme = value;

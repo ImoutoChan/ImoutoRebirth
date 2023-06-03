@@ -9,10 +9,7 @@ internal class SearchTagVM : VMBase
 {
     private readonly SearchTag _model;
 
-    public SearchTagVM(SearchTag model)
-    {
-        _model = model;
-    }
+    public SearchTagVM(SearchTag model) => _model = model;
 
     public Tag Tag => _model.Tag;
         
@@ -20,13 +17,15 @@ internal class SearchTagVM : VMBase
 
     public string? Value
     {
-        get { return _model.Value; }
+        get => _model.Value;
         set
         {
             _model.Value = value;
             OnPropertyChanged(() => Value);
         }
     }
+
+    public string? ValueView => string.IsNullOrWhiteSpace(Value) ? null : "= " + Value?[1..];
 
     public string Hint => $"{Tag.Title} : {Value}";
 

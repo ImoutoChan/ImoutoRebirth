@@ -97,6 +97,10 @@
                                        Header="Show preview on select"
                                        IsOn="{Binding ShowPreviewOnSelect}" />
 
+                <controls:ToggleSwitch Margin="0,25,0,0"
+                                       Header="Show system tags"
+                                       IsOn="{Binding ShowSystemTags}" />
+
                 <TextBlock Margin="0,25,0,0"
                            Text="Path Overrides" />
                 

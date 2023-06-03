@@ -249,8 +249,10 @@ class TagSearchVM : VMBase
 
         CurrentTagsSources.Clear();
 
-        var userTags = tagVmsCollection.Where(x => x.Model.Source == FileTagSource.Manual)
+        var userTags = tagVmsCollection
+            .Where(x => x.Model.Source == FileTagSource.Manual)
             .ToList();
+
         if (userTags.Any())
         {
             CurrentTagsSources.Add(new TagSourceVM
@@ -264,6 +266,7 @@ class TagSearchVM : VMBase
 
         var parsedSources = tagVmsCollection.Select(x => x.Model.Source)
             .Where(x => x != FileTagSource.Manual)
+            .OrderBy(x => x)
             .Distinct();
 
         foreach (var parsedSource in parsedSources)
@@ -272,7 +275,7 @@ class TagSearchVM : VMBase
             {
                 Title = parsedSource.ToString(),
                 Tags = new ObservableCollection<BindedTagVM>(tagVmsCollection
-                    //.Where(x => x.Tag.Type.Title != "LocalMeta")
+                    .Where(x => Settings.Default.ShowSystemTags || x.Tag.Type.Title != "LocalMeta")
                     .Where(x => x.Model.Source == parsedSource)
                     .OrderBy(x => x.TypePriority)
                     .ThenBy(x => x.Tag.Title))

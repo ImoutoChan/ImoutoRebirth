@@ -1,5 +1,4 @@
 ﻿using System.Runtime.InteropServices;
-using Microsoft.Win32;
 
 namespace ImoutoRebirth.Navigator.Services;
 

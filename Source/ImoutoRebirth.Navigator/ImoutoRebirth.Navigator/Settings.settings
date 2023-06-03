@@ -20,6 +20,9 @@
     <Setting Name="RoomHost" Type="System.String" Scope="User">
       <Value Profile="(Default)">http://localhost:11301/</Value>
     </Setting>
+    <Setting Name="ShowSystemTags" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">False</Value>
+    </Setting>
   </Settings>
 </SettingsFile>
 

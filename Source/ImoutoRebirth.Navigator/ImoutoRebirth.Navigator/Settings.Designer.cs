@@ -94,5 +94,17 @@ namespace ImoutoRebirth.Navigator {
                 this["RoomHost"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValue("False")]
+        public bool ShowSystemTags {
+            get {
+                return ((bool)(this["ShowSystemTags"]));
+            }
+            set {
+                this["ShowSystemTags"] = value;
+            }
+        }
     }
 }

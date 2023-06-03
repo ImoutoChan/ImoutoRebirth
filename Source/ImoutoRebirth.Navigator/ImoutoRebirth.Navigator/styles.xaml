@@ -60,7 +60,7 @@
                          FontWeight="Bold" />
                     <Run Text="{Binding Tag.Count, StringFormat=' ({0})', Mode=OneWay}"
                          Foreground="{StaticResource MahApps.Brushes.Gray3}"/>
-                    <Run Text="{Binding Value}"
+                    <Run Text="{Binding ValueView, Mode=OneWay}"
                          wpfHelpers:RunVisibility.Visible="{Binding Value, Converter={StaticResource BooleanResultConverter}, ConverterParameter=!null}" />
                 </TextBlock>
             </Label.Content>
@@ -353,7 +353,7 @@
                 <Button.InputBindings>
                     <MouseBinding Gesture="LeftClick"
                                   Command="{Binding Path=DataContext.InvertSearchTypeCommand,
-                                                     RelativeSource={RelativeSource AncestorType={x:Type UserControl}}}"
+                                                    RelativeSource={RelativeSource AncestorType={x:Type UserControl}}}"
                                   CommandParameter="{Binding}" />
                 </Button.InputBindings>
             </Button>
@@ -364,7 +364,7 @@
                 <Button.InputBindings>
                     <MouseBinding Gesture="LeftClick"
                                   Command="{Binding Path=DataContext.UnselectTagCommand,
-                                                     RelativeSource={RelativeSource AncestorType={x:Type UserControl}}}"
+                                                    RelativeSource={RelativeSource AncestorType={x:Type UserControl}}}"
                                   CommandParameter="{Binding}" />
                 </Button.InputBindings>
             </Button>
