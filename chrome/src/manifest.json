@@ -1,8 +1,11 @@
 {
   "update_url": "https://clients2.google.com/service/update2/crx",
-  "manifest_version": 2,
+  "manifest_version": 3,
   "name": "Imouto Extension",
-  "version": "3.2",
+  "description": "This extension is a supplement to the https://github.com/ImoutoChan/ImoutoRebirth solution. When browsing booru sites, it highlights your saved images with red borders and associated images with green borders. To remove the opacity, simply hover over the image. Click on the extension logo to temporarily disable the borders.",
+  "version": "6.0.0",
+  "author": "ImoutoChan",
+  "homepage_url": "https://github.com/ImoutoChan/ImoutoRebirth",
   "icons": {
     "16": "assets/img/normal/icon16.png",
     "18": "assets/img/normal/icon18.png",
@@ -16,9 +19,7 @@
     "250": "assets/img/normal/icon250.png"
   },
   "background": {
-    "scripts": [
-      "background.js"
-    ]
+    "service_worker": "background.js"
   },
   "content_scripts": [
     {
@@ -35,7 +36,7 @@
       "js": [ "contentscript.js" ]
     }
   ],
-  "browser_action": {
+  "action": {
     "default_icon": {
       "19": "assets/img/normal/icon19.png",
       "38": "assets/img/normal/icon38.png"
@@ -43,10 +44,10 @@
     "default_title": "Imouto Extension"
   },
   "permissions": [
-    "tabs",
-    "activeTab",
+    "storage"
+  ],
+  "host_permissions": [
     "http://*/",
-    "https://*/",
-    "contextMenus"
+    "https://*/"
   ]
 }
