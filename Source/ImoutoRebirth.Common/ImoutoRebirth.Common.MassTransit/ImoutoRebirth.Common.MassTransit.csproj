@@ -9,7 +9,7 @@
 
     <ItemGroup>
         <PackageReference Include="Humanizer.Core" Version="2.14.1" />
-        <PackageReference Include="MassTransit.RabbitMQ" Version="8.0.15" />
+        <PackageReference Include="MassTransit.RabbitMQ" Version="8.0.16" />
     </ItemGroup>
 
 </Project>

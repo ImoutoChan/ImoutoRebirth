@@ -2,7 +2,6 @@
 using System.IO;
 using System.Windows;
 using System.Windows.Media.Imaging;
-using Imouto;
 using ImoutoRebirth.Navigator.Utils;
 
 namespace ImoutoRebirth.Navigator.Model;
@@ -348,4 +347,54 @@ internal class ImageEntry
 
         return formats.Split('|').Any(item => file.EndsWith(item, true, ci));
     }
+}
+
+public enum ImageFormat
+{
+    JPEG,
+    JPG,
+    PNG,
+    BMP,
+    TIFF,
+    GIF
+}
+
+public enum VideoFormat
+{
+    WEBM,
+    MP4,
+    WMV,
+    MOV,
+    M2TS,
+    MPG,
+    MPEG,
+    MKV,
+    F4V,
+    FLV,
+    AVI
+}
+
+public enum PreviewableVideoFormat
+{
+    WEBM,
+    MP4,
+    WMV,
+    MOV,
+    M2TS,
+    MPG,
+    MPEG,
+    MKV,
+    F4V,
+    FLV,
+    AVI
+}
+
+public enum ResizeType
+{
+    FitToViewPort,
+    DownscaleToViewPort,
+    FitToViewPortWidth,
+    DownscaleToViewPortWidth,
+    NoResize,
+    Default
 }

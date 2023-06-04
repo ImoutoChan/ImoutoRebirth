@@ -1,5 +1,4 @@
 ﻿using System.Windows;
-using Imouto.Utils.Core;
 using ImoutoRebirth.LilinService.WebApi.Client;
 using ImoutoRebirth.Navigator.Extensions;
 using ImoutoRebirth.Navigator.Services.Tags;

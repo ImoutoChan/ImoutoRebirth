@@ -1,6 +1,6 @@
 ﻿using System.IO;
+using System.Security.Cryptography;
 using System.Windows.Input;
-using Imouto.Utils.Core;
 using ImoutoRebirth.Navigator.Commands;
 using ImoutoRebirth.Navigator.ViewModel.ListEntries;
 
@@ -103,7 +103,15 @@ class FileInfoVM : VMBase
     {
         Hash = "Calculating...";
 
-        Hash = await _fileInfo.GetMd5ChecksumAsync();
+        Hash = await Task.Run(() =>
+        {
+            if (!_fileInfo.Exists)
+                throw new ArgumentException("File does not exist.");
+
+            using var md5 = MD5.Create();
+            using var stream = _fileInfo.OpenRead();
+            return BitConverter.ToString(md5.ComputeHash(stream)).Replace("-", "").ToLower();
+        });
     }
 
     public void UpdateCurrentInfo(INavigatorListEntry navigatorListEntry, int number)

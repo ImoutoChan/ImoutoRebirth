@@ -2,8 +2,8 @@
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Windows;
-using Imouto;
 using ImoutoRebirth.LilinService.WebApi.Client;
+using ImoutoRebirth.Navigator.Model;
 
 namespace ImoutoRebirth.Navigator.ViewModel.ListEntries;
 
@@ -17,13 +17,13 @@ internal static class EntryVMFactory
     {
         path = OverridePath(path);
 
-        if (path.IsImage() || path.EndsWith(".webp") || path.EndsWith(".jfif"))
+        if (IsImage(path))
             return new ImageEntryVM(path, filesClient, initPreviewSize, dbId);
 
         if (!FileExists(path))
             return null;
 
-        if (path.IsVideo() || path.EndsWith(".m4v") || path.EndsWith(".swf"))
+        if (IsVideo(path))
             return new VideoEntryVM(path, filesClient, initPreviewSize, dbId);
 
         if (path.EndsWith(".zip"))
@@ -31,6 +31,17 @@ internal static class EntryVMFactory
 
         return null;
     }
+
+    private static bool IsImage(string path)
+    {
+        string[] formats = { ".jpg", ".png", ".jpeg", ".bmp", ".gif", ".tiff", ".webp", ".jfif" };
+        return formats.Any(item => path.EndsWith(item, StringComparison.OrdinalIgnoreCase));
+    }
+
+    private static bool IsVideo(string path) 
+        => Enum.GetNames<VideoFormat>().Any(x => path.ToLower().EndsWith('.' + x)) 
+           || path.EndsWith(".m4v") 
+           || path.EndsWith(".swf");
 
     private static string OverridePath(string path)
     {
