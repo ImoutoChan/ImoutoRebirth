@@ -2,6 +2,7 @@
 This repository is in process of open sourcing and isn't ready yet. I'm currently writing documentation, testing installation method on different VM, and preparing code for publishing it. I'll remove this note when everything will be ready, so please wait patiently 🙏
 
 # What is ImoutoRebirth
+([ru version](https://github.com/ImoutoChan/ImoutoRebirth/blob/master/README.RU.md))
 
 ImoutoRebirth is a solution for organizing media files with a focus on anime images. It is inspired and deeply integrated with sites such as danbooru.donmai.us, yande.re, gelbooru.com.
 
