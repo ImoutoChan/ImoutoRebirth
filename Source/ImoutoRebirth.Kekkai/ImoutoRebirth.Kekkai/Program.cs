@@ -73,6 +73,12 @@ public class WebApiStartup
         {
             c.OperationFilter<AddAuthTokenOperationFilter>();
         });
+        
+        services.AddCors(options =>
+        {
+            options.AddPolicy("AllowAnyOrigin",
+                builder => builder.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod());
+        });
     }
 
     public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
@@ -83,6 +89,7 @@ public class WebApiStartup
         }
             
         app.UseRouting();
+        app.UseCors("AllowAnyOrigin");
 
         app.UseSwagger();
         app.UseSwaggerUI(c =>
