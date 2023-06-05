@@ -1,0 +1,63 @@
+﻿<UserControl x:Class="ImoutoViewer.View.CreateTagV"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:metroControls="http://metro.mahapps.com/winfx/xaml/controls"
+             xmlns:converters="clr-namespace:ImoutoViewer.Converters"
+             mc:Ignorable="d"
+             d:DesignHeight="500"
+             d:DesignWidth="250"
+             d:DataContext="{d:DesignInstance Type=viewModel:CreateTagVM, IsDesignTimeCreatable=True}">
+    <UserControl.Resources>
+        <converters:ConditionVisibilityConverter x:Key="ConditionVisibilityConverter" />
+    </UserControl.Resources>
+    <Grid>
+        <Grid Margin="20">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="*" />
+                <RowDefinition Height="Auto" />
+            </Grid.RowDefinitions>
+
+            <ScrollViewer Grid.Row="1"
+                          VerticalScrollBarVisibility="Auto">
+                <StackPanel Orientation="Vertical">
+                    <TextBox Text="{Binding Title, UpdateSourceTrigger=PropertyChanged}"
+                             metroControls:TextBoxHelper.Watermark="Title"
+                             metroControls:TextBoxHelper.UseFloatingWatermark="True"
+                             Margin="0,0,0,5"
+                             PreviewKeyDown="KeyDownEventHandler"
+                             PreviewKeyUp="KeyUpEventHandler" />
+
+                    <ComboBox ItemsSource="{Binding TagTypes}"
+                              SelectedItem="{Binding SelectedType}"
+                              Margin="0, 0, 0, 5"
+                              Style="{DynamicResource VirtualisedMetroComboBox}"
+                              metroControls:TextBoxHelper.Watermark="Tag type"
+                              DisplayMemberPath="Title"
+                              IsEditable="True"
+                              MaxDropDownHeight="125"
+                              PreviewKeyDown="KeyDownEventHandler"
+                              PreviewKeyUp="KeyUpEventHandler" />
+
+                    <TextBox Text="{Binding Synonyms, UpdateSourceTrigger=PropertyChanged}"
+                             metroControls:TextBoxHelper.Watermark="Synonyms (separator ':.:')"
+                             metroControls:TextBoxHelper.UseFloatingWatermark="True"
+                             Margin="0,0,0,5"
+                             PreviewKeyDown="KeyDownEventHandler"
+                             PreviewKeyUp="KeyUpEventHandler" />
+
+                    <CheckBox IsChecked="{Binding HasValue}"
+                              Content="Has value" />
+
+                    <Button Content="Save"
+                            HorizontalAlignment="Right"
+                            Width="85"
+                            Margin="0,15,0,0"
+                            Command="{Binding SaveCommand}" />
+                </StackPanel>
+            </ScrollViewer>
+        </Grid>
+    </Grid>
+</UserControl>
