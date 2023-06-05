@@ -8,13 +8,6 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-<<<<<<<< HEAD:Source/ImoutoRebirth.Navigator/ImoutoRebirth.Navigator/Settings.Designer.cs
-namespace ImoutoRebirth.Navigator {
-    
-    
-    [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.VisualStudio.Editors.SettingsDesigner.SettingsSingleFileGenerator", "16.5.0.0")]
-========
 using ImoutoViewer.ViewModel;
 using ImoutoViewer.ViewModel.SettingsModels;
 
@@ -23,7 +16,6 @@ namespace ImoutoViewer.Properties {
     
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.VisualStudio.Editors.SettingsDesigner.SettingsSingleFileGenerator", "16.7.0.0")]
->>>>>>>> ImoutoViewer/master:Source/ImoutoViewer/Properties/Settings.Designer.cs
     internal sealed partial class Settings : global::System.Configuration.ApplicationSettingsBase {
         
         private static Settings defaultInstance = ((Settings)(global::System.Configuration.ApplicationSettingsBase.Synchronized(new Settings())));
@@ -36,9 +28,6 @@ namespace ImoutoViewer.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-<<<<<<<< HEAD:Source/ImoutoRebirth.Navigator/ImoutoRebirth.Navigator/Settings.Designer.cs
-        [global::System.Configuration.DefaultSettingValueAttribute("Blue")]
-========
         [global::System.Configuration.DefaultSettingValueAttribute("DownscaleToViewPort")]
         public ResizeType ResizeType {
             get {
@@ -112,7 +101,6 @@ namespace ImoutoViewer.Properties {
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("Cyan")]
->>>>>>>> ImoutoViewer/master:Source/ImoutoViewer/Properties/Settings.Designer.cs
         public string AccentColorName {
             get {
                 return ((string)(this["AccentColorName"]));
@@ -136,61 +124,25 @@ namespace ImoutoViewer.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("3")]
+        public int SlideshowDelay {
+            get {
+                return ((int)(this["SlideshowDelay"]));
+            }
+            set {
+                this["SlideshowDelay"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("True")]
-        public bool ActivatePreviewOnSelect {
+        public bool ShowTags {
             get {
-                return ((bool)(this["ActivatePreviewOnSelect"]));
+                return ((bool)(this["ShowTags"]));
             }
             set {
-                this["ActivatePreviewOnSelect"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("")]
-        public string PathOverrides {
-            get {
-                return ((string)(this["PathOverrides"]));
-            }
-            set {
-                this["PathOverrides"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("http://localhost:11302/")]
-        public string LilinHost {
-            get {
-                return ((string)(this["LilinHost"]));
-            }
-            set {
-                this["LilinHost"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("http://localhost:11301/")]
-        public string RoomHost {
-            get {
-                return ((string)(this["RoomHost"]));
-            }
-            set {
-                this["RoomHost"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValue("False")]
-        public bool ShowSystemTags {
-            get {
-                return ((bool)(this["ShowSystemTags"]));
-            }
-            set {
-                this["ShowSystemTags"] = value;
+                this["ShowTags"] = value;
             }
         }
         

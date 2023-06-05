@@ -39,7 +39,7 @@ internal static class EntryVMFactory
     }
 
     private static bool IsVideo(string path) 
-        => Enum.GetNames<VideoFormat>().Any(x => path.ToLower().EndsWith('.' + x)) 
+        => Enum.GetNames<VideoFormat>().Any(x => path.EndsWith('.' + x, StringComparison.OrdinalIgnoreCase)) 
            || path.EndsWith(".m4v") 
            || path.EndsWith(".swf");
 

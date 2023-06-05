@@ -24,6 +24,7 @@ class Build : NukeBuild
         "ImoutoRebirth.Navigator",
         "ImoutoRebirth.Room.Webhost",
         "ImoutoRebirth.Tori",
+        "ImoutoViewer",
     };
 
     public static int Main () => Execute<Build>(x => x.Publish);
@@ -93,6 +94,12 @@ class Build : NukeBuild
                     .SetVersion(GitVersion.NuGetVersionV2)
                     .SetOutput(output / project.Directory.Parent!.Name)
                     .SetProject(project));
+
+                if (project.Directory.Parent!.Name == "ImoutoRebirth.Navigator")
+                {
+                    Directory.Delete(output / project.Directory.Parent!.Name / "de", true);
+                    Directory.Delete(output / project.Directory.Parent!.Name / "libvlc" / "win-x86", true);
+                }
             });
 
             CopyFileToOutput("configuration.json");

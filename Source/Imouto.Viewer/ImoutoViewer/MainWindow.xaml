@@ -15,6 +15,7 @@
                           xmlns:Imouto.Viewer="clr-namespace:ImoutoViewer"
                           xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
                           xmlns:model="clr-namespace:ImoutoViewer.Model"
+                          xmlns:viewModel="clr-namespace:ImoutoViewer.ViewModel"
                           mc:Ignorable="d"
                           d:DataContext="{d:DesignInstance viewModel:MainWindowVM, IsDesignTimeCreatable=False}"
                           Title="{Binding Path=Title}"

@@ -2,7 +2,7 @@
   "profiles": {
     "ImoutoViewer": {
       "commandName": "Project",
-      "commandLineArgs": "C:\\Users\\Oniii-chan\\Downloads\\photo_2022-10-12_00-24-47.jpg"
+      "commandLineArgs": "\"C:\\Users\\Oniii-chan\\Downloads\\New folder (2)\\1g0wnfjcpzfa1.jpg\""
     },
     "ImoutoViewer From Navigator": {
       "commandName": "Project",
