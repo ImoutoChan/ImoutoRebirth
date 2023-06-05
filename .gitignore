@@ -152,3 +152,4 @@ packages/
 ImoutoViewer.sln.ide/*
 .vs/
 /.idea/*
+/Source/.idea/*
