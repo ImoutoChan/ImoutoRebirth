@@ -1,6 +1,4 @@
-﻿// See https://aka.ms/new-console-template for more information
-
-using ImoutoRebirth.Tori;
+﻿using ImoutoRebirth.Tori;
 using ImoutoRebirth.Tori.Services;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
@@ -13,7 +11,6 @@ services.AddTransient<IVersionService, VersionService>();
 services.AddTransient<IShortcutService, ShortcutService>();
 
 services.AddTransient<IWindowsServicesManager, WindowsServicesManager>();
-//services.AddTransient<IWindowsServicesManager, FakeWindowsServicesManager>();
 
 services.AddTransient<IWindowsServiceUpdater, WindowsServiceUpdater>();
 services.AddTransient<IInstaller, Installer>();
