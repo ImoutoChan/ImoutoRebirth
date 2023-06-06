@@ -2,3 +2,7 @@
 /chrome/src/.vscode/*
 /chrome/src/.vs/*
 /chrome/src/dist/*
+/Imouto.Extensions/chrome/src/node_modules/*
+/Imouto.Extensions/chrome/src/dist/*
+/Imouto.Extensions/chrome/src/.vscode/*
+/Imouto.Extensions/chrome/src/.vs/*
