@@ -26,13 +26,22 @@ jobs:
     name: windows-latest
     runs-on: windows-latest
     steps:
+      - name: Install GitVersion
+        uses: GitTools/actions/gitversion/setup@v0.9.11
+        with:
+          versionSpec: '5.5.0'
+
       - name: Checkout code
         uses: actions/checkout@v3
-        
+
       - name: Prepare git for git version
         run: |
           git fetch --tags
           git branch --create-reflog master origin/master
+          
+      - name: Run GitVersion
+        id: gitversion
+        uses: GitTools/actions/gitversion/execute@v0.9.11
 
       - name: Cache .nuke/temp, ~/.nuget/packages
         uses: actions/cache@v3
@@ -46,21 +55,22 @@ jobs:
         run: .\Tools\NukeBuild\build.cmd Pack7ZSfx
 
       - name: Create github release
+        permissions: write-all
         uses: actions/create-release@v1
         id: create_release
         with:
           draft: false
           prerelease: false
-          release_name: ${{ steps.version.outputs.version }}
+          release_name: ${{ steps.gitversion.outputs.majorMinorPatch }}
           tag_name: ${{ github.ref }}
           body: Imouto Rebirth
         env:
-          GITHUB_TOKEN: ${{ github.token }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Upload 7ZSfx installer to github release
         uses: actions/upload-release-asset@v1
         env:
-          GITHUB_TOKEN: ${{ github.token }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
           asset_path: ./Artifacts/ImoutoRebirth.exe
