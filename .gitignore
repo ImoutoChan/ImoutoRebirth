@@ -2,6 +2,6 @@ obj/
 bin/
 /Source/.idea/*
 /Source/ImoutoRebirth.sln.DotSettings.user
-/.nuke/*
 /output/*
 /Artifacts/*
+/.nuke/temp/*
