@@ -62,7 +62,7 @@ jobs:
           prerelease: false
           release_name: ${{ steps.gitversion.outputs.majorMinorPatch }}
           tag_name: ${{ github.ref }}
-          body: Imouto Rebirth
+          body: ImoutoRebirth.exe is self extracting 7z archive. Read installation instructions in README.md
         env:
           GITHUB_TOKEN: ${{ secrets.RELEASES_TOKEN }}
 
