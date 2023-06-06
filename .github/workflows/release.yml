@@ -26,10 +26,14 @@ jobs:
     name: windows-latest
     runs-on: windows-latest
     steps:
-      - uses: actions/checkout@v3
-        - run: |
+      - name: Checkout code
+        uses: actions/checkout@v3
+        
+      - name: Prepare git for git version
+        run: |
           git fetch --tags
           git branch --create-reflog master origin/master
+
       - name: 'Cache: .nuke/temp, ~/.nuget/packages'
         uses: actions/cache@v3
         with:
