@@ -5,3 +5,5 @@ bin/
 /output/*
 /Artifacts/*
 /.nuke/temp/*
+node_modules/
+/Source/Imouto.Extensions/chrome/src/dist/*
