@@ -69,7 +69,7 @@ This service won't run or be installed in your system, as it's an updater servic
 
 # Installation
 
-1. Download ImoutoRebirth.exe to any folder
+1. Download ImoutoRebirth.exe to any folder from [latest release](https://github.com/ImoutoChan/ImoutoRebirth/releases/latest)
 2. Run it (this is a self-extracting 7z archive), it will unpack the application into the "latest" folder, copy the path to this folder
 3. Edit configuration.json, filling it with your data
 4. Run Powershell as an administrator
