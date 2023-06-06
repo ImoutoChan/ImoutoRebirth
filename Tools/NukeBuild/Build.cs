@@ -29,7 +29,8 @@ public class CustomBuildCmdPathGitHubActionsAttribute : GitHubActionsAttribute
     "release",
     GitHubActionsImage.WindowsLatest,
     OnPushTags = new []{ "*"},
-    InvokedTargets = new[] { nameof(Pack7ZSfx) })]
+    InvokedTargets = new[] { nameof(Pack7ZSfx) },
+    AutoGenerate = false)]
 class Build : NukeBuild
 {
     static readonly IReadOnlyCollection<string> ApplicationProjects = new[]
