@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Nuke.Common;
+using Nuke.Common.CI.GitHubActions;
 using Nuke.Common.IO;
 using Nuke.Common.ProjectModel;
 using Nuke.Common.Tooling;
@@ -12,6 +13,23 @@ using Nuke.Common.Tools.GitVersion;
 using Nuke.Common.Utilities.Collections;
 using static Nuke.Common.Tools.DotNet.DotNetTasks;
 
+public class CustomBuildCmdPathGitHubActionsAttribute : GitHubActionsAttribute
+{
+    public CustomBuildCmdPathGitHubActionsAttribute(
+        string name,
+        GitHubActionsImage image,
+        params GitHubActionsImage[] images) : base(name, image, images)
+    {
+    }
+
+    protected override string BuildCmdPath => Build.RootDirectory / "Tools" / "NukeBuild" / "build.cmd";
+}
+
+[CustomBuildCmdPathGitHubActions(
+    "release",
+    GitHubActionsImage.WindowsLatest,
+    OnPushTags = new []{ "*"},
+    InvokedTargets = new[] { nameof(Pack7ZSfx) })]
 class Build : NukeBuild
 {
     static readonly IReadOnlyCollection<string> ApplicationProjects = new[]
