@@ -1,0 +1,23 @@
+.imoutoExtHide {
+    opacity: 0.6;
+    outline: 3px solid red;
+    outline-offset: -3px;
+}
+
+.imoutoExtHide:Hover {
+    opacity: 1;
+    outline: 3px solid transparent;
+    outline-offset: -3px;
+}
+
+.imoutoExtRelativeHide {
+    opacity: 0.6;
+    outline: 3px solid green;
+    outline-offset: -3px;
+}
+
+.imoutoExtRelativeHide:Hover {
+    opacity: 1;
+    outline: 3px solid transparent;
+    outline-offset: -3px;
+}

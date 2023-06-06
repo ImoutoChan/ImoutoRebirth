@@ -1,0 +1,13 @@
+{
+    "compileOnSave": false,
+    "compilerOptions": {
+      "target": "es2017",
+      "module": "commonjs",
+      "sourceMap": false,
+      "types": ["node", "chrome"],
+      "typeRoots": ["node_modules/@types"],
+      "moduleResolution": "node",
+      "lib": ["es2017", "dom"]
+    },
+    "include": ["background", "contentscript"]
+  }
