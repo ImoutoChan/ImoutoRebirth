@@ -55,7 +55,6 @@ jobs:
         run: .\Tools\NukeBuild\build.cmd Pack7ZSfx
 
       - name: Create github release
-        permissions: write-all
         uses: actions/create-release@v1
         id: create_release
         with:
@@ -65,12 +64,12 @@ jobs:
           tag_name: ${{ github.ref }}
           body: Imouto Rebirth
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.RELEASES_TOKEN }}
 
       - name: Upload 7ZSfx installer to github release
         uses: actions/upload-release-asset@v1
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.RELEASES_TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
           asset_path: ./Artifacts/ImoutoRebirth.exe
