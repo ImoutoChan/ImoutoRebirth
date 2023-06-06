@@ -67,6 +67,12 @@ This API gateway proxies requests to internal services and allows you to check w
 ### ImoutoRebirth.Tori
 This service won't run or be installed in your system, as it's an updater service for the new version.
 
+### Imouto.Viewer
+The app that you can use to browse images individually, support local tags, notes, slideshow, fixed zoom and more.
+
+### Imouto.Extensions
+[The chrome extension](https://chrome.google.com/webstore/detail/imouto-extension/ieilellpakdngfomipoedkgfaeddfffc), that will highlight saved images and their relatives.
+
 # Installation
 
 1. Download ImoutoRebirth.exe to any folder from [latest release](https://github.com/ImoutoChan/ImoutoRebirth/releases/latest)
