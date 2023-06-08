@@ -4,7 +4,9 @@ using ImoutoRebirth.Lilin.Core.Models;
 
 namespace ImoutoRebirth.Lilin.Services.CQRS.Queries;
 
-public class TagTypesQueryHandler : IQueryHandler<TagTypesQuery, IReadOnlyCollection<TagType>>
+public record TagTypesQuery : IQuery<IReadOnlyCollection<TagType>>;
+    
+internal class TagTypesQueryHandler : IQueryHandler<TagTypesQuery, IReadOnlyCollection<TagType>>
 {
     private readonly ITagTypeRepository _tagTypeRepository;
 

@@ -7,7 +7,9 @@ using Microsoft.Extensions.Caching.Memory;
 
 namespace ImoutoRebirth.Lilin.Services.CQRS.Queries;
 
-public class RelativesQueryHandler : IQueryHandler<RelativesQuery, IReadOnlyCollection<RelativeInfo>>
+public record RelativesQuery(string Md5) : IQuery<IReadOnlyCollection<RelativeInfo>>;
+
+internal class RelativesQueryHandler : IQueryHandler<RelativesQuery, IReadOnlyCollection<RelativeInfo>>
 {
     private readonly IMediator _mediator;
     private readonly IMemoryCache _memoryCache;
@@ -49,11 +51,11 @@ public class RelativesQueryHandler : IQueryHandler<RelativesQuery, IReadOnlyColl
 
     private async IAsyncEnumerable<FileInfo> GetFileInfoByTagValueRelativeInfo(
         Guid tagId, 
-        string value, 
+        string? value, 
         [EnumeratorCancellation] CancellationToken cancellationToken)
     {
         var filesQuery = new FilesSearchQuery(
-            new[] {new TagSearchEntry(tagId, value, TagSearchScope.Included)});
+            new[] {new TagSearchEntry(tagId, value, TagSearchScope.Included)}, int.MaxValue, 0);
 
         var found = await _mediator.Send(filesQuery, cancellationToken);
             
@@ -80,7 +82,7 @@ public class RelativesQueryHandler : IQueryHandler<RelativesQuery, IReadOnlyColl
 
         async Task<Guid?> SearchTag(string tagName, CancellationToken token)
         {
-            var result = await _mediator.Send(new TagsSearchQuery(tagName, limit: 1), token);
+            var result = await _mediator.Send(new TagsSearchQuery(tagName, Limit: 1), token);
             return result.Select(x => x.Id).SingleOrDefault();
         }
     }

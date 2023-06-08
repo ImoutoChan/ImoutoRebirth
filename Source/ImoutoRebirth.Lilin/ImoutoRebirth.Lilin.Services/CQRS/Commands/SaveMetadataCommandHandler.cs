@@ -1,5 +1,7 @@
-﻿using System.Runtime.CompilerServices;
+﻿using System.Data;
+using System.Runtime.CompilerServices;
 using ImoutoRebirth.Common.Cqrs.Abstract;
+using ImoutoRebirth.Common.Cqrs.Behaviors;
 using ImoutoRebirth.Common.Domain;
 using ImoutoRebirth.Lilin.Core.Infrastructure;
 using ImoutoRebirth.Lilin.Core.Models;
@@ -7,12 +9,14 @@ using ImoutoRebirth.Lilin.Core.Models.FileInfoAggregate;
 using ImoutoRebirth.Lilin.MessageContracts;
 using ImoutoRebirth.Lilin.Services.ApplicationServices;
 using ImoutoRebirth.Lilin.Services.Extensions;
-using MediatR;
 using MetadataSource = ImoutoRebirth.Lilin.Core.Models.MetadataSource;
 
 namespace ImoutoRebirth.Lilin.Services.CQRS.Commands;
 
-public class SaveMetadataCommandHandler : ICommandHandler<SaveMetadataCommand>
+[CommandQuery(IsolationLevel.Serializable)]
+public record SaveMetadataCommand(IUpdateMetadataCommand MqCommand) : ICommand;
+
+internal class SaveMetadataCommandHandler : ICommandHandler<SaveMetadataCommand>
 {
     private readonly ITagTypeRepository _tagTypeRepository;
     private readonly ITagRepository _tagRepository;

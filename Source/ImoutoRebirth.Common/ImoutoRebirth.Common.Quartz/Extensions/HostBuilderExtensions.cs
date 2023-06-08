@@ -30,4 +30,16 @@ public static class HostBuilderExtensions
 
         return hostBuilder;
     }
+    
+    public static IServiceCollection AddQuartz(
+        this IServiceCollection services, 
+        Action<IServiceCollection>? jobsBuilder = null)
+    {
+        services
+            .AddQuartz()
+            .AddHostedService<QuartzHostedService>();
+
+        jobsBuilder?.Invoke(services);
+        return services;
+    }
 }

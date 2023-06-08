@@ -17,15 +17,15 @@ class TagsEditVM : VMBase, IDropable
     #region Fields
 
     private string _searchText;
-    private ICommand _createTagCommand;
-    private ICommand _addTagsCommand;
-    private ICommand _removeTagsCommand;
-    private ICommand _saveCommand;
+    private ICommand? _createTagCommand;
+    private ICommand? _addTagsCommand;
+    private ICommand? _removeTagsCommand;
+    private ICommand? _saveCommand;
+    private ICommand? _setTagInfoContextCommand;
     private readonly MainWindowVM _parentVM;
     private CreateTagVM _createTagVM;
     private bool _isSaving;
     private bool _isSuccess;
-    private ICommand _setTagInfoContextCommand;
     private SearchTagVM _tagInfoContext;
     private readonly IFileTagService _fileTagService;
     private readonly ITagService _tagService;
@@ -250,7 +250,7 @@ class TagsEditVM : VMBase, IDropable
 
             var imageIds = images
                 .Where(x => x.DbId.HasValue)
-                .Select(x => x.DbId.Value);
+                .Select(x => x.DbId!.Value);
 
             var fileTags =
                 from imageId in imageIds

@@ -1,50 +1,34 @@
 ﻿using System.Text.Json.Serialization;
 using ImoutoRebirth.Common.WebApi;
 using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
 
 namespace ImoutoRebirth.Lilin.WebApi;
 
-/// <remarks>
-///     todo: maybe use two extension methods instead
-/// </remarks>
-public class WebApiStartup
+public static class WebApiStartupExtensions
 {
-    private IConfiguration Configuration { get; }
-
-    public WebApiStartup(IConfiguration configuration)
+    public static IServiceCollection ConfigureWebApp(this IServiceCollection services)
     {
-        Configuration = configuration;
+        services.ConfigureHttpJsonOptions(options => {
+            options.SerializerOptions.Converters.Add(new JsonStringEnumConverter());
+        });
+        
+        services.AddSwagger("ImoutoRebirth.Lilin WebApi Client", typeof(WebApiStartupExtensions).Assembly);
+
+        return services;
     }
-
-    public void ConfigureServices(IServiceCollection services)
+    
+    public static WebApplication UseWebApp(this WebApplication app)
     {
-        services
-            .AddControllers()
-            .AddJsonOptions(
-                options =>
-                    options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter()));
-        services.AddSwagger("ImoutoRebirth.Lilin WebApi Client", typeof(WebApiStartup).Assembly);
-    }
-
-    public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
-    {
-        if (env.IsDevelopment())
-        {
-            app.UseDeveloperExceptionPage();
-        }
-            
-        app.UseRouting();
-
-        app.UseEndpoints(endpoints => endpoints.MapControllers());
-
         app.UseSwagger();
         app.UseSwaggerUI(c =>
         {
             c.SwaggerEndpoint("/swagger/v1.0/swagger.json", "ImoutoRebirth.Lilin API V1.0");
         });
+
+        app.MapFilesEndpoints();
+        app.MapTagsEndpoints();
+        
+        return app;
     }
 }

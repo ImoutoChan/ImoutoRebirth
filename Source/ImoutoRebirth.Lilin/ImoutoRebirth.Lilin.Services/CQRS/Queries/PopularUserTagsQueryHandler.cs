@@ -4,7 +4,9 @@ using ImoutoRebirth.Lilin.Core.Models;
 
 namespace ImoutoRebirth.Lilin.Services.CQRS.Queries;
 
-public class PopularUserTagsQueryHandler : IQueryHandler<PopularUserTagsQuery, IReadOnlyCollection<Tag>>
+public record PopularUserTagsQuery(int Limit = 10) : IQuery<IReadOnlyCollection<Tag>>;
+
+internal class PopularUserTagsQueryHandler : IQueryHandler<PopularUserTagsQuery, IReadOnlyCollection<Tag>>
 {
     private readonly IFileTagRepository _fileTagRepository;
 

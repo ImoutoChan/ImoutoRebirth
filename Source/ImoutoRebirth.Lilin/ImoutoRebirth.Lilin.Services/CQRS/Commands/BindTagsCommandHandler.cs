@@ -1,14 +1,19 @@
-﻿using ImoutoRebirth.Common.Cqrs.Abstract;
+﻿using System.Data;
+using ImoutoRebirth.Common.Cqrs.Abstract;
+using ImoutoRebirth.Common.Cqrs.Behaviors;
 using ImoutoRebirth.Lilin.Core.Infrastructure;
 using ImoutoRebirth.Lilin.Core.Models;
 using ImoutoRebirth.Lilin.Core.Models.FileInfoAggregate;
 using ImoutoRebirth.Lilin.Services.ApplicationServices;
-using MediatR;
 using Microsoft.Extensions.Logging;
 
 namespace ImoutoRebirth.Lilin.Services.CQRS.Commands;
 
-public class BindTagsCommandHandler : ICommandHandler<BindTagsCommand>
+[CommandQuery(IsolationLevel.ReadCommitted)]
+public record BindTagsCommand(IReadOnlyCollection<FileTagInfo> FileTags, SameTagHandleStrategy SameTagHandleStrategy) 
+    : ICommand;
+
+internal class BindTagsCommandHandler : ICommandHandler<BindTagsCommand>
 {
     private readonly ILogger<BindTagsCommandHandler> _logger;
     private readonly IFileInfoService _fileInfoService;

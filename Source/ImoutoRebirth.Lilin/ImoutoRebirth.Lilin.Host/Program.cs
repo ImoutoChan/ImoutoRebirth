@@ -1,47 +1,58 @@
 ﻿using ImoutoRebirth.Common.EntityFrameworkCore;
 using ImoutoRebirth.Common.Host;
 using ImoutoRebirth.Common.Logging;
+using ImoutoRebirth.Common.MassTransit;
 using ImoutoRebirth.Common.Quartz.Extensions;
+using ImoutoRebirth.Lilin.Core;
 using ImoutoRebirth.Lilin.DataAccess;
+using ImoutoRebirth.Lilin.Host.Settings;
+using ImoutoRebirth.Lilin.Infrastructure;
+using ImoutoRebirth.Lilin.MessageContracts;
+using ImoutoRebirth.Lilin.Services;
 using ImoutoRebirth.Lilin.WebApi;
-using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Builder;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
-using GenericHost = Microsoft.Extensions.Hosting.Host;
 
-namespace ImoutoRebirth.Lilin.Host;
+const string servicePrefix = "LILIN_";
 
-internal static class Program
-{
-    private const string ServicePrefix = "LILIN_";
+var builder = WebApplication.CreateBuilder(args);
 
-    private static async Task Main(string[] args)
-    {
-        await CreateHostBuilder(args)
-            .Build()
-            .MigrateIfNecessary<LilinDbContext>()
-            .RunAsync();
-    }
+builder.Services.AddWindowsService();
+builder.SetWorkingDirectory();
+builder.UseEnvironmentFromEnvironmentVariable(servicePrefix);
+builder.UseConfiguration(servicePrefix);
+builder.ConfigureSerilog(
+    (loggerBuilder, appConfiguration, hostEnvironment)
+        => loggerBuilder
+            .WithoutDefaultLoggers()
+            .WithConsole()
+            .WithAllRollingFile()
+            .WithInformationRollingFile()
+            .WithOpenSearch(appConfiguration, hostEnvironment));
 
-    // ReSharper disable once MemberCanBePrivate.Global
-    public static IHostBuilder CreateHostBuilder(string[] args)
-        => GenericHost.CreateDefaultBuilder(args)
-            .UseWindowsService()
-            .SetWorkingDirectory()
-            .UseEnvironmentFromEnvironmentVariable(ServicePrefix)
-            .UseConfiguration(ServicePrefix)
-            .ConfigureSerilog(
-                (loggerBuilder, appConfiguration, hostEnvironment)
-                    => loggerBuilder
-                        .WithoutDefaultLoggers()
-                        .WithConsole()
-                        .WithAllRollingFile()
-                        .WithInformationRollingFile()
-                        .WithOpenSearch(appConfiguration, hostEnvironment))
-            .UseStartup(x => new Startup(x))
-            .UseQuartz()
-            .ConfigureWebHostDefaults(
-                webHostBuilder
-                    => webHostBuilder
-                        .UseKestrel(options => options.AddServerHeader = false)
-                        .UseStartup<WebApiStartup>());
-}
+var lilinSettings = builder.Configuration.GetRequired<LilinSettings>();
+
+builder.Services
+    .AddLilinInfrastructure()
+    .AddLilinServices(builder.Configuration)
+    .AddLilinDataAccess(builder.Configuration.GetConnectionString("LilinDatabase")
+                        ?? throw new Exception("ConnectionString is empty"))
+    .AddLilinCore();
+
+builder.Services
+    .AddTrueMassTransit(
+        lilinSettings.RabbitSettings,
+        ReceiverApp.Name,
+        с => с.AddLilinServicesForRabbit());
+
+builder.Services.AddQuartz();
+
+builder.Services.ConfigureWebApp();
+
+var app = builder.Build();
+
+app.UseWebApp();
+
+app.MigrateIfNecessary<LilinDbContext>();
+app.Run();

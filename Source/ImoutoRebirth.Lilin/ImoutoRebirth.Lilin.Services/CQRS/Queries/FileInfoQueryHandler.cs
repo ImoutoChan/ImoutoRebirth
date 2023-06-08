@@ -4,7 +4,9 @@ using ImoutoRebirth.Lilin.Core.Models.FileInfoAggregate;
 
 namespace ImoutoRebirth.Lilin.Services.CQRS.Queries;
 
-public class FileInfoQueryHandler : IQueryHandler<FileInfoQuery, FileInfo>
+public record FileInfoQuery(Guid FileId) : IQuery<FileInfo>;
+
+internal class FileInfoQueryHandler : IQueryHandler<FileInfoQuery, FileInfo>
 {
     private readonly IFileTagRepository _fileTagRepository;
     private readonly IFileNoteRepository _fileNoteRepository;

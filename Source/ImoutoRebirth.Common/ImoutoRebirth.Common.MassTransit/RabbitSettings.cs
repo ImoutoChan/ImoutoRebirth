@@ -2,9 +2,9 @@
 
 public class RabbitSettings
 {
-    public string Url { get; set; } = default!;
+    public required string Url { get; set; }
 
-    public string Username { get; set; } = default!;
+    public required string Username { get; set; }
 
-    public string Password { get; set; } = default!;
+    public required string Password { get; set; }
 }

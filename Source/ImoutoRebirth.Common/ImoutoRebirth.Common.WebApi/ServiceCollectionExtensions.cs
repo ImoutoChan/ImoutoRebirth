@@ -16,6 +16,7 @@ public static class ServiceCollectionExtensions
     {
         assemblyWithControllers ??= Assembly.GetCallingAssembly();
 
+        services.AddEndpointsApiExplorer();
         services.AddSwaggerGen(c =>
         {
             c.UseInlineDefinitionsForEnums();
