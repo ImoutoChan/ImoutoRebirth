@@ -12,8 +12,14 @@ public static class WebApiStartupExtensions
         services.ConfigureHttpJsonOptions(options => {
             options.SerializerOptions.Converters.Add(new JsonStringEnumConverter());
         });
+
+        services.Configure<Microsoft.AspNetCore.Http.Json.JsonOptions>(x =>
+            x.SerializerOptions.Converters.Add(new JsonStringEnumConverter()));
+
+        services.Configure<Microsoft.AspNetCore.Mvc.JsonOptions>(x =>
+            x.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter()));
         
-        services.AddSwagger("ImoutoRebirth.Lilin WebApi Client", typeof(WebApiStartupExtensions).Assembly);
+        services.AddMinimalSwagger("ImoutoRebirth.Lilin WebApi Client");
 
         return services;
     }

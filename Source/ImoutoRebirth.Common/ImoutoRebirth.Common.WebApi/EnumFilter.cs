@@ -23,7 +23,6 @@ public sealed class EnumFilter : ISchemaFilter
         schema.Enum = Enum.GetNames(enumType).Select(x => new OpenApiString(x) as IOpenApiAny).ToList();
     }
 
-
     private static bool IsEnum(
         Type t,
         [NotNullWhen(true)] out string? enumName,

@@ -1,2 +1,2 @@
 dotnet tool update --global NSwag.ConsoleCore
-nswag run .\DefaultService.nswag /variables:Port=11362,ServiceName=ImoutoRebirth.Lilin
+nswag run .\DefaultService.nswag /variables:Port=11402,ServiceName=ImoutoRebirth.Lilin

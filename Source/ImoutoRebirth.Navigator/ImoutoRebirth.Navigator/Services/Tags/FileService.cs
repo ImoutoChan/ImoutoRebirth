@@ -43,10 +43,10 @@ class FileService : IFileService
         var roomFilesIds = roomFiles.Select(x => x.Id).ToList();
         
         var lilinFilesThatSatisfyConditions = await _filesClient
-            .FilterFilesBasedOnTagsAsync(
-                new FilesFilterRequest(
+            .FilterFilesAsync(
+                new FilesFilterQuery(
                     roomFilesIds,
-                    _mapper.Map<List<TagSearchEntryRequest>>(tags)),
+                    _mapper.Map<List<TagSearchEntry>>(tags)),
                 token);
 
         var lilinFilesThatSatisfyConditionsHashSet = lilinFilesThatSatisfyConditions.ToHashSet();
@@ -61,23 +61,18 @@ class FileService : IFileService
     public async Task<int> CountFiles(
         Guid? collectionId,
         IReadOnlyCollection<SearchTag> tags,
-        CancellationToken cancellationToken)
+        CancellationToken ct)
     {
         if (!tags.Any())
         {
             var result = await _collectionFilesClient
-                .CountAsync(new CollectionFilesRequest(default, collectionId, default, default, default, default), cancellationToken);
+                .CountAsync(new CollectionFilesRequest(default, collectionId, default, default, default, default), ct);
 
             return result;
         }
 
         return await _filesClient
-            .GetFilesCountByTagsAsync(
-                new FilesSearchRequest(
-                    int.MaxValue,
-                    0,
-                    _mapper.Map<List<TagSearchEntryRequest>>(tags)),
-                cancellationToken);
+            .CountSearchFilesAsync(new FilesSearchQueryCount(_mapper.Map<List<TagSearchEntry>>(tags)), ct);
     }
 
     public Task RemoveFile(Guid fileId) => _collectionFilesClient.RemoveAsync(fileId);

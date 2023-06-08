@@ -1,5 +1,7 @@
 ﻿using System.Reflection;
+using Microsoft.AspNetCore.Mvc.Abstractions;
 using Microsoft.AspNetCore.Mvc.Controllers;
+using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.OpenApi.Models;
 using Swashbuckle.AspNetCore.SwaggerGen;
@@ -37,6 +39,43 @@ public static class ServiceCollectionExtensions
             var xmlFile = $"{assemblyWithControllers.GetName().Name}.xml";
             var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
             c.IncludeXmlComments(xmlPath);
+            
+            configure?.Invoke(c);
+        });
+
+        return services;
+    }
+    
+    public static IServiceCollection AddMinimalSwagger(
+        this IServiceCollection services,
+        string swaggerTitle,
+        Action<SwaggerGenOptions>? configure = null)
+    {
+        services.AddEndpointsApiExplorer();
+        services.AddSwaggerGen(c =>
+        {
+            c.SchemaFilter<RequireValueTypePropertiesSchemaFilter>();
+
+            c.SwaggerDoc("v1.0", new OpenApiInfo
+            {
+                Title = swaggerTitle,
+                Version = "v1.0"
+            });
+            
+            c.TagActionsBy(e =>
+            {
+                var controllerName = e.RelativePath?.Split("/").FirstOrDefault(x => !string.IsNullOrWhiteSpace(x));
+                return new [] {controllerName?.ToUpperInvariant()[..1] + controllerName?[1..]};
+            });
+            
+            c.CustomOperationIds(e =>
+            {
+                var name = e.ActionDescriptor.EndpointMetadata.OfType<RouteNameMetadata>().FirstOrDefault()?.RouteName;
+                var controllerName = e.RelativePath?.Split("/").FirstOrDefault(x => !string.IsNullOrWhiteSpace(x));
+                var upperControllerName = controllerName?.ToUpperInvariant()[..1] + controllerName?[1..];
+                
+                return upperControllerName + '_' + name;
+            });
             
             configure?.Invoke(c);
         });

@@ -62,7 +62,7 @@ internal class FilesStatusesQueryHandler : IStreamQueryHandler<FilesStatusesQuer
         IReadOnlyCollection<string> hashes,
         CancellationToken ct)
     {
-        var response = await _filesLilinClient.GetRelativesBatchAsync(hashes, ct);
+        var response = await _filesLilinClient.GetRelativesInfoBatchAsync(hashes, ct);
 
         return response.ToDictionary(
             x => x.Hash!,

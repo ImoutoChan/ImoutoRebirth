@@ -2,6 +2,12 @@
 using ImoutoRebirth.LilinService.WebApi.Client;
 using ImoutoRebirth.Navigator.Services.Tags.Model;
 using ImoutoRebirth.RoomService.WebApi.Client;
+using FileTag = ImoutoRebirth.Navigator.Services.Tags.Model.FileTag;
+using Tag = ImoutoRebirth.Navigator.Services.Tags.Model.Tag;
+using LilinTag = ImoutoRebirth.LilinService.WebApi.Client.Tag;
+using LilinFileTag = ImoutoRebirth.LilinService.WebApi.Client.FileTag;
+using LilinTagType = ImoutoRebirth.LilinService.WebApi.Client.TagType;
+using TagType = ImoutoRebirth.Navigator.Services.Tags.Model.TagType;
 
 namespace ImoutoRebirth.Navigator.Services.Tags;
 
@@ -9,33 +15,33 @@ internal class AutoMapperProfile : Profile
 {
     public AutoMapperProfile()
     {
-        CreateMap<SearchTag, TagSearchEntryRequest>()
-            .ForCtorParam("TagId", o => o.MapFrom(x => x.Tag.Id))
-            .ForCtorParam("Value", o => o.MapFrom(x => x.Value))
-            .ForCtorParam("TagSearchScope", o => o.MapFrom(x => x.SearchType));
+        CreateMap<SearchTag, TagSearchEntry>()
+            .ForCtorParam("tagId", o => o.MapFrom(x => x.Tag.Id))
+            .ForCtorParam("value", o => o.MapFrom(x => x.Value))
+            .ForCtorParam("tagSearchScope", o => o.MapFrom(x => x.SearchType));
 
-        CreateMap<FileTag, FileTagRequest>()
+        CreateMap<FileTag, FileTagInfo>()
             .ForMember(x => x.TagId, o => o.MapFrom(x => x.Tag.Id))
             .ForMember(x => x.Value, o => o.MapFrom(x => x.Value));
 
-        CreateMap<SearchType, TagSearchEntryRequestTagSearchScope>()
+        CreateMap<SearchType, TagSearchScope>()
             .ConvertUsing(
                 (x, _) => x switch
                 {
-                    SearchType.Include => TagSearchEntryRequestTagSearchScope.Included,
-                    SearchType.Exclude => TagSearchEntryRequestTagSearchScope.Excluded,
+                    SearchType.Include => TagSearchScope.Included,
+                    SearchType.Exclude => TagSearchScope.Excluded,
                     _ => throw new NotImplementedException(x.ToString())
                 });
 
-        CreateMap<FileTagSource, FileTagRequestSource>()
+        CreateMap<FileTagSource, MetadataSource>()
             .ConvertUsing(
                 (x, _) => x switch
                 {
-                    FileTagSource.Yandere => FileTagRequestSource.Yandere,
-                    FileTagSource.Danbooru => FileTagRequestSource.Danbooru,
-                    FileTagSource.Sankaku => FileTagRequestSource.Sankaku,
-                    FileTagSource.Manual => FileTagRequestSource.Manual,
-                    FileTagSource.Gelbooru => FileTagRequestSource.Gelbooru,
+                    FileTagSource.Yandere => MetadataSource.Yandere,
+                    FileTagSource.Danbooru => MetadataSource.Danbooru,
+                    FileTagSource.Sankaku => MetadataSource.Sankaku,
+                    FileTagSource.Manual => MetadataSource.Manual,
+                    FileTagSource.Gelbooru => MetadataSource.Gelbooru,
                     _ => throw new NotImplementedException(x.ToString())
                 });
 
@@ -47,14 +53,14 @@ internal class AutoMapperProfile : Profile
 
     private void CreateTagMaps()
     {
-        CreateMap<TagResponse, Tag>()
+        CreateMap<LilinTag, Tag>()
             .ForCtorParam("title", o => o.MapFrom(x => x.Name))
             .ForCtorParam("synonymsCollection", o => o.MapFrom(x => x.Synonyms));
         // CreateMap<FileTagResponseTag, Tag>()
         //     .ForCtorParam("title", o => o.MapFrom(x => x.Name))
         //     .ForCtorParam("synonymsCollection", o => o.MapFrom(x => x.Synonyms));
 
-        CreateMap<TagTypeResponse, TagType>()
+        CreateMap<LilinTagType, TagType>()
             .ForCtorParam("title", o => o.MapFrom(x => x.Name));
         // CreateMap<TagResponseType, TagType>()
         //     .ForCtorParam("title", o => o.MapFrom(x => x.Name));
@@ -62,17 +68,17 @@ internal class AutoMapperProfile : Profile
 
     private void CreateFileTagMaps()
     {
-        CreateMap<FileTagResponse, FileTag>();
+        CreateMap<LilinFileTag, FileTag>();
 
-        CreateMap<FileTagRequestSource, FileTagSource>()
+        CreateMap<MetadataSource, FileTagSource>()
             .ConvertUsing(
                 (x, _) => x switch
                 {
-                    FileTagRequestSource.Danbooru => FileTagSource.Danbooru,
-                    FileTagRequestSource.Yandere => FileTagSource.Yandere,
-                    FileTagRequestSource.Sankaku => FileTagSource.Sankaku,
-                    FileTagRequestSource.Manual => FileTagSource.Manual,
-                    FileTagRequestSource.Gelbooru => FileTagSource.Gelbooru,
+                    MetadataSource.Danbooru => FileTagSource.Danbooru,
+                    MetadataSource.Yandere => FileTagSource.Yandere,
+                    MetadataSource.Sankaku => FileTagSource.Sankaku,
+                    MetadataSource.Manual => FileTagSource.Manual,
+                    MetadataSource.Gelbooru => FileTagSource.Gelbooru,
                     _ => throw new NotImplementedException(x.ToString())
                 });
     }

@@ -5,15 +5,14 @@ namespace ImoutoRebirth.Lilin.WebApi.Client;
 
 public static class WebApiServiceCollectionExtensions
 {
-    public static IServiceCollection AddWebApiClient<TClient>(
+    private static IServiceCollection AddWebApiClient<TClient>(
         this IServiceCollection services,
-        string baseUri,
-        string? httpClientName = null)
+        string baseUri)
         where TClient : class
     {
         services.AddHttpClient();
         
-        httpClientName = typeof(TClient).Name;
+        var httpClientName = typeof(TClient).Name;
 
         services.AddTransient(
             provider =>
@@ -30,7 +29,6 @@ public static class WebApiServiceCollectionExtensions
     {
         return services
             .AddWebApiClient<FilesClient>(baseUri)
-            .AddWebApiClient<TagTypesClient>(baseUri)
             .AddWebApiClient<TagsClient>(baseUri);
     }
 }

@@ -1,5 +1,5 @@
 {
-  "runtime": "Net60",
+  "runtime": "Net70",
   "defaultVariables": "Port=11111,ServiceName=Unknown",
   "documentGenerator": {
     "fromDocument": {
@@ -95,7 +95,7 @@
       "enumNameGeneratorType": null,
       "serviceHost": null,
       "serviceSchemes": null,
-      "output": "../../$(ServiceName)/$(ServiceName).WebApi.Client/Clients.cs",
+      "output": "../../Source/$(ServiceName)/$(ServiceName).WebApi.Client/Clients.cs",
       "newLineBehavior": "Auto"
     }
   }

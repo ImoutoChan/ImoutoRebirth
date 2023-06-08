@@ -1,6 +1,8 @@
 ﻿using AutoMapper;
 using ImoutoRebirth.LilinService.WebApi.Client;
 using ImoutoRebirth.Navigator.Services.Tags.Model;
+using FileTag = ImoutoRebirth.Navigator.Services.Tags.Model.FileTag;
+using Tag = ImoutoRebirth.Navigator.Services.Tags.Model.Tag;
 
 namespace ImoutoRebirth.Navigator.Services.Tags;
 
@@ -24,13 +26,13 @@ internal class FileTagService : IFileTagService
     {
         var rateTag = await GetOrCreateTag("Rate", "LocalMeta", true);
 
-        await _filesClient.BindTagsToFilesAsync(
-            new BindTagsRequest(
-                new List<FileTagRequest>
+        await _filesClient.BindTagsAsync(
+            new BindTagsCommand(
+                new List<FileTagInfo>
                 {
-                    new(fileId, FileTagRequestSource.Manual, rateTag.Id, rate.Rating.ToString())
+                    new(fileId, MetadataSource.Manual, rateTag.Id, rate.Rating.ToString())
                 },
-                BindTagsRequestSameTagHandleStrategy.ReplaceExistingValue));
+                SameTagHandleStrategy.ReplaceExistingValue));
     }
 
     public async Task SetFavorite(Guid fileId, bool value)
@@ -40,36 +42,34 @@ internal class FileTagService : IFileTagService
 
         if (value)
         {
-            await _filesClient.BindTagsToFilesAsync(
-                new BindTagsRequest(
-                    new List<FileTagRequest>
+            await _filesClient.BindTagsAsync(
+                new BindTagsCommand(
+                    new List<FileTagInfo>
                     {
-                        new(fileId, FileTagRequestSource.Manual, favTag.Id, default)
+                        new(fileId, MetadataSource.Manual, favTag.Id, default)
                     },
-                    BindTagsRequestSameTagHandleStrategy.ReplaceExistingValue));
+                    SameTagHandleStrategy.ReplaceExistingValue));
         }
         else
         {
-            await _filesClient.UnbindTagFromFileAsync(
-                new UnbindTagRequest(new FileTagRequest(fileId, FileTagRequestSource.Manual,
+            await _filesClient.UnbindTagsAsync(
+                new UnbindTagCommand(new FileTagInfo(fileId, MetadataSource.Manual,
                     favTag.Id, default)));
         }
     }
 
     public async Task BindTags(IReadOnlyCollection<FileTag> fileTags)
     {
-        var requests = _mapper.Map<IReadOnlyCollection<FileTagRequest>>(fileTags);
+        var requests = _mapper.Map<IReadOnlyCollection<FileTagInfo>>(fileTags);
 
-        await _filesClient.BindTagsToFilesAsync(
-            new BindTagsRequest(requests, BindTagsRequestSameTagHandleStrategy.AddNewFileTag));
+        await _filesClient.BindTagsAsync(
+            new BindTagsCommand(requests, SameTagHandleStrategy.AddNewFileTag));
     }
 
     public async Task UnbindTag(Guid fileId, Guid tagId, FileTagSource source)
     {
-        var metadataSource = _mapper.Map<FileTagRequestSource>(source);
-
-        await _filesClient.UnbindTagFromFileAsync(
-            new UnbindTagRequest(new FileTagRequest(fileId, FileTagRequestSource.Manual, tagId, default)));
+        await _filesClient.UnbindTagsAsync(
+            new UnbindTagCommand(new FileTagInfo(fileId, MetadataSource.Manual, tagId, default)));
     }
 
     public async Task<IReadOnlyCollection<FileTag>> GetFileTags(Guid fileId)
