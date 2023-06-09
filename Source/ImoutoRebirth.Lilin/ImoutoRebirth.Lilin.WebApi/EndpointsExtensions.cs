@@ -42,7 +42,7 @@ internal static class EndpointsMappings
                 => mediator.Send(command, ct))
             .WithName("BindTags");
 
-        files.MapDelete("/tags", ([FromBody] UnbindTagCommand command, IMediator mediator, CancellationToken ct)
+        files.MapDelete("/tags", ([FromBody] UnbindTagsCommand command, IMediator mediator, CancellationToken ct)
                 => mediator.Send(command, ct))
             .WithName("UnbindTags");
     }

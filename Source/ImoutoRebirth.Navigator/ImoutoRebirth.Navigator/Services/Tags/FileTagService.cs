@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using ImoutoRebirth.Common;
 using ImoutoRebirth.LilinService.WebApi.Client;
 using ImoutoRebirth.Navigator.Services.Tags.Model;
 using FileTag = ImoutoRebirth.Navigator.Services.Tags.Model.FileTag;
@@ -53,8 +54,7 @@ internal class FileTagService : IFileTagService
         else
         {
             await _filesClient.UnbindTagsAsync(
-                new UnbindTagCommand(new FileTagInfo(fileId, MetadataSource.Manual,
-                    favTag.Id, default)));
+                new UnbindTagsCommand(new FileTagInfo(fileId, MetadataSource.Manual, favTag.Id, default).AsArray()));
         }
     }
 
@@ -66,10 +66,13 @@ internal class FileTagService : IFileTagService
             new BindTagsCommand(requests, SameTagHandleStrategy.AddNewFileTag));
     }
 
-    public async Task UnbindTag(Guid fileId, Guid tagId, FileTagSource source)
+    public async Task UnbindTags(params UnbindTagRequest[] tagsToUnbind)
     {
-        await _filesClient.UnbindTagsAsync(
-            new UnbindTagCommand(new FileTagInfo(fileId, MetadataSource.Manual, tagId, default)));
+        var tags = tagsToUnbind
+            .Select(x => new FileTagInfo(x.FileId, _mapper.Map<MetadataSource>(x.Source), x.TagId, x.Value))
+            .ToList();
+
+        await _filesClient.UnbindTagsAsync(new UnbindTagsCommand(tags));
     }
 
     public async Task<IReadOnlyCollection<FileTag>> GetFileTags(Guid fileId)
@@ -84,22 +87,20 @@ internal class FileTagService : IFileTagService
         var rateTags = await _tagService.SearchTags(name, 1);
         var rateTag = rateTags.FirstOrDefault();
 
-        if (rateTag?.Title != name || rateTag?.HasValue != hasValue || rateTag.Type.Title != typeName)
-        {
-            rateTag = null;
-        }
-
-        if (rateTag != null)
-        {
-            return rateTag;
-        }
+        var rateTagFound = rateTag != null 
+                           && rateTag.Title == name 
+                           && rateTag.HasValue == hasValue 
+                           && rateTag.Type.Title == typeName;
+        
+        if (rateTagFound)
+            return rateTag!;
 
         var types = await _tagService.GеtTypes();
         var localType = types.First(x => x.Title == typeName);
         await _tagService.CreateTag(localType.Id, name, hasValue, Array.Empty<string>());
 
         rateTags = await _tagService.SearchTags(name, 1);
-        rateTag = rateTags.First();
+        rateTag = rateTags.First(x => x.Title == name && x.HasValue == hasValue && x.Type.Title == typeName);
 
         return rateTag;
     }

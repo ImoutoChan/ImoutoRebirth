@@ -2,6 +2,7 @@
 using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Windows.Input;
+using ImoutoRebirth.Common;
 using ImoutoRebirth.Navigator.Behavior;
 using ImoutoRebirth.Navigator.Commands;
 using ImoutoRebirth.Navigator.Services;
@@ -21,12 +22,13 @@ class TagsEditVM : VMBase, IDropable
     private ICommand? _addTagsCommand;
     private ICommand? _removeTagsCommand;
     private ICommand? _saveCommand;
+    private ICommand? _unbindCommand;
     private ICommand? _setTagInfoContextCommand;
-    private readonly MainWindowVM _parentVM;
-    private CreateTagVM _createTagVM;
+    private readonly MainWindowVM _parentVm;
+    private CreateTagVM? _createTagVm;
     private bool _isSaving;
     private bool _isSuccess;
-    private SearchTagVM _tagInfoContext;
+    private SearchTagVM? _tagInfoContext;
     private readonly IFileTagService _fileTagService;
     private readonly ITagService _tagService;
 
@@ -34,16 +36,16 @@ class TagsEditVM : VMBase, IDropable
 
     #region Constructor
 
-    public TagsEditVM(MainWindowVM parentVM)
+    public TagsEditVM(MainWindowVM parentVm)
     {
-        parentVM.PropertyChanged += (sender, args) =>
+        parentVm.PropertyChanged += (sender, args) =>
         {
             if (args.PropertyName == "SelectedEntries")
             {
                 OnPropertyChanged(() => SelectedEntries);
             }
         };
-        _parentVM = parentVM;
+        _parentVm = parentVm;
 
         _fileTagService = ServiceLocator.GetService<IFileTagService>();
         _tagService = ServiceLocator.GetService<ITagService>();
@@ -56,22 +58,19 @@ class TagsEditVM : VMBase, IDropable
 
     #region Collections
 
-    public ObservableCollection<SearchTagVM> FoundTags { get; } = new ObservableCollection<SearchTagVM>();
+    public ObservableCollection<SearchTagVM> FoundTags { get; } = new();
 
-    public ObservableCollection<SearchTagVM> SelectedTags { get; } = new ObservableCollection<SearchTagVM>();
+    public ObservableCollection<SearchTagVM> SelectedTags { get; } = new();
 
-    public ObservableCollection<SearchTagVM> RecentlyTags { get; } = new ObservableCollection<SearchTagVM>();
+    public ObservableCollection<SearchTagVM> RecentlyTags { get; } = new();
     
-    public ObservableCollection<SearchTagVM> UsersTopTags { get; } = new ObservableCollection<SearchTagVM>();
+    public ObservableCollection<SearchTagVM> UsersTopTags { get; } = new();
 
     #endregion Collections
 
     public string SearchText
     {
-        get
-        {
-            return _searchText;
-        }
+        get => _searchText;
         set
         {
             OnPropertyChanged(ref _searchText, value, () => SearchText);
@@ -79,40 +78,25 @@ class TagsEditVM : VMBase, IDropable
         }
     }
 
-    public SearchTagVM TagInfoContext
+    public SearchTagVM? TagInfoContext
     {
-        get
-        {
-            return _tagInfoContext;
-        }
-        set
-        {
-            OnPropertyChanged(ref _tagInfoContext, value, () => TagInfoContext);
-        }
+        get => _tagInfoContext;
+        set => OnPropertyChanged(ref _tagInfoContext, value, () => TagInfoContext);
     }
 
-    public IEnumerable<INavigatorListEntry> SelectedEntries => _parentVM.SelectedEntries;
+    public IEnumerable<INavigatorListEntry> SelectedEntries => _parentVm.SelectedEntries;
 
-    public IList SelectedItems => _parentVM.SelectedItems;
+    public IList SelectedItems => _parentVm.SelectedItems;
 
-    public CreateTagVM CreateTagVM
+    public CreateTagVM? CreateTagVM
     {
-        get
-        {
-            return _createTagVM;
-        }
-        private set
-        {
-            OnPropertyChanged(ref _createTagVM, value, () => CreateTagVM);
-        }
+        get => _createTagVm;
+        private set => OnPropertyChanged(ref _createTagVm, value, () => CreateTagVM);
     }
 
     public bool IsSaving
     {
-        get
-        {
-            return _isSaving;
-        }
+        get => _isSaving;
         set
         {
             _isSaving = value;
@@ -122,10 +106,7 @@ class TagsEditVM : VMBase, IDropable
 
     public bool IsSuccess
     {
-        get
-        {
-            return _isSuccess;
-        }
+        get => _isSuccess;
         set
         {
             _isSuccess = value;
@@ -142,101 +123,59 @@ class TagsEditVM : VMBase, IDropable
     private void CreateTag(object obj)
     {
         CreateTagVM = new CreateTagVM();
-        CreateTagVM.RequestClosing += (sender, args) =>
-        {
-            CreateTagVM = null;
-        };
+        CreateTagVM.RequestClosing += (_, _) => CreateTagVM = null;
     }
 
     public ICommand AddTagsCommand => _addTagsCommand ??= new RelayCommand(AddTags, CanAddTags);
 
-    private bool CanAddTags(object obj)
-    {
-        return (obj as IList)?.Cast<SearchTagVM>()
-            .Any() ?? obj is SearchTagVM;
-    }
+    private bool CanAddTags(object obj) => obj is IList<SearchTagVM> or SearchTagVM;
 
     private void AddTags(object obj)
     {
-        var bindedTags = (obj as IList)?.Cast<SearchTagVM>();
-
-        if (bindedTags == null)
+        var tagVms = obj switch
         {
-            var bindedTag = obj as SearchTagVM;
-
-            if (bindedTag == null)
-            {
-                return;
-            }
-
-            bindedTags = new List<SearchTagVM>
-            {
-                bindedTag
-            };
-        }
-
-        var SearchTagVMs = bindedTags as IList<SearchTagVM> ?? bindedTags.ToList();
-        if (!SearchTagVMs.Any())
-        {
+            IList<SearchTagVM> searchTagVms => searchTagVms.ToArray(),
+            SearchTagVM searchTagVm => searchTagVm.AsArray(),
+            _ => null
+        };
+        
+        if (tagVms == null)
             return;
-        }
 
-        foreach (var bindedTag in SearchTagVMs)
-        {
-            if (SelectedTags.Any(x => x.Tag.Id == bindedTag.Tag.Id && x.Value == bindedTag.Value))
-            {
-                continue;
-            }
-
-            SelectedTags.Add(bindedTag);
-        }
+        var newTagVms = tagVms.Where(t => !SelectedTags.Any(x => x.Tag.Id == t.Tag.Id && x.Value == t.Value));
+        
+        foreach (var tagVm in newTagVms) 
+            SelectedTags.Add(tagVm);
     }
 
     public ICommand RemoveTagsCommand => _removeTagsCommand ??= new RelayCommand(RemoveTags, CanRemoveTags);
 
-    private bool CanRemoveTags(object obj)
-    {
-        return (obj as IList)?.Cast<SearchTagVM>()
-            .Any() ?? obj is SearchTagVM;
-    }
+    private bool CanRemoveTags(object obj) => obj is IList<SearchTagVM> or SearchTagVM;
 
     private void RemoveTags(object obj)
     {
-        var bindedTags = (obj as IList)?.Cast<SearchTagVM>();
-
-        if (bindedTags == null)
+        var tagVms = obj switch
         {
-            var bindedTag = obj as SearchTagVM;
+            IList<SearchTagVM> searchTagVms => searchTagVms.ToArray(),
+            SearchTagVM searchTagVm => searchTagVm.AsArray(),
+            _ => null
+        };
+        
+        if (tagVms == null)
+            return;
 
-            if (bindedTag == null)
-            {
-                return;
-            }
-
-            bindedTags = new List<SearchTagVM>
-            {
-                bindedTag
-            };
-        }
-
-        var SearchTagVMs = bindedTags as IList<SearchTagVM> ?? bindedTags.ToList();
-
-        foreach (var bindedTag in SearchTagVMs)
+        foreach (var tagVm in tagVms)
         {
-            var tagToRemove = SelectedTags.FirstOrDefault(x => x.Tag.Id == bindedTag.Tag.Id && x.Value == bindedTag.Value);
-            if (tagToRemove != null)
-            {
+            var tagToRemove = SelectedTags.FirstOrDefault(x => x.Tag.Id == tagVm.Tag.Id && x.Value == tagVm.Value);
+            
+            if (tagToRemove != null) 
                 SelectedTags.Remove(tagToRemove);
-            }
         }
     }
 
     public ICommand SaveCommand => _saveCommand ??= new RelayCommand(Save, CanSave);
 
-    private bool CanSave(object obj)
-    {
-        return SelectedEntries.Any() && SelectedTags.Any();
-    }
+    private bool CanSave(object obj) => SelectedEntries.Any() && SelectedTags.Any();
 
     private async void Save(object obj)
     {
@@ -279,11 +218,53 @@ class TagsEditVM : VMBase, IDropable
         }
     }
 
+    public ICommand UnbindCommand => _unbindCommand ??= new RelayCommand(Unbind, CanUnbind);
+
+    private bool CanUnbind(object obj) => SelectedEntries.Any() && SelectedTags.Any();
+
+    private async void Unbind(object obj)
+    {
+        var images = SelectedEntries;
+        var tags = SelectedTags;
+
+        try
+        {
+            IsSaving = true;
+            IsSuccess = false;
+
+            var imageIds = images
+                .Where(x => x.DbId.HasValue)
+                .Select(x => x.DbId!.Value);
+
+            var fileTagsToUnbind =
+                from imageId in imageIds
+                from tag in tags
+                select new UnbindTagRequest(
+                    imageId,
+                    tag.Tag.Id,
+                    default,
+                    FileTagSource.Manual);
+
+            await _fileTagService.UnbindTags(fileTagsToUnbind.ToArray());
+
+            IsSaving = false;
+            IsSuccess = true;
+            await Task.Delay(500);
+            IsSuccess = false;
+        }
+        catch
+        {
+            IsSaving = false;
+        }
+    }
+
     private void UpdateRecentlyTags(IEnumerable<SearchTagVM> selectedTags)
     {
         foreach (var selectedTag in selectedTags)
         {
-            var element = RecentlyTags.FirstOrDefault(x => x.Tag.Id == selectedTag.Tag.Id && x.Value == selectedTag.Value);
+            var element = RecentlyTags
+                .FirstOrDefault(x => x.Tag.Id == selectedTag.Tag.Id && x.Value == selectedTag.Value);
+
             if (element == null)
             {
                 RecentlyTags.Insert(0, selectedTag);
@@ -292,7 +273,6 @@ class TagsEditVM : VMBase, IDropable
             {
                 RecentlyTags.Move(RecentlyTags.IndexOf(element), 0);
             }
-
         }
     }
 
@@ -301,24 +281,14 @@ class TagsEditVM : VMBase, IDropable
         var popular = await _tagService.GetPopularUserTags(20);
         
         UsersTopTags.Clear();
+
         foreach (var tag in popular) 
             UsersTopTags.Add(new SearchTagVM(new SearchTag(tag, null)));
     }
 
     public ICommand SetTagInfoContextCommand => _setTagInfoContextCommand ??= new RelayCommand(SetTagInfoContext);
 
-    private void SetTagInfoContext(object obj)
-    {
-        var bindedTag = obj as SearchTagVM;
-
-        if (bindedTag == null)
-        {
-            TagInfoContext = null;
-            return;
-        }
-
-        TagInfoContext = bindedTag;
-    }
+    private void SetTagInfoContext(object obj) => TagInfoContext = obj as SearchTagVM;
 
     #endregion Commands
 
@@ -339,7 +309,7 @@ class TagsEditVM : VMBase, IDropable
         }
         try
         {
-            var tags = await LoadTagsTask(searchPattern);
+            var tags = await _tagService.SearchTags(searchPattern, 10);
 
             lock (SearchText)
             {
@@ -364,11 +334,6 @@ class TagsEditVM : VMBase, IDropable
         }
     }
 
-    private Task<IReadOnlyCollection<Tag>> LoadTagsTask(string searchPattern)
-    {
-        return _tagService.SearchTags(searchPattern, 10);
-    }
-
     #endregion Methods
 
     #region IDpopable members
@@ -377,21 +342,17 @@ class TagsEditVM : VMBase, IDropable
 
     public void Drop(object data, int index = -1)
     {
-        var bindedTags = (data as List<SearchTagVM>)?.ToList();
-        if (bindedTags == null
-            || !bindedTags.Any())
-        {
+        var boundTags = (data as List<SearchTagVM>)?.ToList();
+        
+        if (boundTags == null || !boundTags.Any())
             return;
-        }
 
-        foreach (var bindedTag in bindedTags)
+        foreach (var boundTag in boundTags)
         {
-            if (SelectedTags.Any(x => x.Tag.Id == bindedTag.Tag.Id && x.Value == bindedTag.Value))
-            {
+            if (SelectedTags.Any(x => x.Tag.Id == boundTag.Tag.Id && x.Value == boundTag.Value))
                 continue;
-            }
 
-            SelectedTags.Add(bindedTag);
+            SelectedTags.Add(boundTag);
         }
     }
 

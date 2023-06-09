@@ -1,5 +1,4 @@
-﻿#nullable enable
-namespace ImoutoRebirth.Navigator.Services.Tags.Model;
+﻿namespace ImoutoRebirth.Navigator.Services.Tags.Model;
 
 internal class FileTag
 {

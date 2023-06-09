@@ -661,14 +661,14 @@ namespace ImoutoRebirth.LilinService.WebApi.Client
 
         /// <returns>Success</returns>
         /// <exception cref="WebApiException">A server side error occurred.</exception>
-        public virtual System.Threading.Tasks.Task UnbindTagsAsync(UnbindTagCommand body)
+        public virtual System.Threading.Tasks.Task UnbindTagsAsync(UnbindTagsCommand body)
         {
             return UnbindTagsAsync(body, System.Threading.CancellationToken.None);
         }
 
         /// <returns>Success</returns>
         /// <exception cref="WebApiException">A server side error occurred.</exception>
-        public virtual void UnbindTags(UnbindTagCommand body)
+        public virtual void UnbindTags(UnbindTagsCommand body)
         {
             System.Threading.Tasks.Task.Run(async () => await UnbindTagsAsync(body, System.Threading.CancellationToken.None)).GetAwaiter().GetResult();
         }
@@ -676,7 +676,7 @@ namespace ImoutoRebirth.LilinService.WebApi.Client
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>Success</returns>
         /// <exception cref="WebApiException">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task UnbindTagsAsync(UnbindTagCommand body, System.Threading.CancellationToken cancellationToken)
+        public virtual async System.Threading.Tasks.Task UnbindTagsAsync(UnbindTagsCommand body, System.Threading.CancellationToken cancellationToken)
         {
             if (body == null)
                 throw new System.ArgumentNullException("body");
@@ -1881,21 +1881,21 @@ namespace ImoutoRebirth.LilinService.WebApi.Client
     }
 
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "13.19.0.0 (NJsonSchema v10.9.0.0 (Newtonsoft.Json v13.0.0.0))")]
-    public partial class UnbindTagCommand
+    public partial class UnbindTagsCommand
     {
         [System.Text.Json.Serialization.JsonConstructor]
 
-        public UnbindTagCommand(FileTagInfo? @fileTag)
+        public UnbindTagsCommand(System.Collections.Generic.IReadOnlyCollection<FileTagInfo>? @fileTags)
 
         {
 
-            this.FileTag = @fileTag;
+            this.FileTags = @fileTags;
 
         }
-        [System.Text.Json.Serialization.JsonPropertyName("fileTag")]
+        [System.Text.Json.Serialization.JsonPropertyName("fileTags")]
 
         [System.Text.Json.Serialization.JsonIgnore(Condition = System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingDefault)]   
-        public FileTagInfo? FileTag { get; }
+        public System.Collections.Generic.IReadOnlyCollection<FileTagInfo>? FileTags { get; }
 
     }
 

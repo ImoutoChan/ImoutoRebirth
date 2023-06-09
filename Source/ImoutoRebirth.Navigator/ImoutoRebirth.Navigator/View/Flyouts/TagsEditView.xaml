@@ -349,6 +349,11 @@
                     HorizontalAlignment="Right"
                     Width="85"
                     Command="{Binding SaveCommand}" />
+
+            <Button Content="Unbind"
+                    HorizontalAlignment="Left"
+                    Width="85"
+                    Command="{Binding UnbindCommand}" />
         </Grid>
 
         <TextBlock Grid.Column="10"

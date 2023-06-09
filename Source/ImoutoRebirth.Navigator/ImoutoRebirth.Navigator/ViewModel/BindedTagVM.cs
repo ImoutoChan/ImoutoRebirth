@@ -1,4 +1,5 @@
-﻿using System.Windows.Input;
+﻿using System.Diagnostics;
+using System.Windows.Input;
 using System.Windows.Media;
 using ImoutoRebirth.Navigator.Commands;
 using ImoutoRebirth.Navigator.Services;
@@ -123,13 +124,12 @@ class BindedTagVM : VMBase
         }
         catch (Exception ex)
         {
+            Debug.WriteLine(ex.Message);
         }
     }
 
-    private async Task UnbindTagTask(Guid imageId, Guid tagId, FileTagSource modelSource)
-    {
-        await _fileTagService.UnbindTag(imageId, tagId, modelSource);
-    }
+    private async Task UnbindTagTask(Guid imageId, Guid tagId, FileTagSource source) 
+        => await _fileTagService.UnbindTags(new UnbindTagRequest(imageId, tagId, default, source));
 
     #endregion Commands
 
