@@ -61,7 +61,7 @@ public class WindowsServiceUpdater : IWindowsServiceUpdater
             
             _logger.LogInformation("{ServiceName} | Cleaning existing service directory", serviceName);            
             if (oldServiceDirectory.Exists) 
-                oldServiceDirectory.Delete(true);
+                DeleteWithRetries(oldServiceDirectory);
 
             oldServiceDirectory.Create();
             
@@ -108,5 +108,21 @@ public class WindowsServiceUpdater : IWindowsServiceUpdater
         
         _windowsServicesManager.CreateServices(windowsServicesToCreate);
         _windowsServicesManager.StartServices();
+    }
+
+    private static void DeleteWithRetries(DirectoryInfo oldServiceDirectory, int tryNumber = 0)
+    {
+        try
+        {
+            oldServiceDirectory.Delete(true);
+        }
+        catch
+        {
+            if (tryNumber > 3)
+                throw;
+            
+            Thread.Sleep(TimeSpan.FromSeconds(tryNumber * 5 + 1));
+            DeleteWithRetries(oldServiceDirectory, tryNumber + 1);
+        }
     }
 }
