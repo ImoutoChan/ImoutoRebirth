@@ -15,7 +15,6 @@
         <Company>ImoutoRebirth</Company>
         <Product>Imouto Navigator</Product>
         <Copyright>ImoutoChan © 2013-2023</Copyright>
-        <Version>1.12.1</Version>
         <ApplicationIcon>Resources\Icon\window-icon.ico</ApplicationIcon>
     </PropertyGroup>
 
