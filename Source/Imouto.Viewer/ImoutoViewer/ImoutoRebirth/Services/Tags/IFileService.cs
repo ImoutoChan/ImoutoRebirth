@@ -15,6 +15,4 @@ internal interface IFileService
         Guid? collectionId, 
         IReadOnlyCollection<SearchTag> tags,
         CancellationToken cancellationToken);
-
-    Task RemoveFile(Guid fileId);
 }

@@ -22,7 +22,7 @@ internal class FileLoadingService : IFileLoadingService
         {
             return await LoadEntries(collectionId, searchTags, cancellationToken);
         }
-        catch (Exception ex) when (ex is TaskCanceledException || ex is OperationCanceledException)
+        catch (Exception ex) when (ex is TaskCanceledException or OperationCanceledException)
         {
             Debug.WriteLine(ex.ToString());
             return ArraySegment<string>.Empty;

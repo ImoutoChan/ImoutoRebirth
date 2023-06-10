@@ -1,4 +1,5 @@
-﻿using System.Windows;
+﻿using System.Diagnostics;
+using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media.Imaging;
 using System.Windows.Threading;
@@ -19,7 +20,7 @@ internal class MainWindowVM : VMBase, IDragable, IDropable
     private readonly Guid _appGuid = Guid.NewGuid();
 
     private readonly MainWindow _mainWindowView;
-    private LocalImageList _imageList;
+    private LocalImageList? _imageList;
     private bool _isSlideShowActive;
     private DispatcherTimer _timer;
     private readonly TagsVM _tagsVM;
@@ -56,44 +57,20 @@ internal class MainWindowVM : VMBase, IDragable, IDropable
 
         InitializeImageListAsync();
 
-        View.ViewPort.SizeChanged += (sender, args) => UpdateView();
+        View.ViewPort.SizeChanged += (_, _) => UpdateView();
     }
 
     #endregion Constructors
 
     #region Properties
 
-    public MainWindow View
-    {
-        get
-        {
-            return _mainWindowView;
-        }
-    }
+    public MainWindow View => _mainWindowView;
 
-    public AddTagVM AddTagVM
-    {
-        get
-        {
-            return _addTagVM;
-        }
-    }
+    public AddTagVM AddTagVM => _addTagVM;
 
-    public CreateTagVM CreateTagVM
-    {
-        get
-        {
-            return _createTagVM;
-        }
-    }
+    public CreateTagVM CreateTagVM => _createTagVM;
 
-    public TagsVM Tags
-    {
-        get
-        {
-            return _tagsVM;
-        }
-    }
+    public TagsVM Tags => _tagsVM;
 
     public bool IsSlideShowActive
     {
@@ -106,8 +83,8 @@ internal class MainWindowVM : VMBase, IDragable, IDropable
             }
             if (value)
             {
-                _timer = new DispatcherTimer() { Interval = new TimeSpan(0, 0, 0, 0, Settings.SlideshowDelay) };
-                _timer.Tick += (sender, args) => NextImage();
+                _timer = new DispatcherTimer { Interval = new TimeSpan(0, 0, 0, 0, Settings.SlideshowDelay) };
+                _timer.Tick += (_, _) => NextImage();
                 _timer.Start();
             }
 
@@ -116,11 +93,11 @@ internal class MainWindowVM : VMBase, IDragable, IDropable
         }
     }
 
-    public LocalImage CurrentLocalImage
+    public LocalImage? CurrentLocalImage
     {
         get
         {
-            var bs = _imageList?.CurrentImage.Image;
+            var bs = _imageList?.CurrentImage?.Image;
             if (IsError || bs == null)
             {
                 return null;
@@ -140,7 +117,7 @@ internal class MainWindowVM : VMBase, IDragable, IDropable
                 title += CurrentLocalImage.Name + " - ";
             }
 
-            title += System.Reflection.Assembly.GetExecutingAssembly().GetName().Name.Replace('.', ' ');
+            title += System.Reflection.Assembly.GetExecutingAssembly().GetName().Name?.Replace('.', ' ');
 
             return title;
         }
@@ -151,20 +128,16 @@ internal class MainWindowVM : VMBase, IDragable, IDropable
         get
         {
             if (IsError)
-            {
                 return "Image loading error";
-            }
 
             if (IsLoading)
-            {
                 return "Loading...";
-            }
 
             return "Ready";
         }
     }
 
-    public string DirStatus
+    public string? DirStatus
     {
         get
         {
@@ -174,26 +147,15 @@ internal class MainWindowVM : VMBase, IDragable, IDropable
             }
 
             int i = (int)Math.Log10(_imageList.DirectoriesCount + 1) + 1;
-            return String.Format("{0," + i + "} / {1," + i + "}",
+            return string.Format("{0," + i + "} / {1," + i + "}",
                 _imageList.CurrentDirectoryIndex + 1,
                 _imageList.DirectoriesCount);
         }
     }
 
-    public string DirStatusToolTip
-    {
-        get
-        {
-            if (_imageList == null)
-            {
-                return null;
-            }
+    public string? DirStatusToolTip => _imageList?.CurrentDirectory?.Name;
 
-            return _imageList.CurrentDirectory?.Name;
-        }
-    }
-
-    public string FileStatus
+    public string? FileStatus
     {
         get
         {
@@ -203,69 +165,36 @@ internal class MainWindowVM : VMBase, IDragable, IDropable
             }
 
             int i = (int)Math.Log10(_imageList.ImagesCount) + 1;
-            return String.Format("{0," + i + "} / {1," + i + "}",
+            return string.Format("{0," + i + "} / {1," + i + "}",
                 _imageList.CurrentImageIndex + 1,
                 _imageList.ImagesCount);
         }
     }
 
-    public string ZoomString
-    {
-        get
-        {
-            return CurrentLocalImage != null
-                ? String.Format("{0:N0} %", CurrentLocalImage.Zoom * 100)
-                : "100 %";
-        }
-    }
+    public string ZoomString =>
+        CurrentLocalImage != null
+            ? $"{CurrentLocalImage.Zoom * 100:N0} %"
+            : "100 %";
 
     public double Zoom => CurrentLocalImage?.Zoom ?? 1;
 
-    public BitmapSource Image
-    {
-        get
-        {
-            return CurrentLocalImage == null || CurrentLocalImage.ImageFormat == ImageFormat.GIF
-                ? null
-                : CurrentLocalImage.Image;
-        }
-    }
+    public BitmapSource? Image =>
+        CurrentLocalImage != null && CurrentLocalImage.ImageFormat != ImageFormat.GIF
+            ? CurrentLocalImage.Image
+            : null;
 
-    public BitmapSource AnimutedImage
-    {
-        get
-        {
-            return CurrentLocalImage != null && CurrentLocalImage.ImageFormat == ImageFormat.GIF
-                ? CurrentLocalImage.Image
-                : null;
-        }
-    }
+    public BitmapSource? AnimutedImage =>
+        CurrentLocalImage is { ImageFormat: ImageFormat.GIF }
+            ? CurrentLocalImage.Image
+            : null;
 
-    public bool IsAnimuted
-    {
-        get
-        {
-            return CurrentLocalImage != null && CurrentLocalImage.ImageFormat == ImageFormat.GIF;
-        }
-    }
+    public bool IsAnimuted => CurrentLocalImage is { ImageFormat: ImageFormat.GIF };
 
     public bool IsLoading { get; private set; }
 
-    public double ViewportHeight
-    {
-        get
-        {
-            return CurrentLocalImage == null ? 0 : CurrentLocalImage.ResizedSize.Height;
-        }
-    }
+    public double ViewportHeight => CurrentLocalImage?.ResizedSize.Height ?? 0;
 
-    public double ViewportWidth
-    {
-        get
-        {
-            return CurrentLocalImage == null ? 0 : CurrentLocalImage.ResizedSize.Width;
-        }
-    }
+    public double ViewportWidth => CurrentLocalImage?.ResizedSize.Width ?? 0;
 
     public bool IsSimpleWheelNavigationEnable { private get; set; }
 
@@ -273,36 +202,13 @@ internal class MainWindowVM : VMBase, IDragable, IDropable
 
     public OpenWithVM OpenWith { get; private set; }
 
-    public bool IsError
-    {
-        get
-        {
-            return _imageList?.CurrentImage != null && _imageList.CurrentImage.IsError;
-        }
-    }
+    public bool IsError => _imageList?.CurrentImage is { IsError: true };
 
-    public string ErrorMessage
-    {
-        get
-        {
-            return _imageList?.CurrentImage?.ErrorMessage;
-        }
-    }
+    public string? ErrorMessage => _imageList?.CurrentImage?.ErrorMessage;
 
-    public string ImagePath
-    {
-        get
-        {
-            return CurrentLocalImage != null
-                ? CurrentLocalImage.Path
-                : "";
-        }
-    }
+    public string ImagePath => CurrentLocalImage?.Path ?? "";
 
-    public bool IsZoomFixed
-    {
-        get { return LocalImage.IsZoomFixed; }
-    }
+    public bool IsZoomFixed => LocalImage.IsZoomFixed;
 
     #endregion Properties
 
@@ -327,12 +233,12 @@ internal class MainWindowVM : VMBase, IDragable, IDropable
         Tags.ShowNotes = Settings.ShowNotes;
     }
 
-    private void Settings_SelectedNotesModeChanged(object sender, EventArgs e)
+    private void Settings_SelectedNotesModeChanged(object? sender, EventArgs e)
     {
         Tags.ShowNotes = Settings.ShowNotes;
     }
 
-    private void Settings_SelectedTagsModeChanged(object sender, EventArgs e)
+    private void Settings_SelectedTagsModeChanged(object? sender, EventArgs e)
     {
         Tags.ShowTags = Settings.ShowTags;
     }
@@ -341,9 +247,11 @@ internal class MainWindowVM : VMBase, IDragable, IDropable
     {
         ApplicationProperties.BoundToNavigatorSearch = false;
 
+        LocalImageList imageList;
+        
         if (images != null)
         {
-            _imageList = new LocalImageList(images);
+            imageList = new LocalImageList(images);
         }
         else if (ApplicationProperties.NavigatorSearchParams != null)
         {
@@ -351,31 +259,43 @@ internal class MainWindowVM : VMBase, IDragable, IDropable
 
             var searchParams = ApplicationProperties.NavigatorSearchParams;
 
-            var files = await _fileLoadingService.LoadFiles(
-                searchParams.CollectionId, 
-                _mapper.Map<IReadOnlyCollection<SearchTag>>(searchParams.SearchTags));
-
-            if (files.Any())
+            try
             {
-                var currentFile = files
-                    .FirstOrDefault(x => x == ApplicationProperties.FileNamesToOpen?.FirstOrDefault());
-
-                _imageList = new LocalImageList(files, -1, ApplicationProperties.FileNamesToOpen?.FirstOrDefault());
+                var files = await _fileLoadingService.LoadFiles(
+                    searchParams.CollectionId, 
+                    _mapper.Map<IReadOnlyCollection<SearchTag>>(searchParams.SearchTags));
+                
+                if (files.Any())
+                {
+                    imageList = new LocalImageList(files, -1, ApplicationProperties.FileNamesToOpen?.FirstOrDefault());
+                }
+                else
+                {
+                    imageList = new LocalImageList();
+                }
             }
+            catch (Exception e)
+            {
+                Debug.WriteLine(e.Message);
+                imageList = new LocalImageList();
+            }
+
         }
-        else if (ApplicationProperties.FileNamesToOpen.Any())
+        else if (ApplicationProperties.FileNamesToOpen?.Any() == true)
         {
             var fileNames = ApplicationProperties.FileNamesToOpen;
             ApplicationProperties.FileNamesToOpen = ArraySegment<string>.Empty;
 
-            _imageList = new LocalImageList(fileNames);
+            imageList = new LocalImageList(fileNames);
         }
         else
         {
-            _imageList = new LocalImageList();
+            imageList = new LocalImageList();
         }
 
-        _imageList.CurrentImageChanged += _imageList_CurrentImageChanged;
+        imageList.CurrentImageChanged += _imageList_CurrentImageChanged;
+
+        _imageList = imageList;
     }
 
     private void UpdateView()
@@ -460,7 +380,7 @@ internal class MainWindowVM : VMBase, IDragable, IDropable
 
     private void InitializeCommands()
     {
-        SimpleNextImageCommand = new RelayCommand(param =>
+        SimpleNextImageCommand = new RelayCommand(_ =>
         {
             if (IsSimpleWheelNavigationEnable)
             {
@@ -468,7 +388,7 @@ internal class MainWindowVM : VMBase, IDragable, IDropable
             }
         });
 
-        SimplePrevImageCommand = new RelayCommand(param =>
+        SimplePrevImageCommand = new RelayCommand(_ =>
         {
             if (IsSimpleWheelNavigationEnable)
             {
@@ -476,21 +396,21 @@ internal class MainWindowVM : VMBase, IDragable, IDropable
             }
         });
 
-        NextImageCommand = new RelayCommand(param => NextImage());
-        PrevImageCommand = new RelayCommand(param => PrevImage());
+        NextImageCommand = new RelayCommand(_ => NextImage());
+        PrevImageCommand = new RelayCommand(_ => PrevImage());
 
-        ZoomInCommand = new RelayCommand(param => ZoomIn());
-        ZoomOutCommand = new RelayCommand(param => ZoomOut());
+        ZoomInCommand = new RelayCommand(_ => ZoomIn());
+        ZoomOutCommand = new RelayCommand(_ => ZoomOut());
 
         RotateCommand = new RelayCommand(Rotate);
 
-        NextFolderCommand = new RelayCommand(param => NextFolder());
-        PrevFolderCommand = new RelayCommand(param => PrevFolder());
+        NextFolderCommand = new RelayCommand(_ => NextFolder());
+        PrevFolderCommand = new RelayCommand(_ => PrevFolder());
 
-        FixZoomCommand = new RelayCommand(param => FixZoom());
-        ToggleSlideshowCommand = new RelayCommand(param => ToggleSlideshow(param));
-        ToggleTagsCommand = new RelayCommand(param => ToggleTags());
-        ToggleNotesCommand = new RelayCommand(param => ToggleNotes());
+        FixZoomCommand = new RelayCommand(_ => FixZoom());
+        ToggleSlideshowCommand = new RelayCommand(ToggleSlideshow);
+        ToggleTagsCommand = new RelayCommand(_ => ToggleTags());
+        ToggleNotesCommand = new RelayCommand(_ => ToggleNotes());
     }
 
     #endregion Commands
@@ -509,16 +429,16 @@ internal class MainWindowVM : VMBase, IDragable, IDropable
         Settings.SaveCommand.Execute(new object());
     }
 
-    private void ToggleSlideshow(object param)
+    private void ToggleSlideshow(object? param)
     {
-        if (param is string)
+        if (param is "ForcedDisable")
         {
-            if (param as string == "ForcedDisable")
-            {
-                IsSlideShowActive = false;
-            }
+            IsSlideShowActive = false;
         }
-        IsSlideShowActive = !IsSlideShowActive;
+        else
+        {
+            IsSlideShowActive = !IsSlideShowActive;
+        }
     }
 
     private void NextImage()
@@ -535,25 +455,29 @@ internal class MainWindowVM : VMBase, IDragable, IDropable
 
     private void ZoomIn()
     {
-        CurrentLocalImage.ZoomIn();
+        var localImage = CurrentLocalImage;
+        if (localImage == null)
+            return;
+
+        CurrentLocalImage?.ZoomIn();
         UpdateView();
     }
 
     private void ZoomOut()
     {
-        CurrentLocalImage.ZoomOut();
+        CurrentLocalImage?.ZoomOut();
         UpdateView();
     }
 
-    private void Rotate(object param)
+    private void Rotate(object? param)
     {
         switch (param as string)
         {
             case "left":
-                CurrentLocalImage.RotateLeft();
+                CurrentLocalImage?.RotateLeft();
                 break;
             case "right":
-                CurrentLocalImage.RotateRight();
+                CurrentLocalImage?.RotateRight();
                 break;
         }
         UpdateView();
@@ -561,19 +485,23 @@ internal class MainWindowVM : VMBase, IDragable, IDropable
 
     private void NextFolder()
     {
-        _imageList.NextFolder();
+        _imageList?.NextFolder();
         UpdateView();
     }
 
     private void PrevFolder()
     {
-        _imageList.PrevFolder();
+        _imageList?.PrevFolder();
         UpdateView();
     }
 
     private void FixZoom()
     {
-        LocalImage.StaticZoom = !LocalImage.IsZoomFixed ? CurrentLocalImage.Zoom : 1;
+        var localImage = CurrentLocalImage;
+        if (localImage == null)
+            return;
+        
+        LocalImage.StaticZoom = !LocalImage.IsZoomFixed ? localImage.Zoom : 1;
         LocalImage.IsZoomFixed = !LocalImage.IsZoomFixed;
 
         OnPropertyChanged("IsZoomFixed");
@@ -583,34 +511,42 @@ internal class MainWindowVM : VMBase, IDragable, IDropable
 
     #region Event handlers
 
-    private void _mainWindowView_SizeChanged(object sender, SizeChangedEventArgs e)
+    private void _mainWindowView_SizeChanged(object? sender, SizeChangedEventArgs e)
     {
         UpdateView();
     }
 
-    private void _settings_SelectedResizeTypeChanged(object sender, EventArgs e)
+    private void _settings_SelectedResizeTypeChanged(object? sender, EventArgs e)
     {
         UpdateView();
     }
 
-    private void _settings_SelectedDirectorySearchTypeChanged(object sender, EventArgs e)
+    private void _settings_SelectedDirectorySearchTypeChanged(object? sender, EventArgs e)
     {
+        var localImage = CurrentLocalImage;
+        if (localImage == null)
+            return;
+        
         LocalImageList.FilesGettingMethods = Settings.DirectorySearchFlags;
-        InitializeImageListAsync(new[] { CurrentLocalImage.Path });
+        InitializeImageListAsync(new[] { localImage.Path });
     }
 
-    private void Settings_SelectedFoldersSortingChanged(object sender, EventArgs e)
+    private void Settings_SelectedFoldersSortingChanged(object? sender, EventArgs e)
     {
+        var localImage = CurrentLocalImage;
+        if (localImage == null)
+            return;
+
         LocalImageList.FoldersSortMethod = Settings.SelectedFoldersSorting.Method;
         LocalImageList.IsFoldersSortMethodDescending = Settings.IsSelectedFoldersSortingDescending;
-        InitializeImageListAsync(new[] { CurrentLocalImage.Path });
+        InitializeImageListAsync(new[] { localImage.Path });
     }
 
-    private void Settings_SelectedFilesSortingChanged(object sender, EventArgs e)
+    private void Settings_SelectedFilesSortingChanged(object? sender, EventArgs e)
     {
         LocalImageList.FilesSortMethod = Settings.SelectedFilesSorting.Method;
         LocalImageList.IsFilesSortMethodDescending = Settings.IsSelectedFilesSortingDescending;
-        _imageList.ResortFiles();
+        _imageList?.ResortFiles();
         UpdateView();
     }
 
@@ -625,23 +561,21 @@ internal class MainWindowVM : VMBase, IDragable, IDropable
 
     #region IDragable members
 
-    public object Data
+    public object? Data
     {
         get
         {
-            var data = new DataObject(DataFormats.FileDrop, new[] { CurrentLocalImage.Path });
+            var localImage = CurrentLocalImage;
+            if (localImage == null)
+                return null;
+            
+            var data = new DataObject(DataFormats.FileDrop, new[] { localImage.Path });
             data.SetData("DragSource", _appGuid);
             return data;
         }
     }
 
-    public DragDropEffects AllowDragDropEffects
-    {
-        get
-        {
-            return DragDropEffects.Copy;
-        }
-    }
+    public DragDropEffects AllowDragDropEffects => DragDropEffects.Copy;
 
     #endregion IDragable members
 
@@ -657,7 +591,7 @@ internal class MainWindowVM : VMBase, IDragable, IDropable
         }
     }
 
-    public void Drop(object data, object sourceGuid)
+    public void Drop(object data, object? sourceGuid)
     {
         var droppedFiles = (string[])data;
 

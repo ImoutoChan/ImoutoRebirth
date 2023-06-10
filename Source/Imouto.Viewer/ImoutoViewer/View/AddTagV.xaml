@@ -5,6 +5,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:metroControls="http://metro.mahapps.com/winfx/xaml/controls"
              xmlns:converters="clr-namespace:ImoutoViewer.Converters"
+             xmlns:viewModel="clr-namespace:ImoutoViewer.ViewModel"
              mc:Ignorable="d"
              d:DesignHeight="500"
              d:DesignWidth="250"

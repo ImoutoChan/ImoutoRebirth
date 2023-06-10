@@ -7,88 +7,74 @@ namespace ImoutoViewer.ImoutoRebirth.Services.Tags;
 
 internal class FileService : IFileService
 {
+    private readonly FilesClient _filesClient;
     private readonly IMapper _mapper;
     private readonly CollectionFilesClient _collectionFilesClient;
-    private readonly FilesClient _filesClient;
 
-    public FileService(IMapper mapper, CollectionFilesClient collectionFilesClient, FilesClient filesClient)
+    public FileService(
+        IMapper mapper,
+        FilesClient filesClient,
+        CollectionFilesClient collectionFilesClient)
     {
         _mapper = mapper;
-        _collectionFilesClient = collectionFilesClient;
         _filesClient = filesClient;
+        _collectionFilesClient = collectionFilesClient;
     }
 
-    public async Task<IReadOnlyCollection<File>> SearchFiles(string md5, CancellationToken token)
+    public async Task<IReadOnlyCollection<File>> SearchFiles(string md5, CancellationToken ct)
     {
-        var filesOnly = await _collectionFilesClient
-            .SearchAsync(new CollectionFilesRequest(default, default, 1, new[] { md5 }, default, 0), token);
-
-        return _mapper.Map<IReadOnlyCollection<File>>(filesOnly);
+        var files = await _collectionFilesClient.SearchAsync(
+            new CollectionFilesRequest(default, default, int.MaxValue, new[] { md5 }, default, default), ct);
+        
+        return _mapper.Map<IReadOnlyCollection<File>>(files);
     }
 
     public async Task<IReadOnlyCollection<File>> SearchFiles(
-        Guid? collectionId, 
-        IReadOnlyCollection<SearchTag> tags, 
-        CancellationToken cancellationToken)
+        Guid? collectionId,
+        IReadOnlyCollection<SearchTag> tags,
+        CancellationToken ct)
     {
         if (!tags.Any())
         {
-            var result = await _collectionFilesClient
-                .SearchAsync(
-                    new CollectionFilesRequest(default, collectionId, default, default, default, default),
-                    cancellationToken);
+            var filesOnly = await _collectionFilesClient
+                .SearchAsync(new CollectionFilesRequest(default, collectionId, int.MaxValue, default, default, 0), ct);
 
-            if (result == null)
-                return ArraySegment<File>.Empty;
-                
-            return _mapper.Map<IReadOnlyCollection<File>>(result);
+            return _mapper.Map<IReadOnlyCollection<File>>(filesOnly);
         }
 
-        var files = await _filesClient
-            .GetFilesByTagsAsync(
-                new FilesSearchRequest(
-                    default, 
-                    default,
-                    _mapper.Map<IReadOnlyCollection<TagSearchEntryRequest>>(tags)),
-                cancellationToken);
-            
-        if (files == null || !files.Any())
-            return ArraySegment<File>.Empty;
+        var roomFiles = await _collectionFilesClient
+            .SearchAsync(new CollectionFilesRequest(default, collectionId, int.MaxValue, default, default, 0), ct);
 
-        var collectionFiles = await _collectionFilesClient
-            .SearchAsync(new CollectionFilesRequest(files, collectionId, default, default, default, default),
-                cancellationToken);
-            
-        if (collectionFiles == null || !collectionFiles.Any())
-            return ArraySegment<File>.Empty;
-            
-        return _mapper.Map<IReadOnlyCollection<File>>(collectionFiles);
+        var roomFilesIds = roomFiles.Select(x => x.Id).ToList();
+        
+        var lilinFilesThatSatisfyConditions = await _filesClient
+            .FilterFilesAsync(
+                new FilesFilterQuery(
+                    roomFilesIds,
+                    _mapper.Map<List<TagSearchEntry>>(tags)),
+                ct);
+
+        var lilinFilesThatSatisfyConditionsHashSet = lilinFilesThatSatisfyConditions.ToHashSet();
+
+        var satisfiedRoomFiles = roomFiles.Where(x => lilinFilesThatSatisfyConditionsHashSet.Contains(x.Id)).ToList();
+        
+        return _mapper.Map<IReadOnlyCollection<File>>(satisfiedRoomFiles);
     }
 
     public async Task<int> CountFiles(
-        Guid? collectionId, 
+        Guid? collectionId,
         IReadOnlyCollection<SearchTag> tags,
-        CancellationToken cancellationToken)
+        CancellationToken ct)
     {
         if (!tags.Any())
         {
             var result = await _collectionFilesClient
-                .CountAsync(new CollectionFilesRequest(default, collectionId, default, default, default, default), cancellationToken);
+                .CountAsync(new CollectionFilesRequest(default, collectionId, default, default, default, default), ct);
 
             return result;
         }
 
         return await _filesClient
-            .GetFilesCountByTagsAsync(
-                new FilesSearchRequest(
-                    default, 
-                    default, 
-                    _mapper.Map<IReadOnlyCollection<TagSearchEntryRequest>>(tags)),
-                cancellationToken);
-    }
-
-    public Task RemoveFile(Guid fileId)
-    {
-        throw new NotImplementedException();
+            .CountSearchFilesAsync(new FilesSearchQueryCount(_mapper.Map<List<TagSearchEntry>>(tags)), ct);
     }
 }

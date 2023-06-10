@@ -44,7 +44,7 @@ internal static class ApplicationProperties
         set => Application.Current.Properties["NavigatorSearchParams"] = value;
     }
 
-    public static IReadOnlyCollection<string> FileNamesToOpen 
+    public static IReadOnlyCollection<string>? FileNamesToOpen 
     {
         get => Application.Current.Properties["FileNamesToOpen"] as IReadOnlyCollection<string> 
                ?? ArraySegment<string>.Empty;
