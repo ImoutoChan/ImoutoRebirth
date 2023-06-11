@@ -5,14 +5,10 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace ImoutoRebirth.Lilin.WebApi;
 
-public static class WebApiStartupExtensions
+public static class WebEndpointsExtensions
 {
-    public static IServiceCollection ConfigureWebApp(this IServiceCollection services)
+    public static IServiceCollection AddWebEndpoints(this IServiceCollection services)
     {
-        services.ConfigureHttpJsonOptions(options => {
-            options.SerializerOptions.Converters.Add(new JsonStringEnumConverter());
-        });
-
         services.Configure<Microsoft.AspNetCore.Http.Json.JsonOptions>(x =>
             x.SerializerOptions.Converters.Add(new JsonStringEnumConverter()));
 
@@ -24,7 +20,7 @@ public static class WebApiStartupExtensions
         return services;
     }
     
-    public static WebApplication UseWebApp(this WebApplication app)
+    public static WebApplication MapWebEndpoints(this WebApplication app)
     {
         app.UseSwagger();
         app.UseSwaggerUI(c =>

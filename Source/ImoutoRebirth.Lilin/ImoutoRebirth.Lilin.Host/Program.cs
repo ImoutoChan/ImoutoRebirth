@@ -48,11 +48,11 @@ builder.Services
 
 builder.Services.AddQuartz();
 
-builder.Services.ConfigureWebApp();
+builder.Services.AddWebEndpoints();
 
 var app = builder.Build();
 
-app.UseWebApp();
+app.MapWebEndpoints();
 
 app.MigrateIfNecessary<LilinDbContext>();
 app.Run();
