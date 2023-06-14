@@ -1,4 +1,5 @@
-﻿using ImoutoRebirth.Lilin.MessageContracts;
+﻿using ImoutoRebirth.Common;
+using ImoutoRebirth.Lilin.MessageContracts;
 using ImoutoRebirth.Meido.MessageContracts;
 using ImoutoRebirth.Room.Core.Services.Abstract;
 using MassTransit;
@@ -27,10 +28,14 @@ internal class RemoteCommandService : IRemoteCommandService
 
     public async Task SaveTags(Guid fileId, IReadOnlyCollection<string> tags)
     {
+        if (tags.None())
+            return;
+        
         var command = new
         {
             FileId = fileId,
             MetadataSource = MetadataSource.Manual,
+            FileNotes = Array.Empty<IFileNote>(),
             FileTags = tags.Select(x => new
             {
                 Type = "Location",

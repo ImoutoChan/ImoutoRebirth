@@ -18,8 +18,6 @@ public static class FileTagMapper
 
     public static FileTag ToModel(this FileTagEntity entity)
     {
-        ArgumentValidator.NotNull(entity.Tag, nameof(entity.Tag));
-
         return new FileTag(entity.FileId, entity.TagId, entity.Value, entity.Source);
     }
 }

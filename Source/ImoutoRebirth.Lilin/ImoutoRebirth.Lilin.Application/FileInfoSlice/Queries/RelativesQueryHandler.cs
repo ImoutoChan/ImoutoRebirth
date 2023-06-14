@@ -9,7 +9,7 @@ namespace ImoutoRebirth.Lilin.Application.FileInfoSlice.Queries;
 
 public record RelativesQuery(string Md5) : IQuery<IReadOnlyCollection<RelativeInfo>>;
 
-public record RelativeInfo(RelativeType RelativesType, FileInfo FileInfo);
+public record RelativeInfo(RelativeType RelativesType, DetailedFileInfo FileInfo);
 
 public enum RelativeType
 {
@@ -57,7 +57,7 @@ internal class RelativesQueryHandler : IQueryHandler<RelativesQuery, IReadOnlyCo
         return relativeInfo;
     }
 
-    private async IAsyncEnumerable<FileInfo> GetFileInfoByTagValueRelativeInfo(
+    private async IAsyncEnumerable<DetailedFileInfo> GetFileInfoByTagValueRelativeInfo(
         Guid tagId, 
         string? value, 
         [EnumeratorCancellation] CancellationToken cancellationToken)

@@ -1,7 +1,7 @@
 ﻿using ImoutoRebirth.Lilin.Application.FileInfoSlice.Commands;
 using ImoutoRebirth.Lilin.MessageContracts;
 using MassTransit;
-using MassTransit.Mediator;
+using MediatR;
 
 namespace ImoutoRebirth.Lilin.WebApi.Consumers;
 
@@ -18,15 +18,15 @@ internal class UpdateMetadataCommandConsumer : IConsumer<IUpdateMetadataCommand>
         var command = new ActualizeFileInfoForSourceCommand(
             message.FileId,
             Convert(message.MetadataSource),
-            
+
             message.FileTags
-                .Select(x => new ActualizeTag(x.Type, x.Name, x.Value, x.Synonyms))
-                .ToList(),
-            
+                ?.Select(x => new ActualizeTag(x.Type, x.Name, x.Value, x.Synonyms))
+                .ToArray() ?? Array.Empty<ActualizeTag>(),
+
             message.FileNotes
-                .Select(x =>
+                ?.Select(x =>
                     new ActualizeNote(x.SourceId, x.Label, x.PositionFromLeft, x.PositionFromTop, x.Width, x.Height))
-                .ToList());
+                .ToArray() ?? Array.Empty<ActualizeNote>());
 
         await _mediator.Send(command);
     }

@@ -34,11 +34,11 @@ builder.ConfigureSerilog(
 var lilinSettings = builder.Configuration.GetRequired<LilinSettings>();
 
 builder.Services
-    .AddLilinUi(builder.Configuration)
     .AddLilinApplication(typeof(ImoutoRebirth.Lilin.Infrastructure.ServiceCollectionExtensions).Assembly)
     .AddLilinDataAccess(
         builder.Configuration.GetConnectionString("LilinDatabase") ?? throw new Exception("ConnectionString is empty"))
-    .AddLilinInfrastructure();
+    .AddLilinInfrastructure()
+    .AddLilinUi(builder.Configuration);
 
 builder.Services
     .AddTrueMassTransit(

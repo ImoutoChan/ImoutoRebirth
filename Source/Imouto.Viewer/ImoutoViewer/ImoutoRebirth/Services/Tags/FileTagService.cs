@@ -30,7 +30,7 @@ internal class FileTagService : IFileTagService
 
         await _filesClient.BindTagsAsync(
             new BindTagsCommand(
-                new List<FileTagInfo>
+                new List<BindTag>
                 {
                     new(fileId, MetadataSource.Manual, rateTag.Id, rate.Rating.ToString())
                 },
@@ -46,7 +46,7 @@ internal class FileTagService : IFileTagService
         {
             await _filesClient.BindTagsAsync(
                 new BindTagsCommand(
-                    new List<FileTagInfo>
+                    new List<BindTag>
                     {
                         new(fileId, MetadataSource.Manual, favTag.Id, default)
                     },
@@ -55,13 +55,13 @@ internal class FileTagService : IFileTagService
         else
         {
             await _filesClient.UnbindTagsAsync(
-                new UnbindTagsCommand(new FileTagInfo(fileId, MetadataSource.Manual, favTag.Id, default).AsArray()));
+                new UnbindTagsCommand(new BindTag(fileId, MetadataSource.Manual, favTag.Id, default).AsArray()));
         }
     }
 
     public async Task BindTags(IReadOnlyCollection<FileTag> fileTags)
     {
-        var requests = _mapper.Map<IReadOnlyCollection<FileTagInfo>>(fileTags);
+        var requests = _mapper.Map<IReadOnlyCollection<BindTag>>(fileTags);
 
         await _filesClient.BindTagsAsync(
             new BindTagsCommand(requests, SameTagHandleStrategy.AddNewFileTag));
@@ -70,7 +70,7 @@ internal class FileTagService : IFileTagService
     public async Task UnbindTags(params UnbindTagRequest[] tagsToUnbind)
     {
         var tags = tagsToUnbind
-            .Select(x => new FileTagInfo(x.FileId, _mapper.Map<MetadataSource>(x.Source), x.TagId, x.Value))
+            .Select(x => new BindTag(x.FileId, _mapper.Map<MetadataSource>(x.Source), x.TagId, x.Value))
             .ToList();
 
         await _filesClient.UnbindTagsAsync(new UnbindTagsCommand(tags));

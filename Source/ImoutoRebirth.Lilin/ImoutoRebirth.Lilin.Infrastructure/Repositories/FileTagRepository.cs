@@ -15,8 +15,6 @@ internal class FileTagRepository : IFileTagRepository
     public async Task<IReadOnlyCollection<FileTag>> GetForFile(Guid fileId, CancellationToken ct)
     {
         var results = await _lilinDbContext.FileTags
-            .Include(x => x.Tag)
-            .ThenInclude(x => x!.Type)
             .Where(x => x.FileId == fileId)
             .AsNoTracking()
             .ToArrayAsync(cancellationToken: ct);
@@ -27,8 +25,7 @@ internal class FileTagRepository : IFileTagRepository
     public async Task Add(FileTag fileTag)
     {
         var entity = fileTag.ToEntity();
-        await _lilinDbContext.FileTags.AddAsync(entity);
-
+        await _lilinDbContext.AddAsync(entity);
         await _lilinDbContext.SaveChangesAsync();
     }
 

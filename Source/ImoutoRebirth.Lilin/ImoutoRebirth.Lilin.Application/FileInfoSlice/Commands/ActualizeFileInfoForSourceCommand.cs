@@ -104,12 +104,17 @@ internal class ActualizeFileInfoForSourceCommandHandler : ICommandHandler<Actual
     private async Task<IReadOnlyDictionary<string, TagType>> GetOrCreateTagTypes(
         IReadOnlyCollection<ActualizeTag> tags)
     {
-        var typesTasks = tags
+        var typeNames = tags
             .Select(x => x.Type)
-            .Distinct()
-            .Select(x => _tagTypeRepository.Get(x));
+            .Distinct();
 
-        var types = await Task.WhenAll(typesTasks);
+        var types = new List<TagType>();
+        foreach (var typeName in typeNames)
+        {
+            var type = await _tagTypeRepository.Get(typeName);
+            types.Add(type);
+        }
+        
         return types.ToDictionary(x => x.Name);
     }
 

@@ -5,7 +5,7 @@ using ImoutoRebirth.RoomService.WebApi.Client;
 using FileTag = ImoutoRebirth.Navigator.Services.Tags.Model.FileTag;
 using Tag = ImoutoRebirth.Navigator.Services.Tags.Model.Tag;
 using LilinTag = ImoutoRebirth.LilinService.WebApi.Client.Tag;
-using LilinFileTag = ImoutoRebirth.LilinService.WebApi.Client.FileTag;
+using LilinFileTag = ImoutoRebirth.LilinService.WebApi.Client.DetailedFileTag;
 using LilinTagType = ImoutoRebirth.LilinService.WebApi.Client.TagType;
 using TagType = ImoutoRebirth.Navigator.Services.Tags.Model.TagType;
 
@@ -20,7 +20,7 @@ internal class AutoMapperProfile : Profile
             .ForCtorParam("value", o => o.MapFrom(x => x.Value))
             .ForCtorParam("tagSearchScope", o => o.MapFrom(x => x.SearchType));
 
-        CreateMap<FileTag, FileTagInfo>()
+        CreateMap<FileTag, BindTag>()
             .ForMember(x => x.TagId, o => o.MapFrom(x => x.Tag.Id))
             .ForMember(x => x.Value, o => o.MapFrom(x => x.Value));
 

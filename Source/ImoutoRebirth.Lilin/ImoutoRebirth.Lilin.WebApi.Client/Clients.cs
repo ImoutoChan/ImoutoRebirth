@@ -57,14 +57,14 @@ namespace ImoutoRebirth.LilinService.WebApi.Client
 
         /// <returns>Success</returns>
         /// <exception cref="WebApiException">A server side error occurred.</exception>
-        public virtual System.Threading.Tasks.Task<FileInfo> GetFileInfoAsync(System.Guid fileId)
+        public virtual System.Threading.Tasks.Task<DetailedFileInfo> GetFileInfoAsync(System.Guid fileId)
         {
             return GetFileInfoAsync(fileId, System.Threading.CancellationToken.None);
         }
 
         /// <returns>Success</returns>
         /// <exception cref="WebApiException">A server side error occurred.</exception>
-        public virtual FileInfo GetFileInfo(System.Guid fileId)
+        public virtual DetailedFileInfo GetFileInfo(System.Guid fileId)
         {
             return System.Threading.Tasks.Task.Run(async () => await GetFileInfoAsync(fileId, System.Threading.CancellationToken.None)).GetAwaiter().GetResult();
         }
@@ -72,7 +72,7 @@ namespace ImoutoRebirth.LilinService.WebApi.Client
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>Success</returns>
         /// <exception cref="WebApiException">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<FileInfo> GetFileInfoAsync(System.Guid fileId, System.Threading.CancellationToken cancellationToken)
+        public virtual async System.Threading.Tasks.Task<DetailedFileInfo> GetFileInfoAsync(System.Guid fileId, System.Threading.CancellationToken cancellationToken)
         {
             if (fileId == null)
                 throw new System.ArgumentNullException("fileId");
@@ -113,7 +113,7 @@ namespace ImoutoRebirth.LilinService.WebApi.Client
                         var status_ = (int)response_.StatusCode;
                         if (status_ == 200)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<FileInfo>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<DetailedFileInfo>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new WebApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
@@ -315,14 +315,14 @@ namespace ImoutoRebirth.LilinService.WebApi.Client
 
         /// <returns>Success</returns>
         /// <exception cref="WebApiException">A server side error occurred.</exception>
-        public virtual System.Threading.Tasks.Task<System.Collections.Generic.IReadOnlyCollection<System.Guid>> SearchFilesAsync(FilesSearchQuery body)
+        public virtual System.Threading.Tasks.Task<System.Collections.Generic.IReadOnlyCollection<System.Guid>> SearchFilesAsync(SearchFilesQuery body)
         {
             return SearchFilesAsync(body, System.Threading.CancellationToken.None);
         }
 
         /// <returns>Success</returns>
         /// <exception cref="WebApiException">A server side error occurred.</exception>
-        public virtual System.Collections.Generic.IReadOnlyCollection<System.Guid> SearchFiles(FilesSearchQuery body)
+        public virtual System.Collections.Generic.IReadOnlyCollection<System.Guid> SearchFiles(SearchFilesQuery body)
         {
             return System.Threading.Tasks.Task.Run(async () => await SearchFilesAsync(body, System.Threading.CancellationToken.None)).GetAwaiter().GetResult();
         }
@@ -330,7 +330,7 @@ namespace ImoutoRebirth.LilinService.WebApi.Client
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>Success</returns>
         /// <exception cref="WebApiException">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<System.Collections.Generic.IReadOnlyCollection<System.Guid>> SearchFilesAsync(FilesSearchQuery body, System.Threading.CancellationToken cancellationToken)
+        public virtual async System.Threading.Tasks.Task<System.Collections.Generic.IReadOnlyCollection<System.Guid>> SearchFilesAsync(SearchFilesQuery body, System.Threading.CancellationToken cancellationToken)
         {
             if (body == null)
                 throw new System.ArgumentNullException("body");
@@ -403,14 +403,14 @@ namespace ImoutoRebirth.LilinService.WebApi.Client
 
         /// <returns>Success</returns>
         /// <exception cref="WebApiException">A server side error occurred.</exception>
-        public virtual System.Threading.Tasks.Task<int> CountSearchFilesAsync(FilesSearchQueryCount body)
+        public virtual System.Threading.Tasks.Task<int> CountSearchFilesAsync(SearchFilesQueryCount body)
         {
             return CountSearchFilesAsync(body, System.Threading.CancellationToken.None);
         }
 
         /// <returns>Success</returns>
         /// <exception cref="WebApiException">A server side error occurred.</exception>
-        public virtual int CountSearchFiles(FilesSearchQueryCount body)
+        public virtual int CountSearchFiles(SearchFilesQueryCount body)
         {
             return System.Threading.Tasks.Task.Run(async () => await CountSearchFilesAsync(body, System.Threading.CancellationToken.None)).GetAwaiter().GetResult();
         }
@@ -418,7 +418,7 @@ namespace ImoutoRebirth.LilinService.WebApi.Client
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>Success</returns>
         /// <exception cref="WebApiException">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<int> CountSearchFilesAsync(FilesSearchQueryCount body, System.Threading.CancellationToken cancellationToken)
+        public virtual async System.Threading.Tasks.Task<int> CountSearchFilesAsync(SearchFilesQueryCount body, System.Threading.CancellationToken cancellationToken)
         {
             if (body == null)
                 throw new System.ArgumentNullException("body");
@@ -491,14 +491,14 @@ namespace ImoutoRebirth.LilinService.WebApi.Client
 
         /// <returns>Success</returns>
         /// <exception cref="WebApiException">A server side error occurred.</exception>
-        public virtual System.Threading.Tasks.Task<System.Collections.Generic.IReadOnlyCollection<System.Guid>> FilterFilesAsync(FilesFilterQuery body)
+        public virtual System.Threading.Tasks.Task<System.Collections.Generic.IReadOnlyCollection<System.Guid>> FilterFilesAsync(FilterFilesQuery body)
         {
             return FilterFilesAsync(body, System.Threading.CancellationToken.None);
         }
 
         /// <returns>Success</returns>
         /// <exception cref="WebApiException">A server side error occurred.</exception>
-        public virtual System.Collections.Generic.IReadOnlyCollection<System.Guid> FilterFiles(FilesFilterQuery body)
+        public virtual System.Collections.Generic.IReadOnlyCollection<System.Guid> FilterFiles(FilterFilesQuery body)
         {
             return System.Threading.Tasks.Task.Run(async () => await FilterFilesAsync(body, System.Threading.CancellationToken.None)).GetAwaiter().GetResult();
         }
@@ -506,7 +506,7 @@ namespace ImoutoRebirth.LilinService.WebApi.Client
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>Success</returns>
         /// <exception cref="WebApiException">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<System.Collections.Generic.IReadOnlyCollection<System.Guid>> FilterFilesAsync(FilesFilterQuery body, System.Threading.CancellationToken cancellationToken)
+        public virtual async System.Threading.Tasks.Task<System.Collections.Generic.IReadOnlyCollection<System.Guid>> FilterFilesAsync(FilterFilesQuery body, System.Threading.CancellationToken cancellationToken)
         {
             if (body == null)
                 throw new System.ArgumentNullException("body");
@@ -1320,11 +1320,46 @@ namespace ImoutoRebirth.LilinService.WebApi.Client
     }
 
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "13.19.0.0 (NJsonSchema v10.9.0.0 (Newtonsoft.Json v13.0.0.0))")]
+    public partial class BindTag
+    {
+        [System.Text.Json.Serialization.JsonConstructor]
+
+        public BindTag(System.Guid @fileId, MetadataSource @source, System.Guid @tagId, string? @value)
+
+        {
+
+            this.FileId = @fileId;
+
+            this.TagId = @tagId;
+
+            this.Value = @value;
+
+            this.Source = @source;
+
+        }
+        [System.Text.Json.Serialization.JsonPropertyName("fileId")]
+        public System.Guid FileId { get; }
+
+        [System.Text.Json.Serialization.JsonPropertyName("tagId")]
+        public System.Guid TagId { get; }
+
+        [System.Text.Json.Serialization.JsonPropertyName("value")]
+
+        [System.Text.Json.Serialization.JsonIgnore(Condition = System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingDefault)]   
+        public string? Value { get; }
+
+        [System.Text.Json.Serialization.JsonPropertyName("source")]
+        [System.Text.Json.Serialization.JsonConverter(typeof(System.Text.Json.Serialization.JsonStringEnumConverter))]
+        public MetadataSource Source { get; }
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "13.19.0.0 (NJsonSchema v10.9.0.0 (Newtonsoft.Json v13.0.0.0))")]
     public partial class BindTagsCommand
     {
         [System.Text.Json.Serialization.JsonConstructor]
 
-        public BindTagsCommand(System.Collections.Generic.IReadOnlyCollection<FileTagInfo>? @fileTags, SameTagHandleStrategy @sameTagHandleStrategy)
+        public BindTagsCommand(System.Collections.Generic.IReadOnlyCollection<BindTag>? @fileTags, SameTagHandleStrategy @sameTagHandleStrategy)
 
         {
 
@@ -1336,7 +1371,7 @@ namespace ImoutoRebirth.LilinService.WebApi.Client
         [System.Text.Json.Serialization.JsonPropertyName("fileTags")]
 
         [System.Text.Json.Serialization.JsonIgnore(Condition = System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingDefault)]   
-        public System.Collections.Generic.IReadOnlyCollection<FileTagInfo>? FileTags { get; }
+        public System.Collections.Generic.IReadOnlyCollection<BindTag>? FileTags { get; }
 
         [System.Text.Json.Serialization.JsonPropertyName("sameTagHandleStrategy")]
         [System.Text.Json.Serialization.JsonConverter(typeof(System.Text.Json.Serialization.JsonStringEnumConverter))]
@@ -1381,28 +1416,28 @@ namespace ImoutoRebirth.LilinService.WebApi.Client
     }
 
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "13.19.0.0 (NJsonSchema v10.9.0.0 (Newtonsoft.Json v13.0.0.0))")]
-    public partial class FileInfo
+    public partial class DetailedFileInfo
     {
         [System.Text.Json.Serialization.JsonConstructor]
 
-        public FileInfo(System.Guid @id, System.Collections.Generic.IReadOnlyCollection<FileNote>? @notes, System.Collections.Generic.IReadOnlyCollection<FileTag>? @tags)
+        public DetailedFileInfo(System.Guid @fileId, System.Collections.Generic.IReadOnlyCollection<FileNote>? @notes, System.Collections.Generic.IReadOnlyCollection<DetailedFileTag>? @tags)
 
         {
 
-            this.Id = @id;
+            this.FileId = @fileId;
 
             this.Tags = @tags;
 
             this.Notes = @notes;
 
         }
-        [System.Text.Json.Serialization.JsonPropertyName("id")]
-        public System.Guid Id { get; }
+        [System.Text.Json.Serialization.JsonPropertyName("fileId")]
+        public System.Guid FileId { get; }
 
         [System.Text.Json.Serialization.JsonPropertyName("tags")]
 
         [System.Text.Json.Serialization.JsonIgnore(Condition = System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingDefault)]   
-        public System.Collections.Generic.IReadOnlyCollection<FileTag>? Tags { get; }
+        public System.Collections.Generic.IReadOnlyCollection<DetailedFileTag>? Tags { get; }
 
         [System.Text.Json.Serialization.JsonPropertyName("notes")]
 
@@ -1412,48 +1447,11 @@ namespace ImoutoRebirth.LilinService.WebApi.Client
     }
 
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "13.19.0.0 (NJsonSchema v10.9.0.0 (Newtonsoft.Json v13.0.0.0))")]
-    public partial class FileNote
+    public partial class DetailedFileTag
     {
         [System.Text.Json.Serialization.JsonConstructor]
 
-        public FileNote(System.Guid @fileId, Note? @note, MetadataSource @source, int? @sourceId)
-
-        {
-
-            this.FileId = @fileId;
-
-            this.Note = @note;
-
-            this.Source = @source;
-
-            this.SourceId = @sourceId;
-
-        }
-        [System.Text.Json.Serialization.JsonPropertyName("fileId")]
-        public System.Guid FileId { get; }
-
-        [System.Text.Json.Serialization.JsonPropertyName("note")]
-
-        [System.Text.Json.Serialization.JsonIgnore(Condition = System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingDefault)]   
-        public Note? Note { get; }
-
-        [System.Text.Json.Serialization.JsonPropertyName("source")]
-        [System.Text.Json.Serialization.JsonConverter(typeof(System.Text.Json.Serialization.JsonStringEnumConverter))]
-        public MetadataSource Source { get; }
-
-        [System.Text.Json.Serialization.JsonPropertyName("sourceId")]
-
-        [System.Text.Json.Serialization.JsonIgnore(Condition = System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingDefault)]   
-        public int? SourceId { get; }
-
-    }
-
-    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "13.19.0.0 (NJsonSchema v10.9.0.0 (Newtonsoft.Json v13.0.0.0))")]
-    public partial class FileTag
-    {
-        [System.Text.Json.Serialization.JsonConstructor]
-
-        public FileTag(System.Guid @fileId, MetadataSource @source, Tag? @tag, string? @value)
+        public DetailedFileTag(System.Guid @fileId, MetadataSource @source, Tag? @tag, string? @value)
 
         {
 
@@ -1486,46 +1484,68 @@ namespace ImoutoRebirth.LilinService.WebApi.Client
     }
 
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "13.19.0.0 (NJsonSchema v10.9.0.0 (Newtonsoft.Json v13.0.0.0))")]
-    public partial class FileTagInfo
+    public partial class FileNote
     {
         [System.Text.Json.Serialization.JsonConstructor]
 
-        public FileTagInfo(System.Guid @fileId, MetadataSource @source, System.Guid @tagId, string? @value)
+        public FileNote(System.Guid @fileId, int @height, string? @label, int @positionFromLeft, int @positionFromTop, MetadataSource @source, int? @sourceId, int @width)
 
         {
 
             this.FileId = @fileId;
 
-            this.TagId = @tagId;
+            this.Label = @label;
 
-            this.Value = @value;
+            this.PositionFromLeft = @positionFromLeft;
+
+            this.PositionFromTop = @positionFromTop;
+
+            this.Width = @width;
+
+            this.Height = @height;
 
             this.Source = @source;
+
+            this.SourceId = @sourceId;
 
         }
         [System.Text.Json.Serialization.JsonPropertyName("fileId")]
         public System.Guid FileId { get; }
 
-        [System.Text.Json.Serialization.JsonPropertyName("tagId")]
-        public System.Guid TagId { get; }
-
-        [System.Text.Json.Serialization.JsonPropertyName("value")]
+        [System.Text.Json.Serialization.JsonPropertyName("label")]
 
         [System.Text.Json.Serialization.JsonIgnore(Condition = System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingDefault)]   
-        public string? Value { get; }
+        public string? Label { get; }
+
+        [System.Text.Json.Serialization.JsonPropertyName("positionFromLeft")]
+        public int PositionFromLeft { get; }
+
+        [System.Text.Json.Serialization.JsonPropertyName("positionFromTop")]
+        public int PositionFromTop { get; }
+
+        [System.Text.Json.Serialization.JsonPropertyName("width")]
+        public int Width { get; }
+
+        [System.Text.Json.Serialization.JsonPropertyName("height")]
+        public int Height { get; }
 
         [System.Text.Json.Serialization.JsonPropertyName("source")]
         [System.Text.Json.Serialization.JsonConverter(typeof(System.Text.Json.Serialization.JsonStringEnumConverter))]
         public MetadataSource Source { get; }
 
+        [System.Text.Json.Serialization.JsonPropertyName("sourceId")]
+
+        [System.Text.Json.Serialization.JsonIgnore(Condition = System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingDefault)]   
+        public int? SourceId { get; }
+
     }
 
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "13.19.0.0 (NJsonSchema v10.9.0.0 (Newtonsoft.Json v13.0.0.0))")]
-    public partial class FilesFilterQuery
+    public partial class FilterFilesQuery
     {
         [System.Text.Json.Serialization.JsonConstructor]
 
-        public FilesFilterQuery(System.Collections.Generic.IReadOnlyCollection<System.Guid>? @fileIds, System.Collections.Generic.IReadOnlyCollection<TagSearchEntry>? @tagSearchEntries)
+        public FilterFilesQuery(System.Collections.Generic.IReadOnlyCollection<System.Guid>? @fileIds, System.Collections.Generic.IReadOnlyCollection<TagSearchEntry>? @tagSearchEntries)
 
         {
 
@@ -1539,54 +1559,6 @@ namespace ImoutoRebirth.LilinService.WebApi.Client
         [System.Text.Json.Serialization.JsonIgnore(Condition = System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingDefault)]   
         public System.Collections.Generic.IReadOnlyCollection<System.Guid>? FileIds { get; }
 
-        [System.Text.Json.Serialization.JsonPropertyName("tagSearchEntries")]
-
-        [System.Text.Json.Serialization.JsonIgnore(Condition = System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingDefault)]   
-        public System.Collections.Generic.IReadOnlyCollection<TagSearchEntry>? TagSearchEntries { get; }
-
-    }
-
-    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "13.19.0.0 (NJsonSchema v10.9.0.0 (Newtonsoft.Json v13.0.0.0))")]
-    public partial class FilesSearchQuery
-    {
-        [System.Text.Json.Serialization.JsonConstructor]
-
-        public FilesSearchQuery(int @limit, int @offset, System.Collections.Generic.IReadOnlyCollection<TagSearchEntry>? @tagSearchEntries)
-
-        {
-
-            this.TagSearchEntries = @tagSearchEntries;
-
-            this.Limit = @limit;
-
-            this.Offset = @offset;
-
-        }
-        [System.Text.Json.Serialization.JsonPropertyName("tagSearchEntries")]
-
-        [System.Text.Json.Serialization.JsonIgnore(Condition = System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingDefault)]   
-        public System.Collections.Generic.IReadOnlyCollection<TagSearchEntry>? TagSearchEntries { get; }
-
-        [System.Text.Json.Serialization.JsonPropertyName("limit")]
-        public int Limit { get; }
-
-        [System.Text.Json.Serialization.JsonPropertyName("offset")]
-        public int Offset { get; }
-
-    }
-
-    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "13.19.0.0 (NJsonSchema v10.9.0.0 (Newtonsoft.Json v13.0.0.0))")]
-    public partial class FilesSearchQueryCount
-    {
-        [System.Text.Json.Serialization.JsonConstructor]
-
-        public FilesSearchQueryCount(System.Collections.Generic.IReadOnlyCollection<TagSearchEntry>? @tagSearchEntries)
-
-        {
-
-            this.TagSearchEntries = @tagSearchEntries;
-
-        }
         [System.Text.Json.Serialization.JsonPropertyName("tagSearchEntries")]
 
         [System.Text.Json.Serialization.JsonIgnore(Condition = System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingDefault)]   
@@ -1616,55 +1588,11 @@ namespace ImoutoRebirth.LilinService.WebApi.Client
     }
 
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "13.19.0.0 (NJsonSchema v10.9.0.0 (Newtonsoft.Json v13.0.0.0))")]
-    public partial class Note
-    {
-        [System.Text.Json.Serialization.JsonConstructor]
-
-        public Note(int @height, System.Guid @id, string? @label, int @positionFromLeft, int @positionFromTop, int @width)
-
-        {
-
-            this.Id = @id;
-
-            this.Label = @label;
-
-            this.PositionFromLeft = @positionFromLeft;
-
-            this.PositionFromTop = @positionFromTop;
-
-            this.Width = @width;
-
-            this.Height = @height;
-
-        }
-        [System.Text.Json.Serialization.JsonPropertyName("id")]
-        public System.Guid Id { get; }
-
-        [System.Text.Json.Serialization.JsonPropertyName("label")]
-
-        [System.Text.Json.Serialization.JsonIgnore(Condition = System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingDefault)]   
-        public string? Label { get; }
-
-        [System.Text.Json.Serialization.JsonPropertyName("positionFromLeft")]
-        public int PositionFromLeft { get; }
-
-        [System.Text.Json.Serialization.JsonPropertyName("positionFromTop")]
-        public int PositionFromTop { get; }
-
-        [System.Text.Json.Serialization.JsonPropertyName("width")]
-        public int Width { get; }
-
-        [System.Text.Json.Serialization.JsonPropertyName("height")]
-        public int Height { get; }
-
-    }
-
-    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "13.19.0.0 (NJsonSchema v10.9.0.0 (Newtonsoft.Json v13.0.0.0))")]
     public partial class RelativeInfo
     {
         [System.Text.Json.Serialization.JsonConstructor]
 
-        public RelativeInfo(FileInfo? @fileInfo, RelativeType @relativesType)
+        public RelativeInfo(DetailedFileInfo? @fileInfo, RelativeType @relativesType)
 
         {
 
@@ -1680,7 +1608,7 @@ namespace ImoutoRebirth.LilinService.WebApi.Client
         [System.Text.Json.Serialization.JsonPropertyName("fileInfo")]
 
         [System.Text.Json.Serialization.JsonIgnore(Condition = System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingDefault)]   
-        public FileInfo? FileInfo { get; }
+        public DetailedFileInfo? FileInfo { get; }
 
     }
 
@@ -1732,6 +1660,56 @@ namespace ImoutoRebirth.LilinService.WebApi.Client
 
         [System.Runtime.Serialization.EnumMember(Value = @"AddNewFileTag")]
         AddNewFileTag = 1,
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "13.19.0.0 (NJsonSchema v10.9.0.0 (Newtonsoft.Json v13.0.0.0))")]
+    public partial class SearchFilesQuery
+    {
+        [System.Text.Json.Serialization.JsonConstructor]
+
+        public SearchFilesQuery(int? @limit, int @offset, System.Collections.Generic.IReadOnlyCollection<TagSearchEntry>? @tagSearchEntries)
+
+        {
+
+            this.TagSearchEntries = @tagSearchEntries;
+
+            this.Limit = @limit;
+
+            this.Offset = @offset;
+
+        }
+        [System.Text.Json.Serialization.JsonPropertyName("tagSearchEntries")]
+
+        [System.Text.Json.Serialization.JsonIgnore(Condition = System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingDefault)]   
+        public System.Collections.Generic.IReadOnlyCollection<TagSearchEntry>? TagSearchEntries { get; }
+
+        [System.Text.Json.Serialization.JsonPropertyName("limit")]
+
+        [System.Text.Json.Serialization.JsonIgnore(Condition = System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingDefault)]   
+        public int? Limit { get; }
+
+        [System.Text.Json.Serialization.JsonPropertyName("offset")]
+        public int Offset { get; }
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "13.19.0.0 (NJsonSchema v10.9.0.0 (Newtonsoft.Json v13.0.0.0))")]
+    public partial class SearchFilesQueryCount
+    {
+        [System.Text.Json.Serialization.JsonConstructor]
+
+        public SearchFilesQueryCount(System.Collections.Generic.IReadOnlyCollection<TagSearchEntry>? @tagSearchEntries)
+
+        {
+
+            this.TagSearchEntries = @tagSearchEntries;
+
+        }
+        [System.Text.Json.Serialization.JsonPropertyName("tagSearchEntries")]
+
+        [System.Text.Json.Serialization.JsonIgnore(Condition = System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingDefault)]   
+        public System.Collections.Generic.IReadOnlyCollection<TagSearchEntry>? TagSearchEntries { get; }
 
     }
 
@@ -1885,7 +1863,7 @@ namespace ImoutoRebirth.LilinService.WebApi.Client
     {
         [System.Text.Json.Serialization.JsonConstructor]
 
-        public UnbindTagsCommand(System.Collections.Generic.IReadOnlyCollection<FileTagInfo>? @fileTags)
+        public UnbindTagsCommand(System.Collections.Generic.IReadOnlyCollection<BindTag>? @fileTags)
 
         {
 
@@ -1895,7 +1873,7 @@ namespace ImoutoRebirth.LilinService.WebApi.Client
         [System.Text.Json.Serialization.JsonPropertyName("fileTags")]
 
         [System.Text.Json.Serialization.JsonIgnore(Condition = System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingDefault)]   
-        public System.Collections.Generic.IReadOnlyCollection<FileTagInfo>? FileTags { get; }
+        public System.Collections.Generic.IReadOnlyCollection<BindTag>? FileTags { get; }
 
     }
 

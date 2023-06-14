@@ -12,7 +12,11 @@ public class RecalculateTagsCountersJob : IJob
 
     public RecalculateTagsCountersJob(IMediator mediator) => _mediator = mediator;
 
-    public Task Execute(IJobExecutionContext context) => _mediator.Send(new UpdateTagsCountersCommand());
+    public Task Execute(IJobExecutionContext context)
+    {
+        //return _mediator.Send(new UpdateTagsCountersCommand());
+        return Task.CompletedTask;
+    }
 
     public class Description : IQuartzJobDescription
     {

@@ -49,7 +49,7 @@ internal class FileService : IFileService
         
         var lilinFilesThatSatisfyConditions = await _filesClient
             .FilterFilesAsync(
-                new FilesFilterQuery(
+                new FilterFilesQuery(
                     roomFilesIds,
                     _mapper.Map<List<TagSearchEntry>>(tags)),
                 ct);
@@ -75,6 +75,6 @@ internal class FileService : IFileService
         }
 
         return await _filesClient
-            .CountSearchFilesAsync(new FilesSearchQueryCount(_mapper.Map<List<TagSearchEntry>>(tags)), ct);
+            .CountSearchFilesAsync(new SearchFilesQueryCount(_mapper.Map<List<TagSearchEntry>>(tags)), ct);
     }
 }

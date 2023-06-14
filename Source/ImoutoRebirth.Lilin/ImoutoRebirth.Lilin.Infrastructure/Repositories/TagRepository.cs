@@ -45,15 +45,14 @@ internal class TagRepository : ITagRepository
     {
         var newEntity = new TagEntity
         {
-            Id = Guid.NewGuid(),
+            Id = tag.Id,
             Name = tag.Name,
             HasValue = tag.HasValue,
             SynonymsArray = tag.Synonyms,
             TypeId = tag.Type.Id
         };
 
-        await _lilinDbContext.Tags.AddAsync(newEntity);
-
+        await _lilinDbContext.AddAsync(newEntity);
         await _lilinDbContext.SaveChangesAsync();
     }
 }

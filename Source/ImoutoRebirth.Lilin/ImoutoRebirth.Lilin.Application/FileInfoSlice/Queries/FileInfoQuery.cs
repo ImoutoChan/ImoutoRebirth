@@ -1,17 +1,11 @@
 ﻿using ImoutoRebirth.Common.Cqrs.Abstract;
-using ImoutoRebirth.Lilin.Application.Persistence;
 using ImoutoRebirth.Lilin.Core.FileInfoAggregate;
+using ImoutoRebirth.Lilin.Core.TagAggregate;
 
 namespace ImoutoRebirth.Lilin.Application.FileInfoSlice.Queries;
 
-public record FileInfoQuery(Guid FileId) : IQuery<FileInfo>;
+public record FileInfoQuery(Guid FileId) : IQuery<DetailedFileInfo>;
 
-internal class FileInfoQueryHandler : IQueryHandler<FileInfoQuery, FileInfo>
-{
-    private readonly IFileInfoRepository _fileInfoRepository;
+public record DetailedFileInfo(Guid FileId, IReadOnlyCollection<DetailedFileTag> Tags, IReadOnlyCollection<FileNote> Notes);
 
-    public FileInfoQueryHandler(IFileInfoRepository fileInfoRepository) => _fileInfoRepository = fileInfoRepository;
-
-    public Task<FileInfo> Handle(FileInfoQuery request, CancellationToken ct) 
-        => _fileInfoRepository.Get(request.FileId, ct);
-}
+public record DetailedFileTag(Guid FileId, Tag Tag, string? Value, MetadataSource Source);
