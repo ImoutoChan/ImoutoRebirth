@@ -17,9 +17,11 @@
     </ItemGroup>
 
     <ItemGroup>
+        <ProjectReference Include="..\..\ImoutoRebirth.Common\ImoutoRebirth.Common.MassTransit\ImoutoRebirth.Common.MassTransit.csproj" />
+        <ProjectReference Include="..\..\ImoutoRebirth.Common\ImoutoRebirth.Common.Quartz\ImoutoRebirth.Common.Quartz.csproj" />
         <ProjectReference Include="..\..\ImoutoRebirth.Common\ImoutoRebirth.Common.WebApi\ImoutoRebirth.Common.WebApi.csproj" />
         <ProjectReference Include="..\ImoutoRebirth.Lilin.Application\ImoutoRebirth.Lilin.Application.csproj" />
-        <ProjectReference Include="..\ImoutoRebirth.Lilin.Services\ImoutoRebirth.Lilin.Services.csproj" />
+        <ProjectReference Include="..\ImoutoRebirth.Lilin.MessageContracts\ImoutoRebirth.Lilin.MessageContracts.csproj" />
     </ItemGroup>
 
     <ItemGroup>

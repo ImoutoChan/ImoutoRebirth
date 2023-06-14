@@ -12,7 +12,6 @@ internal class FileInfoUpdatedDomainEventHandler : DomainEventNotificationHandle
     public FileInfoUpdatedDomainEventHandler(IDistributedCommandBus distributedCommandBus) 
         => _distributedCommandBus = distributedCommandBus;
 
-
     protected override async Task Handle(FileInfoUpdatedDomainEvent domainEvent, CancellationToken ct)
     {
         if (domainEvent.MetadataSource == MetadataSource.Manual)

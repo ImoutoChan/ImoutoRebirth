@@ -8,13 +8,18 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\..\ImoutoRebirth.Common\ImoutoRebirth.Common.Cqrs\ImoutoRebirth.Common.Cqrs.csproj"/>
-        <ProjectReference Include="..\ImoutoRebirth.Lilin.Core\ImoutoRebirth.Lilin.Core.csproj"/>
-        <ProjectReference Include="..\ImoutoRebirth.Lilin.Services\ImoutoRebirth.Lilin.Services.csproj"/>
+        <PackageReference Include="Microsoft.Extensions.Caching.Memory" Version="7.0.0" />
+        <PackageReference Include="System.Linq.Async" Version="6.0.1" />
     </ItemGroup>
 
     <ItemGroup>
-        <Using Remove="System.IO"/>
+        <ProjectReference Include="..\..\ImoutoRebirth.Common\ImoutoRebirth.Common.Cqrs\ImoutoRebirth.Common.Cqrs.csproj" />
+        <ProjectReference Include="..\..\ImoutoRebirth.Meido\ImoutoRebirth.Meido.MessageContracts\ImoutoRebirth.Meido.MessageContracts.csproj" />
+        <ProjectReference Include="..\ImoutoRebirth.Lilin.Core\ImoutoRebirth.Lilin.Core.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <Using Remove="System.IO" />
     </ItemGroup>
 
 </Project>
