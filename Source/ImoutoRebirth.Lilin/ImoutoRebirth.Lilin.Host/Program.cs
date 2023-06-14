@@ -4,7 +4,6 @@ using ImoutoRebirth.Common.Logging;
 using ImoutoRebirth.Common.MassTransit;
 using ImoutoRebirth.Common.Quartz.Extensions;
 using ImoutoRebirth.Lilin.Application;
-using ImoutoRebirth.Lilin.Core;
 using ImoutoRebirth.Lilin.DataAccess;
 using ImoutoRebirth.Lilin.Host.Settings;
 using ImoutoRebirth.Lilin.Infrastructure;
