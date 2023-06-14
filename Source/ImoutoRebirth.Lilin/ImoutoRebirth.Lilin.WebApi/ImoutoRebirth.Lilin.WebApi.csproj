@@ -18,6 +18,7 @@
 
     <ItemGroup>
         <ProjectReference Include="..\..\ImoutoRebirth.Common\ImoutoRebirth.Common.WebApi\ImoutoRebirth.Common.WebApi.csproj" />
+        <ProjectReference Include="..\ImoutoRebirth.Lilin.Application\ImoutoRebirth.Lilin.Application.csproj" />
         <ProjectReference Include="..\ImoutoRebirth.Lilin.Services\ImoutoRebirth.Lilin.Services.csproj" />
     </ItemGroup>
 

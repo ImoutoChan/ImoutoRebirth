@@ -3,13 +3,14 @@ using ImoutoRebirth.Common.Host;
 using ImoutoRebirth.Common.Logging;
 using ImoutoRebirth.Common.MassTransit;
 using ImoutoRebirth.Common.Quartz.Extensions;
+using ImoutoRebirth.Lilin.Application;
 using ImoutoRebirth.Lilin.Core;
 using ImoutoRebirth.Lilin.DataAccess;
 using ImoutoRebirth.Lilin.Host.Settings;
 using ImoutoRebirth.Lilin.Infrastructure;
 using ImoutoRebirth.Lilin.MessageContracts;
-using ImoutoRebirth.Lilin.Services;
 using ImoutoRebirth.Lilin.WebApi;
+using ImoutoRebirth.Lilin.WebApi.WebApi;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
@@ -34,17 +35,17 @@ builder.ConfigureSerilog(
 var lilinSettings = builder.Configuration.GetRequired<LilinSettings>();
 
 builder.Services
-    .AddLilinInfrastructure()
-    .AddLilinServices(builder.Configuration)
-    .AddLilinDataAccess(builder.Configuration.GetConnectionString("LilinDatabase")
-                        ?? throw new Exception("ConnectionString is empty"))
-    .AddLilinCore();
+    .AddLilinUi(builder.Configuration)
+    .AddLilinApplication(typeof(ImoutoRebirth.Lilin.Infrastructure.ServiceCollectionExtensions).Assembly)
+    .AddLilinDataAccess(
+        builder.Configuration.GetConnectionString("LilinDatabase") ?? throw new Exception("ConnectionString is empty"))
+    .AddLilinInfrastructure();
 
 builder.Services
     .AddTrueMassTransit(
         lilinSettings.RabbitSettings,
         ReceiverApp.Name,
-        с => с.AddLilinServicesForRabbit());
+        с => с.AddMassTransitUi());
 
 builder.Services.AddQuartz();
 

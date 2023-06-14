@@ -1,0 +1,20 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net7.0</TargetFramework>
+        <Nullable>enable</Nullable>
+        <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+        <ImplicitUsings>enable</ImplicitUsings>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="..\..\ImoutoRebirth.Common\ImoutoRebirth.Common.Cqrs\ImoutoRebirth.Common.Cqrs.csproj"/>
+        <ProjectReference Include="..\ImoutoRebirth.Lilin.Core\ImoutoRebirth.Lilin.Core.csproj"/>
+        <ProjectReference Include="..\ImoutoRebirth.Lilin.Services\ImoutoRebirth.Lilin.Services.csproj"/>
+    </ItemGroup>
+
+    <ItemGroup>
+        <Using Remove="System.IO"/>
+    </ItemGroup>
+
+</Project>

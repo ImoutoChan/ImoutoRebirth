@@ -1,4 +1,4 @@
-﻿using ImoutoRebirth.Lilin.Core.Models;
+﻿using ImoutoRebirth.Lilin.Core.FileInfoAggregate;
 
 namespace ImoutoRebirth.Lilin.DataAccess.Entities;
 

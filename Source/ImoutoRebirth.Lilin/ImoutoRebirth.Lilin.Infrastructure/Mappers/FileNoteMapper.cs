@@ -1,35 +1,32 @@
-﻿using ImoutoRebirth.Lilin.Core.Models;
-using ImoutoRebirth.Lilin.Core.Models.FileInfoAggregate;
+﻿using ImoutoRebirth.Lilin.Core.FileInfoAggregate;
 using ImoutoRebirth.Lilin.DataAccess.Entities;
 
 namespace ImoutoRebirth.Lilin.Infrastructure.Mappers;
 
 public static class FileNoteMapper
 {
-    public static NoteEntity ToEntity(this FileNote fileNoteModel) 
-        => new NoteEntity
+    public static NoteEntity ToNewEntity(this FileNote fileNoteModel) 
+        => new()
         {
             FileId = fileNoteModel.FileId,
-            Id = fileNoteModel.Note.Id,
+            Id = Guid.NewGuid(),
             Source = fileNoteModel.Source,
-            Label = fileNoteModel.Note.Label,
+            Label = fileNoteModel.Label,
             SourceId = fileNoteModel.SourceId,
-            Height = fileNoteModel.Note.Height,
-            Width = fileNoteModel.Note.Width,
-            PositionFromLeft = fileNoteModel.Note.PositionFromLeft,
-            PositionFromTop = fileNoteModel.Note.PositionFromTop
+            Height = fileNoteModel.Height,
+            Width = fileNoteModel.Width,
+            PositionFromLeft = fileNoteModel.PositionFromLeft,
+            PositionFromTop = fileNoteModel.PositionFromTop
         };
 
     public static FileNote ToModel(this NoteEntity entity)
-        => new FileNote(
+        => new(
             entity.FileId,
-            new Note(
-                entity.Id,
-                entity.Label,
-                entity.PositionFromLeft,
-                entity.PositionFromTop,
-                entity.Width,
-                entity.Height),
+            entity.Label,
+            entity.PositionFromLeft,
+            entity.PositionFromTop,
+            entity.Width,
+            entity.Height,
             entity.Source,
             entity.SourceId);
 }

@@ -8,12 +8,18 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="NinjaNye.SearchExtensions" Version="3.0.1"/>
+        <PackageReference Include="NinjaNye.SearchExtensions" Version="3.0.1" />
     </ItemGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\ImoutoRebirth.Lilin.Core\ImoutoRebirth.Lilin.Core.csproj"/>
-        <ProjectReference Include="..\ImoutoRebirth.Lilin.DataAccess\ImoutoRebirth.Lilin.DataAccess.csproj"/>
+        <ProjectReference Include="..\..\ImoutoRebirth.Common\ImoutoRebirth.Common.Infrastructure\ImoutoRebirth.Common.Infrastructure.csproj" />
+        <ProjectReference Include="..\ImoutoRebirth.Lilin.Application\ImoutoRebirth.Lilin.Application.csproj" />
+        <ProjectReference Include="..\ImoutoRebirth.Lilin.Core\ImoutoRebirth.Lilin.Core.csproj" />
+        <ProjectReference Include="..\ImoutoRebirth.Lilin.DataAccess\ImoutoRebirth.Lilin.DataAccess.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <Using Remove="System.IO" />
     </ItemGroup>
 
 </Project>

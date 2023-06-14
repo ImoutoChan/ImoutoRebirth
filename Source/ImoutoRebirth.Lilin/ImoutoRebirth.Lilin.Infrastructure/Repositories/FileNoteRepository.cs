@@ -1,42 +1,40 @@
-﻿using ImoutoRebirth.Lilin.Core.Infrastructure;
-using ImoutoRebirth.Lilin.Core.Models;
-using ImoutoRebirth.Lilin.Core.Models.FileInfoAggregate;
+﻿using ImoutoRebirth.Lilin.Application.Persistence;
+using ImoutoRebirth.Lilin.Core.FileInfoAggregate;
 using ImoutoRebirth.Lilin.DataAccess;
 using ImoutoRebirth.Lilin.Infrastructure.Mappers;
 using Microsoft.EntityFrameworkCore;
 
 namespace ImoutoRebirth.Lilin.Infrastructure.Repositories;
 
-public class FileNoteRepository : IFileNoteRepository
+internal class FileNoteRepository : IFileNoteRepository
 {
     private readonly LilinDbContext _lilinDbContext;
 
-    public FileNoteRepository(LilinDbContext lilinDbContext)
-    {
-        _lilinDbContext = lilinDbContext;
-    }
+    public FileNoteRepository(LilinDbContext lilinDbContext) => _lilinDbContext = lilinDbContext;
 
-    public async Task Add(FileNote fileNote)
+    public async Task Create(FileNote note)
     {
-        await _lilinDbContext.Notes.AddAsync(fileNote.ToEntity());
+        await _lilinDbContext.Notes.AddAsync(note.ToNewEntity());
         await _lilinDbContext.SaveChangesAsync();
     }
 
-    public async Task<IReadOnlyCollection<FileNote>> GetForFile(Guid fileId, CancellationToken cancellationToken)
+    public async Task<IReadOnlyCollection<FileNote>> GetForFile(Guid fileId, CancellationToken ct)
     {
         var results = await _lilinDbContext.Notes
             .Where(x => x.FileId == fileId)
-            .ToArrayAsync();
+            .ToArrayAsync(cancellationToken: ct);
 
         return results.Select(x => x.ToModel()).ToArray();
     }
 
-    public async Task Update(Guid noteId, Note note)
+    public async Task Update(FileNote note)
     {
-        var entity = await _lilinDbContext.Notes.FindAsync(noteId);
+        var entity = await _lilinDbContext.Notes
+            .Where(x => x.FileId == note.FileId && x.SourceId == note.SourceId && x.Source == note.Source)
+            .FirstOrDefaultAsync();
 
         if (entity == null)
-            throw new Exception($"Note with id {noteId} wasn't found");
+            throw new Exception($"Note with id {note.GetIdentity()} wasn't found");
 
         entity.Label = note.Label;
         entity.Height = note.Height;
@@ -47,14 +45,16 @@ public class FileNoteRepository : IFileNoteRepository
         await _lilinDbContext.SaveChangesAsync();
     }
 
-    public async Task Delete(Guid noteId)
+    public async Task Delete(FileNote note)
     {
-        var note = await _lilinDbContext.Notes.FindAsync(noteId);
+        var entity = await _lilinDbContext.Notes
+            .Where(x => x.FileId == note.FileId && x.SourceId == note.SourceId && x.Source == note.Source)
+            .FirstOrDefaultAsync();
 
-        if (note == null)
-            throw new Exception($"Note with id {noteId} wasn't found");
+        if (entity == null)
+            throw new Exception($"Note with id {note.GetIdentity()} wasn't found");
 
-        _lilinDbContext.Remove(note);
+        _lilinDbContext.Remove(entity);
 
         await _lilinDbContext.SaveChangesAsync();
     }

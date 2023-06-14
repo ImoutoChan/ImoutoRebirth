@@ -1,4 +1,6 @@
-﻿namespace ImoutoRebirth.Common;
+﻿using System.Diagnostics.CodeAnalysis;
+
+namespace ImoutoRebirth.Common;
 
 public static class EnumerableExtensions
 {
@@ -18,4 +20,9 @@ public static class EnumerableExtensions
         => string.Join(separator, source.Select(stringSelector));
     
     public static T[] AsArray<T>(this T item) => new [] { item };
+
+    public static bool SafeAny<T>([NotNullWhen(true)] this IEnumerable<T>? source) => source != null && source.Any();
+
+    public static bool None<T>(this IEnumerable<T> source) => !source.Any();
+    
 }
