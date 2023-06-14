@@ -48,11 +48,6 @@ public class FileInfo
         return new DomainResult { new FileInfoUpdatedDomainEvent(FileId, source) };
     }
 
-    public void AddFileTag(FileTag newTag)
-    {
-        _tags.Add(newTag);
-    }
-
     public void RemoveFileTag(Guid tagId, MetadataSource source, string? value)
     {
         var tag = Tags.FirstOrDefault(
@@ -88,7 +83,7 @@ public class FileInfo
                     sameTagWithDifferentValue.UpdateValue(newTag.Value);
                     break;
                 case SameTagHandleStrategy.AddNewFileTag:
-                    AddFileTag(newTag);
+                    _tags.Add(newTag);
                     break;
                 default:
                     throw new ArgumentOutOfRangeException(
@@ -99,7 +94,7 @@ public class FileInfo
         }
         else
         {
-            AddFileTag(newTag);
+            _tags.Add(newTag);
         }
     }
 }
