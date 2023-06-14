@@ -1,4 +1,5 @@
-﻿using ImoutoRebirth.LilinService.WebApi.Client;
+﻿using System.Net;
+using ImoutoRebirth.LilinService.WebApi.Client;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace ImoutoRebirth.Lilin.WebApi.Client;
@@ -10,10 +11,15 @@ public static class WebApiServiceCollectionExtensions
         string baseUri)
         where TClient : class
     {
-        services.AddHttpClient();
-        
         var httpClientName = typeof(TClient).Name;
 
+        services.AddHttpClient(httpClientName)
+            .ConfigurePrimaryHttpMessageHandler(x => new HttpClientHandler
+            {
+                AutomaticDecompression = DecompressionMethods.GZip | DecompressionMethods.Deflate,
+            })
+            .AddHttpMessageHandler<GZipCompressingHandler>();
+        
         services.AddTransient(
             provider =>
             {

@@ -1,6 +1,8 @@
-﻿using System.Text.Json.Serialization;
+﻿using System.IO.Compression;
+using System.Text.Json.Serialization;
 using ImoutoRebirth.Common.WebApi;
 using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.ResponseCompression;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace ImoutoRebirth.Lilin.WebApi.WebApi;
@@ -16,12 +18,34 @@ public static class WebEndpointsExtensions
             x.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter()));
         
         services.AddMinimalSwagger("ImoutoRebirth.Lilin WebApi Client");
+        
+        services.AddResponseCompression(options =>
+        {
+            options.EnableForHttps = true;
+            options.Providers.Add<BrotliCompressionProvider>();
+            options.Providers.Add<GzipCompressionProvider>();
+        });
 
+        services.Configure<BrotliCompressionProviderOptions>(options =>
+        {
+            options.Level = CompressionLevel.Optimal;
+        });
+
+        services.Configure<GzipCompressionProviderOptions>(options =>
+        {
+            options.Level = CompressionLevel.Optimal;
+        });
+        
+        services.AddRequestDecompression();
+
+        
         return services;
     }
     
     public static WebApplication MapWebEndpoints(this WebApplication app)
     {
+        app.UseRequestDecompression();
+        app.UseResponseCompression();
         app.UseSwagger();
         app.UseSwaggerUI(c =>
         {

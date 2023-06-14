@@ -48,7 +48,7 @@ class MainWindowVM : VMBase
 
         NavigatorList.CollectionChanged += (_, _) => OnPropertyChanged(() => LoadedCount);
 
-        _appendNewContentTimer.Tick += async (_, _) => { };
+        _appendNewContentTimer.Tick += async (_, _) => { /*LoadNew();*/ };
     }
 
     private async Task LoadNew()

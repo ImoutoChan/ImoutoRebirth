@@ -46,7 +46,6 @@ internal class FileLoadingService : IFileLoadingService
 
         try
         {
-
             initAction();
 
             var counterTask = UpdateCounter(collectionId, searchTags, counterUpdater, token);
