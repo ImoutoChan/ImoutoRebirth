@@ -25,20 +25,10 @@ public static class WebEndpointsExtensions
             options.Providers.Add<BrotliCompressionProvider>();
             options.Providers.Add<GzipCompressionProvider>();
         });
-
-        services.Configure<BrotliCompressionProviderOptions>(options =>
-        {
-            options.Level = CompressionLevel.Optimal;
-        });
-
-        services.Configure<GzipCompressionProviderOptions>(options =>
-        {
-            options.Level = CompressionLevel.Optimal;
-        });
+        services.Configure<BrotliCompressionProviderOptions>(options => options.Level = CompressionLevel.Optimal);
+        services.Configure<GzipCompressionProviderOptions>(options => options.Level = CompressionLevel.Optimal);
         
         services.AddRequestDecompression();
-
-        
         return services;
     }
     

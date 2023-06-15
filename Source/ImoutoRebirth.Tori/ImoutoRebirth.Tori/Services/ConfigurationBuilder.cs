@@ -37,6 +37,8 @@ public class ConfigurationBuilder : IConfigurationBuilder
     private readonly string _sankakuPassHash;
     private readonly string _yandereApiKey;
     private readonly string _yandereLogin;
+    private readonly string _jaegerHost;
+    private readonly string _jaegerPort;
 
     public ConfigurationBuilder(FileInfo globalConfigurationFile)
     {
@@ -82,6 +84,8 @@ public class ConfigurationBuilder : IConfigurationBuilder
 
         _roomImoutoPicsUploadUrl = _configuration["RoomImoutoPicsUploadUrl"];
         _installLocation = _configuration["InstallLocation"];
+        _jaegerHost = _configuration["JaegerHost"];
+        _jaegerPort = _configuration["JaegerPort"];
     }
 
     public void WriteProductionConfigurations(string newVersion)
@@ -144,7 +148,9 @@ public class ConfigurationBuilder : IConfigurationBuilder
             "MeidoMetadataActualizerRepeatEveryMinutes",
             "MeidoFaultToleranceRepeatEveryMinutes",
             "MeidoFaultToleranceIsEnabled",
-            "RoomImoutoPicsUploadUrl"
+            "RoomImoutoPicsUploadUrl",
+            "JaegerHost",
+            "JaegerPort"
         };
 
         var missedKeys = keys.Where(x => !_configuration.ContainsKey(x)).ToList();
@@ -174,7 +180,11 @@ public class ConfigurationBuilder : IConfigurationBuilder
                 "Username": "{{_rabbitUsername}}",
                 "Password": "{{_rabbitPassword}}"
               },
-              "OpenSearchUri": "{{_openSearchUri}}"
+              "OpenSearchUri": "{{_openSearchUri}}",
+              "Jaeger": {
+                "Host": "{{_jaegerHost}}",
+                "Port": {{_jaegerPort}}
+              }
             }
             """;
     }
@@ -200,7 +210,11 @@ public class ConfigurationBuilder : IConfigurationBuilder
               "FavoritesSaveJobSettings": {
                 "RepeatEveryMinutes": {{_harpyFavoritesSaveJobRepeatEveryMinutes}}
               },
-              "OpenSearchUri": "{{_openSearchUri}}"
+              "OpenSearchUri": "{{_openSearchUri}}",
+              "Jaeger": {
+                "Host": "{{_jaegerHost}}",
+                "Port": {{_jaegerPort}}
+              }
             }
             """;
     }
@@ -223,6 +237,10 @@ public class ConfigurationBuilder : IConfigurationBuilder
                     "Url": "http://*:{{_kekkaiPort}}"
                   }
                 }
+              },
+              "Jaeger": {
+                "Host": "{{_jaegerHost}}",
+                "Port": {{_jaegerPort}}
               }
             }
             """;
@@ -248,6 +266,10 @@ public class ConfigurationBuilder : IConfigurationBuilder
                     "Url": "http://*:{{_lilinPort}}"
                   }
                 }
+              },
+              "Jaeger": {
+                "Host": "{{_jaegerHost}}",
+                "Port": {{_jaegerPort}}
               }
             }
             """;
@@ -276,6 +298,10 @@ public class ConfigurationBuilder : IConfigurationBuilder
               "FaultToleranceSettings": {
                 "RepeatEveryMinutes": {{_meidoFaultToleranceRepeatEveryMinutes}},
                 "IsEnabled": {{_meidoFaultToleranceIsEnabled}}
+              },
+              "Jaeger": {
+                "Host": "{{_jaegerHost}}",
+                "Port": {{_jaegerPort}}
               }
             }
             """;
@@ -302,7 +328,11 @@ public class ConfigurationBuilder : IConfigurationBuilder
                 "Password": "{{_rabbitPassword}}"
               },
               "OpenSearchUri": "{{_openSearchUri}}",
-              "ImoutoPicsUploadUrl": "{{_roomImoutoPicsUploadUrl}}"
+              "ImoutoPicsUploadUrl": "{{_roomImoutoPicsUploadUrl}}",
+              "Jaeger": {
+                "Host": "{{_jaegerHost}}",
+                "Port": {{_jaegerPort}}
+              }
             }
             """;
     }

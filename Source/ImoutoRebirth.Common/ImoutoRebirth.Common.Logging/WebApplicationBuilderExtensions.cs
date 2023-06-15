@@ -22,6 +22,19 @@ public static class WebApplicationBuilderExtensions
         return hostBuilder;
     }
 
+    public static HostApplicationBuilder ConfigureSerilog(
+        this HostApplicationBuilder hostBuilder,
+        Action<LoggerConfiguration, IConfiguration, IHostEnvironment>? configureLogger = null)
+    {
+        hostBuilder.Logging
+            .ClearProviders()
+            .AddSerilog(
+                dispose: true, 
+                logger: GetSerilogLogger(hostBuilder.Configuration, hostBuilder.Environment, configureLogger));
+
+        return hostBuilder;
+    }
+
     private static Logger GetSerilogLogger(
         IConfiguration configuration, 
         IHostEnvironment hostEnvironment,

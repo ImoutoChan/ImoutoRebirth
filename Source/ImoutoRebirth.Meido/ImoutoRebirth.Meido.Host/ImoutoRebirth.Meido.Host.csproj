@@ -16,17 +16,18 @@
             <PrivateAssets>all</PrivateAssets>
             <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageReference>
-        <PackageReference Include="Microsoft.Extensions.Hosting.WindowsServices" Version="7.0.0"/>
+        <PackageReference Include="Microsoft.Extensions.Hosting.WindowsServices" Version="7.0.0" />
     </ItemGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\..\ImoutoRebirth.Common\ImoutoRebirth.Common.Host\ImoutoRebirth.Common.Host.csproj"/>
-        <ProjectReference Include="..\..\ImoutoRebirth.Common\ImoutoRebirth.Common.Logging\ImoutoRebirth.Common.Logging.csproj"/>
-        <ProjectReference Include="..\..\ImoutoRebirth.Common\ImoutoRebirth.Common.MassTransit\ImoutoRebirth.Common.MassTransit.csproj"/>
-        <ProjectReference Include="..\..\ImoutoRebirth.Common\ImoutoRebirth.Common.Quartz\ImoutoRebirth.Common.Quartz.csproj"/>
-        <ProjectReference Include="..\ImoutoRebirth.Meido.DataAccess\ImoutoRebirth.Meido.DataAccess.csproj"/>
-        <ProjectReference Include="..\ImoutoRebirth.Meido.Infrastructure\ImoutoRebirth.Meido.Infrastructure.csproj"/>
-        <ProjectReference Include="..\ImoutoRebirth.Meido.Services\ImoutoRebirth.Meido.Services.csproj"/>
+        <ProjectReference Include="..\..\ImoutoRebirth.Common\ImoutoRebirth.Common.Host\ImoutoRebirth.Common.Host.csproj" />
+        <ProjectReference Include="..\..\ImoutoRebirth.Common\ImoutoRebirth.Common.Logging\ImoutoRebirth.Common.Logging.csproj" />
+        <ProjectReference Include="..\..\ImoutoRebirth.Common\ImoutoRebirth.Common.MassTransit\ImoutoRebirth.Common.MassTransit.csproj" />
+        <ProjectReference Include="..\..\ImoutoRebirth.Common\ImoutoRebirth.Common.OpenTelemetry\ImoutoRebirth.Common.OpenTelemetry.csproj" />
+        <ProjectReference Include="..\..\ImoutoRebirth.Common\ImoutoRebirth.Common.Quartz\ImoutoRebirth.Common.Quartz.csproj" />
+        <ProjectReference Include="..\ImoutoRebirth.Meido.DataAccess\ImoutoRebirth.Meido.DataAccess.csproj" />
+        <ProjectReference Include="..\ImoutoRebirth.Meido.Infrastructure\ImoutoRebirth.Meido.Infrastructure.csproj" />
+        <ProjectReference Include="..\ImoutoRebirth.Meido.Services\ImoutoRebirth.Meido.Services.csproj" />
     </ItemGroup>
 
     <ItemGroup>

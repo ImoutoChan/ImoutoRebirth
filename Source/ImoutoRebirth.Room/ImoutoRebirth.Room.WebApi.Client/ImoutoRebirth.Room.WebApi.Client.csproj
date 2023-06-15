@@ -12,4 +12,8 @@
         <PackageReference Include="Microsoft.Extensions.Http" Version="7.0.0"/>
     </ItemGroup>
 
+    <ItemGroup>
+        <ProjectReference Include="..\..\ImoutoRebirth.Common\ImoutoRebirth.Common.WebApi.Client\ImoutoRebirth.Common.WebApi.Client.csproj"/>
+    </ItemGroup>
+
 </Project>

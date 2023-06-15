@@ -7,13 +7,16 @@ using System.Text;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Threading;
+using ImoutoRebirth.Common;
 using ImoutoRebirth.Navigator.Commands;
 using ImoutoRebirth.Navigator.Model;
 using ImoutoRebirth.Navigator.Services;
 using ImoutoRebirth.Navigator.Services.ImoutoViewer;
 using ImoutoRebirth.Navigator.Services.Tags;
+using ImoutoRebirth.Navigator.Services.Tags.Model;
 using ImoutoRebirth.Navigator.ViewModel.ListEntries;
 using MahApps.Metro.Controls.Dialogs;
+using File = System.IO.File;
 
 namespace ImoutoRebirth.Navigator.ViewModel;
 
@@ -397,11 +400,16 @@ class MainWindowVM : VMBase
     {
         try
         {
+            var tagsToSearch = TagSearchVM.SelectedBindedTags.Select(x => x.Model).ToList();
+            var bulkFactor = GetBulkFactorBasedOnTags(tagsToSearch);
+            
+            var loadingTiming = new Stopwatch();
+            loadingTiming.Start();
             await _fileLoadingService.LoadFiles(
-                10_000_000,
+                bulkFactor,
                 _previewSize,
                 TagSearchVM.SelectedCollection.Value,
-                TagSearchVM.SelectedBindedTags.Select(x => x.Model).ToList(),
+                tagsToSearch,
                 x => TotalCount = x,
                 (x, ct) =>
                 {
@@ -430,12 +438,36 @@ class MainWindowVM : VMBase
                     IsLoading = false;
                     _appendNewContentTimer.Start();
                 });
+            loadingTiming.Stop();
+            Debug.WriteLine("Loading time: " + loadingTiming.ElapsedMilliseconds);
         }
         catch (Exception ex)
         {
             Debug.WriteLine("Can't load images from collection: " + ex.Message);
             SetStatusError("Can't load images from collection", ex.Message);
         }
+    }
+
+    private static int GetBulkFactorBasedOnTags(IReadOnlyCollection<SearchTag> tagsToSearch)
+    {
+        const int defaultSize = 20_000;
+        
+        if (tagsToSearch.None())
+            return defaultSize;
+
+        var min = tagsToSearch.Select(x => x.Tag.Count).Min();
+
+        var factor = tagsToSearch.Count > 1 ? Math.Pow(0.9, tagsToSearch.Count) : 1;
+
+        var predictedCount = (int)(min * factor);
+
+        Debug.WriteLine("Predicted: " + predictedCount);
+        
+        return predictedCount switch
+        {
+            > 40_000 => defaultSize,
+            _ => int.MaxValue
+        };
     }
 
     private void UpdatePreviews()

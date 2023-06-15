@@ -22,5 +22,7 @@
   "MeidoFaultToleranceIsEnabled": "true",
   "RoomImoutoPicsUploadUrl": "",
   "InstallLocation": "C:\\Program Files\\Imouto",
-  "OpenSearchUri": "http://localhost:9200/"
+  "OpenSearchUri": "http://localhost:9200/",
+  "JaegerHost": "localhost",
+  "JaegerPort": "6831"
 }

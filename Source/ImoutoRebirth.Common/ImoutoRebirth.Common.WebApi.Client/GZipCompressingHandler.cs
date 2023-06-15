@@ -1,4 +1,4 @@
-﻿namespace ImoutoRebirth.Lilin.WebApi.Client;
+﻿namespace ImoutoRebirth.Common.WebApi.Client;
 
 public class GZipCompressingHandler : DelegatingHandler
 {

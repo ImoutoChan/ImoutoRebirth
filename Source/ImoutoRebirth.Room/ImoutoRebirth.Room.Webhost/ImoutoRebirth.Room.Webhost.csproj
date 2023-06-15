@@ -27,6 +27,7 @@
     <ItemGroup>
         <ProjectReference Include="..\..\ImoutoRebirth.Common\ImoutoRebirth.Common.Host\ImoutoRebirth.Common.Host.csproj" />
         <ProjectReference Include="..\..\ImoutoRebirth.Common\ImoutoRebirth.Common.Logging\ImoutoRebirth.Common.Logging.csproj" />
+        <ProjectReference Include="..\..\ImoutoRebirth.Common\ImoutoRebirth.Common.OpenTelemetry\ImoutoRebirth.Common.OpenTelemetry.csproj" />
         <ProjectReference Include="..\..\ImoutoRebirth.Common\ImoutoRebirth.Common.Quartz\ImoutoRebirth.Common.Quartz.csproj" />
         <ProjectReference Include="..\ImoutoRebirth.Room.Infrastructure\ImoutoRebirth.Room.Infrastructure.csproj" />
         <ProjectReference Include="..\ImoutoRebirth.Room.Services\ImoutoRebirth.Room.Core.csproj" />

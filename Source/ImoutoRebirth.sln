@@ -131,6 +131,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ImoutoRebirth.Common.Infras
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ImoutoRebirth.Common.Application", "ImoutoRebirth.Common\ImoutoRebirth.Common.Application\ImoutoRebirth.Common.Application.csproj", "{4D709AF0-C891-4744-A102-BB9361CF4790}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ImoutoRebirth.Common.OpenTelemetry", "ImoutoRebirth.Common\ImoutoRebirth.Common.OpenTelemetry\ImoutoRebirth.Common.OpenTelemetry.csproj", "{AE7C331C-BCCD-494E-A545-C16AB3F68DEB}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ImoutoRebirth.Common.WebApi.Client", "ImoutoRebirth.Common\ImoutoRebirth.Common.WebApi.Client\ImoutoRebirth.Common.WebApi.Client.csproj", "{D09316A8-F993-41E9-B87D-C22A2C9AA6EB}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -334,6 +338,14 @@ Global
 		{4D709AF0-C891-4744-A102-BB9361CF4790}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{4D709AF0-C891-4744-A102-BB9361CF4790}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{4D709AF0-C891-4744-A102-BB9361CF4790}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AE7C331C-BCCD-494E-A545-C16AB3F68DEB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AE7C331C-BCCD-494E-A545-C16AB3F68DEB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AE7C331C-BCCD-494E-A545-C16AB3F68DEB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AE7C331C-BCCD-494E-A545-C16AB3F68DEB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D09316A8-F993-41E9-B87D-C22A2C9AA6EB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D09316A8-F993-41E9-B87D-C22A2C9AA6EB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D09316A8-F993-41E9-B87D-C22A2C9AA6EB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D09316A8-F993-41E9-B87D-C22A2C9AA6EB}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{9BC327CE-D36E-4926-9830-DCEB0CB73884} = {6BEB0A5C-9E6B-4440-93B2-F4C63BE43298}
@@ -384,5 +396,7 @@ Global
 		{625ABDC5-3548-4300-97AF-AEFFD1F42A2D} = {9DD31146-A822-409B-B6B7-EE16337740D3}
 		{5094ED81-85C2-4DA6-92B1-70E1022497D0} = {4383FD00-3B54-4C2B-9222-BDC045D3FD9B}
 		{4D709AF0-C891-4744-A102-BB9361CF4790} = {4383FD00-3B54-4C2B-9222-BDC045D3FD9B}
+		{AE7C331C-BCCD-494E-A545-C16AB3F68DEB} = {4383FD00-3B54-4C2B-9222-BDC045D3FD9B}
+		{D09316A8-F993-41E9-B87D-C22A2C9AA6EB} = {4383FD00-3B54-4C2B-9222-BDC045D3FD9B}
 	EndGlobalSection
 EndGlobal

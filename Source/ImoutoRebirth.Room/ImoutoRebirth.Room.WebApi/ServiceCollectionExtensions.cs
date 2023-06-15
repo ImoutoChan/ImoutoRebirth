@@ -1,8 +1,10 @@
-﻿using System.Text.Json.Serialization;
+﻿using System.IO.Compression;
+using System.Text.Json.Serialization;
 using ImoutoRebirth.Common.WebApi;
 using ImoutoRebirth.Room.WebApi.Controllers;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.ResponseCompression;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 
@@ -20,12 +22,25 @@ public static class ServiceCollectionExtensions
                     options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter()));
 
         services.AddSwagger("ImoutoRebirth.Room WebApi Client", typeof(CollectionsController).Assembly);
+        
+        services.AddResponseCompression(options =>
+        {
+            options.EnableForHttps = true;
+            options.Providers.Add<BrotliCompressionProvider>();
+            options.Providers.Add<GzipCompressionProvider>();
+        });
+        services.Configure<BrotliCompressionProviderOptions>(options => options.Level = CompressionLevel.Optimal);
+        services.Configure<GzipCompressionProviderOptions>(options => options.Level = CompressionLevel.Optimal);
+        services.AddRequestDecompression();
 
         return services;
     }
 
     public static IApplicationBuilder ConfigureWebApi(this IApplicationBuilder app, IWebHostEnvironment env)
     {
+        app.UseRequestDecompression();
+        app.UseResponseCompression();
+        
         if (env.IsDevelopment())
         {
             app.UseDeveloperExceptionPage();

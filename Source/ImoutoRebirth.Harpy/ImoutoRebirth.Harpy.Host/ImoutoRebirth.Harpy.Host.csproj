@@ -18,6 +18,7 @@
     <ItemGroup>
         <ProjectReference Include="..\..\ImoutoRebirth.Common\ImoutoRebirth.Common.Host\ImoutoRebirth.Common.Host.csproj" />
         <ProjectReference Include="..\..\ImoutoRebirth.Common\ImoutoRebirth.Common.Logging\ImoutoRebirth.Common.Logging.csproj" />
+        <ProjectReference Include="..\..\ImoutoRebirth.Common\ImoutoRebirth.Common.OpenTelemetry\ImoutoRebirth.Common.OpenTelemetry.csproj" />
         <ProjectReference Include="..\ImoutoRebirth.Harpy.Services\ImoutoRebirth.Harpy.Services.csproj" />
     </ItemGroup>
 

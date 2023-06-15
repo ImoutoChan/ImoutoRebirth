@@ -3,6 +3,7 @@ using ImoutoRebirth.Common.Logging;
 using ImoutoRebirth.Room.Database;
 using ImoutoRebirth.Common.Quartz.Extensions;
 using ImoutoRebirth.Common.Host;
+using ImoutoRebirth.Common.OpenTelemetry;
 
 namespace ImoutoRebirth.Room.Webhost;
 
@@ -32,5 +33,9 @@ public class Program
                         .WithAllRollingFile()
                         .WithInformationRollingFile()
                         .WithOpenSearch(appConfiguration, hostEnvironment))
-            .ConfigureWebHostDefaults(builder => builder.UseStartup<Startup>());
+            .ConfigureWebHostDefaults(builder => builder.UseStartup<Startup>())
+            .ConfigureServices((context, services) =>
+            {
+                services.AddOpenTelemetry(context.HostingEnvironment, context.Configuration);
+            });
 }

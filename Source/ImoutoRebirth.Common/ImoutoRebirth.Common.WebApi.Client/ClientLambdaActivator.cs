@@ -2,7 +2,7 @@
 using System.Linq.Expressions;
 using System.Reflection;
 
-namespace ImoutoRebirth.Lilin.WebApi.Client;
+namespace ImoutoRebirth.Common.WebApi.Client;
 
 public static class ClientLambdaActivator
 {

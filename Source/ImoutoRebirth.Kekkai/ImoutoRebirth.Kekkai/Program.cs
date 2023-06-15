@@ -2,103 +2,59 @@ using System.Text.Json.Serialization;
 using ImoutoRebirth.Common.Cqrs;
 using ImoutoRebirth.Common.Host;
 using ImoutoRebirth.Common.Logging;
+using ImoutoRebirth.Common.OpenTelemetry;
 using ImoutoRebirth.Common.WebApi;
 using ImoutoRebirth.Kekkai.Application;
 using ImoutoRebirth.Kekkai.Auth;
+using ImoutoRebirth.Kekkai.Controllers;
 using ImoutoRebirth.Lilin.WebApi.Client;
 using ImoutoRebirth.Room.WebApi.Client;
-using MediatR;
-using GenericHost = Microsoft.Extensions.Hosting.Host;
+using Microsoft.AspNetCore.Server.Kestrel.Core;
 
-namespace ImoutoRebirth.Kekkai;
+const string servicePrefix = "KEKKAI_";
 
-internal static class Program
-{
-    private const string ServicePrefix = "KEKKAI_";
+var builder = WebApplication.CreateBuilder(args);
+var services = builder.Services;
+var configuration = builder.Configuration;
 
-    private static async Task Main(string[] args)
-    {
-        await CreateHostBuilder(args)
-            .Build()
-            .RunAsync();
-    }
+services.AddWindowsService();
+builder.SetWorkingDirectory();
+builder.UseEnvironmentFromEnvironmentVariable(servicePrefix);
+builder.UseConfiguration(servicePrefix);
+builder.ConfigureSerilog(
+    (loggerBuilder, appConfiguration, environment)
+        => loggerBuilder
+            .WithoutDefaultLoggers()
+            .WithConsole()
+            .WithAllRollingFile()
+            .WithInformationRollingFile()
+            .WithOpenSearch(appConfiguration, environment));
+services.Configure<KestrelServerOptions>(x => x.AddServerHeader = false);
 
-    // ReSharper disable once MemberCanBePrivate.Global
-    public static IHostBuilder CreateHostBuilder(string[] args)
-        => GenericHost.CreateDefaultBuilder(args)
-            .UseWindowsService()
-            .SetWorkingDirectory()
-            .UseEnvironmentFromEnvironmentVariable(ServicePrefix)
-            .UseConfiguration(ServicePrefix)
-            .ConfigureSerilog(
-                (loggerBuilder, appConfiguration, hostEnvironment)
-                    => loggerBuilder
-                        .WithoutDefaultLoggers()
-                        .WithConsole()
-                        .WithAllRollingFile()
-                        .WithInformationRollingFile()
-                        .WithOpenSearch(appConfiguration, hostEnvironment))
-            .ConfigureWebHostDefaults(
-                webHostBuilder
-                    => webHostBuilder
-                        .UseKestrel(options => options.AddServerHeader = false)
-                        .UseStartup<WebApiStartup>());
-}
 
-public class WebApiStartup
-{
-    private IConfiguration Configuration { get; }
-
-    public WebApiStartup(IConfiguration configuration)
-    {
-        Configuration = configuration;
-    }
-
-    public void ConfigureServices(IServiceCollection services)
-    {
-        services.AddLilinWebApiClients(
-            Configuration.GetValue<string>("LilinUrl") ?? throw new ArgumentException("Unable to retrieve LilinUrl"));
-        services.AddRoomWebApiClients(
-            Configuration.GetValue<string>("RoomUrl") ?? throw new ArgumentException("Unable to retrieve RoomUrl"));
+services.AddLilinWebApiClients(configuration.GetRequiredValue<string>("LilinUrl"));
+services.AddRoomWebApiClients(configuration.GetRequiredValue<string>("RoomUrl"));
         
-        services.AddMediatR(x => x.RegisterServicesFromAssemblyContaining<FilesStatusesQueryHandler>());
-        services.AddLoggingBehavior();
+services.AddMediatR(x => x.RegisterServicesFromAssemblyContaining<FilesStatusesQueryHandler>());
+services.AddLoggingBehavior();
 
-        services.AddTransient<SimpleAuthMiddleware>();
+services.AddTransient<SimpleAuthMiddleware>();
         
-        services
-            .AddControllers()
-            .AddJsonOptions(options => options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter()));
-        services.AddSwagger("Kekkai API", typeof(WebApiStartup).Assembly, c =>
-        {
-            c.OperationFilter<AddAuthTokenOperationFilter>();
-        });
-        
-        services.AddCors(options =>
-        {
-            options.AddPolicy("AllowAnyOrigin",
-                builder => builder.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod());
-        });
-    }
+services
+    .AddControllers()
+    .AddJsonOptions(options => options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter()));
 
-    public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
-    {
-        if (env.IsDevelopment())
-        {
-            app.UseDeveloperExceptionPage();
-        }
-            
-        app.UseRouting();
-        app.UseCors("AllowAnyOrigin");
+services.AddSwagger("Kekkai API", typeof(FileStatusController).Assembly, c => c.OperationFilter<AddAuthTokenOperationFilter>());
+services.AddCors(options => options.AddPolicy("AllowAnyOrigin", x => x.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod()));
+services.AddOpenTelemetry(builder.Environment, builder.Configuration);
 
-        app.UseSwagger();
-        app.UseSwaggerUI(c =>
-        {
-            c.SwaggerEndpoint("/swagger/v1.0/swagger.json", "Kekkai API");
-        });
+var app = builder.Build();
+app.UseRouting();
+app.UseCors("AllowAnyOrigin");
 
-        app.UseMiddleware<SimpleAuthMiddleware>();
-        
-        app.UseEndpoints(endpoints => endpoints.MapControllers());
-    }
-}
+app.UseSwagger();
+app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1.0/swagger.json", "Kekkai API"));
+
+app.UseMiddleware<SimpleAuthMiddleware>();
+app.MapControllers();
+app.Run();

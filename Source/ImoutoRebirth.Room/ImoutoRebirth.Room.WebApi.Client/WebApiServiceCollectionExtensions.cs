@@ -1,4 +1,6 @@
-﻿using ImoutoRebirth.RoomService.WebApi.Client;
+﻿using System.Net;
+using ImoutoRebirth.Common.WebApi.Client;
+using ImoutoRebirth.RoomService.WebApi.Client;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace ImoutoRebirth.Room.WebApi.Client;
@@ -11,9 +13,15 @@ public static class WebApiServiceCollectionExtensions
         string? httpClientName = null)
         where TClient : class
     {
-        services.AddHttpClient();
-        
-        httpClientName = typeof(TClient).Name;
+        httpClientName ??= typeof(TClient).Name;
+
+        services.AddTransient<GZipCompressingHandler>();
+        services.AddHttpClient(httpClientName)
+            .ConfigurePrimaryHttpMessageHandler(x => new HttpClientHandler
+            {
+                AutomaticDecompression = DecompressionMethods.GZip | DecompressionMethods.Deflate,
+            })
+            .AddHttpMessageHandler<GZipCompressingHandler>();
 
         services.AddTransient(
             provider =>

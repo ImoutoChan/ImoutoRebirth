@@ -1,36 +1,30 @@
 ﻿using ImoutoRebirth.Common.Host;
 using ImoutoRebirth.Common.Logging;
+using ImoutoRebirth.Common.OpenTelemetry;
 using ImoutoRebirth.Common.Quartz.Extensions;
+using ImoutoRebirth.Harpy.Services;
 using GenericHost = Microsoft.Extensions.Hosting.Host;
 
-namespace ImoutoRebirth.Harpy.Host;
+const string servicePrefix = "HARPY_";
 
-internal static class Program
-{
-    private const string ServicePrefix = "HARPY_";
+var builder = Host.CreateApplicationBuilder(args);
 
-    private static async Task Main(string[] args)
-    {
-        await CreateHostBuilder(args)
-            .Build()
-            .RunAsync();
-    }
+builder.Services.AddWindowsService();
+builder.SetWorkingDirectory();
+builder.UseEnvironmentFromEnvironmentVariable(servicePrefix);
+builder.UseConfiguration(servicePrefix);
+builder.ConfigureSerilog(
+    (loggerBuilder, appConfiguration, hostEnvironment)
+        => loggerBuilder
+            .WithoutDefaultLoggers()
+            .WithConsole()
+            .WithAllRollingFile()
+            .WithInformationRollingFile()
+            .WithOpenSearch(appConfiguration, hostEnvironment));
+builder.UseQuartz();
 
-    // ReSharper disable once MemberCanBePrivate.Global
-    public static IHostBuilder CreateHostBuilder(string[] args)
-        => GenericHost.CreateDefaultBuilder(args)
-            .UseWindowsService()
-            .SetWorkingDirectory()
-            .UseEnvironmentFromEnvironmentVariable(ServicePrefix)
-            .UseConfiguration(ServicePrefix)
-            .ConfigureSerilog(
-                (loggerBuilder, appConfiguration, hostEnvironment)
-                    => loggerBuilder
-                        .WithoutDefaultLoggers()
-                        .WithConsole()
-                        .WithAllRollingFile()
-                        .WithInformationRollingFile()
-                        .WithOpenSearch(appConfiguration, hostEnvironment))
-            .UseStartup(x => new Startup(x))
-            .UseQuartz();
-}
+builder.Services
+    .AddHarpyServices(builder.Configuration)
+    .AddOpenTelemetry(builder.Environment, builder.Configuration);
+
+builder.Build().Run();

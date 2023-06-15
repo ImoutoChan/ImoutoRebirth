@@ -1,6 +1,7 @@
 ﻿using ImoutoRebirth.Common.EntityFrameworkCore;
 using ImoutoRebirth.Common.Host;
 using ImoutoRebirth.Common.Logging;
+using ImoutoRebirth.Common.OpenTelemetry;
 using ImoutoRebirth.Common.Quartz.Extensions;
 using ImoutoRebirth.Meido.DataAccess;
 using Microsoft.Extensions.Hosting;
@@ -34,6 +35,10 @@ internal class Program
                         .WithOpenSearch(appConfiguration, hostEnvironment))
             .UseQuartz()
             .UseStartup(x => new Startup(x))
+            .ConfigureServices((context, services) =>
+            {
+                services.AddOpenTelemetry(context.HostingEnvironment, context.Configuration);
+            })
             .Build();
 
     /// <summary>

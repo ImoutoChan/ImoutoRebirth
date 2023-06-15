@@ -51,8 +51,9 @@ class FileService : IFileService
 
         var lilinFilesThatSatisfyConditionsHashSet = lilinFilesThatSatisfyConditions.ToHashSet();
 
-        var satisfiedRoomFiles = roomFiles.Where(x => lilinFilesThatSatisfyConditionsHashSet.Contains(x.Id)).ToList();
-        
+        var satisfiedRoomFiles =
+            roomFiles.Where(x => lilinFilesThatSatisfyConditionsHashSet.Contains(x.Id)).ToList();
+
         var files = _mapper.Map<IReadOnlyCollection<File>>(satisfiedRoomFiles);
 
         return (files, roomFilesIds.Any());

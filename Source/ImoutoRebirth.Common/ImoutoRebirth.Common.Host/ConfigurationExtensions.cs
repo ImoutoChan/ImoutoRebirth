@@ -16,9 +16,12 @@ public static class ConfigurationExtensions
 
     public static T GetRequired<T>(this IConfigurationSection configuration) 
         => configuration.Get<T>()
-           ?? throw new InvalidOperationException($"Missing configuration");
+           ?? throw new InvalidOperationException("Missing configuration");
 
     public static T GetRequired<T>(this IConfiguration configuration) 
         => configuration.Get<T>()
-           ?? throw new InvalidOperationException($"Missing configuration");
+           ?? throw new InvalidOperationException("Missing configuration");
+    
+    public static T GetRequiredValue<T>(this IConfiguration configuration, string key) 
+        => configuration.GetValue<T>(key) ?? throw new InvalidOperationException($"Missing configuration '{key}'");
 }

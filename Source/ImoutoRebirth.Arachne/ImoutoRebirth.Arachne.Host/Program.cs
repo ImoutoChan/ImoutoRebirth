@@ -1,33 +1,40 @@
-﻿using ImoutoRebirth.Common.Host;
+﻿using ImoutoRebirth.Arachne.Core;
+using ImoutoRebirth.Arachne.Host.Settings;
+using ImoutoRebirth.Arachne.Infrastructure;
+using ImoutoRebirth.Arachne.MessageContracts;
+using ImoutoRebirth.Arachne.Service.Extensions;
+using ImoutoRebirth.Common.Host;
 using ImoutoRebirth.Common.Logging;
+using ImoutoRebirth.Common.MassTransit;
+using ImoutoRebirth.Common.OpenTelemetry;
 using Microsoft.Extensions.Hosting;
 
-namespace ImoutoRebirth.Arachne.Host;
+const string servicePrefix = "ARACHNE_";
 
-internal class Program
-{
-    private const string ServicePrefix = "ARACHNE_";
+var builder = Host.CreateApplicationBuilder(args);
 
-    private static async Task Main(string[] args)
-    {
-        await CreateConsoleHost(args)
-            .RunAsync();
-    }
+builder.Services.AddWindowsService();
+builder.SetWorkingDirectory();
+builder.UseEnvironmentFromEnvironmentVariable(servicePrefix);
+builder.UseConfiguration(servicePrefix);
+builder.ConfigureSerilog(
+    (loggerBuilder, appConfiguration, hostEnvironment)
+        => loggerBuilder
+            .WithoutDefaultLoggers()
+            .WithConsole()
+            .WithAllRollingFile()
+            .WithInformationRollingFile()
+            .WithOpenSearch(appConfiguration, hostEnvironment));
 
-    public static IHost CreateConsoleHost(string[] args)
-        => new HostBuilder()
-            .SetWorkingDirectory()
-            .UseWindowsService()
-            .UseEnvironmentFromEnvironmentVariable(ServicePrefix)
-            .UseConfiguration(ServicePrefix)
-            .ConfigureSerilog(
-                (loggerBuilder, appConfiguration, hostEnvironment)
-                    => loggerBuilder
-                        .WithoutDefaultLoggers()
-                        .WithConsole()
-                        .WithAllRollingFile()
-                        .WithInformationRollingFile()
-                        .WithOpenSearch(appConfiguration, hostEnvironment))
-            .UseStartup(x => new Startup(x))
-            .Build();
-}
+var arachneSettings = builder.Configuration.GetRequired<ArachneSettings>();
+
+builder.Services
+    .AddArachneCore()
+    .AddArachneServices()
+    .AddArachneInfrastructure(arachneSettings.DanbooruSettings, arachneSettings.SankakuSettings)
+    .AddTrueMassTransit(arachneSettings.RabbitSettings, ReceiverApp.Name, с => с.AddArachneServicesForRabbit())
+    .AddOpenTelemetry(builder.Environment, builder.Configuration);
+
+builder.Build().Run();
+
+
