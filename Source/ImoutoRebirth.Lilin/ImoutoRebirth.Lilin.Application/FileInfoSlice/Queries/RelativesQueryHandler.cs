@@ -1,7 +1,7 @@
 ﻿using System.Runtime.CompilerServices;
 using ImoutoRebirth.Common.Cqrs.Abstract;
 using ImoutoRebirth.Lilin.Application.TagSlice;
-using ImoutoRebirth.Lilin.Core.FileInfoAggregate;
+using ImoutoRebirth.Lilin.Domain.FileInfoAggregate;
 using MediatR;
 using Microsoft.Extensions.Caching.Memory;
 

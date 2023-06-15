@@ -1,4 +1,4 @@
-﻿using ImoutoRebirth.Lilin.Core.TagAggregate;
+﻿using ImoutoRebirth.Lilin.Domain.TagAggregate;
 
 namespace ImoutoRebirth.Lilin.Application.Persistence;
 

@@ -3,7 +3,7 @@ using ImoutoRebirth.Common.Cqrs.Abstract;
 using ImoutoRebirth.Common.Cqrs.Behaviors;
 using ImoutoRebirth.Common.Domain;
 using ImoutoRebirth.Lilin.Application.Persistence;
-using ImoutoRebirth.Lilin.Core.TagAggregate;
+using ImoutoRebirth.Lilin.Domain.TagAggregate;
 
 namespace ImoutoRebirth.Lilin.Application.TagSlice;
 

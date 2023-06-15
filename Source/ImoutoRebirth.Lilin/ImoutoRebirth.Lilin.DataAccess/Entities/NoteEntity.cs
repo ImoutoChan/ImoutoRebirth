@@ -1,5 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using ImoutoRebirth.Lilin.Core.FileInfoAggregate;
+using ImoutoRebirth.Lilin.Domain.FileInfoAggregate;
 
 namespace ImoutoRebirth.Lilin.DataAccess.Entities;
 

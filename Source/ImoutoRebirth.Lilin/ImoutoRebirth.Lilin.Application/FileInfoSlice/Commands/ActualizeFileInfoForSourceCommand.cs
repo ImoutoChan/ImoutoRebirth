@@ -4,10 +4,10 @@ using ImoutoRebirth.Common.Cqrs.Abstract;
 using ImoutoRebirth.Common.Cqrs.Behaviors;
 using ImoutoRebirth.Common.Domain;
 using ImoutoRebirth.Lilin.Application.Persistence;
-using ImoutoRebirth.Lilin.Core.FileInfoAggregate;
-using ImoutoRebirth.Lilin.Core.TagAggregate;
-using ImoutoRebirth.Lilin.Core.TagTypeAggregate;
-using MetadataSource = ImoutoRebirth.Lilin.Core.FileInfoAggregate.MetadataSource;
+using ImoutoRebirth.Lilin.Domain.FileInfoAggregate;
+using ImoutoRebirth.Lilin.Domain.TagAggregate;
+using ImoutoRebirth.Lilin.Domain.TagTypeAggregate;
+using MetadataSource = ImoutoRebirth.Lilin.Domain.FileInfoAggregate.MetadataSource;
 
 namespace ImoutoRebirth.Lilin.Application.FileInfoSlice.Commands;
 

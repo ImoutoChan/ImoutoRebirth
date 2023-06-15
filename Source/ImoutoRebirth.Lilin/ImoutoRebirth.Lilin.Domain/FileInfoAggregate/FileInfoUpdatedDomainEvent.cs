@@ -1,5 +1,5 @@
 ﻿using ImoutoRebirth.Common.Domain;
 
-namespace ImoutoRebirth.Lilin.Core.FileInfoAggregate;
+namespace ImoutoRebirth.Lilin.Domain.FileInfoAggregate;
 
 public record FileInfoUpdatedDomainEvent(Guid FileId, MetadataSource MetadataSource) : IDomainEvent;

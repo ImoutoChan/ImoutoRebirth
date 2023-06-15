@@ -24,7 +24,7 @@
     </ItemGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\ImoutoRebirth.Lilin.Core\ImoutoRebirth.Lilin.Core.csproj" />
+        <ProjectReference Include="..\ImoutoRebirth.Lilin.Domain\ImoutoRebirth.Lilin.Domain.csproj" />
     </ItemGroup>
 
     <ItemGroup>

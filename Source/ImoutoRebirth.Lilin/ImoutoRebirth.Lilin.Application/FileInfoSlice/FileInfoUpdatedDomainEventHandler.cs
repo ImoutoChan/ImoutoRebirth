@@ -1,6 +1,6 @@
 ﻿using ImoutoRebirth.Common.Application;
 using ImoutoRebirth.Common.Cqrs.Events;
-using ImoutoRebirth.Lilin.Core.FileInfoAggregate;
+using ImoutoRebirth.Lilin.Domain.FileInfoAggregate;
 using ImoutoRebirth.Meido.MessageContracts;
 
 namespace ImoutoRebirth.Lilin.Application.FileInfoSlice;

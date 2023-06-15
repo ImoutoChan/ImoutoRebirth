@@ -1,7 +1,7 @@
 ﻿using ImoutoRebirth.Common.Cqrs.Abstract;
 using ImoutoRebirth.Lilin.Application.FileInfoSlice.Queries;
-using ImoutoRebirth.Lilin.Core.FileInfoAggregate;
-using ImoutoRebirth.Lilin.Core.TagAggregate;
+using ImoutoRebirth.Lilin.Domain.FileInfoAggregate;
+using ImoutoRebirth.Lilin.Domain.TagAggregate;
 using ImoutoRebirth.Lilin.DataAccess;
 using ImoutoRebirth.Lilin.Infrastructure.Mappers;
 using Microsoft.EntityFrameworkCore;

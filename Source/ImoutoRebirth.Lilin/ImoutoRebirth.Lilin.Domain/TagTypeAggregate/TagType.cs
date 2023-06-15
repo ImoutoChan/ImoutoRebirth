@@ -1,6 +1,6 @@
 ﻿using ImoutoRebirth.Common;
 
-namespace ImoutoRebirth.Lilin.Core.TagTypeAggregate;
+namespace ImoutoRebirth.Lilin.Domain.TagTypeAggregate;
 
 public class TagType
 {

@@ -1,4 +1,4 @@
-﻿using ImoutoRebirth.Lilin.Core.FileInfoAggregate;
+﻿using ImoutoRebirth.Lilin.Domain.FileInfoAggregate;
 using ImoutoRebirth.Lilin.DataAccess.Entities;
 
 namespace ImoutoRebirth.Lilin.Infrastructure.Mappers;

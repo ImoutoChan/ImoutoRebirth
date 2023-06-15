@@ -1,4 +1,4 @@
-﻿using ImoutoRebirth.Lilin.Core.TagTypeAggregate;
+﻿using ImoutoRebirth.Lilin.Domain.TagTypeAggregate;
 using ImoutoRebirth.Lilin.DataAccess.Entities;
 
 namespace ImoutoRebirth.Lilin.Infrastructure.Mappers;

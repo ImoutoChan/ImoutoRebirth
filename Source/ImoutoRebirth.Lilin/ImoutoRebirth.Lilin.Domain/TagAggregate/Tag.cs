@@ -1,7 +1,7 @@
 ﻿using ImoutoRebirth.Common;
-using ImoutoRebirth.Lilin.Core.TagTypeAggregate;
+using ImoutoRebirth.Lilin.Domain.TagTypeAggregate;
 
-namespace ImoutoRebirth.Lilin.Core.TagAggregate;
+namespace ImoutoRebirth.Lilin.Domain.TagAggregate;
 
 public class Tag
 {

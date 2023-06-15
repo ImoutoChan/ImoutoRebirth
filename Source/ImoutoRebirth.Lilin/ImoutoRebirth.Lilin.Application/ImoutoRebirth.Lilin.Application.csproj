@@ -15,7 +15,7 @@
     <ItemGroup>
         <ProjectReference Include="..\..\ImoutoRebirth.Common\ImoutoRebirth.Common.Cqrs\ImoutoRebirth.Common.Cqrs.csproj" />
         <ProjectReference Include="..\..\ImoutoRebirth.Meido\ImoutoRebirth.Meido.MessageContracts\ImoutoRebirth.Meido.MessageContracts.csproj" />
-        <ProjectReference Include="..\ImoutoRebirth.Lilin.Core\ImoutoRebirth.Lilin.Core.csproj" />
+        <ProjectReference Include="..\ImoutoRebirth.Lilin.Domain\ImoutoRebirth.Lilin.Domain.csproj" />
     </ItemGroup>
 
     <ItemGroup>

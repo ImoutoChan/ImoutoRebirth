@@ -1,5 +1,5 @@
 using ImoutoRebirth.Common.Cqrs.Abstract;
-using ImoutoRebirth.Lilin.Core.TagAggregate;
+using ImoutoRebirth.Lilin.Domain.TagAggregate;
 
 namespace ImoutoRebirth.Lilin.Application.FileInfoSlice.Queries;
 

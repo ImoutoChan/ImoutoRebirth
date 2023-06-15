@@ -1,6 +1,6 @@
 ﻿using ImoutoRebirth.Common.Cqrs.Abstract;
 using ImoutoRebirth.Lilin.Application.TagSlice;
-using ImoutoRebirth.Lilin.Core.TagAggregate;
+using ImoutoRebirth.Lilin.Domain.TagAggregate;
 using ImoutoRebirth.Lilin.DataAccess;
 using ImoutoRebirth.Lilin.DataAccess.Entities;
 using ImoutoRebirth.Lilin.Infrastructure.Mappers;

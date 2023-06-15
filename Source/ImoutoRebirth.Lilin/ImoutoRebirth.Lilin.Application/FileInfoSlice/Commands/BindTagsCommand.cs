@@ -3,7 +3,7 @@ using ImoutoRebirth.Common;
 using ImoutoRebirth.Common.Cqrs.Abstract;
 using ImoutoRebirth.Common.Cqrs.Behaviors;
 using ImoutoRebirth.Lilin.Application.Persistence;
-using ImoutoRebirth.Lilin.Core.FileInfoAggregate;
+using ImoutoRebirth.Lilin.Domain.FileInfoAggregate;
 using Microsoft.Extensions.Logging;
 
 namespace ImoutoRebirth.Lilin.Application.FileInfoSlice.Commands;

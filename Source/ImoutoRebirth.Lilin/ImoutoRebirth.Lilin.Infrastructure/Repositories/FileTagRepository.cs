@@ -1,5 +1,5 @@
 ﻿using ImoutoRebirth.Lilin.Application.Persistence;
-using ImoutoRebirth.Lilin.Core.FileInfoAggregate;
+using ImoutoRebirth.Lilin.Domain.FileInfoAggregate;
 using ImoutoRebirth.Lilin.DataAccess;
 using ImoutoRebirth.Lilin.Infrastructure.Mappers;
 using Microsoft.EntityFrameworkCore;

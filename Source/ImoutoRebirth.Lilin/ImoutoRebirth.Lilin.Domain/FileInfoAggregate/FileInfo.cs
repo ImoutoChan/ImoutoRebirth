@@ -1,6 +1,6 @@
 ﻿using ImoutoRebirth.Common.Domain;
 
-namespace ImoutoRebirth.Lilin.Core.FileInfoAggregate;
+namespace ImoutoRebirth.Lilin.Domain.FileInfoAggregate;
 
 public class FileInfo
 {

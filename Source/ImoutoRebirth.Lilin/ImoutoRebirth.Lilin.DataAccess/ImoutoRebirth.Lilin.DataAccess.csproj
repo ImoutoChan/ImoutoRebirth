@@ -21,7 +21,7 @@
         <ProjectReference Include="..\..\ImoutoRebirth.Common\ImoutoRebirth.Common.Domain.EntityFrameworkCore\ImoutoRebirth.Common.Domain.EntityFrameworkCore.csproj" />
         <ProjectReference Include="..\..\ImoutoRebirth.Common\ImoutoRebirth.Common.Domain\ImoutoRebirth.Common.Domain.csproj" />
         <ProjectReference Include="..\..\ImoutoRebirth.Common\ImoutoRebirth.Common.EntityFrameworkCore\ImoutoRebirth.Common.EntityFrameworkCore.csproj" />
-        <ProjectReference Include="..\ImoutoRebirth.Lilin.Core\ImoutoRebirth.Lilin.Core.csproj" />
+        <ProjectReference Include="..\ImoutoRebirth.Lilin.Domain\ImoutoRebirth.Lilin.Domain.csproj" />
     </ItemGroup>
 
     <ItemGroup>

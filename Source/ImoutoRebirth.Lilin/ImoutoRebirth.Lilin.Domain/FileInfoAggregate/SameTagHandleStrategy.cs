@@ -1,4 +1,4 @@
-﻿namespace ImoutoRebirth.Lilin.Core.FileInfoAggregate;
+﻿namespace ImoutoRebirth.Lilin.Domain.FileInfoAggregate;
 
 public enum SameTagHandleStrategy
 {

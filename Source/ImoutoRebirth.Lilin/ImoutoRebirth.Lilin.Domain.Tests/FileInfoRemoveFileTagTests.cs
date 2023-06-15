@@ -1,8 +1,8 @@
 ﻿using FluentAssertions;
-using ImoutoRebirth.Lilin.Core.FileInfoAggregate;
+using ImoutoRebirth.Lilin.Domain.FileInfoAggregate;
 using Xunit;
 
-namespace ImoutoRebirth.Lilin.Core.Tests;
+namespace ImoutoRebirth.Lilin.Domain.Tests;
 
 public class FileInfoRemoveFileTagTests
 {

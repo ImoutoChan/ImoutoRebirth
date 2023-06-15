@@ -31,6 +31,6 @@ internal class UpdateMetadataCommandConsumer : IConsumer<IUpdateMetadataCommand>
         await _mediator.Send(command);
     }
 
-    private static ImoutoRebirth.Lilin.Core.FileInfoAggregate.MetadataSource Convert(MetadataSource metadata)
-        => (ImoutoRebirth.Lilin.Core.FileInfoAggregate.MetadataSource) (int) metadata;
+    private static ImoutoRebirth.Lilin.Domain.FileInfoAggregate.MetadataSource Convert(MetadataSource metadata)
+        => (ImoutoRebirth.Lilin.Domain.FileInfoAggregate.MetadataSource) (int) metadata;
 }

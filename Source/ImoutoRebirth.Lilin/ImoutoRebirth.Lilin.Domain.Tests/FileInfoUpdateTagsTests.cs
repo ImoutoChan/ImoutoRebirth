@@ -1,10 +1,10 @@
 using FluentAssertions;
-using ImoutoRebirth.Lilin.Core.FileInfoAggregate;
-using ImoutoRebirth.Lilin.Core.TagAggregate;
-using ImoutoRebirth.Lilin.Core.TagTypeAggregate;
+using ImoutoRebirth.Lilin.Domain.FileInfoAggregate;
+using ImoutoRebirth.Lilin.Domain.TagAggregate;
+using ImoutoRebirth.Lilin.Domain.TagTypeAggregate;
 using Xunit;
 
-namespace ImoutoRebirth.Lilin.Core.Tests;
+namespace ImoutoRebirth.Lilin.Domain.Tests;
 
 public class FileInfoUpdateTagsTests
 {

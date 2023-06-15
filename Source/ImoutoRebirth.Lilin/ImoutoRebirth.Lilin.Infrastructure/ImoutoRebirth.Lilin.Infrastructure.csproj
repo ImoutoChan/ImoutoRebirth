@@ -14,7 +14,7 @@
     <ItemGroup>
         <ProjectReference Include="..\..\ImoutoRebirth.Common\ImoutoRebirth.Common.Infrastructure\ImoutoRebirth.Common.Infrastructure.csproj" />
         <ProjectReference Include="..\ImoutoRebirth.Lilin.Application\ImoutoRebirth.Lilin.Application.csproj" />
-        <ProjectReference Include="..\ImoutoRebirth.Lilin.Core\ImoutoRebirth.Lilin.Core.csproj" />
+        <ProjectReference Include="..\ImoutoRebirth.Lilin.Domain\ImoutoRebirth.Lilin.Domain.csproj" />
         <ProjectReference Include="..\ImoutoRebirth.Lilin.DataAccess\ImoutoRebirth.Lilin.DataAccess.csproj" />
     </ItemGroup>
 

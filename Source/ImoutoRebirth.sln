@@ -53,9 +53,9 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ImoutoRebirth.Kekkai", "Imo
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ImoutoRebirth.Lilin", "ImoutoRebirth.Lilin", "{9DD31146-A822-409B-B6B7-EE16337740D3}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ImoutoRebirth.Lilin.Core", "ImoutoRebirth.Lilin\ImoutoRebirth.Lilin.Core\ImoutoRebirth.Lilin.Core.csproj", "{D4810667-AF36-4E43-A559-B8B41867A508}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ImoutoRebirth.Lilin.Domain", "ImoutoRebirth.Lilin\ImoutoRebirth.Lilin.Domain\ImoutoRebirth.Lilin.Domain.csproj", "{D4810667-AF36-4E43-A559-B8B41867A508}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ImoutoRebirth.Lilin.Core.Tests", "ImoutoRebirth.Lilin\ImoutoRebirth.Lilin.Core.Tests\ImoutoRebirth.Lilin.Core.Tests.csproj", "{2B774E0D-C850-46B0-9BA4-38673827B24C}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ImoutoRebirth.Lilin.Domain.Tests", "ImoutoRebirth.Lilin\ImoutoRebirth.Lilin.Domain.Tests\ImoutoRebirth.Lilin.Domain.Tests.csproj", "{2B774E0D-C850-46B0-9BA4-38673827B24C}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ImoutoRebirth.Lilin.DataAccess", "ImoutoRebirth.Lilin\ImoutoRebirth.Lilin.DataAccess\ImoutoRebirth.Lilin.DataAccess.csproj", "{8EA5FED5-A8CA-424D-946A-B0C4A05B4D25}"
 EndProject

@@ -1,6 +1,6 @@
 ﻿using ImoutoRebirth.Common.Cqrs.Abstract;
 using ImoutoRebirth.Lilin.Application.Persistence;
-using ImoutoRebirth.Lilin.Core.TagTypeAggregate;
+using ImoutoRebirth.Lilin.Domain.TagTypeAggregate;
 
 namespace ImoutoRebirth.Lilin.Application.TagTypeSlice;
 
