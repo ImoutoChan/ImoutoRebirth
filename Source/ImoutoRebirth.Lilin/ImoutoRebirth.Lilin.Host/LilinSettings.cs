@@ -1,6 +1,6 @@
 ﻿using ImoutoRebirth.Common.MassTransit;
 
-namespace ImoutoRebirth.Lilin.Host.Settings;
+namespace ImoutoRebirth.Lilin.Host;
 
 public class LilinSettings
 {

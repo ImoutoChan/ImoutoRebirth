@@ -16,7 +16,7 @@ var builder = Host.CreateApplicationBuilder(args);
 builder.Services.AddWindowsService();
 builder.SetWorkingDirectory();
 builder.UseEnvironmentFromEnvironmentVariable(servicePrefix);
-builder.UseConfiguration(servicePrefix);
+builder.UseConfiguration<Program>(servicePrefix);
 builder.ConfigureSerilog(
     (loggerBuilder, appConfiguration, hostEnvironment)
         => loggerBuilder

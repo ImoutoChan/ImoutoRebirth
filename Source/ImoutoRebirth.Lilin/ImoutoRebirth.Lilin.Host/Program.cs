@@ -6,13 +6,11 @@ using ImoutoRebirth.Common.OpenTelemetry;
 using ImoutoRebirth.Common.Quartz.Extensions;
 using ImoutoRebirth.Lilin.Application;
 using ImoutoRebirth.Lilin.DataAccess;
-using ImoutoRebirth.Lilin.Host.Settings;
+using ImoutoRebirth.Lilin.Host;
 using ImoutoRebirth.Lilin.Infrastructure;
 using ImoutoRebirth.Lilin.MessageContracts;
 using ImoutoRebirth.Lilin.WebApi;
 using ImoutoRebirth.Lilin.WebApi.WebApi;
-using Microsoft.AspNetCore.Builder;
-using Microsoft.Extensions.Hosting;
 
 const string servicePrefix = "LILIN_";
 
@@ -20,8 +18,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddWindowsService();
 builder.SetWorkingDirectory();
-builder.UseEnvironmentFromEnvironmentVariable(servicePrefix);
-builder.UseConfiguration(servicePrefix);
+builder.UseConfiguration<Program>(servicePrefix);
 builder.ConfigureSerilog(
     (loggerBuilder, appConfiguration, hostEnvironment)
         => loggerBuilder

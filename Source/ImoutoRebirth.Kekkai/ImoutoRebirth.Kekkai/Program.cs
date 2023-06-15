@@ -20,7 +20,7 @@ var configuration = builder.Configuration;
 services.AddWindowsService();
 builder.SetWorkingDirectory();
 builder.UseEnvironmentFromEnvironmentVariable(servicePrefix);
-builder.UseConfiguration(servicePrefix);
+builder.UseConfiguration<Program>(servicePrefix);
 builder.ConfigureSerilog(
     (loggerBuilder, appConfiguration, environment)
         => loggerBuilder

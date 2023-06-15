@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
     <PropertyGroup>
         <OutputType>Exe</OutputType>
@@ -13,8 +13,6 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <FrameworkReference Include="Microsoft.AspNetCore.App" />
-
         <PackageReference Include="Microsoft.Extensions.Hosting.WindowsServices" Version="7.0.0" />
         <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="7.0.5">
             <PrivateAssets>all</PrivateAssets>
@@ -30,12 +28,6 @@
         <ProjectReference Include="..\ImoutoRebirth.Lilin.Infrastructure\ImoutoRebirth.Lilin.Infrastructure.csproj" />
         <ProjectReference Include="..\ImoutoRebirth.Lilin.MessageContracts\ImoutoRebirth.Lilin.MessageContracts.csproj" />
         <ProjectReference Include="..\ImoutoRebirth.Lilin.WebApi\ImoutoRebirth.Lilin.WebApi.csproj" />
-    </ItemGroup>
-
-    <ItemGroup>
-        <None Update="appsettings.json">
-            <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-        </None>
     </ItemGroup>
 
 </Project>
