@@ -1,12 +1,11 @@
-﻿using ImoutoRebirth.Common;
-using ImoutoRebirth.Lilin.Core.FileInfoAggregate;
+﻿using ImoutoRebirth.Lilin.Core.FileInfoAggregate;
 using ImoutoRebirth.Lilin.DataAccess.Entities;
 
 namespace ImoutoRebirth.Lilin.Infrastructure.Mappers;
 
 public static class FileTagMapper
 {
-    public static FileTagEntity ToEntity(this FileTag fileTagModel) 
+    public static FileTagEntity ToNewEntity(this FileTag fileTagModel) 
         => new()
         {
             Id = Guid.NewGuid(),
@@ -16,8 +15,6 @@ public static class FileTagMapper
             Value = fileTagModel.Value
         };
 
-    public static FileTag ToModel(this FileTagEntity entity)
-    {
-        return new FileTag(entity.FileId, entity.TagId, entity.Value, entity.Source);
-    }
+    public static FileTag ToModel(this FileTagEntity entity) 
+        => new(entity.FileId, entity.TagId, entity.Value, entity.Source);
 }

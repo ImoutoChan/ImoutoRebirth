@@ -18,6 +18,7 @@ public static class ServiceCollectionExtensions
         });
         services.AddLoggingBehavior();
         services.AddTransactionBehavior();
+
         services.AddMemoryCache();
 
         return services;

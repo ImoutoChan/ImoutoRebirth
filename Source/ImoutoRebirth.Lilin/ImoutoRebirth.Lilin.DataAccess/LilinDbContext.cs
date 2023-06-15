@@ -11,28 +11,23 @@ public class LilinDbContext : DbContext, IUnitOfWork
 {
     private readonly IEventStorage _eventStorage;
 
-    public DbSet<TagTypeEntity> TagTypes { get; set; } = default!;
+    public required DbSet<TagTypeEntity> TagTypes { get; set; }
 
-    public DbSet<TagEntity> Tags { get; set; } = default!;
+    public required DbSet<TagEntity> Tags { get; set; }
 
-    public DbSet<NoteEntity> Notes { get; set; } = default!;
+    public required DbSet<NoteEntity> Notes { get; set; }
 
-    public DbSet<FileTagEntity> FileTags { get; set; } = default!;
+    public required DbSet<FileTagEntity> FileTags { get; set; }
 
-    public LilinDbContext(
-        DbContextOptions<LilinDbContext> options,
-        IEventStorage eventStorage)
-        : base(options)
-    {
-        _eventStorage = eventStorage;
-    }
+    public LilinDbContext(DbContextOptions<LilinDbContext> options, IEventStorage eventStorage) : base(options) 
+        => _eventStorage = eventStorage;
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<FileTagEntity>(b =>
         {
             b.HasOne(x => x.Tag)
-                .WithMany(x => x!.FileTags)
+                .WithMany(x => x.FileTags)
                 .IsRequired()
                 .OnDelete(DeleteBehavior.Restrict);
 
@@ -47,7 +42,7 @@ public class LilinDbContext : DbContext, IUnitOfWork
         modelBuilder.Entity<TagEntity>(b =>
         {
             b.HasOne(x => x.Type)
-                .WithMany(x => x!.Tags)
+                .WithMany(x => x.Tags)
                 .IsRequired()
                 .OnDelete(DeleteBehavior.Restrict);
 

@@ -37,7 +37,8 @@ builder.Services
     .AddLilinApplication(typeof(ImoutoRebirth.Lilin.Infrastructure.ServiceCollectionExtensions).Assembly)
     .AddLilinDataAccess(builder.Configuration.GetRequiredConnectionString("LilinDatabase"))
     .AddLilinInfrastructure()
-    .AddLilinUi(builder.Configuration).AddTrueMassTransit(lilinSettings.RabbitSettings, ReceiverApp.Name, с => с.AddMassTransitUi())
+    .AddLilinUi(builder.Configuration)
+    .AddTrueMassTransit(lilinSettings.RabbitSettings, ReceiverApp.Name, с => с.AddMassTransitUi())
     .AddQuartz()
     .AddWebEndpoints()
     .AddOpenTelemetry(builder.Environment, builder.Configuration);

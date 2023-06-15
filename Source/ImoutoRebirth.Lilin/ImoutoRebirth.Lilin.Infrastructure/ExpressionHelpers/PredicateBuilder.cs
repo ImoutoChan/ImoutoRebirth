@@ -7,14 +7,10 @@ public static class PredicateBuilder
 {
     public static Expression<Func<T, bool>>? Get<T>() => null;
 
-    public static Expression<Func<T, bool>> Get<T>(
-        this Expression<Func<T, bool>> predicate)
-    {
-        return predicate;
-    }
+    public static Expression<Func<T, bool>> Get<T>(this Expression<Func<T, bool>> predicate) => predicate;
 
     public static Expression<Func<T, bool>> Or<T>(
-        this Expression<Func<T, bool>> expr,
+        this Expression<Func<T, bool>>? expr,
         Expression<Func<T, bool>> or)
     {
         if (expr == null)
@@ -31,13 +27,13 @@ public static class PredicateBuilder
     }
 
     public static Expression<Func<T, bool>> And<T>(
-        this Expression<Func<T, bool>> expr,
+        this Expression<Func<T, bool>>? expr,
         Expression<Func<T, bool>> and)
     {
         if (expr == null)
             return and;
 
-        PredicateBuilder.Replace(
+        Replace(
             (object)and,
             (object)and.Parameters[0],
             (object)expr.Parameters[0]);
@@ -51,18 +47,23 @@ public static class PredicateBuilder
     {
         for (var type = instance.GetType(); type != null; type = type.BaseType)
         {
-            foreach (FieldInfo field in type.GetFields(
+            foreach (var field in type.GetFields(
                          BindingFlags.Instance
                          | BindingFlags.Public
                          | BindingFlags.NonPublic))
             {
-                object? instance1 = field.GetValue(instance);
-                if (instance1 != null && instance1.GetType().Assembly == typeof(Expression).Assembly)
+                var instance1 = field.GetValue(instance);
+
+                if (instance1 == null || instance1.GetType().Assembly != typeof(Expression).Assembly) 
+                    continue;
+                
+                if (instance1 == old)
                 {
-                    if (instance1 == old)
-                        field.SetValue(instance, replacement);
-                    else
-                        PredicateBuilder.Replace(instance1, old, replacement);
+                    field.SetValue(instance, replacement);
+                }
+                else
+                {
+                    Replace(instance1, old, replacement);
                 }
             }
         }

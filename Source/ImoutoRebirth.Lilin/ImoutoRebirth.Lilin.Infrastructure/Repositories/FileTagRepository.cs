@@ -24,7 +24,7 @@ internal class FileTagRepository : IFileTagRepository
 
     public async Task Add(FileTag fileTag)
     {
-        var entity = fileTag.ToEntity();
+        var entity = fileTag.ToNewEntity();
         await _lilinDbContext.AddAsync(entity);
         await _lilinDbContext.SaveChangesAsync();
     }

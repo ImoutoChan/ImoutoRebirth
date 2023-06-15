@@ -12,7 +12,7 @@ public class NoteEntity : EntityBase
     public int? SourceId { get; set; }
 
     [Required]
-    public string Label { get; set; } = default!;
+    public required string Label { get; set; }
 
     public int PositionFromLeft { get; set; }
 

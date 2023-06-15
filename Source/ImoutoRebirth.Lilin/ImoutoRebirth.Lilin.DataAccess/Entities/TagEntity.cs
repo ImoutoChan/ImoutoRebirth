@@ -10,7 +10,7 @@ public class TagEntity : EntityBase
     public Guid TypeId { get; set; }
 
     [Required]
-    public string Name { get; set; } = default!;
+    public required string Name { get; set; }
 
     public bool HasValue { get; set; }
 
@@ -33,7 +33,7 @@ public class TagEntity : EntityBase
     }
 
 
-    public TagTypeEntity? Type { get; set; } = default!;
+    public TagTypeEntity? Type { get; set; }
 
-    public IReadOnlyCollection<FileTagEntity>? FileTags { get; set; } = default!;
+    public IReadOnlyCollection<FileTagEntity>? FileTags { get; set; }
 }
