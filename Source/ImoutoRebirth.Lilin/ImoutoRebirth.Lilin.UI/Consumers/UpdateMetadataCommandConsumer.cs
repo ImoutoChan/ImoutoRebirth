@@ -3,7 +3,7 @@ using ImoutoRebirth.Lilin.MessageContracts;
 using MassTransit;
 using MediatR;
 
-namespace ImoutoRebirth.Lilin.WebApi.Consumers;
+namespace ImoutoRebirth.Lilin.UI.Consumers;
 
 internal class UpdateMetadataCommandConsumer : IConsumer<IUpdateMetadataCommand>
 {

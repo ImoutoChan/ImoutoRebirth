@@ -1,13 +1,13 @@
 ﻿using ImoutoRebirth.Common.MassTransit;
 using ImoutoRebirth.Common.Quartz.Extensions;
 using ImoutoRebirth.Lilin.MessageContracts;
-using ImoutoRebirth.Lilin.WebApi.Consumers;
-using ImoutoRebirth.Lilin.WebApi.Quartz;
+using ImoutoRebirth.Lilin.UI.Consumers;
+using ImoutoRebirth.Lilin.UI.Quartz;
 using ImoutoRebirth.Meido.MessageContracts;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace ImoutoRebirth.Lilin.WebApi;
+namespace ImoutoRebirth.Lilin.UI;
 
 public static class ServiceCollectionExtensions
 {

@@ -9,8 +9,8 @@ using ImoutoRebirth.Lilin.DataAccess;
 using ImoutoRebirth.Lilin.Host;
 using ImoutoRebirth.Lilin.Infrastructure;
 using ImoutoRebirth.Lilin.MessageContracts;
-using ImoutoRebirth.Lilin.WebApi;
-using ImoutoRebirth.Lilin.WebApi.WebApi;
+using ImoutoRebirth.Lilin.UI;
+using ImoutoRebirth.Lilin.UI.WebApi;
 
 const string servicePrefix = "LILIN_";
 

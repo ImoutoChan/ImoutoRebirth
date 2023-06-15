@@ -27,7 +27,7 @@
         <ProjectReference Include="..\ImoutoRebirth.Lilin.DataAccess\ImoutoRebirth.Lilin.DataAccess.csproj" />
         <ProjectReference Include="..\ImoutoRebirth.Lilin.Infrastructure\ImoutoRebirth.Lilin.Infrastructure.csproj" />
         <ProjectReference Include="..\ImoutoRebirth.Lilin.MessageContracts\ImoutoRebirth.Lilin.MessageContracts.csproj" />
-        <ProjectReference Include="..\ImoutoRebirth.Lilin.WebApi\ImoutoRebirth.Lilin.WebApi.csproj" />
+        <ProjectReference Include="..\ImoutoRebirth.Lilin.UI\ImoutoRebirth.Lilin.UI.csproj" />
     </ItemGroup>
 
 </Project>

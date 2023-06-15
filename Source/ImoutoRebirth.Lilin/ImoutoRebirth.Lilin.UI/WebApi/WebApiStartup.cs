@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.ResponseCompression;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace ImoutoRebirth.Lilin.WebApi.WebApi;
+namespace ImoutoRebirth.Lilin.UI.WebApi;
 
 public static class WebEndpointsExtensions
 {

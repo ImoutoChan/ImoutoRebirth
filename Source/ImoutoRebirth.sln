@@ -101,7 +101,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ImoutoRebirth.Room.WebApi.C
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ImoutoRebirth.Room.Webhost", "ImoutoRebirth.Room\ImoutoRebirth.Room.Webhost\ImoutoRebirth.Room.Webhost.csproj", "{FCE7486D-7AAA-43FF-8E4C-29E307385D3A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ImoutoRebirth.Lilin.WebApi", "ImoutoRebirth.Lilin\ImoutoRebirth.Lilin.WebApi\ImoutoRebirth.Lilin.WebApi.csproj", "{DAAC4859-2DDB-4A6F-9291-D3A764A3ACD9}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ImoutoRebirth.Lilin.UI", "ImoutoRebirth.Lilin\ImoutoRebirth.Lilin.UI\ImoutoRebirth.Lilin.UI.csproj", "{DAAC4859-2DDB-4A6F-9291-D3A764A3ACD9}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ImoutoRebirth.Room.WebApi", "ImoutoRebirth.Room\ImoutoRebirth.Room.WebApi\ImoutoRebirth.Room.WebApi.csproj", "{FDB32AFC-5A5E-434C-8393-A95B17937EA6}"
 EndProject

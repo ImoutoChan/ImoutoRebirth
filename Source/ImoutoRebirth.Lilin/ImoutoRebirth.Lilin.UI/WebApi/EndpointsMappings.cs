@@ -6,7 +6,7 @@ using MediatR;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Mvc;
 
-namespace ImoutoRebirth.Lilin.WebApi.WebApi;
+namespace ImoutoRebirth.Lilin.UI.WebApi;
 
 internal static class EndpointsMappings
 {

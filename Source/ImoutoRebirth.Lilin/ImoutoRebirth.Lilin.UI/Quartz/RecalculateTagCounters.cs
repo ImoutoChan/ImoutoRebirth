@@ -4,7 +4,7 @@ using MediatR;
 using Microsoft.Extensions.Options;
 using Quartz;
 
-namespace ImoutoRebirth.Lilin.WebApi.Quartz;
+namespace ImoutoRebirth.Lilin.UI.Quartz;
 
 public class RecalculateTagsCountersJob : IJob
 {
@@ -12,11 +12,7 @@ public class RecalculateTagsCountersJob : IJob
 
     public RecalculateTagsCountersJob(IMediator mediator) => _mediator = mediator;
 
-    public Task Execute(IJobExecutionContext context)
-    {
-        //return _mediator.Send(new UpdateTagsCountersCommand());
-        return Task.CompletedTask;
-    }
+    public Task Execute(IJobExecutionContext context) => _mediator.Send(new UpdateTagsCountersCommand());
 
     public class Description : IQuartzJobDescription
     {
@@ -38,4 +34,9 @@ public class RecalculateTagsCountersJob : IJob
                 .WithSchedule(SimpleScheduleBuilder.RepeatMinutelyForever(_repeatEveryMinutes))
                 .Build();
     }
+}
+
+public class RecalculateTagCountersSettings
+{
+    public int RepeatEveryMinutes { get; set; } = 5;
 }
