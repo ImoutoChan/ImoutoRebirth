@@ -81,6 +81,8 @@ class Build : NukeBuild
             DotNetBuild(s => s
                 .SetProjectFile(Solution)
                 .SetConfiguration(Configuration)
+                .SetAssemblyVersion(GitVersion.AssemblySemVer)
+                .SetVersion(GitVersion.NuGetVersionV2)
                 .EnableNoRestore());
         });
     
@@ -105,7 +107,7 @@ class Build : NukeBuild
 
             var apps = Solution.AllProjects.Where(p => ApplicationProjects.Contains(p.Name));
 
-            Parallel.ForEach(apps, project =>
+            foreach (var project in apps)
             {
                 DotNetPublish(s => s
                     .SetConfiguration(Configuration)
@@ -119,7 +121,7 @@ class Build : NukeBuild
                     Directory.Delete(output / project.Directory.Parent!.Name / "de", true);
                     Directory.Delete(output / project.Directory.Parent!.Name / "libvlc" / "win-x86", true);
                 }
-            });
+            }
 
             CopyFileToOutput("configuration.json");
             CopyFileToOutput("install-update.ps1");
