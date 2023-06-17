@@ -32,15 +32,12 @@ jobs:
           versionSpec: '5.5.0'
 
       - name: Checkout code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
 
-      - name: Prepare git for git version
-        run: |
-          git fetch --tags
-          git branch --create-reflog master origin/master
-          
       - name: Run GitVersion
-        id: gitversion
+        id:   gitversion
         uses: GitTools/actions/gitversion/execute@v0.9.11
 
       - name: Cache .nuke/temp, ~/.nuget/packages
