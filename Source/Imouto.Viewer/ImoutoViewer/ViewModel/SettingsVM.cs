@@ -266,7 +266,7 @@ internal class SettingsVM : VMBase
         catch (UnauthorizedAccessException e)
         {
             var result = await MainWindow.CurrentWindow.ShowMessageAsync("File association", 
-                "You need administrative rigths to set associations. Application will be restarted with administrative rights.",
+                "You need administrative rights to set associations. Application will be restarted with administrative rights.",
                 MessageDialogStyle.AffirmativeAndNegative);
 
             if (result == MessageDialogResult.Affirmative)
@@ -280,7 +280,6 @@ internal class SettingsVM : VMBase
                     Verb = "runas"
                 };
 
-
                 try
                 {
                     Process.Start(proc);
@@ -289,7 +288,6 @@ internal class SettingsVM : VMBase
                 {
                     return;
                 }
-
 
                 Application.Current.Shutdown();
             }
