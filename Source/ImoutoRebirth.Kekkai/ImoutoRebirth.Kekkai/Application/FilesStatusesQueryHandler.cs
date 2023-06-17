@@ -5,6 +5,17 @@ using ImoutoRebirth.RoomService.WebApi.Client;
 
 namespace ImoutoRebirth.Kekkai.Application;
 
+public record FilesStatusesQuery(IReadOnlyCollection<string> Hashes) : IStreamQuery<FileStatusResult>;
+
+public record FileStatusResult(string Hash, FileStatus Status);
+
+public enum FileStatus
+{
+    NotFound,
+    Present,
+    RelativePresent
+}
+
 internal class FilesStatusesQueryHandler : IStreamQueryHandler<FilesStatusesQuery, FileStatusResult>
 {
     private readonly FilesClient _filesLilinClient;

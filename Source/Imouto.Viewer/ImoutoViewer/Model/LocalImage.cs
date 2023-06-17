@@ -172,11 +172,12 @@ internal class LocalImage
 
     private readonly string _filePath;
 
-    private BitmapSource _image;
+    private BitmapSource? _image;
 
     private double _autoResized;
     private double _localZoom;
     private static RotateFlipType _defaultRotation;
+
     #endregion Fields
 
     #region Constructors
@@ -200,14 +201,8 @@ internal class LocalImage
 
     private double LocalZoom
     {
-        get
-        {
-            return IsZoomFixed ? 1 : _localZoom;
-        }
-        set
-        {
-            _localZoom = value;
-        }
+        get => IsZoomFixed ? 1 : _localZoom;
+        set => _localZoom = value;
     }
 
     public BitmapSource Image
@@ -220,10 +215,7 @@ internal class LocalImage
             }
             return _image;
         }
-        private set
-        {
-            _image = value;
-        }
+        private set => _image = value;
     }
 
     public bool IsError { get; private set; }
@@ -369,14 +361,34 @@ internal class LocalImage
         string filePath, 
         BitmapCreateOptions options = BitmapCreateOptions.None)
     {
-        var fileUri = new Uri(filePath);
-        var bitmap = BitmapFrame.Create(fileUri, options, BitmapCacheOption.OnDemand);
+        var bitmap = GetBitmap(options, filePath);
 
         var defaultRotation = GetDefaultRotation(bitmap);
 
         return defaultRotation != RotateFlipType.RotateNoneFlipNone 
             ? Rotate(bitmap, GetTransform(defaultRotation)) 
             : bitmap;
+    }
+
+    private static BitmapSource GetBitmap(BitmapCreateOptions options, string filePath)
+    {
+        var file = new FileInfo(filePath);
+        var isWebp = file.FullName.EndsWith(".webp", StringComparison.OrdinalIgnoreCase);
+
+        if (!isWebp)
+        {
+            var fileUri = new Uri(filePath);
+            return BitmapFrame.Create(fileUri, options, BitmapCacheOption.OnDemand);
+        }
+        
+        using var stream = new MemoryStream();
+        var decoder = new Imazen.WebP.SimpleDecoder();
+        var bytes = File.ReadAllBytes(filePath);
+        var bitmap = decoder.DecodeFromBytes(bytes, bytes.Length);
+        bitmap.Save(stream, System.Drawing.Imaging.ImageFormat.Png);
+        stream.Seek(0, SeekOrigin.Begin);
+
+        return BitmapFrame.Create(stream, options, BitmapCacheOption.OnLoad);
     }
 
     private static Transform GetTransform(RotateFlipType defaultRotation)
@@ -419,7 +431,7 @@ internal class LocalImage
         return result;
     }
 
-    private static RotateFlipType GetDefaultRotation(BitmapFrame bitmap)
+    private static RotateFlipType GetDefaultRotation(BitmapSource bitmap)
     {
         if (!(bitmap.Metadata is BitmapMetadata bitmapMetadata)
             || !bitmapMetadata.ContainsQuery("System.Photo.Orientation"))

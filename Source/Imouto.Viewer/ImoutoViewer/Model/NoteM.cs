@@ -4,9 +4,8 @@ namespace ImoutoViewer.Model;
 
 internal class NoteM
 {
-    public NoteM(Guid id, string noteString, int positionX, int positionY, int width, int height, FileTagSource source)
+    public NoteM(string noteString, int positionX, int positionY, int width, int height, FileTagSource source)
     {
-        Id = id;
         NoteString = noteString;
         PositionX = positionX;
         PositionY = positionY;
@@ -14,8 +13,6 @@ internal class NoteM
         Height = height;
         Source = source;
     }
-
-    public Guid Id { get; }
 
     public string NoteString { get; }
 

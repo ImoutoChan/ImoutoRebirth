@@ -177,7 +177,7 @@ internal class LocalImageList : IEnumerable
         {
             // Load directories
             var image = new FileInfo(imagesList.First());
-            LoadDirectories(image.Directory, FilesGettingMethods);
+            LoadDirectories(image.Directory!, FilesGettingMethods);
 
             // Set current directory
             bool flag = false;

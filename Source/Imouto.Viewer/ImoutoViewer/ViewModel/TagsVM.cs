@@ -211,14 +211,11 @@ internal class TagsVM : VMBase
 
         var tags = await _fileTagService.GetFileTags(file.Id);
         var notes = await _fileTagService.GetFileNotes(file.Id);
-        var notesModels = notes.Select(x => new NoteM(x.Note.Id, x.Note.Label, x.Note.PositionFromLeft,
-            x.Note.PositionFromTop, x.Note.Width, x.Note.Height, x.Source)).ToList();
 
-        return
-        (
-            tags,
-            notesModels
-        );
+        var notesModels = notes.Select(x => new NoteM(x.Label, x.PositionFromLeft,
+            x.PositionFromTop, x.Width, x.Height, x.Source)).ToList();
+
+        return (tags, notesModels);
     }
 
 
