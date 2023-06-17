@@ -29,7 +29,7 @@ internal class ImageEntry
         IsError = false;
     }
 
-    public bool IsWebp => this._path.EndsWith(".webp", StringComparison.OrdinalIgnoreCase);
+    public bool IsWebp => _path.EndsWith(".webp", StringComparison.OrdinalIgnoreCase);
     
     public BitmapSource Image
     {

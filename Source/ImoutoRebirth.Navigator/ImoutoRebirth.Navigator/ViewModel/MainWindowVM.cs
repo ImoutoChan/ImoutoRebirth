@@ -221,6 +221,8 @@ class MainWindowVM : VMBase
     public ICommand RemoveImageCommand { get; set; }
 
     public ICommand SetAsWallpaperCommand { get; set; }
+    
+    public ICommand ShowInExplorerCommand { get; set; }
 
     public ICommand CopyCommand { get; set; }
 
@@ -268,6 +270,7 @@ class MainWindowVM : VMBase
         LoadPreviewsCommand = new RelayCommand(_ => LoadPreviews());
         RemoveImageCommand = new RelayCommand(RemoveImage);
         SetAsWallpaperCommand = new RelayCommand(SetAsWallpaper);
+        ShowInExplorerCommand = new RelayCommand(ShowInExplorer);
 
         CopyCommand = new RelayCommand(CopySelected);
 
@@ -555,6 +558,24 @@ class MainWindowVM : VMBase
             return;
         
         WindowsDesktopService.SetWallpaper(path);
+        Status = "Wallpaper set";
+    }
+
+    private void ShowInExplorer(object o)
+    {
+        var selectedItem = o as INavigatorListEntry;
+
+        var path = selectedItem?.Path;
+        if (path == null)
+            return;
+
+        var file = new FileInfo(path);
+        
+        Process.Start(
+             "explorer.exe" , 
+            $"""
+             /select,"{file.FullName}"
+             """);
         Status = "Wallpaper set";
     }
 
