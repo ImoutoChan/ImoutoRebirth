@@ -1,4 +1,5 @@
-﻿using ImoutoRebirth.Common;
+﻿using System.Diagnostics;
+using ImoutoRebirth.Common;
 using Microsoft.Extensions.Logging;
 
 namespace ImoutoRebirth.Tori.Services;
@@ -24,6 +25,12 @@ public class WindowsServiceUpdater : IWindowsServiceUpdater
     {
         "ImoutoRebirth.Navigator",
     };
+    
+    private static readonly IReadOnlyCollection<string> StopApplicationNames = new[]
+    {
+        "ImoutoRebirth.Navigator",
+        "ImoutoViewer"
+    };
 
     private readonly IWindowsServicesManager _windowsServicesManager;
     private readonly IShortcutService _shortcutService;
@@ -43,6 +50,7 @@ public class WindowsServiceUpdater : IWindowsServiceUpdater
     {
         _windowsServicesManager.LogServices();
         _windowsServicesManager.StopServices();
+        StopApplications();
         _windowsServicesManager.DeleteServices();
 
         var serviceDirectories = updaterLocation.GetDirectories();
@@ -108,6 +116,19 @@ public class WindowsServiceUpdater : IWindowsServiceUpdater
         
         _windowsServicesManager.CreateServices(windowsServicesToCreate);
         _windowsServicesManager.StartServices();
+    }
+
+    private static void StopApplications()
+    {
+        foreach (var process in Process.GetProcesses())
+        {
+            if (!StopApplicationNames.Contains(process.ProcessName)) 
+                continue;
+            
+            process.CloseMainWindow();
+            if (!process.WaitForExit(3000))
+                process.Kill();
+        }
     }
 
     private static void DeleteWithRetries(DirectoryInfo oldServiceDirectory, int tryNumber = 0)
