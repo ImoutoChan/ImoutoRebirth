@@ -28,9 +28,11 @@ internal class SankakuLoaderFabric : IBooruLoaderFabric
     
     public IBooruApiLoader Create() => new SankakuApiLoader(
         _flurlClientFactory,
-        Options.Create(new Imouto.BooruParser.Implementations.Sankaku.SankakuSettings()
+        Options.Create(new Imouto.BooruParser.Implementations.Sankaku.SankakuSettings
         {
-            PauseBetweenRequestsInMs = _settings.Delay
+            PauseBetweenRequestsInMs = _settings.Delay,
+            Login = _settings.Login,
+            PassHash = _settings.PassHash
         }),
         _sankakuAuthManager);
 }
