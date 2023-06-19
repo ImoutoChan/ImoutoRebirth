@@ -46,6 +46,19 @@ public class CollectionFilesController : ControllerBase
     }
 
     /// <summary>
+    ///     Retrieve all file ids by request.
+    /// </summary>
+    /// <returns>The collection of file ids.</returns>
+    [HttpPost("search-ids")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    public async Task<IReadOnlyCollection<Guid>> SearchIds(
+        [FromBody] CollectionFilesRequest request)
+    {
+        var query = _mapper.Map<CollectionFilesQuery>(request);
+        return await _collectionFileRepository.SearchIdsByQuery(query);
+    }
+
+    /// <summary>
     ///     Retrieve count of files by request.
     /// </summary>
     /// <remarks>

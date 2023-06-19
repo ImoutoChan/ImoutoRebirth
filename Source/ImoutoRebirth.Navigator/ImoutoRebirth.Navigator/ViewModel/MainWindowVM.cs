@@ -453,6 +453,8 @@ class MainWindowVM : VMBase
 
     private static int GetBulkFactorBasedOnTags(IReadOnlyCollection<SearchTag> tagsToSearch)
     {
+        return int.MaxValue;
+        
         const int defaultSize = 20_000;
         
         if (tagsToSearch.None())

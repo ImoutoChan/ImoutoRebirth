@@ -10,6 +10,8 @@ public interface ICollectionFileRepository
     Task<bool> AnyWithPath(Guid collectionId, string path);
 
     Task<IReadOnlyCollection<CollectionFile>> SearchByQuery(CollectionFilesQuery query);
+    
+    Task<IReadOnlyCollection<Guid>> SearchIdsByQuery(CollectionFilesQuery query);
         
     Task<int> CountByQuery(CollectionFilesQuery query);
 

@@ -68,6 +68,21 @@ public class CollectionFileRepository : ICollectionFileRepository
         return _mapper.Map<CollectionFile[]>(loaded);
     }
 
+    public async Task<IReadOnlyCollection<Guid>> SearchIdsByQuery(CollectionFilesQuery query)
+    {
+        var files = BuildFilesQuery(query);
+
+        if (query.Skip.HasValue)
+            files = files.Skip(query.Skip.Value);
+
+        if (query.Count.HasValue)
+            files = files.Take(query.Count.Value);
+
+        var loaded = await files.Select(x => x.Id).ToListAsync();
+
+        return loaded;
+    }
+
     public async Task<int> CountByQuery(CollectionFilesQuery query)
     {
         var files = BuildFilesQuery(query);

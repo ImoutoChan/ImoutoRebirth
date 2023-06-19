@@ -15,6 +15,9 @@ public static class ServiceLocator
     {
         var sc = new ServiceCollection();
 
+        sc.AddTransient<IRoomCache, RoomCache>();
+        sc.AddMemoryCache();
+
         sc.AddTransient<IImoutoViewerService, ImoutoViewerService>();
 
         sc.AddTransient<ICollectionService, CollectionService>();

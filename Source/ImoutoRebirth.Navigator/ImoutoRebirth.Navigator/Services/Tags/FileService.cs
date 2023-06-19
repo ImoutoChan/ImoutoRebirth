@@ -5,23 +5,26 @@ using ImoutoRebirth.RoomService.WebApi.Client;
 
 namespace ImoutoRebirth.Navigator.Services.Tags;
 
-class FileService : IFileService
+internal class FileService : IFileService
 {
     private readonly FilesClient _filesClient;
     private readonly IMapper _mapper;
     private readonly CollectionFilesClient _collectionFilesClient;
+    private readonly IRoomCache _roomCache;
 
     public FileService(
         IMapper mapper,
         FilesClient filesClient,
-        CollectionFilesClient collectionFilesClient)
+        CollectionFilesClient collectionFilesClient,
+        IRoomCache roomCache)
     {
         _mapper = mapper;
         _filesClient = filesClient;
         _collectionFilesClient = collectionFilesClient;
+        _roomCache = roomCache;
     }
 
-    public async Task<(IReadOnlyCollection<File> Files, bool Continue)> SearchFiles(
+    public async Task<(IReadOnlyCollection<File> Files, bool Continue)> SearchFilesV1(
         Guid? collectionId,
         IReadOnlyCollection<SearchTag> tags,
         int take,
@@ -57,6 +60,56 @@ class FileService : IFileService
         var files = _mapper.Map<IReadOnlyCollection<File>>(satisfiedRoomFiles);
 
         return (files, roomFilesIds.Any());
+    }
+    
+    public async Task<(IReadOnlyCollection<File> Files, bool Continue)> SearchFilesV2(
+        Guid? collectionId,
+        IReadOnlyCollection<SearchTag> tags,
+        int take,
+        int skip,
+        CancellationToken token)
+    {
+        if (!tags.Any())
+        {
+            var filesMapped = await _roomCache.GetFilesFromCollection(collectionId, skip, take);
+            return (filesMapped, filesMapped.Any());
+        }
+
+        var roomFilesIds = await _roomCache.GetIds(collectionId, skip, take);
+        
+        var lilinFilesThatSatisfyConditions = await _filesClient
+            .FilterFilesAsync(
+                new FilterFilesQuery(
+                    roomFilesIds,
+                    _mapper.Map<List<TagSearchEntry>>(tags)),
+                token);
+
+        var files = await _roomCache.GetFilesByIds(lilinFilesThatSatisfyConditions);
+
+        return (files, roomFilesIds.Any());
+    }
+    
+    public async Task<(IReadOnlyCollection<File> Files, bool Continue)> SearchFiles(
+        Guid? collectionId,
+        IReadOnlyCollection<SearchTag> tags,
+        int take,
+        int skip,
+        CancellationToken token)
+    {
+        if (!tags.Any())
+        {
+            var filesMapped = await _roomCache.GetFilesFromCollection(collectionId, skip, take);
+            return (filesMapped, filesMapped.Any());
+        }
+
+        var lilinIds = await _filesClient
+            .SearchFilesAsync(
+                new SearchFilesQuery(take, skip, _mapper.Map<List<TagSearchEntry>>(tags)),
+                token);
+
+        var files = await _roomCache.GetFilesByIds(lilinIds);
+
+        return (files, files.Any() && take != int.MaxValue);
     }
 
     public async Task<int> CountFiles(
