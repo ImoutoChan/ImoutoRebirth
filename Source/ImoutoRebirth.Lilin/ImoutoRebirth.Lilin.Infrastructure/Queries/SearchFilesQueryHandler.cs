@@ -15,7 +15,8 @@ internal class SearchFilesQueryHandler : IQueryHandler<SearchFilesQuery, IReadOn
     {
         var (tagSearchEntries, limit, offset) = request;
         
-        var filteredFiles = _lilinDbContext.GetSearchFilesQueryable(tagSearchEntries)
+        var filteredFiles = _lilinDbContext
+            .GetSearchFilesQueryable(tagSearchEntries)
             .GroupBy(x => x.FileId)
             .Select(x => new { FileId = x.Key, FirstAppeared = x.Min(y => y.AddedOn) })
             .Distinct()

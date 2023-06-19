@@ -102,12 +102,15 @@ internal class FileService : IFileService
             return (filesMapped, filesMapped.Any());
         }
 
+        // skip and take isn't supported
         var lilinIds = await _filesClient
-            .SearchFilesAsync(
-                new SearchFilesQuery(take, skip, _mapper.Map<List<TagSearchEntry>>(tags)),
+            .SearchFilesFastAsync(
+                new SearchFilesFastQuery(_mapper.Map<List<TagSearchEntry>>(tags)),
                 token);
+        var lilinIdsHashSet = lilinIds.ToHashSet();
 
-        var files = await _roomCache.GetFilesByIds(lilinIds);
+        var roomIds = await _roomCache.GetIds(collectionId, default, default);
+        var files = await _roomCache.GetFilesByIds(roomIds.Where(x =>  lilinIdsHashSet.Contains(x)).ToList());
 
         return (files, files.Any() && take != int.MaxValue);
     }
@@ -126,7 +129,7 @@ internal class FileService : IFileService
         }
 
         return await _filesClient
-            .CountSearchFilesAsync(new SearchFilesQueryCount(_mapper.Map<List<TagSearchEntry>>(tags)), ct);
+            .CountSearchFilesAsync(new SearchFilesCountQuery(_mapper.Map<List<TagSearchEntry>>(tags)), ct);
     }
 
     public Task RemoveFile(Guid fileId) => _collectionFilesClient.RemoveAsync(fileId);

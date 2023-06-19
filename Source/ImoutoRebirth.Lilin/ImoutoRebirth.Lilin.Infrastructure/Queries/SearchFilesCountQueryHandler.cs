@@ -5,13 +5,13 @@ using Microsoft.EntityFrameworkCore;
 
 namespace ImoutoRebirth.Lilin.Infrastructure.Queries;
 
-internal class SearchFilesQueryCountHandler : IQueryHandler<SearchFilesQueryCount, int>
+internal class SearchFilesQueryCountHandler : IQueryHandler<SearchFilesCountQuery, int>
 {
     private readonly LilinDbContext _lilinDbContext;
 
     public SearchFilesQueryCountHandler(LilinDbContext lilinDbContext) => _lilinDbContext = lilinDbContext;
     
-    public Task<int> Handle(SearchFilesQueryCount request, CancellationToken ct)
+    public Task<int> Handle(SearchFilesCountQuery request, CancellationToken ct)
     {
         return _lilinDbContext.GetSearchFilesQueryable(request.TagSearchEntries)
             .GroupBy(x => x.FileId)

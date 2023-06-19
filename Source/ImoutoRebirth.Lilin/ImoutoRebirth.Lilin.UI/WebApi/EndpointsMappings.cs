@@ -32,9 +32,17 @@ internal static class EndpointsMappings
                 => mediator.Send(query, ct))
             .WithName("SearchFiles");
 
-        files.MapPost("/search/count", (SearchFilesQueryCount query, IMediator mediator, CancellationToken ct)
+        files.MapPost("/search-fast", (SearchFilesFastQuery query, IMediator mediator, CancellationToken ct)
+                => mediator.Send(query, ct))
+            .WithName("SearchFilesFast");
+
+        files.MapPost("/search/count", (SearchFilesCountQuery query, IMediator mediator, CancellationToken ct)
                 => mediator.Send(query, ct))
             .WithName("CountSearchFiles");
+
+        files.MapPost("/search-fast/count", (SearchFilesFastCountQuery query, IMediator mediator, CancellationToken ct)
+                => mediator.Send(query, ct))
+            .WithName("CountSearchFilesFast");
 
         files.MapPost("/filter", (FilterFilesQuery query, IMediator mediator, CancellationToken ct)
                 => mediator.Send(query, ct))

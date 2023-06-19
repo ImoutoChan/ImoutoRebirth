@@ -403,14 +403,102 @@ namespace ImoutoRebirth.LilinService.WebApi.Client
 
         /// <returns>Success</returns>
         /// <exception cref="WebApiException">A server side error occurred.</exception>
-        public virtual System.Threading.Tasks.Task<int> CountSearchFilesAsync(SearchFilesQueryCount body)
+        public virtual System.Threading.Tasks.Task<System.Collections.Generic.IReadOnlyCollection<System.Guid>> SearchFilesFastAsync(SearchFilesFastQuery body)
+        {
+            return SearchFilesFastAsync(body, System.Threading.CancellationToken.None);
+        }
+
+        /// <returns>Success</returns>
+        /// <exception cref="WebApiException">A server side error occurred.</exception>
+        public virtual System.Collections.Generic.IReadOnlyCollection<System.Guid> SearchFilesFast(SearchFilesFastQuery body)
+        {
+            return System.Threading.Tasks.Task.Run(async () => await SearchFilesFastAsync(body, System.Threading.CancellationToken.None)).GetAwaiter().GetResult();
+        }
+
+        /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
+        /// <returns>Success</returns>
+        /// <exception cref="WebApiException">A server side error occurred.</exception>
+        public virtual async System.Threading.Tasks.Task<System.Collections.Generic.IReadOnlyCollection<System.Guid>> SearchFilesFastAsync(SearchFilesFastQuery body, System.Threading.CancellationToken cancellationToken)
+        {
+            if (body == null)
+                throw new System.ArgumentNullException("body");
+
+            var urlBuilder_ = new System.Text.StringBuilder();
+            urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/files/search-fast");
+
+            var client_ = _httpClient;
+            var disposeClient_ = false;
+            try
+            {
+                using (var request_ = new System.Net.Http.HttpRequestMessage())
+                {
+                    var json_ = System.Text.Json.JsonSerializer.Serialize(body, _settings.Value);
+                    var content_ = new System.Net.Http.StringContent(json_);
+                    content_.Headers.ContentType = System.Net.Http.Headers.MediaTypeHeaderValue.Parse("application/json");
+                    request_.Content = content_;
+                    request_.Method = new System.Net.Http.HttpMethod("POST");
+                    request_.Headers.Accept.Add(System.Net.Http.Headers.MediaTypeWithQualityHeaderValue.Parse("application/json"));
+
+                    PrepareRequest(client_, request_, urlBuilder_);
+
+                    var url_ = urlBuilder_.ToString();
+                    request_.RequestUri = new System.Uri(url_, System.UriKind.RelativeOrAbsolute);
+
+                    PrepareRequest(client_, request_, url_);
+
+                    var response_ = await client_.SendAsync(request_, System.Net.Http.HttpCompletionOption.ResponseHeadersRead, cancellationToken).ConfigureAwait(false);
+                    var disposeResponse_ = true;
+                    try
+                    {
+                        var headers_ = System.Linq.Enumerable.ToDictionary(response_.Headers, h_ => h_.Key, h_ => h_.Value);
+                        if (response_.Content != null && response_.Content.Headers != null)
+                        {
+                            foreach (var item_ in response_.Content.Headers)
+                                headers_[item_.Key] = item_.Value;
+                        }
+
+                        ProcessResponse(client_, response_);
+
+                        var status_ = (int)response_.StatusCode;
+                        if (status_ == 200)
+                        {
+                            var objectResponse_ = await ReadObjectResponseAsync<System.Collections.Generic.IReadOnlyCollection<System.Guid>>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            if (objectResponse_.Object == null)
+                            {
+                                throw new WebApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
+                            }
+                            return objectResponse_.Object;
+                        }
+                        else
+                        {
+                            var responseData_ = response_.Content == null ? null : await response_.Content.ReadAsStringAsync().ConfigureAwait(false);
+                            throw new WebApiException("The HTTP status code of the response was not expected (" + status_ + ").", status_, responseData_, headers_, null);
+                        }
+                    }
+                    finally
+                    {
+                        if (disposeResponse_)
+                            response_.Dispose();
+                    }
+                }
+            }
+            finally
+            {
+                if (disposeClient_)
+                    client_.Dispose();
+            }
+        }
+
+        /// <returns>Success</returns>
+        /// <exception cref="WebApiException">A server side error occurred.</exception>
+        public virtual System.Threading.Tasks.Task<int> CountSearchFilesAsync(SearchFilesCountQuery body)
         {
             return CountSearchFilesAsync(body, System.Threading.CancellationToken.None);
         }
 
         /// <returns>Success</returns>
         /// <exception cref="WebApiException">A server side error occurred.</exception>
-        public virtual int CountSearchFiles(SearchFilesQueryCount body)
+        public virtual int CountSearchFiles(SearchFilesCountQuery body)
         {
             return System.Threading.Tasks.Task.Run(async () => await CountSearchFilesAsync(body, System.Threading.CancellationToken.None)).GetAwaiter().GetResult();
         }
@@ -418,13 +506,101 @@ namespace ImoutoRebirth.LilinService.WebApi.Client
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>Success</returns>
         /// <exception cref="WebApiException">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<int> CountSearchFilesAsync(SearchFilesQueryCount body, System.Threading.CancellationToken cancellationToken)
+        public virtual async System.Threading.Tasks.Task<int> CountSearchFilesAsync(SearchFilesCountQuery body, System.Threading.CancellationToken cancellationToken)
         {
             if (body == null)
                 throw new System.ArgumentNullException("body");
 
             var urlBuilder_ = new System.Text.StringBuilder();
             urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/files/search/count");
+
+            var client_ = _httpClient;
+            var disposeClient_ = false;
+            try
+            {
+                using (var request_ = new System.Net.Http.HttpRequestMessage())
+                {
+                    var json_ = System.Text.Json.JsonSerializer.Serialize(body, _settings.Value);
+                    var content_ = new System.Net.Http.StringContent(json_);
+                    content_.Headers.ContentType = System.Net.Http.Headers.MediaTypeHeaderValue.Parse("application/json");
+                    request_.Content = content_;
+                    request_.Method = new System.Net.Http.HttpMethod("POST");
+                    request_.Headers.Accept.Add(System.Net.Http.Headers.MediaTypeWithQualityHeaderValue.Parse("application/json"));
+
+                    PrepareRequest(client_, request_, urlBuilder_);
+
+                    var url_ = urlBuilder_.ToString();
+                    request_.RequestUri = new System.Uri(url_, System.UriKind.RelativeOrAbsolute);
+
+                    PrepareRequest(client_, request_, url_);
+
+                    var response_ = await client_.SendAsync(request_, System.Net.Http.HttpCompletionOption.ResponseHeadersRead, cancellationToken).ConfigureAwait(false);
+                    var disposeResponse_ = true;
+                    try
+                    {
+                        var headers_ = System.Linq.Enumerable.ToDictionary(response_.Headers, h_ => h_.Key, h_ => h_.Value);
+                        if (response_.Content != null && response_.Content.Headers != null)
+                        {
+                            foreach (var item_ in response_.Content.Headers)
+                                headers_[item_.Key] = item_.Value;
+                        }
+
+                        ProcessResponse(client_, response_);
+
+                        var status_ = (int)response_.StatusCode;
+                        if (status_ == 200)
+                        {
+                            var objectResponse_ = await ReadObjectResponseAsync<int>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            if (objectResponse_.Object == null)
+                            {
+                                throw new WebApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
+                            }
+                            return objectResponse_.Object;
+                        }
+                        else
+                        {
+                            var responseData_ = response_.Content == null ? null : await response_.Content.ReadAsStringAsync().ConfigureAwait(false);
+                            throw new WebApiException("The HTTP status code of the response was not expected (" + status_ + ").", status_, responseData_, headers_, null);
+                        }
+                    }
+                    finally
+                    {
+                        if (disposeResponse_)
+                            response_.Dispose();
+                    }
+                }
+            }
+            finally
+            {
+                if (disposeClient_)
+                    client_.Dispose();
+            }
+        }
+
+        /// <returns>Success</returns>
+        /// <exception cref="WebApiException">A server side error occurred.</exception>
+        public virtual System.Threading.Tasks.Task<int> CountSearchFilesFastAsync(SearchFilesFastCountQuery body)
+        {
+            return CountSearchFilesFastAsync(body, System.Threading.CancellationToken.None);
+        }
+
+        /// <returns>Success</returns>
+        /// <exception cref="WebApiException">A server side error occurred.</exception>
+        public virtual int CountSearchFilesFast(SearchFilesFastCountQuery body)
+        {
+            return System.Threading.Tasks.Task.Run(async () => await CountSearchFilesFastAsync(body, System.Threading.CancellationToken.None)).GetAwaiter().GetResult();
+        }
+
+        /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
+        /// <returns>Success</returns>
+        /// <exception cref="WebApiException">A server side error occurred.</exception>
+        public virtual async System.Threading.Tasks.Task<int> CountSearchFilesFastAsync(SearchFilesFastCountQuery body, System.Threading.CancellationToken cancellationToken)
+        {
+            if (body == null)
+                throw new System.ArgumentNullException("body");
+
+            var urlBuilder_ = new System.Text.StringBuilder();
+            urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/files/search-fast/count");
 
             var client_ = _httpClient;
             var disposeClient_ = false;
@@ -1664,6 +1840,63 @@ namespace ImoutoRebirth.LilinService.WebApi.Client
     }
 
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "13.19.0.0 (NJsonSchema v10.9.0.0 (Newtonsoft.Json v13.0.0.0))")]
+    public partial class SearchFilesCountQuery
+    {
+        [System.Text.Json.Serialization.JsonConstructor]
+
+        public SearchFilesCountQuery(System.Collections.Generic.IReadOnlyCollection<TagSearchEntry>? @tagSearchEntries)
+
+        {
+
+            this.TagSearchEntries = @tagSearchEntries;
+
+        }
+        [System.Text.Json.Serialization.JsonPropertyName("tagSearchEntries")]
+
+        [System.Text.Json.Serialization.JsonIgnore(Condition = System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingDefault)]   
+        public System.Collections.Generic.IReadOnlyCollection<TagSearchEntry>? TagSearchEntries { get; }
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "13.19.0.0 (NJsonSchema v10.9.0.0 (Newtonsoft.Json v13.0.0.0))")]
+    public partial class SearchFilesFastCountQuery
+    {
+        [System.Text.Json.Serialization.JsonConstructor]
+
+        public SearchFilesFastCountQuery(System.Collections.Generic.IReadOnlyCollection<TagSearchEntry>? @tagSearchEntries)
+
+        {
+
+            this.TagSearchEntries = @tagSearchEntries;
+
+        }
+        [System.Text.Json.Serialization.JsonPropertyName("tagSearchEntries")]
+
+        [System.Text.Json.Serialization.JsonIgnore(Condition = System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingDefault)]   
+        public System.Collections.Generic.IReadOnlyCollection<TagSearchEntry>? TagSearchEntries { get; }
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "13.19.0.0 (NJsonSchema v10.9.0.0 (Newtonsoft.Json v13.0.0.0))")]
+    public partial class SearchFilesFastQuery
+    {
+        [System.Text.Json.Serialization.JsonConstructor]
+
+        public SearchFilesFastQuery(System.Collections.Generic.IReadOnlyCollection<TagSearchEntry>? @tagSearchEntries)
+
+        {
+
+            this.TagSearchEntries = @tagSearchEntries;
+
+        }
+        [System.Text.Json.Serialization.JsonPropertyName("tagSearchEntries")]
+
+        [System.Text.Json.Serialization.JsonIgnore(Condition = System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingDefault)]   
+        public System.Collections.Generic.IReadOnlyCollection<TagSearchEntry>? TagSearchEntries { get; }
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "13.19.0.0 (NJsonSchema v10.9.0.0 (Newtonsoft.Json v13.0.0.0))")]
     public partial class SearchFilesQuery
     {
         [System.Text.Json.Serialization.JsonConstructor]
@@ -1691,25 +1924,6 @@ namespace ImoutoRebirth.LilinService.WebApi.Client
 
         [System.Text.Json.Serialization.JsonPropertyName("offset")]
         public int Offset { get; }
-
-    }
-
-    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "13.19.0.0 (NJsonSchema v10.9.0.0 (Newtonsoft.Json v13.0.0.0))")]
-    public partial class SearchFilesQueryCount
-    {
-        [System.Text.Json.Serialization.JsonConstructor]
-
-        public SearchFilesQueryCount(System.Collections.Generic.IReadOnlyCollection<TagSearchEntry>? @tagSearchEntries)
-
-        {
-
-            this.TagSearchEntries = @tagSearchEntries;
-
-        }
-        [System.Text.Json.Serialization.JsonPropertyName("tagSearchEntries")]
-
-        [System.Text.Json.Serialization.JsonIgnore(Condition = System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingDefault)]   
-        public System.Collections.Generic.IReadOnlyCollection<TagSearchEntry>? TagSearchEntries { get; }
 
     }
 

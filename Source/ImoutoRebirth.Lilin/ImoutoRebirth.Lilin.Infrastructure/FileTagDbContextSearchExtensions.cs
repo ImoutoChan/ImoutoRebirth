@@ -105,6 +105,52 @@ internal static class FileTagDbContextSearchExtensions
         return query.Select(x => x.FileId);
     }
 
+    public static IQueryable<FileTagEntity> MakeValueFilter(
+        this IQueryable<FileTagEntity> query, 
+        string? valueFilter)
+    {
+        if (string.IsNullOrWhiteSpace(valueFilter))
+            return query;
+        
+        // retrieve whenever we should check tag value for equality or inequality
+        var (checkEquals, value) = ExtractEqualityFlag(valueFilter);
+
+        // retrieve whenever we should search for given value with * pattern
+        var (asteriskPlace, extractedValue) = ExtractAsteriskFlag(value);
+        value = extractedValue;
+
+        Expression<Func<FileTagEntity, bool>> predicateExpression = (checkEquals, asteriskPlace) switch
+        {
+            (true, AsteriskPlace.None) => t
+                => t.Value == value,
+
+            (true, AsteriskPlace.Start) => t
+                => t.Value != null && t.Value.EndsWith(value),
+
+            (true, AsteriskPlace.End) => t
+                => t.Value != null && t.Value.StartsWith(value),
+
+            (true, AsteriskPlace.Both) => t
+                => t.Value != null && t.Value.Contains(value),
+
+            (false, AsteriskPlace.None) => t
+                => t.Value != value,
+
+            (false, AsteriskPlace.Start) => t
+                => t.Value == null || !t.Value.EndsWith(value),
+
+            (false, AsteriskPlace.End) => t
+                => t.Value == null || !t.Value.StartsWith(value),
+
+            (false, AsteriskPlace.Both) => t
+                => t.Value == null || !t.Value.Contains(value),
+
+            _ => throw new NotImplementedException("unsupported pattern scenario")
+        };
+
+        return query.Where(predicateExpression);
+    }
+    
     /// <summary>
     ///     Convert string with asterisk symbol to tuple:
     ///     '*xxx' => start, 'xxx'
