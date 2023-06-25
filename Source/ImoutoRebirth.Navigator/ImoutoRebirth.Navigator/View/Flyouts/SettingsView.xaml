@@ -89,6 +89,24 @@
                                            Content="Night" />
                                 </Grid>
                             </ComboBoxItem>
+
+                            <ComboBoxItem>
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="20" />
+                                        <ColumnDefinition Width="*" />
+                                    </Grid.ColumnDefinitions>
+                                    <Ellipse Grid.Column="0"
+                                             Width="16"
+                                             Height="16"
+                                             StrokeThickness="1"
+                                             Stroke="DarkSlateGray"
+                                             Fill="DarkSlateGray" />
+
+                                    <Label Grid.Column="1"
+                                           Content="Random" />
+                                </Grid>
+                            </ComboBoxItem>
                         </ComboBox>
                     </StackPanel>
                 </DockPanel>

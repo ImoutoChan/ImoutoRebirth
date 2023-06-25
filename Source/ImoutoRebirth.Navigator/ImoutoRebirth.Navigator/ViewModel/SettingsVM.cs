@@ -16,10 +16,21 @@ class SettingsVM : VMBase
 
         public Brush ColorBrush { get; set; }
 
-        public void ChangeAccent()
+        public void ChangeAccent(IReadOnlyCollection<AccentColorMenuData>? randomColors = null)
         {
-            ThemeManager.Current.ChangeThemeColorScheme(Application.Current, Name);
-            Settings.Default.AccentColorName = Name;
+            if (randomColors?.Any() == true)
+            {
+                var colors = randomColors.Where(x => x.Name != "Random").ToList();
+                var randomColor = colors[Random.Shared.Next(colors.Count)];
+
+                ThemeManager.Current.ChangeThemeColorScheme(Application.Current, randomColor.Name);
+                Settings.Default.AccentColorName = randomColor.Name;
+            }
+            else
+            {
+                ThemeManager.Current.ChangeThemeColorScheme(Application.Current, Name);
+                Settings.Default.AccentColorName = Name;
+            }
         }
     }
 
@@ -45,6 +56,11 @@ class SettingsVM : VMBase
             {
                 Name = a.Key,
                 ColorBrush = a.First().ShowcaseBrush
+            })
+            .Append(new AccentColorMenuData
+            {
+                Name = "Random",
+                ColorBrush = Brushes.Black
             }).ToList();
 
         SelectedAccentColor = AccentColors.First(x => x.Name == Settings.Default.AccentColorName);
@@ -88,7 +104,15 @@ class SettingsVM : VMBase
         set
         {
             _selectedAccentColor = value;
-            _selectedAccentColor.ChangeAccent();
+
+            if (_selectedAccentColor.Name == "Random")
+            {
+                _selectedAccentColor.ChangeAccent(AccentColors);
+            }
+            else
+            {
+                _selectedAccentColor.ChangeAccent();
+            }
         }
     }
 
@@ -104,6 +128,12 @@ class SettingsVM : VMBase
             var theme = ThemeManager.Current.DetectTheme(Application.Current);
             switch (value)
             {
+                case 2:
+                    var next = Random.Shared.Next(10);
+                    var name = next % 2 == 0 ? "Dark" : "Light";
+                    ThemeManager.Current.ChangeThemeBaseColor(Application.Current, name);
+                    Settings.Default.ThemeIndex = 2;
+                    break;
                 case 1:
                     ThemeManager.Current.ChangeThemeBaseColor(Application.Current, "Dark");
                     Settings.Default.ThemeIndex = 1;
