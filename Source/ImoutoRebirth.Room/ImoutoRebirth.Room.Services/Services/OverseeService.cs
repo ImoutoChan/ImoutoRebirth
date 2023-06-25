@@ -30,22 +30,36 @@ public class OverseeService : IOverseeService
             return;
         }
 
-        try
+        var runMoreTimes = 0;
+        do
         {
-            var collections = await LoadCollections();
+            var anyFileMoved = false;
+            try
+            {
+                var collections = await LoadCollections();
 
-            foreach (var oversawCollection in collections)
-                await _fileSystemActualizationService.PryCollection(oversawCollection);
+                foreach (var oversawCollection in collections)
+                    anyFileMoved |= await _fileSystemActualizationService.PryCollection(oversawCollection);
 
-        }
-        catch (Exception e)
-        {
-            _logger.LogError(e, "Oversee process error");
-        }
-        finally
-        {
-            SemaphoreSlim.Release();
-        }
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e, "Oversee process error");
+                break;
+            }
+
+            if (anyFileMoved)
+                runMoreTimes = 10;
+
+            runMoreTimes--;
+
+            if (runMoreTimes > 0)
+                await Task.Delay(500);
+
+        } while (runMoreTimes > 0);
+            
+            
+        SemaphoreSlim.Release();
     }
 
     private async Task<IReadOnlyCollection<OversawCollection>> LoadCollections()

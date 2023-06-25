@@ -35,17 +35,20 @@ public class FileSystemActualizationService : IFileSystemActualizationService
         _imoutoPicsUploader = imoutoPicsUploader;
     }
 
-    public async Task PryCollection(OversawCollection oversawCollection)
+    public async Task<bool> PryCollection(OversawCollection oversawCollection)
     {
         _logger.LogTrace("Prying collection {CollectionName}", oversawCollection.Collection.Name);
 
+        var anyFileMoved = false;
         foreach (var collectionSourceFolder in oversawCollection.SourceFolders)
         {
-            await ProcessSourceFolder(oversawCollection, collectionSourceFolder);
+            anyFileMoved |= await ProcessSourceFolder(oversawCollection, collectionSourceFolder);
         }
+
+        return anyFileMoved;
     }
 
-    private async Task ProcessSourceFolder(
+    private async Task<bool> ProcessSourceFolder(
         OversawCollection oversawCollection, 
         SourceFolder collectionSourceFolder)
     {
@@ -57,7 +60,7 @@ public class FileSystemActualizationService : IFileSystemActualizationService
 
         if (!newFiles.Any())
         {
-            return;
+            return false;
         }
 
         _logger.LogInformation("{NewFilesCount} new files found", newFiles.Count);
@@ -82,6 +85,8 @@ public class FileSystemActualizationService : IFileSystemActualizationService
             .WhenAll();
 
         _logger.LogDebug("Update metadata requests are sent");
+
+        return movedFiles.Any();
     }
 
     private async Task<IReadOnlyCollection<(Guid FileId, MovedInformation MovedInformation)>> MoveFiles(
