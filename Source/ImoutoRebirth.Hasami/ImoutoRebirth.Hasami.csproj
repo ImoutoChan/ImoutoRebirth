@@ -12,4 +12,9 @@
         <ProjectReference Include="..\ImoutoRebirth.Room\ImoutoRebirth.Room.WebApi.Client\ImoutoRebirth.Room.WebApi.Client.csproj"/>
     </ItemGroup>
 
+    <ItemGroup>
+        <PackageReference Include="Imouto.BooruParser" Version="3.1.0"/>
+        <PackageReference Include="Microsoft.Extensions.Caching.Memory" Version="7.0.0"/>
+    </ItemGroup>
+
 </Project>
