@@ -94,7 +94,7 @@ internal class FileService : IFileService
         IReadOnlyCollection<SearchTag> tags,
         int take,
         int skip,
-        CancellationToken token)
+        CancellationToken ct)
     {
         if (!tags.Any())
         {
@@ -102,11 +102,20 @@ internal class FileService : IFileService
             return (filesMapped, filesMapped.Any());
         }
 
+        if (tags.All(x => x.SearchType == SearchType.Exclude))
+        {
+            var allRoomIds = await _roomCache.GetIds(collectionId, default, default);
+            var filteredLilinIds = await _filesClient
+                .FilterFilesAsync(new FilterFilesQuery(allRoomIds, _mapper.Map<List<TagSearchEntry>>(tags)), ct);
+            var filteredFiles = await _roomCache.GetFilesByIds(filteredLilinIds);
+            return (filteredFiles, filteredFiles.Any() && take != int.MaxValue);
+        }
+        
         // skip and take isn't supported
         var lilinIds = await _filesClient
             .SearchFilesFastAsync(
                 new SearchFilesFastQuery(_mapper.Map<List<TagSearchEntry>>(tags)),
-                token);
+                ct);
         var lilinIdsHashSet = lilinIds.ToHashSet();
 
         var roomIds = await _roomCache.GetIds(collectionId, default, default);

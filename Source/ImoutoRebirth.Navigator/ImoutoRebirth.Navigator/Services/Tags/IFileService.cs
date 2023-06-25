@@ -9,7 +9,7 @@ interface IFileService
         IReadOnlyCollection<SearchTag> tags,
         int take,
         int skip,
-        CancellationToken token);
+        CancellationToken ct);
 
     Task<int> CountFiles(
         Guid? collectionId, 
