@@ -24,7 +24,7 @@ class SettingsVM : VMBase
                 var randomColor = colors[Random.Shared.Next(colors.Count)];
 
                 ThemeManager.Current.ChangeThemeColorScheme(Application.Current, randomColor.Name);
-                Settings.Default.AccentColorName = randomColor.Name;
+                Settings.Default.AccentColorName = "Random";
             }
             else
             {

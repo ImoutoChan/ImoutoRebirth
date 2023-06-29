@@ -718,7 +718,7 @@
             <view:TagsSearchView Grid.Row="0"
                                  Grid.Column="0"
                                  MinWidth="200"
-                                 MaxWidth="300"
+                                 MaxWidth="298"
                                  DataContext="{Binding TagSearchVM}"
                                  Visibility="{Binding 
                                     Path=DataContext.ShowTags, 
@@ -729,6 +729,8 @@
 
             <view:FileInfoView Grid.Column="0"
                                Grid.Row="1"
+                               MinWidth="200"
+                               MaxWidth="298"
                                DataContext="{Binding FileInfoVM}">
                 <view:FileInfoView.Visibility>
                     <MultiBinding Converter="{StaticResource MultiBooleanVisibilityConverter}">
