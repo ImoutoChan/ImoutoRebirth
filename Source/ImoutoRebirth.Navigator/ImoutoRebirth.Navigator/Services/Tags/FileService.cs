@@ -106,7 +106,7 @@ internal class FileService : IFileService
         {
             var allRoomIds = await _roomCache.GetIds(collectionId, default, default);
             var filteredLilinIds = await _filesClient
-                .FilterFilesAsync(new FilterFilesQuery(allRoomIds, _mapper.Map<List<TagSearchEntry>>(tags)), ct);
+                .FilterFilesAsync(new (allRoomIds, _mapper.Map<List<TagSearchEntry>>(tags)), ct);
             var filteredFiles = await _roomCache.GetFilesByIds(filteredLilinIds);
             return (filteredFiles, filteredFiles.Any() && take != int.MaxValue);
         }
@@ -125,6 +125,36 @@ internal class FileService : IFileService
     }
 
     public async Task<int> CountFiles(
+        Guid? collectionId,
+        IReadOnlyCollection<SearchTag> tags,
+        CancellationToken ct)
+    {
+        if (!tags.Any())
+        {
+            var allRoomIds = await _roomCache.GetIds(collectionId, default, default);
+            return allRoomIds.Count;
+        }
+
+        if (tags.All(x => x.SearchType == SearchType.Exclude))
+        {
+            var allRoomIds = await _roomCache.GetIds(collectionId, default, default);
+            return await _filesClient
+                .CountFilterFilesAsync(new (allRoomIds, _mapper.Map<List<TagSearchEntry>>(tags)), ct);
+        }
+        
+        // skip and take isn't supported
+        var lilinIds = await _filesClient
+            .SearchFilesFastAsync(
+                new SearchFilesFastQuery(_mapper.Map<List<TagSearchEntry>>(tags)),
+                ct);
+        var lilinIdsHashSet = lilinIds.ToHashSet();
+
+        var roomIds = await _roomCache.GetIds(collectionId, default, default);
+
+        return roomIds.Count(x => lilinIdsHashSet.Contains(x));
+    }
+
+    public async Task<int> CountFiles1(
         Guid? collectionId,
         IReadOnlyCollection<SearchTag> tags,
         CancellationToken ct)

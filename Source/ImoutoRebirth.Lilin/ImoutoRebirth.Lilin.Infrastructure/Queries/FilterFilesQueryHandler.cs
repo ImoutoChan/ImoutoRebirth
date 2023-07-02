@@ -5,7 +5,9 @@ using Microsoft.EntityFrameworkCore;
 
 namespace ImoutoRebirth.Lilin.Infrastructure.Queries;
 
-internal class FilterFilesQueryHandler : IQueryHandler<FilterFilesQuery, IReadOnlyCollection<Guid>>
+internal class FilterFilesQueryHandler 
+    : IQueryHandler<FilterFilesQuery, IReadOnlyCollection<Guid>>
+    , IQueryHandler<FilterFilesCountQuery, int>
 {
     private readonly LilinDbContext _lilinDbContext;
 
@@ -15,24 +17,55 @@ internal class FilterFilesQueryHandler : IQueryHandler<FilterFilesQuery, IReadOn
     {
         var (fileIds, tagSearchEntries) = request;
 
-        var withoutTags = new List<Guid>();
         if (tagSearchEntries.All(x => x.TagSearchScope == TagSearchScope.Excluded))
         {
-            var allFilesWithTags = await _lilinDbContext.FileTags
-                .Where(x => fileIds.Contains(x.FileId))
+            var invertedTagSearchEntries = tagSearchEntries
+                .Select(x => x with { TagSearchScope = TagSearchScope.Included })
+                .ToArray();
+
+            var allFilesWithAnyInvertedTagQuery = _lilinDbContext.GetSearchFilesQueryable(
+                    invertedTagSearchEntries,
+                    SearchOptions.FileShouldHaveAnyIncludedTags)
                 .Select(x => x.FileId)
-                .ToListAsync(cancellationToken: ct);
-            withoutTags = fileIds.Except(allFilesWithTags).ToList();
+                .Distinct();
+            
+            var allFilesWithAnyInvertedTag = await allFilesWithAnyInvertedTagQuery.ToListAsync(ct);
+            
+            return fileIds.Except(allFilesWithAnyInvertedTag).ToList();
         }
         
-        var withTags = await _lilinDbContext.GetSearchFilesQueryable(tagSearchEntries)
+        return await _lilinDbContext.GetSearchFilesQueryable(tagSearchEntries)
             .Where(x => fileIds.Contains(x.FileId))
             .Select(x => x.FileId)
             .Distinct()
-            .ToArrayAsync(ct);
+            .ToListAsync(ct);
+    }
 
-        return withTags
-            .Union(withoutTags)
-            .ToArray();
+    public async Task<int> Handle(FilterFilesCountQuery request, CancellationToken ct)
+    {
+        var (fileIds, tagSearchEntries) = request;
+
+        if (tagSearchEntries.All(x => x.TagSearchScope == TagSearchScope.Excluded))
+        {
+            var invertedTagSearchEntries = tagSearchEntries
+                .Select(x => x with { TagSearchScope = TagSearchScope.Included })
+                .ToArray();
+
+            var allFilesWithAnyInvertedTagQuery = _lilinDbContext.GetSearchFilesQueryable(
+                    invertedTagSearchEntries,
+                    SearchOptions.FileShouldHaveAnyIncludedTags)
+                .Select(x => x.FileId)
+                .Distinct();
+            
+            var allFilesWithAnyInvertedTag = await allFilesWithAnyInvertedTagQuery.ToListAsync(ct);
+            
+            return fileIds.Except(allFilesWithAnyInvertedTag).Count();
+        }
+        
+        return await _lilinDbContext.GetSearchFilesQueryable(tagSearchEntries)
+            .Where(x => fileIds.Contains(x.FileId))
+            .Select(x => x.FileId)
+            .Distinct()
+            .CountAsync(ct);
     }
 }

@@ -48,6 +48,10 @@ internal static class EndpointsMappings
                 => mediator.Send(query, ct))
             .WithName("FilterFiles");
 
+        files.MapPost("/filter/count", (FilterFilesCountQuery query, IMediator mediator, CancellationToken ct)
+                => mediator.Send(query, ct))
+            .WithName("CountFilterFiles");
+
         files.MapPost("/tags", (BindTagsCommand command, IMediator mediator, CancellationToken ct)
                 => mediator.Send(command, ct))
             .WithName("BindTags");

@@ -6,11 +6,18 @@ using ImoutoRebirth.Lilin.Infrastructure.ExpressionHelpers;
 
 namespace ImoutoRebirth.Lilin.Infrastructure;
 
+internal enum SearchOptions
+{
+    FileShouldHaveAllIncludedTags,
+    FileShouldHaveAnyIncludedTags
+}
+
 internal static class FileTagDbContextSearchExtensions
 {
     public static IQueryable<FileTagEntity> GetSearchFilesQueryable(
         this LilinDbContext context,
-        IReadOnlyCollection<TagSearchEntry> tagSearchEntries)
+        IReadOnlyCollection<TagSearchEntry> tagSearchEntries,
+        SearchOptions searchOptions = SearchOptions.FileShouldHaveAllIncludedTags)
     {
         var fileTags = context.FileTags;
         IQueryable<FileTagEntity> files = context.FileTags;
@@ -27,10 +34,20 @@ internal static class FileTagDbContextSearchExtensions
             files = files.Where(f => !excludeFilter.Contains(f.FileId));
         }
 
-        // include tags
-        foreach (var tagSearchEntry in tagSearchEntries.Where(x => x.TagSearchScope == TagSearchScope.Included))
+        if (searchOptions == SearchOptions.FileShouldHaveAllIncludedTags)
         {
-            var includeFilter = MakeOrFilter(fileTags, new[] { tagSearchEntry });
+            // include tags
+            foreach (var tagSearchEntry in tagSearchEntries.Where(x => x.TagSearchScope == TagSearchScope.Included))
+            {
+                var includeFilter = MakeOrFilter(fileTags, new[] { tagSearchEntry });
+                files = files.Where(f => includeFilter.Contains(f.FileId));
+            }
+        }
+        else
+        {
+            var includedTags = tagSearchEntries.Where(x => x.TagSearchScope == TagSearchScope.Included).ToList();
+
+            var includeFilter = MakeOrFilter(fileTags, includedTags);
             files = files.Where(f => includeFilter.Contains(f.FileId));
         }
 

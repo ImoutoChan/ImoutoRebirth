@@ -22,7 +22,7 @@ public static class PredicateBuilder
             (object)expr.Parameters[0]);
 
         return Expression.Lambda<Func<T, bool>>(
-            (Expression)Expression.Or(expr.Body, or.Body),
+            (Expression)Expression.OrElse(expr.Body, or.Body),
             (IEnumerable<ParameterExpression>)expr.Parameters);
     }
 
