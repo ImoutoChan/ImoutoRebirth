@@ -3,6 +3,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using ControlzEx.Theming;
 using ImoutoRebirth.Navigator.Commands;
+using MahApps.Metro.Theming;
 
 namespace ImoutoRebirth.Navigator.ViewModel;
 
@@ -16,7 +17,7 @@ class SettingsVM : VMBase
 
         public Brush ColorBrush { get; set; }
 
-        public void ChangeAccent(IReadOnlyCollection<AccentColorMenuData>? randomColors = null)
+        public virtual void ChangeAccent(IReadOnlyCollection<AccentColorMenuData>? randomColors = null)
         {
             if (randomColors?.Any() == true)
             {
@@ -31,6 +32,33 @@ class SettingsVM : VMBase
                 ThemeManager.Current.ChangeThemeColorScheme(Application.Current, Name);
                 Settings.Default.AccentColorName = Name;
             }
+        }
+    }
+    
+    public class CustomTheme : AccentColorMenuData
+    {
+        public override void ChangeAccent(IReadOnlyCollection<AccentColorMenuData>? randomColors = null)
+        {
+            if (!ThemeManager.Current.Themes.Any(x => x.Name == Name))
+            {
+                var darkTheme = ThemeManager.Current.AddLibraryTheme(
+                    new LibraryTheme(
+                        new Uri(
+                            $"pack://application:,,,/ImoutoRebirth.Navigator;component/Themes/ColorSchemes/Dark.{Name}.xaml"),
+                        MahAppsLibraryThemeProvider.DefaultInstance
+                    )
+                );
+                var lightTheme = ThemeManager.Current.AddLibraryTheme(
+                    new LibraryTheme(
+                        new Uri(
+                            $"pack://application:,,,/ImoutoRebirth.Navigator;component/Themes/ColorSchemes/Light.{Name}.xaml"),
+                        MahAppsLibraryThemeProvider.DefaultInstance
+                    )
+                );
+            }
+
+            ThemeManager.Current.ChangeThemeColorScheme(Application.Current, Name);
+            Settings.Default.AccentColorName = Name;
         }
     }
 
@@ -61,7 +89,13 @@ class SettingsVM : VMBase
             {
                 Name = "Random",
                 ColorBrush = Brushes.Black
-            }).ToList();
+            })
+            .Append(new CustomTheme
+            {
+                Name = "Elite",
+                ColorBrush = new SolidColorBrush(Color.FromRgb(0xff, 0xcb, 0x74))
+            })
+            .ToList();
 
         SelectedAccentColor = AccentColors.First(x => x.Name == Settings.Default.AccentColorName);
 

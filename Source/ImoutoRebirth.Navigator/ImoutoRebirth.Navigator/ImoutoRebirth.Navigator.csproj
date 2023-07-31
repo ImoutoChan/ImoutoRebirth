@@ -49,6 +49,18 @@
     </ItemGroup>
 
     <ItemGroup>
+        <PackageReference Include="XAMLTools.MSBuild" Version="1.0.0-alpha0143">
+            <PrivateAssets>all</PrivateAssets>
+            <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
+        </PackageReference>
+
+        <XAMLColorSchemeGeneratorItems Include="Themes\Theme.Template.xaml">
+            <ParametersFile>Themes\GeneratorParameters.json</ParametersFile>
+            <OutputPath>Themes\ColorSchemes</OutputPath>
+        </XAMLColorSchemeGeneratorItems>
+    </ItemGroup>
+
+    <ItemGroup>
         <Resource Include="Resources\Entypo.ttf" />
         <Resource Include="Resources\Icon\49a7b0a953e5106e5942169f3cb0c237.ico" />
         <Resource Include="Resources\Icon\window-icon.ico" />

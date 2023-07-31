@@ -55,7 +55,7 @@
                                  Header="Collections"
                                  Position="Right"
                                  DataContext="{Binding Path=CollectionManager}"
-                                 Theme="Inverse">
+                                 >
                 <flyouts:CollectionsView />
             </metroControl:Flyout>
 
@@ -64,7 +64,7 @@
                                  Header="Settings"
                                  Position="Right"
                                  DataContext="{Binding Path=Settings}"
-                                 Theme="Inverse">
+                                 >
                 <b:Interaction.Triggers>
                     <b:EventTrigger EventName="IsOpenChanged">
                         <b:InvokeCommandAction Command="{Binding SaveCommand}" />
@@ -79,7 +79,7 @@
                                  Header="Add tags"
                                  Position="Bottom"
                                  DataContext="{Binding Path=TagsEdit}"
-                                 Theme="Inverse">
+                                 >
                 <flyouts:TagsEditView />
             </metroControl:Flyout>
         </metroControl:FlyoutsControl>
