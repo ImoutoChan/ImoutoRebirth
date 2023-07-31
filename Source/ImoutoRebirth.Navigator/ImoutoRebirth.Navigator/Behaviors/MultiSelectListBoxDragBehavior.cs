@@ -3,7 +3,7 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using ImoutoRebirth.Navigator.ViewModel;
 
-namespace ImoutoRebirth.Navigator.Behavior;
+namespace ImoutoRebirth.Navigator.Behaviors;
 
 class MultiSelectListBoxDragBehavior : FrameworkElementDragBehavior
 {

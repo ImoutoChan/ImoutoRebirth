@@ -14,10 +14,10 @@
                           xmlns:converters="clr-namespace:ImoutoRebirth.Navigator.Converters"
                           xmlns:flyouts="clr-namespace:ImoutoRebirth.Navigator.View.Flyouts"
                           xmlns:userControl="clr-namespace:ImoutoRebirth.Navigator.UserControls"
-                          xmlns:behavior="clr-namespace:ImoutoRebirth.Navigator.Behavior"
                           xmlns:view="clr-namespace:ImoutoRebirth.Navigator.View"
                           xmlns:listEntries="clr-namespace:ImoutoRebirth.Navigator.ViewModel.ListEntries"
                           xmlns:apngPlayer="clr-namespace:ImoutoRebirth.Navigator.ApngWpfPlayer.ApngPlayer;assembly=ImoutoRebirth.Navigator.ApngWpfPlayer"
+                          xmlns:behaviors="clr-namespace:ImoutoRebirth.Navigator.Behaviors"
                           d:DataContext="{d:DesignInstance viewModel:MainWindowVM, IsDesignTimeCreatable=False}"
                           mc:Ignorable="d"
                           WindowStartupLocation="CenterScreen"
@@ -192,7 +192,7 @@
                                   DataType="{x:Type listEntries:INavigatorListEntry}">
                         <Border Margin="0,11,0,11">
                             <b:Interaction.Behaviors>
-                                <behavior:FrameworkElementDragBehavior />
+                                <behaviors:FrameworkElementDragBehavior />
                             </b:Interaction.Behaviors>
 
                             <Border.Effect>
@@ -383,7 +383,7 @@
                                   DataType="{x:Type listEntries:ImageEntryVM}">
                         <Border Margin="0,11,0,11">
                             <b:Interaction.Behaviors>
-                                <behavior:FrameworkElementDragBehavior />
+                                <behaviors:FrameworkElementDragBehavior />
                             </b:Interaction.Behaviors>
 
                             <Border.Effect>
@@ -401,7 +401,7 @@
                                   DataType="{x:Type listEntries:ImageEntryVM}">
                         <Border Margin="0,11,0,11">
                             <b:Interaction.Behaviors>
-                                <behavior:FrameworkElementDragBehavior />
+                                <behaviors:FrameworkElementDragBehavior />
                             </b:Interaction.Behaviors>
 
                             <Border.Effect>
@@ -429,7 +429,7 @@
                                   DataType="{x:Type listEntries:VideoEntryVM}">
                         <Border Margin="0,11,0,11">
                             <b:Interaction.Behaviors>
-                                <behavior:FrameworkElementDragBehavior />
+                                <behaviors:FrameworkElementDragBehavior />
                             </b:Interaction.Behaviors>
 
                             <Border.Effect>
@@ -452,7 +452,7 @@
                                   DataType="{x:Type listEntries:UgoiraEntryVM}">
                         <Border Margin="0,11,0,11">
                             <b:Interaction.Behaviors>
-                                <behavior:FrameworkElementDragBehavior />
+                                <behaviors:FrameworkElementDragBehavior />
                             </b:Interaction.Behaviors>
 
                             <Border.Effect>

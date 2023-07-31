@@ -1,6 +1,6 @@
 ﻿using System.Windows;
 
-namespace ImoutoRebirth.Navigator.Behavior;
+namespace ImoutoRebirth.Navigator.Behaviors;
 
 interface IDragable
 {

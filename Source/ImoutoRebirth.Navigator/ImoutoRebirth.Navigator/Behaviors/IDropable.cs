@@ -1,4 +1,4 @@
-﻿namespace ImoutoRebirth.Navigator.Behavior;
+﻿namespace ImoutoRebirth.Navigator.Behaviors;
 
 interface IDropable
 {

@@ -1,7 +1,7 @@
 ﻿using System.Windows;
 using Microsoft.Xaml.Behaviors;
 
-namespace ImoutoRebirth.Navigator.Behavior;
+namespace ImoutoRebirth.Navigator.Behaviors;
 
 class FrameworkElementDropBehavior : Behavior<FrameworkElement>
 {

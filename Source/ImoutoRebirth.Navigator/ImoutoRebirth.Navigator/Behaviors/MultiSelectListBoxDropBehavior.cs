@@ -1,7 +1,7 @@
 ﻿using System.Windows;
 using System.Windows.Controls;
 
-namespace ImoutoRebirth.Navigator.Behavior;
+namespace ImoutoRebirth.Navigator.Behaviors;
 
 class MultiSelectListBoxDropBehavior : FrameworkElementDropBehavior
 {

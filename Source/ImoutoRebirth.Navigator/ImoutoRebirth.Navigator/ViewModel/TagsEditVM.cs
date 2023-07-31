@@ -3,7 +3,7 @@ using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Windows.Input;
 using ImoutoRebirth.Common;
-using ImoutoRebirth.Navigator.Behavior;
+using ImoutoRebirth.Navigator.Behaviors;
 using ImoutoRebirth.Navigator.Commands;
 using ImoutoRebirth.Navigator.Services;
 using ImoutoRebirth.Navigator.Services.Tags;

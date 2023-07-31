@@ -3,7 +3,7 @@ using System.Windows;
 using System.Windows.Input;
 using Microsoft.Xaml.Behaviors;
 
-namespace ImoutoRebirth.Navigator.Behavior;
+namespace ImoutoRebirth.Navigator.Behaviors;
 
 class FrameworkElementDragBehavior : Behavior<FrameworkElement>
 {

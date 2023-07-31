@@ -1,6 +1,6 @@
 ﻿using System.Windows;
 using System.Windows.Media.Imaging;
-using ImoutoRebirth.Navigator.Behavior;
+using ImoutoRebirth.Navigator.Behaviors;
 
 namespace ImoutoRebirth.Navigator.ViewModel.ListEntries;
 
