@@ -49,7 +49,7 @@ jobs:
           key: ${{ runner.os }}-${{ hashFiles('**/global.json', '**/*.csproj', '**/Directory.Packages.props') }}
       
       - name: Pack 7ZSfx installer
-        run: .\Tools\NukeBuild\build.cmd Pack7ZSfx
+        run: .\Tools\NukeBuild\build.cmd Test Pack7ZSfx
 
       - name: Create github release
         uses: actions/create-release@v1

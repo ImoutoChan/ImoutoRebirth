@@ -8,7 +8,7 @@
       "properties": {
         "Configuration": {
           "type": "string",
-          "description": "Configuration to build - Default is 'Debug' (local) or 'Release' (server)",
+          "description": "Configuration to build - Default is 'Release'",
           "enum": [
             "Debug",
             "Release"
