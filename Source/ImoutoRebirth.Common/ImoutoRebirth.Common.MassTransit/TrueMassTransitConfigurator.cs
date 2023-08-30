@@ -7,13 +7,13 @@ internal class TrueMassTransitConfigurator : ITrueMassTransitConfigurator
 {
     public IRabbitMqBusFactoryConfigurator RabbitMqBusFactoryConfigurator { get; }
 
-    public IServiceProvider ServiceProvider { get; }
+    public IBusRegistrationContext BusRegistrationContext { get; }
 
     public TrueMassTransitConfigurator(
         IRabbitMqBusFactoryConfigurator rabbitMqBusFactoryConfigurator,
-        IServiceProvider serviceProvider)
+        IBusRegistrationContext serviceProvider)
     {
         RabbitMqBusFactoryConfigurator = rabbitMqBusFactoryConfigurator;
-        ServiceProvider = serviceProvider;
+        BusRegistrationContext = serviceProvider;
     }
 }

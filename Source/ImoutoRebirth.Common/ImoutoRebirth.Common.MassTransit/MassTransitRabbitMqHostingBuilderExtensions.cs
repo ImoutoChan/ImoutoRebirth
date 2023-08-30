@@ -14,9 +14,7 @@ public static class MassTransitExtensions
         Action<ITrueMassTransitConfigurator>? configureAction = null)
     {
         services.AddMassTransit(
-            x => x.AddBus(
-                innerServices => Bus.Factory.CreateUsingRabbitMq(
-                    cfg =>
+            x => x.UsingRabbitMq((context, cfg) =>
                     {
                         cfg.Host(
                             new Uri(settings.Url),
@@ -27,8 +25,8 @@ public static class MassTransitExtensions
                                 hostConfigurator.Password(settings.Password);
                             });
 
-                        configureAction?.Invoke(new TrueMassTransitConfigurator(cfg, innerServices));
-                    })));
+                        configureAction?.Invoke(new TrueMassTransitConfigurator(cfg, context));
+                    }));
 
         return services;
     }
@@ -48,7 +46,7 @@ public static class MassTransitExtensions
                 x.UseMessageRetry(GetRetryPolicy);
                 endpointConfigurator?.Invoke(x);
 
-                x.Consumer<TConsumer>(configurator.ServiceProvider);
+                x.Consumer<TConsumer>(configurator.BusRegistrationContext);
             });
 
         return configurator;
