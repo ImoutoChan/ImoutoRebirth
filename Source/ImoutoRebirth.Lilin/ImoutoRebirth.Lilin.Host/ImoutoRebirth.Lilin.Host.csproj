@@ -10,6 +10,7 @@
         <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
         <ImplicitUsings>true</ImplicitUsings>
         <UserSecretsId>d6ded988-acd8-40e3-b897-86a1922ce0ec</UserSecretsId>
+        <ServerGarbageCollection>false</ServerGarbageCollection>
     </PropertyGroup>
 
     <ItemGroup>

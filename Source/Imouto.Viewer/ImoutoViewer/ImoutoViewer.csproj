@@ -13,6 +13,7 @@
 
         <Nullable>enable</Nullable>
         <ImplicitUsings>true</ImplicitUsings>
+        <ServerGarbageCollection>false</ServerGarbageCollection>
     </PropertyGroup>
 
     <PropertyGroup>
