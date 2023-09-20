@@ -129,7 +129,14 @@
 
     <Grid MouseLeftButtonUp="Grid_MouseLeftButtonUp"
           x:Name="Client">
-        <Grid>
+
+        <view:FullScreenPreviewView
+            DataContext="{Binding Path=FullScreenPreviewVM}"
+            Visibility="{Binding Converter={StaticResource ConditionVisibilityConverter}, ConverterParameter=!null, Mode=OneWay}">
+        </view:FullScreenPreviewView>
+        
+        <Grid
+            Visibility="{Binding Path=FullScreenPreviewVM, Converter={StaticResource ConditionVisibilityConverter}, ConverterParameter=null, Mode=OneWay}">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="auto" 
                                   MaxWidth="300" />
@@ -146,7 +153,7 @@
                                        Grid.Column="1"
                                        Grid.RowSpan="2"
                                        Visibility="{Binding Path=IsLoading, Converter={StaticResource ConditionVisibilityConverter}, ConverterParameter=true, Mode=OneWay}" />
-
+            
             <ListBox x:Name="ListBoxElement"
                      Grid.Row="0"
                      Grid.Column="1"
@@ -253,28 +260,6 @@
                                                     Width="19"
                                                     Height="19"
                                                     Kind="ImageExport">
-                                                </iconPacks:PackIconModern>
-                                            </ControlTemplate>
-                                        </Label.Template>
-                                    </Label>
-
-                                    <Label HorizontalAlignment="Left"
-                                           VerticalAlignment="Top"
-                                           Margin="5,5,5,5"
-                                           Visibility="{Binding Path=Type, Converter={StaticResource ConditionVisibilityConverter}, ConverterParameter=Ugoira}">
-                                        <Label.Effect>
-                                            <DropShadowEffect Color="{Binding Source={StaticResource MahApps.Brushes.ThemeBackground}, Path=Color, Mode=OneTime}"
-                                                              BlurRadius="5"
-                                                              Opacity="0.9"
-                                                              Direction="315"
-                                                              ShadowDepth="3" />
-                                        </Label.Effect>
-                                        <Label.Template>
-                                            <ControlTemplate>
-                                                <iconPacks:PackIconModern
-                                                    Width="19"
-                                                    Height="19"
-                                                    Kind="ImageMultiple">
                                                 </iconPacks:PackIconModern>
                                             </ControlTemplate>
                                         </Label.Template>
@@ -437,7 +422,7 @@
                             </Border.Effect>
 
                              <Grid Width="{Binding Path=ViewPortSize.Width}"
-                                  Height="{Binding Path=ViewPortSize.Height}">
+                                   Height="{Binding Path=ViewPortSize.Height}">
                                 <!-- todo: implement video control -->
                                 <userControl:PlayerControl 
                                     Source="{Binding Path}" 
@@ -485,6 +470,10 @@
                                                                             Path=DataContext.OpenFileCommand}"
                                                           CommandParameter="{Binding}"
                                                           Gesture="LeftDoubleClick" />
+                                            <MouseBinding Command="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type Window}},
+                                                                            Path=DataContext.OpenFullScreenPreviewCommand}"
+                                                          CommandParameter="{Binding}"
+                                                          Gesture="MiddleClick" />
                                         </Border.InputBindings>
 
                                         <ContentControl Name="ContentControl"

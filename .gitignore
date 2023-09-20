@@ -7,3 +7,4 @@ bin/
 /.nuke/temp/*
 node_modules/
 /Source/Imouto.Extensions/chrome/src/dist/*
+/Source/.vs/*

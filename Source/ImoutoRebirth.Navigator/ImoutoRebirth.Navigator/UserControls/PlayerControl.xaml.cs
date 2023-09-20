@@ -49,7 +49,7 @@ public partial class PlayerControl
 
         _control = new VlcControl();
         Container.Content = _control;
-
+        
         _control.SourceProvider.CreatePlayer(vlcLibDirectory);
         _control.SourceProvider.MediaPlayer.PositionChanged 
             += (sender, args) 
@@ -99,7 +99,7 @@ public partial class PlayerControl
 
     public static readonly DependencyProperty SourceProperty 
         = DependencyProperty.Register(
-            "Source", 
+            nameof(Source), 
             typeof (string), 
             typeof (PlayerControl), 
             new UIPropertyMetadata(null, OnSourceChanged));
@@ -108,6 +108,19 @@ public partial class PlayerControl
     {
         get => (string) GetValue(SourceProperty);
         set => SetValue(SourceProperty, value);
+    }
+
+    public static readonly DependencyProperty InfinityLifespanModeProperty 
+        = DependencyProperty.Register(
+            nameof(InfinityLifespanMode), 
+            typeof (bool), 
+            typeof (PlayerControl), 
+            new UIPropertyMetadata(false, null));
+
+    public bool InfinityLifespanMode
+    {
+        get => (bool) GetValue(InfinityLifespanModeProperty);
+        set => SetValue(InfinityLifespanModeProperty, value);
     }
 
     private static void OnSourceChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
@@ -120,7 +133,13 @@ public partial class PlayerControl
         {
             if (newPropertyValue == null)
             {
-                Task.Run(() => control._control.Dispose());
+                if (!control.InfinityLifespanMode)
+                    Task.Run(() => control._control.Dispose());
+                else
+                {
+                    player?.Pause();
+                    control.IsPlayed = false;
+                }
             }
             else
             {
@@ -139,7 +158,7 @@ public partial class PlayerControl
 
     public static readonly DependencyProperty ShouldPauseProperty 
         = DependencyProperty.Register(
-            "ShouldPause", 
+            nameof(ShouldPause), 
             typeof (bool), 
             typeof (PlayerControl), 
             new UIPropertyMetadata(false, OnShouldPauseChanged));
@@ -163,7 +182,7 @@ public partial class PlayerControl
 
     public static readonly DependencyProperty VolumeProperty 
         = DependencyProperty.Register(
-            "Volume", 
+            nameof(Volume), 
             typeof (int), 
             typeof (PlayerControl), 
             new UIPropertyMetadata(0, OnVolumeChanged));

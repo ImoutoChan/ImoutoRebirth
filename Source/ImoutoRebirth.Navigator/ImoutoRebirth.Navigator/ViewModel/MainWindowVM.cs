@@ -36,6 +36,7 @@ class MainWindowVM : VMBase
     private readonly DispatcherTimer _appendNewContentTimer = new() { Interval = TimeSpan.FromSeconds(5) };
     private int _volume = 100;
     private bool _showTags = true;
+    private FullScreenPreviewVM? _fullScreenPreviewVM;
 
     #endregion Fields
 
@@ -166,6 +167,12 @@ class MainWindowVM : VMBase
 
     public TagsEditVM TagsEdit { get; set; }
 
+    public FullScreenPreviewVM? FullScreenPreviewVM
+    {
+        get => _fullScreenPreviewVM;
+        private set => OnPropertyChanged(ref _fullScreenPreviewVM, value, () => FullScreenPreviewVM);
+    }
+
     public bool IsLoading
     {
         get => _isLoading;
@@ -227,6 +234,8 @@ class MainWindowVM : VMBase
     public ICommand CopyCommand { get; set; }
 
     public ICommand OpenFileCommand { get; set; }
+    
+    public ICommand OpenFullScreenPreviewCommand { get; set; }
 
     public ICommand ToggleShowTagsCommand { get; set; }
 
@@ -275,6 +284,7 @@ class MainWindowVM : VMBase
         CopyCommand = new RelayCommand(CopySelected);
 
         OpenFileCommand = new RelayCommand<INavigatorListEntry>(OpenFile);
+        OpenFullScreenPreviewCommand = new RelayCommand<INavigatorListEntry>(OpenFullScreenPreview);
 
         ToggleShowTagsCommand = new RelayCommand(_ => ShowTags = !ShowTags);
     }
@@ -319,6 +329,25 @@ class MainWindowVM : VMBase
                 Debug.WriteLine("Can't open unsupported entry type" + navigatorListEntry?.GetType().FullName);
                 break;
         }
+    }
+    
+    private void OpenFullScreenPreview(INavigatorListEntry? navigatorListEntry)
+    {
+        if (navigatorListEntry == null)
+            return;
+
+        var vm = new FullScreenPreviewVM(navigatorListEntry);
+        vm.CloseRequested += OnFullScreenPreviewVMCloseRequested;
+        FullScreenPreviewVM = vm;
+    }
+
+    private void OnFullScreenPreviewVMCloseRequested(object? o, EventArgs eventArgs)
+    {
+        if (FullScreenPreviewVM == null)
+            return;
+        
+        FullScreenPreviewVM.CloseRequested -= OnFullScreenPreviewVMCloseRequested;
+        FullScreenPreviewVM = null;
     }
 
     private static string CreatePlayList(IList<string> videos, string videoPath)
