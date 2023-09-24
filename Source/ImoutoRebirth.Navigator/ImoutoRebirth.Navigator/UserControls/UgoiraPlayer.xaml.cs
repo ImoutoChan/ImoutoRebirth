@@ -66,6 +66,7 @@ public partial class UgoiraPlayer : UserControl
         }
         else
         {
+            control.UnloadUgoira();
             await control.LoadUgoira(path);
         }
     }
@@ -124,6 +125,7 @@ public partial class UgoiraPlayer : UserControl
     {
         StopPlaying();
         Frames.Clear();
+        _loaded = false;
     }
 
     private async void StartPlaying()

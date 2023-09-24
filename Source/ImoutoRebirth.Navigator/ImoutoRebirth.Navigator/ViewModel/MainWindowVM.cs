@@ -14,8 +14,10 @@ using ImoutoRebirth.Navigator.Services;
 using ImoutoRebirth.Navigator.Services.ImoutoViewer;
 using ImoutoRebirth.Navigator.Services.Tags;
 using ImoutoRebirth.Navigator.Services.Tags.Model;
+using ImoutoRebirth.Navigator.UserControls;
 using ImoutoRebirth.Navigator.ViewModel.ListEntries;
 using MahApps.Metro.Controls.Dialogs;
+using Newtonsoft.Json;
 using File = System.IO.File;
 
 namespace ImoutoRebirth.Navigator.ViewModel;
@@ -31,6 +33,7 @@ class MainWindowVM : VMBase
     private string _status;
     private string _statusToolTip;
     private readonly IFileService _fileService;
+    private readonly IFileTagService _fileTagService;
     private readonly IFileLoadingService _fileLoadingService;
     private readonly IImoutoViewerService _imoutoViewerService;
     private readonly DispatcherTimer _appendNewContentTimer = new() { Interval = TimeSpan.FromSeconds(5) };
@@ -46,6 +49,7 @@ class MainWindowVM : VMBase
     {
         _fileLoadingService = ServiceLocator.GetService<IFileLoadingService>();
         _fileService = ServiceLocator.GetService<IFileService>();
+        _fileTagService = ServiceLocator.GetService<IFileTagService>();
         _imoutoViewerService = ServiceLocator.GetService<IImoutoViewerService>();
 
         InitializeCommands();
@@ -336,17 +340,31 @@ class MainWindowVM : VMBase
         if (navigatorListEntry == null)
             return;
 
-        var vm = new FullScreenPreviewVM(navigatorListEntry);
+        var vm = new FullScreenPreviewVM(async entry =>
+        {
+            var tags = await _fileTagService.GetFileTags(entry.DbId!.Value);
+            var frameDataTag = tags.FirstOrDefault(x => x.Tag.Title == "UgoiraFrameData");
+
+            if (frameDataTag == null || string.IsNullOrEmpty(frameDataTag.Value))
+                return null;
+
+            var frameData = JsonConvert.DeserializeObject<UgoiraFrameData>(frameDataTag.Value);
+
+            return frameData?.Data.Select(x => new DelayItem(x.Delay, x.File)).ToList();
+        });
+        vm.SetCurrentEntry(navigatorListEntry, NavigatorList);
         vm.CloseRequested += OnFullScreenPreviewVMCloseRequested;
         FullScreenPreviewVM = vm;
     }
 
     private void OnFullScreenPreviewVMCloseRequested(object? o, EventArgs eventArgs)
     {
-        if (FullScreenPreviewVM == null)
+        var vm = FullScreenPreviewVM;
+        
+        if (vm == null)
             return;
         
-        FullScreenPreviewVM.CloseRequested -= OnFullScreenPreviewVMCloseRequested;
+        vm.CloseRequested -= OnFullScreenPreviewVMCloseRequested;
         FullScreenPreviewVM = null;
     }
 

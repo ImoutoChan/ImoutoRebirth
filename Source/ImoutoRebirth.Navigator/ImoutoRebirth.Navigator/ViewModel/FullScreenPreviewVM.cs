@@ -1,114 +1,89 @@
 ﻿using System.Windows.Input;
 using ImoutoRebirth.Navigator.Commands;
+using ImoutoRebirth.Navigator.UserControls;
 using ImoutoRebirth.Navigator.ViewModel.ListEntries;
 
 namespace ImoutoRebirth.Navigator.ViewModel;
 
 internal class FullScreenPreviewVM : VMBase
 {
-    private string? _imagePath;
-    private string? _pngPath;
-    private string? _gifPath;
-    private string? _videoPath;
-    private string? _ugoiraPath;
-    private bool _isImage;
-    private bool _isPng;
-    private bool _isGif;
-    private bool _isVideo;
-    private bool _isUgoira;
+    private readonly Func<INavigatorListEntry, Task<List<DelayItem>>> _ugoiraDelaysGetter;
+    private string? _path;
+    private INavigatorListEntry? _currentEntry;
+    private ListEntryType? _type;
+    private IList<INavigatorListEntry>? _list;
+    private IReadOnlyCollection<DelayItem>? _ugoiraFrameDelays;
 
-    public FullScreenPreviewVM(INavigatorListEntry forEntry)
+    public FullScreenPreviewVM(Func<INavigatorListEntry, Task<List<DelayItem>>> ugoiraDelaysGetter) 
+        => _ugoiraDelaysGetter = ugoiraDelaysGetter;
+
+    public string? PngPath => _type == ListEntryType.Png ? Path : null;
+    public string? GifPath => _type == ListEntryType.Gif ? Path : null;
+    public string? VideoPath => _type == ListEntryType.Video ? Path : null;
+    public string? UgoiraPath => _type == ListEntryType.Ugoira ? Path : null;
+    public string? ImagePath => _type == ListEntryType.Image ? Path : null;
+
+    private string? Path
     {
-        switch (forEntry.Type)
+        get => _path;
+        set
         {
-            case ListEntryType.Video:
-                _isVideo = true;
-                _videoPath = forEntry.Path;
-                break;
-            case ListEntryType.Gif:
-                _isGif = true;
-                _gifPath = forEntry.Path;
-                break;
-            case ListEntryType.Image:
-                _isImage = true;
-                _imagePath = forEntry.Path;
-                break;
-            case ListEntryType.Ugoira:
-                _isUgoira = true;
-                _ugoiraPath = forEntry.Path;
-                break;
-            case ListEntryType.Png:
-                _isPng = true;
-                _pngPath = forEntry.Path;
-                break;
-            default:
-                throw new ArgumentOutOfRangeException();
+            OnPropertyChanged(ref _path, value, () => Path);
+            OnPropertyChanged(nameof(PngPath));
+            OnPropertyChanged(nameof(GifPath));
+            OnPropertyChanged(nameof(VideoPath));
+            OnPropertyChanged(nameof(UgoiraPath));
+            OnPropertyChanged(nameof(ImagePath));
         }
     }
     
-    public string? ImagePath 
-    { 
-        get => _imagePath; 
-        set => OnPropertyChanged(ref _imagePath, value, () => ImagePath);
+    private INavigatorListEntry? CurrentEntry
+    {
+        get => _currentEntry;
+        set => OnPropertyChanged(ref _currentEntry, value, () => CurrentEntry);
     }
 
-    public string? PngPath 
-    { 
-        get => _pngPath; 
-        set => OnPropertyChanged(ref _pngPath, value, () => PngPath);
-    }
-
-    public string? GifPath 
-    { 
-        get => _gifPath; 
-        set => OnPropertyChanged(ref _gifPath, value, () => GifPath);
-    }
-
-    public string? VideoPath 
-    { 
-        get => _videoPath; 
-        set => OnPropertyChanged(ref _videoPath, value, () => VideoPath);
-    }
-
-    public string? UgoiraPath 
-    { 
-        get => _ugoiraPath; 
-        set => OnPropertyChanged(ref _ugoiraPath, value, () => UgoiraPath);
-    }
-
-    public bool IsImage 
-    { 
-        get => _isImage; 
-        set => OnPropertyChanged(ref _isImage, value, () => IsImage);
-    }
-
-    public bool IsPng 
-    { 
-        get => _isPng; 
-        set => OnPropertyChanged(ref _isPng, value, () => IsPng);
-    }
-
-    public bool IsGif 
-    { 
-        get => _isGif; 
-        set => OnPropertyChanged(ref _isGif, value, () => IsGif);
-    }
-
-    public bool IsVideo 
-    { 
-        get => _isVideo; 
-        set => OnPropertyChanged(ref _isVideo, value, () => IsVideo);
-    }
-
-    public bool IsUgoira 
-    { 
-        get => _isUgoira; 
-        set => OnPropertyChanged(ref _isUgoira, value, () => IsUgoira);
+    public ListEntryType? Type
+    {
+        get => Path != null ? _type : null; 
+        private set => OnPropertyChanged(ref _type, value, () => Type);
     }
     
-    public ICommand CloseCommand => new RelayCommand(_ => OnCloseRequested());
+    public IReadOnlyCollection<DelayItem>? UgoiraFrameDelays
+    {
+        get => _ugoiraFrameDelays;
+        set => OnPropertyChanged(ref _ugoiraFrameDelays, value, () => UgoiraFrameDelays);
+    }
+    
+    public async void SetCurrentEntry(INavigatorListEntry forEntry, IList<INavigatorListEntry> list)
+    {
+        Type = forEntry.Type;
+        Path = forEntry.Path;
+        CurrentEntry = forEntry;
+        _list = list;
 
-    public event EventHandler CloseRequested;
+        if (Type == ListEntryType.Ugoira)
+            UgoiraFrameDelays = await _ugoiraDelaysGetter(forEntry);
+    }
+    
+    public ICommand CloseCommand => new RelayCommand(_ => CloseRequested?.Invoke(this, EventArgs.Empty));
+    
+    public ICommand NextPreviewCommand => new RelayCommand<bool>(isNext =>
+    {
+        var current = CurrentEntry;
+        var list = _list;
+        
+        if (current == null || list == null)
+            return;
+        
+        var currentIndex = list.IndexOf(current);
+        var nextIndex = currentIndex + 1;
+        var prevIndex = currentIndex - 1;
+        var nextEntry = nextIndex < list.Count ? list[nextIndex] : list[0];
+        var prevEntry = prevIndex >= 0 ? list[prevIndex] : list[^1];
 
-    protected virtual void OnCloseRequested() => CloseRequested?.Invoke(this, EventArgs.Empty);
+        SetCurrentEntry(isNext ? nextEntry : prevEntry, list);
+    });
+
+    public event EventHandler? CloseRequested;
 }

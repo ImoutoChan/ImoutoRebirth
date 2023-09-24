@@ -11,40 +11,42 @@
     xmlns:userControls="clr-namespace:ImoutoRebirth.Navigator.UserControls"
     d:DataContext="{d:DesignInstance viewModel:FullScreenPreviewVM, IsDesignTimeCreatable=False}"
     d:DesignHeight="300" 
-    d:DesignWidth="300">
+    d:DesignWidth="300"
+    PreviewMouseWheel="OnPreviewMouseWheel">
     <UserControl.InputBindings>
         <MouseBinding Gesture="MiddleClick" Command="{Binding CloseCommand}" />
     </UserControl.InputBindings>
     <Grid>
-        <Grid Name="SimpleNotAnimatedImage">
+        <Grid>
             <Grid.RowDefinitions>
                 <RowDefinition Height="*" />
             </Grid.RowDefinitions>
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*" />
             </Grid.ColumnDefinitions>
+
             <Image
                 Source="{Binding Path=ImagePath}"
-                Visibility="{Binding Path=IsImage, Converter={StaticResource ConditionVisibilityConverter}, ConverterParameter=true}" />
+                Visibility="{Binding Path=Type, Converter={StaticResource ConditionVisibilityConverter}, ConverterParameter=Image}" />
 
             <apngPlayer:ApngPlayer
-                Source="{Binding PngPath}"
-                Visibility="{Binding Path=IsPng, Converter={StaticResource ConditionVisibilityConverter}, ConverterParameter=true}" />
+                Source="{Binding Path=PngPath}"
+                Visibility="{Binding Path=Type, Converter={StaticResource ConditionVisibilityConverter}, ConverterParameter=Png}" />
 
             <Image
                 gif:ImageBehavior.AnimatedSource="{Binding GifPath}"
-                Visibility="{Binding Path=IsGif, Converter={StaticResource ConditionVisibilityConverter}, ConverterParameter=true}" />
+                Visibility="{Binding Path=Type, Converter={StaticResource ConditionVisibilityConverter}, ConverterParameter=Gif}" />
 
             <userControls:PlayerControl
                 InfinityLifespanMode="True"
-                Source="{Binding VideoPath}"
+                Source="{Binding Path=VideoPath}"
                 Volume="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type Window}}, Path=DataContext.Volume}"
-                Visibility="{Binding Path=IsVideo, Converter={StaticResource ConditionVisibilityConverter}, ConverterParameter=true}" />
+                Visibility="{Binding Path=Type, Converter={StaticResource ConditionVisibilityConverter}, ConverterParameter=Video}" />
 
             <userControls:UgoiraPlayer
-                Source="{Binding UgoiraPath}"
-                FrameDelays="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type Window}}, Path=DataContext.TagSearchVM.UgoiraFrameDelays}"
-                Visibility="{Binding Path=IsUgoira, Converter={StaticResource ConditionVisibilityConverter}, ConverterParameter=true}" />
+                Source="{Binding Path=UgoiraPath}"
+                FrameDelays="{Binding Path=UgoiraFrameDelays}"
+                Visibility="{Binding Path=Type, Converter={StaticResource ConditionVisibilityConverter}, ConverterParameter=Ugoira}" />
         </Grid>
     </Grid>
 </UserControl>

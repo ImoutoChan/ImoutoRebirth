@@ -31,7 +31,8 @@
                           WindowButtonCommandsOverlayBehavior="Never"
                           ResizeBorderThickness="5"
                           Icon="pack://application:,,,/ImoutoRebirth.Navigator;component/Resources/Icon/window-icon.ico"
-                          ShowIconOnTitleBar="False">
+                          ShowIconOnTitleBar="False"
+                          Closing="MainWindow_OnClosing">
     <metroControl:MetroWindow.Resources>
         <converters:ConditionVisibilityConverter x:Key="ConditionVisibilityConverter" />
         <converters:MultiBooleanVisibilityConverter x:Key="MultiBooleanVisibilityConverter" />

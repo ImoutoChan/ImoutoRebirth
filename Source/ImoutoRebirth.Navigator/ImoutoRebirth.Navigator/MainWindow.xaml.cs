@@ -1,4 +1,5 @@
 ﻿using System.Collections;
+using System.ComponentModel;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -174,6 +175,16 @@ internal partial class MainWindow
         // Open TagsEdit flyout.
         if (e.Key == Key.T)
             ToggleFlyout(TagsEditFlyout);
+    }
+
+    private void MainWindow_OnClosing(object? sender, CancelEventArgs e)
+    {
+        var viewModel = DataContext as MainWindowVM;
+        if (viewModel?.FullScreenPreviewVM == null) 
+            return;
+        
+        viewModel.FullScreenPreviewVM.CloseCommand.Execute(null);
+        e.Cancel = true;
     }
 
     #endregion Event handlers
