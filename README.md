@@ -99,6 +99,8 @@ This will install or update the application itself
 ./install-update.ps1
 ```
 
+6. Optionally, you can install the chrome extension, which will highlight saved images and their relatives. [Link to the extension](https://chrome.google.com/webstore/detail/imouto-extension/ieilellpakdngfomipoedkgfaeddfffc)
+
 # Configuration
 
 ## configuration.json

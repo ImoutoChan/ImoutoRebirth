@@ -89,15 +89,17 @@ Set-ExecutionPolicy Bypass -Scope Process -Force;
 cd <путь к папке latest>
 ``` 
 
-Установит rabbitmq, postgres, .net runtime
+Установить rabbitmq, postgres, .net runtime
 ```powershell
 ./install-dependencies.ps1
 ```
 
-Установит или обновит само приложение
+Установить или обновить само приложение
 ```powershell
 ./install-update.ps1
 ```
+
+6. Опционально, можно установить расширение для хрома, которое будет подсвечивать сохраненные или связанные с сохраненными картинки на бурах. [Ссылка на расширение](https://chrome.google.com/webstore/detail/imouto-extension/ieilellpakdngfomipoedkgfaeddfffc)
 
 # Configuration
 
