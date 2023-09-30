@@ -64,11 +64,16 @@ public static class Z7Tasks
 
         protected override Arguments ConfigureProcessArguments(Arguments arguments)
         {
-            return arguments
-                .Add(Command)
-                .Add(Switch)
+            var resultArguments = arguments
+                .Add(Command);
+            
+            if (!string.IsNullOrWhiteSpace(Switch))
+                resultArguments = resultArguments
+                    .Add(Switch);
+
+            return resultArguments
                 .Add("\"{0}\"", ArchiveName)
-                .Add("\"{0}\\*\"", SourceName);
+                .Add("\"{0}\\", SourceName);
         }
     }
 }

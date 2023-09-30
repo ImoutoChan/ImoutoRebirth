@@ -59,14 +59,16 @@ class Build : NukeBuild
     AbsolutePath SourceDirectory => RootDirectory;
     
     AbsolutePath OutputDirectory => RootDirectory / "Artifacts";
-    
-    AbsolutePath OutputLatestDirectory => OutputDirectory / "latest";
+
+    AbsolutePath OutputLatestDirectory => OutputDirectory / VersionedName;
     
     [Solution(GenerateProjects = true)]
     readonly Solution Solution;
 
     [GitVersion]
     readonly GitVersion GitVersion;
+    
+    string VersionedName => "ImoutoRebirth-" + GitVersion.NuGetVersionV2;
     
     Target Clean => _ => _
         .Before(Restore)
@@ -161,7 +163,12 @@ class Build : NukeBuild
             PackAs7z(s => s
                 .CreateArchive()
                 .AsSfx()
-                .SetOutputArchiveFile(OutputLatestDirectory.Parent / "ImoutoRebirth.exe")
+                .SetOutputArchiveFile(OutputLatestDirectory.Parent / $"{VersionedName}.exe")
+                .SetSourceDirectory(OutputLatestDirectory));
+            
+            PackAs7z(s => s
+                .CreateArchive()
+                .SetOutputArchiveFile(OutputLatestDirectory.Parent / $"{VersionedName}.7z")
                 .SetSourceDirectory(OutputLatestDirectory));
         });
 }
