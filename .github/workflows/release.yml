@@ -80,3 +80,4 @@ jobs:
         uses: softprops/action-gh-release@v1
         with:
           files: ./Artifacts/ImoutoRebirth-*.*
+          token: ${{ secrets.RELEASES_TOKEN }}
