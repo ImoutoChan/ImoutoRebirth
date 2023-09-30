@@ -20,6 +20,9 @@ on:
   push:
     tags:
       - '*'
+        
+permissions:
+  contents: write
 
 jobs:
   windows-latest:
@@ -55,17 +58,17 @@ jobs:
       - name: Pack 7ZSfx installer
         run: .\Tools\NukeBuild\build.cmd Test Pack7ZSfx
 
-      - name: Create github release
-        uses: actions/create-release@v1
-        id: create_release
-        with:
-          draft: false
-          prerelease: false
-          release_name: ${{ steps.gitversion.outputs.majorMinorPatch }}
-          tag_name: ${{ github.ref }}
-          body: ImoutoRebirth.exe is self extracting 7z archive. Read installation instructions in README.md
-        env:
-          GITHUB_TOKEN: ${{ secrets.RELEASES_TOKEN }}
+#      - name: Create github release
+#        uses: actions/create-release@v1
+#        id: create_release
+#        with:
+#          draft: false
+#          prerelease: false
+#          release_name: ${{ steps.gitversion.outputs.majorMinorPatch }}
+#          tag_name: ${{ github.ref }}
+#          body: ImoutoRebirth.exe is self extracting 7z archive. Read installation instructions in README.md
+#        env:
+#          GITHUB_TOKEN: ${{ secrets.RELEASES_TOKEN }}
 
 #      - name: Upload 7ZSfx installer to github release
 #        uses: actions/upload-release-asset@v1
@@ -76,8 +79,9 @@ jobs:
 #          asset_path: ./Artifacts/ImoutoRebirth-*.*
 #          asset_content_type: application/octet-stream
 
-      - name: RUpload 7ZSfx installer to github release
+      - name: Upload 7ZSfx installer to github release
         uses: softprops/action-gh-release@v1
         with:
           files: ./Artifacts/ImoutoRebirth-*.*
-          token: ${{ secrets.RELEASES_TOKEN }}
+          body:  ImoutoRebirth-<version>.exe is self extracting 7z archive. You can use it or download 7z archive itself. Read installation instructions in README.md
+          name: ImoutoRebirth ${{ steps.gitversion.outputs.majorMinorPatch }}
