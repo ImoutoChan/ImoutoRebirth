@@ -67,12 +67,16 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.RELEASES_TOKEN }}
 
-      - name: Upload 7ZSfx installer to github release
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.RELEASES_TOKEN }}
+#      - name: Upload 7ZSfx installer to github release
+#        uses: actions/upload-release-asset@v1
+#        env:
+#          GITHUB_TOKEN: ${{ secrets.RELEASES_TOKEN }}
+#        with:
+#          upload_url: ${{ steps.create_release.outputs.upload_url }}
+#          asset_path: ./Artifacts/ImoutoRebirth-*.*
+#          asset_content_type: application/octet-stream
+
+      - name: RUpload 7ZSfx installer to github release
+        uses: softprops/action-gh-release@v1
         with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ./Artifacts/ImoutoRebirth.exe
-          asset_name: ImoutoRebirth.exe
-          asset_content_type: application/octet-stream
+          files: ./Artifacts/ImoutoRebirth-*.*
