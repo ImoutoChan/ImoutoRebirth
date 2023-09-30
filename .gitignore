@@ -8,3 +8,4 @@ bin/
 node_modules/
 /Source/Imouto.Extensions/chrome/src/dist/*
 /Source/.vs/*
+/Source/ImoutoRebirth.Hasami/appsettings.json

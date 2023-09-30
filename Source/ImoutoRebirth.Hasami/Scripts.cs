@@ -7,6 +7,7 @@ using Imouto.BooruParser.Implementations.Sankaku;
 using Imouto.BooruParser.Implementations.Yandere;
 using ImoutoRebirth.RoomService.WebApi.Client;
 using Microsoft.Extensions.Caching.Memory;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 
@@ -41,6 +42,7 @@ internal static class Scripts
 
     public static async Task SplitBasedOnFoundInBooru()
     {
+        
         var sourcePath = new DirectoryInfo(@"C:\Users\Oniii-chan\Downloads\pepper0\!new\!pngs");
         var targetFoundPath = new DirectoryInfo(Path.Combine(sourcePath.FullName, "!found"));
         var targetMissPath = new DirectoryInfo(Path.Combine(sourcePath.FullName, "!miss"));
@@ -76,14 +78,25 @@ internal static class Scripts
 
     private static async Task<bool> IsFoundInAnyBooru(string md5)
     {
+        var configuration = new ConfigurationBuilder()
+            .AddJsonFile("appsettings.json", false)
+            .Build();
+        
         var services = new ServiceCollection();
         services.AddBooruParsers();
         services.AddMemoryCache();
         services.Configure<DanbooruSettings>(x =>
         {
+            x.Login = configuration.GetValue<string>("DanbooruSettings:Login");
+            x.ApiKey = configuration.GetValue<string>("DanbooruSettings:ApiKey");
+            x.PauseBetweenRequestsInMs = 0;
+            x.BotUserAgent = configuration.GetValue<string>("DanbooruSettings:UserAgent");
         });
         services.Configure<SankakuSettings>(x =>
         {
+            x.Login = configuration.GetValue<string>("SankakuSettings:Login");
+            x.PassHash = configuration.GetValue<string>("SankakuSettings:PassHash");
+            x.PauseBetweenRequestsInMs = 5000;
         });
         var provider = services.BuildServiceProvider();
 
