@@ -1,4 +1,5 @@
 ﻿using System.Text.Json;
+using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 
 namespace ImoutoRebirth.Harpy.Services.SaveFavorites.Services.Loaders;
@@ -10,21 +11,29 @@ internal class DanbooruFavoritesLoader
 
     private readonly BooruConfiguration _booruConfiguration;
     private readonly HttpClient _httpClient;
+    private readonly ILogger<DanbooruFavoritesLoader> _logger;
     private readonly bool _enabled;
 
-    public DanbooruFavoritesLoader(HttpClient httpClient, IOptions<DanbooruBooruConfiguration> booruConfiguration)
+    public DanbooruFavoritesLoader(
+        HttpClient httpClient,
+        IOptions<DanbooruBooruConfiguration> booruConfiguration,
+        ILogger<DanbooruFavoritesLoader> logger)
     {
         _httpClient = httpClient;
+        _logger = logger;
         _booruConfiguration = booruConfiguration.Value;
 
         _enabled = !(string.IsNullOrWhiteSpace(_booruConfiguration.Login) ||
-                    string.IsNullOrWhiteSpace(_booruConfiguration.BotUserAgent));
+                     string.IsNullOrWhiteSpace(_booruConfiguration.BotUserAgent));
     }
 
     public async IAsyncEnumerable<Post> GetFavoritesUrls()
     {
         if (!_enabled)
+        {
+            _logger.LogInformation("Danbooru favorites loader disabled");
             yield break;
+        }
 
         Post[] posts;
         var page = 1;

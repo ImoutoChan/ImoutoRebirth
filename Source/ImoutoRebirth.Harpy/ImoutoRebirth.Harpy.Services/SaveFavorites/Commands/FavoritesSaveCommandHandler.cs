@@ -1,4 +1,5 @@
 ﻿using System.Diagnostics.SymbolStore;
+using ImoutoRebirth.Common;
 using ImoutoRebirth.Common.Cqrs.Abstract;
 using ImoutoRebirth.Harpy.Services.SaveFavorites.Services;
 using ImoutoRebirth.Harpy.Services.SaveFavorites.Services.Loaders;
@@ -94,11 +95,19 @@ internal class FavoritesSaveCommandHandler : ICommandHandler<FavoritesSaveComman
                     continue;
 
                 var onlyNew = await _roomSavedChecker.GetOnlyNewPosts(uncheckedPosts);
-                if (!onlyNew.Any())
+                if (onlyNew.None())
                     break;
 
                 checkedPosts.AddRange(onlyNew);
                 uncheckedPosts.Clear();
+            }
+
+            if (uncheckedPosts.Any())
+            {
+                var onlyNew = await _roomSavedChecker.GetOnlyNewPosts(uncheckedPosts);
+                
+                if (onlyNew.Any())
+                    checkedPosts.AddRange(onlyNew);
             }
         }
         catch (Exception e)

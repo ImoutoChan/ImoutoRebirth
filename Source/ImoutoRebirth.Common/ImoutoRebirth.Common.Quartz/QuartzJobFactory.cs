@@ -37,7 +37,7 @@ internal class QuartzJobFactory : IJobFactory
         catch (Exception exception)
         {
             scope.Dispose();
-            _logger.LogError("An exception is occured in NewJob method", exception);
+            _logger.LogError(exception, "An exception is occured in NewJob method");
             throw;
         }
     }

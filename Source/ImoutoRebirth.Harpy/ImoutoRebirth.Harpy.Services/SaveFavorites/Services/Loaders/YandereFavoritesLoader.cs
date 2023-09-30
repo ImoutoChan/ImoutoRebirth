@@ -1,4 +1,5 @@
 ﻿using System.Text.Json;
+using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 
 namespace ImoutoRebirth.Harpy.Services.SaveFavorites.Services.Loaders;
@@ -10,11 +11,16 @@ internal class YandereFavoritesLoader
 
     private readonly BooruConfiguration _booruConfiguration;
     private readonly HttpClient _httpClient;
+    private readonly ILogger<DanbooruFavoritesLoader> _logger;
     private readonly bool _enabled;
 
-    public YandereFavoritesLoader(HttpClient httpClient, IOptions<YandereBooruConfiguration> booruConfiguration)
+    public YandereFavoritesLoader(
+        HttpClient httpClient,
+        IOptions<YandereBooruConfiguration> booruConfiguration,
+        ILogger<DanbooruFavoritesLoader> logger)
     {
         _httpClient = httpClient;
+        _logger = logger;
         _booruConfiguration = booruConfiguration.Value;
 
         _enabled = !string.IsNullOrWhiteSpace(_booruConfiguration.Login);
@@ -23,7 +29,10 @@ internal class YandereFavoritesLoader
     public async IAsyncEnumerable<Post> GetFavoritesUrls()
     {
         if (!_enabled)
+        {
+            _logger.LogInformation("Yandere favorites loader disabled");
             yield break;
+        }
 
         Post[] posts;
         var page = 1;
