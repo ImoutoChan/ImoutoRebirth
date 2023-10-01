@@ -11,9 +11,6 @@ internal class SourceActualizingStateRepository : ISourceActualizingStateReposit
 
     public SourceActualizingStateRepository(MeidoDbContext meidoDbContext) => _meidoDbContext = meidoDbContext;
 
-    public async Task Add(SourceActualizingState sourceActualizingState)
-        => await _meidoDbContext.SourceActualizingStates.AddAsync(sourceActualizingState);
-
     public async Task<IReadOnlyCollection<SourceActualizingState>> GetAll()
         => await _meidoDbContext.SourceActualizingStates.ToListAsync();
 

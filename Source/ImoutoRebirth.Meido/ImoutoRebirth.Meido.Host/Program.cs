@@ -1,47 +1,48 @@
 ﻿using ImoutoRebirth.Common.Host;
 using ImoutoRebirth.Common.Logging;
+using ImoutoRebirth.Common.MassTransit;
 using ImoutoRebirth.Common.OpenTelemetry;
 using ImoutoRebirth.Common.Quartz.Extensions;
+using ImoutoRebirth.Meido.Application;
 using ImoutoRebirth.Meido.DataAccess;
+using ImoutoRebirth.Meido.Host;
+using ImoutoRebirth.Meido.Infrastructure;
+using ImoutoRebirth.Meido.MessageContracts;
+using ImoutoRebirth.Meido.UI;
 using Microsoft.Extensions.Hosting;
 
-namespace ImoutoRebirth.Meido.Host;
+const string servicePrefix = "MEIDO_";
 
-internal class Program
-{
-    private const string ServicePrefix = "MEIDO_";
+var builder = Host.CreateApplicationBuilder(args);
+builder.Services.AddWindowsService();
+builder.SetWorkingDirectory();
+builder.UseEnvironmentFromEnvironmentVariable(servicePrefix);
+builder.UseConfiguration<Program>(servicePrefix);
+builder.ConfigureSerilog(
+    (loggerBuilder, appConfiguration, hostEnvironment)
+        => loggerBuilder
+            .WithoutDefaultLoggers()
+            .WithConsole()
+            .WithAllRollingFile()
+            .WithInformationRollingFile()
+            .WithOpenSearch(appConfiguration, hostEnvironment));
+builder.UseQuartz();
 
-    private static async Task Main(string[] args)
-    {
-        await CreateConsoleHost(args)
-            .MigrateMeido()
-            .RunAsync();
-    }
+var meidoSettings = builder.Configuration.GetRequired<MeidoSettings>();
 
-    public static IHost CreateConsoleHost(string[] args)
-        => new HostBuilder()
-            .UseWindowsService()
-            .SetWorkingDirectory()
-            .UseEnvironmentFromEnvironmentVariable(ServicePrefix)
-            .UseConfiguration(ServicePrefix)
-            .ConfigureSerilog(
-                (loggerBuilder, appConfiguration, hostEnvironment) 
-                    => loggerBuilder
-                        .WithoutDefaultLoggers()
-                        .WithConsole()
-                        .WithAllRollingFile()
-                        .WithInformationRollingFile()
-                        .WithOpenSearch(appConfiguration, hostEnvironment))
-            .UseQuartz()
-            .UseStartup(x => new Startup(x))
-            .ConfigureServices((context, services) =>
-            {
-                services.AddOpenTelemetry(context.HostingEnvironment, context.Configuration);
-            })
-            .Build();
+builder.Services
+    .AddOpenTelemetry(builder.Environment, builder.Configuration)
+    .AddMeidoApplication()
+    .AddMeidoUi()
+    .ConfigureMeidoUi(builder.Configuration)
+    .AddMeidoDataAccess(builder.Configuration.GetRequiredConnectionString("MeidoDatabase"))
+    .AddMeidoInfrastructure();
 
-    /// <summary>
-    /// Hack for EFCore DesignTime DbContext construction.
-    /// </summary>
-    public static IHost BuildWebHost(string[] args) => CreateConsoleHost(args);
-}
+builder.Services.AddTrueMassTransit(
+    meidoSettings.RabbitSettings,
+    MeidoReceiverApp.Name,
+    с => с.AddMeidoServicesForRabbit());
+
+await builder.Build()
+    .MigrateMeido()
+    .RunAsync();

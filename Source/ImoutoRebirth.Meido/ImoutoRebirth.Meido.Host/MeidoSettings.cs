@@ -1,6 +1,6 @@
 ﻿using ImoutoRebirth.Common.MassTransit;
 
-namespace ImoutoRebirth.Meido.Host.Settings;
+namespace ImoutoRebirth.Meido.Host;
 
 public class MeidoSettings
 {
