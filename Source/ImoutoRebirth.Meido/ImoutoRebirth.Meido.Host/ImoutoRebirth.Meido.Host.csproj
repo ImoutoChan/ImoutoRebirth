@@ -28,7 +28,6 @@
         <ProjectReference Include="..\..\ImoutoRebirth.Common\ImoutoRebirth.Common.Quartz\ImoutoRebirth.Common.Quartz.csproj" />
         <ProjectReference Include="..\ImoutoRebirth.Meido.DataAccess\ImoutoRebirth.Meido.DataAccess.csproj" />
         <ProjectReference Include="..\ImoutoRebirth.Meido.Infrastructure\ImoutoRebirth.Meido.Infrastructure.csproj" />
-        <ProjectReference Include="..\ImoutoRebirth.Meido.Services\ImoutoRebirth.Meido.Services.csproj" />
         <ProjectReference Include="..\ImoutoRebirth.Meido.UI\ImoutoRebirth.Meido.UI.csproj" />
     </ItemGroup>
 

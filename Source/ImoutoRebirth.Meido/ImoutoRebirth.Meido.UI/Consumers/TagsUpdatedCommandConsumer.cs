@@ -2,7 +2,7 @@
 using ImoutoRebirth.Meido.Domain;
 using ImoutoRebirth.Meido.MessageContracts;
 using MassTransit;
-using MassTransit.Mediator;
+using MediatR;
 using Microsoft.Extensions.Logging;
 
 namespace ImoutoRebirth.Meido.UI.Consumers;
