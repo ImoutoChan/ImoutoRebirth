@@ -1,4 +1,5 @@
-﻿using ImoutoRebirth.Arachne.MessageContracts.Commands;
+﻿using ImoutoRebirth.Arachne.MessageContracts;
+using ImoutoRebirth.Arachne.MessageContracts.Commands;
 using ImoutoRebirth.Common.Application;
 using ImoutoRebirth.Common.Cqrs.Events;
 using ImoutoRebirth.Meido.Domain.SourceActualizingStateAggregate;
@@ -30,13 +31,13 @@ internal class ActualizationRequestedDomainEventHandler
 
         await _distributedCommandBus.SendAsync<ILoadTagHistoryCommand>(new
         {
-            SearchEngineType = searchEngineType,
+            SearchEngineType = (SearchEngineType)(int)searchEngineType,
             LastProcessedTagHistoryId = domainEvent.Entity.LastProcessedTagHistoryId
         }, ct);
 
         await _distributedCommandBus.SendAsync<ILoadNoteHistoryCommand>(new
         {
-            SearchEngineType = searchEngineType,
+            SearchEngineType = (SearchEngineType)(int)searchEngineType,
             LastProcessedNoteUpdateAt = domainEvent.Entity.LastProcessedNoteUpdateAt.ToDateTimeOffset()
         }, ct);
     }
