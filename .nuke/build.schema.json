@@ -109,6 +109,14 @@
             "Quiet",
             "Verbose"
           ]
+        },
+        "VersionedFolder": {
+          "type": "string",
+          "description": "Insert version into the artefacts - Default is 'True'",
+          "enum": [
+            "False",
+            "True"
+          ]
         }
       }
     }

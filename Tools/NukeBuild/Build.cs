@@ -56,11 +56,15 @@ class Build : NukeBuild
     [Parameter("Configuration to build - Default is 'Release'")]
     readonly Configuration Configuration = Configuration.Release;
 
+    [Parameter("Insert version into the artefacts - Default is 'True'")]
+    readonly BuildToVersionedFolder VersionedFolder = BuildToVersionedFolder.True;
+
     AbsolutePath SourceDirectory => RootDirectory;
     
     AbsolutePath OutputDirectory => RootDirectory / "Artifacts";
 
-    AbsolutePath OutputLatestDirectory => OutputDirectory / VersionedName;
+    AbsolutePath OutputLatestDirectory =>
+        OutputDirectory / (VersionedFolder == BuildToVersionedFolder.True ? VersionedName : "latest");
     
     [Solution(GenerateProjects = true)]
     readonly Solution Solution;
