@@ -1,5 +1,4 @@
-﻿using ImoutoRebirth.Common.Cqrs.Events;
-using ImoutoRebirth.Common.Domain;
+﻿using ImoutoRebirth.Common.Domain;
 using MediatR;
 
 namespace ImoutoRebirth.Common.Cqrs.Behaviors;
@@ -8,18 +7,8 @@ public class TransactionBehavior<TRequest, TResponse> : IPipelineBehavior<TReque
     where TRequest : notnull
 {
     private readonly IUnitOfWork _unitOfWork;
-    private readonly IEventStorage _eventStorage;
-    private readonly IEventPublisher _eventPublisher;
 
-    public TransactionBehavior(
-        IUnitOfWork unitOfWork,
-        IEventStorage eventStorage,
-        IEventPublisher eventPublisher)
-    {
-        _unitOfWork = unitOfWork;
-        _eventStorage = eventStorage;
-        _eventPublisher = eventPublisher;
-    }
+    public TransactionBehavior(IUnitOfWork unitOfWork) => _unitOfWork = unitOfWork;
 
     public async Task<TResponse> Handle(
         TRequest request, 
@@ -28,19 +17,12 @@ public class TransactionBehavior<TRequest, TResponse> : IPipelineBehavior<TReque
     {
         var isolationLevel = typeof(TRequest).GetIsolationLevel();
 
-        TResponse response;
-        using (var transaction = await _unitOfWork.CreateTransactionAsync(isolationLevel))
-        {
-            response = await next();
+        using var transaction = await _unitOfWork.CreateTransactionAsync(isolationLevel);
 
-            await _unitOfWork.SaveEntitiesAsync(cancellationToken);
-            await transaction.CommitAsync();
-        }
+        var response = await next();
 
-        foreach (var domainEvent in _eventStorage.GetAll())
-        {
-            await _eventPublisher.Publish(domainEvent, cancellationToken);
-        }
+        await _unitOfWork.SaveEntitiesAsync(cancellationToken);
+        await transaction.CommitAsync();
 
         return response;
     }

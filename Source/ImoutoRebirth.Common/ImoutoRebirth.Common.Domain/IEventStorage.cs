@@ -6,5 +6,7 @@ public interface IEventStorage
 
     void AddRange(IEnumerable<IDomainEvent> domainEvents);
 
-    IReadOnlyCollection<IDomainEvent> GetAll();
+    IReadOnlyCollection<IDomainEvent> GetAll(Guid mark);
+
+    void Mark(Guid mark);
 }

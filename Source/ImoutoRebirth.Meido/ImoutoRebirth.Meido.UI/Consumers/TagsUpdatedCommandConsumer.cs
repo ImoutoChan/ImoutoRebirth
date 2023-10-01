@@ -28,7 +28,7 @@ internal class TagsUpdatedCommandConsumer : IConsumer<ITagsUpdatedCommand>
 
         var command = new MarkTagsUpdatedCommand(
             (MetadataSource)context.Message.SourceId,
-            context.Message.PostIds,
+            context.Message.PostIds.Distinct().ToList(),
             context.Message.LastHistoryId);
 
         await _mediator.Send(command);

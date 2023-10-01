@@ -9,7 +9,8 @@ internal class SourceMetadataRequester : ISourceMetadataRequester
 
     public SourceMetadataRequester(IEnumerable<IMetadataRequester> requesters) => _requesters = requesters;
     
-    public Task Request(MetadataSource source, Guid fileId, string md5) => Get(source).SendRequestCommand(fileId, md5);
+    public Task Request(MetadataSource source, Guid fileId, string md5) 
+        => Get(source).SendRequestCommand(fileId, md5);
 
     private IMetadataRequester Get(MetadataSource source)
     {
