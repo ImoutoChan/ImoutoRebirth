@@ -1,6 +1,4 @@
-﻿using GihanSoft.String;
-
-namespace ImoutoViewer.Model;
+﻿namespace ImoutoViewer.Model;
 
 internal static class Extentions
 {

@@ -9,7 +9,11 @@ public class DomainResult : IEnumerable<IDomainEvent>
     public IReadOnlyCollection<IDomainEvent> EventsCollection => Events;
 
     public DomainResult() => Events = new List<IDomainEvent>();
+    
+    public DomainResult(params IDomainEvent[] events) => Events = new List<IDomainEvent>(events);
 
+    public static DomainResult Empty => new();
+    
     public void Add(IDomainEvent domainEvent) => Events.Add(domainEvent);
     
     IEnumerator<IDomainEvent> IEnumerable<IDomainEvent>.GetEnumerator() => Events.GetEnumerator();

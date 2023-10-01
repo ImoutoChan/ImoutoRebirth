@@ -1,5 +1,4 @@
-﻿using System;
-using ImoutoRebirth.Meido.Core;
+﻿using ImoutoRebirth.Meido.Domain;
 using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace ImoutoRebirth.Meido.DataAccess.Migrations;

@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace ImoutoRebirth.Arachne.MessageContracts;
+﻿namespace ImoutoRebirth.Arachne.MessageContracts;
 
 public interface ISearchMetadataCommand
 {

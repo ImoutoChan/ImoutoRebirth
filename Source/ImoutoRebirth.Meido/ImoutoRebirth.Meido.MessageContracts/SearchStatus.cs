@@ -2,7 +2,7 @@
 
 public enum SearchStatus
 {
-    NotFound,
-    Success,
-    Error
+    NotFound = 0,
+    Success = 1,
+    Error = 2
 }

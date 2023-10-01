@@ -4,7 +4,6 @@ using ImoutoRebirth.Meido.MessageContracts;
 using ImoutoRebirth.Room.Core.Services.Abstract;
 using ImoutoRebirth.Room.Infrastructure.Service;
 using Microsoft.Extensions.DependencyInjection;
-using MeidoReceiverApp = ImoutoRebirth.Meido.MessageContracts.ReceiverApp;
 using LilinReceiverApp = ImoutoRebirth.Lilin.MessageContracts.ReceiverApp;
 
 namespace ImoutoRebirth.Room.Infrastructure;

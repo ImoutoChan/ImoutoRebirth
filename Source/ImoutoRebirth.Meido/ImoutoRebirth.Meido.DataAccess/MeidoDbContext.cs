@@ -2,13 +2,13 @@
 using ImoutoRebirth.Common.Domain;
 using ImoutoRebirth.Common.Domain.EntityFrameworkCore;
 using ImoutoRebirth.Common.EntityFrameworkCore.TimeTrack;
-using ImoutoRebirth.Meido.Core.ParsingStatus;
-using ImoutoRebirth.Meido.Core.SourceActualizingState;
+using ImoutoRebirth.Meido.Domain.ParsingStatusAggregate;
+using ImoutoRebirth.Meido.Domain.SourceActualizingStateAggregate;
 using Microsoft.EntityFrameworkCore;
 
 namespace ImoutoRebirth.Meido.DataAccess;
 
-public class MeidoDbContext : DbContext, IUnitOfWork
+internal class MeidoDbContext : DbContext, IUnitOfWork
 {
     private readonly IEventStorage _eventStorage;
 
@@ -16,10 +16,7 @@ public class MeidoDbContext : DbContext, IUnitOfWork
 
     public DbSet<SourceActualizingState> SourceActualizingStates { get; set; } = default!;
 
-    public MeidoDbContext(
-        DbContextOptions<MeidoDbContext> options,
-        IEventStorage eventStorage)
-        : base(options)
+    public MeidoDbContext(DbContextOptions<MeidoDbContext> options, IEventStorage eventStorage) : base(options)
     {
         _eventStorage = eventStorage;
     }

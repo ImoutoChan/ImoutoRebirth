@@ -1,5 +1,5 @@
 ﻿using ImoutoRebirth.Common.EntityFrameworkCore.TimeTrack;
-using ImoutoRebirth.Meido.Core.ParsingStatus;
+using ImoutoRebirth.Meido.Domain.ParsingStatusAggregate;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 

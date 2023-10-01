@@ -31,7 +31,7 @@ public static class ServiceCollectionExtensions
     {
         builder
             .AddConsumer<UpdateMetadataCommandConsumer, IUpdateMetadataCommand>(Lilin.MessageContracts.ReceiverApp.Name)
-            .AddFireAndForget<ISavedCommand>(Meido.MessageContracts.ReceiverApp.Name);
+            .AddFireAndForget<ISavedCommand>(Meido.MessageContracts.MeidoReceiverApp.Name);
 
         return builder;
     }

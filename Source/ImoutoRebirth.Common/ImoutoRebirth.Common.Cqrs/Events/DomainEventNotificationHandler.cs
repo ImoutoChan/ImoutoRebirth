@@ -6,13 +6,13 @@ namespace ImoutoRebirth.Common.Cqrs.Events;
 public abstract class DomainEventNotificationHandler<TEvent> : INotificationHandler<EventWrapper<IDomainEvent>>
     where TEvent : IDomainEvent
 {
-    public Task Handle(EventWrapper<IDomainEvent> wrapper, CancellationToken cancellationToken)
+    public Task Handle(EventWrapper<IDomainEvent> wrapper, CancellationToken ct)
     {
-        if (!(wrapper.Wrapped is TEvent domainEvent))
+        if (wrapper.Wrapped is not TEvent domainEvent)
             return Task.CompletedTask;
 
-        return Handle(domainEvent, cancellationToken);
+        return Handle(domainEvent, ct);
     }
 
-    protected abstract Task Handle(TEvent domainEvent, CancellationToken cancellationToken);
+    protected abstract Task Handle(TEvent domainEvent, CancellationToken ct);
 }

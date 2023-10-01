@@ -1,5 +1,4 @@
-﻿using ImoutoRebirth.Common.EntityFrameworkCore;
-using ImoutoRebirth.Common.Host;
+﻿using ImoutoRebirth.Common.Host;
 using ImoutoRebirth.Common.Logging;
 using ImoutoRebirth.Common.OpenTelemetry;
 using ImoutoRebirth.Common.Quartz.Extensions;
@@ -15,7 +14,7 @@ internal class Program
     private static async Task Main(string[] args)
     {
         await CreateConsoleHost(args)
-            .MigrateIfNecessary<MeidoDbContext>()
+            .MigrateMeido()
             .RunAsync();
     }
 

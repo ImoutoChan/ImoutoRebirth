@@ -1,7 +1,8 @@
 ﻿using ImoutoRebirth.Common.Domain;
-using ImoutoRebirth.Meido.Core.ParsingStatus;
-using ImoutoRebirth.Meido.Core.SourceActualizingState;
-using ImoutoRebirth.Meido.DataAccess;
+using ImoutoRebirth.Common.Infrastructure;
+using ImoutoRebirth.Meido.Application.Infrastructure;
+using ImoutoRebirth.Meido.Infrastructure.MetadataRequest;
+using ImoutoRebirth.Meido.Infrastructure.MetadataRequest.Requesters;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace ImoutoRebirth.Meido.Infrastructure;
@@ -10,11 +11,15 @@ public static class ServiceCollectionExtensions
 {
     public static IServiceCollection AddMeidoInfrastructure(this IServiceCollection services)
     {
-        services.AddTransient<IUnitOfWork>(provider => provider.GetRequiredService<MeidoDbContext>());
         services.AddScoped<IEventStorage, EventStorage>();
-
-        services.AddTransient<IParsingStatusRepository, ParsingStatusRepository>();
-        services.AddTransient<ISourceActualizingStateRepository, SourceActualizingStateRepository>();
+        
+        services.AddTransient<ISourceMetadataRequester, SourceMetadataRequester>();
+        services.AddTransient<IMetadataRequester, YandereMetadataRequester>();
+        services.AddTransient<IMetadataRequester, DanbooruMetadataRequester>();
+        services.AddTransient<IMetadataRequester, SankakuMetadataRequester>();
+        services.AddTransient<IMetadataRequester, GelbooruMetadataRequester>();
+        
+        services.AddDistributedBus();
 
         return services;
     }

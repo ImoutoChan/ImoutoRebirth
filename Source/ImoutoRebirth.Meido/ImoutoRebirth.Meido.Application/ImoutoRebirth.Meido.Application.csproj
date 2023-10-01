@@ -1,0 +1,21 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net7.0</TargetFramework>
+        <Nullable>enable</Nullable>
+        <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+        <ImplicitUsings>true</ImplicitUsings>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <PackageReference Include="NodaTime" Version="3.1.9"/>
+    </ItemGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="..\..\ImoutoRebirth.Arachne\ImoutoRebirth.Arachne.MessageContracts\ImoutoRebirth.Arachne.MessageContracts.csproj"/>
+        <ProjectReference Include="..\..\ImoutoRebirth.Common\ImoutoRebirth.Common.Application\ImoutoRebirth.Common.Application.csproj"/>
+        <ProjectReference Include="..\..\ImoutoRebirth.Common\ImoutoRebirth.Common.Cqrs\ImoutoRebirth.Common.Cqrs.csproj"/>
+        <ProjectReference Include="..\ImoutoRebirth.Meido.Domain\ImoutoRebirth.Meido.Domain.csproj"/>
+    </ItemGroup>
+
+</Project>

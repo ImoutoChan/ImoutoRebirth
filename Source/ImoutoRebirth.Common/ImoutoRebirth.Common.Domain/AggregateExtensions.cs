@@ -27,6 +27,20 @@ public static class AggregateExtensions
 
         return aggregate;
     }
+
+    public static async ValueTask<T> GetAggregateOrThrow<T, TId>(
+        this ValueTask<T?> aggregateGetter,
+        TId id)
+    {
+        var aggregate = await aggregateGetter;
+
+        if (aggregate == null)
+        {
+            throw AggregateNotFoundException.Create<T>(id);
+        }
+
+        return aggregate;
+    }
 }
 
 public class AggregateNotFoundException : DomainException

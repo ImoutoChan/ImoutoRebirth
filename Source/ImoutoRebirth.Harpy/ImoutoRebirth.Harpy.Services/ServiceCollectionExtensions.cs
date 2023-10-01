@@ -5,7 +5,6 @@ using ImoutoRebirth.Harpy.Services.SaveFavorites.Quartz;
 using ImoutoRebirth.Harpy.Services.SaveFavorites.Services;
 using ImoutoRebirth.Harpy.Services.SaveFavorites.Services.Loaders;
 using ImoutoRebirth.Harpy.Services.SaveFavorites.Services.Room;
-using MediatR;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 

@@ -1,11 +1,11 @@
-﻿using ImoutoRebirth.Arachne.MessageContracts.Commands;
+﻿using ImoutoRebirth.Arachne.MessageContracts;
+using ImoutoRebirth.Arachne.MessageContracts.Commands;
 using ImoutoRebirth.Arachne.Service.Consumers;
 using ImoutoRebirth.Arachne.Service.SearchEngineHistory;
 using ImoutoRebirth.Common.MassTransit;
 using ImoutoRebirth.Lilin.MessageContracts;
 using ImoutoRebirth.Meido.MessageContracts;
 using Microsoft.Extensions.DependencyInjection;
-using ReceiverApp = ImoutoRebirth.Arachne.MessageContracts.ReceiverApp;
 
 namespace ImoutoRebirth.Arachne.Service.Extensions;
 
@@ -32,13 +32,13 @@ public static class ServiceCollectionExtensions
     public static ITrueMassTransitConfigurator AddArachneServicesForRabbit(
         this ITrueMassTransitConfigurator builder)
         => builder
-            .AddConsumer<EverywhereSearchMetadataCommandConsumer, IEverywhereSearchMetadataCommand>(ReceiverApp.Name)
-            .AddConsumer<YandereSearchMetadataCommandConsumer, IYandereSearchMetadataCommand>(ReceiverApp.Name)
-            .AddConsumer<DanbooruSearchMetadataCommandConsumer, IDanbooruSearchMetadataCommand>(ReceiverApp.Name)
-            .AddConsumer<SankakuSearchMetadataCommandConsumer, ISankakuSearchMetadataCommand>(ReceiverApp.Name)
-            .AddConsumer<GelbooruSearchMetadataCommandConsumer, IGelbooruSearchMetadataCommand>(ReceiverApp.Name)
+            .AddConsumer<EverywhereSearchMetadataCommandConsumer, IEverywhereSearchMetadataCommand>(ArachneReceiverApp.Name)
+            .AddConsumer<YandereSearchMetadataCommandConsumer, IYandereSearchMetadataCommand>(ArachneReceiverApp.Name)
+            .AddConsumer<DanbooruSearchMetadataCommandConsumer, IDanbooruSearchMetadataCommand>(ArachneReceiverApp.Name)
+            .AddConsumer<SankakuSearchMetadataCommandConsumer, ISankakuSearchMetadataCommand>(ArachneReceiverApp.Name)
+            .AddConsumer<GelbooruSearchMetadataCommandConsumer, IGelbooruSearchMetadataCommand>(ArachneReceiverApp.Name)
             .AddConsumer<LoadTagHistoryCommandConsumer, ILoadTagHistoryCommand>(
-                ReceiverApp.Name,
+                ArachneReceiverApp.Name,
                 configurator =>
                 {
                     configurator.PrefetchCount = 16;
@@ -46,7 +46,7 @@ public static class ServiceCollectionExtensions
                     configurator.Durable = false;
                 })
             .AddConsumer<LoadNoteHistoryCommandConsumer, ILoadNoteHistoryCommand>(
-                ReceiverApp.Name,
+                ArachneReceiverApp.Name,
                 configurator =>
                 {
                     configurator.PrefetchCount = 16;
@@ -54,7 +54,7 @@ public static class ServiceCollectionExtensions
                     configurator.Durable = false;
                 })
             .AddFireAndForget<IUpdateMetadataCommand>(Lilin.MessageContracts.ReceiverApp.Name)
-            .AddFireAndForget<ISearchCompleteCommand>(Meido.MessageContracts.ReceiverApp.Name)
-            .AddFireAndForget<INotesUpdatedCommand>(Meido.MessageContracts.ReceiverApp.Name)
-            .AddFireAndForget<ITagsUpdatedCommand>(Meido.MessageContracts.ReceiverApp.Name);
+            .AddFireAndForget<ISearchCompleteCommand>(Meido.MessageContracts.MeidoReceiverApp.Name)
+            .AddFireAndForget<INotesUpdatedCommand>(Meido.MessageContracts.MeidoReceiverApp.Name)
+            .AddFireAndForget<ITagsUpdatedCommand>(Meido.MessageContracts.MeidoReceiverApp.Name);
 }

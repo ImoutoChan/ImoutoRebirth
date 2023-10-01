@@ -1,5 +1,5 @@
 ﻿using ImoutoRebirth.Common.EntityFrameworkCore.TimeTrack;
-using ImoutoRebirth.Meido.Core.SourceActualizingState;
+using ImoutoRebirth.Meido.Domain.SourceActualizingStateAggregate;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 

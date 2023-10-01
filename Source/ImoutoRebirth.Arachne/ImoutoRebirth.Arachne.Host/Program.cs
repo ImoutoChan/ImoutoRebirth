@@ -32,7 +32,7 @@ builder.Services
     .AddArachneCore()
     .AddArachneServices()
     .AddArachneInfrastructure(arachneSettings.DanbooruSettings, arachneSettings.SankakuSettings)
-    .AddTrueMassTransit(arachneSettings.RabbitSettings, ReceiverApp.Name, с => с.AddArachneServicesForRabbit())
+    .AddTrueMassTransit(arachneSettings.RabbitSettings, ArachneReceiverApp.Name, с => с.AddArachneServicesForRabbit())
     .AddOpenTelemetry(builder.Environment, builder.Configuration);
 
 builder.Build().Run();

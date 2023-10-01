@@ -1,11 +1,11 @@
 ﻿using ImoutoRebirth.Common.Host;
 using ImoutoRebirth.Common.MassTransit;
-using ImoutoRebirth.Meido.Core;
+using ImoutoRebirth.Meido.Application;
 using ImoutoRebirth.Meido.DataAccess;
 using ImoutoRebirth.Meido.Host.Settings;
 using ImoutoRebirth.Meido.Infrastructure;
 using ImoutoRebirth.Meido.MessageContracts;
-using ImoutoRebirth.Meido.Services;
+using ImoutoRebirth.Meido.UI;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -20,15 +20,16 @@ public class Startup : BaseStartup
 
     public override void ConfigureServices(IServiceCollection services)
     {
-        services.AddMeidoServices()
-            .ConfigureMeidoServices(Configuration)
+        services
+            .AddMeidoApplication()
+            .AddMeidoUi()
+            .ConfigureMeidoUi(Configuration)
             .AddMeidoDataAccess(Configuration.GetRequiredConnectionString("MeidoDatabase"))
-            .AddMeidoDomain()
             .AddMeidoInfrastructure();
 
         services.AddTrueMassTransit(
             MeidoSettings.RabbitSettings,
-            ReceiverApp.Name,
+            MeidoReceiverApp.Name,
             с => с.AddMeidoServicesForRabbit());
     }
 }

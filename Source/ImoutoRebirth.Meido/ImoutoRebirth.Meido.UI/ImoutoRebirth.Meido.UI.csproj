@@ -1,0 +1,24 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net7.0</TargetFramework>
+        <Nullable>enable</Nullable>
+        <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+        <ImplicitUsings>true</ImplicitUsings>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <PackageReference Include="MassTransit.Abstractions" Version="8.1.0"/>
+        <PackageReference Include="MediatR" Version="12.1.1"/>
+        <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="7.0.1"/>
+        <PackageReference Include="Microsoft.Extensions.Options" Version="7.0.1"/>
+    </ItemGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="..\..\ImoutoRebirth.Common\ImoutoRebirth.Common.MassTransit\ImoutoRebirth.Common.MassTransit.csproj"/>
+        <ProjectReference Include="..\..\ImoutoRebirth.Common\ImoutoRebirth.Common.Quartz\ImoutoRebirth.Common.Quartz.csproj"/>
+        <ProjectReference Include="..\ImoutoRebirth.Meido.Application\ImoutoRebirth.Meido.Application.csproj"/>
+        <ProjectReference Include="..\ImoutoRebirth.Meido.MessageContracts\ImoutoRebirth.Meido.MessageContracts.csproj"/>
+    </ItemGroup>
+
+</Project>

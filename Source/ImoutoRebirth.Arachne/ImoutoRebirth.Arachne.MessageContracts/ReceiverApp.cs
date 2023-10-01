@@ -1,6 +1,6 @@
 ﻿namespace ImoutoRebirth.Arachne.MessageContracts;
 
-public static class ReceiverApp
+public static class ArachneReceiverApp
 {
     public static string Name => "imoutorebirth_arachne";
 }
