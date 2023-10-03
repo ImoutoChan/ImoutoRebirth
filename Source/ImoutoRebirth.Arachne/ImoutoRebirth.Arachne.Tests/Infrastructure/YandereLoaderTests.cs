@@ -11,7 +11,7 @@ namespace ImoutoRebirth.Arachne.Tests.Infrastructure;
 
 public class YandereLoaderTests
 {
-    [Fact]
+    [Fact(Skip = "Only local run")]
     public async Task ShouldHaveAllTags()
     {
         // arrange
