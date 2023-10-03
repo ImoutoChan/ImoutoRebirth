@@ -1,12 +1,45 @@
 using FluentAssertions;
 using Flurl.Http.Configuration;
+using Imouto.BooruParser.Implementations.Sankaku;
 using ImoutoRebirth.Arachne.Infrastructure.LoaderFabrics;
+using Microsoft.Extensions.Caching.Memory;
+using Microsoft.Extensions.Options;
 using Xunit;
+using SankakuSettings = ImoutoRebirth.Arachne.Infrastructure.Models.Settings.SankakuSettings;
 
 namespace ImoutoRebirth.Arachne.Tests.Infrastructure;
 
 public class YandereLoaderTests
 {
+    [Fact]
+    public async Task ShouldHaveAllTags()
+    {
+        // arrange
+        var settings = new SankakuSettings
+        {
+            Login = "testuser159",
+            Password = "testuser159",
+            Delay = 6000
+        };
+
+        var fabric = new SankakuLoaderFabric(settings,
+            new SankakuAuthManager(new MemoryCache(new MemoryCacheOptions()), Options.Create(
+                    new Imouto.BooruParser.Implementations.Sankaku.SankakuSettings()
+                    {
+                        Login = settings.Login,
+                        Password = settings.Password,
+                        PauseBetweenRequestsInMs = settings.Delay
+                    }),
+                new PerBaseUrlFlurlClientFactory()), new PerBaseUrlFlurlClientFactory());
+        var loader = fabric.Create();
+        
+        // act
+        var post = await loader.GetPostByMd5Async("4c58f8a682ccdf6eef5b3ed28678c71d");
+
+        // assert
+        post!.Tags.Should().Contain(x => x.Name == "tattoo");
+    }
+
     [Fact]
     public async Task ShouldHaveMd5OnChildren()
     {

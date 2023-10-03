@@ -5,6 +5,7 @@ using ImoutoRebirth.Arachne.Infrastructure.Abstract;
 using ImoutoRebirth.Arachne.Infrastructure.LoaderFabrics;
 using ImoutoRebirth.Arachne.Infrastructure.Models.Settings;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Options;
 using Polly;
 using Polly.Extensions.Http;
 
@@ -40,6 +41,21 @@ public static class ServiceCollectionExtensions
 
         services.AddTransient<DanbooruSettings>(x => danbooruSettings);
         services.AddTransient<SankakuSettings>(x => sankakuSettings);
+        services.AddTransient<IOptions<Imouto.BooruParser.Implementations.Sankaku.SankakuSettings>>(_ =>
+            Options.Create(new Imouto.BooruParser.Implementations.Sankaku.SankakuSettings
+            {
+                Login = sankakuSettings.Login,
+                Password = sankakuSettings.Password,
+                PauseBetweenRequestsInMs = sankakuSettings.Delay
+            }));
+        services.AddTransient<IOptions<Imouto.BooruParser.Implementations.Danbooru.DanbooruSettings>>(_ =>
+            Options.Create(new Imouto.BooruParser.Implementations.Danbooru.DanbooruSettings
+            {
+                Login = danbooruSettings.Login,
+                ApiKey = danbooruSettings.ApiKey,
+                PauseBetweenRequestsInMs = danbooruSettings.Delay,
+                BotUserAgent = danbooruSettings.BotUserAgent
+            }));
 
         services.AddTransient<IBooruPostConverter, BooruPostConverter>();
 
