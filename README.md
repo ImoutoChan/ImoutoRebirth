@@ -115,7 +115,7 @@ Template and default values
   "DanbooruLogin": "",
   "DanbooruApiKey": "",
   "SankakuLogin": "",
-  "SankakuPassHash": "",
+  "SankakuPassword": "",
   "YandereLogin": "",
   "YandereApiKey": "",
   "RoomPort": "11301",
@@ -144,7 +144,7 @@ Template and default values
 | DanbooruLogin                             |          | Optional but recommended, only if you want ImoutoRebirth to search tags for your files in danbooru                                                                                         |
 | DanbooruApiKey                            |          | Optional but recommended, you can find it at the end of your danbooru profile page, API Key row                                                                                            |
 | SankakuLogin                              |          | Optional, your sankaku login                                                                                                                                                               |
-| SankakuPassHash                           |          | Optional, your sankaku pass_hash, you can find this value in cookies after login on their old site                                                                                         |
+| SankakuPassword                           |          | Optional, your sankaku password                                                                                          |
 | YandereLogin                              |          | Optional but recommended, only if you want ImoutoRebirth to search tags for your files in yandere                                                                                          |
 | YandereApiKey                             |          | Optional but recommended, you can find it in Profile / Settings                                                                                                                            |
 | RoomPort                                  | *        | Room service will be exposed through this port                                                                                                                                             |

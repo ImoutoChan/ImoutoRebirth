@@ -32,7 +32,7 @@ internal class SankakuLoaderFabric : IBooruLoaderFabric
         {
             PauseBetweenRequestsInMs = _settings.Delay,
             Login = _settings.Login,
-            PassHash = _settings.PassHash
+            Password = _settings.Password
         }),
         _sankakuAuthManager);
 }

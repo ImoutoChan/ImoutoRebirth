@@ -115,7 +115,7 @@ cd <путь к папке latest>
   "DanbooruLogin": "",
   "DanbooruApiKey": "",
   "SankakuLogin": "",
-  "SankakuPassHash": "",
+  "SankakuPassword": "",
   "YandereLogin": "",
   "YandereApiKey": "",
   "RoomPort": "11301",
@@ -144,7 +144,7 @@ cd <путь к папке latest>
 | DanbooruLogin                             |          | Крайне желательно заполнить, используется для поиска тегов и скачивания любимых картинок                                                                                                              |
 | DanbooruApiKey                            |          | Крайне желательно заполнить, находится на странице вашего профиля на danbooru, строчка API Key                                                                                                        |
 | SankakuLogin                              |          | Опционально, логин с санкаку                                                                                                                                                                          |
-| SankakuPassHash                           |          | Опционально, sankaku pass_hash, его можжно найти в куки, после того, как вы залогинетесь на их старом сайте                                                                                           |
+| SankakuPassword                           |          | Опционально, sankaku password                                                                                                                                                                         |
 | YandereLogin                              |          | Крайне желательно заполнить, используется для поиска тегов и скачивания любимых картинок                                                                                                              |
 | YandereApiKey                             |          | Крайне желательно заполнить, находится на странице Profile / Settings                                                                                                                                 |
 | RoomPort                                  | *        | Room сервис будет доступен по этому порту                                                                                                                                                             |

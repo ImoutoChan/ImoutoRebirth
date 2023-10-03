@@ -90,7 +90,7 @@ internal static class Scripts
         services.Configure<SankakuSettings>(x =>
         {
             x.Login = configuration.GetValue<string>("SankakuSettings:Login");
-            x.PassHash = configuration.GetValue<string>("SankakuSettings:PassHash");
+            x.Password = configuration.GetValue<string>("SankakuSettings:Password");
             x.PauseBetweenRequestsInMs = 5000;
         });
         var provider = services.BuildServiceProvider();

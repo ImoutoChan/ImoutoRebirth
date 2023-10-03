@@ -14,7 +14,7 @@
     </ItemGroup>
 
     <ItemGroup>
-        <PackageReference Include="Imouto.BooruParser" Version="3.1.0"/>
+        <PackageReference Include="Imouto.BooruParser" Version="3.2.4" />
         <PackageReference Include="Microsoft.Extensions.Caching.Memory" Version="7.0.0"/>
         <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="7.0.0"/>
     </ItemGroup>

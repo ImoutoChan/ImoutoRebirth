@@ -34,7 +34,7 @@ public class ConfigurationBuilder : IConfigurationBuilder
     private readonly string _roomImoutoPicsUploadUrl;
     private readonly string _roomPort;
     private readonly string _sankakuLogin;
-    private readonly string _sankakuPassHash;
+    private readonly string _sankakuPassword;
     private readonly string _yandereApiKey;
     private readonly string _yandereLogin;
     private readonly string _jaegerHost;
@@ -60,7 +60,7 @@ public class ConfigurationBuilder : IConfigurationBuilder
         _danbooruLogin = _configuration["DanbooruLogin"];
         _danbooruApiKey = _configuration["DanbooruApiKey"];
         _sankakuLogin = _configuration["SankakuLogin"];
-        _sankakuPassHash = _configuration["SankakuPassHash"];
+        _sankakuPassword = _configuration["SankakuPassword"];
         _yandereLogin = _configuration["YandereLogin"];
         _yandereApiKey = _configuration["YandereApiKey"];
 
@@ -132,7 +132,7 @@ public class ConfigurationBuilder : IConfigurationBuilder
             "DanbooruLogin",
             "DanbooruApiKey",
             "SankakuLogin",
-            "SankakuPassHash",
+            "SankakuPassword",
             "YandereLogin",
             "YandereApiKey",
             "OpenSearchUri",
@@ -172,7 +172,7 @@ public class ConfigurationBuilder : IConfigurationBuilder
               },
               "SankakuSettings": {
                 "Login": "{{_sankakuLogin}}",
-                "PassHash": "{{_sankakuPassHash}}",
+                "Password": "{{_sankakuPassword}}",
                 "Delay": "6000"
               },
               "RabbitSettings": {
