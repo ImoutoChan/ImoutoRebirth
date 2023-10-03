@@ -42,6 +42,9 @@ internal class SaveCompletedSearchCommandHandler : ICommandHandler<SaveCompleted
 
         if (source == MetadataSource.Danbooru && searchStatus == SearchStatus.NotFound)
             await CreateGelbooruParsingStatus(fileId);
+        
+        if (source == MetadataSource.Gelbooru && searchStatus == SearchStatus.NotFound)
+            await CreateRule34ParsingStatus(fileId);
     }
 
     private async Task SaveSearchResult(
@@ -77,6 +80,27 @@ internal class SaveCompletedSearchCommandHandler : ICommandHandler<SaveCompleted
         }
 
         var result = ParsingStatus.Create(fileId, danbooruStatus.Md5, MetadataSource.Gelbooru, now);
+        await _parsingStatusRepository.Add(result.Result);
+        _eventStorage.AddRange(result.EventsCollection);
+    }
+
+    private async Task CreateRule34ParsingStatus(Guid fileId)
+    {
+        var now = _clock.GetCurrentInstant();
+
+        // we always have gelbooru status for this file since it's a requirement for rule34
+        var danbooruStatus = await _parsingStatusRepository.Get(fileId, MetadataSource.Gelbooru);
+        var check = await _parsingStatusRepository.Get(fileId, MetadataSource.Rule34);
+        if (check != null || danbooruStatus == null)
+        {
+            _logger.LogWarning(
+                "Can't create a parsing status with duplicate key {FileId}, {Source}",
+                fileId,
+                MetadataSource.Rule34);
+            return;
+        }
+
+        var result = ParsingStatus.Create(fileId, danbooruStatus.Md5, MetadataSource.Rule34, now);
         await _parsingStatusRepository.Add(result.Result);
         _eventStorage.AddRange(result.EventsCollection);
     }

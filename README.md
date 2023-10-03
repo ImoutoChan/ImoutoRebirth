@@ -4,7 +4,7 @@ This repository is in process of open sourcing and isn't ready yet. I'm currentl
 # What is ImoutoRebirth
 ([ru version](https://github.com/ImoutoChan/ImoutoRebirth/blob/master/README.RU.md))
 
-ImoutoRebirth is a solution for organizing media files with a focus on anime images. It is inspired and deeply integrated with sites such as danbooru.donmai.us, yande.re, gelbooru.com.
+ImoutoRebirth is a solution for organizing media files with a focus on anime images. It is inspired and deeply integrated with sites such as danbooru.donmai.us, yande.re, gelbooru.com, rule34.xxx.
 
 I started writing it for myself many years ago because I am an avid image saver. Over time, different functions came together into a comprehensive solution, and I decided to publish it.
 
@@ -17,7 +17,7 @@ Key features:
     - jpg, jpeg, png, bmp, tiff, apng, gif, webp, jfif
     - mp4, mov, webm, wmv, mov, m2ts, mpg, mpeg, mkv, f4v, flv, avi, m4v, swf
     - zip as pixiv ugoira
-- Background search and updating of tags for your images and metadata based on file hash from danbooru, sankaku, yande.re, gelbooru
+- Background search and updating of tags for your images and metadata based on file hash from danbooru, sankaku, yande.re, gelbooru, rule34
 - Local search for saved files and their tags
 - Bulk tagging of files
 - Display of notes from boorus on local images

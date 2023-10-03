@@ -51,6 +51,7 @@ public static class ServiceCollectionExtensions
             .AddFireAndForget<IYandereSearchMetadataCommand>(ArachneReceiverApp.Name)
             .AddFireAndForget<IDanbooruSearchMetadataCommand>(ArachneReceiverApp.Name)
             .AddFireAndForget<IGelbooruSearchMetadataCommand>(ArachneReceiverApp.Name)
+            .AddFireAndForget<IRule34SearchMetadataCommand>(ArachneReceiverApp.Name)
             .AddFireAndForget<ISankakuSearchMetadataCommand>(ArachneReceiverApp.Name)
             .AddFireAndForget<ILoadTagHistoryCommand>(
                 ArachneReceiverApp.Name,

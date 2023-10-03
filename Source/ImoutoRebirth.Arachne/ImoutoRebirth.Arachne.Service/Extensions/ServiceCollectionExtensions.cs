@@ -20,6 +20,7 @@ public static class ServiceCollectionExtensions
         services.AddTransient<DanbooruSearchMetadataCommandConsumer>();
         services.AddTransient<SankakuSearchMetadataCommandConsumer>();
         services.AddTransient<GelbooruSearchMetadataCommandConsumer>();
+        services.AddTransient<Rule34SearchMetadataCommandConsumer>();
         services.AddTransient<LoadTagHistoryCommandConsumer>();
         services.AddTransient<LoadNoteHistoryCommandConsumer>();
 
@@ -37,6 +38,7 @@ public static class ServiceCollectionExtensions
             .AddConsumer<DanbooruSearchMetadataCommandConsumer, IDanbooruSearchMetadataCommand>(ArachneReceiverApp.Name)
             .AddConsumer<SankakuSearchMetadataCommandConsumer, ISankakuSearchMetadataCommand>(ArachneReceiverApp.Name)
             .AddConsumer<GelbooruSearchMetadataCommandConsumer, IGelbooruSearchMetadataCommand>(ArachneReceiverApp.Name)
+            .AddConsumer<Rule34SearchMetadataCommandConsumer, IRule34SearchMetadataCommand>(ArachneReceiverApp.Name)
             .AddConsumer<LoadTagHistoryCommandConsumer, ILoadTagHistoryCommand>(
                 ArachneReceiverApp.Name,
                 configurator =>

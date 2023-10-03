@@ -15,5 +15,6 @@ public enum MetadataSource
     Danbooru = 1,
     Sankaku = 2,
     Manual = 3,
-    Gelbooru = 4
+    Gelbooru = 4,
+    Rule34 = 5,
 }

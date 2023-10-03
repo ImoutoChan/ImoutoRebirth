@@ -30,7 +30,8 @@
         "*://donmai.us/*",
         "*://yande.re/*",
         "*://konachan.com/*",
-        "*://gelbooru.com/*"
+        "*://gelbooru.com/*",
+        "*://rule34.xxx/*"
       ],
       "css": [ "contentscript.css" ],
       "js": [ "contentscript.js" ]

@@ -32,11 +32,13 @@ public static class ServiceCollectionExtensions
         services.AddTransient<DanbooruLoaderFabric>();
         services.AddTransient<SankakuLoaderFabric>();
         services.AddTransient<GelbooruLoaderFabric>();
+        services.AddTransient<Rule34LoaderFabric>();
 
         services.AddTransient<IBooruLoaderFabric>(provider => provider.GetRequiredService<YandereLoaderFabric>());
         services.AddTransient<IBooruLoaderFabric>(provider => provider.GetRequiredService<DanbooruLoaderFabric>());
         services.AddTransient<IBooruLoaderFabric>(provider => provider.GetRequiredService<SankakuLoaderFabric>());
         services.AddTransient<IBooruLoaderFabric>(provider => provider.GetRequiredService<GelbooruLoaderFabric>());
+        services.AddTransient<IBooruLoaderFabric>(provider => provider.GetRequiredService<Rule34LoaderFabric>());
             
 
         services.AddTransient<DanbooruSettings>(x => danbooruSettings);

@@ -34,7 +34,7 @@ internal class CreateParsingsForNewFileCommandHandler : ICommandHandler<CreatePa
         var (fileId, md5) = request;
         var now = _clock.GetCurrentInstant();
         
-        // we're ignoring gelbooru since it's unnecessary when danbooru entry is present
+        // we're ignoring gelbooru and rule34 since it's unnecessary when danbooru entry is present
         var allMetadataSources = new[] { MetadataSource.Danbooru, MetadataSource.Yandere, MetadataSource.Sankaku };
 
         foreach (var metadataSource in allMetadataSources)

@@ -1875,6 +1875,9 @@ namespace ImoutoRebirth.LilinService.WebApi.Client
         [System.Runtime.Serialization.EnumMember(Value = @"Gelbooru")]
         Gelbooru = 4,
 
+        [System.Runtime.Serialization.EnumMember(Value = @"Rule34")]
+        Rule34 = 5,
+
     }
 
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "13.19.0.0 (NJsonSchema v10.9.0.0 (Newtonsoft.Json v13.0.0.0))")]

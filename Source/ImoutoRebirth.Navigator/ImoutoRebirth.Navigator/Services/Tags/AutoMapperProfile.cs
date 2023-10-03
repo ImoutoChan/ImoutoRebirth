@@ -42,6 +42,7 @@ internal class AutoMapperProfile : Profile
                     FileTagSource.Sankaku => MetadataSource.Sankaku,
                     FileTagSource.Manual => MetadataSource.Manual,
                     FileTagSource.Gelbooru => MetadataSource.Gelbooru,
+                    FileTagSource.Rule34 => MetadataSource.Rule34,
                     _ => throw new NotImplementedException(x.ToString())
                 });
 
@@ -79,6 +80,7 @@ internal class AutoMapperProfile : Profile
                     MetadataSource.Sankaku => FileTagSource.Sankaku,
                     MetadataSource.Manual => FileTagSource.Manual,
                     MetadataSource.Gelbooru => FileTagSource.Gelbooru,
+                    MetadataSource.Rule34 => FileTagSource.Rule34,
                     _ => throw new NotImplementedException(x.ToString())
                 });
     }

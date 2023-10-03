@@ -18,6 +18,7 @@ public static class ServiceCollectionExtensions
         services.AddTransient<IMetadataRequester, DanbooruMetadataRequester>();
         services.AddTransient<IMetadataRequester, SankakuMetadataRequester>();
         services.AddTransient<IMetadataRequester, GelbooruMetadataRequester>();
+        services.AddTransient<IMetadataRequester, Rule34MetadataRequester>();
         
         services.AddDistributedBus();
 
