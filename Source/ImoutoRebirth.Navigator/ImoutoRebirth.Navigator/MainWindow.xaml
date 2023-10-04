@@ -424,8 +424,8 @@
 
                              <Grid Width="{Binding Path=ViewPortSize.Width}"
                                    Height="{Binding Path=ViewPortSize.Height}">
-                                <!-- todo: implement video control -->
-                                <userControl:PlayerControl 
+                                <userControl:PlayerControl
+                                    IsVolumeVisible="False"
                                     Source="{Binding Path}" 
                                     ShouldPause="{Binding ShouldPause}" 
                                     Volume="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type Window}},

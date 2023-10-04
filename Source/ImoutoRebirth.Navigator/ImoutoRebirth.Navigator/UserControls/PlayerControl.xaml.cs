@@ -187,6 +187,19 @@ public partial class PlayerControl
             typeof (PlayerControl), 
             new UIPropertyMetadata(0, OnVolumeChanged));
 
+    public bool IsVolumeVisible
+    {
+        get => (bool) GetValue(IsVolumeVisibleProperty);
+        set => SetValue(IsVolumeVisibleProperty, value);
+    }
+
+    public static readonly DependencyProperty IsVolumeVisibleProperty 
+        = DependencyProperty.Register(
+            nameof(IsVolumeVisible), 
+            typeof (bool), 
+            typeof (PlayerControl), 
+            new UIPropertyMetadata(false));
+
     private static void OnVolumeChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
     {
         var volume = (int) e.NewValue;
