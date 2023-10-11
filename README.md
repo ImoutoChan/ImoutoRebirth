@@ -1,5 +1,28 @@
-# WIP
-This repository is in process of open sourcing and isn't ready yet. I'm currently writing documentation, testing installation method on different VM, and preparing code for publishing it. I'll remove this note when everything will be ready, so please wait patiently 🙏
+## Important
+I recently open-sourced the program that I wrote myself and used for many years. Installation instructions are checked on a clean Windows 10 and should be ok, but if you have any problems feel free to create a discussion or an issue. I'm also planning to upload a video with a demo of the installation process in near future, it should help a little.
+
+- [Lastest release](https://github.com/ImoutoChan/ImoutoRebirth/releases/latest)
+- [Quick start](#installation)
+
+## Content
+
+- [What is ImoutoRebirth](#what-is-imoutorebirth)
+- [What does ImoutoRebirth look like](#what-does-imoutorebirth-look-like)
+  - [Imouto Navigator](#imouto-navigator)
+  - [ImoutoRebirth Viewer](#imoutorebirth-viewer)
+- [Installation](#installation)
+- [Configuration](#configuration)
+  - [configuration.json](#configurationjson)
+- [ImoutoRebirth Architecture](#imoutorebirth-architecture)
+  - [ImoutoRebirth.Room](#imoutorebirthroom)
+  - [ImoutoRebirth.Arachne](#imoutorebirtharachne)
+  - [ImoutoRebirth.Lilin](#imoutorebirthlilin)
+  - [ImoutoRebirth.Meido](#imoutorebirthmeido)
+  - [ImoutoRebirth.Harpy](#imoutorebirthharpy)
+  - [ImoutoRebirth.Kekkai](#imoutorebirthkekkai)
+  - [ImoutoRebirth.Tori](#imoutorebirthtori)
+  - [Imouto.Viewer](#imoutoviewer)
+  - [Imouto.Extensions](#imoutoextensions)
 
 # What is ImoutoRebirth
 ([ru version](https://github.com/ImoutoChan/ImoutoRebirth/blob/master/README.RU.md))
@@ -26,7 +49,7 @@ Key features:
 
 ## What does ImoutoRebirth look like
 
-There are two windows desktop applications available for you.
+There are two Windows desktop applications available for you.
 
 ### Imouto Navigator
 
@@ -40,46 +63,15 @@ For viewing individual images. Its use is not mandatory, you can use your favori
 
 ![Imouto Navigator](https://raw.githubusercontent.com/ImoutoChan/ImoutoRebirth/master/Docs/Screens/Imouto%20Viewer.png "Imouto Viewer")
 
-## ImoutoRebirth Architecture
-
-Beyond the two applications mentioned earlier, ImoutoRebirth internally consists of a bunch of services, each with its own function. These will be installed automatically, and no particular knowledge about them is required. However, for the inquisitive, this section describes the inner workings and purposes of different services, as well as their dependencies. If you follow the installation instructions below, these services will be automatically installed as Windows Services. Also, for the system to operate, Postgres and RabbitMQ will be needed. You can install them independently or use the scripts provided with each release.
-
-You can overview the basic architecture and the interaction of services in greater detail in [this diagram](https://drive.google.com/file/d/1MD8NAIeuV8u_wt9HWjdUUrcOaiZOMNBF/view?usp=drive_link), open it with diagrams.net or draw.io.
-
-### ImoutoRebirth.Room
-This service is responsible for interacting with the file system. It is the one that stores your collections, moves files, checks for duplicates, calculates and compares md5 hashes. Configuring collections from Imouto Navigator calls methods specifically in it.
-
-### ImoutoRebirth.Arachne
-This service handles interactions with the outside world and collects tags and metadata. Receiving tasks asynchronously (for instance, when you save a new file), it accesses the known sites and downloads tags, notes, and metadata from them. It also manages tag updates, tracking changes that the sites typically publish as a feed. Ideally, you should always have up-to-date tags locally, just like on the websites.
-
-### ImoutoRebirth.Lilin
-This service is responsible for storing and searching tags. The results of Arachne's work and the tags you add yourself are stored here.
-
-### ImoutoRebirth.Meido
-This coordinating service monitors the processes occurring in the system and assigns tasks to Arachne for searching or updating tags.
-
-### ImoutoRebirth.Harpy
-This mini-service downloads favs from your site accounts and stores them in the specified folder.
-
-### ImoutoRebirth.Kekkai
-This API gateway proxies requests to internal services and allows you to check whether specific images are stored in the system. For example, Imouto Extensions uses it.
-
-### ImoutoRebirth.Tori
-This service won't run or be installed in your system, as it's an updater service for the new version.
-
-### Imouto.Viewer
-The app that you can use to browse images individually, support local tags, notes, slideshow, fixed zoom and more.
-
-### Imouto.Extensions
-[The chrome extension](https://chrome.google.com/webstore/detail/imouto-extension/ieilellpakdngfomipoedkgfaeddfffc), that will highlight saved images and their relatives.
-
 # Installation
 
+The main idea of the app is that you have different collections with media that store your images/videos. After installation, you have to set up this collection in ImoutoNavigator app. Each collection has source folders and (optionally) a destination folder. The app monitors each source folder, takes files from there, processes them, and moves them to the destination folder. After that files are observable in ImoutoNavigator app. Installation itself looks like this:
+
 1. Download ImoutoRebirth.exe to any folder from [latest release](https://github.com/ImoutoChan/ImoutoRebirth/releases/latest)
-2. Run it (this is a self-extracting 7z archive), it will unpack the application into the "latest" folder, copy the path to this folder
-3. Edit configuration.json, filling it with your data
+2. Run it (this is a self-extracting 7z archive), it will unpack the application into the version folder, copy the path to this folder
+3. Edit configuration.json, filling it with your data, I recommend filling in at least Danbooru and Yandere login info. But in the worst case you can leave everything at defaults.
 4. Run Powershell as an administrator
-5. Execute the commands below in order:
+5. Execute these commands:
 
 ```powershell
 Set-ExecutionPolicy Bypass -Scope Process -Force;
@@ -89,17 +81,17 @@ Set-ExecutionPolicy Bypass -Scope Process -Force;
 cd <path to the latest folder>
 ``` 
 
-This will install rabbitmq, postgres, .net runtime
+It will install rabbitmq, postgres, .net runtime (can take some time, especially for Postgres)
 ```powershell
 ./install-dependencies.ps1
 ```
 
-This will install or update the application itself
+It will install or update the application itself
 ```powershell
 ./install-update.ps1
 ```
 
-6. Optionally, you can install the chrome extension, which will highlight saved images and their relatives. [Link to the extension](https://chrome.google.com/webstore/detail/imouto-extension/ieilellpakdngfomipoedkgfaeddfffc)
+6. Optionally, you can install the Chrome extension, which will highlight saved images and their relatives. [Link to the extension](https://chrome.google.com/webstore/detail/imouto-extension/ieilellpakdngfomipoedkgfaeddfffc)
 
 # Configuration
 
@@ -163,3 +155,35 @@ Template and default values
 | InstallLocation                           | *        | Installation location for ImoutoRebirth                                                                                                                                                    |
 | OpenSearchUri                             |          | Optional, logging to open search                                                                                                                                                           |
 
+## ImoutoRebirth Architecture
+
+Beyond the two applications mentioned earlier, ImoutoRebirth internally consists of a bunch of services, each with its own function. These will be installed automatically, and no particular knowledge about them is required. However, for the inquisitive, this section describes the inner workings and purposes of different services, as well as their dependencies. If you follow the installation instructions below, these services will be automatically installed as Windows Services. Also, for the system to operate, Postgres and RabbitMQ will be needed. You can install them independently or use the scripts provided with each release.
+
+You can overview the basic architecture and the interaction of services in greater detail in [this diagram](https://drive.google.com/file/d/1MD8NAIeuV8u_wt9HWjdUUrcOaiZOMNBF/view?usp=drive_link), open it with diagrams.net or draw.io.
+
+### ImoutoRebirth.Room
+This service is responsible for interacting with the file system. It is the one that stores your collections, moves files, checks for duplicates, calculates and compares md5 hashes. Configuring collections from Imouto Navigator calls methods specifically in it.
+
+### ImoutoRebirth.Arachne
+This service handles interactions with the outside world and collects tags and metadata. Receiving tasks asynchronously (for instance, when you save a new file), it accesses the known sites and downloads tags, notes, and metadata from them. It also manages tag updates, tracking changes that the sites typically publish as a feed. Ideally, you should always have up-to-date tags locally, just like on the websites.
+
+### ImoutoRebirth.Lilin
+This service is responsible for storing and searching tags. The results of Arachne's work and the tags you add yourself are stored here.
+
+### ImoutoRebirth.Meido
+This coordinating service monitors the processes occurring in the system and assigns tasks to Arachne for searching or updating tags.
+
+### ImoutoRebirth.Harpy
+This mini-service downloads favs from your site accounts and stores them in the specified folder.
+
+### ImoutoRebirth.Kekkai
+This API gateway proxies requests to internal services and allows you to check whether specific images are stored in the system. For example, Imouto Extensions uses it.
+
+### ImoutoRebirth.Tori
+This service won't run or be installed in your system, as it's an updater service for the new version.
+
+### Imouto.Viewer
+The app that you can use to browse images individually, supports local tags, notes, slideshow, fixed zoom, and more.
+
+### Imouto.Extensions
+[The chrome extension](https://chrome.google.com/webstore/detail/imouto-extension/ieilellpakdngfomipoedkgfaeddfffc), that will highlight saved images and their relatives.
