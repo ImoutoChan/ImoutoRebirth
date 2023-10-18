@@ -88,7 +88,8 @@
 
     <metroControl:MetroWindow.RightWindowCommands>
         <metroControl:WindowCommands>
-            
+            <Button Content="Refresh"
+                    Command="{Binding RefreshCommand}"/>
             <Button Content="Tags"
                     Command="{Binding Path=ToggleShowTagsCommand}" />
             <Button Content="Images on row 2"

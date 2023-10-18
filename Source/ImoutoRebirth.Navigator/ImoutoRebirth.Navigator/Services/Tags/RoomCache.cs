@@ -3,6 +3,7 @@ using AutoMapper;
 using ImoutoRebirth.Navigator.Services.Tags.Model;
 using ImoutoRebirth.RoomService.WebApi.Client;
 using Microsoft.Extensions.Caching.Memory;
+using Microsoft.Extensions.Primitives;
 
 namespace ImoutoRebirth.Navigator.Services.Tags;
 
@@ -13,6 +14,8 @@ internal interface IRoomCache
     Task<IReadOnlyCollection<File>> GetFilesByIds(IReadOnlyCollection<Guid> ids);
     
     Task<IReadOnlyCollection<Guid>> GetIds(Guid? collectionId, int? skip, int? take);
+
+    void Clear();
 }
 
 internal class RoomCache : IRoomCache
@@ -22,6 +25,7 @@ internal class RoomCache : IRoomCache
     private readonly CollectionFilesClient _collectionFilesClient;
     private readonly IMemoryCache _memoryCache;
     private readonly IMapper _mapper;
+    private static CancellationTokenSource _resetCacheToken = new();
 
     public RoomCache(CollectionFilesClient collectionFilesClient, IMemoryCache memoryCache, IMapper mapper)
     {
@@ -35,6 +39,7 @@ internal class RoomCache : IRoomCache
         var key = "collection_file_ids_" + collectionId + "_" + skip + "_" + take;
 
         var requestUsed = false;
+        
         var ids = await _memoryCache.GetOrCreateAsync(key, async entry =>
         {
             var ids = await _collectionFilesClient.SearchIdsAsync(new CollectionFilesRequest(
@@ -46,6 +51,8 @@ internal class RoomCache : IRoomCache
                 skip));
 
             requestUsed = true;
+
+            entry.AddExpirationToken(new CancellationChangeToken(_resetCacheToken.Token));
 
             return ids;
         }) ?? Array.Empty<Guid>();
@@ -64,6 +71,17 @@ internal class RoomCache : IRoomCache
         ids = ids.Union(newIds).ToList();
 
         return ids;
+    }
+
+    public void Clear()
+    {
+        if (_resetCacheToken is { IsCancellationRequested: false, Token.CanBeCanceled: true })
+        {
+            _resetCacheToken.Cancel();
+            _resetCacheToken.Dispose();
+        }
+
+        _resetCacheToken = new CancellationTokenSource();
     }
 
     public async Task<IReadOnlyCollection<File>> GetFilesFromCollection(Guid? collectionId, int? skip, int? take)

@@ -15,6 +15,7 @@ using ImoutoRebirth.Navigator.Services.ImoutoViewer;
 using ImoutoRebirth.Navigator.Services.Tags;
 using ImoutoRebirth.Navigator.Services.Tags.Model;
 using ImoutoRebirth.Navigator.UserControls;
+using ImoutoRebirth.Navigator.Utils;
 using ImoutoRebirth.Navigator.ViewModel.ListEntries;
 using MahApps.Metro.Controls.Dialogs;
 using Newtonsoft.Json;
@@ -221,6 +222,8 @@ class MainWindowVM : VMBase
 
     public ICommand ReverseCommand { get; set; }
 
+    public ICommand RefreshCommand { get; set; }
+
     public ICommand ZoomInCommand { get; set; }
 
     public ICommand ZoomOutCommand { get; set; }
@@ -252,6 +255,8 @@ class MainWindowVM : VMBase
         ShuffleCommand = new RelayCommand(_ => ShuffleNavigatorList());
 
         ReverseCommand = new RelayCommand(_ => ReverseNavigatorList());
+        
+        RefreshCommand = new AsyncCommand(Reload);
 
         ZoomInCommand = new RelayCommand(_ =>
         {

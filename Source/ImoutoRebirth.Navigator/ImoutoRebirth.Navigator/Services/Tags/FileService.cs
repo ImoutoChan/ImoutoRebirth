@@ -171,5 +171,9 @@ internal class FileService : IFileService
             .CountSearchFilesAsync(new SearchFilesCountQuery(_mapper.Map<List<TagSearchEntry>>(tags)), ct);
     }
 
-    public Task RemoveFile(Guid fileId) => _collectionFilesClient.RemoveAsync(fileId);
+    public async Task RemoveFile(Guid fileId)
+    {
+        await _collectionFilesClient.RemoveAsync(fileId);
+        _roomCache.Clear();
+    }
 }

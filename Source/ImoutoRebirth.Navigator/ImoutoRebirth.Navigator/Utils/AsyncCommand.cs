@@ -5,20 +5,21 @@ namespace ImoutoRebirth.Navigator.Utils;
 public interface IAsyncCommand : ICommand
 {
     Task ExecuteAsync();
+
     bool CanExecute();
 }
 
 public class AsyncCommand : IAsyncCommand
 {
-    public event EventHandler CanExecuteChanged;
+    public event EventHandler? CanExecuteChanged;
 
     private bool _isExecuting;
     private readonly Func<Task> _execute;
-    private readonly Func<bool> _canExecute;
+    private readonly Func<bool>? _canExecute;
 
     public AsyncCommand(
         Func<Task> execute,
-        Func<bool> canExecute = null)
+        Func<bool>? canExecute = null)
     {
         _execute = execute;
         _canExecute = canExecute;
@@ -47,18 +48,18 @@ public class AsyncCommand : IAsyncCommand
         RaiseCanExecuteChanged();
     }
 
-    public void RaiseCanExecuteChanged()
+    private void RaiseCanExecuteChanged()
     {
         CanExecuteChanged?.Invoke(this, EventArgs.Empty);
     }
 
     #region Explicit implementations
-    bool ICommand.CanExecute(object parameter)
+    bool ICommand.CanExecute(object? parameter)
     {
         return CanExecute();
     }
 
-    async void ICommand.Execute(object parameter)
+    async void ICommand.Execute(object? parameter)
     {
         await ExecuteAsync();
     }

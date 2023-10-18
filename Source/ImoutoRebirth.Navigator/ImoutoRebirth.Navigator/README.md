@@ -1,4 +1,20 @@
-Imouto Viewer
+# Imouto Navigator
+
+Collection organizer for your images and videos.
+
+## Features
+
+* TODO will describe it later
+
+* Top bar
+  * REFRESH button to reload
+
+* File context menu
+  * Delete
+    * Delete file from collection and move it to !Deleted folder
+    * Also delete this file from local cache and current view~~~~
+
+# Imouto Viewer
 =============
   The simple minimalistic image viewer with metro style window.
   
@@ -12,7 +28,7 @@ Imouto Viewer
 	Drag & drop available. Current image is draggable as file. Files with supported formats is droppable.
 	
 	
-Hot keys
+# Hot keys
 =============  
     View:
       F11 | ALT+ENTER — full-screen/default mode
