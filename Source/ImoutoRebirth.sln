@@ -137,6 +137,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ImoutoRebirth.Meido.Applica
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ImoutoRebirth.Meido.UI", "ImoutoRebirth.Meido\ImoutoRebirth.Meido.UI\ImoutoRebirth.Meido.UI.csproj", "{ABA7639A-2342-4050-8ACA-F795C9EA59A1}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ImoutoRebirth.Common.WebP", "ImoutoRebirth.Common\ImoutoRebirth.Common.WebP\ImoutoRebirth.Common.WebP.csproj", "{36C7BF70-F817-44C8-ABBE-3015D73D2B96}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -352,6 +354,10 @@ Global
 		{ABA7639A-2342-4050-8ACA-F795C9EA59A1}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{ABA7639A-2342-4050-8ACA-F795C9EA59A1}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{ABA7639A-2342-4050-8ACA-F795C9EA59A1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{36C7BF70-F817-44C8-ABBE-3015D73D2B96}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{36C7BF70-F817-44C8-ABBE-3015D73D2B96}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{36C7BF70-F817-44C8-ABBE-3015D73D2B96}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{36C7BF70-F817-44C8-ABBE-3015D73D2B96}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{9BC327CE-D36E-4926-9830-DCEB0CB73884} = {6BEB0A5C-9E6B-4440-93B2-F4C63BE43298}
@@ -405,5 +411,6 @@ Global
 		{904A4D4E-FA47-45EF-9FB4-6A3F5820E5D1} = {614D6032-416A-4B4D-A772-3C86BADFDBDD}
 		{BC055FCD-527B-4628-8B3A-78D20AFA322B} = {614D6032-416A-4B4D-A772-3C86BADFDBDD}
 		{ABA7639A-2342-4050-8ACA-F795C9EA59A1} = {614D6032-416A-4B4D-A772-3C86BADFDBDD}
+		{36C7BF70-F817-44C8-ABBE-3015D73D2B96} = {4383FD00-3B54-4C2B-9222-BDC045D3FD9B}
 	EndGlobalSection
 EndGlobal

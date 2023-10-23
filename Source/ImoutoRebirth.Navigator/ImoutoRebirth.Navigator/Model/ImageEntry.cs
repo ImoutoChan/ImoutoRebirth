@@ -2,6 +2,7 @@
 using System.IO;
 using System.Windows;
 using System.Windows.Media.Imaging;
+using ImoutoRebirth.Common.WebP;
 using ImoutoRebirth.Navigator.Utils;
 
 namespace ImoutoRebirth.Navigator.Model;
@@ -137,7 +138,7 @@ internal class ImageEntry
                     }
                     else if (_frameSize == null)
                     {
-                        var decoder = new Imazen.WebP.SimpleDecoder();
+                        var decoder = new SimpleDecoder();
                         var bytes = await File.ReadAllBytesAsync(_path);
                         var bitmap = decoder.DecodeFromBytes(bytes, bytes.Length);
 
@@ -185,7 +186,7 @@ internal class ImageEntry
                 var useStream = false;
                 if (IsWebp)
                 {
-                    var decoder = new Imazen.WebP.SimpleDecoder();
+                    var decoder = new SimpleDecoder();
                     var bytes = File.ReadAllBytes(_path);
                     var bitmap = decoder.DecodeFromBytes(bytes, bytes.Length);
                     bitmap.Save(stream, System.Drawing.Imaging.ImageFormat.Png);

@@ -15,11 +15,16 @@ public partial class RatingControl : UserControl
     {
         InitializeComponent();
     }
-        
+
     /// <summary>
     ///     Value Dependency Property
     /// </summary>
-    public static readonly DependencyProperty ValueProperty = DependencyProperty.Register("Value", typeof (int), typeof (RatingControl), new PropertyMetadata(0, OnValueChanged));
+    public static readonly DependencyProperty ValueProperty
+        = DependencyProperty.Register(
+            nameof(Value), 
+            typeof(int), 
+            typeof(RatingControl),
+            new PropertyMetadata(0, OnValueChanged));
 
     /// <summary>
     ///     Gets or sets the Value property.
@@ -37,10 +42,7 @@ public partial class RatingControl : UserControl
                 return 0;
             }
         }
-        set
-        {
-            SetValue(ValueProperty, value);
-        }
+        set => SetValue(ValueProperty, value);
     }
 
     /// <summary>

@@ -42,7 +42,6 @@
     <ItemGroup>
         <PackageReference Include="AutoMapper" Version="12.0.1"/>
         <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="12.0.1"/>
-        <PackageReference Include="Imazen.WebP" Version="10.0.1" />
         <PackageReference Include="MahApps.Metro" Version="2.4.10" />
         <PackageReference Include="MahApps.Metro.IconPacks" Version="4.11.0"/>
         <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="7.0.0"/>
@@ -73,6 +72,7 @@
     </ItemGroup>
 
     <ItemGroup>
+        <ProjectReference Include="..\..\ImoutoRebirth.Common\ImoutoRebirth.Common.WebP\ImoutoRebirth.Common.WebP.csproj" />
         <ProjectReference Include="..\..\ImoutoRebirth.Common\ImoutoRebirth.Common\ImoutoRebirth.Common.csproj"/>
         <ProjectReference Include="..\..\ImoutoRebirth.Lilin\ImoutoRebirth.Lilin.WebApi.Client\ImoutoRebirth.Lilin.WebApi.Client.csproj"/>
         <ProjectReference Include="..\..\ImoutoRebirth.Room\ImoutoRebirth.Room.WebApi.Client\ImoutoRebirth.Room.WebApi.Client.csproj"/>

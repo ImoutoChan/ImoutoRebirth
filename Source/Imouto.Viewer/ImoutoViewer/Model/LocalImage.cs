@@ -2,6 +2,7 @@
 using System.Windows;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
+using ImoutoRebirth.Common.WebP;
 using ImoutoViewer.ViewModel.SettingsModels;
 using Size = System.Windows.Size;
 
@@ -382,7 +383,7 @@ internal class LocalImage
         }
         
         using var stream = new MemoryStream();
-        var decoder = new Imazen.WebP.SimpleDecoder();
+        var decoder = new SimpleDecoder();
         var bytes = File.ReadAllBytes(filePath);
         var bitmap = decoder.DecodeFromBytes(bytes, bytes.Length);
         bitmap.Save(stream, System.Drawing.Imaging.ImageFormat.Png);

@@ -9,7 +9,7 @@ internal class StringToInlineCollectionConverter : IValueConverter
 {
     public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
     {
-        var str = value as string + "<";
+        var str = (value as string) + "<";
         str = str.Replace("&lt;", "<");
         str = str.Replace("&gt;", ">");
         str = str.Replace("\n", "");
