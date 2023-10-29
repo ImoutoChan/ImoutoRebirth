@@ -13,3 +13,4 @@
 
 ### Infrastructure
 * Add changelog file
+* Add build step to create release notes body based on latest changelog

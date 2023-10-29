@@ -75,6 +75,7 @@
               "Clean",
               "Compile",
               "Pack7ZSfx",
+              "PrepareChangelog",
               "Publish",
               "Restore",
               "Test"
@@ -94,6 +95,7 @@
               "Clean",
               "Compile",
               "Pack7ZSfx",
+              "PrepareChangelog",
               "Publish",
               "Restore",
               "Test"

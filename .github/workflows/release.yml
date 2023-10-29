@@ -40,11 +40,11 @@ jobs:
           key: ${{ runner.os }}-${{ hashFiles('**/global.json', '**/*.csproj', '**/Directory.Packages.props') }}
       
       - name: Pack 7ZSfx installer
-        run: .\Tools\NukeBuild\build.cmd Test Pack7ZSfx
+        run: .\Tools\NukeBuild\build.cmd Test Pack7ZSfx PrepareChangelog
 
       - name: Upload 7ZSfx installer to github release
         uses: softprops/action-gh-release@de2c0eb89ae2a093876385947365aca7b0e5f844 # v1.0.0
         with:
           files: ./Artifacts/ImoutoRebirth-*.*
-          body:  ImoutoRebirth-*.exe is a self-extracting 7z archive. You can use it directly, or download the 7z archive itself. Please read the installation instructions in the [README](https://github.com/ImoutoChan/ImoutoRebirth#installation) for more information.
+          body_path: ./CHANGELOG.RESULT.md
           name: ImoutoRebirth ${{ steps.gitversion.outputs.majorMinorPatch }}

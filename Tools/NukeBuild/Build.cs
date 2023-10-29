@@ -1,6 +1,8 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Text;
 using Nuke.Common;
 using Nuke.Common.CI.GitHubActions;
 using Nuke.Common.IO;
@@ -174,5 +176,31 @@ class Build : NukeBuild
                 .CreateArchive()
                 .SetOutputArchiveFile(OutputLatestDirectory.Parent / $"{VersionedName}.7z")
                 .SetSourceDirectory(OutputLatestDirectory));
+        });
+    
+    Target PrepareChangelog => _ => _
+        .Executes(() =>
+        {
+            var changelog = RootDirectory / "CHANGELOG.md";
+            var changelogResult = RootDirectory / "CHANGELOG.RESULT.md";
+            var changelogTemplate = RootDirectory / "CHANGELOG.TEMPLATE.md";
+
+            var changelogTemplateContent = File.ReadAllText(changelogTemplate);
+            
+            var changelogContent = new StringBuilder();
+            changelogContent.AppendLine($"# {GitVersion.NuGetVersionV2}");
+            foreach (var changeLogLine in File.ReadLines(changelog))
+            {
+                if (changeLogLine.StartsWith("# Unreleased"))
+                    continue;
+                
+                if (changeLogLine.StartsWith("# "))
+                    break;
+
+                changelogContent.AppendLine(changeLogLine);
+            }
+
+            var newChangelogContent = changelogTemplateContent + Environment.NewLine + changelogContent;
+            File.WriteAllText(changelogResult, newChangelogContent);
         });
 }
