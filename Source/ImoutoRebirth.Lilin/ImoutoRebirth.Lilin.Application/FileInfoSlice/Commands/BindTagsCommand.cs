@@ -2,6 +2,7 @@
 using ImoutoRebirth.Common;
 using ImoutoRebirth.Common.Cqrs.Abstract;
 using ImoutoRebirth.Common.Cqrs.Behaviors;
+using ImoutoRebirth.Common.Domain;
 using ImoutoRebirth.Lilin.Application.Persistence;
 using ImoutoRebirth.Lilin.Domain.FileInfoAggregate;
 using Microsoft.Extensions.Logging;
@@ -18,13 +19,16 @@ internal class BindTagsCommandHandler : ICommandHandler<BindTagsCommand>
 {
     private readonly ILogger<BindTagsCommandHandler> _logger;
     private readonly IFileInfoRepository _fileInfoRepository;
+    private readonly IEventStorage _eventStorage;
 
     public BindTagsCommandHandler(
         ILogger<BindTagsCommandHandler> logger,
-        IFileInfoRepository fileInfoRepository)
+        IFileInfoRepository fileInfoRepository,
+        IEventStorage eventStorage)
     {
         _logger = logger;
         _fileInfoRepository = fileInfoRepository;
+        _eventStorage = eventStorage;
     }
 
     public async Task Handle(BindTagsCommand command, CancellationToken ct)
@@ -51,8 +55,9 @@ internal class BindTagsCommandHandler : ICommandHandler<BindTagsCommand>
         {
             var fileInfo = await _fileInfoRepository.Get(fileTags.Key, ct);
             
-            fileInfo.UpdateTags(fileTags.ToList(), sameTagHandleStrategy);
+            var domainResult = fileInfo.UpdateTags(fileTags.ToList(), sameTagHandleStrategy);
             await _fileInfoRepository.Save(fileInfo);
+            _eventStorage.AddRange(domainResult);
         }
     }
 }

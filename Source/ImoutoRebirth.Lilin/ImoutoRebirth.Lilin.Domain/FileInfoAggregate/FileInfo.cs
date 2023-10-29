@@ -45,10 +45,10 @@ public class FileInfo
             _notes.Add(note);
         }
 
-        return new DomainResult { new FileInfoUpdatedDomainEvent(FileId, source) };
+        return new DomainResult { new FileInfoUpdatedDomainEvent(this, source) };
     }
 
-    public void RemoveFileTag(Guid tagId, MetadataSource source, string? value)
+    public DomainResult RemoveFileTag(Guid tagId, MetadataSource source, string? value)
     {
         var tag = Tags.FirstOrDefault(
             x => x.TagId == tagId
@@ -57,14 +57,23 @@ public class FileInfo
 
         if (tag != null)
             _tags.Remove(tag);
+        
+        return new DomainResult { new FileInfoUpdatedDomainEvent(this, source) };
     }
 
-    public void UpdateTags(IReadOnlyCollection<FileTag> fileTags, SameTagHandleStrategy sameTagHandleStrategy)
+    public DomainResult UpdateTags(IReadOnlyCollection<FileTag> fileTags, SameTagHandleStrategy sameTagHandleStrategy)
     {
+        var sources = fileTags.Select(x => x.Source).Distinct().ToList();
+        
+        if (sources.Count > 1)
+            throw new DomainException("Unable to update tags with different sources.");
+        
         foreach (var newTag in fileTags)
         {
             UpdateTag(newTag, sameTagHandleStrategy);
         }
+        
+        return new DomainResult { new FileInfoUpdatedDomainEvent(this, sources.First()) };
     }
 
     private void UpdateTag(FileTag newTag, SameTagHandleStrategy sameTagHandleStrategy)

@@ -5,11 +5,11 @@ using ImoutoRebirth.Meido.MessageContracts;
 
 namespace ImoutoRebirth.Lilin.Application.FileInfoSlice;
 
-internal class FileInfoUpdatedDomainEventHandler : DomainEventNotificationHandler<FileInfoUpdatedDomainEvent>
+internal class FileInfoUpdatedPublishingDomainEventHandler : DomainEventNotificationHandler<FileInfoUpdatedDomainEvent>
 {
     private readonly IDistributedCommandBus _distributedCommandBus;
 
-    public FileInfoUpdatedDomainEventHandler(IDistributedCommandBus distributedCommandBus) 
+    public FileInfoUpdatedPublishingDomainEventHandler(IDistributedCommandBus distributedCommandBus) 
         => _distributedCommandBus = distributedCommandBus;
 
     protected override async Task Handle(FileInfoUpdatedDomainEvent domainEvent, CancellationToken ct)
@@ -19,7 +19,7 @@ internal class FileInfoUpdatedDomainEventHandler : DomainEventNotificationHandle
 
         var command = new
         {
-            FileId = domainEvent.FileId,
+            FileId = domainEvent.Aggregate.FileId,
             SourceId = (int) domainEvent.MetadataSource
         };
 

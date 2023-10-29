@@ -109,7 +109,7 @@ public class FileInfoUpdateMetadataTests
         result.EventsCollection.First().Should().BeOfType<FileInfoUpdatedDomainEvent>();
 
         var eventObject = result.EventsCollection.OfType<FileInfoUpdatedDomainEvent>().First();
-        eventObject.FileId.Should().Be(_fileId);
+        eventObject.Aggregate.FileId.Should().Be(_fileId);
         eventObject.MetadataSource.Should().Be(NewSource);
     }
 
