@@ -1,7 +1,7 @@
 ﻿using System.Diagnostics;
 using System.Windows.Input;
 using System.Windows.Media;
-using ImoutoRebirth.Navigator.Commands;
+using ImoutoRebirth.LilinService.WebApi.Client;
 using ImoutoRebirth.Navigator.Services;
 using ImoutoRebirth.Navigator.Services.Tags;
 using ImoutoRebirth.Navigator.Services.Tags.Model;
@@ -12,9 +12,7 @@ namespace ImoutoRebirth.Navigator.ViewModel;
 
 class BindedTagVM : VMBase
 {
-    #region Static members
-
-    private static readonly List<string> TypePriorities = new List<string>
+    private static readonly List<string> TypePriorities = new()
     {
         "Artist",
         "Copyright",
@@ -27,29 +25,20 @@ class BindedTagVM : VMBase
         "General"
     };
 
-    #endregion Static members
-
-    #region Fields
-
-    private ICommand _unbindCommand;
-    private readonly Guid? _targetId;
+    private ICommand? _incrementCounterCommand;
+    private ICommand? _unbindCommand;
+    private readonly Guid? _fileId;
+    private readonly Action? _updateAction;
     private readonly IFileTagService _fileTagService;
     private SearchType _searchType;
 
-    #endregion Fields
-
-    #region Constructors
-
-    public BindedTagVM(FileTag bindedTagModel, Guid? targetId = null)
+    public BindedTagVM(FileTag model, Guid? fileId, Action? updateAction)
     {
-        Model = bindedTagModel;
+        Model = model;
         _fileTagService = ServiceLocator.GetService<IFileTagService>();
-        _targetId = targetId;
+        _fileId = fileId;
+        _updateAction = updateAction;
     }
-
-    #endregion Constructors
-
-    #region Properties
 
     public SearchType SearchType
     {
@@ -67,7 +56,7 @@ class BindedTagVM : VMBase
 
     public string Synonyms => string.Join(", ", Tag.SynonymsCollection);
 
-    public string Value
+    public string? Value
     {
         get => Model.Value;
         set
@@ -85,15 +74,20 @@ class BindedTagVM : VMBase
         {
             var tag = Model.Tag.Title;
 
-            if (Model.Tag.HasValue)
-            {
+            if (Model.Tag.HasValue && !IsCounterTag)
                 return tag + " : " + Model.Value;
-            }
+            
             return tag;
         }
     }
 
+    public string CounterCountTitle => CounterCount == null ? string.Empty : $"[{CounterCount}]";
+
     public bool IsEditable => Model.IsEditable;
+    
+    public bool IsCounterTag => Model.Value != null && Model.Value.StartsWith("Counter:");
+    
+    public int? CounterCount => IsCounterTag ? int.Parse(Model.Value!.Split(':')[1]) : null;
 
     public int TypePriority
     {
@@ -104,23 +98,21 @@ class BindedTagVM : VMBase
         }
     }
 
-    #endregion Properties
+    public ICommand UnbindCommand => _unbindCommand ??= new AsyncCommand(UnbindAsync);
+    
+    public ICommand IncrementCounterCommand => _incrementCounterCommand ??= new AsyncCommand(IncrementCounter);
 
-    #region Commands
-
-    public ICommand UnbindCommand => _unbindCommand ??= new RelayCommand(UnbindAsync);
-
-    private async void UnbindAsync(object obj)
+    private async Task UnbindAsync()
     {
-        if (_targetId == null
-            || Model?.Tag?.Id == null)
-        {
+        if (_fileId == null || Model?.Tag?.Id == null)
             return;
-        }
 
         try
         {
-            await UnbindTagTask(_targetId.Value, Model.Tag.Id, Model.Source);
+            await _fileTagService.UnbindTags(new UnbindTagRequest(_fileId.Value, Model.Tag.Id, Model.Value,
+                Model.Source));
+            
+            OnReloadRequested();
         }
         catch (Exception ex)
         {
@@ -128,17 +120,28 @@ class BindedTagVM : VMBase
         }
     }
 
-    private async Task UnbindTagTask(Guid imageId, Guid tagId, FileTagSource source) 
-        => await _fileTagService.UnbindTags(new UnbindTagRequest(imageId, tagId, default, source));
-
-    #endregion Commands
-
-    #region Methods
-
-    public override string ToString()
+    private async Task IncrementCounter()
     {
-        return $"{Tag.Id} - {Tag.Title} : {Value}";
+        if (_fileId == null || Model?.Tag?.Id == null || !IsCounterTag)
+            return;
+
+        var newCountValue = "Counter:" + (CounterCount + 1);
+        
+        try
+        {
+            await _fileTagService.BindTags(new[]
+                { new FileTag(_fileId.Value, Model.Tag, newCountValue, Model.Source) },
+                SameTagHandleStrategy.ReplaceExistingValue);
+            
+            OnReloadRequested();
+        }
+        catch (Exception ex)
+        {
+            Debug.WriteLine(ex.Message);
+        }
     }
 
-    #endregion Methods
+    public override string ToString() => $"{Tag.Id} - {Tag.Title} : {Value}";
+
+    protected virtual void OnReloadRequested() => _updateAction?.Invoke();
 }

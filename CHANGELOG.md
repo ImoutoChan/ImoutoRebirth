@@ -5,6 +5,9 @@
 
 ### Navigator
 * Add tag "my wallpapers" to the file when setting wallpaper from context menu
+* Add counter tags initial support: you have to create tag with value "Counter:0",
+then you can increase it in left tags window
+* Fixed bug with deletion of user tags with custom value
 
 # 4.19.3
 

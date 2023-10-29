@@ -136,7 +136,7 @@ class MainWindowVM : VMBase
         if (SelectedItem == null)
             return;
 
-        TagSearchVM.UpdateCurrentTags(SelectedItem);
+        TagSearchVM.UpdateCurrentTags(SelectedItem.DbId);
         FileInfoVM.UpdateCurrentInfo(SelectedItem, NavigatorList.IndexOf(SelectedItem));
     }
 

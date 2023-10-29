@@ -228,23 +228,23 @@ class TagSearchVM : VMBase
 
     #region Public methods
 
-    public async void UpdateCurrentTags(INavigatorListEntry listEntry)
+    public async void UpdateCurrentTags(Guid? fileId)
     {
-        if (listEntry?.DbId == null)
+        if (fileId == null)
         {
             IsRateSetted = false;
 
             return;
         }
 
-        var id = listEntry.DbId.Value;
+        var id = fileId.Value;
 
         var tags = await _fileTagService.GetFileTags(id);
 
         _lastListEntryId = id;
 
         var tagVmsCollection = tags
-            .Select(x => new BindedTagVM(x, listEntry.DbId))
+            .Select(x =>  new BindedTagVM(x, id, () => UpdateCurrentTags(_lastListEntryId)))
             .ToList();
 
         CurrentTagsSources.Clear();

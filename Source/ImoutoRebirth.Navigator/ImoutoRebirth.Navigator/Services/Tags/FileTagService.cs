@@ -68,12 +68,14 @@ internal class FileTagService : IFileTagService
                 SameTagHandleStrategy.ReplaceExistingValue));
     }
 
-    public async Task BindTags(IReadOnlyCollection<FileTag> fileTags)
+    public async Task BindTags(
+        IReadOnlyCollection<FileTag> fileTags,
+        SameTagHandleStrategy strategy = SameTagHandleStrategy.AddNewFileTag)
     {
         var requests = _mapper.Map<IReadOnlyCollection<BindTag>>(fileTags);
 
         await _filesClient.BindTagsAsync(
-            new BindTagsCommand(requests, SameTagHandleStrategy.AddNewFileTag));
+            new BindTagsCommand(requests, strategy));
     }
 
     public async Task UnbindTags(params UnbindTagRequest[] tagsToUnbind)

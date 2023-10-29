@@ -1,4 +1,5 @@
-﻿using ImoutoRebirth.Navigator.Services.Tags.Model;
+﻿using ImoutoRebirth.LilinService.WebApi.Client;
+using ImoutoRebirth.Navigator.Services.Tags.Model;
 
 namespace ImoutoRebirth.Navigator.Services.Tags;
 
@@ -10,7 +11,9 @@ interface IFileTagService
 
     Task SetWasWallpaper(Guid selectedItemDbId);
 
-    Task BindTags(IReadOnlyCollection<FileTag> fileTags);
+    Task BindTags(
+        IReadOnlyCollection<FileTag> fileTags,
+        SameTagHandleStrategy strategy = SameTagHandleStrategy.AddNewFileTag);
 
     Task UnbindTags(params UnbindTagRequest[] tagsToUnbind);
 

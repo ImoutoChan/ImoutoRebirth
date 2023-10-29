@@ -237,11 +237,32 @@
                     <DataTemplate>
                         <Grid>
                             <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto" />
                                 <ColumnDefinition Width="*" />
                                 <ColumnDefinition Width="Auto" />
                             </Grid.ColumnDefinitions>
 
-                            <TextBlock Grid.Column="0"
+                            <Button Grid.Column="0"
+                                    Width="15"
+                                    Height="15"
+                                    Margin="7, 0, 0, 0"
+                                    Style="{DynamicResource MahApps.Styles.Button.Circle}"
+                                    HorizontalAlignment="Left"
+                                    Command="{Binding IncrementCounterCommand}"
+                                    Visibility="{Binding 
+                                        IsCounterTag,
+                                        Mode=OneWay,
+                                        Converter={StaticResource ConditionVisibilityConverter},
+                                        ConverterParameter=true,
+                                        FallbackValue=Collapsed}">
+                                <iconPacks:PackIconModern
+                                    Width="6"
+                                    Height="6"
+                                    Kind="Add">
+                                </iconPacks:PackIconModern>
+                            </Button>
+
+                            <TextBlock Grid.Column="1"
                                        Margin="5,0,0,2">
                                 <Hyperlink TextDecorations="None"
                                            Command="{Binding RelativeSource={RelativeSource FindAncestor,
@@ -255,36 +276,53 @@
                                             <MouseBinding Command="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}}, Path=DataContext.ExploreTagCommand}"
                                                           CommandParameter="{Binding}"
                                                           MouseAction="MiddleClick" />
-                                            <MouseBinding Command="{Binding 
-                                                RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}}, Path=DataContext.DraftAddTagCommand}"
-                                                          CommandParameter="{Binding}"
-                                                          MouseAction="RightClick" />
+                                            <MouseBinding 
+                                                Command="{Binding 
+                                                    RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}}, 
+                                                    Path=DataContext.DraftAddTagCommand}"
+                                                CommandParameter="{Binding}"
+                                                MouseAction="RightClick" />
                                         </TextBlock.InputBindings>
+
+                                        <TextBlock
+                                            Visibility="{Binding 
+                                            IsCounterTag,
+                                            Mode=OneWay,
+                                            Converter={StaticResource ConditionVisibilityConverter},
+                                            ConverterParameter=true,
+                                            FallbackValue=Collapsed}">
+                                            <Run Text="{Binding CounterCountTitle, Mode=OneWay}"
+                                                 Foreground="{DynamicResource MahApps.Brushes.Accent}"
+                                                 FontFamily="Arial"
+                                                 FontSize="14"
+                                                 FontWeight="Bold"/>
+                                        </TextBlock>
 
                                         <Run Text="{Binding Title, Mode=OneWay}"
                                              Foreground="{Binding TypeBrush}"
                                              FontFamily="Comic Sans MS"
                                              FontSize="13"
                                              FontWeight="Bold" />
-
+                                        
                                         <Run Text="{Binding Tag.Count, StringFormat=' ({0})', Mode=OneWay}"
                                              Foreground="{StaticResource MahApps.Brushes.Gray3}" />
                                     </TextBlock>
                                 </Hyperlink>
                             </TextBlock>
 
-                            <Button Grid.Column="1"
+                            <Button Grid.Column="2"
                                     Width="15"
                                     Height="15"
                                     Margin="0, 0, 0, 0"
                                     Style="{DynamicResource MahApps.Styles.Button.Circle}"
                                     HorizontalAlignment="Left"
                                     Command="{Binding UnbindCommand}"
-                                    Visibility="{Binding IsEditable,
-                                                         Mode=OneWay,
-                                                         Converter={StaticResource ConditionVisibilityConverter},
-                                                         ConverterParameter=true,
-                                                         FallbackValue=Collapsed}">
+                                    Visibility="{Binding 
+                                        IsEditable,
+                                        Mode=OneWay,
+                                        Converter={StaticResource ConditionVisibilityConverter},
+                                        ConverterParameter=true,
+                                        FallbackValue=Collapsed}">
                                 <iconPacks:PackIconModern
                                     Width="6"
                                     Height="6"
