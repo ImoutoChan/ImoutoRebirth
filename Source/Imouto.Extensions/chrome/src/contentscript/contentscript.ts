@@ -1,5 +1,4 @@
 import './contentscript.scss';
-import oboe = require("oboe");
 
 export class HashResult {
     public hash: string;
@@ -30,6 +29,7 @@ const remoteKekkai = "http://localhost:11303/FileStatus?token=" + token;
 let logEnabled = false;
 let loadingCounter: number = 0;
 let localShowOwnedMediaBorders = true;
+let lastRequest;
 
 const log = (obj: any): void => {
     if (logEnabled) {
@@ -48,7 +48,7 @@ const requestImagesInfo = async (): Promise<void> => {
             .filter(x => !hashesResult.map(x => x.hash).some(y => y === x));
 
     if (imgsToRequest.length > 0) {
-        await tryMd5(imgsToRequest, 0);
+        await tryMd5(imgsToRequest);
     }
     updateView();
 };
@@ -101,40 +101,45 @@ const updateView = (): void => {
     }
 };
 
-const getFromKekkai = async (hashes: string[], notifyTabId: number, timerKey: string) => {
+const getFromKekkai = async (hashes: string[], timerKey: string) => {
+    if (lastRequest && lastRequest.abort) {
+        lastRequest.abort();
+    }
+    
     const body = JSON.stringify(hashes);
     log("requestedHashes: " + body);
     
+    lastRequest = new AbortController();
     const config = {
-        url: remoteKekkai,
         method: "POST",
-        cached: false,
-        headers: { 'Content-Type': 'application/json'},
-        body: body
-    };            
-    const oboeService = oboe(config);
+        headers: { 'Content-Type': 'application/json' },
+        body: body,
+        signal: lastRequest.signal
+    };
 
-    oboeService
-        .node('!.*', (response: KekkaiResponse) => {  
-            log("Kekkai result element: " + JSON.stringify(response));
-            
-            const results = [response].map(x => <HashResult>{ hash: x.hash, result: ToImgStatus(x)});
-            saveResults(results);
-            updateView();
-        })
-        .fail((errorReport: oboe.FailReason) => {
-            log("Kekkai fail: " + JSON.stringify(errorReport));
-            console.timeEnd(timerKey);
-            })
-            .done(() => {
-            console.timeEnd(timerKey);
-            })
+    try {
+        const response = await fetch(remoteKekkai, config);
+        if (!response.ok) {
+            log(`HTTP error! status: ${response.status}`);
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        const data = await response.json();
+        log("Kekkai result element: " + JSON.stringify(data));
+    
+        const results = data.map(x => <HashResult>{ hash: x.hash, result: ToImgStatus(x) });
+        saveResults(results);
+        updateView();
+    } catch (error) {
+        log("Kekkai fail: " + JSON.stringify(error));
+    } finally {
+        console.timeEnd(timerKey);
+    }
 };
 
-const tryMd5 = async (hashes: string[], notifyTabId: number): Promise<void> => {
+const tryMd5 = async (hashes: string[]): Promise<void> => {
     const timerKey = 'loading' + loadingCounter++;
     console.time(timerKey);
-    await getFromKekkai(hashes, notifyTabId, timerKey);
+    await getFromKekkai(hashes, timerKey);
 };
  
 const ToImgStatus = (response: KekkaiResponse) : ImgStatus => {

@@ -8,5 +8,8 @@
 ### Lilin
 * Add memory cache for RelativesBatchQuery
 
+### ImoutoExtensions
+* Remove oboe and use simple fetch with AbortController
+
 ### Infrastructure
 * Add changelog file
