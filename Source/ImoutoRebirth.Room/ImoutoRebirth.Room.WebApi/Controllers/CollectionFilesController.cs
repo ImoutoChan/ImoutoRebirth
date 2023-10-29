@@ -37,13 +37,22 @@ public class CollectionFilesController : ControllerBase
     /// <returns>The collection of files.</returns>
     [HttpPost]
     [ProducesResponseType(StatusCodes.Status200OK)]
-    public async Task<ActionResult<CollectionFileResponse[]>> Search(
+    public async Task<CollectionFileResponse[]> Search(
         [FromBody] CollectionFilesRequest request)
     {
         var query = _mapper.Map<CollectionFilesQuery>(request);
-        var files = await _collectionFileRepository.SearchByQuery(query);
+        var files = await _collectionFileRepository.SearchByQuery(query, HttpContext.RequestAborted);
         return _mapper.Map<CollectionFileResponse[]>(files);
     }
+
+    /// <summary>
+    ///     Filter hashes that present in collections.
+    /// </summary>
+    /// <returns>The collection of hashes.</returns>
+    [HttpPost("filter-hashes")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    public async Task<IReadOnlyCollection<string>> FilterHashes([FromBody] IReadOnlyCollection<string> md5Hashes) 
+        => await _collectionFileRepository.FilterHashesQuery(md5Hashes, HttpContext.RequestAborted);
 
     /// <summary>
     ///     Retrieve all file ids by request.
@@ -55,7 +64,7 @@ public class CollectionFilesController : ControllerBase
         [FromBody] CollectionFilesRequest request)
     {
         var query = _mapper.Map<CollectionFilesQuery>(request);
-        return await _collectionFileRepository.SearchIdsByQuery(query);
+        return await _collectionFileRepository.SearchIdsByQuery(query, HttpContext.RequestAborted);
     }
 
     /// <summary>
@@ -67,11 +76,11 @@ public class CollectionFilesController : ControllerBase
     /// <returns>The count of files that was found by request.</returns>
     [HttpPost("count")]
     [ProducesResponseType(StatusCodes.Status200OK)]
-    public async Task<ActionResult<int>> Count(
+    public async Task<int> Count(
         [FromBody] CollectionFilesRequest request)
     {
         var query = _mapper.Map<CollectionFilesQuery>(request);
-        var count = await _collectionFileRepository.CountByQuery(query);
+        var count = await _collectionFileRepository.CountByQuery(query, HttpContext.RequestAborted);
         return count;
     }
 
@@ -92,8 +101,5 @@ public class CollectionFilesController : ControllerBase
     /// </summary>
     [HttpDelete("{id}")]
     [ProducesResponseType(StatusCodes.Status200OK)]
-    public async Task Remove([BindRequired] Guid id)
-    {
-        await _collectionFileService.Delete(id);
-    }
+    public async Task Remove([BindRequired] Guid id) => await _collectionFileService.Delete(id);
 }
