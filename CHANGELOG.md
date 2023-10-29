@@ -1,5 +1,10 @@
 # Unreleased
 
+### Infrastructure
+* Optimize release notes builder
+
+# 4.19.3
+
 ### Room
 * Add cancellation support for room controllers
 * Add separate query for filter exising file hashes

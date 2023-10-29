@@ -188,7 +188,8 @@ class Build : NukeBuild
             var changelogTemplateContent = File.ReadAllText(changelogTemplate);
             
             var changelogContent = new StringBuilder();
-            changelogContent.AppendLine($"# {GitVersion.NuGetVersionV2}");
+            changelogContent.AppendLine($"## Changes in v{GitVersion.NuGetVersionV2}");
+            var empty = true;
             foreach (var changeLogLine in File.ReadLines(changelog))
             {
                 if (changeLogLine.StartsWith("# Unreleased"))
@@ -197,10 +198,14 @@ class Build : NukeBuild
                 if (changeLogLine.StartsWith("# "))
                     break;
 
+                empty = false;
                 changelogContent.AppendLine(changeLogLine);
             }
+            
+            var newChangelogContent = empty
+                ? changelogTemplateContent
+                : changelogTemplateContent + Environment.NewLine + changelogContent;
 
-            var newChangelogContent = changelogTemplateContent + Environment.NewLine + changelogContent;
             File.WriteAllText(changelogResult, newChangelogContent);
         });
 }
