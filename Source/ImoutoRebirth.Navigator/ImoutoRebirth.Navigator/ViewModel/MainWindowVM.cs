@@ -287,7 +287,7 @@ class MainWindowVM : VMBase
 
         LoadPreviewsCommand = new RelayCommand(_ => LoadPreviews());
         RemoveImageCommand = new RelayCommand(RemoveImage);
-        SetAsWallpaperCommand = new RelayCommand(SetAsWallpaper);
+        SetAsWallpaperCommand = new AsyncCommand<INavigatorListEntry>(SetAsWallpaper);
         ShowInExplorerCommand = new RelayCommand(ShowInExplorer);
 
         CopyCommand = new RelayCommand(CopySelected);
@@ -600,19 +600,21 @@ class MainWindowVM : VMBase
         Status = "File successfully removed";
     }
 
-    private void SetAsWallpaper(object o)
+    private async Task SetAsWallpaper(INavigatorListEntry? entry)
     {
-        var selectedItem = o as INavigatorListEntry;
-
-        var path = selectedItem?.Path;
+        var path = entry?.Path;
         if (path == null)
             return;
 
-        if (selectedItem is not { Type: ListEntryType.Image or ListEntryType.Png }) 
+        if (entry is not { Type: ListEntryType.Image or ListEntryType.Png }) 
             return;
         
         WindowsDesktopService.SetWallpaper(path);
+
         Status = "Wallpaper set";
+
+        if (entry.DbId.HasValue)
+            await _fileTagService.SetWasWallpaper(entry.DbId.Value);
     }
 
     private void ShowInExplorer(object o)

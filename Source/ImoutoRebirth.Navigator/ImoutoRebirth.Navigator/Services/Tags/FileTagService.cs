@@ -58,6 +58,16 @@ internal class FileTagService : IFileTagService
         }
     }
 
+    public async Task SetWasWallpaper(Guid fileId)
+    {
+        var tag = await GetOrCreateTag("my wallpapers", "LocalMeta", false);
+
+        await _filesClient.BindTagsAsync(
+            new BindTagsCommand(
+                new List<BindTag> { new(fileId, MetadataSource.Manual, tag.Id, null) },
+                SameTagHandleStrategy.ReplaceExistingValue));
+    }
+
     public async Task BindTags(IReadOnlyCollection<FileTag> fileTags)
     {
         var requests = _mapper.Map<IReadOnlyCollection<BindTag>>(fileTags);
@@ -84,24 +94,24 @@ internal class FileTagService : IFileTagService
 
     private async Task<Tag> GetOrCreateTag(string name, string typeName, bool hasValue)
     {
-        var rateTags = await _tagService.SearchTags(name, 1);
-        var rateTag = rateTags.FirstOrDefault();
+        var tags = await _tagService.SearchTags(name, 1);
+        var tag = tags.FirstOrDefault();
 
-        var rateTagFound = rateTag != null 
-                           && rateTag.Title == name 
-                           && rateTag.HasValue == hasValue 
-                           && rateTag.Type.Title == typeName;
+        var tagFound = tag != null 
+                           && tag.Title == name 
+                           && tag.HasValue == hasValue 
+                           && tag.Type.Title == typeName;
         
-        if (rateTagFound)
-            return rateTag!;
+        if (tagFound)
+            return tag!;
 
         var types = await _tagService.GеtTypes();
         var localType = types.First(x => x.Title == typeName);
         await _tagService.CreateTag(localType.Id, name, hasValue, Array.Empty<string>());
 
-        rateTags = await _tagService.SearchTags(name, 1);
-        rateTag = rateTags.First(x => x.Title == name && x.HasValue == hasValue && x.Type.Title == typeName);
+        tags = await _tagService.SearchTags(name, 1);
+        tag = tags.First(x => x.Title == name && x.HasValue == hasValue && x.Type.Title == typeName);
 
-        return rateTag;
+        return tag;
     }
 }

@@ -8,6 +8,8 @@ interface IFileTagService
 
     Task SetFavorite(Guid fileId, bool value);
 
+    Task SetWasWallpaper(Guid selectedItemDbId);
+
     Task BindTags(IReadOnlyCollection<FileTag> fileTags);
 
     Task UnbindTags(params UnbindTagRequest[] tagsToUnbind);

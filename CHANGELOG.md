@@ -1,7 +1,10 @@
 # Unreleased
 
 ### Infrastructure
-* Optimize release notes builder
+* Optimize release notes 
+
+### Navigator
+* Add tag "my wallpapers" to the file when setting wallpaper from context menu
 
 # 4.19.3
 
