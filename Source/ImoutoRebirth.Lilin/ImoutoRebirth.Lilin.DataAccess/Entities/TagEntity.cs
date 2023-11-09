@@ -1,5 +1,7 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using ImoutoRebirth.Lilin.Domain.TagAggregate;
 
 namespace ImoutoRebirth.Lilin.DataAccess.Entities;
 
@@ -18,6 +20,9 @@ public class TagEntity : EntityBase
     /// Values separator: :.: -- SynonymsSeparator
     /// </summary>
     public string? Synonyms { get; set; }
+    
+    [DefaultValue(TagOptions.None)]
+    public TagOptions Options { get; set; }
 
     public int Count { get; set; }
 

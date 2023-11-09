@@ -1,4 +1,5 @@
 ﻿using ImoutoRebirth.Lilin.Application.FileInfoSlice.Commands;
+using ImoutoRebirth.Lilin.Domain.TagAggregate;
 using ImoutoRebirth.Lilin.MessageContracts;
 using MassTransit;
 using MediatR;
@@ -20,7 +21,7 @@ internal class UpdateMetadataCommandConsumer : IConsumer<IUpdateMetadataCommand>
             Convert(message.MetadataSource),
 
             message.FileTags
-                ?.Select(x => new ActualizeTag(x.Type, x.Name, x.Value, x.Synonyms))
+                ?.Select(x => new ActualizeTag(x.Type, x.Name, x.Value, x.Synonyms, TagOptions.None))
                 .ToArray() ?? Array.Empty<ActualizeTag>(),
 
             message.FileNotes

@@ -1,5 +1,9 @@
 # Unreleased
 
+### Infrastructure
+* Add hotkey descriptions
+* Add Options field to the tag entity to store counter flag
+
 # 4.20.0
 
 ### Infrastructure

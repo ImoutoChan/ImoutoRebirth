@@ -10,7 +10,6 @@
              d:DataContext="{d:DesignInstance viewModel:TagsEditVM, IsDesignTimeCreatable=False}"
              d:DesignHeight="300"
              d:DesignWidth="800">
-
     <Grid Margin="15,15,15,15">
         <Grid.ColumnDefinitions>
             <!-- 0 --><ColumnDefinition Width="200" />

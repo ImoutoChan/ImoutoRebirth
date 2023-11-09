@@ -321,7 +321,7 @@ public class FileInfoUpdateMetadataTests
     private static Tag CreateSomeTag()
     {
         var tagType = new TagType(Guid.NewGuid(), "Type", default);
-        return new Tag(Guid.NewGuid(), tagType, "Tag", true, Array.Empty<string>(), default);
+        return new Tag(Guid.NewGuid(), tagType, "Tag", true, Array.Empty<string>(), TagOptions.None, default);
     }
         
     private static FileNote CreateSomeNote(Guid fileId, MetadataSource source, string text = "", int? sourceId = default) 

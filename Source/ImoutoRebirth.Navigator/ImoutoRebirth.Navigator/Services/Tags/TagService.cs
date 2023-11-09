@@ -23,9 +23,10 @@ internal class TagService : ITagService
         return _mapper.Map<IReadOnlyCollection<TagType>>(types);
     }
 
-    public Task CreateTag(Guid typeId, string name, bool hasValue, IReadOnlyCollection<string> synonyms)
+    public Task CreateTag(Guid typeId, string name, bool hasValue, IReadOnlyCollection<string> synonyms, bool isCounter)
     {
-        return _tagsClient.CreateTagAsync(new CreateTagCommand(hasValue, name, synonyms.ToList(), typeId));
+        var options = isCounter ? TagOptions.Counter : TagOptions.None;
+        return _tagsClient.CreateTagAsync(new CreateTagCommand(hasValue, name, options, synonyms.ToList(), typeId));
     }
 
     public async Task<IReadOnlyCollection<Tag>> SearchTags(string name, int count)

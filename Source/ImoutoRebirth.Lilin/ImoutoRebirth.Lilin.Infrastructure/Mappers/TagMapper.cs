@@ -16,6 +16,7 @@ public static class TagMapper
             entity.Name,
             entity.HasValue,
             entity.SynonymsArray,
+            entity.Options,
             entity.Count);
     }
 }

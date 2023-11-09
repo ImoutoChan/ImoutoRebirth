@@ -2,11 +2,11 @@
   "profiles": {
     "ImoutoRebirth.Lilin.Host": {
       "commandName": "Project",
-      "launchBrowser": true,
+      "launchBrowser": false,
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
       },
-      "applicationUrl": "https://localhost:21741;http://localhost:21742"
+      "applicationUrl": "http://localhost:11402"
     }
   }
 }

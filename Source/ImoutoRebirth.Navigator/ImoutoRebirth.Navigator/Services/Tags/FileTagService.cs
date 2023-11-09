@@ -25,7 +25,7 @@ internal class FileTagService : IFileTagService
 
     public async Task SetRate(Guid fileId, Rate rate)
     {
-        var rateTag = await GetOrCreateTag("Rate", "LocalMeta", true);
+        var rateTag = await GetOrCreateTag("Rate", "LocalMeta", true, false);
 
         await _filesClient.BindTagsAsync(
             new BindTagsCommand(
@@ -38,7 +38,7 @@ internal class FileTagService : IFileTagService
 
     public async Task SetFavorite(Guid fileId, bool value)
     {
-        var favTag = await GetOrCreateTag("Favorite", "LocalMeta", false);
+        var favTag = await GetOrCreateTag("Favorite", "LocalMeta", false, false);
 
 
         if (value)
@@ -60,7 +60,7 @@ internal class FileTagService : IFileTagService
 
     public async Task SetWasWallpaper(Guid fileId)
     {
-        var tag = await GetOrCreateTag("my wallpapers", "LocalMeta", false);
+        var tag = await GetOrCreateTag("my wallpapers", "LocalMeta", false, false);
 
         await _filesClient.BindTagsAsync(
             new BindTagsCommand(
@@ -94,7 +94,7 @@ internal class FileTagService : IFileTagService
         return _mapper.Map<IReadOnlyCollection<FileTag>>(info.Tags);
     }
 
-    private async Task<Tag> GetOrCreateTag(string name, string typeName, bool hasValue)
+    private async Task<Tag> GetOrCreateTag(string name, string typeName, bool hasValue, bool isCounter)
     {
         var tags = await _tagService.SearchTags(name, 1);
         var tag = tags.FirstOrDefault();
@@ -109,7 +109,7 @@ internal class FileTagService : IFileTagService
 
         var types = await _tagService.GеtTypes();
         var localType = types.First(x => x.Title == typeName);
-        await _tagService.CreateTag(localType.Id, name, hasValue, Array.Empty<string>());
+        await _tagService.CreateTag(localType.Id, name, hasValue, Array.Empty<string>(), isCounter);
 
         tags = await _tagService.SearchTags(name, 1);
         tag = tags.First(x => x.Title == name && x.HasValue == hasValue && x.Type.Title == typeName);

@@ -8,23 +8,21 @@ using TagType = ImoutoRebirth.Navigator.Services.Tags.Model.TagType;
 
 namespace ImoutoRebirth.Navigator.ViewModel;
 
-class CreateTagVM : VMBase
+internal class CreateTagVM : VMBase
 {
-    #region Fields
-
+    private static readonly SemaphoreSlim ReloadTagTypesAsyncSemaphore = new(1, 1);
+    
     private bool _tagTypesLoaded;
     private bool _isSaving;
     private bool _isSuccess;
-    private string _title;
-    private TagType _selectedType;
-    private string _synonyms;
+    private string? _title;
+    private TagType? _selectedType;
+    private string? _synonyms;
     private bool _hasValue;
-    private ICommand _saveCommand;
+    private bool _isCounter;
+    private ICommand? _saveCommand;
+    private ICommand? _cancelCommand;
     private readonly ITagService _tagService;
-
-    #endregion Fields
-
-    #region Constructors
 
     public CreateTagVM()
     {
@@ -32,89 +30,64 @@ class CreateTagVM : VMBase
         ReloadTagTypesAsync();
     }
 
-    #endregion Constructors
-
-    #region Properties
-
-    public TagType SelectedType
+    public TagType? SelectedType
     {
         get => _selectedType;
-        set
-        {
-            OnPropertyChanged(ref _selectedType, value, () => SelectedType);
-        }
+        set => OnPropertyChanged(ref _selectedType, value, () => SelectedType);
     }
 
     public ObservableCollection<TagType> TagTypes { get; } = new ObservableCollection<TagType>();
 
-    public string Title
+    public string? Title
     {
         get => _title;
-        set
-        {
-            OnPropertyChanged(ref _title, value, () => Title);
-        }
+        set => OnPropertyChanged(ref _title, value, () => Title);
     }
 
     /// <summary>
     ///     Separator :.:
     /// </summary>
-    public string Synonyms
+    public string? Synonyms
     {
         get => _synonyms;
-        set
-        {
-            OnPropertyChanged(ref _synonyms, value, () => Synonyms);
-        }
+        set => OnPropertyChanged(ref _synonyms, value, () => Synonyms);
     }
 
     public List<string> SynonymsCollection 
-        => _synonyms?.Split(new[] { ":.:" }, StringSplitOptions.RemoveEmptyEntries).ToList() 
+        => _synonyms
+               ?.Split(new[] { ":.:" }, StringSplitOptions.RemoveEmptyEntries)
+               .ToList() 
            ?? new List<string>();
 
     public bool HasValue
     {
         get => _hasValue;
-        set
-        {
-            OnPropertyChanged(ref _hasValue, value, () => HasValue);
-        }
+        set => OnPropertyChanged(ref _hasValue, value, () => HasValue);
+    }
+
+    public bool IsCounter
+    {
+        get => _isCounter;
+        set => OnPropertyChanged(ref _isCounter, value, () => IsCounter);
     }
 
     public bool IsSaving
     {
         get => _isSaving;
-        set
-        {
-            _isSaving = value;
-            OnPropertyChanged(() => IsSaving);
-        }
+        set => OnPropertyChanged(ref _isSaving, value, () => IsSaving);
     }
 
     public bool IsSuccess
     {
         get => _isSuccess;
-        set
-        {
-            _isSuccess = value;
-            OnPropertyChanged(() => IsSuccess);
-        }
+        set => OnPropertyChanged(ref _isSuccess, value, () => IsSuccess);
     }
-
-    #endregion Properties
-
-    #region Commands
-
-    #region Save command
 
     public ICommand SaveCommand => _saveCommand ??= new RelayCommand(Save, CanSave);
 
-    private bool CanSave(object obj)
-    {
-        return SelectedType != null && !string.IsNullOrWhiteSpace(Title);
-    }
+    private bool CanSave(object _) => SelectedType != null && !string.IsNullOrWhiteSpace(Title);
 
-    private async void Save(object obj)
+    private async void Save(object _)
     {
         try
         {
@@ -135,26 +108,10 @@ class CreateTagVM : VMBase
         }
     }
 
-    #endregion Save command
-
-    #region Cancel command
-
-    private ICommand _cancelCommand;
 
     public ICommand CancelCommand => _cancelCommand ??= new RelayCommand(Cancel);
 
-    private void Cancel(object obj)
-    {
-        OnRequestClosing();
-    }
-
-    #endregion Cancel command
-
-    #endregion Commands
-
-    #region Methods
-
-    private static readonly SemaphoreSlim ReloadTagTypesAsyncSemaphore = new SemaphoreSlim(1, 1);
+    private void Cancel(object _) => OnRequestClosing();
 
     private async void ReloadTagTypesAsync()
     {
@@ -163,9 +120,7 @@ class CreateTagVM : VMBase
         try
         {
             if (_tagTypesLoaded)
-            {
                 return;
-            }
 
             var tagTypes = await ReloadTagTypesTask();
 
@@ -177,9 +132,9 @@ class CreateTagVM : VMBase
 
             _tagTypesLoaded = true;
         }
-        catch (Exception e)
+        catch
         {
-            TagTypesLoadFail(e);
+            Debug.WriteLine("Tag creating", "Unable to load TagTypes. Creating process terminated");
         }
         finally
         {
@@ -187,36 +142,23 @@ class CreateTagVM : VMBase
         }
     }
 
-    private static void TagTypesLoadFail(Exception e)
-    {
-        Debug.WriteLine("Tag creating", "Unable to load TagTypes. Creating process terminated");
-    }
-
-    private async Task<IReadOnlyCollection<TagType>> ReloadTagTypesTask()
-    {
-        return await _tagService.GеtTypes();
-    }
+    private async Task<IReadOnlyCollection<TagType>> ReloadTagTypesTask() => await _tagService.GеtTypes();
 
     private async Task CreateTagTask(CreateTagVM createTagVm)
     {
         await _tagService.CreateTag(
-            createTagVm.SelectedType.Id,
-            createTagVm.Title,
+            createTagVm.SelectedType?.Id ?? throw new InvalidOperationException("SelectedType is null"),
+            createTagVm.Title ?? throw new InvalidOperationException("Title is null"),
             createTagVm.HasValue,
-            createTagVm.SynonymsCollection);
+            createTagVm.SynonymsCollection,
+            createTagVm.IsCounter);
     }
 
-    #endregion Methods
-
-    #region Events
-
-    public event EventHandler RequestClosing;
+    public event EventHandler? RequestClosing;
 
     private void OnRequestClosing()
     {
         var handler = RequestClosing;
-        handler?.Invoke(this, new EventArgs());
+        handler?.Invoke(this, EventArgs.Empty);
     }
-
-    #endregion Events
 }

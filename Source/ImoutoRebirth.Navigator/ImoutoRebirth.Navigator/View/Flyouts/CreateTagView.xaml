@@ -40,7 +40,11 @@
                              Margin="0,0,0,5" />
 
                     <CheckBox IsChecked="{Binding HasValue}"
-                              Content="Has value" />
+                              Content="Has value"
+                              Margin="0,0,0,5" />
+
+                    <CheckBox IsChecked="{Binding IsCounter}"
+                              Content="Is counter" />
 
                     <Grid Height="25"
                           Margin="0,15,0,0">

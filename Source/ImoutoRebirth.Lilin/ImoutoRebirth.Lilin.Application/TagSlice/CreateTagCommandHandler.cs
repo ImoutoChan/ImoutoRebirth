@@ -8,7 +8,12 @@ using ImoutoRebirth.Lilin.Domain.TagAggregate;
 namespace ImoutoRebirth.Lilin.Application.TagSlice;
 
 [CommandQuery(IsolationLevel.Serializable)]
-public record CreateTagCommand(Guid TypeId, string Name, bool HasValue, IReadOnlyCollection<string>? Synonyms)
+public record CreateTagCommand(
+    Guid TypeId,
+    string Name,
+    bool HasValue,
+    IReadOnlyCollection<string>? Synonyms,
+    TagOptions Options)
     : ICommand<Tag>;
 
 internal class CreateTagCommandHandler : ICommandHandler<CreateTagCommand, Tag>
@@ -24,7 +29,7 @@ internal class CreateTagCommandHandler : ICommandHandler<CreateTagCommand, Tag>
 
     public async Task<Tag> Handle(CreateTagCommand command, CancellationToken ct)
     {
-        var (typeId, name, hasValue, synonyms) = command;
+        var (typeId, name, hasValue, synonyms, options) = command;
 
         var tag = await _tagRepository.Get(name, typeId, ct);
 
@@ -41,7 +46,7 @@ internal class CreateTagCommandHandler : ICommandHandler<CreateTagCommand, Tag>
         {
             var tagType = await _tagTypeRepository.Get(typeId, ct).GetAggregateOrThrow(typeId);
 
-            tag = Tag.Create(tagType, name, hasValue, synonyms);
+            tag = Tag.Create(tagType, name, hasValue, synonyms, options);
 
             await _tagRepository.Create(tag);
         }

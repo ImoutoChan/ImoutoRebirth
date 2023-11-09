@@ -14,10 +14,19 @@ public class Tag
     public bool HasValue { get; private set; }
 
     public IReadOnlyCollection<string> Synonyms { get; private set; }
+    
+    public TagOptions Options { get; private set; }
 
     public int Count { get; }
 
-    public Tag(Guid id, TagType type, string name, bool hasValue, IReadOnlyCollection<string> synonyms, int count)
+    public Tag(
+        Guid id,
+        TagType type,
+        string name,
+        bool hasValue,
+        IReadOnlyCollection<string> synonyms,
+        TagOptions options,
+        int count)
     {
         ArgumentValidator.NotNull(() => type, () => name);
         ArgumentValidator.Requires(() => !string.IsNullOrWhiteSpace(name), nameof(name));
@@ -27,14 +36,20 @@ public class Tag
         Name = name;
         HasValue = hasValue;
         Synonyms = synonyms;
+        Options = options;
         Count = count;
     }
 
-    public static Tag Create(TagType type, string name, bool hasValue, IReadOnlyCollection<string>? synonyms)
+    public static Tag Create(
+        TagType type,
+        string name,
+        bool hasValue,
+        IReadOnlyCollection<string>? synonyms,
+        TagOptions options)
     {
         synonyms ??= Array.Empty<string>();
 
-        return new Tag(Guid.NewGuid(), type, name, hasValue, synonyms, 0);
+        return new Tag(Guid.NewGuid(), type, name, hasValue, synonyms, options, 0);
     }
 
     public void UpdateHasValue(bool hasValue)
@@ -46,4 +61,11 @@ public class Tag
     {
         Synonyms = Synonyms.Union(synonyms).ToList();
     }
+}
+
+[Flags]
+public enum TagOptions
+{
+    None = 0,
+    Counter = 1
 }

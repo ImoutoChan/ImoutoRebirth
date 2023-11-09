@@ -22,7 +22,8 @@ public record ActualizeTag(
     string Type,
     string Name,
     string? Value,
-    IReadOnlyCollection<string>? Synonyms);
+    IReadOnlyCollection<string>? Synonyms,
+    TagOptions Options);
 
 public record ActualizeNote(
     int? SourceId,
@@ -142,7 +143,7 @@ internal class ActualizeFileInfoForSourceCommandHandler : ICommandHandler<Actual
 
         if (tag == null)
         {
-            var newTag = Tag.Create(type, fileTag.Name, hasValue, fileTag.Synonyms);
+            var newTag = Tag.Create(type, fileTag.Name, hasValue, fileTag.Synonyms, fileTag.Options);
             await _tagRepository.Create(newTag);
 
             return newTag;

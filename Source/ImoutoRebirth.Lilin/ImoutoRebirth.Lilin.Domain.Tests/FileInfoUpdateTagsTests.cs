@@ -112,6 +112,6 @@ public class FileInfoUpdateTagsTests
     private static Tag CreateTag()
     {
         var tagType = new TagType(Guid.NewGuid(), "Type", 0);
-        return new Tag(Guid.NewGuid(), tagType, "Tag", true, Array.Empty<string>(), 0);
+        return new Tag(Guid.NewGuid(), tagType, "Tag", true, Array.Empty<string>(), TagOptions.None, 0);
     }
 }
