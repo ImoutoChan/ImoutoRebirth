@@ -56,7 +56,8 @@ internal class AutoMapperProfile : Profile
     {
         CreateMap<LilinTag, Tag>()
             .ForCtorParam("title", o => o.MapFrom(x => x.Name))
-            .ForCtorParam("synonymsCollection", o => o.MapFrom(x => x.Synonyms));
+            .ForCtorParam("synonymsCollection", o => o.MapFrom(x => x.Synonyms))
+            .ForCtorParam("isCounter", o => o.MapFrom(x => x.Options.HasFlag(TagOptions.Counter)));
         // CreateMap<FileTagResponseTag, Tag>()
         //     .ForCtorParam("title", o => o.MapFrom(x => x.Name))
         //     .ForCtorParam("synonymsCollection", o => o.MapFrom(x => x.Synonyms));

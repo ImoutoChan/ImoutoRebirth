@@ -13,32 +13,27 @@ using Tag = ImoutoRebirth.Navigator.Services.Tags.Model.Tag;
 
 namespace ImoutoRebirth.Navigator.ViewModel;
 
-class TagsEditVM : VMBase, IDropable
+internal class TagsEditVM : VMBase, IDropable
 {
-    #region Fields
+    private readonly IFileTagService _fileTagService;
+    private readonly ITagService _tagService;
+    private readonly MainWindowVM _parentVm;
 
-    private string _searchText;
+    private string? _searchText;
     private ICommand? _createTagCommand;
     private ICommand? _addTagsCommand;
     private ICommand? _removeTagsCommand;
     private ICommand? _saveCommand;
     private ICommand? _unbindCommand;
     private ICommand? _setTagInfoContextCommand;
-    private readonly MainWindowVM _parentVm;
     private CreateTagVM? _createTagVm;
     private bool _isSaving;
     private bool _isSuccess;
     private SearchTagVM? _tagInfoContext;
-    private readonly IFileTagService _fileTagService;
-    private readonly ITagService _tagService;
-
-    #endregion Fields
-
-    #region Constructor
 
     public TagsEditVM(MainWindowVM parentVm)
     {
-        parentVm.PropertyChanged += (sender, args) =>
+        parentVm.PropertyChanged += (_, args) =>
         {
             if (args.PropertyName == "SelectedEntries")
             {
@@ -52,12 +47,6 @@ class TagsEditVM : VMBase, IDropable
         UpdateUsersTopTags();
     }
 
-    #endregion Constructor
-
-    #region Properties
-
-    #region Collections
-
     public ObservableCollection<SearchTagVM> FoundTags { get; } = new();
 
     public ObservableCollection<SearchTagVM> SelectedTags { get; } = new();
@@ -66,9 +55,7 @@ class TagsEditVM : VMBase, IDropable
     
     public ObservableCollection<SearchTagVM> UsersTopTags { get; } = new();
 
-    #endregion Collections
-
-    public string SearchText
+    public string? SearchText
     {
         get => _searchText;
         set
@@ -97,30 +84,18 @@ class TagsEditVM : VMBase, IDropable
     public bool IsSaving
     {
         get => _isSaving;
-        set
-        {
-            _isSaving = value;
-            OnPropertyChanged(() => IsSaving);
-        }
+        set => OnPropertyChanged(ref _isSaving, value, () => IsSaving);
     }
 
     public bool IsSuccess
     {
         get => _isSuccess;
-        set
-        {
-            _isSuccess = value;
-            OnPropertyChanged(() => IsSuccess);
-        }
+        set => OnPropertyChanged(ref _isSuccess, value, () => IsSuccess);
     }
-
-    #endregion Properties
-
-    #region Commands
 
     public ICommand CreateTagCommand => _createTagCommand ??= new RelayCommand(CreateTag);
 
-    private void CreateTag(object obj)
+    private void CreateTag(object _)
     {
         CreateTagVM = new CreateTagVM();
         CreateTagVM.RequestClosing += (_, _) => CreateTagVM = null;
@@ -143,9 +118,13 @@ class TagsEditVM : VMBase, IDropable
             return;
 
         var newTagVms = tagVms.Where(t => !SelectedTags.Any(x => x.Tag.Id == t.Tag.Id && x.Value == t.Value));
-        
-        foreach (var tagVm in newTagVms) 
+
+        foreach (var tagVm in newTagVms)
+        {
+            var value = tagVm.Tag.IsCounter ? "Counter:1" : null;
+            tagVm.Value = value;
             SelectedTags.Add(tagVm);
+        }
     }
 
     public ICommand RemoveTagsCommand => _removeTagsCommand ??= new RelayCommand(RemoveTags, CanRemoveTags);
@@ -290,34 +269,27 @@ class TagsEditVM : VMBase, IDropable
 
     private void SetTagInfoContext(object obj) => TagInfoContext = obj as SearchTagVM;
 
-    #endregion Commands
-
-    #region Methods
-
     public void DraftAddTag(BindedTagVM tag)
     {
-        var searchTagVm = new SearchTagVM(new SearchTag(tag.Tag, null));
+        var value = tag.Tag.IsCounter ? "Counter:1" : null;
+        
+        var searchTagVm = new SearchTagVM(new SearchTag(tag.Tag, value));
         SelectedTags.Add(searchTagVm);
     }
     
     private async void SearchTagsAsync()
     {
-        string searchPattern;
-        lock (SearchText)
-        {
-            searchPattern = SearchText;
-        }
+        var searchPattern = SearchText;
+
+        if (string.IsNullOrWhiteSpace(searchPattern))
+            return;
+
         try
         {
             var tags = await _tagService.SearchTags(searchPattern, 10);
 
-            lock (SearchText)
-            {
-                if (SearchText == searchPattern)
-                {
-                    ReloadFoundTags(tags);
-                }
-            }
+            if (SearchText == searchPattern) 
+                ReloadFoundTags(tags);
         }
         catch (Exception ex)
         {
@@ -333,10 +305,6 @@ class TagsEditVM : VMBase, IDropable
             FoundTags.Add(new SearchTagVM(new SearchTag(tag, null)));
         }
     }
-
-    #endregion Methods
-
-    #region IDpopable members
 
     public Type DataType => typeof (List<SearchTagVM>);
 
@@ -355,6 +323,4 @@ class TagsEditVM : VMBase, IDropable
             SelectedTags.Add(boundTag);
         }
     }
-
-    #endregion IDpopablemembers
 }

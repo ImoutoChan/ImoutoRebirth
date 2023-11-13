@@ -25,7 +25,8 @@ internal class TagService : ITagService
 
     public Task CreateTag(Guid typeId, string name, bool hasValue, IReadOnlyCollection<string> synonyms)
     {
-        return _tagsClient.CreateTagAsync(new CreateTagCommand(hasValue, name, synonyms.ToList(), typeId));
+        return _tagsClient.CreateTagAsync(new CreateTagCommand(hasValue, name, TagOptions.None, synonyms.ToList(),
+            typeId));
     }
 
     public async Task<IReadOnlyCollection<Tag>> SearchTags(string name, int count)

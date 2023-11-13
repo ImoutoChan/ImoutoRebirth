@@ -61,6 +61,11 @@ public class Tag
     {
         Synonyms = Synonyms.Union(synonyms).ToList();
     }
+
+    public void UpdateOptions(TagOptions options)
+    {
+        Options = options;
+    }
 }
 
 [Flags]

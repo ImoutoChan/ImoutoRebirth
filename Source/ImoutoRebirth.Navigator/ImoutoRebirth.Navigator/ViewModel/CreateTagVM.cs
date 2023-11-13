@@ -68,7 +68,13 @@ internal class CreateTagVM : VMBase
     public bool IsCounter
     {
         get => _isCounter;
-        set => OnPropertyChanged(ref _isCounter, value, () => IsCounter);
+        set
+        {
+            OnPropertyChanged(ref _isCounter, value, () => IsCounter);
+
+            if (value)
+                HasValue = true;
+        }
     }
 
     public bool IsSaving

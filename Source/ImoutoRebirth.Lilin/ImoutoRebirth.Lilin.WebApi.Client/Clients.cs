@@ -2106,14 +2106,15 @@ namespace ImoutoRebirth.LilinService.WebApi.Client
     }
 
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "13.20.0.0 (NJsonSchema v10.9.0.0 (Newtonsoft.Json v13.0.0.0))")]
+    [System.Flags]
     public enum TagOptions
     {
 
         [System.Runtime.Serialization.EnumMember(Value = @"None")]
-        None = 0,
+        None = 1,
 
         [System.Runtime.Serialization.EnumMember(Value = @"Counter")]
-        Counter = 1,
+        Counter = 2,
 
     }
 

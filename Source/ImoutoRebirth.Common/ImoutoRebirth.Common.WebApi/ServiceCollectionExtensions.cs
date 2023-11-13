@@ -53,6 +53,7 @@ public static class ServiceCollectionExtensions
         services.AddEndpointsApiExplorer();
         services.AddSwaggerGen(c =>
         {
+            c.SchemaFilter<EnumFilter>();
             c.SchemaFilter<RequireValueTypePropertiesSchemaFilter>();
 
             c.SwaggerDoc("v1.0", new OpenApiInfo

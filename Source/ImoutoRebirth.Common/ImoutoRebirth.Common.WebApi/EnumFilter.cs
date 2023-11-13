@@ -1,4 +1,5 @@
 ﻿using System.Diagnostics.CodeAnalysis;
+using System.Reflection;
 using Microsoft.OpenApi.Any;
 using Microsoft.OpenApi.Extensions;
 using Microsoft.OpenApi.Models;
@@ -19,7 +20,14 @@ public sealed class EnumFilter : ISchemaFilter
             ["modelAsString"] = new OpenApiBoolean(false)
         };
 
+        var names = new OpenApiArray();
+        names.AddRange(Enum.GetNames(enumType).Select(x => new OpenApiString(x) as IOpenApiAny));
+
         schema.AddExtension("x-ms-enum", extension);
+        
+        schema.AddExtension("x-enumFlags", new OpenApiBoolean(IsFlagsEnum(enumType)));
+        schema.AddExtension("x-enumNames", names);
+        
         schema.Enum = Enum.GetNames(enumType).Select(x => new OpenApiString(x) as IOpenApiAny).ToList();
     }
 
@@ -40,5 +48,22 @@ public sealed class EnumFilter : ISchemaFilter
 
         trueEnumType = nullableType;
         return nullableType is { IsEnum: true };
+    }
+
+    private static bool IsFlagsEnum(Type t)
+    {
+        if (t.IsEnum)
+        {
+            return t.GetCustomAttribute<FlagsAttribute>() != null;
+        }
+
+        var nullableType = Nullable.GetUnderlyingType(t);
+
+        if (nullableType is { IsEnum: true })
+        {
+            return nullableType.GetCustomAttribute<FlagsAttribute>() != null;
+        }
+
+        return false;
     }
 }

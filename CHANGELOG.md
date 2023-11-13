@@ -1,7 +1,14 @@
 # Unreleased
 
 ### Infrastructure
-* Add hotkey descriptions
+* Add hotkey descriptions for Viewer and Navigator desktop apps
+
+### Navigator
+* Add an option to create tag as counter
+* When adding tag to file automatically set value to Counter:1 
+if tag is counter
+
+### Lilin
 * Add Options field to the tag entity to store counter flag
 
 # 4.20.0
@@ -10,9 +17,10 @@
 * Optimize release notes 
 
 ### Navigator
-* Add tag "my wallpapers" to the file when setting wallpaper from context menu
-* Add counter tags initial support: you have to create tag with value "Counter:0",
-then you can increase it in left tags window
+* Add tag "my wallpapers" to the file when setting wallpaper 
+from context menu
+* Add counter tags initial support: you have to create tag 
+with value "Counter:0",then you can increase it in left tags window
 * Fixed bug with deletion of user tags with custom value
 
 # 4.19.3

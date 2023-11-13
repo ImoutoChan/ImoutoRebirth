@@ -7,7 +7,8 @@ internal class Tag
         string title, 
         TagType type, 
         IReadOnlyCollection<string> synonymsCollection, 
-        bool hasValue, 
+        bool hasValue,
+        bool isCounter,
         int count)
     {
         Id = id;
@@ -15,6 +16,7 @@ internal class Tag
         Type = type;
         SynonymsCollection = synonymsCollection;
         HasValue = hasValue;
+        IsCounter = isCounter;
         Count = count;
     }
 
@@ -27,6 +29,8 @@ internal class Tag
     public IReadOnlyCollection<string> SynonymsCollection { get; }
 
     public bool HasValue { get; }
+    
+    public bool IsCounter { get; }
 
     public int Count { get; }
 }

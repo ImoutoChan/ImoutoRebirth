@@ -37,6 +37,7 @@ internal class TagRepository : ITagRepository
         
         loadedTag.HasValue = tag.HasValue;
         loadedTag.SynonymsArray = tag.Synonyms;
+        loadedTag.Options = tag.Options;
 
         await _lilinDbContext.SaveChangesAsync();
     }
@@ -49,7 +50,8 @@ internal class TagRepository : ITagRepository
             Name = tag.Name,
             HasValue = tag.HasValue,
             SynonymsArray = tag.Synonyms,
-            TypeId = tag.Type.Id
+            TypeId = tag.Type.Id,
+            Options = tag.Options
         };
 
         await _lilinDbContext.AddAsync(newEntity);
