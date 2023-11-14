@@ -40,8 +40,8 @@ public class SimpleDecoder
             throw new Exception("Invalid WebP header detected");
 
         var success = false;
-        Bitmap b = null;
-        BitmapData bd = null;
+        Bitmap? b = null;
+        BitmapData? bd = null;
         try
         {
             //Allocate canvas
