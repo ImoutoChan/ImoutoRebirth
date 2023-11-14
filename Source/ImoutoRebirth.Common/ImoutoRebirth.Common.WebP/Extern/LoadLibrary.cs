@@ -6,6 +6,9 @@ namespace ImoutoRebirth.Common.WebP.Extern;
 
 public static class LoadLibrary
 {
+    private static readonly object LockObj = new();
+    private static readonly Dictionary<string, IntPtr> Loaded = new(StringComparer.OrdinalIgnoreCase);
+    
     [DllImport("kernel32.dll", SetLastError = true, CallingConvention = CallingConvention.StdCall)]
     static extern IntPtr LoadLibraryEx(string lpFileName, IntPtr hReservedNull, uint dwFlags);
 
@@ -13,10 +16,9 @@ public static class LoadLibrary
     {
         //canonicalize as much as we can
         fullPath = Path.GetFullPath(fullPath);
-        lock (lockObj)
+        lock (LockObj)
         {
-            IntPtr handle;
-            if (loaded.TryGetValue(fullPath, out handle))
+            if (Loaded.TryGetValue(fullPath, out var handle))
             {
                 return true;
             }
@@ -25,7 +27,7 @@ public static class LoadLibrary
                 handle = LoadByPath(fullPath, throwException);
                 if (handle != IntPtr.Zero)
                 {
-                    loaded.Add(fullPath, handle);
+                    Loaded.Add(fullPath, handle);
                     return true;
                 }
             }
@@ -41,10 +43,10 @@ public static class LoadLibrary
     /// <returns></returns>
     public static IntPtr LoadByPath(string fullPath, bool throwException)
     {
-        const uint LOAD_LIBRARY_SEARCH_DLL_LOAD_DIR = 0x00000100;
-        const uint LOAD_LIBRARY_SEARCH_SYSTEM32 = 0x00000800;
+        const uint loadLibrarySearchDllLoadDir = 0x00000100;
+        const uint loadLibrarySearchSystem32 = 0x00000800;
 
-        var moduleHandle = LoadLibraryEx(fullPath, IntPtr.Zero, LOAD_LIBRARY_SEARCH_DLL_LOAD_DIR | LOAD_LIBRARY_SEARCH_SYSTEM32);
+        var moduleHandle = LoadLibraryEx(fullPath, IntPtr.Zero, loadLibrarySearchDllLoadDir | loadLibrarySearchSystem32);
         if (moduleHandle == IntPtr.Zero && throwException)
             throw new Win32Exception(Marshal.GetLastWin32Error());
         return moduleHandle;
@@ -67,11 +69,8 @@ public static class LoadLibrary
     public static bool AutoLoadNearby(string name, bool throwFailure)
     {
         var a = Assembly.GetExecutingAssembly();
-        return AutoLoad(name, new string[]{Path.GetDirectoryName(a.Location), Path.GetDirectoryName(new Uri(a.CodeBase).LocalPath)},throwFailure,throwFailure);
+        return AutoLoad(name, new[]{Path.GetDirectoryName(a.Location), Path.GetDirectoryName(new Uri(a.Location).LocalPath)},throwFailure,throwFailure);
     }
-
-    static object lockObj = new object();
-    static Dictionary<string, IntPtr> loaded = new Dictionary<string, IntPtr>(StringComparer.OrdinalIgnoreCase);
 
     /// <summary>
     /// Looks for 'name' inside /x86/ and /x64/ subfolders of 'folder', depending on executing architecture. 
@@ -81,11 +80,14 @@ public static class LoadLibrary
     /// <param name="throwNotFound"></param>
     /// <param name="throwExceptions"></param>
     /// <returns></returns>
-    public static bool AutoLoad(string name, string[] searchFolders, bool throwNotFound, bool throwExceptions)
+    public static bool AutoLoad(string name, string?[] searchFolders, bool throwNotFound, bool throwExceptions)
     {
-        string searched = "";
-        foreach (string folder in searchFolders)
+        var searched = "";
+        foreach (var folder in searchFolders)
         {
+            if (folder == null)
+                continue;
+            
             var basePath = Path.Combine(folder, (IntPtr.Size == 8) ? "x64" : "x86");
             var fullPath = Path.Combine(basePath, name);
             if (string.IsNullOrEmpty(Path.GetExtension(fullPath)))
