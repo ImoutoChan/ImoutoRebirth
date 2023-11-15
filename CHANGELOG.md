@@ -2,6 +2,7 @@
 
 ### Infrastructure
 * Add hotkey descriptions for Viewer and Navigator desktop apps
+* Upgrade to net 8.0
 
 ### Navigator
 * Add an option to create tag as counter

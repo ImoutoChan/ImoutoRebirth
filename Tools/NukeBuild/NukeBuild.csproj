@@ -7,6 +7,7 @@
         <NukeRootDirectory>..\..</NukeRootDirectory>
         <NukeTelemetryVersion>1</NukeTelemetryVersion>
         <RootNamespace></RootNamespace>
+        <EnableUnsafeBinaryFormatterSerialization>true</EnableUnsafeBinaryFormatterSerialization>
     </PropertyGroup>
 
     <ItemGroup>
