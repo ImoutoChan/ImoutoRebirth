@@ -8,10 +8,6 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="NodaTime" Version="3.1.9"/>
-    </ItemGroup>
-
-    <ItemGroup>
         <ProjectReference Include="..\..\ImoutoRebirth.Arachne\ImoutoRebirth.Arachne.MessageContracts\ImoutoRebirth.Arachne.MessageContracts.csproj"/>
         <ProjectReference Include="..\..\ImoutoRebirth.Common\ImoutoRebirth.Common.Application\ImoutoRebirth.Common.Application.csproj"/>
         <ProjectReference Include="..\..\ImoutoRebirth.Common\ImoutoRebirth.Common.Cqrs\ImoutoRebirth.Common.Cqrs.csproj"/>
