@@ -4,18 +4,6 @@ namespace ImoutoRebirth.Common;
 
 public static class EnumerableExtensions
 {
-    public static IEnumerable<T> DistinctBy<T, TKey>(this IEnumerable<T> source, Func<T, TKey> selector)
-    {
-        var hashSet = new HashSet<TKey>();
-
-        foreach (var item in source)
-        {
-            var propertyValue = selector(item);
-            if (hashSet.Add(propertyValue))
-                yield return item;
-        }
-    }
-
     public static string JoinStrings<T>(this IEnumerable<T> source, Func<T, string> stringSelector, string separator) 
         => string.Join(separator, source.Select(stringSelector));
     
@@ -25,4 +13,8 @@ public static class EnumerableExtensions
 
     public static bool None<T>(this IEnumerable<T> source) => !source.Any();
     
+    public static bool SafeNone<T>([NotNullWhen(false)] this IEnumerable<T>? source) => source == null || !source.Any();
+
+    public static IEnumerable<T> WhereNotNull<T>(this IEnumerable<T?> source) => source.Where(x => x != null)!;
+
 }
