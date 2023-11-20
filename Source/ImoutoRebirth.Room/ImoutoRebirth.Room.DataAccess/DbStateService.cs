@@ -6,11 +6,7 @@ public class DbStateService : IDbStateService
 {
     private readonly RoomDbContext _roomDbContext;
 
-    public DbStateService(RoomDbContext roomDbContext)
-    {
-        _roomDbContext = roomDbContext;
-    }
+    public DbStateService(RoomDbContext roomDbContext) => _roomDbContext = roomDbContext;
 
-    public Task SaveChanges() 
-        => _roomDbContext.SaveChangesAsync();
+    public Task SaveChanges() => _roomDbContext.SaveChangesAsync();
 }

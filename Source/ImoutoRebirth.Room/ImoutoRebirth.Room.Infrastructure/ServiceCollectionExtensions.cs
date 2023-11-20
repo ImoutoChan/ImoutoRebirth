@@ -1,7 +1,7 @@
 ﻿using ImoutoRebirth.Common.MassTransit;
 using ImoutoRebirth.Lilin.MessageContracts;
 using ImoutoRebirth.Meido.MessageContracts;
-using ImoutoRebirth.Room.Core.Services.Abstract;
+using ImoutoRebirth.Room.Application;
 using ImoutoRebirth.Room.Infrastructure.Service;
 using Microsoft.Extensions.DependencyInjection;
 using LilinReceiverApp = ImoutoRebirth.Lilin.MessageContracts.ReceiverApp;
@@ -12,7 +12,6 @@ public static class ServiceCollectionExtensions
 {
     public static IServiceCollection AddRoomServices(this IServiceCollection services)
     {
-        services.AddTransient<IFileService, FileService>();
         services.AddTransient<IImageService, ImageService>();
         services.AddTransient<IRemoteCommandService, RemoteCommandService>();
         services.AddHttpClient<IImoutoPicsUploader, ImoutoPicsUploader>();

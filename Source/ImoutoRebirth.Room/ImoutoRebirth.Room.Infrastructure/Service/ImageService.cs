@@ -1,14 +1,15 @@
-﻿using ImoutoRebirth.Room.Core.Services.Abstract;
+﻿using ImoutoRebirth.Room.Application;
+using ImoutoRebirth.Room.Domain;
 
 namespace ImoutoRebirth.Room.Infrastructure.Service;
 
-public class ImageService : IImageService
+internal class ImageService : IImageService
 {
-    public bool IsImageCorrect(FileInfo fileInfo)
+    public bool IsImageCorrect(SystemFile file)
     {
         try
         {
-            using (var image = Image.Load(fileInfo.FullName))
+            using (var image = Image.Load(file.File.FullName))
             {
             }
             return true;

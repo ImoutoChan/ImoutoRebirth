@@ -1,10 +1,10 @@
-﻿using ImoutoRebirth.Room.Core.Services.Abstract;
+﻿using ImoutoRebirth.Room.Application;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 
 namespace ImoutoRebirth.Room.Infrastructure.Service;
 
-public class ImoutoPicsUploader : IImoutoPicsUploader
+internal class ImoutoPicsUploader : IImoutoPicsUploader
 {
     private readonly HttpClient _httpClient;
     private readonly string? _imoutoPicsUploadUrl;

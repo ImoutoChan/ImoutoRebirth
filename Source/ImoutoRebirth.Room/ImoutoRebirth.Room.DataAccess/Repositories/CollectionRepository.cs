@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using ImoutoRebirth.Room.Application;
 using ImoutoRebirth.Room.DataAccess.Exceptions;
 using ImoutoRebirth.Room.DataAccess.Models;
 using ImoutoRebirth.Room.DataAccess.Repositories.Abstract;

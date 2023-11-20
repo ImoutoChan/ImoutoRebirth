@@ -1,11 +1,10 @@
-﻿using AutoMapper;
+﻿using ImoutoRebirth.Room.Application;
 using ImoutoRebirth.Room.DataAccess.Cache;
 using ImoutoRebirth.Room.DataAccess.Exceptions;
-using ImoutoRebirth.Room.DataAccess.Models;
-using ImoutoRebirth.Room.DataAccess.Repositories.Abstract;
-using ImoutoRebirth.Room.DataAccess.Repositories.Queries;
+using ImoutoRebirth.Room.DataAccess.Mappers;
 using ImoutoRebirth.Room.Database;
 using ImoutoRebirth.Room.Database.Entities;
+using ImoutoRebirth.Room.Domain;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Memory;
 
@@ -16,25 +15,22 @@ public class CollectionFileRepository : ICollectionFileRepository
     private const string FilterCacheKeyPrefix = "FilterHashesQuery_";
 
     private readonly RoomDbContext _roomDbContext;
-    private readonly IMapper _mapper;
     private readonly ICollectionFileCacheService _collectionFileCacheService;
     private readonly IMemoryCache _cache;
 
     public CollectionFileRepository(
         RoomDbContext roomDbContext,
-        IMapper mapper,
         ICollectionFileCacheService collectionFileCacheService,
         IMemoryCache cache)
     {
         _roomDbContext = roomDbContext;
-        _mapper = mapper;
         _collectionFileCacheService = collectionFileCacheService;
         _cache = cache;
     }
 
-    public async Task Add(CollectionFile collectionFile)
+    public async Task Create(CollectionFile collectionFile)
     {
-        var entity = _mapper.Map<CollectionFileEntity>(collectionFile);
+        var entity = collectionFile.ToEntity();
 
         _collectionFileCacheService.AddToFilter(collectionFile.CollectionId, entity.Path);
 
@@ -55,21 +51,6 @@ public class CollectionFileRepository : ICollectionFileRepository
             _cache.Set(key, result);
 
         return result;
-    }
-
-    public async Task<IReadOnlyCollection<CollectionFile>> SearchByQuery(CollectionFilesQuery query, CancellationToken ct)
-    {
-        var files = BuildFilesQuery(query);
-
-        if (query.Skip.HasValue)
-            files = files.Skip(query.Skip.Value);
-
-        if (query.Count.HasValue)
-            files = files.Take(query.Count.Value);
-
-        var loaded = await files.ToListAsync(cancellationToken: ct);
-
-        return _mapper.Map<CollectionFile[]>(loaded);
     }
 
     public async Task<IReadOnlyCollection<string>> FilterHashesQuery(
@@ -133,26 +114,6 @@ public class CollectionFileRepository : ICollectionFileRepository
             .ToListAsync(cancellationToken: ct);
     }
 
-    public async Task<IReadOnlyCollection<Guid>> SearchIdsByQuery(CollectionFilesQuery query, CancellationToken ct)
-    {
-        var files = BuildFilesQuery(query);
-
-        if (query.Skip.HasValue)
-            files = files.Skip(query.Skip.Value);
-
-        if (query.Count.HasValue)
-            files = files.Take(query.Count.Value);
-
-        return await files.Select(x => x.Id).ToListAsync(cancellationToken: ct);
-    }
-
-    public async Task<int> CountByQuery(CollectionFilesQuery query, CancellationToken ct)
-    {
-        var files = BuildFilesQuery(query);
-
-        return await files.CountAsync(cancellationToken: ct);
-    }
-
     public async Task Remove(Guid id)
     {
         var file = await _roomDbContext.CollectionFiles.FindAsync(id);
@@ -180,27 +141,6 @@ public class CollectionFileRepository : ICollectionFileRepository
             _cache.Set(key, file.OriginalPath);
 
         return file?.OriginalPath;
-    }
-
-    private IQueryable<CollectionFileEntity> BuildFilesQuery(CollectionFilesQuery query)
-    {
-        var files = _roomDbContext.CollectionFiles.AsQueryable();
-
-        if (query.CollectionId.HasValue)
-            files = files.Where(x => x.CollectionId == query.CollectionId.Value);
-
-        if (query.CollectionFileIds?.Any() == true)
-            files = files.Where(x => query.CollectionFileIds.Contains(x.Id));
-
-        if (query.Path != null)
-            files = files.Where(x => query.Path.Equals(x.Path));
-
-        if (query.Md5 != null && query.Md5.Any())
-            files = files.Where(x => query.Md5.Contains(x.Md5));
-
-        files = files.OrderBy(x => x.AddedOn);
-
-        return files;
     }
 
     private async Task<bool> CheckInDatabaseWithRemoved(Guid collectionId, string path, CancellationToken ct)

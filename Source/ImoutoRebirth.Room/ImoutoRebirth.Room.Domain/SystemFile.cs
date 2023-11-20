@@ -68,7 +68,9 @@ public partial class SystemFile
 
         return true;
     }
-    
+
+    public void Delete() => File.Delete();
+
     private bool MoveToExisted(ref FileInfo newFile)
     {
         var newSystemFile = Create(newFile);
@@ -97,7 +99,7 @@ public partial class SystemFile
 
         return true;
     }
-    
+
     private static bool IsFileReady(FileInfo fileInfo)
     {
         // If the file can be opened for exclusive access it means that the file

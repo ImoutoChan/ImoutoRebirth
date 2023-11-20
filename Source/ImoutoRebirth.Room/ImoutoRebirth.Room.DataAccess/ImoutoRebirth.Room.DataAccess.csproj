@@ -8,11 +8,10 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="AutoMapper" Version="12.0.1"/>
-    </ItemGroup>
-
-    <ItemGroup>
+        <ProjectReference Include="..\..\ImoutoRebirth.Common\ImoutoRebirth.Common.Cqrs\ImoutoRebirth.Common.Cqrs.csproj" />
+        <ProjectReference Include="..\ImoutoRebirth.Room.Application\ImoutoRebirth.Room.Application.csproj" />
         <ProjectReference Include="..\ImoutoRebirth.Room.Database\ImoutoRebirth.Room.Database.csproj"/>
+        <ProjectReference Include="..\ImoutoRebirth.Room.Domain\ImoutoRebirth.Room.Domain.csproj" />
     </ItemGroup>
 
 </Project>

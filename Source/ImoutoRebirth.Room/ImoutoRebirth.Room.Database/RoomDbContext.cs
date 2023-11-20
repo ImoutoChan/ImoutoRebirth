@@ -4,9 +4,8 @@ using Microsoft.EntityFrameworkCore;
 
 namespace ImoutoRebirth.Room.Database;
 
-public class RoomDbContext : DbContext
+public class RoomDbContext(DbContextOptions options) : DbContext(options)
 {
-
     public DbSet<CollectionEntity> Collections { get; set; } = default!;
 
     public DbSet<SourceFolderEntity> SourceFolders { get; set; } = default!;
@@ -14,11 +13,6 @@ public class RoomDbContext : DbContext
     public DbSet<DestinationFolderEntity> DestinationFolders { get; set; } = default!;
 
     public DbSet<CollectionFileEntity> CollectionFiles { get; set; } = default!;
-
-    public RoomDbContext(DbContextOptions options)
-        : base(options)
-    {
-    }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

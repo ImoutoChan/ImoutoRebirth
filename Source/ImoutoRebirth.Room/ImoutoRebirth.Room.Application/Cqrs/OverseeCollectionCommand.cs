@@ -1,11 +1,11 @@
 ﻿using System.Runtime.CompilerServices;
 using ImoutoRebirth.Common.Cqrs.Abstract;
 using ImoutoRebirth.Common.Domain;
-using ImoutoRebirth.Room.Core.Services.Abstract;
 using ImoutoRebirth.Room.Domain;
+using MediatR;
 using Microsoft.Extensions.Logging;
 
-namespace ImoutoRebirth.Room.Application;
+namespace ImoutoRebirth.Room.Application.Cqrs;
 
 public record OverseeCollectionCommand(Guid CollectionId) : ICommand<OverseeCollectionResult>;
 
@@ -19,6 +19,7 @@ internal class OverseeCollectionCommandHandler : ICommandHandler<OverseeCollecti
     private readonly IImageService _imageService;
     private readonly IRemoteCommandService _remoteCommandService;
     private readonly IImoutoPicsUploader _imoutoPicsUploader;
+    private readonly IMediator _mediator;
 
     public OverseeCollectionCommandHandler(
         ICollectionRepository collectionRepository,
@@ -26,7 +27,8 @@ internal class OverseeCollectionCommandHandler : ICommandHandler<OverseeCollecti
         ILogger<OverseeCollectionCommandHandler> logger,
         IImageService imageService,
         IRemoteCommandService remoteCommandService,
-        IImoutoPicsUploader imoutoPicsUploader)
+        IImoutoPicsUploader imoutoPicsUploader,
+        IMediator mediator)
     {
         _collectionRepository = collectionRepository;
         _collectionFileRepository = collectionFileRepository;
@@ -34,6 +36,7 @@ internal class OverseeCollectionCommandHandler : ICommandHandler<OverseeCollecti
         _imageService = imageService;
         _remoteCommandService = remoteCommandService;
         _imoutoPicsUploader = imoutoPicsUploader;
+        _mediator = mediator;
     }
 
     public async Task<OverseeCollectionResult> Handle(OverseeCollectionCommand command, CancellationToken ct)
@@ -61,20 +64,10 @@ internal class OverseeCollectionCommandHandler : ICommandHandler<OverseeCollecti
 
         return new OverseeCollectionResult(anyFileAdded);
     }
-
+    
     private async Task SaveAndReport(Guid collectionId, SystemFileMoved moved)
     {
-        var newId = Guid.NewGuid();
-
-        var newFile = new CollectionFile(
-            newId,
-            collectionId,
-            moved.MovedFileInfo.FullName,
-            moved.SystemFile.Md5,
-            moved.SystemFile.Size,
-            moved.SystemFile.File.FullName);
-
-        await _collectionFileRepository.Add(newFile);
+        var newId = await _mediator.Send(new SaveNewFileCommand(collectionId, moved));
 
         await _remoteCommandService.SaveTags(newId, moved.SourceTags);
         await _remoteCommandService.UpdateMetadataRequest(newId, moved.SystemFile.Md5);
