@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using ImoutoRebirth.Common.MassTransit;
 using ImoutoRebirth.Common.Quartz.Extensions;
+using ImoutoRebirth.Room.Application;
 using ImoutoRebirth.Room.Core;
 using ImoutoRebirth.Room.DataAccess;
 using ImoutoRebirth.Room.Database;
@@ -26,7 +27,7 @@ public class Startup
     public void ConfigureServices(IServiceCollection services)
     {
         services.AddRoomServices();
-        services.AddRoomCore();
+        services.AddRoomApplication();
         services.AddRoomDataAccess();
         services.AddRoomDatabase(Configuration);
         services.AddRoomWebApi();

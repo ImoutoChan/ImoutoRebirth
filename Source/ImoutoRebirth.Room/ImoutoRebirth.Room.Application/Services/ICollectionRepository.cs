@@ -1,7 +1,6 @@
-﻿using System.Collections;
-using ImoutoRebirth.Room.Domain;
+﻿using ImoutoRebirth.Room.Domain.CollectionAggregate;
 
-namespace ImoutoRebirth.Room.Application;
+namespace ImoutoRebirth.Room.Application.Services;
 
 public interface ICollectionRepository
 {
@@ -11,9 +10,9 @@ public interface ICollectionRepository
 
     Task<Collection?> GetById(Guid id);
 
-    Task<Collection> Create(string name);
+    Task Create(Collection collection);
+    
+    Task Update(Collection collection);
 
     Task Remove(Guid id);
-
-    Task Rename(Guid id, string newName);
 }

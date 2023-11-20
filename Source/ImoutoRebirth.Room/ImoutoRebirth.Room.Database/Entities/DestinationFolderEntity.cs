@@ -10,20 +10,20 @@ public class DestinationFolderEntity : EntityBase
     public Guid CollectionId { get; set; }
 
     [Required]
-    public string Path { get; set; } = default!;
+    public required string Path { get; set; }
 
     public bool ShouldCreateSubfoldersByHash { get; set; }
 
     public bool ShouldRenameByHash { get; set; }
 
     [Required]
-    public string FormatErrorSubfolder { get; set; } = default!;
+    public required string FormatErrorSubfolder { get; set; }
 
     [Required]
-    public string HashErrorSubfolder { get; set; } = default!;
+    public required string HashErrorSubfolder { get; set; }
 
     [Required]
-    public string WithoutHashErrorSubfolder { get; set; } = default!;
+    public required string WithoutHashErrorSubfolder { get; set; }
 
     public CollectionEntity? Collection { get; set; }
 }

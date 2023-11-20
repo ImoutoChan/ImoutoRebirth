@@ -1,6 +1,5 @@
 ﻿using AutoMapper;
 using ImoutoRebirth.Room.DataAccess.Models;
-using ImoutoRebirth.Room.DataAccess.Repositories.Queries;
 using ImoutoRebirth.Room.WebApi.Requests;
 using ImoutoRebirth.Room.WebApi.Responses;
 

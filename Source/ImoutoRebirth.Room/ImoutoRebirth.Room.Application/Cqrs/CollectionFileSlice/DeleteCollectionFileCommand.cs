@@ -1,11 +1,12 @@
 ﻿using ImoutoRebirth.Common;
 using ImoutoRebirth.Common.Cqrs.Abstract;
 using ImoutoRebirth.Common.Domain;
+using ImoutoRebirth.Room.Application.Services;
 using ImoutoRebirth.Room.Domain;
 using MediatR;
 using Microsoft.Extensions.Logging;
 
-namespace ImoutoRebirth.Room.Application.Cqrs;
+namespace ImoutoRebirth.Room.Application.Cqrs.CollectionFileSlice;
 
 public record DeleteCollectionFileCommand(Guid Id) : ICommand;
 

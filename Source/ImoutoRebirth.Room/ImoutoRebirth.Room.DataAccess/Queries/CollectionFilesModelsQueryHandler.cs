@@ -1,13 +1,12 @@
 ﻿using ImoutoRebirth.Common.Cqrs.Abstract;
-using ImoutoRebirth.Room.Application;
-using ImoutoRebirth.Room.Application.Cqrs;
+using ImoutoRebirth.Room.Application.Cqrs.CollectionFileSlice;
 using ImoutoRebirth.Room.DataAccess.Mappers;
 using ImoutoRebirth.Room.Database;
 using ImoutoRebirth.Room.Database.Entities;
 using ImoutoRebirth.Room.Domain;
 using Microsoft.EntityFrameworkCore;
 
-namespace ImoutoRebirth.Room.DataAccess.Repositories.Queries;
+namespace ImoutoRebirth.Room.DataAccess.Queries;
 
 internal class CollectionFilesModelsQueryHandler 
     : IQueryHandler<CollectionFilesModelsQuery, IReadOnlyCollection<CollectionFile>>
@@ -34,7 +33,7 @@ internal class CollectionFilesModelsQueryHandler
 
         var loaded = await files.ToListAsync(cancellationToken: ct);
 
-        return loaded.Select(x => x.ToEntity()).ToList();
+        return loaded.Select(x => x.ToModel()).ToList();
     }
 
     public async Task<IReadOnlyCollection<Guid>> Handle(CollectionFilesIdsQuery request, CancellationToken ct)

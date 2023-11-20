@@ -1,7 +1,6 @@
 ﻿using AutoMapper;
 using ImoutoRebirth.Room.Core.Services.Abstract;
 using ImoutoRebirth.Room.DataAccess.Repositories.Abstract;
-using ImoutoRebirth.Room.DataAccess.Repositories.Queries;
 using ImoutoRebirth.Room.WebApi.Requests;
 using ImoutoRebirth.Room.WebApi.Responses;
 using Microsoft.AspNetCore.Http;

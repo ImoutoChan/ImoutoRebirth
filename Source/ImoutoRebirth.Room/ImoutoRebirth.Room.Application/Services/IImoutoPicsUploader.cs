@@ -1,4 +1,4 @@
-namespace ImoutoRebirth.Room.Application;
+namespace ImoutoRebirth.Room.Application.Services;
 
 public interface IImoutoPicsUploader
 {

@@ -1,34 +1,34 @@
-﻿using ImoutoRebirth.Room.DataAccess.Models;
-using ImoutoRebirth.Room.Database.Entities;
+﻿using ImoutoRebirth.Room.Database.Entities;
+using ImoutoRebirth.Room.Domain.CollectionAggregate;
 
 namespace ImoutoRebirth.Room.DataAccess.Mappers;
 
-public static class DestinationFolderMapper
+internal static class DestinationFolderMapper
 {
-    public static DestinationFolderEntity ToEntity(this DestinationFolderCreateData createData)
-        => new DestinationFolderEntity
+    public static DestinationFolderEntity? ToEntity(this DestinationFolder destinationFolder, Guid collectionId)
+        => destinationFolder.DestinationDirectory == null 
+            ? null 
+            : new DestinationFolderEntity
         {
-            Id = Guid.NewGuid(),
-            Path = createData.Path,
-            CollectionId = createData.CollectionId,
-            WithoutHashErrorSubfolder = createData.WithoutHashErrorSubfolder,
-            ShouldCreateSubfoldersByHash = createData.ShouldCreateSubfoldersByHash,
-            HashErrorSubfolder = createData.HashErrorSubfolder,
-            ShouldRenameByHash = createData.ShouldRenameByHash,
-            FormatErrorSubfolder = createData.FormatErrorSubfolder
+            Id = destinationFolder.Id,
+            Path = destinationFolder.DestinationDirectory.FullName,
+            CollectionId = collectionId,
+            WithoutHashErrorSubfolder = destinationFolder.WithoutHashErrorSubfolder,
+            ShouldCreateSubfoldersByHash = destinationFolder.ShouldCreateSubfoldersByHash,
+            HashErrorSubfolder = destinationFolder.HashErrorSubfolder,
+            ShouldRenameByHash = destinationFolder.ShouldRenameByHash,
+            FormatErrorSubfolder = destinationFolder.FormatErrorSubfolder
         };
 
-    public static DestinationFolderEntity ToEntity(
-        this DestinationFolderCreateData createData, 
-        DestinationFolderEntity updateCurrent)
-    {
-        updateCurrent.Path = createData.Path;
-        updateCurrent.WithoutHashErrorSubfolder = createData.WithoutHashErrorSubfolder;
-        updateCurrent.ShouldCreateSubfoldersByHash = createData.ShouldCreateSubfoldersByHash;
-        updateCurrent.HashErrorSubfolder = createData.HashErrorSubfolder;
-        updateCurrent.ShouldRenameByHash = createData.ShouldRenameByHash;
-        updateCurrent.FormatErrorSubfolder = createData.FormatErrorSubfolder;
-
-        return updateCurrent;
-    }
+    public static DestinationFolder ToModel(this DestinationFolderEntity? destinationFolder)
+        => destinationFolder == null
+            ? DestinationFolder.Default
+            : new(
+                destinationFolder.Id,
+                destinationFolder.Path,
+                destinationFolder.ShouldCreateSubfoldersByHash,
+                destinationFolder.ShouldRenameByHash,
+                destinationFolder.FormatErrorSubfolder,
+                destinationFolder.HashErrorSubfolder,
+                destinationFolder.WithoutHashErrorSubfolder);
 }

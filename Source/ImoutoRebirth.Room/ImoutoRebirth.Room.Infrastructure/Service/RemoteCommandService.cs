@@ -2,6 +2,7 @@
 using ImoutoRebirth.Lilin.MessageContracts;
 using ImoutoRebirth.Meido.MessageContracts;
 using ImoutoRebirth.Room.Application;
+using ImoutoRebirth.Room.Application.Services;
 using MassTransit;
 
 namespace ImoutoRebirth.Room.Infrastructure.Service;

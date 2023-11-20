@@ -1,4 +1,5 @@
 ﻿using ImoutoRebirth.Room.Application;
+using ImoutoRebirth.Room.Application.Services;
 using ImoutoRebirth.Room.Domain;
 
 namespace ImoutoRebirth.Room.Infrastructure.Service;

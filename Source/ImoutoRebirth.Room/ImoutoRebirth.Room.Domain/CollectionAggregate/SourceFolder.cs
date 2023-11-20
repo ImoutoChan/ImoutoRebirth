@@ -1,12 +1,11 @@
 ﻿using ImoutoRebirth.Common;
 
-namespace ImoutoRebirth.Room.Domain;
+namespace ImoutoRebirth.Room.Domain.CollectionAggregate;
 
 public class SourceFolder
 {
     public SourceFolder(
         Guid id,
-        Guid collectionId,
         string path,
         bool shouldCheckFormat,
         bool shouldCheckHashFromName,
@@ -15,7 +14,6 @@ public class SourceFolder
         IReadOnlyCollection<string> supportedExtensions)
     {
         Id = id;
-        CollectionId = collectionId;
         Path = path;
         ShouldCheckFormat = shouldCheckFormat;
         ShouldCheckHashFromName = shouldCheckHashFromName;
@@ -25,8 +23,6 @@ public class SourceFolder
     }
 
     public Guid Id { get; }
-
-    public Guid CollectionId { get; }
 
     public string Path { get; }
 

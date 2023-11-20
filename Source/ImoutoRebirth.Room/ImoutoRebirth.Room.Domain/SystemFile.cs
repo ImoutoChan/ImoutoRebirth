@@ -1,5 +1,6 @@
 ﻿using System.Security.Cryptography;
 using System.Text.RegularExpressions;
+using ImoutoRebirth.Room.Domain.CollectionAggregate;
 
 namespace ImoutoRebirth.Room.Domain;
 

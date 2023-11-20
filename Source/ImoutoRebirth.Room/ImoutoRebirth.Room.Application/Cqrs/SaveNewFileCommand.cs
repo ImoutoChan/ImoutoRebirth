@@ -1,4 +1,5 @@
 ﻿using ImoutoRebirth.Common.Cqrs.Abstract;
+using ImoutoRebirth.Room.Application.Services;
 using ImoutoRebirth.Room.Domain;
 
 namespace ImoutoRebirth.Room.Application.Cqrs;

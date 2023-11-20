@@ -13,5 +13,9 @@
         <ProjectReference Include="..\ImoutoRebirth.Room.Database\ImoutoRebirth.Room.Database.csproj"/>
         <ProjectReference Include="..\ImoutoRebirth.Room.Domain\ImoutoRebirth.Room.Domain.csproj" />
     </ItemGroup>
+    
+    <ItemGroup>
+        <InternalsVisibleTo Include="ImoutoRebirth.Room.DataAccess.Tests" />
+    </ItemGroup>
 
 </Project>

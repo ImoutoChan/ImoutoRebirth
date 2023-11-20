@@ -1,62 +1,124 @@
-﻿using AutoMapper;
-using ImoutoRebirth.Room.Application;
+﻿using ImoutoRebirth.Room.Application;
+using ImoutoRebirth.Room.Application.Services;
 using ImoutoRebirth.Room.DataAccess.Exceptions;
-using ImoutoRebirth.Room.DataAccess.Models;
-using ImoutoRebirth.Room.DataAccess.Repositories.Abstract;
+using ImoutoRebirth.Room.DataAccess.Mappers;
 using ImoutoRebirth.Room.Database;
 using ImoutoRebirth.Room.Database.Entities;
+using ImoutoRebirth.Room.Domain.CollectionAggregate;
 using Microsoft.EntityFrameworkCore;
 
 namespace ImoutoRebirth.Room.DataAccess.Repositories;
 
-public class CollectionRepository : ICollectionRepository
+internal class CollectionRepository : ICollectionRepository
 {
     private readonly RoomDbContext _roomDbContext;
-    private readonly IMapper _mapper;
 
-    public CollectionRepository(
-        RoomDbContext roomDbContext,
-        IMapper mapper)
-    {
-        _roomDbContext = roomDbContext;
-        _mapper = mapper;
-    }
+    public CollectionRepository(RoomDbContext roomDbContext) => _roomDbContext = roomDbContext;
 
-    public async Task<IReadOnlyCollection<OversawCollection>> GetAllOversaw()
+    public async Task<IReadOnlyCollection<Guid>> GetAllIds() 
+        => await _roomDbContext.Collections.Select(x => x.Id).ToListAsync();
+
+    public async Task<IReadOnlyCollection<Collection>> GetAll()
     {
         var collections 
             = await _roomDbContext
                 .Collections
+                .AsNoTracking()
                 .Include(x => x.DestinationFolder)
                 .Include(x => x.SourceFolders)
                 .ToListAsync();
             
-        return collections
-            .Select(x => new OversawCollection(
-                _mapper.Map<Collection>(x),
-                _mapper.Map<IReadOnlyCollection<SourceFolder>>(x.SourceFolders),
-                x.DestinationFolder is null 
-                    ? (DestinationFolder) new DefaultDestinationFolder() 
-                    : _mapper.Map<CustomDestinationFolder>(x.DestinationFolder)))
-            .ToArray();
+        return collections.Select(x => x.ToModel()).ToList();
     }
 
-    public async Task<IReadOnlyCollection<Collection>> GetAll()
+    public async Task<Collection?> GetById(Guid id)
     {
-        var collections = await _roomDbContext.Collections.ToListAsync();
+        var collection
+            = await _roomDbContext
+                .Collections
+                .AsNoTracking()
+                .Include(x => x.DestinationFolder)
+                .Include(x => x.SourceFolders)
+                .Where(x => x.Id == id)
+                .SingleOrDefaultAsync();
 
-        return _mapper.Map<IReadOnlyCollection<Collection>>(collections);
+        return collection?.ToModel();
     }
 
-    public async Task<Collection> Add(CollectionCreateData collectionCreateData)
+    public async Task Create(Collection collection)
     {
-        var newCollection = _mapper.Map<Collection>(collectionCreateData);
-
-        var newCollectionEntity = _mapper.Map<CollectionEntity>(newCollection);
+        var newCollectionEntity = collection.ToEntity();
         await _roomDbContext.Collections.AddAsync(newCollectionEntity);
         await _roomDbContext.SaveChangesAsync();
+    }
 
-        return newCollection;
+    public async Task Update(Collection collection)
+    {
+        var collectionId = collection.Id;
+        
+        var collectionEntity = await _roomDbContext.Collections
+            .Where(x => x.Id == collectionId)
+            .SingleAsync();
+            
+        collectionEntity.Name = collection.Name;
+
+        // update destination folder
+        if (collection.DestinationFolder.IsDefault())
+        {
+            var destinationFolderEntity = await _roomDbContext.DestinationFolders
+                .Where(x => x.CollectionId == collectionId)
+                .FirstOrDefaultAsync();
+
+            if (destinationFolderEntity != null) 
+                _roomDbContext.Remove(destinationFolderEntity);
+        }
+        else
+        {
+            var destinationFolderEntity = await _roomDbContext.DestinationFolders
+                .Where(x => x.CollectionId == collectionId)
+                .SingleAsync();
+            
+            destinationFolderEntity.Path = collection.DestinationFolder.DestinationDirectory!.FullName;
+            destinationFolderEntity.ShouldCreateSubfoldersByHash = collection.DestinationFolder.ShouldCreateSubfoldersByHash;
+            destinationFolderEntity.ShouldRenameByHash = collection.DestinationFolder.ShouldRenameByHash;
+            destinationFolderEntity.FormatErrorSubfolder = collection.DestinationFolder.FormatErrorSubfolder;
+            destinationFolderEntity.HashErrorSubfolder = collection.DestinationFolder.HashErrorSubfolder;
+            destinationFolderEntity.WithoutHashErrorSubfolder = collection.DestinationFolder.WithoutHashErrorSubfolder;
+        }
+        
+        // update source folders
+        var sourceFolderEntities = await _roomDbContext.SourceFolders
+            .Where(x => x.CollectionId == collectionId)
+            .ToListAsync();
+
+        foreach (var collectionSourceFolder in collection.SourceFolders)
+        {
+            var sourceFolderEntity = sourceFolderEntities
+                .SingleOrDefault(x => x.Id == collectionSourceFolder.Id);
+
+            if (sourceFolderEntity == null)
+            {
+                sourceFolderEntity = collectionSourceFolder.ToEntity(collectionId);
+                await _roomDbContext.SourceFolders.AddAsync(sourceFolderEntity);
+            }
+            else
+            {
+                sourceFolderEntity.Path = collectionSourceFolder.Path;
+                sourceFolderEntity.ShouldCheckFormat = collectionSourceFolder.ShouldCheckFormat;
+                sourceFolderEntity.ShouldCheckHashFromName = collectionSourceFolder.ShouldCheckHashFromName;
+                sourceFolderEntity.ShouldCreateTagsFromSubfolders = collectionSourceFolder.ShouldCreateTagsFromSubfolders;
+                sourceFolderEntity.ShouldAddTagFromFilename = collectionSourceFolder.ShouldAddTagFromFilename;
+                sourceFolderEntity.SupportedExtensionCollection = collectionSourceFolder.SupportedExtensions;
+            }
+        }
+        
+        foreach (var sourceFolderEntity in sourceFolderEntities)
+        {
+            if (collection.SourceFolders.All(x => x.Id != sourceFolderEntity.Id))
+                _roomDbContext.Remove(sourceFolderEntity);
+        }
+
+        await _roomDbContext.SaveChangesAsync();
     }
 
     public async Task Remove(Guid id)
@@ -67,19 +129,6 @@ public class CollectionRepository : ICollectionRepository
             throw new EntityNotFoundException<CollectionEntity>(id);
 
         _roomDbContext.Remove(collection);
-
-        await _roomDbContext.SaveChangesAsync();
-    }
-
-    public async Task Rename(Guid id, string newName)
-    {
-        var collection = await _roomDbContext.Collections.FirstOrDefaultAsync(x => x.Id == id);
-
-        if (collection == null)
-            throw new EntityNotFoundException<CollectionEntity>(id);
-
-        collection.Name = newName;
-
         await _roomDbContext.SaveChangesAsync();
     }
 }

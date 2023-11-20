@@ -1,7 +1,7 @@
 ﻿using ImoutoRebirth.Common.Cqrs.Abstract;
 using ImoutoRebirth.Room.Domain;
 
-namespace ImoutoRebirth.Room.Application.Cqrs;
+namespace ImoutoRebirth.Room.Application.Cqrs.CollectionFileSlice;
 
 public record CollectionFilesQuery
 {

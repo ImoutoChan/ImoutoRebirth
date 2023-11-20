@@ -3,7 +3,7 @@ using ImoutoRebirth.Room.Domain;
 
 namespace ImoutoRebirth.Room.DataAccess.Mappers;
 
-public static class CollectionFileMapper
+internal static class CollectionFileMapper
 {
     public static CollectionFileEntity ToEntity(this CollectionFile file)
         => new()
@@ -16,7 +16,7 @@ public static class CollectionFileMapper
             OriginalPath = file.OriginalPath
         };
 
-    public static CollectionFile ToEntity(this CollectionFileEntity file)
+    public static CollectionFile ToModel(this CollectionFileEntity file)
         => new(
             file.Id,
             file.CollectionId,

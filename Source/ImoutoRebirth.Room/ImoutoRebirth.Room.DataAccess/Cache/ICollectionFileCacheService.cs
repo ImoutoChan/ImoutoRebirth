@@ -1,6 +1,6 @@
 ﻿namespace ImoutoRebirth.Room.DataAccess.Cache;
 
-public interface ICollectionFileCacheService
+internal interface ICollectionFileCacheService
 {
     void AddToFilter(Guid id, string value);
 

@@ -14,7 +14,7 @@ public class SourceFolderEntity : EntityBase
     public Guid CollectionId { get; set; }
 
     [Required]
-    public string Path { get; set; } = default!;
+    public required string Path { get; set; }
 
     public bool ShouldCheckFormat { get; set; }
 
@@ -27,12 +27,8 @@ public class SourceFolderEntity : EntityBase
     [NotMapped]
     public IReadOnlyCollection<string>? SupportedExtensionCollection
     {
-        get => _supportedExtensions?.Split(
-            new[] {SupportedExtensionsSeparator}, 
-            StringSplitOptions.RemoveEmptyEntries);
-        set => _supportedExtensions = value != null 
-            ? string.Join(SupportedExtensionsSeparator, value) 
-            : null;
+        get => _supportedExtensions?.Split(new[] {SupportedExtensionsSeparator}, StringSplitOptions.RemoveEmptyEntries);
+        set => _supportedExtensions = value != null ? string.Join(SupportedExtensionsSeparator, value) : null;
     }
 
     public CollectionEntity? Collection { get; set; }

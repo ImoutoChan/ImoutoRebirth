@@ -6,13 +6,13 @@ namespace ImoutoRebirth.Room.Database;
 
 public class RoomDbContext(DbContextOptions options) : DbContext(options)
 {
-    public DbSet<CollectionEntity> Collections { get; set; } = default!;
+    public required DbSet<CollectionEntity> Collections { get; set; }
 
-    public DbSet<SourceFolderEntity> SourceFolders { get; set; } = default!;
+    public required DbSet<SourceFolderEntity> SourceFolders { get; set; }
 
-    public DbSet<DestinationFolderEntity> DestinationFolders { get; set; } = default!;
+    public required DbSet<DestinationFolderEntity> DestinationFolders { get; set; }
 
-    public DbSet<CollectionFileEntity> CollectionFiles { get; set; } = default!;
+    public required DbSet<CollectionFileEntity> CollectionFiles { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

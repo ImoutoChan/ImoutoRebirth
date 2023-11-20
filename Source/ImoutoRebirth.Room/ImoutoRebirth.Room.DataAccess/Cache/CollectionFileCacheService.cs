@@ -5,7 +5,7 @@ namespace ImoutoRebirth.Room.DataAccess.Cache;
 /// <summary>
 /// Ensure singleton, service uses Bloom Filter, guarantees only false responses
 /// </summary>
-public class CollectionFileCacheService : ICollectionFileCacheService
+internal class CollectionFileCacheService : ICollectionFileCacheService
 {
     // Guid - collection id
     private readonly ConcurrentDictionary<Guid, BloomFilter<string>> _bloomFilters

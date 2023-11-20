@@ -1,4 +1,5 @@
 ﻿using ImoutoRebirth.Room.Application;
+using ImoutoRebirth.Room.Application.Services;
 using ImoutoRebirth.Room.DataAccess.Cache;
 using ImoutoRebirth.Room.DataAccess.Exceptions;
 using ImoutoRebirth.Room.DataAccess.Mappers;
@@ -10,7 +11,7 @@ using Microsoft.Extensions.Caching.Memory;
 
 namespace ImoutoRebirth.Room.DataAccess.Repositories;
 
-public class CollectionFileRepository : ICollectionFileRepository
+internal class CollectionFileRepository : ICollectionFileRepository
 {
     private const string FilterCacheKeyPrefix = "FilterHashesQuery_";
 
@@ -35,6 +36,7 @@ public class CollectionFileRepository : ICollectionFileRepository
         _collectionFileCacheService.AddToFilter(collectionFile.CollectionId, entity.Path);
 
         await _roomDbContext.CollectionFiles.AddAsync(entity);
+        await _roomDbContext.SaveChangesAsync();
         
         _cache.Remove(GetKey(entity.Md5));
     }
@@ -134,7 +136,7 @@ public class CollectionFileRepository : ICollectionFileRepository
         if (_cache.TryGetValue(key, out string? path))
             return path;
 
-        var file = await _roomDbContext.CollectionFiles.FirstOrDefaultAsync(
+        var file = await _roomDbContext.CollectionFiles.AsNoTracking().FirstOrDefaultAsync(
             x => x.Md5 == md5 && x.CollectionId == collectionId, cancellationToken: ct);
 
         if (file != null)

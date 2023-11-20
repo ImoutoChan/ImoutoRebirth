@@ -10,11 +10,11 @@ public class CollectionFileEntity : EntityBase
     public Guid CollectionId { get; set; }
 
     [Required]
-    public string Path { get; set; } = default!;
+    public required string Path { get; set; }
 
     [Required]
     [StringLength(32)]
-    public string Md5 { get; set; } = default!;
+    public required string Md5 { get; set; }
 
     public long Size { get; set; }
 
@@ -22,5 +22,5 @@ public class CollectionFileEntity : EntityBase
 
     public bool IsRemoved { get; set; }
 
-    public CollectionEntity Collection { get; set; } = default!;
+    public CollectionEntity? Collection { get; set; }
 }

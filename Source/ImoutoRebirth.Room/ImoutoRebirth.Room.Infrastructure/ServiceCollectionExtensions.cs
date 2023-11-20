@@ -1,7 +1,7 @@
 ﻿using ImoutoRebirth.Common.MassTransit;
 using ImoutoRebirth.Lilin.MessageContracts;
 using ImoutoRebirth.Meido.MessageContracts;
-using ImoutoRebirth.Room.Application;
+using ImoutoRebirth.Room.Application.Services;
 using ImoutoRebirth.Room.Infrastructure.Service;
 using Microsoft.Extensions.DependencyInjection;
 using LilinReceiverApp = ImoutoRebirth.Lilin.MessageContracts.ReceiverApp;

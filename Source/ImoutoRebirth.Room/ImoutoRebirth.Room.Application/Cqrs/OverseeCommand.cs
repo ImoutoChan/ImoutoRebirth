@@ -1,4 +1,5 @@
 ﻿using ImoutoRebirth.Common.Cqrs.Abstract;
+using ImoutoRebirth.Room.Application.Services;
 using MediatR;
 using Microsoft.Extensions.Logging;
 

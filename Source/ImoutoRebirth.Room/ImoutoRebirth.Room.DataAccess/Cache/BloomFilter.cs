@@ -6,7 +6,7 @@ namespace ImoutoRebirth.Room.DataAccess.Cache;
 /// Bloom filter.
 /// </summary>
 /// <typeparam name="T">Item type </typeparam>
-public class BloomFilter<T> where T: notnull
+internal class BloomFilter<T> where T: notnull
 {
     private readonly int _hashFunctionCount;
     private readonly BitArray _hashBits;

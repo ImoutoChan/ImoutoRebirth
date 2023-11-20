@@ -4,7 +4,6 @@ public class DestinationFolder
 {
     public DestinationFolder(
         Guid id,
-        Guid collectionId,
         string? path,
         bool shouldCreateSubfoldersByHash,
         bool shouldRenameByHash,
@@ -13,7 +12,6 @@ public class DestinationFolder
         string withoutHashErrorSubfolder)
     {
         Id = id;
-        CollectionId = collectionId;
         ShouldCreateSubfoldersByHash = shouldCreateSubfoldersByHash;
         ShouldRenameByHash = shouldRenameByHash;
         FormatErrorSubfolder = formatErrorSubfolder;
@@ -23,8 +21,6 @@ public class DestinationFolder
     }
 
     public Guid Id { get; }
-
-    public Guid CollectionId { get; }
 
     public bool ShouldCreateSubfoldersByHash { get; }
 
@@ -40,14 +36,15 @@ public class DestinationFolder
 
     public static DestinationFolder Default
         => new(
-            Guid.Empty, 
-            Guid.Empty, 
+            Guid.Empty,
             null,
             false, 
             false, 
             DefaultValues.DestinationFolderEntityFormatErrorSubfolder,
             DefaultValues.DestinationFolderEntityHashErrorSubfolder,
             DefaultValues.DestinationFolderEntityWithoutHashErrorSubfolder);
+    
+    public bool IsDefault() => Id == Guid.Empty;
     
     public SystemFileMoved Move(SystemFilePreparedToMove preparedToMove)
     {

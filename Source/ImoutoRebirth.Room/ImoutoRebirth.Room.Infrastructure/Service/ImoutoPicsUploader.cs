@@ -1,4 +1,5 @@
 ﻿using ImoutoRebirth.Room.Application;
+using ImoutoRebirth.Room.Application.Services;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 
