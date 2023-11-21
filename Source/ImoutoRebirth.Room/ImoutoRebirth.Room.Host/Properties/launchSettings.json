@@ -1,14 +1,13 @@
 {
-  "$schema": "http://json.schemastore.org/launchsettings.json",
+  "$schema": "https://json.schemastore.org/launchsettings.json",
   "profiles": {
-    "ImoutoRebirth.Room.Webhost": {
+    "ImoutoRebirth.Room.Host": {
       "commandName": "Project",
       "launchBrowser": false,
-      "launchUrl": "",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
       },
-      "applicationUrl": "http://localhost:21301"
+      "applicationUrl": "http://localhost:11401"
     }
   }
 }

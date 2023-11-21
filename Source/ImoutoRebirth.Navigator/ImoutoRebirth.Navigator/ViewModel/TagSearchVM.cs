@@ -8,7 +8,6 @@ using ImoutoRebirth.Navigator.Services.Tags;
 using ImoutoRebirth.Navigator.Services.Tags.Model;
 using ImoutoRebirth.Navigator.UserControls;
 using ImoutoRebirth.Navigator.Utils;
-using ImoutoRebirth.Navigator.ViewModel.ListEntries;
 using Newtonsoft.Json;
 using SearchType = ImoutoRebirth.Navigator.Services.Tags.Model.SearchType;
 using Tag = ImoutoRebirth.Navigator.Services.Tags.Model.Tag;

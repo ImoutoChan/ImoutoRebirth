@@ -30,7 +30,7 @@ class Build : NukeBuild
         Solution.ImoutoRebirth_Lilin.ImoutoRebirth_Lilin_Host,
         Solution.ImoutoRebirth_Meido.ImoutoRebirth_Meido_Host,
         Solution.ImoutoRebirth_Navigator.ImoutoRebirth_Navigator,
-        Solution.ImoutoRebirth_Room.ImoutoRebirth_Room_Webhost,
+        Solution.ImoutoRebirth_Room.ImoutoRebirth_Room_Host,
         Solution.ImoutoRebirth_Tori.ImoutoRebirth_Tori,
         Solution.Imouto_Viewer.ImoutoViewer
     };

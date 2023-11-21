@@ -1,22 +1,17 @@
 ﻿using ImoutoRebirth.Common.Quartz;
-using ImoutoRebirth.Room.Core.Services.Abstract;
+using ImoutoRebirth.Room.Application.Cqrs;
+using MediatR;
 using Quartz;
 
-namespace ImoutoRebirth.Room.Webhost.Quartz;
+namespace ImoutoRebirth.Room.UI.Quartz;
 
 public class OverseeJob : IJob
 {
-    private readonly IOverseeService _overseeService;
+    private readonly IMediator _mediator;
 
-    public OverseeJob(IOverseeService overseeService)
-    {
-        _overseeService = overseeService;
-    }
+    public OverseeJob(IMediator mediator) => _mediator = mediator;
 
-    public async Task Execute(IJobExecutionContext context)
-    {
-        await _overseeService.Oversee();
-    }
+    public async Task Execute(IJobExecutionContext context) => await _mediator.Send(new OverseeCommand());
 
     public class Description : IQuartzJobDescription
     {

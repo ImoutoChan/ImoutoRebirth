@@ -1,27 +1,23 @@
 ﻿using System.IO.Compression;
 using System.Text.Json.Serialization;
 using ImoutoRebirth.Common.WebApi;
-using ImoutoRebirth.Room.WebApi.Controllers;
 using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.ResponseCompression;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
 
-namespace ImoutoRebirth.Room.WebApi;
+namespace ImoutoRebirth.Room.UI.WebApi;
 
-public static class ServiceCollectionExtensions
+public static class WebEndpointsExtensions
 {
-    public static IServiceCollection AddRoomWebApi(this IServiceCollection services)
+    public static IServiceCollection AddWebEndpoints(this IServiceCollection services)
     {
-        services
-            .AddControllers()
-            .AddApplicationPart(typeof(CollectionsController).Assembly)
-            .AddJsonOptions(
-                options =>
-                    options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter()));
+        services.Configure<Microsoft.AspNetCore.Http.Json.JsonOptions>(x =>
+            x.SerializerOptions.Converters.Add(new JsonStringEnumConverter()));
 
-        services.AddSwagger("ImoutoRebirth.Room WebApi Client", typeof(CollectionsController).Assembly);
+        services.Configure<Microsoft.AspNetCore.Mvc.JsonOptions>(x =>
+            x.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter()));
+        
+        services.AddMinimalSwagger("ImoutoRebirth.Room WebApi Client");
         
         services.AddResponseCompression(options =>
         {
@@ -31,35 +27,26 @@ public static class ServiceCollectionExtensions
         });
         services.Configure<BrotliCompressionProviderOptions>(options => options.Level = CompressionLevel.Optimal);
         services.Configure<GzipCompressionProviderOptions>(options => options.Level = CompressionLevel.Optimal);
+        
         services.AddRequestDecompression();
-
         return services;
     }
-
-    public static IApplicationBuilder ConfigureWebApi(this IApplicationBuilder app, IWebHostEnvironment env)
+    
+    public static WebApplication MapWebEndpoints(this WebApplication app)
     {
         app.UseRequestDecompression();
         app.UseResponseCompression();
-        
-        if (env.IsDevelopment())
-        {
-            app.UseDeveloperExceptionPage();
-        }
-        else
-        {
-            app.UseHsts();
-            app.UseHttpsRedirection();
-        }
-
-        app.UseRouting();
-        app.UseEndpoints(builder => builder.MapControllers());
-
         app.UseSwagger();
         app.UseSwaggerUI(c =>
         {
             c.SwaggerEndpoint("/swagger/v1.0/swagger.json", "ImoutoRebirth.Room API V1.0");
         });
 
+        app.MapCollectionsEndpoints();
+        app.MapCollectionFilesEndpoints();
+        app.MapDestinationFoldersEndpoints();
+        app.MapSourceFoldersEndpoints();
+        
         return app;
     }
 }

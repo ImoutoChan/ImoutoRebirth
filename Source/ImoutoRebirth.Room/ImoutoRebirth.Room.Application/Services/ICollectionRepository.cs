@@ -6,7 +6,7 @@ public interface ICollectionRepository
 {
     Task<IReadOnlyCollection<Guid>> GetAllIds();
 
-    Task<IReadOnlyCollection<Collection>> GetAll();
+    Task<IReadOnlyCollection<Collection>> GetAll(CancellationToken ct);
 
     Task<Collection?> GetById(Guid id);
 

@@ -41,7 +41,7 @@ internal class UpdateLocationTagsCommandHandler : ICommandHandler<UpdateLocation
     {
         try
         {
-            var collections = await _collectionRepository.GetAll();
+            var collections = await _collectionRepository.GetAll(ct);
 
             foreach (var collection in collections)
             {

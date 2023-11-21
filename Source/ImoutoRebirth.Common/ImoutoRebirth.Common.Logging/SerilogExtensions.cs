@@ -72,9 +72,6 @@ public static class SerilogExtensions
         if (appName.EndsWith(".Host"))
             appName = appName[..^5];
 
-        if (appName.EndsWith(".Webhost"))
-            appName = appName[..^8];
-
         if (appName.EndsWith(".WebApi"))
             appName = appName[..^7];
 

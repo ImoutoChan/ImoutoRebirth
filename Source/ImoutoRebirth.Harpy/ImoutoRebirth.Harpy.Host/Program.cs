@@ -3,7 +3,6 @@ using ImoutoRebirth.Common.Logging;
 using ImoutoRebirth.Common.OpenTelemetry;
 using ImoutoRebirth.Common.Quartz.Extensions;
 using ImoutoRebirth.Harpy.Services;
-using GenericHost = Microsoft.Extensions.Hosting.Host;
 
 const string servicePrefix = "HARPY_";
 

@@ -1,5 +1,4 @@
-﻿using ImoutoRebirth.Room.Application;
-using ImoutoRebirth.Room.Application.Services;
+﻿using ImoutoRebirth.Room.Application.Services;
 using ImoutoRebirth.Room.DataAccess.Cache;
 using ImoutoRebirth.Room.DataAccess.Exceptions;
 using ImoutoRebirth.Room.DataAccess.Mappers;
@@ -53,67 +52,6 @@ internal class CollectionFileRepository : ICollectionFileRepository
             _cache.Set(key, result);
 
         return result;
-    }
-
-    public async Task<IReadOnlyCollection<string>> FilterHashesQuery(
-        IReadOnlyCollection<string> md5Hashes,
-        CancellationToken ct)
-    {
-        if (!md5Hashes.Any())
-            return Array.Empty<string>();
-
-        var present = new List<string>();
-        var notInCache = new List<string>();
-
-        foreach (var md5Hash in md5Hashes)
-        {
-            var key = GetKey(md5Hash);
-            if (_cache.TryGetValue(key, out bool value))
-            {
-                if (value) 
-                    present.Add(md5Hash);
-            }
-            else
-            {
-                notInCache.Add(md5Hash);
-            }
-        }
-        
-        if (notInCache.Count == 0)
-            return present;
-        
-        var loaded = await FilterHashesCoreQuery(notInCache, ct);
-        
-        foreach (var md5Hash in notInCache)
-        {
-            var key = GetKey(md5Hash);
-
-            if (loaded.Contains(md5Hash))
-            {
-                _cache.Set(key, true);
-                present.Add(md5Hash);
-            }
-            else
-            {
-                _cache.Set(key, false);
-            }
-        }
-
-        return present;
-    }
-    
-    private async Task<IReadOnlyCollection<string>> FilterHashesCoreQuery(
-        IReadOnlyCollection<string> md5Hashes,
-        CancellationToken ct)
-    {
-        if (!md5Hashes.Any())
-            return Array.Empty<string>();
-
-        return await _roomDbContext.CollectionFiles
-            .Where(x => md5Hashes.Contains(x.Md5))
-            .OrderBy(x => x.AddedOn)
-            .Select(x => x.Md5)
-            .ToListAsync(cancellationToken: ct);
     }
 
     public async Task Remove(Guid id)

@@ -11,10 +11,6 @@ public interface ICollectionFileRepository
         string path,
         CancellationToken ct = default);
 
-    Task<IReadOnlyCollection<string>> FilterHashesQuery(
-        IReadOnlyCollection<string> md5Hashes,
-        CancellationToken ct);
-
     Task Remove(Guid id);
 
     Task<string?> GetWithMd5(

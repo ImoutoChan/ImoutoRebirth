@@ -14,14 +14,12 @@
 
     <ItemGroup>
         <FrameworkReference Include="Microsoft.AspNetCore.App" />
-        <PackageReference Include="AutoMapper" Version="12.0.1" />
-        <PackageReference Include="Swashbuckle.AspNetCore" Version="6.5.0" />
     </ItemGroup>
 
     <ItemGroup>
         <ProjectReference Include="..\..\ImoutoRebirth.Common\ImoutoRebirth.Common.WebApi\ImoutoRebirth.Common.WebApi.csproj" />
-        <ProjectReference Include="..\ImoutoRebirth.Room.DataAccess\ImoutoRebirth.Room.DataAccess.csproj" />
-        <ProjectReference Include="..\ImoutoRebirth.Room.Services\ImoutoRebirth.Room.Core.csproj" />
+        <ProjectReference Include="..\..\ImoutoRebirth.Common\ImoutoRebirth.Common.Quartz\ImoutoRebirth.Common.Quartz.csproj" />
+        <ProjectReference Include="..\ImoutoRebirth.Room.Application\ImoutoRebirth.Room.Application.csproj" />
     </ItemGroup>
 
 </Project>

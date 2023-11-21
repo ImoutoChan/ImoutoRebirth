@@ -10,7 +10,7 @@ namespace ImoutoRebirth.Room.Infrastructure;
 
 public static class ServiceCollectionExtensions
 {
-    public static IServiceCollection AddRoomServices(this IServiceCollection services)
+    public static IServiceCollection AddRoomInfrastructure(this IServiceCollection services)
     {
         services.AddTransient<IImageService, ImageService>();
         services.AddTransient<IRemoteCommandService, RemoteCommandService>();
@@ -19,7 +19,7 @@ public static class ServiceCollectionExtensions
         return services;
     }
 
-    public static ITrueMassTransitConfigurator AddRoomServicesForRabbit(this ITrueMassTransitConfigurator builder)
+    public static ITrueMassTransitConfigurator AddRoomInfrastructureForRabbit(this ITrueMassTransitConfigurator builder)
         => builder
             .AddFireAndForget<INewFileCommand>(MeidoReceiverApp.Name)
             .AddFireAndForget<IUpdateMetadataCommand>(LilinReceiverApp.Name);

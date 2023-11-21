@@ -1,5 +1,4 @@
-﻿using ImoutoRebirth.Room.Application;
-using ImoutoRebirth.Room.Application.Services;
+﻿using ImoutoRebirth.Room.Application.Services;
 using ImoutoRebirth.Room.DataAccess.Exceptions;
 using ImoutoRebirth.Room.DataAccess.Mappers;
 using ImoutoRebirth.Room.Database;
@@ -18,7 +17,7 @@ internal class CollectionRepository : ICollectionRepository
     public async Task<IReadOnlyCollection<Guid>> GetAllIds() 
         => await _roomDbContext.Collections.Select(x => x.Id).ToListAsync();
 
-    public async Task<IReadOnlyCollection<Collection>> GetAll()
+    public async Task<IReadOnlyCollection<Collection>> GetAll(CancellationToken ct)
     {
         var collections 
             = await _roomDbContext
@@ -26,7 +25,7 @@ internal class CollectionRepository : ICollectionRepository
                 .AsNoTracking()
                 .Include(x => x.DestinationFolder)
                 .Include(x => x.SourceFolders)
-                .ToListAsync();
+                .ToListAsync(ct);
             
         return collections.Select(x => x.ToModel()).ToList();
     }
