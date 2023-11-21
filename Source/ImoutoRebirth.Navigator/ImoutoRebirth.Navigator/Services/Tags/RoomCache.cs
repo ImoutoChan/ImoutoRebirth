@@ -42,7 +42,7 @@ internal class RoomCache : IRoomCache
         
         var ids = await _memoryCache.GetOrCreateAsync(key, async entry =>
         {
-            var ids = await _collectionFilesClient.SearchIdsAsync(new CollectionFilesRequest(
+            var ids = await _collectionFilesClient.SearchCollectionFileIdsAsync(new(
                 default,
                 collectionId,
                 take,
@@ -60,7 +60,7 @@ internal class RoomCache : IRoomCache
         if (requestUsed || ids.Count >= take) 
             return ids;
         
-        var newIds = await _collectionFilesClient.SearchIdsAsync(new CollectionFilesRequest(
+        var newIds = await _collectionFilesClient.SearchCollectionFileIdsAsync(new(
             default,
             collectionId,
             take - ids.Count,
@@ -98,7 +98,7 @@ internal class RoomCache : IRoomCache
 
         if (newFileIds.Any())
         {
-            var newFiles = await _collectionFilesClient.SearchAsync(new CollectionFilesRequest(
+            var newFiles = await _collectionFilesClient.SearchCollectionFilesAsync(new(
                 newFileIds,
                 default,
                 default,

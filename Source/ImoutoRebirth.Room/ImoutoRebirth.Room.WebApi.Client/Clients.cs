@@ -56,36 +56,30 @@ namespace ImoutoRebirth.RoomService.WebApi.Client
         partial void PrepareRequest(System.Net.Http.HttpClient client, System.Net.Http.HttpRequestMessage request, System.Text.StringBuilder urlBuilder);
         partial void ProcessResponse(System.Net.Http.HttpClient client, System.Net.Http.HttpResponseMessage response);
 
-        /// <summary>
-        /// Retrieve all files by request.
-        /// </summary>
         /// <returns>Success</returns>
         /// <exception cref="WebApiException">A server side error occurred.</exception>
-        public virtual System.Threading.Tasks.Task<System.Collections.Generic.IReadOnlyCollection<CollectionFileResponse>> SearchAsync(CollectionFilesRequest? body)
+        public virtual System.Threading.Tasks.Task<System.Collections.Generic.IReadOnlyCollection<CollectionFile>> SearchCollectionFilesAsync(CollectionFilesQuery body)
         {
-            return SearchAsync(body, System.Threading.CancellationToken.None);
+            return SearchCollectionFilesAsync(body, System.Threading.CancellationToken.None);
         }
 
-        /// <summary>
-        /// Retrieve all files by request.
-        /// </summary>
         /// <returns>Success</returns>
         /// <exception cref="WebApiException">A server side error occurred.</exception>
-        public virtual System.Collections.Generic.IReadOnlyCollection<CollectionFileResponse> Search(CollectionFilesRequest? body)
+        public virtual System.Collections.Generic.IReadOnlyCollection<CollectionFile> SearchCollectionFiles(CollectionFilesQuery body)
         {
-            return System.Threading.Tasks.Task.Run(async () => await SearchAsync(body, System.Threading.CancellationToken.None)).GetAwaiter().GetResult();
+            return System.Threading.Tasks.Task.Run(async () => await SearchCollectionFilesAsync(body, System.Threading.CancellationToken.None)).GetAwaiter().GetResult();
         }
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
-        /// <summary>
-        /// Retrieve all files by request.
-        /// </summary>
         /// <returns>Success</returns>
         /// <exception cref="WebApiException">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<System.Collections.Generic.IReadOnlyCollection<CollectionFileResponse>> SearchAsync(CollectionFilesRequest? body, System.Threading.CancellationToken cancellationToken)
+        public virtual async System.Threading.Tasks.Task<System.Collections.Generic.IReadOnlyCollection<CollectionFile>> SearchCollectionFilesAsync(CollectionFilesQuery body, System.Threading.CancellationToken cancellationToken)
         {
+            if (body == null)
+                throw new System.ArgumentNullException("body");
+
             var urlBuilder_ = new System.Text.StringBuilder();
-            urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/api/CollectionFiles");
+            urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/collection-files");
 
             var client_ = _httpClient;
             var disposeClient_ = false;
@@ -98,7 +92,7 @@ namespace ImoutoRebirth.RoomService.WebApi.Client
                     content_.Headers.ContentType = System.Net.Http.Headers.MediaTypeHeaderValue.Parse("application/json");
                     request_.Content = content_;
                     request_.Method = new System.Net.Http.HttpMethod("POST");
-                    request_.Headers.Accept.Add(System.Net.Http.Headers.MediaTypeWithQualityHeaderValue.Parse("text/plain"));
+                    request_.Headers.Accept.Add(System.Net.Http.Headers.MediaTypeWithQualityHeaderValue.Parse("application/json"));
 
                     PrepareRequest(client_, request_, urlBuilder_);
 
@@ -123,7 +117,7 @@ namespace ImoutoRebirth.RoomService.WebApi.Client
                         var status_ = (int)response_.StatusCode;
                         if (status_ == 200)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<System.Collections.Generic.IReadOnlyCollection<CollectionFileResponse>>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<System.Collections.Generic.IReadOnlyCollection<CollectionFile>>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new WebApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
@@ -150,36 +144,30 @@ namespace ImoutoRebirth.RoomService.WebApi.Client
             }
         }
 
-        /// <summary>
-        /// Filter hashes that present in collections.
-        /// </summary>
         /// <returns>Success</returns>
         /// <exception cref="WebApiException">A server side error occurred.</exception>
-        public virtual System.Threading.Tasks.Task<System.Collections.Generic.IReadOnlyCollection<string>> FilterHashesAsync(System.Collections.Generic.IReadOnlyCollection<string>? body)
+        public virtual System.Threading.Tasks.Task<System.Collections.Generic.IReadOnlyCollection<string>> FilterCollectionFileHashesAsync(FilterCollectionFileHashesQuery body)
         {
-            return FilterHashesAsync(body, System.Threading.CancellationToken.None);
+            return FilterCollectionFileHashesAsync(body, System.Threading.CancellationToken.None);
         }
 
-        /// <summary>
-        /// Filter hashes that present in collections.
-        /// </summary>
         /// <returns>Success</returns>
         /// <exception cref="WebApiException">A server side error occurred.</exception>
-        public virtual System.Collections.Generic.IReadOnlyCollection<string> FilterHashes(System.Collections.Generic.IReadOnlyCollection<string>? body)
+        public virtual System.Collections.Generic.IReadOnlyCollection<string> FilterCollectionFileHashes(FilterCollectionFileHashesQuery body)
         {
-            return System.Threading.Tasks.Task.Run(async () => await FilterHashesAsync(body, System.Threading.CancellationToken.None)).GetAwaiter().GetResult();
+            return System.Threading.Tasks.Task.Run(async () => await FilterCollectionFileHashesAsync(body, System.Threading.CancellationToken.None)).GetAwaiter().GetResult();
         }
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
-        /// <summary>
-        /// Filter hashes that present in collections.
-        /// </summary>
         /// <returns>Success</returns>
         /// <exception cref="WebApiException">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<System.Collections.Generic.IReadOnlyCollection<string>> FilterHashesAsync(System.Collections.Generic.IReadOnlyCollection<string>? body, System.Threading.CancellationToken cancellationToken)
+        public virtual async System.Threading.Tasks.Task<System.Collections.Generic.IReadOnlyCollection<string>> FilterCollectionFileHashesAsync(FilterCollectionFileHashesQuery body, System.Threading.CancellationToken cancellationToken)
         {
+            if (body == null)
+                throw new System.ArgumentNullException("body");
+
             var urlBuilder_ = new System.Text.StringBuilder();
-            urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/api/CollectionFiles/filter-hashes");
+            urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/collection-files/filter-hashes");
 
             var client_ = _httpClient;
             var disposeClient_ = false;
@@ -192,7 +180,7 @@ namespace ImoutoRebirth.RoomService.WebApi.Client
                     content_.Headers.ContentType = System.Net.Http.Headers.MediaTypeHeaderValue.Parse("application/json");
                     request_.Content = content_;
                     request_.Method = new System.Net.Http.HttpMethod("POST");
-                    request_.Headers.Accept.Add(System.Net.Http.Headers.MediaTypeWithQualityHeaderValue.Parse("text/plain"));
+                    request_.Headers.Accept.Add(System.Net.Http.Headers.MediaTypeWithQualityHeaderValue.Parse("application/json"));
 
                     PrepareRequest(client_, request_, urlBuilder_);
 
@@ -244,36 +232,30 @@ namespace ImoutoRebirth.RoomService.WebApi.Client
             }
         }
 
-        /// <summary>
-        /// Retrieve all file ids by request.
-        /// </summary>
         /// <returns>Success</returns>
         /// <exception cref="WebApiException">A server side error occurred.</exception>
-        public virtual System.Threading.Tasks.Task<System.Collections.Generic.IReadOnlyCollection<System.Guid>> SearchIdsAsync(CollectionFilesRequest? body)
+        public virtual System.Threading.Tasks.Task<System.Collections.Generic.IReadOnlyCollection<System.Guid>> SearchCollectionFileIdsAsync(CollectionFilesQuery body)
         {
-            return SearchIdsAsync(body, System.Threading.CancellationToken.None);
+            return SearchCollectionFileIdsAsync(body, System.Threading.CancellationToken.None);
         }
 
-        /// <summary>
-        /// Retrieve all file ids by request.
-        /// </summary>
         /// <returns>Success</returns>
         /// <exception cref="WebApiException">A server side error occurred.</exception>
-        public virtual System.Collections.Generic.IReadOnlyCollection<System.Guid> SearchIds(CollectionFilesRequest? body)
+        public virtual System.Collections.Generic.IReadOnlyCollection<System.Guid> SearchCollectionFileIds(CollectionFilesQuery body)
         {
-            return System.Threading.Tasks.Task.Run(async () => await SearchIdsAsync(body, System.Threading.CancellationToken.None)).GetAwaiter().GetResult();
+            return System.Threading.Tasks.Task.Run(async () => await SearchCollectionFileIdsAsync(body, System.Threading.CancellationToken.None)).GetAwaiter().GetResult();
         }
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
-        /// <summary>
-        /// Retrieve all file ids by request.
-        /// </summary>
         /// <returns>Success</returns>
         /// <exception cref="WebApiException">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<System.Collections.Generic.IReadOnlyCollection<System.Guid>> SearchIdsAsync(CollectionFilesRequest? body, System.Threading.CancellationToken cancellationToken)
+        public virtual async System.Threading.Tasks.Task<System.Collections.Generic.IReadOnlyCollection<System.Guid>> SearchCollectionFileIdsAsync(CollectionFilesQuery body, System.Threading.CancellationToken cancellationToken)
         {
+            if (body == null)
+                throw new System.ArgumentNullException("body");
+
             var urlBuilder_ = new System.Text.StringBuilder();
-            urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/api/CollectionFiles/search-ids");
+            urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/collection-files/search-ids");
 
             var client_ = _httpClient;
             var disposeClient_ = false;
@@ -286,7 +268,7 @@ namespace ImoutoRebirth.RoomService.WebApi.Client
                     content_.Headers.ContentType = System.Net.Http.Headers.MediaTypeHeaderValue.Parse("application/json");
                     request_.Content = content_;
                     request_.Method = new System.Net.Http.HttpMethod("POST");
-                    request_.Headers.Accept.Add(System.Net.Http.Headers.MediaTypeWithQualityHeaderValue.Parse("text/plain"));
+                    request_.Headers.Accept.Add(System.Net.Http.Headers.MediaTypeWithQualityHeaderValue.Parse("application/json"));
 
                     PrepareRequest(client_, request_, urlBuilder_);
 
@@ -338,45 +320,30 @@ namespace ImoutoRebirth.RoomService.WebApi.Client
             }
         }
 
-        /// <summary>
-        /// Retrieve count of files by request.
-        /// </summary>
-        /// <remarks>
-        /// Note that Skip and Count fields are ignored.
-        /// </remarks>
         /// <returns>Success</returns>
         /// <exception cref="WebApiException">A server side error occurred.</exception>
-        public virtual System.Threading.Tasks.Task<int> CountAsync(CollectionFilesRequest? body)
+        public virtual System.Threading.Tasks.Task<int> CountCollectionFilesAsync(CollectionFilesQuery body)
         {
-            return CountAsync(body, System.Threading.CancellationToken.None);
+            return CountCollectionFilesAsync(body, System.Threading.CancellationToken.None);
         }
 
-        /// <summary>
-        /// Retrieve count of files by request.
-        /// </summary>
-        /// <remarks>
-        /// Note that Skip and Count fields are ignored.
-        /// </remarks>
         /// <returns>Success</returns>
         /// <exception cref="WebApiException">A server side error occurred.</exception>
-        public virtual int Count(CollectionFilesRequest? body)
+        public virtual int CountCollectionFiles(CollectionFilesQuery body)
         {
-            return System.Threading.Tasks.Task.Run(async () => await CountAsync(body, System.Threading.CancellationToken.None)).GetAwaiter().GetResult();
+            return System.Threading.Tasks.Task.Run(async () => await CountCollectionFilesAsync(body, System.Threading.CancellationToken.None)).GetAwaiter().GetResult();
         }
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
-        /// <summary>
-        /// Retrieve count of files by request.
-        /// </summary>
-        /// <remarks>
-        /// Note that Skip and Count fields are ignored.
-        /// </remarks>
         /// <returns>Success</returns>
         /// <exception cref="WebApiException">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<int> CountAsync(CollectionFilesRequest? body, System.Threading.CancellationToken cancellationToken)
+        public virtual async System.Threading.Tasks.Task<int> CountCollectionFilesAsync(CollectionFilesQuery body, System.Threading.CancellationToken cancellationToken)
         {
+            if (body == null)
+                throw new System.ArgumentNullException("body");
+
             var urlBuilder_ = new System.Text.StringBuilder();
-            urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/api/CollectionFiles/count");
+            urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/collection-files/count");
 
             var client_ = _httpClient;
             var disposeClient_ = false;
@@ -389,7 +356,7 @@ namespace ImoutoRebirth.RoomService.WebApi.Client
                     content_.Headers.ContentType = System.Net.Http.Headers.MediaTypeHeaderValue.Parse("application/json");
                     request_.Content = content_;
                     request_.Method = new System.Net.Http.HttpMethod("POST");
-                    request_.Headers.Accept.Add(System.Net.Http.Headers.MediaTypeWithQualityHeaderValue.Parse("text/plain"));
+                    request_.Headers.Accept.Add(System.Net.Http.Headers.MediaTypeWithQualityHeaderValue.Parse("application/json"));
 
                     PrepareRequest(client_, request_, urlBuilder_);
 
@@ -441,45 +408,30 @@ namespace ImoutoRebirth.RoomService.WebApi.Client
             }
         }
 
-        /// <summary>
-        /// Get new tags.
-        /// </summary>
-        /// <remarks>
-        /// Note that Skip and Count fields are ignored.
-        /// </remarks>
         /// <returns>Success</returns>
         /// <exception cref="WebApiException">A server side error occurred.</exception>
-        public virtual System.Threading.Tasks.Task UpdateSourceTagsAsync()
+        public virtual System.Threading.Tasks.Task UpdateSourceTagsAsync(UpdateLocationTagsCommand body)
         {
-            return UpdateSourceTagsAsync(System.Threading.CancellationToken.None);
+            return UpdateSourceTagsAsync(body, System.Threading.CancellationToken.None);
         }
 
-        /// <summary>
-        /// Get new tags.
-        /// </summary>
-        /// <remarks>
-        /// Note that Skip and Count fields are ignored.
-        /// </remarks>
         /// <returns>Success</returns>
         /// <exception cref="WebApiException">A server side error occurred.</exception>
-        public virtual void UpdateSourceTags()
+        public virtual void UpdateSourceTags(UpdateLocationTagsCommand body)
         {
-            System.Threading.Tasks.Task.Run(async () => await UpdateSourceTagsAsync(System.Threading.CancellationToken.None)).GetAwaiter().GetResult();
+            System.Threading.Tasks.Task.Run(async () => await UpdateSourceTagsAsync(body, System.Threading.CancellationToken.None)).GetAwaiter().GetResult();
         }
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
-        /// <summary>
-        /// Get new tags.
-        /// </summary>
-        /// <remarks>
-        /// Note that Skip and Count fields are ignored.
-        /// </remarks>
         /// <returns>Success</returns>
         /// <exception cref="WebApiException">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task UpdateSourceTagsAsync(System.Threading.CancellationToken cancellationToken)
+        public virtual async System.Threading.Tasks.Task UpdateSourceTagsAsync(UpdateLocationTagsCommand body, System.Threading.CancellationToken cancellationToken)
         {
+            if (body == null)
+                throw new System.ArgumentNullException("body");
+
             var urlBuilder_ = new System.Text.StringBuilder();
-            urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/api/CollectionFiles/updateSourceTags");
+            urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/collection-files/updateSourceTags");
 
             var client_ = _httpClient;
             var disposeClient_ = false;
@@ -487,7 +439,10 @@ namespace ImoutoRebirth.RoomService.WebApi.Client
             {
                 using (var request_ = new System.Net.Http.HttpRequestMessage())
                 {
-                    request_.Content = new System.Net.Http.StringContent(string.Empty, System.Text.Encoding.UTF8, "application/json");
+                    var json_ = System.Text.Json.JsonSerializer.Serialize(body, _settings.Value);
+                    var content_ = new System.Net.Http.StringContent(json_);
+                    content_.Headers.ContentType = System.Net.Http.Headers.MediaTypeHeaderValue.Parse("application/json");
+                    request_.Content = content_;
                     request_.Method = new System.Net.Http.HttpMethod("POST");
 
                     PrepareRequest(client_, request_, urlBuilder_);
@@ -516,12 +471,6 @@ namespace ImoutoRebirth.RoomService.WebApi.Client
                             return;
                         }
                         else
-                        if (status_ == 500)
-                        {
-                            string responseText_ = ( response_.Content == null ) ? string.Empty : await response_.Content.ReadAsStringAsync().ConfigureAwait(false);
-                            throw new WebApiException("Server Error", status_, responseText_, headers_, null);
-                        }
-                        else
                         {
                             var responseData_ = response_.Content == null ? null : await response_.Content.ReadAsStringAsync().ConfigureAwait(false);
                             throw new WebApiException("The HTTP status code of the response was not expected (" + status_ + ").", status_, responseData_, headers_, null);
@@ -541,39 +490,30 @@ namespace ImoutoRebirth.RoomService.WebApi.Client
             }
         }
 
-        /// <summary>
-        /// Remove file with id.
-        /// </summary>
         /// <returns>Success</returns>
         /// <exception cref="WebApiException">A server side error occurred.</exception>
-        public virtual System.Threading.Tasks.Task RemoveAsync(System.Guid id)
+        public virtual System.Threading.Tasks.Task DeleteCollectionFileAsync(System.Guid id)
         {
-            return RemoveAsync(id, System.Threading.CancellationToken.None);
+            return DeleteCollectionFileAsync(id, System.Threading.CancellationToken.None);
         }
 
-        /// <summary>
-        /// Remove file with id.
-        /// </summary>
         /// <returns>Success</returns>
         /// <exception cref="WebApiException">A server side error occurred.</exception>
-        public virtual void Remove(System.Guid id)
+        public virtual void DeleteCollectionFile(System.Guid id)
         {
-            System.Threading.Tasks.Task.Run(async () => await RemoveAsync(id, System.Threading.CancellationToken.None)).GetAwaiter().GetResult();
+            System.Threading.Tasks.Task.Run(async () => await DeleteCollectionFileAsync(id, System.Threading.CancellationToken.None)).GetAwaiter().GetResult();
         }
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
-        /// <summary>
-        /// Remove file with id.
-        /// </summary>
         /// <returns>Success</returns>
         /// <exception cref="WebApiException">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task RemoveAsync(System.Guid id, System.Threading.CancellationToken cancellationToken)
+        public virtual async System.Threading.Tasks.Task DeleteCollectionFileAsync(System.Guid id, System.Threading.CancellationToken cancellationToken)
         {
             if (id == null)
                 throw new System.ArgumentNullException("id");
 
             var urlBuilder_ = new System.Text.StringBuilder();
-            urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/api/CollectionFiles/{id}");
+            urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/collection-files/{id}");
             urlBuilder_.Replace("{id}", System.Uri.EscapeDataString(ConvertToString(id, System.Globalization.CultureInfo.InvariantCulture)));
 
             var client_ = _httpClient;
@@ -764,36 +704,27 @@ namespace ImoutoRebirth.RoomService.WebApi.Client
         partial void PrepareRequest(System.Net.Http.HttpClient client, System.Net.Http.HttpRequestMessage request, System.Text.StringBuilder urlBuilder);
         partial void ProcessResponse(System.Net.Http.HttpClient client, System.Net.Http.HttpResponseMessage response);
 
-        /// <summary>
-        /// Retrieve all collections.
-        /// </summary>
         /// <returns>Success</returns>
         /// <exception cref="WebApiException">A server side error occurred.</exception>
-        public virtual System.Threading.Tasks.Task<System.Collections.Generic.IReadOnlyCollection<CollectionResponse>> GetAllAsync()
+        public virtual System.Threading.Tasks.Task<System.Collections.Generic.IReadOnlyCollection<CollectionResponse>> GetAllCollectionsAsync()
         {
-            return GetAllAsync(System.Threading.CancellationToken.None);
+            return GetAllCollectionsAsync(System.Threading.CancellationToken.None);
         }
 
-        /// <summary>
-        /// Retrieve all collections.
-        /// </summary>
         /// <returns>Success</returns>
         /// <exception cref="WebApiException">A server side error occurred.</exception>
-        public virtual System.Collections.Generic.IReadOnlyCollection<CollectionResponse> GetAll()
+        public virtual System.Collections.Generic.IReadOnlyCollection<CollectionResponse> GetAllCollections()
         {
-            return System.Threading.Tasks.Task.Run(async () => await GetAllAsync(System.Threading.CancellationToken.None)).GetAwaiter().GetResult();
+            return System.Threading.Tasks.Task.Run(async () => await GetAllCollectionsAsync(System.Threading.CancellationToken.None)).GetAwaiter().GetResult();
         }
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
-        /// <summary>
-        /// Retrieve all collections.
-        /// </summary>
         /// <returns>Success</returns>
         /// <exception cref="WebApiException">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<System.Collections.Generic.IReadOnlyCollection<CollectionResponse>> GetAllAsync(System.Threading.CancellationToken cancellationToken)
+        public virtual async System.Threading.Tasks.Task<System.Collections.Generic.IReadOnlyCollection<CollectionResponse>> GetAllCollectionsAsync(System.Threading.CancellationToken cancellationToken)
         {
             var urlBuilder_ = new System.Text.StringBuilder();
-            urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/api/Collections");
+            urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/collections");
 
             var client_ = _httpClient;
             var disposeClient_ = false;
@@ -802,7 +733,7 @@ namespace ImoutoRebirth.RoomService.WebApi.Client
                 using (var request_ = new System.Net.Http.HttpRequestMessage())
                 {
                     request_.Method = new System.Net.Http.HttpMethod("GET");
-                    request_.Headers.Accept.Add(System.Net.Http.Headers.MediaTypeWithQualityHeaderValue.Parse("text/plain"));
+                    request_.Headers.Accept.Add(System.Net.Http.Headers.MediaTypeWithQualityHeaderValue.Parse("application/json"));
 
                     PrepareRequest(client_, request_, urlBuilder_);
 
@@ -854,39 +785,30 @@ namespace ImoutoRebirth.RoomService.WebApi.Client
             }
         }
 
-        /// <summary>
-        /// Create a new collection with the specific name.
-        /// </summary>
-        /// <param name="body">The parameters for the new collection.</param>
-        /// <returns>Created</returns>
+        /// <returns>Success</returns>
         /// <exception cref="WebApiException">A server side error occurred.</exception>
-        public virtual System.Threading.Tasks.Task<CollectionResponse> CreateAsync(CollectionCreateRequest? body)
+        public virtual System.Threading.Tasks.Task<System.Guid> CreateCollectionAsync(CreateCollectionCommand body)
         {
-            return CreateAsync(body, System.Threading.CancellationToken.None);
+            return CreateCollectionAsync(body, System.Threading.CancellationToken.None);
         }
 
-        /// <summary>
-        /// Create a new collection with the specific name.
-        /// </summary>
-        /// <param name="body">The parameters for the new collection.</param>
-        /// <returns>Created</returns>
+        /// <returns>Success</returns>
         /// <exception cref="WebApiException">A server side error occurred.</exception>
-        public virtual CollectionResponse Create(CollectionCreateRequest? body)
+        public virtual System.Guid CreateCollection(CreateCollectionCommand body)
         {
-            return System.Threading.Tasks.Task.Run(async () => await CreateAsync(body, System.Threading.CancellationToken.None)).GetAwaiter().GetResult();
+            return System.Threading.Tasks.Task.Run(async () => await CreateCollectionAsync(body, System.Threading.CancellationToken.None)).GetAwaiter().GetResult();
         }
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
-        /// <summary>
-        /// Create a new collection with the specific name.
-        /// </summary>
-        /// <param name="body">The parameters for the new collection.</param>
-        /// <returns>Created</returns>
+        /// <returns>Success</returns>
         /// <exception cref="WebApiException">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<CollectionResponse> CreateAsync(CollectionCreateRequest? body, System.Threading.CancellationToken cancellationToken)
+        public virtual async System.Threading.Tasks.Task<System.Guid> CreateCollectionAsync(CreateCollectionCommand body, System.Threading.CancellationToken cancellationToken)
         {
+            if (body == null)
+                throw new System.ArgumentNullException("body");
+
             var urlBuilder_ = new System.Text.StringBuilder();
-            urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/api/Collections");
+            urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/collections");
 
             var client_ = _httpClient;
             var disposeClient_ = false;
@@ -899,7 +821,7 @@ namespace ImoutoRebirth.RoomService.WebApi.Client
                     content_.Headers.ContentType = System.Net.Http.Headers.MediaTypeHeaderValue.Parse("application/json");
                     request_.Content = content_;
                     request_.Method = new System.Net.Http.HttpMethod("POST");
-                    request_.Headers.Accept.Add(System.Net.Http.Headers.MediaTypeWithQualityHeaderValue.Parse("text/plain"));
+                    request_.Headers.Accept.Add(System.Net.Http.Headers.MediaTypeWithQualityHeaderValue.Parse("application/json"));
 
                     PrepareRequest(client_, request_, urlBuilder_);
 
@@ -922,9 +844,9 @@ namespace ImoutoRebirth.RoomService.WebApi.Client
                         ProcessResponse(client_, response_);
 
                         var status_ = (int)response_.StatusCode;
-                        if (status_ == 201)
+                        if (status_ == 200)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<CollectionResponse>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<System.Guid>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new WebApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
@@ -951,49 +873,34 @@ namespace ImoutoRebirth.RoomService.WebApi.Client
             }
         }
 
-        /// <summary>
-        /// Rename the collection with the provided id.
-        /// </summary>
-        /// <param name="id">The collection id.</param>
-        /// <param name="newName">The new name for the collection.</param>
         /// <returns>Success</returns>
         /// <exception cref="WebApiException">A server side error occurred.</exception>
-        public virtual System.Threading.Tasks.Task RenameAsync(System.Guid id, string newName)
+        public virtual System.Threading.Tasks.Task RenameCollectionAsync(System.Guid collectionId, string newName)
         {
-            return RenameAsync(id, newName, System.Threading.CancellationToken.None);
+            return RenameCollectionAsync(collectionId, newName, System.Threading.CancellationToken.None);
         }
 
-        /// <summary>
-        /// Rename the collection with the provided id.
-        /// </summary>
-        /// <param name="id">The collection id.</param>
-        /// <param name="newName">The new name for the collection.</param>
         /// <returns>Success</returns>
         /// <exception cref="WebApiException">A server side error occurred.</exception>
-        public virtual void Rename(System.Guid id, string newName)
+        public virtual void RenameCollection(System.Guid collectionId, string newName)
         {
-            System.Threading.Tasks.Task.Run(async () => await RenameAsync(id, newName, System.Threading.CancellationToken.None)).GetAwaiter().GetResult();
+            System.Threading.Tasks.Task.Run(async () => await RenameCollectionAsync(collectionId, newName, System.Threading.CancellationToken.None)).GetAwaiter().GetResult();
         }
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
-        /// <summary>
-        /// Rename the collection with the provided id.
-        /// </summary>
-        /// <param name="id">The collection id.</param>
-        /// <param name="newName">The new name for the collection.</param>
         /// <returns>Success</returns>
         /// <exception cref="WebApiException">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task RenameAsync(System.Guid id, string newName, System.Threading.CancellationToken cancellationToken)
+        public virtual async System.Threading.Tasks.Task RenameCollectionAsync(System.Guid collectionId, string newName, System.Threading.CancellationToken cancellationToken)
         {
-            if (id == null)
-                throw new System.ArgumentNullException("id");
+            if (collectionId == null)
+                throw new System.ArgumentNullException("collectionId");
 
             if (newName == null)
                 throw new System.ArgumentNullException("newName");
 
             var urlBuilder_ = new System.Text.StringBuilder();
-            urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/api/Collections/{id}?");
-            urlBuilder_.Replace("{id}", System.Uri.EscapeDataString(ConvertToString(id, System.Globalization.CultureInfo.InvariantCulture)));
+            urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/collections/{collectionId}?");
+            urlBuilder_.Replace("{collectionId}", System.Uri.EscapeDataString(ConvertToString(collectionId, System.Globalization.CultureInfo.InvariantCulture)));
             urlBuilder_.Append(System.Uri.EscapeDataString("newName") + "=").Append(System.Uri.EscapeDataString(ConvertToString(newName, System.Globalization.CultureInfo.InvariantCulture))).Append("&");
             urlBuilder_.Length--;
 
@@ -1051,43 +958,31 @@ namespace ImoutoRebirth.RoomService.WebApi.Client
             }
         }
 
-        /// <summary>
-        /// Delete the collection with the provided id.
-        /// </summary>
-        /// <param name="id">The collection id.</param>
         /// <returns>Success</returns>
         /// <exception cref="WebApiException">A server side error occurred.</exception>
-        public virtual System.Threading.Tasks.Task DeleteAsync(System.Guid id)
+        public virtual System.Threading.Tasks.Task DeleteCollectionAsync(System.Guid collectionId)
         {
-            return DeleteAsync(id, System.Threading.CancellationToken.None);
+            return DeleteCollectionAsync(collectionId, System.Threading.CancellationToken.None);
         }
 
-        /// <summary>
-        /// Delete the collection with the provided id.
-        /// </summary>
-        /// <param name="id">The collection id.</param>
         /// <returns>Success</returns>
         /// <exception cref="WebApiException">A server side error occurred.</exception>
-        public virtual void Delete(System.Guid id)
+        public virtual void DeleteCollection(System.Guid collectionId)
         {
-            System.Threading.Tasks.Task.Run(async () => await DeleteAsync(id, System.Threading.CancellationToken.None)).GetAwaiter().GetResult();
+            System.Threading.Tasks.Task.Run(async () => await DeleteCollectionAsync(collectionId, System.Threading.CancellationToken.None)).GetAwaiter().GetResult();
         }
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
-        /// <summary>
-        /// Delete the collection with the provided id.
-        /// </summary>
-        /// <param name="id">The collection id.</param>
         /// <returns>Success</returns>
         /// <exception cref="WebApiException">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task DeleteAsync(System.Guid id, System.Threading.CancellationToken cancellationToken)
+        public virtual async System.Threading.Tasks.Task DeleteCollectionAsync(System.Guid collectionId, System.Threading.CancellationToken cancellationToken)
         {
-            if (id == null)
-                throw new System.ArgumentNullException("id");
+            if (collectionId == null)
+                throw new System.ArgumentNullException("collectionId");
 
             var urlBuilder_ = new System.Text.StringBuilder();
-            urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/api/Collections/{id}");
-            urlBuilder_.Replace("{id}", System.Uri.EscapeDataString(ConvertToString(id, System.Globalization.CultureInfo.InvariantCulture)));
+            urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/collections/{collectionId}");
+            urlBuilder_.Replace("{collectionId}", System.Uri.EscapeDataString(ConvertToString(collectionId, System.Globalization.CultureInfo.InvariantCulture)));
 
             var client_ = _httpClient;
             var disposeClient_ = false;
@@ -1142,177 +1037,30 @@ namespace ImoutoRebirth.RoomService.WebApi.Client
             }
         }
 
-        protected struct ObjectResponseResult<T>
-        {
-            public ObjectResponseResult(T responseObject, string responseText)
-            {
-                this.Object = responseObject;
-                this.Text = responseText;
-            }
-
-            public T Object { get; }
-
-            public string Text { get; }
-        }
-
-        public bool ReadResponseAsString { get; set; }
-
-        protected virtual async System.Threading.Tasks.Task<ObjectResponseResult<T>> ReadObjectResponseAsync<T>(System.Net.Http.HttpResponseMessage response, System.Collections.Generic.IReadOnlyDictionary<string, System.Collections.Generic.IEnumerable<string>> headers, System.Threading.CancellationToken cancellationToken)
-        {
-            if (response == null || response.Content == null)
-            {
-                return new ObjectResponseResult<T>(default(T)!, string.Empty);
-            }
-
-            if (ReadResponseAsString)
-            {
-                var responseText = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
-                try
-                {
-                    var typedBody = System.Text.Json.JsonSerializer.Deserialize<T>(responseText, JsonSerializerSettings);
-                    return new ObjectResponseResult<T>(typedBody!, responseText);
-                }
-                catch (System.Text.Json.JsonException exception)
-                {
-                    var message = "Could not deserialize the response body string as " + typeof(T).FullName + ".";
-                    throw new WebApiException(message, (int)response.StatusCode, responseText, headers, exception);
-                }
-            }
-            else
-            {
-                try
-                {
-                    using (var responseStream = await response.Content.ReadAsStreamAsync().ConfigureAwait(false))
-                    {
-                        var typedBody = await System.Text.Json.JsonSerializer.DeserializeAsync<T>(responseStream, JsonSerializerSettings, cancellationToken).ConfigureAwait(false);
-                        return new ObjectResponseResult<T>(typedBody!, string.Empty);
-                    }
-                }
-                catch (System.Text.Json.JsonException exception)
-                {
-                    var message = "Could not deserialize the response body stream as " + typeof(T).FullName + ".";
-                    throw new WebApiException(message, (int)response.StatusCode, string.Empty, headers, exception);
-                }
-            }
-        }
-
-        private string ConvertToString(object? value, System.Globalization.CultureInfo cultureInfo)
-        {
-            if (value == null)
-            {
-                return "";
-            }
-
-            if (value is System.Enum)
-            {
-                var name = System.Enum.GetName(value.GetType(), value);
-                if (name != null)
-                {
-                    var field = System.Reflection.IntrospectionExtensions.GetTypeInfo(value.GetType()).GetDeclaredField(name);
-                    if (field != null)
-                    {
-                        var attribute = System.Reflection.CustomAttributeExtensions.GetCustomAttribute(field, typeof(System.Runtime.Serialization.EnumMemberAttribute)) 
-                            as System.Runtime.Serialization.EnumMemberAttribute;
-                        if (attribute != null)
-                        {
-                            return attribute.Value != null ? attribute.Value : name;
-                        }
-                    }
-
-                    var converted = System.Convert.ToString(System.Convert.ChangeType(value, System.Enum.GetUnderlyingType(value.GetType()), cultureInfo));
-                    return converted == null ? string.Empty : converted;
-                }
-            }
-            else if (value is bool) 
-            {
-                return System.Convert.ToString((bool)value, cultureInfo).ToLowerInvariant();
-            }
-            else if (value is byte[])
-            {
-                return System.Convert.ToBase64String((byte[]) value);
-            }
-            else if (value.GetType().IsArray)
-            {
-                var array = System.Linq.Enumerable.OfType<object>((System.Array) value);
-                return string.Join(",", System.Linq.Enumerable.Select(array, o => ConvertToString(o, cultureInfo)));
-            }
-
-            var result = System.Convert.ToString(value, cultureInfo);
-            return result == null ? "" : result;
-        }
-    }
-
-    [System.CodeDom.Compiler.GeneratedCode("NSwag", "13.20.0.0 (NJsonSchema v10.9.0.0 (Newtonsoft.Json v13.0.0.0))")]
-    public partial class DestinationFolderClient 
-    {
-        private string _baseUrl = "";
-        private System.Net.Http.HttpClient _httpClient;
-        private System.Lazy<System.Text.Json.JsonSerializerOptions> _settings;
-
-        public DestinationFolderClient(string baseUrl, System.Net.Http.HttpClient httpClient)
-        {
-            BaseUrl = baseUrl;
-            _httpClient = httpClient;
-            _settings = new System.Lazy<System.Text.Json.JsonSerializerOptions>(CreateSerializerSettings, true);
-        }
-
-        private System.Text.Json.JsonSerializerOptions CreateSerializerSettings()
-        {
-            var settings = new System.Text.Json.JsonSerializerOptions();
-            UpdateJsonSerializerSettings(settings);
-            return settings;
-        }
-
-        public string BaseUrl
-        {
-            get { return _baseUrl; }
-            set { _baseUrl = value; }
-        }
-
-        protected System.Text.Json.JsonSerializerOptions JsonSerializerSettings { get { return _settings.Value; } }
-
-        partial void UpdateJsonSerializerSettings(System.Text.Json.JsonSerializerOptions settings);
-
-        partial void PrepareRequest(System.Net.Http.HttpClient client, System.Net.Http.HttpRequestMessage request, string url);
-        partial void PrepareRequest(System.Net.Http.HttpClient client, System.Net.Http.HttpRequestMessage request, System.Text.StringBuilder urlBuilder);
-        partial void ProcessResponse(System.Net.Http.HttpClient client, System.Net.Http.HttpResponseMessage response);
-
-        /// <summary>
-        /// Get the destination folder for collection.
-        /// </summary>
-        /// <param name="collectionId">The collection id.</param>
         /// <returns>Success</returns>
         /// <exception cref="WebApiException">A server side error occurred.</exception>
-        public virtual System.Threading.Tasks.Task<DestinationFolderResponse> GetAsync(System.Guid collectionId)
+        public virtual System.Threading.Tasks.Task<DestinationFolderInfo> GetDestinationFolderAsync(System.Guid collectionId)
         {
-            return GetAsync(collectionId, System.Threading.CancellationToken.None);
+            return GetDestinationFolderAsync(collectionId, System.Threading.CancellationToken.None);
         }
 
-        /// <summary>
-        /// Get the destination folder for collection.
-        /// </summary>
-        /// <param name="collectionId">The collection id.</param>
         /// <returns>Success</returns>
         /// <exception cref="WebApiException">A server side error occurred.</exception>
-        public virtual DestinationFolderResponse Get(System.Guid collectionId)
+        public virtual DestinationFolderInfo GetDestinationFolder(System.Guid collectionId)
         {
-            return System.Threading.Tasks.Task.Run(async () => await GetAsync(collectionId, System.Threading.CancellationToken.None)).GetAwaiter().GetResult();
+            return System.Threading.Tasks.Task.Run(async () => await GetDestinationFolderAsync(collectionId, System.Threading.CancellationToken.None)).GetAwaiter().GetResult();
         }
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
-        /// <summary>
-        /// Get the destination folder for collection.
-        /// </summary>
-        /// <param name="collectionId">The collection id.</param>
         /// <returns>Success</returns>
         /// <exception cref="WebApiException">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<DestinationFolderResponse> GetAsync(System.Guid collectionId, System.Threading.CancellationToken cancellationToken)
+        public virtual async System.Threading.Tasks.Task<DestinationFolderInfo> GetDestinationFolderAsync(System.Guid collectionId, System.Threading.CancellationToken cancellationToken)
         {
             if (collectionId == null)
                 throw new System.ArgumentNullException("collectionId");
 
             var urlBuilder_ = new System.Text.StringBuilder();
-            urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/api/Collections/{collectionId}/DestinationFolder");
+            urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/collections/destination-folders/{collectionId}");
             urlBuilder_.Replace("{collectionId}", System.Uri.EscapeDataString(ConvertToString(collectionId, System.Globalization.CultureInfo.InvariantCulture)));
 
             var client_ = _httpClient;
@@ -1322,7 +1070,7 @@ namespace ImoutoRebirth.RoomService.WebApi.Client
                 using (var request_ = new System.Net.Http.HttpRequestMessage())
                 {
                     request_.Method = new System.Net.Http.HttpMethod("GET");
-                    request_.Headers.Accept.Add(System.Net.Http.Headers.MediaTypeWithQualityHeaderValue.Parse("text/plain"));
+                    request_.Headers.Accept.Add(System.Net.Http.Headers.MediaTypeWithQualityHeaderValue.Parse("application/json"));
 
                     PrepareRequest(client_, request_, urlBuilder_);
 
@@ -1347,7 +1095,7 @@ namespace ImoutoRebirth.RoomService.WebApi.Client
                         var status_ = (int)response_.StatusCode;
                         if (status_ == 200)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<DestinationFolderResponse>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<DestinationFolderInfo>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new WebApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
@@ -1374,46 +1122,30 @@ namespace ImoutoRebirth.RoomService.WebApi.Client
             }
         }
 
-        /// <summary>
-        /// CreateOrUpdate or update a destination folder for collection.
-        /// </summary>
-        /// <param name="collectionId">The collection id.</param>
-        /// <param name="body">Destination folder parameters.</param>
-        /// <returns>Created</returns>
+        /// <returns>Success</returns>
         /// <exception cref="WebApiException">A server side error occurred.</exception>
-        public virtual System.Threading.Tasks.Task<DestinationFolderResponse> CreateOrUpdateAsync(System.Guid collectionId, DestinationFolderCreateRequest? body)
+        public virtual System.Threading.Tasks.Task<System.Guid> SetDestinationFolderAsync(SetDestinationFolderCommand body)
         {
-            return CreateOrUpdateAsync(collectionId, body, System.Threading.CancellationToken.None);
+            return SetDestinationFolderAsync(body, System.Threading.CancellationToken.None);
         }
 
-        /// <summary>
-        /// CreateOrUpdate or update a destination folder for collection.
-        /// </summary>
-        /// <param name="collectionId">The collection id.</param>
-        /// <param name="body">Destination folder parameters.</param>
-        /// <returns>Created</returns>
+        /// <returns>Success</returns>
         /// <exception cref="WebApiException">A server side error occurred.</exception>
-        public virtual DestinationFolderResponse CreateOrUpdate(System.Guid collectionId, DestinationFolderCreateRequest? body)
+        public virtual System.Guid SetDestinationFolder(SetDestinationFolderCommand body)
         {
-            return System.Threading.Tasks.Task.Run(async () => await CreateOrUpdateAsync(collectionId, body, System.Threading.CancellationToken.None)).GetAwaiter().GetResult();
+            return System.Threading.Tasks.Task.Run(async () => await SetDestinationFolderAsync(body, System.Threading.CancellationToken.None)).GetAwaiter().GetResult();
         }
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
-        /// <summary>
-        /// CreateOrUpdate or update a destination folder for collection.
-        /// </summary>
-        /// <param name="collectionId">The collection id.</param>
-        /// <param name="body">Destination folder parameters.</param>
-        /// <returns>Created</returns>
+        /// <returns>Success</returns>
         /// <exception cref="WebApiException">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<DestinationFolderResponse> CreateOrUpdateAsync(System.Guid collectionId, DestinationFolderCreateRequest? body, System.Threading.CancellationToken cancellationToken)
+        public virtual async System.Threading.Tasks.Task<System.Guid> SetDestinationFolderAsync(SetDestinationFolderCommand body, System.Threading.CancellationToken cancellationToken)
         {
-            if (collectionId == null)
-                throw new System.ArgumentNullException("collectionId");
+            if (body == null)
+                throw new System.ArgumentNullException("body");
 
             var urlBuilder_ = new System.Text.StringBuilder();
-            urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/api/Collections/{collectionId}/DestinationFolder");
-            urlBuilder_.Replace("{collectionId}", System.Uri.EscapeDataString(ConvertToString(collectionId, System.Globalization.CultureInfo.InvariantCulture)));
+            urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/collections/destination-folders");
 
             var client_ = _httpClient;
             var disposeClient_ = false;
@@ -1426,7 +1158,7 @@ namespace ImoutoRebirth.RoomService.WebApi.Client
                     content_.Headers.ContentType = System.Net.Http.Headers.MediaTypeHeaderValue.Parse("application/json");
                     request_.Content = content_;
                     request_.Method = new System.Net.Http.HttpMethod("POST");
-                    request_.Headers.Accept.Add(System.Net.Http.Headers.MediaTypeWithQualityHeaderValue.Parse("text/plain"));
+                    request_.Headers.Accept.Add(System.Net.Http.Headers.MediaTypeWithQualityHeaderValue.Parse("application/json"));
 
                     PrepareRequest(client_, request_, urlBuilder_);
 
@@ -1449,9 +1181,9 @@ namespace ImoutoRebirth.RoomService.WebApi.Client
                         ProcessResponse(client_, response_);
 
                         var status_ = (int)response_.StatusCode;
-                        if (status_ == 201)
+                        if (status_ == 200)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<DestinationFolderResponse>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<System.Guid>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new WebApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
@@ -1478,50 +1210,32 @@ namespace ImoutoRebirth.RoomService.WebApi.Client
             }
         }
 
-        /// <summary>
-        /// Delete the destination folder.
-        /// </summary>
-        /// <param name="collectionId">The collection id. Aren't needed and added only for routes consistency.</param>
-        /// <param name="destinationFolderId">Id of the folder that will be deleted.</param>
         /// <returns>Success</returns>
         /// <exception cref="WebApiException">A server side error occurred.</exception>
-        public virtual System.Threading.Tasks.Task DeleteAsync(System.Guid collectionId, System.Guid destinationFolderId)
+        public virtual System.Threading.Tasks.Task DeleteDestinationFolderAsync(System.Guid collectionId)
         {
-            return DeleteAsync(collectionId, destinationFolderId, System.Threading.CancellationToken.None);
+            return DeleteDestinationFolderAsync(collectionId, System.Threading.CancellationToken.None);
         }
 
-        /// <summary>
-        /// Delete the destination folder.
-        /// </summary>
-        /// <param name="collectionId">The collection id. Aren't needed and added only for routes consistency.</param>
-        /// <param name="destinationFolderId">Id of the folder that will be deleted.</param>
         /// <returns>Success</returns>
         /// <exception cref="WebApiException">A server side error occurred.</exception>
-        public virtual void Delete(System.Guid collectionId, System.Guid destinationFolderId)
+        public virtual void DeleteDestinationFolder(System.Guid collectionId)
         {
-            System.Threading.Tasks.Task.Run(async () => await DeleteAsync(collectionId, destinationFolderId, System.Threading.CancellationToken.None)).GetAwaiter().GetResult();
+            System.Threading.Tasks.Task.Run(async () => await DeleteDestinationFolderAsync(collectionId, System.Threading.CancellationToken.None)).GetAwaiter().GetResult();
         }
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
-        /// <summary>
-        /// Delete the destination folder.
-        /// </summary>
-        /// <param name="collectionId">The collection id. Aren't needed and added only for routes consistency.</param>
-        /// <param name="destinationFolderId">Id of the folder that will be deleted.</param>
         /// <returns>Success</returns>
         /// <exception cref="WebApiException">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task DeleteAsync(System.Guid collectionId, System.Guid destinationFolderId, System.Threading.CancellationToken cancellationToken)
+        public virtual async System.Threading.Tasks.Task DeleteDestinationFolderAsync(System.Guid collectionId, System.Threading.CancellationToken cancellationToken)
         {
             if (collectionId == null)
                 throw new System.ArgumentNullException("collectionId");
 
-            if (destinationFolderId == null)
-                throw new System.ArgumentNullException("destinationFolderId");
-
             var urlBuilder_ = new System.Text.StringBuilder();
-            urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/api/Collections/{collectionId}/DestinationFolder/{destinationFolderId}");
-            urlBuilder_.Replace("{collectionId}", System.Uri.EscapeDataString(ConvertToString(collectionId, System.Globalization.CultureInfo.InvariantCulture)));
-            urlBuilder_.Replace("{destinationFolderId}", System.Uri.EscapeDataString(ConvertToString(destinationFolderId, System.Globalization.CultureInfo.InvariantCulture)));
+            urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/collections/destination-folders?");
+            urlBuilder_.Append(System.Uri.EscapeDataString("collectionId") + "=").Append(System.Uri.EscapeDataString(ConvertToString(collectionId, System.Globalization.CultureInfo.InvariantCulture))).Append("&");
+            urlBuilder_.Length--;
 
             var client_ = _httpClient;
             var disposeClient_ = false;
@@ -1576,177 +1290,30 @@ namespace ImoutoRebirth.RoomService.WebApi.Client
             }
         }
 
-        protected struct ObjectResponseResult<T>
-        {
-            public ObjectResponseResult(T responseObject, string responseText)
-            {
-                this.Object = responseObject;
-                this.Text = responseText;
-            }
-
-            public T Object { get; }
-
-            public string Text { get; }
-        }
-
-        public bool ReadResponseAsString { get; set; }
-
-        protected virtual async System.Threading.Tasks.Task<ObjectResponseResult<T>> ReadObjectResponseAsync<T>(System.Net.Http.HttpResponseMessage response, System.Collections.Generic.IReadOnlyDictionary<string, System.Collections.Generic.IEnumerable<string>> headers, System.Threading.CancellationToken cancellationToken)
-        {
-            if (response == null || response.Content == null)
-            {
-                return new ObjectResponseResult<T>(default(T)!, string.Empty);
-            }
-
-            if (ReadResponseAsString)
-            {
-                var responseText = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
-                try
-                {
-                    var typedBody = System.Text.Json.JsonSerializer.Deserialize<T>(responseText, JsonSerializerSettings);
-                    return new ObjectResponseResult<T>(typedBody!, responseText);
-                }
-                catch (System.Text.Json.JsonException exception)
-                {
-                    var message = "Could not deserialize the response body string as " + typeof(T).FullName + ".";
-                    throw new WebApiException(message, (int)response.StatusCode, responseText, headers, exception);
-                }
-            }
-            else
-            {
-                try
-                {
-                    using (var responseStream = await response.Content.ReadAsStreamAsync().ConfigureAwait(false))
-                    {
-                        var typedBody = await System.Text.Json.JsonSerializer.DeserializeAsync<T>(responseStream, JsonSerializerSettings, cancellationToken).ConfigureAwait(false);
-                        return new ObjectResponseResult<T>(typedBody!, string.Empty);
-                    }
-                }
-                catch (System.Text.Json.JsonException exception)
-                {
-                    var message = "Could not deserialize the response body stream as " + typeof(T).FullName + ".";
-                    throw new WebApiException(message, (int)response.StatusCode, string.Empty, headers, exception);
-                }
-            }
-        }
-
-        private string ConvertToString(object? value, System.Globalization.CultureInfo cultureInfo)
-        {
-            if (value == null)
-            {
-                return "";
-            }
-
-            if (value is System.Enum)
-            {
-                var name = System.Enum.GetName(value.GetType(), value);
-                if (name != null)
-                {
-                    var field = System.Reflection.IntrospectionExtensions.GetTypeInfo(value.GetType()).GetDeclaredField(name);
-                    if (field != null)
-                    {
-                        var attribute = System.Reflection.CustomAttributeExtensions.GetCustomAttribute(field, typeof(System.Runtime.Serialization.EnumMemberAttribute)) 
-                            as System.Runtime.Serialization.EnumMemberAttribute;
-                        if (attribute != null)
-                        {
-                            return attribute.Value != null ? attribute.Value : name;
-                        }
-                    }
-
-                    var converted = System.Convert.ToString(System.Convert.ChangeType(value, System.Enum.GetUnderlyingType(value.GetType()), cultureInfo));
-                    return converted == null ? string.Empty : converted;
-                }
-            }
-            else if (value is bool) 
-            {
-                return System.Convert.ToString((bool)value, cultureInfo).ToLowerInvariant();
-            }
-            else if (value is byte[])
-            {
-                return System.Convert.ToBase64String((byte[]) value);
-            }
-            else if (value.GetType().IsArray)
-            {
-                var array = System.Linq.Enumerable.OfType<object>((System.Array) value);
-                return string.Join(",", System.Linq.Enumerable.Select(array, o => ConvertToString(o, cultureInfo)));
-            }
-
-            var result = System.Convert.ToString(value, cultureInfo);
-            return result == null ? "" : result;
-        }
-    }
-
-    [System.CodeDom.Compiler.GeneratedCode("NSwag", "13.20.0.0 (NJsonSchema v10.9.0.0 (Newtonsoft.Json v13.0.0.0))")]
-    public partial class SourceFoldersClient 
-    {
-        private string _baseUrl = "";
-        private System.Net.Http.HttpClient _httpClient;
-        private System.Lazy<System.Text.Json.JsonSerializerOptions> _settings;
-
-        public SourceFoldersClient(string baseUrl, System.Net.Http.HttpClient httpClient)
-        {
-            BaseUrl = baseUrl;
-            _httpClient = httpClient;
-            _settings = new System.Lazy<System.Text.Json.JsonSerializerOptions>(CreateSerializerSettings, true);
-        }
-
-        private System.Text.Json.JsonSerializerOptions CreateSerializerSettings()
-        {
-            var settings = new System.Text.Json.JsonSerializerOptions();
-            UpdateJsonSerializerSettings(settings);
-            return settings;
-        }
-
-        public string BaseUrl
-        {
-            get { return _baseUrl; }
-            set { _baseUrl = value; }
-        }
-
-        protected System.Text.Json.JsonSerializerOptions JsonSerializerSettings { get { return _settings.Value; } }
-
-        partial void UpdateJsonSerializerSettings(System.Text.Json.JsonSerializerOptions settings);
-
-        partial void PrepareRequest(System.Net.Http.HttpClient client, System.Net.Http.HttpRequestMessage request, string url);
-        partial void PrepareRequest(System.Net.Http.HttpClient client, System.Net.Http.HttpRequestMessage request, System.Text.StringBuilder urlBuilder);
-        partial void ProcessResponse(System.Net.Http.HttpClient client, System.Net.Http.HttpResponseMessage response);
-
-        /// <summary>
-        /// Get all source folders for collection.
-        /// </summary>
-        /// <param name="collectionId">The collection id.</param>
         /// <returns>Success</returns>
         /// <exception cref="WebApiException">A server side error occurred.</exception>
-        public virtual System.Threading.Tasks.Task<System.Collections.Generic.IReadOnlyCollection<SourceFolderResponse>> GetAllAsync(System.Guid collectionId)
+        public virtual System.Threading.Tasks.Task<System.Collections.Generic.IReadOnlyCollection<SourceFolderInfo>> GetSourceFoldersAsync(System.Guid collectionId)
         {
-            return GetAllAsync(collectionId, System.Threading.CancellationToken.None);
+            return GetSourceFoldersAsync(collectionId, System.Threading.CancellationToken.None);
         }
 
-        /// <summary>
-        /// Get all source folders for collection.
-        /// </summary>
-        /// <param name="collectionId">The collection id.</param>
         /// <returns>Success</returns>
         /// <exception cref="WebApiException">A server side error occurred.</exception>
-        public virtual System.Collections.Generic.IReadOnlyCollection<SourceFolderResponse> GetAll(System.Guid collectionId)
+        public virtual System.Collections.Generic.IReadOnlyCollection<SourceFolderInfo> GetSourceFolders(System.Guid collectionId)
         {
-            return System.Threading.Tasks.Task.Run(async () => await GetAllAsync(collectionId, System.Threading.CancellationToken.None)).GetAwaiter().GetResult();
+            return System.Threading.Tasks.Task.Run(async () => await GetSourceFoldersAsync(collectionId, System.Threading.CancellationToken.None)).GetAwaiter().GetResult();
         }
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
-        /// <summary>
-        /// Get all source folders for collection.
-        /// </summary>
-        /// <param name="collectionId">The collection id.</param>
         /// <returns>Success</returns>
         /// <exception cref="WebApiException">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<System.Collections.Generic.IReadOnlyCollection<SourceFolderResponse>> GetAllAsync(System.Guid collectionId, System.Threading.CancellationToken cancellationToken)
+        public virtual async System.Threading.Tasks.Task<System.Collections.Generic.IReadOnlyCollection<SourceFolderInfo>> GetSourceFoldersAsync(System.Guid collectionId, System.Threading.CancellationToken cancellationToken)
         {
             if (collectionId == null)
                 throw new System.ArgumentNullException("collectionId");
 
             var urlBuilder_ = new System.Text.StringBuilder();
-            urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/api/Collections/{collectionId}/SourceFolders");
+            urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/collections/source-folders/{collectionId}");
             urlBuilder_.Replace("{collectionId}", System.Uri.EscapeDataString(ConvertToString(collectionId, System.Globalization.CultureInfo.InvariantCulture)));
 
             var client_ = _httpClient;
@@ -1756,7 +1323,7 @@ namespace ImoutoRebirth.RoomService.WebApi.Client
                 using (var request_ = new System.Net.Http.HttpRequestMessage())
                 {
                     request_.Method = new System.Net.Http.HttpMethod("GET");
-                    request_.Headers.Accept.Add(System.Net.Http.Headers.MediaTypeWithQualityHeaderValue.Parse("text/plain"));
+                    request_.Headers.Accept.Add(System.Net.Http.Headers.MediaTypeWithQualityHeaderValue.Parse("application/json"));
 
                     PrepareRequest(client_, request_, urlBuilder_);
 
@@ -1781,7 +1348,7 @@ namespace ImoutoRebirth.RoomService.WebApi.Client
                         var status_ = (int)response_.StatusCode;
                         if (status_ == 200)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<System.Collections.Generic.IReadOnlyCollection<SourceFolderResponse>>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<System.Collections.Generic.IReadOnlyCollection<SourceFolderInfo>>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new WebApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
@@ -1808,46 +1375,30 @@ namespace ImoutoRebirth.RoomService.WebApi.Client
             }
         }
 
-        /// <summary>
-        /// Create a source folder for collection.
-        /// </summary>
-        /// <param name="collectionId">The collection id.</param>
-        /// <param name="body">Source folder parameters.</param>
-        /// <returns>Created</returns>
+        /// <returns>Success</returns>
         /// <exception cref="WebApiException">A server side error occurred.</exception>
-        public virtual System.Threading.Tasks.Task<SourceFolderResponse> CreateAsync(System.Guid collectionId, SourceFolderCreateRequest? body)
+        public virtual System.Threading.Tasks.Task<System.Guid> AddSourceFolderAsync(AddSourceFolderCommand body)
         {
-            return CreateAsync(collectionId, body, System.Threading.CancellationToken.None);
+            return AddSourceFolderAsync(body, System.Threading.CancellationToken.None);
         }
 
-        /// <summary>
-        /// Create a source folder for collection.
-        /// </summary>
-        /// <param name="collectionId">The collection id.</param>
-        /// <param name="body">Source folder parameters.</param>
-        /// <returns>Created</returns>
+        /// <returns>Success</returns>
         /// <exception cref="WebApiException">A server side error occurred.</exception>
-        public virtual SourceFolderResponse Create(System.Guid collectionId, SourceFolderCreateRequest? body)
+        public virtual System.Guid AddSourceFolder(AddSourceFolderCommand body)
         {
-            return System.Threading.Tasks.Task.Run(async () => await CreateAsync(collectionId, body, System.Threading.CancellationToken.None)).GetAwaiter().GetResult();
+            return System.Threading.Tasks.Task.Run(async () => await AddSourceFolderAsync(body, System.Threading.CancellationToken.None)).GetAwaiter().GetResult();
         }
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
-        /// <summary>
-        /// Create a source folder for collection.
-        /// </summary>
-        /// <param name="collectionId">The collection id.</param>
-        /// <param name="body">Source folder parameters.</param>
-        /// <returns>Created</returns>
+        /// <returns>Success</returns>
         /// <exception cref="WebApiException">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<SourceFolderResponse> CreateAsync(System.Guid collectionId, SourceFolderCreateRequest? body, System.Threading.CancellationToken cancellationToken)
+        public virtual async System.Threading.Tasks.Task<System.Guid> AddSourceFolderAsync(AddSourceFolderCommand body, System.Threading.CancellationToken cancellationToken)
         {
-            if (collectionId == null)
-                throw new System.ArgumentNullException("collectionId");
+            if (body == null)
+                throw new System.ArgumentNullException("body");
 
             var urlBuilder_ = new System.Text.StringBuilder();
-            urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/api/Collections/{collectionId}/SourceFolders");
-            urlBuilder_.Replace("{collectionId}", System.Uri.EscapeDataString(ConvertToString(collectionId, System.Globalization.CultureInfo.InvariantCulture)));
+            urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/collections/source-folders");
 
             var client_ = _httpClient;
             var disposeClient_ = false;
@@ -1860,7 +1411,7 @@ namespace ImoutoRebirth.RoomService.WebApi.Client
                     content_.Headers.ContentType = System.Net.Http.Headers.MediaTypeHeaderValue.Parse("application/json");
                     request_.Content = content_;
                     request_.Method = new System.Net.Http.HttpMethod("POST");
-                    request_.Headers.Accept.Add(System.Net.Http.Headers.MediaTypeWithQualityHeaderValue.Parse("text/plain"));
+                    request_.Headers.Accept.Add(System.Net.Http.Headers.MediaTypeWithQualityHeaderValue.Parse("application/json"));
 
                     PrepareRequest(client_, request_, urlBuilder_);
 
@@ -1883,9 +1434,9 @@ namespace ImoutoRebirth.RoomService.WebApi.Client
                         ProcessResponse(client_, response_);
 
                         var status_ = (int)response_.StatusCode;
-                        if (status_ == 201)
+                        if (status_ == 200)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<SourceFolderResponse>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<System.Guid>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new WebApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
@@ -1912,53 +1463,30 @@ namespace ImoutoRebirth.RoomService.WebApi.Client
             }
         }
 
-        /// <summary>
-        /// Update the source folder for given collection.
-        /// </summary>
-        /// <param name="collectionId">The collection id. Aren't needed and added only for routes consistency.</param>
-        /// <param name="sourceFolderId">The id of the source folder that will be updated.</param>
-        /// <param name="body">Source folder parameters.</param>
-        /// <returns>Created</returns>
+        /// <returns>Success</returns>
         /// <exception cref="WebApiException">A server side error occurred.</exception>
-        public virtual System.Threading.Tasks.Task<SourceFolderResponse> UpdateAsync(System.Guid collectionId, System.Guid sourceFolderId, SourceFolderCreateRequest? body)
+        public virtual System.Threading.Tasks.Task UpdateSourceFolderAsync(UpdateSourceFolderCommand body)
         {
-            return UpdateAsync(collectionId, sourceFolderId, body, System.Threading.CancellationToken.None);
+            return UpdateSourceFolderAsync(body, System.Threading.CancellationToken.None);
         }
 
-        /// <summary>
-        /// Update the source folder for given collection.
-        /// </summary>
-        /// <param name="collectionId">The collection id. Aren't needed and added only for routes consistency.</param>
-        /// <param name="sourceFolderId">The id of the source folder that will be updated.</param>
-        /// <param name="body">Source folder parameters.</param>
-        /// <returns>Created</returns>
+        /// <returns>Success</returns>
         /// <exception cref="WebApiException">A server side error occurred.</exception>
-        public virtual SourceFolderResponse Update(System.Guid collectionId, System.Guid sourceFolderId, SourceFolderCreateRequest? body)
+        public virtual void UpdateSourceFolder(UpdateSourceFolderCommand body)
         {
-            return System.Threading.Tasks.Task.Run(async () => await UpdateAsync(collectionId, sourceFolderId, body, System.Threading.CancellationToken.None)).GetAwaiter().GetResult();
+            System.Threading.Tasks.Task.Run(async () => await UpdateSourceFolderAsync(body, System.Threading.CancellationToken.None)).GetAwaiter().GetResult();
         }
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
-        /// <summary>
-        /// Update the source folder for given collection.
-        /// </summary>
-        /// <param name="collectionId">The collection id. Aren't needed and added only for routes consistency.</param>
-        /// <param name="sourceFolderId">The id of the source folder that will be updated.</param>
-        /// <param name="body">Source folder parameters.</param>
-        /// <returns>Created</returns>
+        /// <returns>Success</returns>
         /// <exception cref="WebApiException">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<SourceFolderResponse> UpdateAsync(System.Guid collectionId, System.Guid sourceFolderId, SourceFolderCreateRequest? body, System.Threading.CancellationToken cancellationToken)
+        public virtual async System.Threading.Tasks.Task UpdateSourceFolderAsync(UpdateSourceFolderCommand body, System.Threading.CancellationToken cancellationToken)
         {
-            if (collectionId == null)
-                throw new System.ArgumentNullException("collectionId");
-
-            if (sourceFolderId == null)
-                throw new System.ArgumentNullException("sourceFolderId");
+            if (body == null)
+                throw new System.ArgumentNullException("body");
 
             var urlBuilder_ = new System.Text.StringBuilder();
-            urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/api/Collections/{collectionId}/SourceFolders/{sourceFolderId}");
-            urlBuilder_.Replace("{collectionId}", System.Uri.EscapeDataString(ConvertToString(collectionId, System.Globalization.CultureInfo.InvariantCulture)));
-            urlBuilder_.Replace("{sourceFolderId}", System.Uri.EscapeDataString(ConvertToString(sourceFolderId, System.Globalization.CultureInfo.InvariantCulture)));
+            urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/collections/source-folders");
 
             var client_ = _httpClient;
             var disposeClient_ = false;
@@ -1971,7 +1499,6 @@ namespace ImoutoRebirth.RoomService.WebApi.Client
                     content_.Headers.ContentType = System.Net.Http.Headers.MediaTypeHeaderValue.Parse("application/json");
                     request_.Content = content_;
                     request_.Method = new System.Net.Http.HttpMethod("PUT");
-                    request_.Headers.Accept.Add(System.Net.Http.Headers.MediaTypeWithQualityHeaderValue.Parse("text/plain"));
 
                     PrepareRequest(client_, request_, urlBuilder_);
 
@@ -1994,14 +1521,9 @@ namespace ImoutoRebirth.RoomService.WebApi.Client
                         ProcessResponse(client_, response_);
 
                         var status_ = (int)response_.StatusCode;
-                        if (status_ == 201)
+                        if (status_ == 200)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<SourceFolderResponse>(response_, headers_, cancellationToken).ConfigureAwait(false);
-                            if (objectResponse_.Object == null)
-                            {
-                                throw new WebApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
-                            }
-                            return objectResponse_.Object;
+                            return;
                         }
                         else
                         {
@@ -2023,39 +1545,24 @@ namespace ImoutoRebirth.RoomService.WebApi.Client
             }
         }
 
-        /// <summary>
-        /// Delete the source folder.
-        /// </summary>
-        /// <param name="collectionId">The collection id. Aren't needed and added only for routes consistency.</param>
-        /// <param name="sourceFolderId">Id of the folder that will be deleted.</param>
         /// <returns>Success</returns>
         /// <exception cref="WebApiException">A server side error occurred.</exception>
-        public virtual System.Threading.Tasks.Task DeleteAsync(System.Guid collectionId, System.Guid sourceFolderId)
+        public virtual System.Threading.Tasks.Task DeleteSourceFolderAsync(System.Guid collectionId, System.Guid sourceFolderId)
         {
-            return DeleteAsync(collectionId, sourceFolderId, System.Threading.CancellationToken.None);
+            return DeleteSourceFolderAsync(collectionId, sourceFolderId, System.Threading.CancellationToken.None);
         }
 
-        /// <summary>
-        /// Delete the source folder.
-        /// </summary>
-        /// <param name="collectionId">The collection id. Aren't needed and added only for routes consistency.</param>
-        /// <param name="sourceFolderId">Id of the folder that will be deleted.</param>
         /// <returns>Success</returns>
         /// <exception cref="WebApiException">A server side error occurred.</exception>
-        public virtual void Delete(System.Guid collectionId, System.Guid sourceFolderId)
+        public virtual void DeleteSourceFolder(System.Guid collectionId, System.Guid sourceFolderId)
         {
-            System.Threading.Tasks.Task.Run(async () => await DeleteAsync(collectionId, sourceFolderId, System.Threading.CancellationToken.None)).GetAwaiter().GetResult();
+            System.Threading.Tasks.Task.Run(async () => await DeleteSourceFolderAsync(collectionId, sourceFolderId, System.Threading.CancellationToken.None)).GetAwaiter().GetResult();
         }
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
-        /// <summary>
-        /// Delete the source folder.
-        /// </summary>
-        /// <param name="collectionId">The collection id. Aren't needed and added only for routes consistency.</param>
-        /// <param name="sourceFolderId">Id of the folder that will be deleted.</param>
         /// <returns>Success</returns>
         /// <exception cref="WebApiException">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task DeleteAsync(System.Guid collectionId, System.Guid sourceFolderId, System.Threading.CancellationToken cancellationToken)
+        public virtual async System.Threading.Tasks.Task DeleteSourceFolderAsync(System.Guid collectionId, System.Guid sourceFolderId, System.Threading.CancellationToken cancellationToken)
         {
             if (collectionId == null)
                 throw new System.ArgumentNullException("collectionId");
@@ -2064,9 +1571,10 @@ namespace ImoutoRebirth.RoomService.WebApi.Client
                 throw new System.ArgumentNullException("sourceFolderId");
 
             var urlBuilder_ = new System.Text.StringBuilder();
-            urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/api/Collections/{collectionId}/SourceFolders/{sourceFolderId}");
-            urlBuilder_.Replace("{collectionId}", System.Uri.EscapeDataString(ConvertToString(collectionId, System.Globalization.CultureInfo.InvariantCulture)));
-            urlBuilder_.Replace("{sourceFolderId}", System.Uri.EscapeDataString(ConvertToString(sourceFolderId, System.Globalization.CultureInfo.InvariantCulture)));
+            urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/collections/source-folders?");
+            urlBuilder_.Append(System.Uri.EscapeDataString("collectionId") + "=").Append(System.Uri.EscapeDataString(ConvertToString(collectionId, System.Globalization.CultureInfo.InvariantCulture))).Append("&");
+            urlBuilder_.Append(System.Uri.EscapeDataString("sourceFolderId") + "=").Append(System.Uri.EscapeDataString(ConvertToString(sourceFolderId, System.Globalization.CultureInfo.InvariantCulture))).Append("&");
+            urlBuilder_.Length--;
 
             var client_ = _httpClient;
             var disposeClient_ = false;
@@ -2222,28 +1730,62 @@ namespace ImoutoRebirth.RoomService.WebApi.Client
     }
 
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "13.20.0.0 (NJsonSchema v10.9.0.0 (Newtonsoft.Json v13.0.0.0))")]
-    public partial class CollectionCreateRequest
+    public partial class AddSourceFolderCommand
     {
         [System.Text.Json.Serialization.JsonConstructor]
 
-        public CollectionCreateRequest(string @name)
+        public AddSourceFolderCommand(System.Guid @collectionId, string? @path, bool @shouldAddTagFromFilename, bool @shouldCheckFormat, bool @shouldCheckHashFromName, bool @shouldCreateTagsFromSubfolders, System.Collections.Generic.IReadOnlyCollection<string>? @supportedExtensions)
 
         {
 
-            this.Name = @name;
+            this.CollectionId = @collectionId;
+
+            this.Path = @path;
+
+            this.ShouldCheckFormat = @shouldCheckFormat;
+
+            this.ShouldCheckHashFromName = @shouldCheckHashFromName;
+
+            this.ShouldCreateTagsFromSubfolders = @shouldCreateTagsFromSubfolders;
+
+            this.ShouldAddTagFromFilename = @shouldAddTagFromFilename;
+
+            this.SupportedExtensions = @supportedExtensions;
 
         }
-        [System.Text.Json.Serialization.JsonPropertyName("name")]
-        public string Name { get; }
+        [System.Text.Json.Serialization.JsonPropertyName("collectionId")]
+        public System.Guid CollectionId { get; }
+
+        [System.Text.Json.Serialization.JsonPropertyName("path")]
+
+        [System.Text.Json.Serialization.JsonIgnore(Condition = System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingDefault)]   
+        public string? Path { get; }
+
+        [System.Text.Json.Serialization.JsonPropertyName("shouldCheckFormat")]
+        public bool ShouldCheckFormat { get; }
+
+        [System.Text.Json.Serialization.JsonPropertyName("shouldCheckHashFromName")]
+        public bool ShouldCheckHashFromName { get; }
+
+        [System.Text.Json.Serialization.JsonPropertyName("shouldCreateTagsFromSubfolders")]
+        public bool ShouldCreateTagsFromSubfolders { get; }
+
+        [System.Text.Json.Serialization.JsonPropertyName("shouldAddTagFromFilename")]
+        public bool ShouldAddTagFromFilename { get; }
+
+        [System.Text.Json.Serialization.JsonPropertyName("supportedExtensions")]
+
+        [System.Text.Json.Serialization.JsonIgnore(Condition = System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingDefault)]   
+        public System.Collections.Generic.IReadOnlyCollection<string>? SupportedExtensions { get; }
 
     }
 
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "13.20.0.0 (NJsonSchema v10.9.0.0 (Newtonsoft.Json v13.0.0.0))")]
-    public partial class CollectionFileResponse
+    public partial class CollectionFile
     {
         [System.Text.Json.Serialization.JsonConstructor]
 
-        public CollectionFileResponse(System.Guid @collectionId, System.Guid @id, string? @md5, string? @originalPath, string? @path, long @size)
+        public CollectionFile(System.Guid @collectionId, System.Guid @id, string? @md5, string? @originalPath, string? @path, long @size)
 
         {
 
@@ -2287,11 +1829,11 @@ namespace ImoutoRebirth.RoomService.WebApi.Client
     }
 
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "13.20.0.0 (NJsonSchema v10.9.0.0 (Newtonsoft.Json v13.0.0.0))")]
-    public partial class CollectionFilesRequest
+    public partial class CollectionFilesQuery
     {
         [System.Text.Json.Serialization.JsonConstructor]
 
-        public CollectionFilesRequest(System.Collections.Generic.IReadOnlyCollection<System.Guid>? @collectionFileIds, System.Guid? @collectionId, int? @count, System.Collections.Generic.IReadOnlyCollection<string>? @md5, string? @path, int? @skip)
+        public CollectionFilesQuery(System.Collections.Generic.IReadOnlyCollection<System.Guid>? @collectionFileIds, System.Guid? @collectionId, int? @count, System.Collections.Generic.IReadOnlyCollection<string>? @md5, string? @path, int? @skip)
 
         {
 
@@ -2365,53 +1907,30 @@ namespace ImoutoRebirth.RoomService.WebApi.Client
     }
 
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "13.20.0.0 (NJsonSchema v10.9.0.0 (Newtonsoft.Json v13.0.0.0))")]
-    public partial class DestinationFolderCreateRequest
+    public partial class CreateCollectionCommand
     {
         [System.Text.Json.Serialization.JsonConstructor]
 
-        public DestinationFolderCreateRequest(string @formatErrorSubfolder, string @hashErrorSubfolder, string @path, bool @shouldCreateSubfoldersByHash, bool @shouldRenameByHash, string @withoutHashErrorSubfolder)
+        public CreateCollectionCommand(string? @name)
 
         {
 
-            this.Path = @path;
-
-            this.ShouldCreateSubfoldersByHash = @shouldCreateSubfoldersByHash;
-
-            this.ShouldRenameByHash = @shouldRenameByHash;
-
-            this.FormatErrorSubfolder = @formatErrorSubfolder;
-
-            this.HashErrorSubfolder = @hashErrorSubfolder;
-
-            this.WithoutHashErrorSubfolder = @withoutHashErrorSubfolder;
+            this.Name = @name;
 
         }
-        [System.Text.Json.Serialization.JsonPropertyName("path")]
-        public string Path { get; }
+        [System.Text.Json.Serialization.JsonPropertyName("name")]
 
-        [System.Text.Json.Serialization.JsonPropertyName("shouldCreateSubfoldersByHash")]
-        public bool ShouldCreateSubfoldersByHash { get; }
-
-        [System.Text.Json.Serialization.JsonPropertyName("shouldRenameByHash")]
-        public bool ShouldRenameByHash { get; }
-
-        [System.Text.Json.Serialization.JsonPropertyName("formatErrorSubfolder")]
-        public string FormatErrorSubfolder { get; }
-
-        [System.Text.Json.Serialization.JsonPropertyName("hashErrorSubfolder")]
-        public string HashErrorSubfolder { get; }
-
-        [System.Text.Json.Serialization.JsonPropertyName("withoutHashErrorSubfolder")]
-        public string WithoutHashErrorSubfolder { get; }
+        [System.Text.Json.Serialization.JsonIgnore(Condition = System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingDefault)]   
+        public string? Name { get; }
 
     }
 
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "13.20.0.0 (NJsonSchema v10.9.0.0 (Newtonsoft.Json v13.0.0.0))")]
-    public partial class DestinationFolderResponse
+    public partial class DestinationFolderInfo
     {
         [System.Text.Json.Serialization.JsonConstructor]
 
-        public DestinationFolderResponse(System.Guid @collectionId, string? @formatErrorSubfolder, string? @hashErrorSubfolder, System.Guid @id, string? @path, bool @shouldCreateSubfoldersByHash, bool @shouldRenameByHash, string? @withoutHashErrorSubfolder)
+        public DestinationFolderInfo(System.Guid @collectionId, string? @formatErrorSubfolder, string? @hashErrorSubfolder, System.Guid @id, string? @path, bool @shouldCreateSubfoldersByHash, bool @shouldRenameByHash, string? @withoutHashErrorSubfolder)
 
         {
 
@@ -2467,55 +1986,85 @@ namespace ImoutoRebirth.RoomService.WebApi.Client
     }
 
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "13.20.0.0 (NJsonSchema v10.9.0.0 (Newtonsoft.Json v13.0.0.0))")]
-    public partial class SourceFolderCreateRequest
+    public partial class FilterCollectionFileHashesQuery
     {
         [System.Text.Json.Serialization.JsonConstructor]
 
-        public SourceFolderCreateRequest(string @path, bool @shouldAddTagFromFilename, bool @shouldCheckFormat, bool @shouldCheckHashFromName, bool @shouldCreateTagsFromSubfolders, System.Collections.Generic.IReadOnlyCollection<string>? @supportedExtensions)
+        public FilterCollectionFileHashesQuery(System.Collections.Generic.IReadOnlyCollection<string>? @md5Hashes)
 
         {
 
-            this.Path = @path;
-
-            this.ShouldCheckFormat = @shouldCheckFormat;
-
-            this.ShouldCheckHashFromName = @shouldCheckHashFromName;
-
-            this.ShouldCreateTagsFromSubfolders = @shouldCreateTagsFromSubfolders;
-
-            this.ShouldAddTagFromFilename = @shouldAddTagFromFilename;
-
-            this.SupportedExtensions = @supportedExtensions;
+            this.Md5Hashes = @md5Hashes;
 
         }
-        [System.Text.Json.Serialization.JsonPropertyName("path")]
-        public string Path { get; }
-
-        [System.Text.Json.Serialization.JsonPropertyName("shouldCheckFormat")]
-        public bool ShouldCheckFormat { get; }
-
-        [System.Text.Json.Serialization.JsonPropertyName("shouldCheckHashFromName")]
-        public bool ShouldCheckHashFromName { get; }
-
-        [System.Text.Json.Serialization.JsonPropertyName("shouldCreateTagsFromSubfolders")]
-        public bool ShouldCreateTagsFromSubfolders { get; }
-
-        [System.Text.Json.Serialization.JsonPropertyName("shouldAddTagFromFilename")]
-        public bool ShouldAddTagFromFilename { get; }
-
-        [System.Text.Json.Serialization.JsonPropertyName("supportedExtensions")]
+        [System.Text.Json.Serialization.JsonPropertyName("md5Hashes")]
 
         [System.Text.Json.Serialization.JsonIgnore(Condition = System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingDefault)]   
-        public System.Collections.Generic.IReadOnlyCollection<string>? SupportedExtensions { get; }
+        public System.Collections.Generic.IReadOnlyCollection<string>? Md5Hashes { get; }
 
     }
 
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "13.20.0.0 (NJsonSchema v10.9.0.0 (Newtonsoft.Json v13.0.0.0))")]
-    public partial class SourceFolderResponse
+    public partial class SetDestinationFolderCommand
     {
         [System.Text.Json.Serialization.JsonConstructor]
 
-        public SourceFolderResponse(System.Guid @collectionId, System.Guid @id, string? @path, bool @shouldAddTagFromFilename, bool @shouldCheckFormat, bool @shouldCheckHashFromName, bool @shouldCreateTagsFromSubfolders, System.Collections.Generic.IReadOnlyCollection<string>? @supportedExtensions)
+        public SetDestinationFolderCommand(System.Guid @collectionId, string? @formatErrorSubfolder, string? @hashErrorSubfolder, string? @path, bool @shouldCreateSubfoldersByHash, bool @shouldRenameByHash, string? @withoutHashErrorSubfolder)
+
+        {
+
+            this.CollectionId = @collectionId;
+
+            this.Path = @path;
+
+            this.ShouldCreateSubfoldersByHash = @shouldCreateSubfoldersByHash;
+
+            this.ShouldRenameByHash = @shouldRenameByHash;
+
+            this.FormatErrorSubfolder = @formatErrorSubfolder;
+
+            this.HashErrorSubfolder = @hashErrorSubfolder;
+
+            this.WithoutHashErrorSubfolder = @withoutHashErrorSubfolder;
+
+        }
+        [System.Text.Json.Serialization.JsonPropertyName("collectionId")]
+        public System.Guid CollectionId { get; }
+
+        [System.Text.Json.Serialization.JsonPropertyName("path")]
+
+        [System.Text.Json.Serialization.JsonIgnore(Condition = System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingDefault)]   
+        public string? Path { get; }
+
+        [System.Text.Json.Serialization.JsonPropertyName("shouldCreateSubfoldersByHash")]
+        public bool ShouldCreateSubfoldersByHash { get; }
+
+        [System.Text.Json.Serialization.JsonPropertyName("shouldRenameByHash")]
+        public bool ShouldRenameByHash { get; }
+
+        [System.Text.Json.Serialization.JsonPropertyName("formatErrorSubfolder")]
+
+        [System.Text.Json.Serialization.JsonIgnore(Condition = System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingDefault)]   
+        public string? FormatErrorSubfolder { get; }
+
+        [System.Text.Json.Serialization.JsonPropertyName("hashErrorSubfolder")]
+
+        [System.Text.Json.Serialization.JsonIgnore(Condition = System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingDefault)]   
+        public string? HashErrorSubfolder { get; }
+
+        [System.Text.Json.Serialization.JsonPropertyName("withoutHashErrorSubfolder")]
+
+        [System.Text.Json.Serialization.JsonIgnore(Condition = System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingDefault)]   
+        public string? WithoutHashErrorSubfolder { get; }
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "13.20.0.0 (NJsonSchema v10.9.0.0 (Newtonsoft.Json v13.0.0.0))")]
+    public partial class SourceFolderInfo
+    {
+        [System.Text.Json.Serialization.JsonConstructor]
+
+        public SourceFolderInfo(System.Guid @collectionId, System.Guid @id, string? @path, bool @shouldAddTagFromFilename, bool @shouldCheckFormat, bool @shouldCheckHashFromName, bool @shouldCreateTagsFromSubfolders, System.Collections.Generic.IReadOnlyCollection<string>? @supportedExtensions)
 
         {
 
@@ -2541,6 +2090,74 @@ namespace ImoutoRebirth.RoomService.WebApi.Client
 
         [System.Text.Json.Serialization.JsonPropertyName("collectionId")]
         public System.Guid CollectionId { get; }
+
+        [System.Text.Json.Serialization.JsonPropertyName("path")]
+
+        [System.Text.Json.Serialization.JsonIgnore(Condition = System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingDefault)]   
+        public string? Path { get; }
+
+        [System.Text.Json.Serialization.JsonPropertyName("shouldCheckFormat")]
+        public bool ShouldCheckFormat { get; }
+
+        [System.Text.Json.Serialization.JsonPropertyName("shouldCheckHashFromName")]
+        public bool ShouldCheckHashFromName { get; }
+
+        [System.Text.Json.Serialization.JsonPropertyName("shouldCreateTagsFromSubfolders")]
+        public bool ShouldCreateTagsFromSubfolders { get; }
+
+        [System.Text.Json.Serialization.JsonPropertyName("shouldAddTagFromFilename")]
+        public bool ShouldAddTagFromFilename { get; }
+
+        [System.Text.Json.Serialization.JsonPropertyName("supportedExtensions")]
+
+        [System.Text.Json.Serialization.JsonIgnore(Condition = System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingDefault)]   
+        public System.Collections.Generic.IReadOnlyCollection<string>? SupportedExtensions { get; }
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "13.20.0.0 (NJsonSchema v10.9.0.0 (Newtonsoft.Json v13.0.0.0))")]
+    public partial class UpdateLocationTagsCommand
+    {
+        [System.Text.Json.Serialization.JsonConstructor]
+
+        public UpdateLocationTagsCommand()
+
+        {
+
+        }
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "13.20.0.0 (NJsonSchema v10.9.0.0 (Newtonsoft.Json v13.0.0.0))")]
+    public partial class UpdateSourceFolderCommand
+    {
+        [System.Text.Json.Serialization.JsonConstructor]
+
+        public UpdateSourceFolderCommand(System.Guid @collectionId, string? @path, bool @shouldAddTagFromFilename, bool @shouldCheckFormat, bool @shouldCheckHashFromName, bool @shouldCreateTagsFromSubfolders, System.Guid @sourceFolderId, System.Collections.Generic.IReadOnlyCollection<string>? @supportedExtensions)
+
+        {
+
+            this.CollectionId = @collectionId;
+
+            this.SourceFolderId = @sourceFolderId;
+
+            this.Path = @path;
+
+            this.ShouldCheckFormat = @shouldCheckFormat;
+
+            this.ShouldCheckHashFromName = @shouldCheckHashFromName;
+
+            this.ShouldCreateTagsFromSubfolders = @shouldCreateTagsFromSubfolders;
+
+            this.ShouldAddTagFromFilename = @shouldAddTagFromFilename;
+
+            this.SupportedExtensions = @supportedExtensions;
+
+        }
+        [System.Text.Json.Serialization.JsonPropertyName("collectionId")]
+        public System.Guid CollectionId { get; }
+
+        [System.Text.Json.Serialization.JsonPropertyName("sourceFolderId")]
+        public System.Guid SourceFolderId { get; }
 
         [System.Text.Json.Serialization.JsonPropertyName("path")]
 

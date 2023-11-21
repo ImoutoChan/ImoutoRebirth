@@ -8,5 +8,5 @@ public interface ICollectionService
 
     Task RenameCollection(Guid collectionId, string name);
 
-    Task DeleteCollectionAsync(Guid guid);
+    Task DeleteCollectionAsync(Guid id);
 }

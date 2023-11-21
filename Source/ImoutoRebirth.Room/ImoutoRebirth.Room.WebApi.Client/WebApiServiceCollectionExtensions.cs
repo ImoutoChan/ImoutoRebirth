@@ -38,8 +38,6 @@ public static class WebApiServiceCollectionExtensions
     {
         return services
             .AddWebApiClient<CollectionFilesClient>(baseUri)
-            .AddWebApiClient<CollectionsClient>(baseUri)
-            .AddWebApiClient<DestinationFolderClient>(baseUri)
-            .AddWebApiClient<SourceFoldersClient>(baseUri);
+            .AddWebApiClient<CollectionsClient>(baseUri);
     }
 }

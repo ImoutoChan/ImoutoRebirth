@@ -23,8 +23,8 @@ internal class FileService : IFileService
 
     public async Task<IReadOnlyCollection<File>> SearchFiles(string md5, CancellationToken ct)
     {
-        var files = await _collectionFilesClient.SearchAsync(
-            new CollectionFilesRequest(default, default, int.MaxValue, new[] { md5 }, default, default), ct);
+        var files = await _collectionFilesClient.SearchCollectionFilesAsync(
+            new(default, default, int.MaxValue, new[] { md5 }, default, default), ct);
         
         return _mapper.Map<IReadOnlyCollection<File>>(files);
     }
@@ -37,13 +37,13 @@ internal class FileService : IFileService
         if (!tags.Any())
         {
             var filesOnly = await _collectionFilesClient
-                .SearchAsync(new CollectionFilesRequest(default, collectionId, int.MaxValue, default, default, 0), ct);
+                .SearchCollectionFilesAsync(new(default, collectionId, int.MaxValue, default, default, 0), ct);
 
             return _mapper.Map<IReadOnlyCollection<File>>(filesOnly);
         }
 
         var roomFiles = await _collectionFilesClient
-            .SearchAsync(new CollectionFilesRequest(default, collectionId, int.MaxValue, default, default, 0), ct);
+            .SearchCollectionFilesAsync(new(default, collectionId, int.MaxValue, default, default, 0), ct);
 
         var roomFilesIds = roomFiles.Select(x => x.Id).ToList();
         
@@ -69,7 +69,7 @@ internal class FileService : IFileService
         if (!tags.Any())
         {
             var result = await _collectionFilesClient
-                .CountAsync(new CollectionFilesRequest(default, collectionId, default, default, default, default), ct);
+                .CountCollectionFilesAsync(new(default, collectionId, default, default, default, default), ct);
 
             return result;
         }

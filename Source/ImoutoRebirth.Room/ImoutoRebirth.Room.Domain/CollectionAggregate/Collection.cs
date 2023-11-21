@@ -33,7 +33,7 @@ public class Collection
 
     public void Rename(string newName) => Name = newName;
 
-    public void SetDestinationFolder(
+    public Guid SetDestinationFolder(
         string path,
         bool shouldCreateSubfoldersByHash,
         bool shouldRenameByHash,
@@ -41,14 +41,17 @@ public class Collection
         string hashErrorSubfolder,
         string withoutHashErrorSubfolder)
     {
+        var newId = Guid.NewGuid();
         DestinationFolder = new DestinationFolder(
-            Guid.NewGuid(),
+            newId,
             path,
             shouldCreateSubfoldersByHash,
             shouldRenameByHash,
             formatErrorSubfolder,
             hashErrorSubfolder,
             withoutHashErrorSubfolder);
+
+        return newId;
     }
 
     public void DeleteDestinationFolder()
@@ -56,7 +59,7 @@ public class Collection
         DestinationFolder = DestinationFolder.Default;
     }
 
-    public void AddSourceFolder(
+    public Guid AddSourceFolder(
         string path,
         bool shouldCheckFormat,
         bool shouldCheckHashFromName,
@@ -64,8 +67,9 @@ public class Collection
         bool shouldAddTagFromFilename,
         IReadOnlyCollection<string> supportedExtensions)
     {
+        var id = Guid.NewGuid();
         var sourceFolder = new SourceFolder(
-            Guid.NewGuid(),
+            id,
             path,
             shouldCheckFormat,
             shouldCheckHashFromName,
@@ -74,6 +78,8 @@ public class Collection
             supportedExtensions);
         
         SourceFolders = SourceFolders.Append(sourceFolder).ToList();
+
+        return id;
     }
 
     public void RemoveSourceFolder(Guid id)

@@ -11,22 +11,22 @@ public record SetDestinationFolderCommand(
     bool ShouldRenameByHash,
     string FormatErrorSubfolder,
     string HashErrorSubfolder,
-    string WithoutHashErrorSubfolder) : ICommand;
+    string WithoutHashErrorSubfolder) : ICommand<Guid>;
 
-internal class SetDestinationFolderCommandHandler : ICommandHandler<SetDestinationFolderCommand>
+internal class SetDestinationFolderCommandHandler : ICommandHandler<SetDestinationFolderCommand, Guid>
 {
     private readonly ICollectionRepository _collectionRepository;
 
     public SetDestinationFolderCommandHandler(ICollectionRepository collectionFileRepository) 
         => _collectionRepository = collectionFileRepository;
 
-    public async Task Handle(SetDestinationFolderCommand request, CancellationToken cancellationToken)
+    public async Task<Guid> Handle(SetDestinationFolderCommand request, CancellationToken cancellationToken)
     {
         var (collectionId, path, shouldCreateSubfoldersByHash, shouldRenameByHash, formatErrorSubfolder,
             hashErrorSubfolder, withoutHashErrorSubfolder) = request;
         var collection = await _collectionRepository.GetById(collectionId).GetAggregateOrThrow();
 
-        collection.SetDestinationFolder(
+        var newId = collection.SetDestinationFolder(
             path,
             shouldCreateSubfoldersByHash,
             shouldRenameByHash,
@@ -35,5 +35,7 @@ internal class SetDestinationFolderCommandHandler : ICommandHandler<SetDestinati
             withoutHashErrorSubfolder);
 
         await _collectionRepository.Update(collection);
+
+        return newId;
     }
 }

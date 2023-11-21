@@ -40,20 +40,20 @@ internal static class EndpointsMappings
     {
         var files = app.MapGroup("/collection-files");
 
-        files.MapPost("", (CollectionFilesModelsQuery query, IMediator mediator, CancellationToken ct) 
-                => mediator.Send(query, ct))
+        files.MapPost("", (CollectionFilesQuery query, IMediator mediator, CancellationToken ct) 
+                => mediator.Send(new CollectionFilesModelsQuery(query), ct))
             .WithName("SearchCollectionFiles");
         
         files.MapPost("filter-hashes", (FilterCollectionFileHashesQuery command, IMediator mediator, CancellationToken ct)
                 => mediator.Send(command, ct))
             .WithName("FilterCollectionFileHashes");
         
-        files.MapPost("search-ids", (CollectionFilesIdsQuery query, IMediator mediator, CancellationToken ct) 
-                => mediator.Send(query, ct))
+        files.MapPost("search-ids", (CollectionFilesQuery query, IMediator mediator, CancellationToken ct) 
+                => mediator.Send(new CollectionFilesIdsQuery(query), ct))
             .WithName("SearchCollectionFileIds");
         
-        files.MapPost("count", (CollectionFilesCountQuery query, IMediator mediator, CancellationToken ct) 
-                => mediator.Send(query, ct))
+        files.MapPost("count", (CollectionFilesQuery query, IMediator mediator, CancellationToken ct) 
+                => mediator.Send(new CollectionFilesCountQuery(query), ct))
             .WithName("CountCollectionFiles");
         
         files.MapPost("updateSourceTags", (UpdateLocationTagsCommand command, IMediator mediator, CancellationToken ct) 

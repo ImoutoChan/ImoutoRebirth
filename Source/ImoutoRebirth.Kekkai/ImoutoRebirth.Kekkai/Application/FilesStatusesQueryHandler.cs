@@ -51,7 +51,7 @@ internal class FilesStatusesQueryHandler : IStreamQueryHandler<FilesStatusesQuer
         IReadOnlyCollection<string> hashes,
         CancellationToken ct)
     {
-        var loaded = await _collectionFilesClient.FilterHashesAsync(hashes, ct);
+        var loaded = await _collectionFilesClient.FilterCollectionFileHashesAsync(new(hashes), ct);
 
         var loadedHashset = loaded.ToHashSet();
 

@@ -21,7 +21,7 @@ internal static class Scripts
         var hashesOnly = hashes.Select(x => x.MD5).ToList();
 
         var roomClient = new CollectionFilesClient("http://localhost:11301", new HttpClient());
-        var found = await roomClient.SearchAsync(new CollectionFilesRequest(null, null, int.MaxValue, hashesOnly, null, 0));
+        var found = await roomClient.SearchCollectionFilesAsync(new CollectionFilesQuery(null, null, int.MaxValue, hashesOnly, null, 0));
 
         targetFoundPath.Create();
         targetMissPath.Create();

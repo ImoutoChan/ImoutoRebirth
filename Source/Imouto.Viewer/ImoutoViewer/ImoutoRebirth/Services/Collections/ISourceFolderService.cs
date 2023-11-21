@@ -6,7 +6,7 @@ public interface ISourceFolderService
 
     Task<SourceFolder> AddSourceFolderAsync(SourceFolder sourceFolder);
 
-    Task<SourceFolder> UpdateSourceFolderAsync(SourceFolder sourceFolder);
+    Task UpdateSourceFolderAsync(SourceFolder sourceFolder);
 
     Task DeleteSourceFolderAsync(Guid collectionId, Guid sourceFolderId);
 }

@@ -154,7 +154,7 @@ class CollectionVM : VMBase
         {
             try
             {
-                await _destinationFolderService.DeleteDestinationFolderAsync(Id, folderVM.Id.Value);
+                await _destinationFolderService.DeleteDestinationFolderAsync(Id);
             }
             catch (Exception ex)
             {
@@ -215,7 +215,7 @@ class CollectionVM : VMBase
 
         try
         {
-            await _destinationFolderService.AddOrUpdateDestinationFolderAsync(destinationFolder);
+            await _destinationFolderService.SetDestinationFolderAsync(destinationFolder);
             await LoadFolders();
         }
         catch (Exception ex)

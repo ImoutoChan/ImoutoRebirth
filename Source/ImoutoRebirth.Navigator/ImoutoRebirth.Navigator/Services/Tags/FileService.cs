@@ -34,14 +34,14 @@ internal class FileService : IFileService
         if (!tags.Any())
         {
             var filesOnly = await _collectionFilesClient
-                .SearchAsync(new CollectionFilesRequest(default, collectionId, take, default, default, skip), token);
+                .SearchCollectionFilesAsync(new(default, collectionId, take, default, default, skip), token);
 
             var filesMapped = _mapper.Map<IReadOnlyCollection<File>>(filesOnly);
             return (filesMapped, filesOnly.Any());
         }
 
         var roomFiles = await _collectionFilesClient
-            .SearchAsync(new CollectionFilesRequest(default, collectionId, take, default, default, skip), token);
+            .SearchCollectionFilesAsync(new(default, collectionId, take, default, default, skip), token);
 
         var roomFilesIds = roomFiles.Select(x => x.Id).ToList();
         
@@ -162,7 +162,7 @@ internal class FileService : IFileService
         if (!tags.Any())
         {
             var result = await _collectionFilesClient
-                .CountAsync(new CollectionFilesRequest(default, collectionId, default, default, default, default), ct);
+                .CountCollectionFilesAsync(new (default, collectionId, default, default, default, default), ct);
 
             return result;
         }
@@ -173,7 +173,7 @@ internal class FileService : IFileService
 
     public async Task RemoveFile(Guid fileId)
     {
-        await _collectionFilesClient.RemoveAsync(fileId);
+        await _collectionFilesClient.DeleteCollectionFileAsync(fileId);
         _roomCache.Clear();
     }
 }

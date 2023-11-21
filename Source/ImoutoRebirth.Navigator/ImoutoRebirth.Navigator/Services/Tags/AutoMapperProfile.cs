@@ -46,7 +46,7 @@ internal class AutoMapperProfile : Profile
                     _ => throw new NotImplementedException(x.ToString())
                 });
 
-        CreateMap<CollectionFileResponse, File>();
+        CreateMap<CollectionFile, File>();
 
         CreateFileTagMaps();
         CreateTagMaps();
