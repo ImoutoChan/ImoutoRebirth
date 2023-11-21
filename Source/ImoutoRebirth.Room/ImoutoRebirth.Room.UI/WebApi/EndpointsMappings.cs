@@ -15,10 +15,10 @@ internal static class EndpointsMappings
     {
         var collections = app.MapGroup("/collections");
 
-        collections.MapGet("", async (AllCollectionsQuery query, IMediator mediator, CancellationToken ct)
+        collections.MapGet("", async (IMediator mediator, CancellationToken ct)
                 =>
                 {
-                    var found = await mediator.Send(query, ct);
+                    var found = await mediator.Send(new AllCollectionsQuery(), ct);
                     return found.Select(x => new CollectionResponse(x.Id, x.Name)).ToList();
                 })
             .WithName("GetAllCollections");
@@ -77,8 +77,8 @@ internal static class EndpointsMappings
                 => mediator.Send(command, ct))
             .WithName("SetDestinationFolder");
 
-        destinationFolders.MapDelete("", (DeleteDestinationFolderCommand command, IMediator mediator, CancellationToken ct)
-                => mediator.Send(command, ct))
+        destinationFolders.MapDelete("", (Guid collectionId, IMediator mediator, CancellationToken ct)
+                => mediator.Send(new DeleteDestinationFolderCommand(collectionId), ct))
             .WithName("DeleteDestinationFolder");
     }
 
@@ -98,8 +98,8 @@ internal static class EndpointsMappings
                 => mediator.Send(command, ct))
             .WithName("UpdateSourceFolder");
 
-        sourceFolders.MapDelete("", (DeleteSourceFolderCommand command, IMediator mediator, CancellationToken ct)
-                => mediator.Send(command, ct))
+        sourceFolders.MapDelete("", (Guid collectionId, Guid sourceFolderId, IMediator mediator, CancellationToken ct)
+                => mediator.Send(new DeleteSourceFolderCommand(collectionId, sourceFolderId), ct))
             .WithName("DeleteSourceFolder");
     }
 }

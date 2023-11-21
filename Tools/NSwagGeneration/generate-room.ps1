@@ -1,2 +1,2 @@
 dotnet tool update --global NSwag.ConsoleCore
-nswag run .\DefaultService.nswag /variables:Port=21301,ServiceName=ImoutoRebirth.Room
+nswag run .\DefaultService.nswag /variables:Port=11401,ServiceName=ImoutoRebirth.Room
