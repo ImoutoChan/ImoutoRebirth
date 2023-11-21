@@ -12,10 +12,7 @@ public class DestinationFoldersTests
 {
     private readonly TestWebApplicationFactory<Program> _webApp;
 
-    public DestinationFoldersTests(TestWebApplicationFactory<Program> webApp)
-    {
-        _webApp = webApp;
-    }
+    public DestinationFoldersTests(TestWebApplicationFactory<Program> webApp) => _webApp = webApp;
 
     [Fact]
     public async Task CreateDestinationFolder()
@@ -24,17 +21,14 @@ public class DestinationFoldersTests
         var context = _webApp.GetDbContext(_webApp.GetScope());
         var httpClient = _webApp.Client;
 
-        var collectionName = $"Collection Name {Guid.NewGuid()}";
-        var result = await httpClient.PostAsJsonAsync("/collections", new {name = collectionName});
-        var resultString = await result.Content.ReadAsStringAsync();
-        var createdCollectionId = Guid.Parse(resultString[1..^1]);
+        var collectionId = await CreateCollection(httpClient);
         
         var location = Assembly.GetExecutingAssembly().Location;
         
         // act
         var command = new
         {
-            CollectionId = createdCollectionId,
+            CollectionId = collectionId,
             Path = Path.Combine(location, "collection", "destination"),
             ShouldCreateSubfoldersByHash = true,
             ShouldRenameByHash = true,
@@ -48,7 +42,7 @@ public class DestinationFoldersTests
         // assert
         var destinationFolder =
             await context.DestinationFolders
-                .FirstOrDefaultAsync(x => x.CollectionId == createdCollectionId);
+                .FirstOrDefaultAsync(x => x.CollectionId == collectionId);
 
         destinationFolder.Should().NotBeNull();
         destinationFolder!.CollectionId.Should().Be(command.CollectionId);
@@ -67,15 +61,12 @@ public class DestinationFoldersTests
         var context = _webApp.GetDbContext(_webApp.GetScope());
         var httpClient = _webApp.Client;
 
-        var collectionName = $"Collection Name {Guid.NewGuid()}";
-        var result = await httpClient.PostAsJsonAsync("/collections", new {name = collectionName});
-        var resultString = await result.Content.ReadAsStringAsync();
-        var createdCollectionId = Guid.Parse(resultString[1..^1]);
+        var collectionId = await CreateCollection(httpClient);
         
         var location = Assembly.GetExecutingAssembly().Location;
         var command = new
         {
-            CollectionId = createdCollectionId,
+            CollectionId = collectionId,
             Path = Path.Combine(location, "collection", "destination"),
             ShouldCreateSubfoldersByHash = true,
             ShouldRenameByHash = true,
@@ -89,7 +80,7 @@ public class DestinationFoldersTests
         // act
         var updateCommand = new
         {
-            CollectionId = createdCollectionId,
+            CollectionId = collectionId,
             Path = Path.Combine(location, "collection1", "destination1"),
             ShouldCreateSubfoldersByHash = false,
             ShouldRenameByHash = false,
@@ -103,7 +94,7 @@ public class DestinationFoldersTests
         // assert
         var destinationFolder =
             await context.DestinationFolders
-                .SingleOrDefaultAsync(x => x.CollectionId == createdCollectionId);
+                .SingleOrDefaultAsync(x => x.CollectionId == collectionId);
 
         destinationFolder.Should().NotBeNull();
         destinationFolder!.CollectionId.Should().Be(updateCommand.CollectionId);
@@ -122,15 +113,12 @@ public class DestinationFoldersTests
         var context = _webApp.GetDbContext(_webApp.GetScope());
         var httpClient = _webApp.Client;
 
-        var collectionName = $"Collection Name {Guid.NewGuid()}";
-        var result = await httpClient.PostAsJsonAsync("/collections", new {name = collectionName});
-        var resultString = await result.Content.ReadAsStringAsync();
-        var createdCollectionId = Guid.Parse(resultString[1..^1]);
+        var collectionId = await CreateCollection(httpClient);
         
         var location = Assembly.GetExecutingAssembly().Location;
         var command = new
         {
-            CollectionId = createdCollectionId,
+            CollectionId = collectionId,
             Path = Path.Combine(location, "collection", "destination"),
             ShouldCreateSubfoldersByHash = true,
             ShouldRenameByHash = true,
@@ -143,12 +131,12 @@ public class DestinationFoldersTests
         
         // act
         
-        await httpClient.DeleteAsync($"/collections/{createdCollectionId}/destination-folder");
+        await httpClient.DeleteAsync($"/collections/{collectionId}/destination-folder");
         
         // assert
         var destinationFolder =
             await context.DestinationFolders
-                .SingleOrDefaultAsync(x => x.CollectionId == createdCollectionId);
+                .SingleOrDefaultAsync(x => x.CollectionId == collectionId);
 
         destinationFolder.Should().BeNull();
     }
@@ -159,15 +147,12 @@ public class DestinationFoldersTests
         // arrange
         var httpClient = _webApp.Client;
 
-        var collectionName = $"Collection Name {Guid.NewGuid()}";
-        var result = await httpClient.PostAsJsonAsync("/collections", new {name = collectionName});
-        var resultString = await result.Content.ReadAsStringAsync();
-        var createdCollectionId = Guid.Parse(resultString[1..^1]);
-        
+        var collectionId = await CreateCollection(httpClient);
+
         var location = Assembly.GetExecutingAssembly().Location;
         var command = new
         {
-            CollectionId = createdCollectionId,
+            CollectionId = collectionId,
             Path = Path.Combine(location, "collection", "destination"),
             ShouldCreateSubfoldersByHash = true,
             ShouldRenameByHash = true,
@@ -182,7 +167,7 @@ public class DestinationFoldersTests
 
         var destinationFolder =
             await httpClient.GetFromJsonAsync<DestinationFolderInfo>(
-                $"/collections/{createdCollectionId}/destination-folder");
+                $"/collections/{collectionId}/destination-folder");
         
         // assert
         destinationFolder.Should().NotBeNull();
@@ -193,5 +178,13 @@ public class DestinationFoldersTests
         destinationFolder.FormatErrorSubfolder.Should().Be(command.FormatErrorSubfolder);
         destinationFolder.HashErrorSubfolder.Should().Be(command.HashErrorSubfolder);
         destinationFolder.WithoutHashErrorSubfolder.Should().Be(command.WithoutHashErrorSubfolder);
+    }
+
+    private static async Task<Guid> CreateCollection(HttpClient httpClient)
+    {
+        var collectionName = $"Collection Name {Guid.NewGuid()}";
+        var result = await httpClient.PostAsJsonAsync("/collections", new {name = collectionName});
+        var resultString = await result.Content.ReadAsStringAsync();
+        return Guid.Parse(resultString[1..^1]);
     }
 }

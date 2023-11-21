@@ -84,21 +84,21 @@ internal static class EndpointsMappings
 
     public static void MapSourceFoldersEndpoints(this WebApplication app)
     {
-        var sourceFolders = app.MapGroup("/collections/source-folders");
+        var sourceFolders = app.MapGroup("/collections");
 
-        sourceFolders.MapGet("/{collectionId:guid}", (Guid collectionId, IMediator mediator, CancellationToken ct) 
+        sourceFolders.MapGet("/{collectionId:guid}/source-folders", (Guid collectionId, IMediator mediator, CancellationToken ct) 
                 => mediator.Send(new SourceFoldersQuery(collectionId), ct))
             .WithName("GetSourceFolders");
         
-        sourceFolders.MapPost("", (AddSourceFolderCommand command, IMediator mediator, CancellationToken ct)
+        sourceFolders.MapPost("/source-folders", (AddSourceFolderCommand command, IMediator mediator, CancellationToken ct)
                 => mediator.Send(command, ct))
             .WithName("AddSourceFolder");
         
-        sourceFolders.MapPut("", (UpdateSourceFolderCommand command, IMediator mediator, CancellationToken ct)
+        sourceFolders.MapPut("/source-folders", (UpdateSourceFolderCommand command, IMediator mediator, CancellationToken ct)
                 => mediator.Send(command, ct))
             .WithName("UpdateSourceFolder");
 
-        sourceFolders.MapDelete("", (Guid collectionId, Guid sourceFolderId, IMediator mediator, CancellationToken ct)
+        sourceFolders.MapDelete("/{collectionId:guid}/source-folders/{sourceFolderId:guid}", (Guid collectionId, Guid sourceFolderId, IMediator mediator, CancellationToken ct)
                 => mediator.Send(new DeleteSourceFolderCommand(collectionId, sourceFolderId), ct))
             .WithName("DeleteSourceFolder");
     }

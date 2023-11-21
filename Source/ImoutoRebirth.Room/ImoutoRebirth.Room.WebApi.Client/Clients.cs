@@ -1312,7 +1312,7 @@ namespace ImoutoRebirth.RoomService.WebApi.Client
                 throw new System.ArgumentNullException("collectionId");
 
             var urlBuilder_ = new System.Text.StringBuilder();
-            urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/collections/source-folders/{collectionId}");
+            urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/collections/{collectionId}/source-folders");
             urlBuilder_.Replace("{collectionId}", System.Uri.EscapeDataString(ConvertToString(collectionId, System.Globalization.CultureInfo.InvariantCulture)));
 
             var client_ = _httpClient;
@@ -1570,10 +1570,9 @@ namespace ImoutoRebirth.RoomService.WebApi.Client
                 throw new System.ArgumentNullException("sourceFolderId");
 
             var urlBuilder_ = new System.Text.StringBuilder();
-            urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/collections/source-folders?");
-            urlBuilder_.Append(System.Uri.EscapeDataString("collectionId") + "=").Append(System.Uri.EscapeDataString(ConvertToString(collectionId, System.Globalization.CultureInfo.InvariantCulture))).Append("&");
-            urlBuilder_.Append(System.Uri.EscapeDataString("sourceFolderId") + "=").Append(System.Uri.EscapeDataString(ConvertToString(sourceFolderId, System.Globalization.CultureInfo.InvariantCulture))).Append("&");
-            urlBuilder_.Length--;
+            urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/collections/{collectionId}/source-folders/{sourceFolderId}");
+            urlBuilder_.Replace("{collectionId}", System.Uri.EscapeDataString(ConvertToString(collectionId, System.Globalization.CultureInfo.InvariantCulture)));
+            urlBuilder_.Replace("{sourceFolderId}", System.Uri.EscapeDataString(ConvertToString(sourceFolderId, System.Globalization.CultureInfo.InvariantCulture)));
 
             var client_ = _httpClient;
             var disposeClient_ = false;

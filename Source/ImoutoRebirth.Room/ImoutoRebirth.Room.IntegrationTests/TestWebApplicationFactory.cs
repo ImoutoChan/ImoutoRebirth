@@ -1,4 +1,5 @@
 ﻿using ImoutoRebirth.Room.Database;
+using MassTransit;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
@@ -9,18 +10,14 @@ using Xunit;
 namespace ImoutoRebirth.Room.IntegrationTests;
 
 [CollectionDefinition("WebApplication")]
-public class WebApplicationCollection : ICollectionFixture<TestWebApplicationFactory<Program>>
-{
-}
+public class WebApplicationCollection : ICollectionFixture<TestWebApplicationFactory<Program>>;
 
 public class TestWebApplicationFactory<TProgram>
     : WebApplicationFactory<TProgram> where TProgram : class
 {
     private const string TestDatabaseName = "RoomIntegrationTests";
-    private const string ConnectionString 
-        = $"Server=localhost;Port=5432;Database={TestDatabaseName};User Id=postgres;Password=postgres;";
-    private const string PostgresConnectionString 
-        = $"Server=localhost;Port=5432;Database=postgres;User Id=postgres;Password=postgres;";
+    private const string ConnectionString = $"Server=localhost;Port=5432;Database={TestDatabaseName};User Id=postgres;Password=postgres;";
+    private const string PostgresConnectionString = $"Server=localhost;Port=5432;Database=postgres;User Id=postgres;Password=postgres;";
 
     public HttpClient Client => CreateClient();
     
@@ -40,6 +37,7 @@ public class TestWebApplicationFactory<TProgram>
                 services.Remove(descriptor);
 
             services.AddDbContext<RoomDbContext>(x => x.UseNpgsql(ConnectionString, y => y.UseNodaTime()));
+            services.AddMassTransitTestHarness();
         });
 
         var host = base.CreateHost(builder);
