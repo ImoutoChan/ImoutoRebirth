@@ -64,7 +64,7 @@ internal class OverseeCollectionCommandHandler : ICommandHandler<OverseeCollecti
             }
         }
 
-        return new OverseeCollectionResult(anyFileAdded);
+        return new(anyFileAdded);
     }
     
     private async Task SaveAndReport(Guid collectionId, SystemFileMoved moved)

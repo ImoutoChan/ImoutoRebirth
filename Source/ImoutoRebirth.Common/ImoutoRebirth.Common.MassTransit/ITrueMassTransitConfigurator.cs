@@ -4,7 +4,9 @@ namespace ImoutoRebirth.Common.MassTransit;
 
 public interface ITrueMassTransitConfigurator
 {
-    IRabbitMqBusFactoryConfigurator RabbitMqBusFactoryConfigurator { get; }
+    IBusFactoryConfigurator BusFactoryConfigurator { get; }
 
     IBusRegistrationContext BusRegistrationContext { get; }
+
+    IRabbitMqBusFactoryConfigurator? RabbitMqBusFactoryConfigurator { get; }
 }

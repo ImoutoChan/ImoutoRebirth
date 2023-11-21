@@ -41,6 +41,7 @@ public static class ServiceCollectionExtensions
             .AddConsumer<Rule34SearchMetadataCommandConsumer, IRule34SearchMetadataCommand>(ArachneReceiverApp.Name)
             .AddConsumer<LoadTagHistoryCommandConsumer, ILoadTagHistoryCommand>(
                 ArachneReceiverApp.Name,
+                null,
                 configurator =>
                 {
                     configurator.PrefetchCount = 16;
@@ -49,6 +50,7 @@ public static class ServiceCollectionExtensions
                 })
             .AddConsumer<LoadNoteHistoryCommandConsumer, ILoadNoteHistoryCommand>(
                 ArachneReceiverApp.Name,
+                null,
                 configurator =>
                 {
                     configurator.PrefetchCount = 16;

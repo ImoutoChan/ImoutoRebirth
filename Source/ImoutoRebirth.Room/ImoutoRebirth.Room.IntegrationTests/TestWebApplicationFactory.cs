@@ -1,4 +1,7 @@
-﻿using ImoutoRebirth.Room.Database;
+﻿using System.Reflection;
+using ImoutoRebirth.Common.MassTransit;
+using ImoutoRebirth.Room.Database;
+using ImoutoRebirth.Room.Infrastructure;
 using MassTransit;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.EntityFrameworkCore;
@@ -20,24 +23,38 @@ public class TestWebApplicationFactory<TProgram>
     private const string PostgresConnectionString = $"Server=localhost;Port=5432;Database=postgres;User Id=postgres;Password=postgres;";
 
     public HttpClient Client => CreateClient();
-    
+
     public IServiceScope GetScope() => Services.CreateScope();
-    
+
     public RoomDbContext GetDbContext(IServiceScope scope) => scope.ServiceProvider.GetRequiredService<RoomDbContext>();
     
+    public string TestsTempLocation 
+        => Path.Combine(new FileInfo(Assembly.GetExecutingAssembly().Location).Directory!.FullName, "temp");
+    
+    public string TestsLocation 
+        => new FileInfo(Assembly.GetExecutingAssembly().Location).Directory!.FullName;
+
     protected override IHost CreateHost(IHostBuilder builder)
     {
         builder.ConfigureServices(services =>
         {
-            var descriptors = services.Where(d => d.ServiceType == typeof(DbContextOptions<RoomDbContext>))
+            var descriptors = services
+                
+                // disable default context
+                .Where(d => d.ServiceType == typeof(DbContextOptions<RoomDbContext>))
                 .Union(services.Where(d => d.ServiceType == typeof(RoomDbContext)))
+                
+                // disable quartz 
+                .Union(services.Where(
+                    d => d.ServiceType == typeof(IHostedService)
+                         && d.ImplementationType?.Name == "QuartzHostedService"))
                 .ToList();
 
             foreach (var descriptor in descriptors)
                 services.Remove(descriptor);
 
             services.AddDbContext<RoomDbContext>(x => x.UseNpgsql(ConnectionString, y => y.UseNodaTime()));
-            services.AddMassTransitTestHarness();
+            services.AddTrueMassTransitTestHarness(с => с.AddRoomInfrastructureForRabbit());
         });
 
         var host = base.CreateHost(builder);
@@ -50,6 +67,7 @@ public class TestWebApplicationFactory<TProgram>
 
     protected override void Dispose(bool disposing)
     {
+        // delete test database
         using var connection = new NpgsqlConnection(PostgresConnectionString);
         connection.Open();
 
@@ -65,6 +83,10 @@ public class TestWebApplicationFactory<TProgram>
 
         using var command = new NpgsqlCommand($"DROP DATABASE IF EXISTS \"{TestDatabaseName}\";", connection);
         command.ExecuteNonQuery();
+        
+        // clean temp folder
+        if (Directory.Exists(TestsTempLocation))
+            Directory.Delete(TestsTempLocation, true);
         
         base.Dispose(disposing);
     }

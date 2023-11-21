@@ -65,7 +65,7 @@ public partial class SystemFile
         if (newFile.Exists)
             return MoveToExisted(ref newFile);
 
-        File.MoveTo(newFile.FullName);
+        System.IO.File.Move(File.FullName, newFile.FullName);
 
         return true;
     }

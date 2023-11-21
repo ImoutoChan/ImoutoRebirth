@@ -1,6 +1,7 @@
 ﻿using System.Text.RegularExpressions;
 using Humanizer;
 using MassTransit;
+using MassTransit.RabbitMqTransport.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace ImoutoRebirth.Common.MassTransit;
@@ -15,18 +16,29 @@ public static class MassTransitExtensions
     {
         services.AddMassTransit(
             x => x.UsingRabbitMq((context, cfg) =>
+            {
+                cfg.Host(
+                    new Uri(settings.Url),
+                    connectionName,
+                    hostConfigurator =>
                     {
-                        cfg.Host(
-                            new Uri(settings.Url),
-                            connectionName,
-                            hostConfigurator =>
-                            {
-                                hostConfigurator.Username(settings.Username);
-                                hostConfigurator.Password(settings.Password);
-                            });
+                        hostConfigurator.Username(settings.Username);
+                        hostConfigurator.Password(settings.Password);
+                    });
 
-                        configureAction?.Invoke(new TrueMassTransitConfigurator(cfg, context));
-                    }));
+                configureAction?.Invoke(new TrueMassTransitConfigurator(cfg, context));
+            }));
+
+        return services;
+    }
+
+    public static IServiceCollection AddTrueMassTransitTestHarness(
+        this IServiceCollection services,
+        Action<ITrueMassTransitConfigurator>? configureAction = null)
+    {
+        services.AddMassTransitTestHarness(
+            x => x.UsingInMemory(
+                (context, cfg) => configureAction?.Invoke(new TrueMassTransitConfigurator(cfg, context))));
 
         return services;
     }
@@ -34,20 +46,41 @@ public static class MassTransitExtensions
     public static ITrueMassTransitConfigurator AddConsumer<TConsumer, TMessage>(
         this ITrueMassTransitConfigurator configurator,
         string messageSourceAppName,
-        Action<IRabbitMqReceiveEndpointConfigurator>? endpointConfigurator = null)
+        Action<IReceiveEndpointConfigurator>? endpointConfigurator = null,
+        Action<IRabbitMqReceiveEndpointConfigurator>? rabbitMqEndpointConfigurator = null)
         where TConsumer : class, IConsumer<TMessage>
         where TMessage : class
     {
-        configurator.RabbitMqBusFactoryConfigurator.ReceiveEndpoint(
-            GetQueueName<TMessage>(messageSourceAppName),
-            x =>
-            {
-                x.PrefetchCount = 1;
-                x.UseMessageRetry(GetRetryPolicy);
-                endpointConfigurator?.Invoke(x);
+        if (configurator.RabbitMqBusFactoryConfigurator != null)
+        {
+            configurator.RabbitMqBusFactoryConfigurator.ReceiveEndpoint(
+                GetQueueName<TMessage>(messageSourceAppName),
+                x =>
+                {
+                    x.PrefetchCount = 1;
+                    x.UseMessageRetry(GetRetryPolicy);
+                    endpointConfigurator?.Invoke(x);
+                    rabbitMqEndpointConfigurator?.Invoke(x);
 
-                x.Consumer<TConsumer>(configurator.BusRegistrationContext);
-            });
+                    x.Consumer<TConsumer>(configurator.BusRegistrationContext);
+                });
+        }
+        else
+        {
+            if (rabbitMqEndpointConfigurator != null)
+                throw new("Wrong configuration for rabbitmq bus");
+
+            configurator.BusFactoryConfigurator.ReceiveEndpoint(
+                GetQueueName<TMessage>(messageSourceAppName),
+                x =>
+                {
+                    x.PrefetchCount = 1;
+                    x.UseMessageRetry(GetRetryPolicy);
+                    endpointConfigurator?.Invoke(x);
+
+                    x.Consumer<TConsumer>(configurator.BusRegistrationContext);
+                });
+        }
 
         return configurator;
     }

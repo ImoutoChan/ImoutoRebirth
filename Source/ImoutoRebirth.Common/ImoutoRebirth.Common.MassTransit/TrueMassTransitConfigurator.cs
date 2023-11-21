@@ -4,15 +4,18 @@ namespace ImoutoRebirth.Common.MassTransit;
 
 internal class TrueMassTransitConfigurator : ITrueMassTransitConfigurator
 {
-    public IRabbitMqBusFactoryConfigurator RabbitMqBusFactoryConfigurator { get; }
+    public IBusFactoryConfigurator BusFactoryConfigurator { get; }
+
+    public IRabbitMqBusFactoryConfigurator? RabbitMqBusFactoryConfigurator =>
+        BusFactoryConfigurator as IRabbitMqBusFactoryConfigurator;
 
     public IBusRegistrationContext BusRegistrationContext { get; }
 
     public TrueMassTransitConfigurator(
-        IRabbitMqBusFactoryConfigurator rabbitMqBusFactoryConfigurator,
+        IBusFactoryConfigurator busFactoryConfigurator,
         IBusRegistrationContext serviceProvider)
     {
-        RabbitMqBusFactoryConfigurator = rabbitMqBusFactoryConfigurator;
+        BusFactoryConfigurator = busFactoryConfigurator;
         BusRegistrationContext = serviceProvider;
     }
 }
