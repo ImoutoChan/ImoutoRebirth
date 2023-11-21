@@ -1,4 +1,5 @@
-﻿using ImoutoRebirth.Common.EntityFrameworkCore;
+﻿using ImoutoRebirth.Common.Domain;
+using ImoutoRebirth.Common.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -17,6 +18,8 @@ public static class ServiceCollectionExtensions
             => builder.UseNpgsql(
                 configuration.GetConnectionString("RoomDatabase"), 
                 x => x.UseNodaTime()));
+
+        services.AddScoped<IUnitOfWork>(provider => provider.GetRequiredService<RoomDbContext>());
 
         return services;
     }

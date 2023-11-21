@@ -75,14 +75,21 @@ internal class CollectionRepository : ICollectionRepository
         {
             var destinationFolderEntity = await _roomDbContext.DestinationFolders
                 .Where(x => x.CollectionId == collectionId)
-                .SingleAsync();
-            
-            destinationFolderEntity.Path = collection.DestinationFolder.DestinationDirectory!.FullName;
-            destinationFolderEntity.ShouldCreateSubfoldersByHash = collection.DestinationFolder.ShouldCreateSubfoldersByHash;
-            destinationFolderEntity.ShouldRenameByHash = collection.DestinationFolder.ShouldRenameByHash;
-            destinationFolderEntity.FormatErrorSubfolder = collection.DestinationFolder.FormatErrorSubfolder;
-            destinationFolderEntity.HashErrorSubfolder = collection.DestinationFolder.HashErrorSubfolder;
-            destinationFolderEntity.WithoutHashErrorSubfolder = collection.DestinationFolder.WithoutHashErrorSubfolder;
+                .SingleOrDefaultAsync();
+
+            if (destinationFolderEntity != null)
+            {
+                destinationFolderEntity.Path = collection.DestinationFolder.DestinationDirectory!.FullName;
+                destinationFolderEntity.ShouldCreateSubfoldersByHash = collection.DestinationFolder.ShouldCreateSubfoldersByHash;
+                destinationFolderEntity.ShouldRenameByHash = collection.DestinationFolder.ShouldRenameByHash;
+                destinationFolderEntity.FormatErrorSubfolder = collection.DestinationFolder.FormatErrorSubfolder;
+                destinationFolderEntity.HashErrorSubfolder = collection.DestinationFolder.HashErrorSubfolder;
+                destinationFolderEntity.WithoutHashErrorSubfolder = collection.DestinationFolder.WithoutHashErrorSubfolder;
+            }
+            else
+            {
+                await _roomDbContext.DestinationFolders.AddAsync(collection.DestinationFolder.ToEntity(collectionId)!);
+            }
         }
         
         // update source folders

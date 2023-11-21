@@ -4,7 +4,7 @@ using ImoutoRebirth.Room.Domain.CollectionAggregate;
 
 namespace ImoutoRebirth.Room.Application.Cqrs.CollectionSlice;
 
-public record AllCollectionsQuery() : IQuery<IReadOnlyCollection<Collection>>;
+public record AllCollectionsQuery : IQuery<IReadOnlyCollection<Collection>>;
 
 internal class AllCollectionsQueryHandler : IQueryHandler<AllCollectionsQuery, IReadOnlyCollection<Collection>>
 {

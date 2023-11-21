@@ -67,17 +67,17 @@ internal static class EndpointsMappings
 
     public static void MapDestinationFoldersEndpoints(this WebApplication app)
     {
-        var destinationFolders = app.MapGroup("/collections/destination-folders");
+        var destinationFolders = app.MapGroup("/collections");
 
-        destinationFolders.MapGet("/{collectionId:guid}", (Guid collectionId, IMediator mediator, CancellationToken ct) 
+        destinationFolders.MapGet("/{collectionId:guid}/destination-folder", (Guid collectionId, IMediator mediator, CancellationToken ct) 
                 => mediator.Send(new DestinationFolderQuery(collectionId), ct))
             .WithName("GetDestinationFolder");
         
-        destinationFolders.MapPost("", (SetDestinationFolderCommand command, IMediator mediator, CancellationToken ct)
+        destinationFolders.MapPost("/destination-folder", (SetDestinationFolderCommand command, IMediator mediator, CancellationToken ct)
                 => mediator.Send(command, ct))
             .WithName("SetDestinationFolder");
 
-        destinationFolders.MapDelete("", (Guid collectionId, IMediator mediator, CancellationToken ct)
+        destinationFolders.MapDelete("/{collectionId:guid}/destination-folder", (Guid collectionId, IMediator mediator, CancellationToken ct)
                 => mediator.Send(new DeleteDestinationFolderCommand(collectionId), ct))
             .WithName("DeleteDestinationFolder");
     }

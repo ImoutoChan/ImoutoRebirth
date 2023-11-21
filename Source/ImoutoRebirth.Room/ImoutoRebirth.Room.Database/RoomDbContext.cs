@@ -1,11 +1,21 @@
-﻿using ImoutoRebirth.Common.EntityFrameworkCore.TimeTrack;
+﻿using System.Data;
+using ImoutoRebirth.Common.Domain;
+using ImoutoRebirth.Common.Domain.EntityFrameworkCore;
+using ImoutoRebirth.Common.EntityFrameworkCore.TimeTrack;
 using ImoutoRebirth.Room.Database.Entities;
 using Microsoft.EntityFrameworkCore;
 
 namespace ImoutoRebirth.Room.Database;
 
-public class RoomDbContext(DbContextOptions options) : DbContext(options)
+public class RoomDbContext : DbContext, IUnitOfWork
 {
+    private readonly IEventStorage _eventStorage;
+
+    public RoomDbContext(DbContextOptions options, IEventStorage eventStorage) : base(options)
+    {
+        _eventStorage = eventStorage;
+    }
+
     public required DbSet<CollectionEntity> Collections { get; set; }
 
     public required DbSet<SourceFolderEntity> SourceFolders { get; set; }
@@ -23,13 +33,33 @@ public class RoomDbContext(DbContextOptions options) : DbContext(options)
         base.OnModelCreating(modelBuilder);
     }
 
-    public override Task<int> SaveChangesAsync(
-        bool acceptAllChangesOnSuccess,
-        CancellationToken cancellationToken = new CancellationToken())
+    public async Task SaveEntitiesAsync(CancellationToken ct = default)
+    {
+        await SaveChangesAsync(ct);
+
+        foreach (var domainEvent in ChangeTracker
+                     .Entries()
+                     .Select(x => x.Entity)
+                     .OfType<Entity>()
+                     .SelectMany(x => x.Events))
+        {
+            _eventStorage.Add(domainEvent);
+        }
+    }
+
+    public override Task<int> SaveChangesAsync(CancellationToken ct = default)
     {
         ChangeTracker.TrackImplicitTimeBeforeSaveChanges();
 
-        return base.SaveChangesAsync(acceptAllChangesOnSuccess, cancellationToken);
+        return base.SaveChangesAsync(ct);
+    }
+
+    public async Task<ITransaction> CreateTransactionAsync(IsolationLevel isolationLevel)
+    {
+        if (Database.CurrentTransaction != null)
+            return new EmptyTransaction();
+
+        return new DbTransaction(await Database.BeginTransactionAsync(isolationLevel));
     }
 
     private static void BuildDestinationFolderEntity(ModelBuilder modelBuilder)

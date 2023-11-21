@@ -145,6 +145,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ImoutoRebirth.Room.UI", "Im
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ImoutoRebirth.Room.Host", "ImoutoRebirth.Room\ImoutoRebirth.Room.Host\ImoutoRebirth.Room.Host.csproj", "{46AFCD9F-8AFE-49ED-9FDA-20EF0192A324}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ImoutoRebirth.Room.IntegrationTests", "ImoutoRebirth.Room\ImoutoRebirth.Room.IntegrationTests\ImoutoRebirth.Room.IntegrationTests.csproj", "{F50AC677-879C-4DC6-90BA-EDBC847C38C3}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -368,6 +370,10 @@ Global
 		{46AFCD9F-8AFE-49ED-9FDA-20EF0192A324}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{46AFCD9F-8AFE-49ED-9FDA-20EF0192A324}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{46AFCD9F-8AFE-49ED-9FDA-20EF0192A324}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F50AC677-879C-4DC6-90BA-EDBC847C38C3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F50AC677-879C-4DC6-90BA-EDBC847C38C3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F50AC677-879C-4DC6-90BA-EDBC847C38C3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F50AC677-879C-4DC6-90BA-EDBC847C38C3}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{9BC327CE-D36E-4926-9830-DCEB0CB73884} = {6BEB0A5C-9E6B-4440-93B2-F4C63BE43298}
@@ -423,5 +429,6 @@ Global
 		{15A3DF4D-1269-45F3-BFAF-3A4ED132DBBC} = {5198DC62-EAAC-4A81-8728-349F06201287}
 		{DF0662D1-FA61-4F02-905F-154800C67A7E} = {5198DC62-EAAC-4A81-8728-349F06201287}
 		{46AFCD9F-8AFE-49ED-9FDA-20EF0192A324} = {5198DC62-EAAC-4A81-8728-349F06201287}
+		{F50AC677-879C-4DC6-90BA-EDBC847C38C3} = {5198DC62-EAAC-4A81-8728-349F06201287}
 	EndGlobalSection
 EndGlobal

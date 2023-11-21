@@ -48,3 +48,5 @@ app.MapWebEndpoints();
 
 app.MigrateIfNecessary<RoomDbContext>();
 app.Run();
+
+public partial class Program;
