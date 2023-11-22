@@ -2,10 +2,7 @@
 
 public class SystemFilePreparedToMove
 {
-    public SystemFilePreparedToMove(SystemFile systemFile)
-    {
-        SystemFile = systemFile;
-    }
+    public SystemFilePreparedToMove(SystemFile systemFile) => SystemFile = systemFile;
 
     public SystemFile SystemFile { get; }
 
