@@ -1,5 +1,6 @@
 ﻿using System.Net.Http.Json;
 using FluentAssertions;
+using ImoutoRebirth.Common.MassTransit;
 using ImoutoRebirth.Lilin.MessageContracts;
 using ImoutoRebirth.Meido.MessageContracts;
 using ImoutoRebirth.Room.Application.Cqrs;
@@ -98,25 +99,17 @@ public class CollectionIoTests : IDisposable
         savedFile.Size.Should().Be(150881);
         savedFile.IsRemoved.Should().BeFalse();
         savedFile.OriginalPath.Should().Be(Path.Combine(sourceFolderPath, file.Name));
-
-        _harness.Sent.Count().Should().BeGreaterOrEqualTo(2);
-
-        var newFileCommands = _harness.Sent.Select(x => x.MessageType == typeof(INewFileCommand)).ToList();
-
-        newFileCommands.Any(x =>
-                x.MessageObject is INewFileCommand message
-                && message.FileId == savedFile.Id
-                && message.Md5 == "5f30f9953332c230d11e3f26db5ae9a0")
+            
+        _harness.Sent
+            .AnyMessage<INewFileCommand>(x => x.FileId == savedFile.Id && x.Md5 == "5f30f9953332c230d11e3f26db5ae9a0")
             .Should().BeTrue();
 
-        var updateMetadataCommands = _harness.Sent.Select(x => x.MessageType == typeof(IUpdateMetadataCommand)).ToList();
-        
-        updateMetadataCommands.Any(x =>
-                x.MessageObject is IUpdateMetadataCommand message
-                && message.FileId == savedFile.Id
-                && message.MetadataSource == MetadataSource.Manual
-                && message.FileTags[0].Type == "Location"
-                && message.FileTags[0].Name == "file1-5f30f9953332c230d11e3f26db5ae9a0.jpg")
+        _harness.Sent
+            .AnyMessage<IUpdateMetadataCommand>(x
+                => x.FileId == savedFile.Id
+                   && x.MetadataSource == MetadataSource.Manual
+                   && x.FileTags[0].Type == "Location"
+                   && x.FileTags[0].Name == "file1-5f30f9953332c230d11e3f26db5ae9a0.jpg")
             .Should().BeTrue();
     }
 
@@ -151,26 +144,18 @@ public class CollectionIoTests : IDisposable
         savedFile.IsRemoved.Should().BeFalse();
         savedFile.OriginalPath.Should().Be(testFilePath);
 
-        _harness.Sent.Count().Should().BeGreaterOrEqualTo(2);
-
-        var newFileCommands = _harness.Sent.Select(x => x.MessageType == typeof(INewFileCommand)).ToList();
-
-        newFileCommands.Any(x =>
-                x.MessageObject is INewFileCommand message
-                && message.FileId == savedFile.Id
-                && message.Md5 == "5f30f9953332c230d11e3f26db5ae9a0")
+        _harness.Sent
+            .AnyMessage<INewFileCommand>(x => x.FileId == savedFile.Id && x.Md5 == "5f30f9953332c230d11e3f26db5ae9a0")
             .Should().BeTrue();
 
-        var updateMetadataCommands = _harness.Sent.Select(x => x.MessageType == typeof(IUpdateMetadataCommand)).ToList();
-        
-        updateMetadataCommands.Any(x =>
-                x.MessageObject is IUpdateMetadataCommand message
-                && message.FileId == savedFile.Id
-                && message.MetadataSource == MetadataSource.Manual
-                && message.FileTags[0].Type == "Location"
-                && message.FileTags[0].Name == "file1-5f30f9953332c230d11e3f26db5ae9a0.jpg"
-                && message.FileTags[1].Type == "Location"
-                && message.FileTags[1].Name == "inner")
+        _harness.Sent
+            .AnyMessage<IUpdateMetadataCommand>(x
+                => x.FileId == savedFile.Id
+                   && x.MetadataSource == MetadataSource.Manual
+                   && x.FileTags[0].Type == "Location"
+                   && x.FileTags[0].Name == "file1-5f30f9953332c230d11e3f26db5ae9a0.jpg"
+                   && x.FileTags[1].Type == "Location"
+                   && x.FileTags[1].Name == "inner")
             .Should().BeTrue();
     }
 
@@ -431,15 +416,13 @@ public class CollectionIoTests : IDisposable
         Directory.GetFiles(sourceFolderPath).Should().BeEmpty();
         _context.CollectionFiles.Count(x => x.CollectionId == collectionId).Should().Be(1);
         var dbFile = _context.CollectionFiles.First(x => x.CollectionId == collectionId);
-        
-        var updateMetadataCommands = _harness.Sent.Select(x => x.MessageType == typeof(IUpdateMetadataCommand)).ToList();
-        
-        updateMetadataCommands.Any(x =>
-                x.MessageObject is IUpdateMetadataCommand message
-                && message.FileId == dbFile.Id
-                && message.MetadataSource == MetadataSource.Manual
-                && message.FileTags[0].Type == "Location"
-                && message.FileTags[0].Name == "file1-5f30f9953332c230d11e3f26db5ae9a0.jpg")
+
+        _harness.Sent
+            .AnyMessage<IUpdateMetadataCommand>(x
+                => x.FileId == dbFile.Id
+                   && x.MetadataSource == MetadataSource.Manual
+                   && x.FileTags[0].Type == "Location"
+                   && x.FileTags[0].Name == "file1-5f30f9953332c230d11e3f26db5ae9a0.jpg")
             .Should().BeTrue();
     }
 
@@ -466,13 +449,11 @@ public class CollectionIoTests : IDisposable
         Directory.GetFiles(sourceFolderPath).Should().BeEmpty();
         _context.CollectionFiles.Count(x => x.CollectionId == collectionId).Should().Be(1);
         var dbFile = _context.CollectionFiles.First(x => x.CollectionId == collectionId);
-
-        var updateMetadataCommands = _harness.Sent.Select(x => x.MessageType == typeof(IUpdateMetadataCommand)).ToList();
         
-        updateMetadataCommands.Any(x =>
-                x.MessageObject is IUpdateMetadataCommand message
-                && message.FileId == dbFile.Id
-                && message.FileTags[0].Name == "file1-5f30f9953332c230d11e3f26db5ae9a0.jpg")
+        _harness.Sent
+            .AnyMessage<IUpdateMetadataCommand>(x
+                => x.FileId == dbFile.Id
+                   && x.FileTags[0].Name == "file1-5f30f9953332c230d11e3f26db5ae9a0.jpg")
             .Should().BeFalse();
     }
 
