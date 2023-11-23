@@ -20,13 +20,13 @@ namespace ImoutoRebirth.Room.IntegrationTests;
  * 
  * # Source folder options
  * + Check flags: bad images are moved to the bad format folder
- * Check flags: images with wrong hash in the name are moved to the bad hash folder
+ * + Check flags: images with wrong hash in the name are moved to the bad hash folder
  * Check flags: images without hash moved to the no hash folder
  * Check flags: images push its name to the tags
  * Check flags: images push its folder name to the tags
  * 
  * + Check flags [false]: bad images are processed correctly if format check is disabled
- * Check flags [false]: images with wrong hash in the name are processed correctly if hash check is disabled
+ * + Check flags [false]: images with wrong hash in the name are processed correctly if hash check is disabled
  * Check flags [false]: images without hash are processed correctly if no hash check is disabled
  * Check flags [false]: images don't push its name to the tags if the corresponding flag is disabled
  * Check flags [false]: images don't push its folder name to the tags if the corresponding flag is disabled
@@ -355,6 +355,82 @@ public class CollectionIoTests
         Directory.GetFiles(sourceFolderPath).Should().BeEmpty();
         context.CollectionFiles.Count(x => x.CollectionId == collectionId).Should().Be(1);
         Directory.Exists(Path.Combine(destFolderPath, "!format-error")).Should().BeFalse();
+    }
+
+    [Fact]
+    public async Task WrongHashImagesAreMovedToHashErrorFolder()
+    {
+        // arrange
+        var scope = _webApp.GetScope();
+        var context = _webApp.GetDbContext(scope);
+        var mediator = scope.ServiceProvider.GetRequiredService<IMediator>();
+        var httpClient = _webApp.Client;
+
+        var collectionId = await CreateCollection(httpClient);
+        var collectionPath = Guid.NewGuid().ToString();
+        
+        var sourceFolderPath = Path.Combine(_webApp.TestsTempLocation, "collection", collectionPath, "source");
+        var destFolderPath = Path.Combine(_webApp.TestsTempLocation, "collection", collectionPath, "dest");
+        
+        Directory.CreateDirectory(sourceFolderPath);
+        Directory.CreateDirectory(destFolderPath);
+        
+        var addSourceFolderCommand = new AddSourceFolderCommand(collectionId, sourceFolderPath, false, true, false, false, Array.Empty<string>());
+        var addDestinationFolderCommand = new SetDestinationFolderCommand(collectionId, destFolderPath, true, true, "!format-error", "!hash-error", "!no-hash-error");
+        
+        await httpClient.PostAsJsonAsync("/collections/source-folders", addSourceFolderCommand);
+        await httpClient.PostAsJsonAsync("/collections/destination-folder", addDestinationFolderCommand);
+        
+        var testFile = new FileInfo(Path.Combine(_webApp.TestsLocation, "Resources", "file1-5f30f9953332c230d11e3f26db5ae9a0.jpg"));
+        
+        // act
+        
+        // rename to wrong hash
+        testFile.CopyTo(Path.Combine(sourceFolderPath, "file1-1f30f9953332c230d11e3f26db5ae9a0.jpg"));
+        await mediator.Send(new OverseeCommand(false));
+        
+        // assert
+        Directory.GetFiles(sourceFolderPath).Should().BeEmpty();
+        context.CollectionFiles.Count(x => x.CollectionId == collectionId).Should().Be(0);
+        Directory.GetFiles(Path.Combine(destFolderPath, "!hash-error")).Should().NotBeEmpty();
+    }
+
+    [Fact]
+    public async Task WrongHashImagesAreNotMovedToHashErrorFolderWhenHashCheckIsDisabled()
+    {
+        // arrange
+        var scope = _webApp.GetScope();
+        var context = _webApp.GetDbContext(scope);
+        var mediator = scope.ServiceProvider.GetRequiredService<IMediator>();
+        var httpClient = _webApp.Client;
+
+        var collectionId = await CreateCollection(httpClient);
+        var collectionPath = Guid.NewGuid().ToString();
+        
+        var sourceFolderPath = Path.Combine(_webApp.TestsTempLocation, "collection", collectionPath, "source");
+        var destFolderPath = Path.Combine(_webApp.TestsTempLocation, "collection", collectionPath, "dest");
+        
+        Directory.CreateDirectory(sourceFolderPath);
+        Directory.CreateDirectory(destFolderPath);
+        
+        var addSourceFolderCommand = new AddSourceFolderCommand(collectionId, sourceFolderPath, false, false, false, false, Array.Empty<string>());
+        var addDestinationFolderCommand = new SetDestinationFolderCommand(collectionId, destFolderPath, true, true, "!format-error", "!hash-error", "!no-hash-error");
+        
+        await httpClient.PostAsJsonAsync("/collections/source-folders", addSourceFolderCommand);
+        await httpClient.PostAsJsonAsync("/collections/destination-folder", addDestinationFolderCommand);
+        
+        var testFile = new FileInfo(Path.Combine(_webApp.TestsLocation, "Resources", "file1-5f30f9953332c230d11e3f26db5ae9a0.jpg"));
+        
+        // act
+
+        // rename to wrong hash
+        testFile.CopyTo(Path.Combine(sourceFolderPath, "file1-1f30f9953332c230d11e3f26db5ae9a0.jpg"));
+        await mediator.Send(new OverseeCommand(false));
+        
+        // assert
+        Directory.GetFiles(sourceFolderPath).Should().BeEmpty();
+        context.CollectionFiles.Count(x => x.CollectionId == collectionId).Should().Be(1);
+        Directory.Exists(Path.Combine(destFolderPath, "!hash-error")).Should().BeFalse();
     }
 
     private static async Task<Guid> CreateCollection(HttpClient httpClient)
