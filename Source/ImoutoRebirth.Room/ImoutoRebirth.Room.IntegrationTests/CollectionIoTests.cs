@@ -33,15 +33,15 @@ namespace ImoutoRebirth.Room.IntegrationTests;
  * + Check flags [false]: images don't push its name to the tags if the corresponding flag is disabled
  * + Check flags [false]: images don't push its folder name to the tags if the corresponding flag is disabled
  * 
- * Formats: all files are processed if formats are empty
- * Formats: only files with the specified extensions are processed if formats are specified
+ * + Formats: all files are processed if formats are empty
+ * + Formats: only files with the specified extensions are processed if formats are specified
  * 
  * # Destination folder options
- * Check flags: files are renamed if the corresponding flag is enabled
- * Check flags: files are moved to the hash subfolder if the corresponding flag is enabled
- * Check flags [false]: files are not renamed if the corresponding flag is disabled
- * Check flags [false]: files are not moved to the hash subfolder if the corresponding flag is disabled
- * 
+ * + Check flags: files are renamed if the corresponding flag is enabled
+ * + Check flags: files are moved to the hash subfolder if the corresponding flag is enabled
+ * + Check flags [false]: files are not renamed if the corresponding flag is disabled
+ * + Check flags [false]: files are not moved to the hash subfolder if the corresponding flag is disabled
+ *
  */
 
 [Collection("WebApplication")]
@@ -522,6 +522,288 @@ public class CollectionIoTests : IDisposable
                    && x.MetadataSource == MetadataSource.Manual
                    && x.FileTags.Any(y => y is { Type: "Location", Name: "inner" }))
             .Should().BeFalse();
+    }
+
+    [Fact]
+    public async Task ImagesAreIgnoredWhenArentMatchedByExtensions()
+    {
+        // arrange
+        var (collectionId, sourceFolderPath, _) = await CreateDefaultCollection(
+            sourceShouldCheckFormat:              false,
+            sourceShouldCheckHashFromName:        false ,
+            sourceShouldCreateTagsFromSubfolders: false,
+            sourceShouldAddTagFromFilename:       false,
+            sourceSupportedExtensions:            new[] { "png" },
+            destShouldCreateSubfoldersByHash:     true,
+            destShouldRenameByHash:               true);
+        
+        var testFile = new FileInfo(Path.Combine(_webApp.TestsLocation, "Resources", "file1-5f30f9953332c230d11e3f26db5ae9a0.jpg"));
+        
+        // act
+        testFile.CopyTo(Path.Combine(sourceFolderPath, testFile.Name));
+        await _mediator.Send(new OverseeCommand(false));
+        
+        // assert
+        Directory.GetFiles(sourceFolderPath).Should().NotBeEmpty();
+        _context.CollectionFiles.Count(x => x.CollectionId == collectionId).Should().Be(0);
+    }
+
+    [Fact]
+    public async Task ImagesAreNotIgnoredWhenExtensionsFilterIsEmpty()
+    {
+        // arrange
+        var (collectionId, sourceFolderPath, _) = await CreateDefaultCollection(
+            sourceShouldCheckFormat:              false,
+            sourceShouldCheckHashFromName:        false ,
+            sourceShouldCreateTagsFromSubfolders: false,
+            sourceShouldAddTagFromFilename:       false,
+            sourceSupportedExtensions:            Array.Empty<string>(),
+            destShouldCreateSubfoldersByHash:     true,
+            destShouldRenameByHash:               true);
+        
+        var testFile = new FileInfo(Path.Combine(_webApp.TestsLocation, "Resources", "file1-5f30f9953332c230d11e3f26db5ae9a0.jpg"));
+        
+        // act
+        testFile.CopyTo(Path.Combine(sourceFolderPath, testFile.Name));
+        await _mediator.Send(new OverseeCommand(false));
+        
+        // assert
+        Directory.GetFiles(sourceFolderPath).Should().BeEmpty();
+        _context.CollectionFiles.Count(x => x.CollectionId == collectionId).Should().Be(1);
+    }
+
+    [Fact]
+    public async Task ImagesAreNotIgnoredWhenExtensionsFilterIsMatched()
+    {
+        // arrange
+        var (collectionId, sourceFolderPath, _) = await CreateDefaultCollection(
+            sourceShouldCheckFormat:              false,
+            sourceShouldCheckHashFromName:        false ,
+            sourceShouldCreateTagsFromSubfolders: false,
+            sourceShouldAddTagFromFilename:       false,
+            sourceSupportedExtensions:            new []{ "jpg" },
+            destShouldCreateSubfoldersByHash:     true,
+            destShouldRenameByHash:               true);
+        
+        var testFile = new FileInfo(Path.Combine(_webApp.TestsLocation, "Resources", "file1-5f30f9953332c230d11e3f26db5ae9a0.jpg"));
+        
+        // act
+        testFile.CopyTo(Path.Combine(sourceFolderPath, testFile.Name));
+        await _mediator.Send(new OverseeCommand(false));
+        
+        // assert
+        Directory.GetFiles(sourceFolderPath).Should().BeEmpty();
+        _context.CollectionFiles.Count(x => x.CollectionId == collectionId).Should().Be(1);
+    }
+
+    [Fact]
+    public async Task FileIsRenamedToHash()
+    {
+        // arrange
+        var (collectionId, sourceFolderPath, destFolderPath) = await CreateDefaultCollection(
+            sourceShouldCheckFormat:              false,
+            sourceShouldCheckHashFromName:        false ,
+            sourceShouldCreateTagsFromSubfolders: false,
+            sourceShouldAddTagFromFilename:       false,
+            sourceSupportedExtensions:            Array.Empty<string>(),
+            destShouldCreateSubfoldersByHash:     false,
+            destShouldRenameByHash:               true);
+        
+        var testFile = new FileInfo(Path.Combine(_webApp.TestsLocation, "Resources", "file1-5f30f9953332c230d11e3f26db5ae9a0.jpg"));
+        
+        // act
+        testFile.CopyTo(Path.Combine(sourceFolderPath, testFile.Name));
+        await _mediator.Send(new OverseeCommand(false));
+        
+        // assert
+        _context.CollectionFiles.Count(x => x.CollectionId == collectionId).Should().Be(1);
+        Directory.GetFiles(sourceFolderPath).Should().BeEmpty();
+        Directory.GetFiles(destFolderPath).Should().HaveCount(1);
+        Directory.GetFiles(destFolderPath).First().Should().Be(Path.Combine(destFolderPath, "5f30f9953332c230d11e3f26db5ae9a0.jpg"));
+    }
+
+    [Fact]
+    public async Task FileIsNotRenamedToHashWhenShouldRenameByHashIsDisabled()
+    {
+        // arrange
+        var (collectionId, sourceFolderPath, destFolderPath) = await CreateDefaultCollection(
+            sourceShouldCheckFormat:              false,
+            sourceShouldCheckHashFromName:        false ,
+            sourceShouldCreateTagsFromSubfolders: false,
+            sourceShouldAddTagFromFilename:       false,
+            sourceSupportedExtensions:            Array.Empty<string>(),
+            destShouldCreateSubfoldersByHash:     false,
+            destShouldRenameByHash:               false);
+        
+        var testFile = new FileInfo(Path.Combine(_webApp.TestsLocation, "Resources", "file1-5f30f9953332c230d11e3f26db5ae9a0.jpg"));
+        
+        // act
+        testFile.CopyTo(Path.Combine(sourceFolderPath, testFile.Name));
+        await _mediator.Send(new OverseeCommand(false));
+        
+        // assert
+        _context.CollectionFiles.Count(x => x.CollectionId == collectionId).Should().Be(1);
+        Directory.GetFiles(sourceFolderPath).Should().BeEmpty();
+        Directory.GetFiles(destFolderPath).Should().HaveCount(1);
+        Directory.GetFiles(destFolderPath).First().Should().Be(Path.Combine(destFolderPath, "file1-5f30f9953332c230d11e3f26db5ae9a0.jpg"));
+    }
+
+    [Fact]
+    public async Task FileIsMovedToHashFolder()
+    {
+        // arrange
+        var (collectionId, sourceFolderPath, destFolderPath) = await CreateDefaultCollection(
+            sourceShouldCheckFormat:              false,
+            sourceShouldCheckHashFromName:        false ,
+            sourceShouldCreateTagsFromSubfolders: false,
+            sourceShouldAddTagFromFilename:       false,
+            sourceSupportedExtensions:            Array.Empty<string>(),
+            destShouldCreateSubfoldersByHash:     true,
+            destShouldRenameByHash:               true);
+        
+        var testFile = new FileInfo(Path.Combine(_webApp.TestsLocation, "Resources", "file1-5f30f9953332c230d11e3f26db5ae9a0.jpg"));
+        
+        // act
+        testFile.CopyTo(Path.Combine(sourceFolderPath, testFile.Name));
+        await _mediator.Send(new OverseeCommand(false));
+        
+        // assert
+        _context.CollectionFiles.Count(x => x.CollectionId == collectionId).Should().Be(1);
+        Directory.GetFiles(sourceFolderPath).Should().BeEmpty();
+        Directory.GetFiles(destFolderPath, "*", SearchOption.AllDirectories).Should().HaveCount(1);
+        Directory.GetFiles(destFolderPath, "*", SearchOption.AllDirectories).First()
+            .Should().Be(Path.Combine(destFolderPath, "5f", "30", "5f30f9953332c230d11e3f26db5ae9a0.jpg"));
+    }
+
+    [Fact]
+    public async Task FileIsNotMovedToHashFolder()
+    {
+        // arrange
+        var (collectionId, sourceFolderPath, destFolderPath) = await CreateDefaultCollection(
+            sourceShouldCheckFormat:              false,
+            sourceShouldCheckHashFromName:        false ,
+            sourceShouldCreateTagsFromSubfolders: false,
+            sourceShouldAddTagFromFilename:       false,
+            sourceSupportedExtensions:            Array.Empty<string>(),
+            destShouldCreateSubfoldersByHash:     false,
+            destShouldRenameByHash:               true);
+        
+        var testFile = new FileInfo(Path.Combine(_webApp.TestsLocation, "Resources", "file1-5f30f9953332c230d11e3f26db5ae9a0.jpg"));
+        
+        // act
+        testFile.CopyTo(Path.Combine(sourceFolderPath, testFile.Name));
+        await _mediator.Send(new OverseeCommand(false));
+        
+        // assert
+        _context.CollectionFiles.Count(x => x.CollectionId == collectionId).Should().Be(1);
+        Directory.GetFiles(sourceFolderPath).Should().BeEmpty();
+        Directory.GetFiles(destFolderPath).Should().HaveCount(1);
+        Directory.GetFiles(destFolderPath).First().Should().Be(Path.Combine(destFolderPath, "5f30f9953332c230d11e3f26db5ae9a0.jpg"));
+    }
+
+    [Fact]
+    public async Task FileIsMovedToHashFolderIsNotRenamedWithSameName()
+    {
+        // arrange
+        var (collectionId, sourceFolderPath, destFolderPath) = await CreateDefaultCollection(
+            sourceShouldCheckFormat:              false,
+            sourceShouldCheckHashFromName:        false ,
+            sourceShouldCreateTagsFromSubfolders: false,
+            sourceShouldAddTagFromFilename:       false,
+            sourceSupportedExtensions:            Array.Empty<string>(),
+            destShouldCreateSubfoldersByHash:     true,
+            destShouldRenameByHash:               false);
+        
+        var testFile1 = new FileInfo(Path.Combine(_webApp.TestsLocation, "Resources", "file1-5f30f9953332c230d11e3f26db5ae9a0.jpg"));
+        var testFile2 = new FileInfo(Path.Combine(_webApp.TestsLocation, "Resources", "file2-09e56a8fd9d1e8beb62c50e6945632bf.jpg"));
+        
+        // act
+        testFile1.CopyTo(Path.Combine(sourceFolderPath, testFile1.Name));
+        await _mediator.Send(new OverseeCommand(false));
+            
+        testFile2.CopyTo(Path.Combine(sourceFolderPath, testFile1.Name));
+        await _mediator.Send(new OverseeCommand(false));
+        
+        // assert
+        _context.CollectionFiles.Count(x => x.CollectionId == collectionId).Should().Be(2);
+        Directory.GetFiles(sourceFolderPath).Should().BeEmpty();
+        Directory.GetFiles(destFolderPath, "*", SearchOption.AllDirectories).Should().HaveCount(2);
+        Directory.GetFiles(destFolderPath, "*", SearchOption.AllDirectories).First()
+            .Should().Be(Path.Combine(destFolderPath, "09", "e5", "file1-5f30f9953332c230d11e3f26db5ae9a0.jpg"));
+        Directory.GetFiles(destFolderPath, "*", SearchOption.AllDirectories).ElementAt(1)
+            .Should().Be(Path.Combine(destFolderPath, "5f", "30", "file1-5f30f9953332c230d11e3f26db5ae9a0.jpg"));
+    }
+
+    [Fact]
+    public async Task FileIsMovedToDestinationWithSameName()
+    {
+        // arrange
+        var (collectionId, sourceFolderPath, destFolderPath) = await CreateDefaultCollection(
+            sourceShouldCheckFormat:              false,
+            sourceShouldCheckHashFromName:        false ,
+            sourceShouldCreateTagsFromSubfolders: false,
+            sourceShouldAddTagFromFilename:       false,
+            sourceSupportedExtensions:            Array.Empty<string>(),
+            destShouldCreateSubfoldersByHash:     false,
+            destShouldRenameByHash:               false);
+        
+        var testFile1 = new FileInfo(Path.Combine(_webApp.TestsLocation, "Resources", "file1-5f30f9953332c230d11e3f26db5ae9a0.jpg"));
+        var testFile2 = new FileInfo(Path.Combine(_webApp.TestsLocation, "Resources", "file2-09e56a8fd9d1e8beb62c50e6945632bf.jpg"));
+        
+        // act
+        testFile1.CopyTo(Path.Combine(sourceFolderPath, testFile1.Name));
+        await _mediator.Send(new OverseeCommand(false));
+            
+        testFile2.CopyTo(Path.Combine(sourceFolderPath, testFile1.Name));
+        await _mediator.Send(new OverseeCommand(false));
+        
+        // assert
+        _context.CollectionFiles.Count(x => x.CollectionId == collectionId).Should().Be(2);
+        Directory.GetFiles(sourceFolderPath).Should().BeEmpty();
+        Directory.GetFiles(destFolderPath, "*", SearchOption.AllDirectories).Should().HaveCount(2);
+        Directory.GetFiles(destFolderPath, "*", SearchOption.AllDirectories).First()
+            .Should().Be(Path.Combine(destFolderPath, "file1-5f30f9953332c230d11e3f26db5ae9a0 (0).jpg"));
+        Directory.GetFiles(destFolderPath, "*", SearchOption.AllDirectories).ElementAt(1)
+            .Should().Be(Path.Combine(destFolderPath, "file1-5f30f9953332c230d11e3f26db5ae9a0.jpg"));
+    }
+
+    [Fact]
+    public async Task MultipleFileIsMovedToDestinationWithSameName()
+    {
+        // arrange
+        var (collectionId, sourceFolderPath, destFolderPath) = await CreateDefaultCollection(
+            sourceShouldCheckFormat:              false,
+            sourceShouldCheckHashFromName:        false ,
+            sourceShouldCreateTagsFromSubfolders: false,
+            sourceShouldAddTagFromFilename:       false,
+            sourceSupportedExtensions:            Array.Empty<string>(),
+            destShouldCreateSubfoldersByHash:     false,
+            destShouldRenameByHash:               false);
+        
+        var testFile1 = new FileInfo(Path.Combine(_webApp.TestsLocation, "Resources", "file1-5f30f9953332c230d11e3f26db5ae9a0.jpg"));
+        var testFile2 = new FileInfo(Path.Combine(_webApp.TestsLocation, "Resources", "file2-09e56a8fd9d1e8beb62c50e6945632bf.jpg"));
+        var testFile3 = new FileInfo(Path.Combine(_webApp.TestsLocation, "Resources", "empty-file.jpg"));
+        
+        // act
+        testFile1.CopyTo(Path.Combine(sourceFolderPath, testFile1.Name));
+        await _mediator.Send(new OverseeCommand(false));
+            
+        testFile2.CopyTo(Path.Combine(sourceFolderPath, testFile1.Name));
+        await _mediator.Send(new OverseeCommand(false));
+            
+        testFile3.CopyTo(Path.Combine(sourceFolderPath, testFile1.Name));
+        await _mediator.Send(new OverseeCommand(false));
+        
+        // assert
+        _context.CollectionFiles.Count(x => x.CollectionId == collectionId).Should().Be(3);
+        Directory.GetFiles(sourceFolderPath).Should().BeEmpty();
+        Directory.GetFiles(destFolderPath, "*", SearchOption.AllDirectories).Should().HaveCount(3);
+        Directory.GetFiles(destFolderPath, "*", SearchOption.AllDirectories).First()
+            .Should().Be(Path.Combine(destFolderPath, "file1-5f30f9953332c230d11e3f26db5ae9a0 (0).jpg"));
+        Directory.GetFiles(destFolderPath, "*", SearchOption.AllDirectories).ElementAt(1)
+            .Should().Be(Path.Combine(destFolderPath, "file1-5f30f9953332c230d11e3f26db5ae9a0 (1).jpg"));
+        Directory.GetFiles(destFolderPath, "*", SearchOption.AllDirectories).ElementAt(2)
+            .Should().Be(Path.Combine(destFolderPath, "file1-5f30f9953332c230d11e3f26db5ae9a0.jpg"));
     }
 
     private async Task<CreatedCollection> CreateDefaultCollection(

@@ -85,11 +85,11 @@ public partial class SystemFile
         var counter = 0;
         FileInfo countedFile;
 
-        var filenameWithoutExtension = newFile.Name[..(newFile.Name.Length - newFile.Extension.Length - 1)];
+        var filenameWithoutExtension = newFile.Name[..^newFile.Extension.Length];
 
         do
         {
-            var countedPath = $@"{newFile.Directory}\{filenameWithoutExtension} ({counter}).{newFile.Extension}";
+            var countedPath = $@"{newFile.Directory}\{filenameWithoutExtension} ({counter}){newFile.Extension}";
             countedFile = new FileInfo(countedPath);
             counter++;
         }
