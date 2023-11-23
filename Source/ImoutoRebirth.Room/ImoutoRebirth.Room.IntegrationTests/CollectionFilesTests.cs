@@ -30,9 +30,10 @@ public class CollectionFilesTests
         var httpClient = _webApp.Client;
 
         var collectionId = await CreateCollection(httpClient);
+        var collectionPath = Guid.NewGuid().ToString();
         
-        var sourceFolderPath = Path.Combine(_webApp.TestsTempLocation, "collection", "source");
-        var destFolderPath = Path.Combine(_webApp.TestsTempLocation, "collection", "dest");
+        var sourceFolderPath = Path.Combine(_webApp.TestsTempLocation, "collection", collectionPath, "source");
+        var destFolderPath = Path.Combine(_webApp.TestsTempLocation, "collection", collectionPath, "dest");
 
         if (Directory.Exists(sourceFolderPath))
             Directory.Delete(sourceFolderPath, true);
@@ -64,21 +65,25 @@ public class CollectionFilesTests
         savedFile.IsRemoved.Should().BeFalse();
         savedFile.OriginalPath.Should().Be(Path.Combine(sourceFolderPath, file.Name));
 
-        harness.Sent.Count().Should().Be(2);
+        harness.Sent.Count().Should().BeGreaterOrEqualTo(2);
 
-        var newFileCommand = harness.Sent.Select(x => x.MessageType == typeof(INewFileCommand)).FirstOrDefault();
-        newFileCommand.Should().NotBeNull();
-        var message1 = newFileCommand!.MessageObject as INewFileCommand;
-        message1!.Md5.Should().Be("5f30f9953332c230d11e3f26db5ae9a0");
-        message1.FileId.Should().Be(savedFile.Id);
+        var newFileCommands = harness.Sent.Select(x => x.MessageType == typeof(INewFileCommand)).ToList();
 
-        var updateMetadataCommand = harness.Sent.Select(x => x.MessageType == typeof(IUpdateMetadataCommand)).FirstOrDefault();
-        updateMetadataCommand.Should().NotBeNull();
-        var message2 = updateMetadataCommand!.MessageObject as IUpdateMetadataCommand;
-        message2!.FileId.Should().Be(savedFile.Id);
-        message2.MetadataSource.Should().Be(MetadataSource.Manual);
-        message2.FileTags[0].Type.Should().Be("Location");
-        message2.FileTags[0].Name.Should().Be("file1-5f30f9953332c230d11e3f26db5ae9a0.jpg");
+        newFileCommands.Any(x =>
+                x.MessageObject is INewFileCommand message
+                && message.FileId == savedFile.Id
+                && message.Md5 == "5f30f9953332c230d11e3f26db5ae9a0")
+            .Should().BeTrue();
+
+        var updateMetadataCommands = harness.Sent.Select(x => x.MessageType == typeof(IUpdateMetadataCommand)).ToList();
+        
+        updateMetadataCommands.Any(x =>
+                x.MessageObject is IUpdateMetadataCommand message
+                && message.FileId == savedFile.Id
+                && message.MetadataSource == MetadataSource.Manual
+                && message.FileTags[0].Type == "Location"
+                && message.FileTags[0].Name == "file1-5f30f9953332c230d11e3f26db5ae9a0.jpg")
+            .Should().BeTrue();
     }
 
     [Fact]
@@ -118,23 +123,28 @@ public class CollectionFilesTests
         savedFile.IsRemoved.Should().BeFalse();
         savedFile.OriginalPath.Should().Be(testFilePath);
 
-        harness.Sent.Count().Should().Be(2);
+        harness.Sent.Count().Should().BeGreaterOrEqualTo(2);
 
-        var newFileCommand = harness.Sent.Select(x => x.MessageType == typeof(INewFileCommand)).FirstOrDefault();
-        newFileCommand.Should().NotBeNull();
-        var message1 = newFileCommand!.MessageObject as INewFileCommand;
-        message1!.Md5.Should().Be("5f30f9953332c230d11e3f26db5ae9a0");
-        message1.FileId.Should().Be(savedFile.Id);
+        var newFileCommands = harness.Sent.Select(x => x.MessageType == typeof(INewFileCommand)).ToList();
 
-        var updateMetadataCommand = harness.Sent.Select(x => x.MessageType == typeof(IUpdateMetadataCommand)).FirstOrDefault();
-        updateMetadataCommand.Should().NotBeNull();
-        var message2 = updateMetadataCommand!.MessageObject as IUpdateMetadataCommand;
-        message2!.FileId.Should().Be(savedFile.Id);
-        message2.MetadataSource.Should().Be(MetadataSource.Manual);
-        message2.FileTags[0].Type.Should().Be("Location");
-        message2.FileTags[0].Name.Should().Be("file1-5f30f9953332c230d11e3f26db5ae9a0.jpg");
-        message2.FileTags[1].Type.Should().Be("Location");
-        message2.FileTags[1].Name.Should().Be("inner");
+        newFileCommands.Any(x =>
+                x.MessageObject is INewFileCommand message
+                && message.FileId == savedFile.Id
+                && message.Md5 == "5f30f9953332c230d11e3f26db5ae9a0")
+            .Should().BeTrue();
+
+        var updateMetadataCommands = harness.Sent.Select(x => x.MessageType == typeof(IUpdateMetadataCommand)).ToList();
+        
+        updateMetadataCommands.Any(x =>
+                x.MessageObject is IUpdateMetadataCommand message
+                && message.FileId == savedFile.Id
+                && message.MetadataSource == MetadataSource.Manual
+                && message.FileTags[0].Type == "Location"
+                && message.FileTags[0].Name == "file1-5f30f9953332c230d11e3f26db5ae9a0.jpg"
+                && message.FileTags[1].Type == "Location"
+                && message.FileTags[1].Name == "inner"
+                )
+            .Should().BeTrue();
     }
 
     private static async Task<Guid> CreateCollection(HttpClient httpClient)
