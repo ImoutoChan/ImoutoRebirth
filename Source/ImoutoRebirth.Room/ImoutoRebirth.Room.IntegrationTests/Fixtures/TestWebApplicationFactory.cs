@@ -2,7 +2,6 @@
 using ImoutoRebirth.Common.MassTransit;
 using ImoutoRebirth.Room.Database;
 using ImoutoRebirth.Room.Infrastructure;
-using MassTransit;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
@@ -10,7 +9,7 @@ using Microsoft.Extensions.Hosting;
 using Npgsql;
 using Xunit;
 
-namespace ImoutoRebirth.Room.IntegrationTests;
+namespace ImoutoRebirth.Room.IntegrationTests.Fixtures;
 
 [CollectionDefinition("WebApplication")]
 public class WebApplicationCollection : ICollectionFixture<TestWebApplicationFactory<Program>>;

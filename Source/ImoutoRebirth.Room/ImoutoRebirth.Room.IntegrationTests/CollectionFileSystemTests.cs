@@ -6,6 +6,7 @@ using ImoutoRebirth.Meido.MessageContracts;
 using ImoutoRebirth.Room.Application.Cqrs;
 using ImoutoRebirth.Room.Application.Cqrs.FoldersSlice;
 using ImoutoRebirth.Room.Database;
+using ImoutoRebirth.Room.IntegrationTests.Fixtures;
 using MassTransit.Testing;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
@@ -45,7 +46,7 @@ namespace ImoutoRebirth.Room.IntegrationTests;
  */
 
 [Collection("WebApplication")]
-public class CollectionIoTests : IDisposable
+public class CollectionFileSystemTests : IDisposable
 {
     private readonly TestWebApplicationFactory<Program> _webApp;
     private readonly IServiceScope _scope;
@@ -54,7 +55,7 @@ public class CollectionIoTests : IDisposable
     private readonly ITestHarness _harness;
     private readonly HttpClient _httpClient;
 
-    public CollectionIoTests(TestWebApplicationFactory<Program> webApp)
+    public CollectionFileSystemTests(TestWebApplicationFactory<Program> webApp)
     {
         _webApp = webApp;
 

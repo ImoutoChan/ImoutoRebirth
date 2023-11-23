@@ -19,20 +19,17 @@ internal class UpdateLocationTagsCommandHandler : ICommandHandler<UpdateLocation
 {
     private readonly ICollectionRepository _collectionRepository;
     private readonly ILogger<UpdateLocationTagsCommandHandler> _logger;
-    private readonly ICollectionFileRepository _collectionFileRepository;
     private readonly IRemoteCommandService _remoteCommandService;
     private readonly IMediator _mediator;
 
     public UpdateLocationTagsCommandHandler(
         ICollectionRepository collectionRepository,
         ILogger<UpdateLocationTagsCommandHandler> logger,
-        ICollectionFileRepository collectionFileRepository,
         IRemoteCommandService remoteCommandService,
         IMediator mediator)
     {
         _collectionRepository = collectionRepository;
         _logger = logger;
-        _collectionFileRepository = collectionFileRepository;
         _remoteCommandService = remoteCommandService;
         _mediator = mediator;
     }
@@ -75,7 +72,7 @@ internal class UpdateLocationTagsCommandHandler : ICommandHandler<UpdateLocation
         foreach (var file in allFiles)
         {
             var foundFiles = await _mediator.Send(
-                new CollectionFilesModelsQuery(new CollectionFilesQuery(
+                new CollectionFilesModelsQuery(new(
                     CollectionId: default,
                     CollectionFileIds: Array.Empty<Guid>(),
                     Path: file.FullName,

@@ -32,7 +32,9 @@ var configuration = builder.Configuration;
 var roomSettings = builder.Configuration.GetRequired<RoomSettings>();
 
 builder.Services
-    .AddRoomApplication(typeof(ImoutoRebirth.Room.Application.ServiceCollectionExtensions).Assembly)
+    .AddRoomApplication(
+        typeof(ImoutoRebirth.Room.Application.ServiceCollectionExtensions).Assembly,
+        typeof(ImoutoRebirth.Room.DataAccess.ServiceCollectionExtensions).Assembly)
     .AddRoomDataAccess()
     .AddRoomDatabase(configuration)
     .AddRoomInfrastructure()

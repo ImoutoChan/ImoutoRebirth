@@ -56,8 +56,8 @@ internal static class EndpointsMappings
                 => mediator.Send(new CollectionFilesCountQuery(query), ct))
             .WithName("CountCollectionFiles");
         
-        files.MapPost("updateSourceTags", (UpdateLocationTagsCommand command, IMediator mediator, CancellationToken ct) 
-                => mediator.Send(command, ct))
+        files.MapPost("updateSourceTags", (IMediator mediator, CancellationToken ct) 
+                => mediator.Send(new UpdateLocationTagsCommand(), ct))
             .WithName("UpdateSourceTags");
 
         files.MapDelete("/{id:guid}", (Guid id, IMediator mediator, CancellationToken ct)

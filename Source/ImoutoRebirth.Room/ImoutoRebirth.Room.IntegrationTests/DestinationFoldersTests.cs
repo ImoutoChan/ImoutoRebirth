@@ -2,6 +2,7 @@
 using System.Reflection;
 using FluentAssertions;
 using ImoutoRebirth.Room.Application.Cqrs.FoldersSlice;
+using ImoutoRebirth.Room.IntegrationTests.Fixtures;
 using Microsoft.EntityFrameworkCore;
 using Xunit;
 
