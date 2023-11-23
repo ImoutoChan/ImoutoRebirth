@@ -5,7 +5,7 @@ using Microsoft.Extensions.Logging;
 
 namespace ImoutoRebirth.Room.Application.Cqrs;
 
-public record OverseeCommand : ICommand;
+public record OverseeCommand(bool RepeatWhenNewFilesAreDiscovered) : ICommand;
 
 internal class OverseeCommandHandler : ICommandHandler<OverseeCommand>
 {
@@ -45,6 +45,9 @@ internal class OverseeCommandHandler : ICommandHandler<OverseeCommand>
                     var result = await _mediator.Send(new OverseeCollectionCommand(id), ct);
                     anyFileMoved |= result.AnyFileMoved;
                 }
+                
+                if (!request.RepeatWhenNewFilesAreDiscovered)
+                    break;
             }
             catch (Exception e)
             {

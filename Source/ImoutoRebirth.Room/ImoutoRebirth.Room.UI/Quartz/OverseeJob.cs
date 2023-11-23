@@ -11,7 +11,7 @@ public class OverseeJob : IJob
 
     public OverseeJob(IMediator mediator) => _mediator = mediator;
 
-    public async Task Execute(IJobExecutionContext context) => await _mediator.Send(new OverseeCommand());
+    public async Task Execute(IJobExecutionContext context) => await _mediator.Send(new OverseeCommand(true));
 
     public class Description : IQuartzJobDescription
     {

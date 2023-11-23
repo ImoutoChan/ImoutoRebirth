@@ -32,6 +32,12 @@
         <None Update="Resources\file1-5f30f9953332c230d11e3f26db5ae9a0.jpg">
             <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
         </None>
+        <None Update="Resources\file2-09e56a8fd9d1e8beb62c50e6945632bf.jpg">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </None>
+        <None Update="Resources\empty-file.jpg">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </None>
     </ItemGroup>
 
 </Project>
