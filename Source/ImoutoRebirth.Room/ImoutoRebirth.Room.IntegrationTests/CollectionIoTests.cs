@@ -25,13 +25,13 @@ namespace ImoutoRebirth.Room.IntegrationTests;
  * + Check flags: images with wrong hash in the name are moved to the bad hash folder
  * + Check flags: images without hash moved to the no hash folder
  * + Check flags: images push its name to the tags
- * Check flags: images push its folder name to the tags
+ * + Check flags: images push its folder name to the tags
  * 
  * + Check flags [false]: bad images are processed correctly if format check is disabled
  * + Check flags [false]: images with wrong hash in the name are processed correctly if hash check is disabled
  * + Check flags [false]: images without hash are processed correctly if no hash check is disabled
  * + Check flags [false]: images don't push its name to the tags if the corresponding flag is disabled
- * Check flags [false]: images don't push its folder name to the tags if the corresponding flag is disabled
+ * + Check flags [false]: images don't push its folder name to the tags if the corresponding flag is disabled
  * 
  * Formats: all files are processed if formats are empty
  * Formats: only files with the specified extensions are processed if formats are specified
@@ -108,8 +108,7 @@ public class CollectionIoTests : IDisposable
             .AnyMessage<IUpdateMetadataCommand>(x
                 => x.FileId == savedFile.Id
                    && x.MetadataSource == MetadataSource.Manual
-                   && x.FileTags[0].Type == "Location"
-                   && x.FileTags[0].Name == "file1-5f30f9953332c230d11e3f26db5ae9a0.jpg")
+                   && x.FileTags.Any(y => y is { Type: "Location", Name: "file1-5f30f9953332c230d11e3f26db5ae9a0.jpg" }))
             .Should().BeTrue();
     }
 
@@ -152,10 +151,8 @@ public class CollectionIoTests : IDisposable
             .AnyMessage<IUpdateMetadataCommand>(x
                 => x.FileId == savedFile.Id
                    && x.MetadataSource == MetadataSource.Manual
-                   && x.FileTags[0].Type == "Location"
-                   && x.FileTags[0].Name == "file1-5f30f9953332c230d11e3f26db5ae9a0.jpg"
-                   && x.FileTags[1].Type == "Location"
-                   && x.FileTags[1].Name == "inner")
+                   && x.FileTags.Any(y => y is { Type: "Location", Name: "file1-5f30f9953332c230d11e3f26db5ae9a0.jpg" })
+                   && x.FileTags.Any(y => y is { Type: "Location", Name: "inner" }))
             .Should().BeTrue();
     }
 
@@ -394,7 +391,7 @@ public class CollectionIoTests : IDisposable
     }
 
     [Fact]
-    public async Task ImageNameArePushedAsTag()
+    public async Task ImageNameIsPushedAsTag()
     {
         // arrange
         var (collectionId, sourceFolderPath, _) = await CreateDefaultCollection(
@@ -421,13 +418,12 @@ public class CollectionIoTests : IDisposable
             .AnyMessage<IUpdateMetadataCommand>(x
                 => x.FileId == dbFile.Id
                    && x.MetadataSource == MetadataSource.Manual
-                   && x.FileTags[0].Type == "Location"
-                   && x.FileTags[0].Name == "file1-5f30f9953332c230d11e3f26db5ae9a0.jpg")
+                   && x.FileTags.Any(y => y is { Type: "Location", Name: "file1-5f30f9953332c230d11e3f26db5ae9a0.jpg" }))
             .Should().BeTrue();
     }
 
     [Fact]
-    public async Task ImageNameAreNotPushedAsTagWhenShouldAddTagFromFilenameDisabled()
+    public async Task ImageNameIsNotPushedAsTagWhenShouldAddTagFromFilenameDisabled()
     {
         // arrange
         var (collectionId, sourceFolderPath, _) = await CreateDefaultCollection(
@@ -452,8 +448,79 @@ public class CollectionIoTests : IDisposable
         
         _harness.Sent
             .AnyMessage<IUpdateMetadataCommand>(x
-                => x.FileId == dbFile.Id
-                   && x.FileTags[0].Name == "file1-5f30f9953332c230d11e3f26db5ae9a0.jpg")
+                => x.FileId == dbFile.Id && x.FileTags.Any(y => y.Name == "file1-5f30f9953332c230d11e3f26db5ae9a0.jpg"))
+            .Should().BeFalse();
+    }
+
+    [Fact]
+    public async Task ImageSubfolderIsPushedAsTag()
+    {
+        // arrange
+        var collectionId = await CreateCollection();
+        var collectionPath = Guid.NewGuid().ToString();
+        
+        var sourceFolderPath = Path.Combine(_webApp.TestsTempLocation, "collections", collectionPath, "source");
+        var innerSourceFolderPath = Path.Combine(sourceFolderPath, "inner");
+        Directory.CreateDirectory(innerSourceFolderPath);
+        
+        var addSourceFolderCommand = new AddSourceFolderCommand(collectionId, sourceFolderPath, true, true, true, true, new[] { "jpg" });
+        await _httpClient.PostAsJsonAsync("/collections/source-folders", addSourceFolderCommand);
+        
+        // act
+        var file = new FileInfo(Path.Combine(_webApp.TestsLocation, "Resources", "file1-5f30f9953332c230d11e3f26db5ae9a0.jpg"));
+        var testFilePath = Path.Combine(innerSourceFolderPath, file.Name);
+        file.CopyTo(testFilePath);
+        
+        await _mediator.Send(new OverseeCommand(false));
+        
+        // assert
+        var savedFile = await _context.CollectionFiles.FirstAsync(x => x.CollectionId == collectionId);
+
+        _harness.Sent
+            .AnyMessage<INewFileCommand>(x => x.FileId == savedFile.Id && x.Md5 == "5f30f9953332c230d11e3f26db5ae9a0")
+            .Should().BeTrue();
+
+        _harness.Sent
+            .AnyMessage<IUpdateMetadataCommand>(x
+                => x.FileId == savedFile.Id
+                   && x.MetadataSource == MetadataSource.Manual
+                   && x.FileTags.Any(y => y is { Type: "Location", Name: "inner" }))
+            .Should().BeTrue();
+    }
+
+    [Fact]
+    public async Task ImageSubfolderIsNotPushedAsTagWhenShouldCreateTagsFromSubfoldersIsDisabled()
+    {
+        // arrange
+        var collectionId = await CreateCollection();
+        var collectionPath = Guid.NewGuid().ToString();
+        
+        var sourceFolderPath = Path.Combine(_webApp.TestsTempLocation, "collections", collectionPath, "source");
+        var innerSourceFolderPath = Path.Combine(sourceFolderPath, "inner");
+        Directory.CreateDirectory(innerSourceFolderPath);
+        
+        var addSourceFolderCommand = new AddSourceFolderCommand(collectionId, sourceFolderPath, true, true, false, true, new[] { "jpg" });
+        await _httpClient.PostAsJsonAsync("/collections/source-folders", addSourceFolderCommand);
+        
+        // act
+        var file = new FileInfo(Path.Combine(_webApp.TestsLocation, "Resources", "file1-5f30f9953332c230d11e3f26db5ae9a0.jpg"));
+        var testFilePath = Path.Combine(innerSourceFolderPath, file.Name);
+        file.CopyTo(testFilePath);
+        
+        await _mediator.Send(new OverseeCommand(false));
+        
+        // assert
+        var savedFile = await _context.CollectionFiles.FirstAsync(x => x.CollectionId == collectionId);
+
+        _harness.Sent
+            .AnyMessage<INewFileCommand>(x => x.FileId == savedFile.Id && x.Md5 == "5f30f9953332c230d11e3f26db5ae9a0")
+            .Should().BeTrue();
+
+        _harness.Sent
+            .AnyMessage<IUpdateMetadataCommand>(x
+                => x.FileId == savedFile.Id
+                   && x.MetadataSource == MetadataSource.Manual
+                   && x.FileTags.Any(y => y is { Type: "Location", Name: "inner" }))
             .Should().BeFalse();
     }
 
