@@ -4,6 +4,7 @@ using ImoutoRebirth.Lilin.MessageContracts;
 using ImoutoRebirth.Meido.MessageContracts;
 using ImoutoRebirth.Room.Application.Cqrs;
 using ImoutoRebirth.Room.Application.Cqrs.FoldersSlice;
+using ImoutoRebirth.Room.Database;
 using MassTransit.Testing;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
@@ -21,14 +22,14 @@ namespace ImoutoRebirth.Room.IntegrationTests;
  * # Source folder options
  * + Check flags: bad images are moved to the bad format folder
  * + Check flags: images with wrong hash in the name are moved to the bad hash folder
- * Check flags: images without hash moved to the no hash folder
- * Check flags: images push its name to the tags
+ * + Check flags: images without hash moved to the no hash folder
+ * + Check flags: images push its name to the tags
  * Check flags: images push its folder name to the tags
  * 
  * + Check flags [false]: bad images are processed correctly if format check is disabled
  * + Check flags [false]: images with wrong hash in the name are processed correctly if hash check is disabled
- * Check flags [false]: images without hash are processed correctly if no hash check is disabled
- * Check flags [false]: images don't push its name to the tags if the corresponding flag is disabled
+ * + Check flags [false]: images without hash are processed correctly if no hash check is disabled
+ * + Check flags [false]: images don't push its name to the tags if the corresponding flag is disabled
  * Check flags [false]: images don't push its folder name to the tags if the corresponding flag is disabled
  * 
  * Formats: all files are processed if formats are empty
@@ -43,44 +44,53 @@ namespace ImoutoRebirth.Room.IntegrationTests;
  */
 
 [Collection("WebApplication")]
-public class CollectionIoTests
+public class CollectionIoTests : IDisposable
 {
     private readonly TestWebApplicationFactory<Program> _webApp;
+    private readonly IServiceScope _scope;
+    private readonly RoomDbContext _context;
+    private readonly IMediator _mediator;
+    private readonly ITestHarness _harness;
+    private readonly HttpClient _httpClient;
 
-    public CollectionIoTests(TestWebApplicationFactory<Program> webApp) => _webApp = webApp;
+    public CollectionIoTests(TestWebApplicationFactory<Program> webApp)
+    {
+        _webApp = webApp;
+
+        _scope = _webApp.GetScope();
+        _context = _webApp.GetDbContext(_scope);
+        _mediator = _scope.ServiceProvider.GetRequiredService<IMediator>();
+        _harness = _scope.ServiceProvider.GetRequiredService<ITestHarness>();
+        _httpClient = _webApp.Client;
+    }
+
+    public void Dispose()
+    {
+        _scope.Dispose();
+        _context.Dispose();
+        _httpClient.Dispose();
+    }
 
     [Fact]
     public async Task FileInSourceFolderShouldBeAddedToDatabaseAndMovedToDestinationFolder()
     {
         // arrange
-        var scope = _webApp.GetScope();
-        var context = _webApp.GetDbContext(scope);
-        var mediator = scope.ServiceProvider.GetRequiredService<IMediator>();
-        var harness = scope.ServiceProvider.GetRequiredService<ITestHarness>();
-        var httpClient = _webApp.Client;
+        var (collectionId, sourceFolderPath, destFolderPath) = await CreateDefaultCollection(
+            sourceShouldCheckFormat:              true,
+            sourceShouldCheckHashFromName:        true,
+            sourceShouldCreateTagsFromSubfolders: true,
+            sourceShouldAddTagFromFilename:       true,
+            sourceSupportedExtensions:            new[] { "jpg" },
+            destShouldCreateSubfoldersByHash:     true,
+            destShouldRenameByHash:               true);
 
-        var collectionId = await CreateCollection(httpClient);
-        var collectionPath = Guid.NewGuid().ToString();
-        
-        var sourceFolderPath = Path.Combine(_webApp.TestsTempLocation, "collection", collectionPath, "source");
-        var destFolderPath = Path.Combine(_webApp.TestsTempLocation, "collection", collectionPath, "dest");
-        
-        Directory.CreateDirectory(sourceFolderPath);
-        Directory.CreateDirectory(destFolderPath);
-        
-        var addSourceFolderCommand = new AddSourceFolderCommand(collectionId, sourceFolderPath, true, true, true, true, new[] { "jpg" });
-        var addDestinationFolderCommand = new SetDestinationFolderCommand(collectionId, destFolderPath, true, true, "!format-error", "!hash-error", "!no-hash-error");
-        
-        await httpClient.PostAsJsonAsync("/collections/source-folders", addSourceFolderCommand);
-        await httpClient.PostAsJsonAsync("/collections/destination-folder", addDestinationFolderCommand);
-        
         // act
         var file = new FileInfo(Path.Combine(_webApp.TestsLocation, "Resources", "file1-5f30f9953332c230d11e3f26db5ae9a0.jpg"));
         file.CopyTo(Path.Combine(sourceFolderPath, file.Name));
-        await mediator.Send(new OverseeCommand(false));
+        await _mediator.Send(new OverseeCommand(false));
         
         // assert
-        var savedFile = await context.CollectionFiles.FirstOrDefaultAsync(x => x.CollectionId == collectionId);
+        var savedFile = await _context.CollectionFiles.FirstOrDefaultAsync(x => x.CollectionId == collectionId);
 
         savedFile.Should().NotBeNull();
         savedFile!.Path.Should().Be(Path.Combine(destFolderPath, "5f", "30", "5f30f9953332c230d11e3f26db5ae9a0.jpg"));
@@ -89,9 +99,9 @@ public class CollectionIoTests
         savedFile.IsRemoved.Should().BeFalse();
         savedFile.OriginalPath.Should().Be(Path.Combine(sourceFolderPath, file.Name));
 
-        harness.Sent.Count().Should().BeGreaterOrEqualTo(2);
+        _harness.Sent.Count().Should().BeGreaterOrEqualTo(2);
 
-        var newFileCommands = harness.Sent.Select(x => x.MessageType == typeof(INewFileCommand)).ToList();
+        var newFileCommands = _harness.Sent.Select(x => x.MessageType == typeof(INewFileCommand)).ToList();
 
         newFileCommands.Any(x =>
                 x.MessageObject is INewFileCommand message
@@ -99,7 +109,7 @@ public class CollectionIoTests
                 && message.Md5 == "5f30f9953332c230d11e3f26db5ae9a0")
             .Should().BeTrue();
 
-        var updateMetadataCommands = harness.Sent.Select(x => x.MessageType == typeof(IUpdateMetadataCommand)).ToList();
+        var updateMetadataCommands = _harness.Sent.Select(x => x.MessageType == typeof(IUpdateMetadataCommand)).ToList();
         
         updateMetadataCommands.Any(x =>
                 x.MessageObject is IUpdateMetadataCommand message
@@ -114,13 +124,7 @@ public class CollectionIoTests
     public async Task FileInSourceFolderWithoutDestinationShouldBeAddedToDatabaseAndNotMoved()
     {
         // arrange
-        var scope = _webApp.GetScope();
-        var context = _webApp.GetDbContext(scope);
-        var mediator = scope.ServiceProvider.GetRequiredService<IMediator>();
-        var harness = scope.ServiceProvider.GetRequiredService<ITestHarness>();
-        var httpClient = _webApp.Client;
-
-        var collectionId = await CreateCollection(httpClient);
+        var collectionId = await CreateCollection();
         var collectionPath = Guid.NewGuid().ToString();
         
         var sourceFolderPath = Path.Combine(_webApp.TestsTempLocation, "collections", collectionPath, "source");
@@ -128,17 +132,17 @@ public class CollectionIoTests
         Directory.CreateDirectory(innerSourceFolderPath);
         
         var addSourceFolderCommand = new AddSourceFolderCommand(collectionId, sourceFolderPath, true, true, true, true, new[] { "jpg" });
-        await httpClient.PostAsJsonAsync("/collections/source-folders", addSourceFolderCommand);
+        await _httpClient.PostAsJsonAsync("/collections/source-folders", addSourceFolderCommand);
         
         // act
         var file = new FileInfo(Path.Combine(_webApp.TestsLocation, "Resources", "file1-5f30f9953332c230d11e3f26db5ae9a0.jpg"));
         var testFilePath = Path.Combine(innerSourceFolderPath, file.Name);
         file.CopyTo(testFilePath);
         
-        await mediator.Send(new OverseeCommand(false));
+        await _mediator.Send(new OverseeCommand(false));
         
         // assert
-        var savedFile = await context.CollectionFiles.FirstOrDefaultAsync(x => x.CollectionId == collectionId);
+        var savedFile = await _context.CollectionFiles.FirstOrDefaultAsync(x => x.CollectionId == collectionId);
 
         savedFile.Should().NotBeNull();
         savedFile!.Path.Should().Be(testFilePath);
@@ -147,9 +151,9 @@ public class CollectionIoTests
         savedFile.IsRemoved.Should().BeFalse();
         savedFile.OriginalPath.Should().Be(testFilePath);
 
-        harness.Sent.Count().Should().BeGreaterOrEqualTo(2);
+        _harness.Sent.Count().Should().BeGreaterOrEqualTo(2);
 
-        var newFileCommands = harness.Sent.Select(x => x.MessageType == typeof(INewFileCommand)).ToList();
+        var newFileCommands = _harness.Sent.Select(x => x.MessageType == typeof(INewFileCommand)).ToList();
 
         newFileCommands.Any(x =>
                 x.MessageObject is INewFileCommand message
@@ -157,7 +161,7 @@ public class CollectionIoTests
                 && message.Md5 == "5f30f9953332c230d11e3f26db5ae9a0")
             .Should().BeTrue();
 
-        var updateMetadataCommands = harness.Sent.Select(x => x.MessageType == typeof(IUpdateMetadataCommand)).ToList();
+        var updateMetadataCommands = _harness.Sent.Select(x => x.MessageType == typeof(IUpdateMetadataCommand)).ToList();
         
         updateMetadataCommands.Any(x =>
                 x.MessageObject is IUpdateMetadataCommand message
@@ -174,150 +178,106 @@ public class CollectionIoTests
     public async Task DuplicateImagesAreDeletedFromSourceFolder()
     {
         // arrange
-        var scope = _webApp.GetScope();
-        var context = _webApp.GetDbContext(scope);
-        var mediator = scope.ServiceProvider.GetRequiredService<IMediator>();
-        var httpClient = _webApp.Client;
-
-        var collectionId = await CreateCollection(httpClient);
-        var collectionPath = Guid.NewGuid().ToString();
-        
-        var sourceFolderPath = Path.Combine(_webApp.TestsTempLocation, "collection", collectionPath, "source");
-        var destFolderPath = Path.Combine(_webApp.TestsTempLocation, "collection", collectionPath, "dest");
-        
-        Directory.CreateDirectory(sourceFolderPath);
-        Directory.CreateDirectory(destFolderPath);
-        
-        var addSourceFolderCommand = new AddSourceFolderCommand(collectionId, sourceFolderPath, true, true, true, true, new[] { "jpg" });
-        var addDestinationFolderCommand = new SetDestinationFolderCommand(collectionId, destFolderPath, true, true, "!format-error", "!hash-error", "!no-hash-error");
-        
-        await httpClient.PostAsJsonAsync("/collections/source-folders", addSourceFolderCommand);
-        await httpClient.PostAsJsonAsync("/collections/destination-folder", addDestinationFolderCommand);
+        var (collectionId, sourceFolderPath, _) = await CreateDefaultCollection(
+            sourceShouldCheckFormat:              true,
+            sourceShouldCheckHashFromName:        true,
+            sourceShouldCreateTagsFromSubfolders: true,
+            sourceShouldAddTagFromFilename:       true,
+            sourceSupportedExtensions:            new[] { "jpg" },
+            destShouldCreateSubfoldersByHash:     true,
+            destShouldRenameByHash:               true);
         
         var testFile = new FileInfo(Path.Combine(_webApp.TestsLocation, "Resources", "file1-5f30f9953332c230d11e3f26db5ae9a0.jpg"));
         
         // act
         testFile.CopyTo(Path.Combine(sourceFolderPath, testFile.Name));
-        await mediator.Send(new OverseeCommand(false));
+        await _mediator.Send(new OverseeCommand(false));
 
         testFile.CopyTo(Path.Combine(sourceFolderPath, testFile.Name));
-        await mediator.Send(new OverseeCommand(false));
+        await _mediator.Send(new OverseeCommand(false));
         
         // assert
         Directory.GetFiles(sourceFolderPath).Should().BeEmpty();
-        context.CollectionFiles.Count(x => x.CollectionId == collectionId).Should().Be(1);
+        _context.CollectionFiles.Count(x => x.CollectionId == collectionId).Should().Be(1);
     }
 
     [Fact]
     public async Task ImagesWithSameMd5AreDeletedFromSourceFolder()
     {
         // arrange
-        var scope = _webApp.GetScope();
-        var context = _webApp.GetDbContext(scope);
-        var mediator = scope.ServiceProvider.GetRequiredService<IMediator>();
-        var httpClient = _webApp.Client;
-
-        var collectionId = await CreateCollection(httpClient);
-        var collectionPath = Guid.NewGuid().ToString();
-        
-        var sourceFolderPath = Path.Combine(_webApp.TestsTempLocation, "collection", collectionPath, "source");
-        var destFolderPath = Path.Combine(_webApp.TestsTempLocation, "collection", collectionPath, "dest");
-        
-        Directory.CreateDirectory(sourceFolderPath);
-        Directory.CreateDirectory(destFolderPath);
-        
-        var addSourceFolderCommand = new AddSourceFolderCommand(collectionId, sourceFolderPath, true, true, true, true, new[] { "jpg" });
-        var addDestinationFolderCommand = new SetDestinationFolderCommand(collectionId, destFolderPath, true, true, "!format-error", "!hash-error", "!no-hash-error");
-        
-        await httpClient.PostAsJsonAsync("/collections/source-folders", addSourceFolderCommand);
-        await httpClient.PostAsJsonAsync("/collections/destination-folder", addDestinationFolderCommand);
+        var (collectionId, sourceFolderPath, _) = await CreateDefaultCollection(
+            sourceShouldCheckFormat:              true,
+            sourceShouldCheckHashFromName:        true,
+            sourceShouldCreateTagsFromSubfolders: true,
+            sourceShouldAddTagFromFilename:       true,
+            sourceSupportedExtensions:            new[] { "jpg" },
+            destShouldCreateSubfoldersByHash:     true,
+            destShouldRenameByHash:               true);
         
         var testFile = new FileInfo(Path.Combine(_webApp.TestsLocation, "Resources", "file1-5f30f9953332c230d11e3f26db5ae9a0.jpg"));
         
         // act
         testFile.CopyTo(Path.Combine(sourceFolderPath, testFile.Name));
-        await mediator.Send(new OverseeCommand(false));
+        await _mediator.Send(new OverseeCommand(false));
 
         testFile.CopyTo(Path.Combine(sourceFolderPath, "diff-name" + testFile.Name));
-        await mediator.Send(new OverseeCommand(false));
+        await _mediator.Send(new OverseeCommand(false));
         
         // assert
         Directory.GetFiles(sourceFolderPath).Should().BeEmpty();
-        context.CollectionFiles.Count(x => x.CollectionId == collectionId).Should().Be(1);
+        _context.CollectionFiles.Count(x => x.CollectionId == collectionId).Should().Be(1);
     }
 
     [Fact]
     public async Task ImagesWithSameNameButDifferentMd5AreProcessedCorrectly()
     {
         // arrange
-        var scope = _webApp.GetScope();
-        var context = _webApp.GetDbContext(scope);
-        var mediator = scope.ServiceProvider.GetRequiredService<IMediator>();
-        var httpClient = _webApp.Client;
-
-        var collectionId = await CreateCollection(httpClient);
-        var collectionPath = Guid.NewGuid().ToString();
-        
-        var sourceFolderPath = Path.Combine(_webApp.TestsTempLocation, "collection", collectionPath, "source");
-        var destFolderPath = Path.Combine(_webApp.TestsTempLocation, "collection", collectionPath, "dest");
-        
-        Directory.CreateDirectory(sourceFolderPath);
-        Directory.CreateDirectory(destFolderPath);
-        
-        var addSourceFolderCommand = new AddSourceFolderCommand(collectionId, sourceFolderPath, true, false, true, true, new[] { "jpg" });
-        var addDestinationFolderCommand = new SetDestinationFolderCommand(collectionId, destFolderPath, true, true, "!format-error", "!hash-error", "!no-hash-error");
-        
-        await httpClient.PostAsJsonAsync("/collections/source-folders", addSourceFolderCommand);
-        await httpClient.PostAsJsonAsync("/collections/destination-folder", addDestinationFolderCommand);
+        var (collectionId, sourceFolderPath, _) = await CreateDefaultCollection(
+            sourceShouldCheckFormat:              true,
+            sourceShouldCheckHashFromName:        false,
+            sourceShouldCreateTagsFromSubfolders: true,
+            sourceShouldAddTagFromFilename:       true,
+            sourceSupportedExtensions:            new[] { "jpg" },
+            destShouldCreateSubfoldersByHash:     true,
+            destShouldRenameByHash:               true);
         
         var testFile1 = new FileInfo(Path.Combine(_webApp.TestsLocation, "Resources", "file1-5f30f9953332c230d11e3f26db5ae9a0.jpg"));
         var testFile2 = new FileInfo(Path.Combine(_webApp.TestsLocation, "Resources", "file2-09e56a8fd9d1e8beb62c50e6945632bf.jpg"));
         
         // act
         testFile1.CopyTo(Path.Combine(sourceFolderPath, testFile1.Name));
-        await mediator.Send(new OverseeCommand(false));
+        await _mediator.Send(new OverseeCommand(false));
 
         testFile2.CopyTo(Path.Combine(sourceFolderPath, testFile1.Name));
-        await mediator.Send(new OverseeCommand(false));
+        await _mediator.Send(new OverseeCommand(false));
         
         // assert
         Directory.GetFiles(sourceFolderPath).Should().BeEmpty();
-        context.CollectionFiles.Count(x => x.CollectionId == collectionId).Should().Be(2);
+        _context.CollectionFiles.Count(x => x.CollectionId == collectionId).Should().Be(2);
     }
 
     [Fact]
     public async Task BrokenImagesAreMovedToFormatErrorFolder()
     {
         // arrange
-        var scope = _webApp.GetScope();
-        var context = _webApp.GetDbContext(scope);
-        var mediator = scope.ServiceProvider.GetRequiredService<IMediator>();
-        var httpClient = _webApp.Client;
-
-        var collectionId = await CreateCollection(httpClient);
-        var collectionPath = Guid.NewGuid().ToString();
-        
-        var sourceFolderPath = Path.Combine(_webApp.TestsTempLocation, "collection", collectionPath, "source");
-        var destFolderPath = Path.Combine(_webApp.TestsTempLocation, "collection", collectionPath, "dest");
-        
-        Directory.CreateDirectory(sourceFolderPath);
-        Directory.CreateDirectory(destFolderPath);
-        
-        var addSourceFolderCommand = new AddSourceFolderCommand(collectionId, sourceFolderPath, true, false, true, true, new[] { "jpg" });
-        var addDestinationFolderCommand = new SetDestinationFolderCommand(collectionId, destFolderPath, true, true, "!format-error", "!hash-error", "!no-hash-error");
-        
-        await httpClient.PostAsJsonAsync("/collections/source-folders", addSourceFolderCommand);
-        await httpClient.PostAsJsonAsync("/collections/destination-folder", addDestinationFolderCommand);
+        var (collectionId, sourceFolderPath, destFolderPath) = await CreateDefaultCollection(
+            sourceShouldCheckFormat:              true,
+            sourceShouldCheckHashFromName:        false,
+            sourceShouldCreateTagsFromSubfolders: true,
+            sourceShouldAddTagFromFilename:       true,
+            sourceSupportedExtensions:            new[] { "jpg" },
+            destShouldCreateSubfoldersByHash:     true,
+            destShouldRenameByHash:               true);
         
         var testFile = new FileInfo(Path.Combine(_webApp.TestsLocation, "Resources", "empty-file.jpg"));
         
         // act
         testFile.CopyTo(Path.Combine(sourceFolderPath, testFile.Name));
-        await mediator.Send(new OverseeCommand(false));
+        await _mediator.Send(new OverseeCommand(false));
         
         // assert
         Directory.GetFiles(sourceFolderPath).Should().BeEmpty();
-        context.CollectionFiles.Count(x => x.CollectionId == collectionId).Should().Be(0);
+        _context.CollectionFiles.Count(x => x.CollectionId == collectionId).Should().Be(0);
         Directory.GetFiles(Path.Combine(destFolderPath, "!format-error")).Should().NotBeEmpty();
     }
 
@@ -325,35 +285,24 @@ public class CollectionIoTests
     public async Task BrokenImagesAreNotMovedToFormatErrorFolderWhenFormatCheckIsDisabled()
     {
         // arrange
-        var scope = _webApp.GetScope();
-        var context = _webApp.GetDbContext(scope);
-        var mediator = scope.ServiceProvider.GetRequiredService<IMediator>();
-        var httpClient = _webApp.Client;
-
-        var collectionId = await CreateCollection(httpClient);
-        var collectionPath = Guid.NewGuid().ToString();
-        
-        var sourceFolderPath = Path.Combine(_webApp.TestsTempLocation, "collection", collectionPath, "source");
-        var destFolderPath = Path.Combine(_webApp.TestsTempLocation, "collection", collectionPath, "dest");
-        
-        Directory.CreateDirectory(sourceFolderPath);
-        Directory.CreateDirectory(destFolderPath);
-        
-        var addSourceFolderCommand = new AddSourceFolderCommand(collectionId, sourceFolderPath, false, false, true, true, new[] { "jpg" });
-        var addDestinationFolderCommand = new SetDestinationFolderCommand(collectionId, destFolderPath, true, true, "!format-error", "!hash-error", "!no-hash-error");
-        
-        await httpClient.PostAsJsonAsync("/collections/source-folders", addSourceFolderCommand);
-        await httpClient.PostAsJsonAsync("/collections/destination-folder", addDestinationFolderCommand);
+        var (collectionId, sourceFolderPath, destFolderPath) = await CreateDefaultCollection(
+            sourceShouldCheckFormat:              false,
+            sourceShouldCheckHashFromName:        false,
+            sourceShouldCreateTagsFromSubfolders: true,
+            sourceShouldAddTagFromFilename:       true,
+            sourceSupportedExtensions:            new[] { "jpg" },
+            destShouldCreateSubfoldersByHash:     true,
+            destShouldRenameByHash:               true);
         
         var testFile = new FileInfo(Path.Combine(_webApp.TestsLocation, "Resources", "empty-file.jpg"));
         
         // act
         testFile.CopyTo(Path.Combine(sourceFolderPath, testFile.Name));
-        await mediator.Send(new OverseeCommand(false));
+        await _mediator.Send(new OverseeCommand(false));
         
         // assert
         Directory.GetFiles(sourceFolderPath).Should().BeEmpty();
-        context.CollectionFiles.Count(x => x.CollectionId == collectionId).Should().Be(1);
+        _context.CollectionFiles.Count(x => x.CollectionId == collectionId).Should().Be(1);
         Directory.Exists(Path.Combine(destFolderPath, "!format-error")).Should().BeFalse();
     }
 
@@ -361,37 +310,25 @@ public class CollectionIoTests
     public async Task WrongHashImagesAreMovedToHashErrorFolder()
     {
         // arrange
-        var scope = _webApp.GetScope();
-        var context = _webApp.GetDbContext(scope);
-        var mediator = scope.ServiceProvider.GetRequiredService<IMediator>();
-        var httpClient = _webApp.Client;
-
-        var collectionId = await CreateCollection(httpClient);
-        var collectionPath = Guid.NewGuid().ToString();
-        
-        var sourceFolderPath = Path.Combine(_webApp.TestsTempLocation, "collection", collectionPath, "source");
-        var destFolderPath = Path.Combine(_webApp.TestsTempLocation, "collection", collectionPath, "dest");
-        
-        Directory.CreateDirectory(sourceFolderPath);
-        Directory.CreateDirectory(destFolderPath);
-        
-        var addSourceFolderCommand = new AddSourceFolderCommand(collectionId, sourceFolderPath, false, true, false, false, Array.Empty<string>());
-        var addDestinationFolderCommand = new SetDestinationFolderCommand(collectionId, destFolderPath, true, true, "!format-error", "!hash-error", "!no-hash-error");
-        
-        await httpClient.PostAsJsonAsync("/collections/source-folders", addSourceFolderCommand);
-        await httpClient.PostAsJsonAsync("/collections/destination-folder", addDestinationFolderCommand);
+        var (collectionId, sourceFolderPath, destFolderPath) = await CreateDefaultCollection(
+            sourceShouldCheckFormat:              false,
+            sourceShouldCheckHashFromName:        true,
+            sourceShouldCreateTagsFromSubfolders: false,
+            sourceShouldAddTagFromFilename:       false,
+            sourceSupportedExtensions:            new[] { "jpg" },
+            destShouldCreateSubfoldersByHash:     true,
+            destShouldRenameByHash:               true);
         
         var testFile = new FileInfo(Path.Combine(_webApp.TestsLocation, "Resources", "file1-5f30f9953332c230d11e3f26db5ae9a0.jpg"));
         
         // act
-        
         // rename to wrong hash
         testFile.CopyTo(Path.Combine(sourceFolderPath, "file1-1f30f9953332c230d11e3f26db5ae9a0.jpg"));
-        await mediator.Send(new OverseeCommand(false));
+        await _mediator.Send(new OverseeCommand(false));
         
         // assert
         Directory.GetFiles(sourceFolderPath).Should().BeEmpty();
-        context.CollectionFiles.Count(x => x.CollectionId == collectionId).Should().Be(0);
+        _context.CollectionFiles.Count(x => x.CollectionId == collectionId).Should().Be(0);
         Directory.GetFiles(Path.Combine(destFolderPath, "!hash-error")).Should().NotBeEmpty();
     }
 
@@ -399,12 +336,158 @@ public class CollectionIoTests
     public async Task WrongHashImagesAreNotMovedToHashErrorFolderWhenHashCheckIsDisabled()
     {
         // arrange
-        var scope = _webApp.GetScope();
-        var context = _webApp.GetDbContext(scope);
-        var mediator = scope.ServiceProvider.GetRequiredService<IMediator>();
-        var httpClient = _webApp.Client;
+        var (collectionId, sourceFolderPath, destFolderPath) = await CreateDefaultCollection(
+            sourceShouldCheckFormat:              false,
+            sourceShouldCheckHashFromName:        false,
+            sourceShouldCreateTagsFromSubfolders: false,
+            sourceShouldAddTagFromFilename:       false,
+            sourceSupportedExtensions:            new[] { "jpg" },
+            destShouldCreateSubfoldersByHash:     true,
+            destShouldRenameByHash:               true);
+        
+        var testFile = new FileInfo(Path.Combine(_webApp.TestsLocation, "Resources", "file1-5f30f9953332c230d11e3f26db5ae9a0.jpg"));
+        
+        // act
+        // rename to wrong hash
+        testFile.CopyTo(Path.Combine(sourceFolderPath, "file1-1f30f9953332c230d11e3f26db5ae9a0.jpg"));
+        await _mediator.Send(new OverseeCommand(false));
+        
+        // assert
+        Directory.GetFiles(sourceFolderPath).Should().BeEmpty();
+        _context.CollectionFiles.Count(x => x.CollectionId == collectionId).Should().Be(1);
+        Directory.Exists(Path.Combine(destFolderPath, "!hash-error")).Should().BeFalse();
+    }
 
-        var collectionId = await CreateCollection(httpClient);
+    [Fact]
+    public async Task NoHashImagesAreMovedToNoHashFolder()
+    {
+        // arrange
+        var (collectionId, sourceFolderPath, destFolderPath) = await CreateDefaultCollection(
+            sourceShouldCheckFormat:              false,
+            sourceShouldCheckHashFromName:        true ,
+            sourceShouldCreateTagsFromSubfolders: false,
+            sourceShouldAddTagFromFilename:       false,
+            sourceSupportedExtensions:            new[] { "jpg" },
+            destShouldCreateSubfoldersByHash:     true,
+            destShouldRenameByHash:               true);
+        
+        var testFile = new FileInfo(Path.Combine(_webApp.TestsLocation, "Resources", "empty-file.jpg"));
+        
+        // act
+        testFile.CopyTo(Path.Combine(sourceFolderPath, "empty-file.jpg"));
+        await _mediator.Send(new OverseeCommand(false));
+        
+        // assert
+        Directory.GetFiles(sourceFolderPath).Should().BeEmpty();
+        _context.CollectionFiles.Count(x => x.CollectionId == collectionId).Should().Be(0);
+        Directory.GetFiles(Path.Combine(destFolderPath, "!no-hash-error")).Should().NotBeEmpty();
+    }
+
+    [Fact]
+    public async Task NoHashImagesAreNotMovedToNoHashFolderWhenHashCheckIsDisabled()
+    {
+        // arrange
+        var (collectionId, sourceFolderPath, destFolderPath) = await CreateDefaultCollection(
+            sourceShouldCheckFormat:              false,
+            sourceShouldCheckHashFromName:        false,
+            sourceShouldCreateTagsFromSubfolders: false,
+            sourceShouldAddTagFromFilename:       false,
+            sourceSupportedExtensions:            new[] { "jpg" },
+            destShouldCreateSubfoldersByHash:     true,
+            destShouldRenameByHash:               true);
+        
+        var testFile = new FileInfo(Path.Combine(_webApp.TestsLocation, "Resources", "empty-file.jpg"));
+        
+        // act
+        testFile.CopyTo(Path.Combine(sourceFolderPath, "empty-file.jpg"));
+        await _mediator.Send(new OverseeCommand(false));
+        
+        // assert
+        Directory.GetFiles(sourceFolderPath).Should().BeEmpty();
+        _context.CollectionFiles.Count(x => x.CollectionId == collectionId).Should().Be(1);
+        Directory.Exists(Path.Combine(destFolderPath, "!no-hash-error")).Should().BeFalse();
+    }
+
+    [Fact]
+    public async Task ImageNameArePushedAsTag()
+    {
+        // arrange
+        var (collectionId, sourceFolderPath, _) = await CreateDefaultCollection(
+            sourceShouldCheckFormat:              false,
+            sourceShouldCheckHashFromName:        false ,
+            sourceShouldCreateTagsFromSubfolders: false,
+            sourceShouldAddTagFromFilename:       true,
+            sourceSupportedExtensions:            new[] { "jpg" },
+            destShouldCreateSubfoldersByHash:     true,
+            destShouldRenameByHash:               true);
+        
+        var testFile = new FileInfo(Path.Combine(_webApp.TestsLocation, "Resources", "file1-5f30f9953332c230d11e3f26db5ae9a0.jpg"));
+        
+        // act
+        testFile.CopyTo(Path.Combine(sourceFolderPath, testFile.Name));
+        await _mediator.Send(new OverseeCommand(false));
+        
+        // assert
+        Directory.GetFiles(sourceFolderPath).Should().BeEmpty();
+        _context.CollectionFiles.Count(x => x.CollectionId == collectionId).Should().Be(1);
+        var dbFile = _context.CollectionFiles.First(x => x.CollectionId == collectionId);
+        
+        var updateMetadataCommands = _harness.Sent.Select(x => x.MessageType == typeof(IUpdateMetadataCommand)).ToList();
+        
+        updateMetadataCommands.Any(x =>
+                x.MessageObject is IUpdateMetadataCommand message
+                && message.FileId == dbFile.Id
+                && message.MetadataSource == MetadataSource.Manual
+                && message.FileTags[0].Type == "Location"
+                && message.FileTags[0].Name == "file1-5f30f9953332c230d11e3f26db5ae9a0.jpg")
+            .Should().BeTrue();
+    }
+
+    [Fact]
+    public async Task ImageNameAreNotPushedAsTagWhenShouldAddTagFromFilenameDisabled()
+    {
+        // arrange
+        var (collectionId, sourceFolderPath, _) = await CreateDefaultCollection(
+            sourceShouldCheckFormat:              false,
+            sourceShouldCheckHashFromName:        false ,
+            sourceShouldCreateTagsFromSubfolders: false,
+            sourceShouldAddTagFromFilename:       false,
+            sourceSupportedExtensions:            new[] { "jpg" },
+            destShouldCreateSubfoldersByHash:     true,
+            destShouldRenameByHash:               true);
+        
+        var testFile = new FileInfo(Path.Combine(_webApp.TestsLocation, "Resources", "file1-5f30f9953332c230d11e3f26db5ae9a0.jpg"));
+        
+        // act
+        testFile.CopyTo(Path.Combine(sourceFolderPath, testFile.Name));
+        await _mediator.Send(new OverseeCommand(false));
+        
+        // assert
+        Directory.GetFiles(sourceFolderPath).Should().BeEmpty();
+        _context.CollectionFiles.Count(x => x.CollectionId == collectionId).Should().Be(1);
+        var dbFile = _context.CollectionFiles.First(x => x.CollectionId == collectionId);
+
+        var updateMetadataCommands = _harness.Sent.Select(x => x.MessageType == typeof(IUpdateMetadataCommand)).ToList();
+        
+        updateMetadataCommands.Any(x =>
+                x.MessageObject is IUpdateMetadataCommand message
+                && message.FileId == dbFile.Id
+                && message.FileTags[0].Name == "file1-5f30f9953332c230d11e3f26db5ae9a0.jpg")
+            .Should().BeFalse();
+    }
+
+    private async Task<CreatedCollection> CreateDefaultCollection(
+        bool sourceShouldCheckFormat = false,
+        bool sourceShouldCheckHashFromName = false,
+        bool sourceShouldCreateTagsFromSubfolders = false,
+        bool sourceShouldAddTagFromFilename = false,
+        IReadOnlyCollection<string>? sourceSupportedExtensions = null,
+        bool destShouldCreateSubfoldersByHash = false,
+        bool destShouldRenameByHash = false)
+    {
+        sourceSupportedExtensions ??= Array.Empty<string>();
+        
+        var collectionId = await CreateCollection();
         var collectionPath = Guid.NewGuid().ToString();
         
         var sourceFolderPath = Path.Combine(_webApp.TestsTempLocation, "collection", collectionPath, "source");
@@ -413,31 +496,21 @@ public class CollectionIoTests
         Directory.CreateDirectory(sourceFolderPath);
         Directory.CreateDirectory(destFolderPath);
         
-        var addSourceFolderCommand = new AddSourceFolderCommand(collectionId, sourceFolderPath, false, false, false, false, Array.Empty<string>());
-        var addDestinationFolderCommand = new SetDestinationFolderCommand(collectionId, destFolderPath, true, true, "!format-error", "!hash-error", "!no-hash-error");
+        var addSourceFolderCommand = new AddSourceFolderCommand(collectionId, sourceFolderPath, sourceShouldCheckFormat, sourceShouldCheckHashFromName, sourceShouldCreateTagsFromSubfolders, sourceShouldAddTagFromFilename, sourceSupportedExtensions);
+        var addDestinationFolderCommand = new SetDestinationFolderCommand(collectionId, destFolderPath, destShouldCreateSubfoldersByHash, destShouldRenameByHash, "!format-error", "!hash-error", "!no-hash-error");
         
-        await httpClient.PostAsJsonAsync("/collections/source-folders", addSourceFolderCommand);
-        await httpClient.PostAsJsonAsync("/collections/destination-folder", addDestinationFolderCommand);
-        
-        var testFile = new FileInfo(Path.Combine(_webApp.TestsLocation, "Resources", "file1-5f30f9953332c230d11e3f26db5ae9a0.jpg"));
-        
-        // act
-
-        // rename to wrong hash
-        testFile.CopyTo(Path.Combine(sourceFolderPath, "file1-1f30f9953332c230d11e3f26db5ae9a0.jpg"));
-        await mediator.Send(new OverseeCommand(false));
-        
-        // assert
-        Directory.GetFiles(sourceFolderPath).Should().BeEmpty();
-        context.CollectionFiles.Count(x => x.CollectionId == collectionId).Should().Be(1);
-        Directory.Exists(Path.Combine(destFolderPath, "!hash-error")).Should().BeFalse();
+        await _httpClient.PostAsJsonAsync("/collections/source-folders", addSourceFolderCommand);
+        await _httpClient.PostAsJsonAsync("/collections/destination-folder", addDestinationFolderCommand);
+        return new (collectionId, sourceFolderPath, destFolderPath);
     }
 
-    private static async Task<Guid> CreateCollection(HttpClient httpClient)
+    private async Task<Guid> CreateCollection()
     {
         var collectionName = $"Collection Name {Guid.NewGuid()}";
-        var result = await httpClient.PostAsJsonAsync("/collections", new {name = collectionName});
+        var result = await _httpClient.PostAsJsonAsync("/collections", new {name = collectionName});
         var resultString = await result.Content.ReadAsStringAsync();
         return Guid.Parse(resultString[1..^1]);
     }
+
+    private record CreatedCollection(Guid Id, string SourceFolderPath, string DestFolderPath);
 }
