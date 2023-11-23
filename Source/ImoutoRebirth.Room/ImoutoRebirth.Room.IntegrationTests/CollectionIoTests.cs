@@ -43,11 +43,11 @@ namespace ImoutoRebirth.Room.IntegrationTests;
  */
 
 [Collection("WebApplication")]
-public class CollectionFilesTests
+public class CollectionIoTests
 {
     private readonly TestWebApplicationFactory<Program> _webApp;
 
-    public CollectionFilesTests(TestWebApplicationFactory<Program> webApp) => _webApp = webApp;
+    public CollectionIoTests(TestWebApplicationFactory<Program> webApp) => _webApp = webApp;
 
     [Fact]
     public async Task FileInSourceFolderShouldBeAddedToDatabaseAndMovedToDestinationFolder()
