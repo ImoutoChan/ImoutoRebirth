@@ -12,20 +12,21 @@ namespace ImoutoRebirth.Room.DataAccess.Repositories;
 
 internal class CollectionFileRepository : ICollectionFileRepository
 {
-    private const string FilterCacheKeyPrefix = "FilterHashesQuery_";
-
     private readonly RoomDbContext _roomDbContext;
     private readonly ICollectionFileCacheService _collectionFileCacheService;
-    private readonly IMemoryCache _cache;
+    private readonly IMd5PresenceCache _md5PresenceCache;
+    private readonly IMemoryCache _memoryCache;
 
     public CollectionFileRepository(
         RoomDbContext roomDbContext,
         ICollectionFileCacheService collectionFileCacheService,
-        IMemoryCache cache)
+        IMd5PresenceCache md5PresenceCache,
+        IMemoryCache memoryCache)
     {
         _roomDbContext = roomDbContext;
         _collectionFileCacheService = collectionFileCacheService;
-        _cache = cache;
+        _md5PresenceCache = md5PresenceCache;
+        _memoryCache = memoryCache;
     }
 
     public async Task Create(CollectionFile collectionFile)
@@ -37,19 +38,19 @@ internal class CollectionFileRepository : ICollectionFileRepository
         await _roomDbContext.CollectionFiles.AddAsync(entity);
         await _roomDbContext.SaveChangesAsync();
         
-        _cache.Remove(GetKey(entity.Md5));
+        _md5PresenceCache.Remove(entity.Md5);
     }
 
     public async Task<bool> AnyWithPath(Guid collectionId, string path, CancellationToken ct)
     {
         var key = collectionId + path;
-        if (_cache.TryGetValue(key, out bool value) && value)
+        if (_memoryCache.TryGetValue(key, out bool value) && value)
             return true;
 
         var result = await CheckInDatabaseWithRemoved(collectionId, path, ct);
 
         if (result)
-            _cache.Set(key, result);
+            _memoryCache.Set(key, result);
 
         return result;
     }
@@ -65,20 +66,22 @@ internal class CollectionFileRepository : ICollectionFileRepository
 
         await _roomDbContext.SaveChangesAsync();
         
-        _cache.Remove(GetKey(file.Md5));
+        _memoryCache.Remove(file.CollectionId + file.Path);
+        _memoryCache.Remove(file.CollectionId + file.Md5);
+        _md5PresenceCache.Remove(file.Md5);
     }
 
     public async Task<string?> GetWithMd5(Guid collectionId, string md5, CancellationToken ct)
     {
         var key = collectionId + md5;
-        if (_cache.TryGetValue(key, out string? path))
+        if (_memoryCache.TryGetValue(key, out string? path))
             return path;
 
         var file = await _roomDbContext.CollectionFiles.AsNoTracking().FirstOrDefaultAsync(
             x => x.Md5 == md5 && x.CollectionId == collectionId, cancellationToken: ct);
 
         if (file != null)
-            _cache.Set(key, file.OriginalPath);
+            _memoryCache.Set(key, file.OriginalPath);
 
         return file?.OriginalPath;
     }
@@ -90,6 +93,4 @@ internal class CollectionFileRepository : ICollectionFileRepository
             .Where(x => x.CollectionId == collectionId)
             .Select(x => x.Path)
             .AnyAsync(x => x == path, cancellationToken: ct);
-    
-    private static string GetKey(string md5Hash) => FilterCacheKeyPrefix + md5Hash.ToLowerInvariant();
 }

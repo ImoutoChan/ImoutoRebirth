@@ -1,5 +1,6 @@
 ﻿using ImoutoRebirth.Common.Cqrs.Abstract;
 using ImoutoRebirth.Room.Application.Cqrs.CollectionFileSlice;
+using ImoutoRebirth.Room.DataAccess.Cache;
 using ImoutoRebirth.Room.Database;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Memory;
@@ -9,12 +10,10 @@ namespace ImoutoRebirth.Room.DataAccess.Queries;
 internal class FilterCollectionFileHashesQueryHandler 
     : IQueryHandler<FilterCollectionFileHashesQuery, IReadOnlyCollection<string>>
 {
-    private const string FilterCacheKeyPrefix = "FilterHashesQuery_";
-
     private readonly RoomDbContext _roomDbContext;
-    private readonly IMemoryCache _cache;
+    private readonly IMd5PresenceCache _cache;
 
-    public FilterCollectionFileHashesQueryHandler(RoomDbContext roomDbContext, IMemoryCache cache)
+    public FilterCollectionFileHashesQueryHandler(RoomDbContext roomDbContext, IMd5PresenceCache cache)
     {
         _roomDbContext = roomDbContext;
         _cache = cache;
@@ -32,10 +31,10 @@ internal class FilterCollectionFileHashesQueryHandler
 
         foreach (var md5Hash in md5Hashes)
         {
-            var key = GetKey(md5Hash);
-            if (_cache.TryGetValue(key, out bool value))
+            var value = _cache.IsPresent(md5Hash);
+            if (value != null)
             {
-                if (value) 
+                if (value.Value) 
                     present.Add(md5Hash);
             }
             else
@@ -51,16 +50,14 @@ internal class FilterCollectionFileHashesQueryHandler
         
         foreach (var md5Hash in notInCache)
         {
-            var key = GetKey(md5Hash);
-
             if (loaded.Contains(md5Hash))
             {
-                _cache.Set(key, true);
+                _cache.Set(md5Hash, true);
                 present.Add(md5Hash);
             }
             else
             {
-                _cache.Set(key, false);
+                _cache.Set(md5Hash, false);
             }
         }
 
@@ -80,6 +77,4 @@ internal class FilterCollectionFileHashesQueryHandler
             .Select(x => x.Md5)
             .ToListAsync(cancellationToken: ct);
     }
-
-    private static string GetKey(string md5Hash) => FilterCacheKeyPrefix + md5Hash.ToLowerInvariant();
 }
