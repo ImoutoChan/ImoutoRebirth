@@ -1,10 +1,12 @@
 ﻿using ImoutoRebirth.Common.Cqrs;
+using ImoutoRebirth.Common.Host;
 using ImoutoRebirth.Common.Quartz.Extensions;
 using ImoutoRebirth.Harpy.Services.SaveFavorites.Commands;
 using ImoutoRebirth.Harpy.Services.SaveFavorites.Quartz;
 using ImoutoRebirth.Harpy.Services.SaveFavorites.Services;
 using ImoutoRebirth.Harpy.Services.SaveFavorites.Services.Loaders;
 using ImoutoRebirth.Harpy.Services.SaveFavorites.Services.Room;
+using ImoutoRebirth.Room.WebApi.Client;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -37,7 +39,6 @@ public static class ServiceCollectionExtensions
                 x.DefaultRequestHeaders.Add("User-Agent", userAgent);
         });
         services.AddHttpClient<YandereFavoritesLoader>();
-        services.AddHttpClient<RoomSavedChecker>();
         services.AddHttpClient<PostSaver>().ConfigureHttpClient(x =>
         {
             if (!string.IsNullOrWhiteSpace(userAgent))
@@ -45,6 +46,9 @@ public static class ServiceCollectionExtensions
 
             x.Timeout = TimeSpan.FromMinutes(5);
         });
+        
+        services.AddTransient<RoomSavedChecker>();
+        services.AddRoomWebApiClients(configuration.GetRequiredValue<string>("Saver:RoomUrl"));
 
         return services;
     }

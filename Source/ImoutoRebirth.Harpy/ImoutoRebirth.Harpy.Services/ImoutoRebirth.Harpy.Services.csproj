@@ -15,8 +15,10 @@
 
     <ItemGroup>
         <ProjectReference Include="..\..\ImoutoRebirth.Common\ImoutoRebirth.Common.Cqrs\ImoutoRebirth.Common.Cqrs.csproj" />
+        <ProjectReference Include="..\..\ImoutoRebirth.Common\ImoutoRebirth.Common.Host\ImoutoRebirth.Common.Host.csproj" />
         <ProjectReference Include="..\..\ImoutoRebirth.Common\ImoutoRebirth.Common.Quartz\ImoutoRebirth.Common.Quartz.csproj" />
         <ProjectReference Include="..\..\ImoutoRebirth.Common\ImoutoRebirth.Common\ImoutoRebirth.Common.csproj" />
+        <ProjectReference Include="..\..\ImoutoRebirth.Room\ImoutoRebirth.Room.WebApi.Client\ImoutoRebirth.Room.WebApi.Client.csproj" />
     </ItemGroup>
 
 </Project>
