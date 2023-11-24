@@ -89,7 +89,7 @@ public class CollectionFileSystemTests : IDisposable
         // act
         var file = new FileInfo(Path.Combine(_webApp.TestsLocation, "Resources", "file1-5f30f9953332c230d11e3f26db5ae9a0.jpg"));
         file.CopyTo(Path.Combine(sourceFolderPath, file.Name));
-        await _mediator.Send(new OverseeCommand(false));
+        await _mediator.Send(new OverseeCommand());
         
         // assert
         var savedFile = await _context.CollectionFiles.FirstOrDefaultAsync(x => x.CollectionId == collectionId);
@@ -132,7 +132,7 @@ public class CollectionFileSystemTests : IDisposable
         var testFilePath = Path.Combine(innerSourceFolderPath, file.Name);
         file.CopyTo(testFilePath);
         
-        await _mediator.Send(new OverseeCommand(false));
+        await _mediator.Send(new OverseeCommand());
         
         // assert
         var savedFile = await _context.CollectionFiles.FirstOrDefaultAsync(x => x.CollectionId == collectionId);
@@ -174,10 +174,10 @@ public class CollectionFileSystemTests : IDisposable
         
         // act
         testFile.CopyTo(Path.Combine(sourceFolderPath, testFile.Name));
-        await _mediator.Send(new OverseeCommand(false));
+        await _mediator.Send(new OverseeCommand());
 
         testFile.CopyTo(Path.Combine(sourceFolderPath, testFile.Name));
-        await _mediator.Send(new OverseeCommand(false));
+        await _mediator.Send(new OverseeCommand());
         
         // assert
         Directory.GetFiles(sourceFolderPath).Should().BeEmpty();
@@ -201,10 +201,10 @@ public class CollectionFileSystemTests : IDisposable
         
         // act
         testFile.CopyTo(Path.Combine(sourceFolderPath, testFile.Name));
-        await _mediator.Send(new OverseeCommand(false));
+        await _mediator.Send(new OverseeCommand());
 
         testFile.CopyTo(Path.Combine(sourceFolderPath, "diff-name" + testFile.Name));
-        await _mediator.Send(new OverseeCommand(false));
+        await _mediator.Send(new OverseeCommand());
         
         // assert
         Directory.GetFiles(sourceFolderPath).Should().BeEmpty();
@@ -229,10 +229,10 @@ public class CollectionFileSystemTests : IDisposable
         
         // act
         testFile1.CopyTo(Path.Combine(sourceFolderPath, testFile1.Name));
-        await _mediator.Send(new OverseeCommand(false));
+        await _mediator.Send(new OverseeCommand());
 
         testFile2.CopyTo(Path.Combine(sourceFolderPath, testFile1.Name));
-        await _mediator.Send(new OverseeCommand(false));
+        await _mediator.Send(new OverseeCommand());
         
         // assert
         Directory.GetFiles(sourceFolderPath).Should().BeEmpty();
@@ -256,7 +256,7 @@ public class CollectionFileSystemTests : IDisposable
         
         // act
         testFile.CopyTo(Path.Combine(sourceFolderPath, testFile.Name));
-        await _mediator.Send(new OverseeCommand(false));
+        await _mediator.Send(new OverseeCommand());
         
         // assert
         Directory.GetFiles(sourceFolderPath).Should().BeEmpty();
@@ -281,7 +281,7 @@ public class CollectionFileSystemTests : IDisposable
         
         // act
         testFile.CopyTo(Path.Combine(sourceFolderPath, testFile.Name));
-        await _mediator.Send(new OverseeCommand(false));
+        await _mediator.Send(new OverseeCommand());
         
         // assert
         Directory.GetFiles(sourceFolderPath).Should().BeEmpty();
@@ -307,7 +307,7 @@ public class CollectionFileSystemTests : IDisposable
         // act
         // rename to wrong hash
         testFile.CopyTo(Path.Combine(sourceFolderPath, "file1-1f30f9953332c230d11e3f26db5ae9a0.jpg"));
-        await _mediator.Send(new OverseeCommand(false));
+        await _mediator.Send(new OverseeCommand());
         
         // assert
         Directory.GetFiles(sourceFolderPath).Should().BeEmpty();
@@ -333,7 +333,7 @@ public class CollectionFileSystemTests : IDisposable
         // act
         // rename to wrong hash
         testFile.CopyTo(Path.Combine(sourceFolderPath, "file1-1f30f9953332c230d11e3f26db5ae9a0.jpg"));
-        await _mediator.Send(new OverseeCommand(false));
+        await _mediator.Send(new OverseeCommand());
         
         // assert
         Directory.GetFiles(sourceFolderPath).Should().BeEmpty();
@@ -358,7 +358,7 @@ public class CollectionFileSystemTests : IDisposable
         
         // act
         testFile.CopyTo(Path.Combine(sourceFolderPath, "empty-file.jpg"));
-        await _mediator.Send(new OverseeCommand(false));
+        await _mediator.Send(new OverseeCommand());
         
         // assert
         Directory.GetFiles(sourceFolderPath).Should().BeEmpty();
@@ -383,7 +383,7 @@ public class CollectionFileSystemTests : IDisposable
         
         // act
         testFile.CopyTo(Path.Combine(sourceFolderPath, "empty-file.jpg"));
-        await _mediator.Send(new OverseeCommand(false));
+        await _mediator.Send(new OverseeCommand());
         
         // assert
         Directory.GetFiles(sourceFolderPath).Should().BeEmpty();
@@ -408,7 +408,7 @@ public class CollectionFileSystemTests : IDisposable
         
         // act
         testFile.CopyTo(Path.Combine(sourceFolderPath, testFile.Name));
-        await _mediator.Send(new OverseeCommand(false));
+        await _mediator.Send(new OverseeCommand());
         
         // assert
         Directory.GetFiles(sourceFolderPath).Should().BeEmpty();
@@ -440,7 +440,7 @@ public class CollectionFileSystemTests : IDisposable
         
         // act
         testFile.CopyTo(Path.Combine(sourceFolderPath, testFile.Name));
-        await _mediator.Send(new OverseeCommand(false));
+        await _mediator.Send(new OverseeCommand());
         
         // assert
         Directory.GetFiles(sourceFolderPath).Should().BeEmpty();
@@ -472,7 +472,7 @@ public class CollectionFileSystemTests : IDisposable
         var testFilePath = Path.Combine(innerSourceFolderPath, file.Name);
         file.CopyTo(testFilePath);
         
-        await _mediator.Send(new OverseeCommand(false));
+        await _mediator.Send(new OverseeCommand());
         
         // assert
         var savedFile = await _context.CollectionFiles.FirstAsync(x => x.CollectionId == collectionId);
@@ -508,7 +508,7 @@ public class CollectionFileSystemTests : IDisposable
         var testFilePath = Path.Combine(innerSourceFolderPath, file.Name);
         file.CopyTo(testFilePath);
         
-        await _mediator.Send(new OverseeCommand(false));
+        await _mediator.Send(new OverseeCommand());
         
         // assert
         var savedFile = await _context.CollectionFiles.FirstAsync(x => x.CollectionId == collectionId);
@@ -542,7 +542,7 @@ public class CollectionFileSystemTests : IDisposable
         
         // act
         testFile.CopyTo(Path.Combine(sourceFolderPath, testFile.Name));
-        await _mediator.Send(new OverseeCommand(false));
+        await _mediator.Send(new OverseeCommand());
         
         // assert
         Directory.GetFiles(sourceFolderPath).Should().NotBeEmpty();
@@ -566,7 +566,7 @@ public class CollectionFileSystemTests : IDisposable
         
         // act
         testFile.CopyTo(Path.Combine(sourceFolderPath, testFile.Name));
-        await _mediator.Send(new OverseeCommand(false));
+        await _mediator.Send(new OverseeCommand());
         
         // assert
         Directory.GetFiles(sourceFolderPath).Should().BeEmpty();
@@ -590,7 +590,7 @@ public class CollectionFileSystemTests : IDisposable
         
         // act
         testFile.CopyTo(Path.Combine(sourceFolderPath, testFile.Name));
-        await _mediator.Send(new OverseeCommand(false));
+        await _mediator.Send(new OverseeCommand());
         
         // assert
         Directory.GetFiles(sourceFolderPath).Should().BeEmpty();
@@ -614,7 +614,7 @@ public class CollectionFileSystemTests : IDisposable
         
         // act
         testFile.CopyTo(Path.Combine(sourceFolderPath, testFile.Name));
-        await _mediator.Send(new OverseeCommand(false));
+        await _mediator.Send(new OverseeCommand());
         
         // assert
         _context.CollectionFiles.Count(x => x.CollectionId == collectionId).Should().Be(1);
@@ -640,7 +640,7 @@ public class CollectionFileSystemTests : IDisposable
         
         // act
         testFile.CopyTo(Path.Combine(sourceFolderPath, testFile.Name));
-        await _mediator.Send(new OverseeCommand(false));
+        await _mediator.Send(new OverseeCommand());
         
         // assert
         _context.CollectionFiles.Count(x => x.CollectionId == collectionId).Should().Be(1);
@@ -666,7 +666,7 @@ public class CollectionFileSystemTests : IDisposable
         
         // act
         testFile.CopyTo(Path.Combine(sourceFolderPath, testFile.Name));
-        await _mediator.Send(new OverseeCommand(false));
+        await _mediator.Send(new OverseeCommand());
         
         // assert
         _context.CollectionFiles.Count(x => x.CollectionId == collectionId).Should().Be(1);
@@ -693,7 +693,7 @@ public class CollectionFileSystemTests : IDisposable
         
         // act
         testFile.CopyTo(Path.Combine(sourceFolderPath, testFile.Name));
-        await _mediator.Send(new OverseeCommand(false));
+        await _mediator.Send(new OverseeCommand());
         
         // assert
         _context.CollectionFiles.Count(x => x.CollectionId == collectionId).Should().Be(1);
@@ -720,10 +720,10 @@ public class CollectionFileSystemTests : IDisposable
         
         // act
         testFile1.CopyTo(Path.Combine(sourceFolderPath, testFile1.Name));
-        await _mediator.Send(new OverseeCommand(false));
+        await _mediator.Send(new OverseeCommand());
             
         testFile2.CopyTo(Path.Combine(sourceFolderPath, testFile1.Name));
-        await _mediator.Send(new OverseeCommand(false));
+        await _mediator.Send(new OverseeCommand());
         
         // assert
         _context.CollectionFiles.Count(x => x.CollectionId == collectionId).Should().Be(2);
@@ -753,10 +753,10 @@ public class CollectionFileSystemTests : IDisposable
         
         // act
         testFile1.CopyTo(Path.Combine(sourceFolderPath, testFile1.Name));
-        await _mediator.Send(new OverseeCommand(false));
+        await _mediator.Send(new OverseeCommand());
             
         testFile2.CopyTo(Path.Combine(sourceFolderPath, testFile1.Name));
-        await _mediator.Send(new OverseeCommand(false));
+        await _mediator.Send(new OverseeCommand());
         
         // assert
         _context.CollectionFiles.Count(x => x.CollectionId == collectionId).Should().Be(2);
@@ -787,13 +787,13 @@ public class CollectionFileSystemTests : IDisposable
         
         // act
         testFile1.CopyTo(Path.Combine(sourceFolderPath, testFile1.Name));
-        await _mediator.Send(new OverseeCommand(false));
+        await _mediator.Send(new OverseeCommand());
             
         testFile2.CopyTo(Path.Combine(sourceFolderPath, testFile1.Name));
-        await _mediator.Send(new OverseeCommand(false));
+        await _mediator.Send(new OverseeCommand());
             
         testFile3.CopyTo(Path.Combine(sourceFolderPath, testFile1.Name));
-        await _mediator.Send(new OverseeCommand(false));
+        await _mediator.Send(new OverseeCommand());
         
         // assert
         _context.CollectionFiles.Count(x => x.CollectionId == collectionId).Should().Be(3);

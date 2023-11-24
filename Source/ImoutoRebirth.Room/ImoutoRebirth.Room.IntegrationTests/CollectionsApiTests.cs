@@ -62,7 +62,7 @@ public class CollectionsApiTests : IDisposable
         
         testFile1.CopyTo(Path.Combine(sourceFolderPath, testFile1.Name));
         testFile2.CopyTo(Path.Combine(sourceFolderPath, testFile2.Name));
-        await _mediator.Send(new OverseeCommand(false));
+        await _mediator.Send(new OverseeCommand());
         
         // act
         var response = await _httpClient.PostAsJsonAsync(
@@ -105,7 +105,7 @@ public class CollectionsApiTests : IDisposable
         
         testFile1.CopyTo(Path.Combine(sourceFolderPath, testFile1.Name));
         testFile2.CopyTo(Path.Combine(sourceFolderPath, testFile2.Name));
-        await _mediator.Send(new OverseeCommand(false));
+        await _mediator.Send(new OverseeCommand());
         
         // act
         var response = await _httpClient.PostAsJsonAsync(
@@ -119,6 +119,55 @@ public class CollectionsApiTests : IDisposable
                 }));
 
         var files = await response.Content.ReadFromJsonAsync<IReadOnlyCollection<string>>();
+        
+        // assert
+        files.Should().HaveCount(2);
+        files.Should().Contain("5f30f9953332c230d11e3f26db5ae9a0");
+        files.Should().Contain("09e56a8fd9d1e8beb62c50e6945632bf");
+    }
+
+    [Fact]
+    public async Task FilterCollectionFilesShouldResetCache()
+    {
+        // arrange
+        var (_, sourceFolderPath, _) = await CreateDefaultCollection(
+            sourceShouldCheckFormat:              false,
+            sourceShouldCheckHashFromName:        false,
+            sourceShouldCreateTagsFromSubfolders: false,
+            sourceShouldAddTagFromFilename:       false,
+            sourceSupportedExtensions:            new[] { "jpg" },
+            destShouldCreateSubfoldersByHash:     false,
+            destShouldRenameByHash:               false);
+        
+        var response1 = await _httpClient.PostAsJsonAsync(
+            "/collection-files/filter-hashes",
+            new FilterCollectionFileHashesQuery(
+                new[]
+                {
+                    "5f30f9953332c230d11e3f26db5ae9a0", 
+                    "09e56a8fd9d1e8beb62c50e6945632bf",
+                    "12356a8fd9d1e8beb62c50e6945632bf"
+                }));
+        
+        var testFile1 = new FileInfo(Path.Combine(_webApp.TestsLocation, "Resources", "file1-5f30f9953332c230d11e3f26db5ae9a0.jpg"));
+        var testFile2 = new FileInfo(Path.Combine(_webApp.TestsLocation, "Resources", "file2-09e56a8fd9d1e8beb62c50e6945632bf.jpg"));
+        
+        testFile1.CopyTo(Path.Combine(sourceFolderPath, testFile1.Name));
+        testFile2.CopyTo(Path.Combine(sourceFolderPath, testFile2.Name));
+        await _mediator.Send(new OverseeCommand());
+        
+        // act
+        var response2 = await _httpClient.PostAsJsonAsync(
+            "/collection-files/filter-hashes",
+            new FilterCollectionFileHashesQuery(
+                new[]
+                {
+                    "5f30f9953332c230d11e3f26db5ae9a0", 
+                    "09e56a8fd9d1e8beb62c50e6945632bf",
+                    "12356a8fd9d1e8beb62c50e6945632bf"
+                }));
+
+        var files = await response2.Content.ReadFromJsonAsync<IReadOnlyCollection<string>>();
         
         // assert
         files.Should().HaveCount(2);
@@ -144,7 +193,7 @@ public class CollectionsApiTests : IDisposable
         
         testFile1.CopyTo(Path.Combine(sourceFolderPath, testFile1.Name));
         testFile2.CopyTo(Path.Combine(sourceFolderPath, testFile2.Name));
-        await _mediator.Send(new OverseeCommand(false));
+        await _mediator.Send(new OverseeCommand());
         
         // act
         var response = await _httpClient.PostAsJsonAsync(
@@ -181,7 +230,7 @@ public class CollectionsApiTests : IDisposable
         
         testFile1.CopyTo(Path.Combine(sourceFolderPath, testFile1.Name));
         testFile2.CopyTo(Path.Combine(sourceFolderPath, testFile2.Name));
-        await _mediator.Send(new OverseeCommand(false));
+        await _mediator.Send(new OverseeCommand());
         
         // act
         var response = await _httpClient.PostAsJsonAsync(
@@ -218,7 +267,7 @@ public class CollectionsApiTests : IDisposable
         
         testFile1.CopyTo(Path.Combine(sourceFolderPath, testFile1.Name));
         testFile2.CopyTo(Path.Combine(sourceFolderPath, testFile2.Name));
-        await _mediator.Send(new OverseeCommand(false));
+        await _mediator.Send(new OverseeCommand());
 
         var fileIds = _context.CollectionFiles
             .Where(x => x.CollectionId == collectionId)
@@ -267,7 +316,7 @@ public class CollectionsApiTests : IDisposable
         Directory.CreateDirectory(Path.Combine(sourceFolderPath, "inner"));
         testFile1.CopyTo(Path.Combine(sourceFolderPath, "inner", testFile1.Name));
         testFile2.CopyTo(Path.Combine(sourceFolderPath, "inner", testFile2.Name));
-        await _mediator.Send(new OverseeCommand(false));
+        await _mediator.Send(new OverseeCommand());
         
         // act
         await _httpClient.PostAsync("/collection-files/updateSourceTags", null);
