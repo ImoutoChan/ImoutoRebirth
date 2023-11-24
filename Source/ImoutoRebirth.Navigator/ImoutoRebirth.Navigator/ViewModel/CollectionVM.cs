@@ -72,7 +72,6 @@ class CollectionVM : VMBase
 
             if (destinationFolder != null)
             {
-
                 var destinationFolderVm = new DestinationFolderVM(
                     destinationFolder.Id,
                     destinationFolder.Path,

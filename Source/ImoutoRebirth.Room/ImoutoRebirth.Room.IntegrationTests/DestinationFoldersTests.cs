@@ -1,6 +1,8 @@
-﻿using System.Net.Http.Json;
+﻿using System.Net;
+using System.Net.Http.Json;
 using System.Reflection;
 using FluentAssertions;
+using ImoutoRebirth.Common.WebApi;
 using ImoutoRebirth.Room.Application.Cqrs.FoldersSlice;
 using ImoutoRebirth.Room.IntegrationTests.Fixtures;
 using Microsoft.EntityFrameworkCore;
@@ -167,18 +169,40 @@ public class DestinationFoldersTests
         // act
 
         var destinationFolder =
-            await httpClient.GetFromJsonAsync<DestinationFolderInfo>(
+            await httpClient.GetFromJsonAsync<OptionalResponse<DestinationFolderInfo>>(
                 $"/collections/{collectionId}/destination-folder");
         
         // assert
         destinationFolder.Should().NotBeNull();
-        destinationFolder!.CollectionId.Should().Be(command.CollectionId);
-        destinationFolder.Path.Should().Be(command.Path);
-        destinationFolder.ShouldCreateSubfoldersByHash.Should().Be(command.ShouldCreateSubfoldersByHash);
-        destinationFolder.ShouldRenameByHash.Should().Be(command.ShouldRenameByHash);
-        destinationFolder.FormatErrorSubfolder.Should().Be(command.FormatErrorSubfolder);
-        destinationFolder.HashErrorSubfolder.Should().Be(command.HashErrorSubfolder);
-        destinationFolder.WithoutHashErrorSubfolder.Should().Be(command.WithoutHashErrorSubfolder);
+        destinationFolder!.HasValue.Should().BeTrue();
+        var folder = destinationFolder.Value;
+
+        folder.Should().NotBeNull();
+        folder!.CollectionId.Should().Be(command.CollectionId);
+        folder.Path.Should().Be(command.Path);
+        folder.ShouldCreateSubfoldersByHash.Should().Be(command.ShouldCreateSubfoldersByHash);
+        folder.ShouldRenameByHash.Should().Be(command.ShouldRenameByHash);
+        folder.FormatErrorSubfolder.Should().Be(command.FormatErrorSubfolder);
+        folder.HashErrorSubfolder.Should().Be(command.HashErrorSubfolder);
+        folder.WithoutHashErrorSubfolder.Should().Be(command.WithoutHashErrorSubfolder);
+    }
+
+    [Fact]
+    public async Task GetDestinationFolderWithoutDestinationFolderReturns404()
+    {
+        // arrange
+        var httpClient = _webApp.Client;
+
+        var collectionId = await CreateCollection(httpClient);
+        
+        // act
+        var response = await httpClient.GetFromJsonAsync<OptionalResponse<DestinationFolderInfo>>(
+            $"/collections/{collectionId}/destination-folder");
+        
+        // assert
+        response.Should().NotBeNull();
+        response!.HasValue.Should().BeFalse();
+        response.Value.Should().BeNull();
     }
 
     private static async Task<Guid> CreateCollection(HttpClient httpClient)

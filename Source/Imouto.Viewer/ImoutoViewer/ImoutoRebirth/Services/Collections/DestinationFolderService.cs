@@ -11,25 +11,21 @@ internal class DestinationFolderService : IDestinationFolderService
 
     public async Task<DestinationFolder?> GetDestinationFolderAsync(Guid collectionId)
     {
-        try
-        {
-            var result = await _collectionsClient.GetDestinationFolderAsync(collectionId);
-            return result != null
-                ? new DestinationFolder(
-                    result.Id,
-                    result.CollectionId,
-                    result.Path,
-                    result.ShouldCreateSubfoldersByHash,
-                    result.ShouldRenameByHash,
-                    result.FormatErrorSubfolder,
-                    result.HashErrorSubfolder,
-                    result.WithoutHashErrorSubfolder)
-                : null;
-        }
-        catch (WebApiException e) when (e.StatusCode == 404)
-        {
+        var optionalResult = await _collectionsClient.GetDestinationFolderAsync(collectionId);
+        if (!optionalResult.HasValue)
             return null;
-        }
+        
+        var result = optionalResult.Value!;
+
+        return new DestinationFolder(
+            result.Id,
+            result.CollectionId,
+            result.Path,
+            result.ShouldCreateSubfoldersByHash,
+            result.ShouldRenameByHash,
+            result.FormatErrorSubfolder,
+            result.HashErrorSubfolder,
+            result.WithoutHashErrorSubfolder);
     }
 
     public async Task<DestinationFolder> SetDestinationFolderAsync(DestinationFolder destinationFolder)

@@ -1,4 +1,5 @@
-﻿using ImoutoRebirth.Room.Application.Cqrs;
+﻿using ImoutoRebirth.Common.WebApi;
+using ImoutoRebirth.Room.Application.Cqrs;
 using ImoutoRebirth.Room.Application.Cqrs.CollectionFileSlice;
 using ImoutoRebirth.Room.Application.Cqrs.CollectionSlice;
 using ImoutoRebirth.Room.Application.Cqrs.FoldersSlice;
@@ -70,7 +71,7 @@ internal static class EndpointsMappings
         var destinationFolders = app.MapGroup("/collections");
 
         destinationFolders.MapGet("/{collectionId:guid}/destination-folder", (Guid collectionId, IMediator mediator, CancellationToken ct) 
-                => mediator.Send(new DestinationFolderQuery(collectionId), ct))
+                => mediator.Send(new DestinationFolderQuery(collectionId), ct).ToOptional())
             .WithName("GetDestinationFolder");
         
         destinationFolders.MapPost("/destination-folder", (SetDestinationFolderCommand command, IMediator mediator, CancellationToken ct)
