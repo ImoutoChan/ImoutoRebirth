@@ -1,5 +1,9 @@
 # Unreleased
 
+
+
+# 4.22.0
+
 ### Infrastructure
 * Add hotkey descriptions for Viewer and Navigator desktop apps
 * Upgrade to net 8.0
@@ -11,6 +15,9 @@ if tag is counter
 
 ### Lilin
 * Add Options field to the tag entity to store counter flag
+
+### Room
+* Refactor entire service to DDD style architecture
 
 # 4.20.0
 
