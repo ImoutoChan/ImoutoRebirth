@@ -17,6 +17,10 @@ namespace ImoutoRebirth.Navigator;
 internal partial class MainWindow
 {
     private double _lastExtentHeight = 0;
+    private ScrollViewer? _scrollViewerElement;
+    private readonly Stack<IReadOnlyCollection<WeakReference<INavigatorListEntry>>> _lastSelectedItems = new();
+    private IReadOnlyCollection<WeakReference<INavigatorListEntry>> _currentSelectedItems 
+        = Array.Empty<WeakReference<INavigatorListEntry>>();
 
     public MainWindow()
     {
@@ -30,7 +34,7 @@ internal partial class MainWindow
                 viewModel?.LoadPreviewsCommand.Execute(null);
             };
 
-            ListBoxElement.SelectionChanged += (_, _) => OnSelectedItemsChanged();
+            ListBoxElement.SelectionChanged += OnSelectedItemsChanged;
 
             ScrollViewerElement.ScrollChanged += (_, _) =>
             {
@@ -68,8 +72,7 @@ internal partial class MainWindow
 
     public double? ViewPortWidth => ScrollViewerElement?.ViewportWidth;
 
-    private ScrollViewer? ScrollViewerElement
-        => FindFirstVisualChildOfType<ScrollViewer>(ListBoxElement);
+    private ScrollViewer ScrollViewerElement => _scrollViewerElement ??= FindFirstVisualChildOfType<ScrollViewer>(ListBoxElement)!;
 
     #endregion Properties
 
@@ -118,6 +121,26 @@ internal partial class MainWindow
         return await this.ShowMessageAsync(title, message, style, settings);
     }
 
+    public void RevertSelectedItems()
+    {
+        if (!_lastSelectedItems.TryPop(out var revertTo))
+            return;
+        
+        ListBoxElement.SelectionChanged -= OnSelectedItemsChanged;
+        
+        ListBoxElement.SelectedItems.Clear();
+        foreach (var item in revertTo)
+        {
+            if (item.TryGetTarget(out var target))
+                ListBoxElement.SelectedItems.Add(target);
+        }
+
+        ListBoxElement.SelectionChanged += OnSelectedItemsChanged;
+        
+        _currentSelectedItems = SelectedEntries.Select(x => new WeakReference<INavigatorListEntry>(x)).ToList();
+        SelectedItemsChanged?.Invoke(this, EventArgs.Empty);
+    }
+    
     #endregion Methods
 
     #region Event handlers
@@ -191,12 +214,14 @@ internal partial class MainWindow
 
     #region Events
 
-    public event EventHandler SelectedItemsChanged;
+    public event EventHandler? SelectedItemsChanged;
 
-    private void OnSelectedItemsChanged()
+    private void OnSelectedItemsChanged(object _, SelectionChangedEventArgs __)
     {
-        var handler = SelectedItemsChanged;
-        handler?.Invoke(this, EventArgs.Empty);
+        _lastSelectedItems.Push(_currentSelectedItems);
+        _currentSelectedItems = SelectedEntries.Select(x => new WeakReference<INavigatorListEntry>(x)).ToList();
+        
+        SelectedItemsChanged?.Invoke(this, EventArgs.Empty);
     }
 
     #endregion Events

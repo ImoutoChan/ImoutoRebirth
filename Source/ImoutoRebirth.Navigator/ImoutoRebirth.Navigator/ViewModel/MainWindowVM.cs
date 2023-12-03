@@ -246,6 +246,8 @@ class MainWindowVM : VMBase
 
     public ICommand ToggleShowTagsCommand { get; set; }
 
+    public ICommand RevertSelectedItemsCommand { get; set; }
+
     #endregion Commands
 
     #region Methods
@@ -296,6 +298,7 @@ class MainWindowVM : VMBase
         OpenFullScreenPreviewCommand = new RelayCommand<INavigatorListEntry>(OpenFullScreenPreview);
 
         ToggleShowTagsCommand = new RelayCommand(_ => ShowTags = !ShowTags);
+        RevertSelectedItemsCommand = new RelayCommand(_ => _view.RevertSelectedItems());
     }
 
     private void OpenFile(INavigatorListEntry? navigatorListEntry)

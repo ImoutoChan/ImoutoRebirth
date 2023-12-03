@@ -88,6 +88,8 @@
 
     <metroControl:MetroWindow.RightWindowCommands>
         <metroControl:WindowCommands>
+            <Button Content="Revert selection"
+                    Command="{Binding RevertSelectedItemsCommand}"/>
             <Button Content="Refresh"
                     Command="{Binding RefreshCommand}"/>
             <Button Content="Tags"
