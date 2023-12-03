@@ -1,12 +1,13 @@
 using System.IO;
 using System.IO.Compression;
 using System.Windows;
+using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using ImoutoRebirth.LilinService.WebApi.Client;
 
 namespace ImoutoRebirth.Navigator.ViewModel.ListEntries;
 
-internal class UgoiraEntryVM : BaseEntryVM, INavigatorListEntry
+internal class UgoiraEntryVM : BaseEntryVM, INavigatorListEntry, IPixelSizable
 {
     private Size _size;
     private bool _isLoading;
@@ -42,7 +43,9 @@ internal class UgoiraEntryVM : BaseEntryVM, INavigatorListEntry
     public string Path { get; }
 
     public BitmapSource? Image { get; private set; }
-        
+
+    public Size? PixelSize => Image != null ? new Size(Image.PixelWidth, Image.PixelHeight) : null;
+
     public object Data => new DataObject(DataFormats.FileDrop, new[] { Path });
         
     public DragDropEffects AllowDragDropEffects => DragDropEffects.Copy;

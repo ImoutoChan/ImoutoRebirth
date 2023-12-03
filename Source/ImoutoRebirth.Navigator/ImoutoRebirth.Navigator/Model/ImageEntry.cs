@@ -48,7 +48,7 @@ internal class ImageEntry
 
     public string ErrorMessage { get; private set; }
 
-    public Size ImageSize => new Size(Image.PixelWidth, Image.PixelHeight);
+    public Size? ImageSize => _frameSize;
 
     public Size ViewPort => _viewPort;
 

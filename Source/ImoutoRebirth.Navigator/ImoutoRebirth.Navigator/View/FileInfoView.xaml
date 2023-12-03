@@ -24,10 +24,13 @@
                 <RowDefinition Height="Auto" />
                 <RowDefinition Height="5" />
                 <RowDefinition Height="Auto" />
+                <RowDefinition Height="5" />
+                <RowDefinition Height="Auto" />
             </Grid.RowDefinitions>
 
             <TextBlock Grid.Row="0"
                        Text="{Binding Name, StringFormat='Name: {0}'}" />
+
             <TextBlock Grid.Row="2">
                 <TextBlock.Text>
                     <MultiBinding StringFormat="Size: {0} ({1} B)">
@@ -57,6 +60,16 @@
 
             <TextBlock Grid.Row="6"
                        Text="{Binding OrderNumber, StringFormat='Order # {0}', FallbackValue=''}" />
+
+            <TextBlock Grid.Row="8"
+                       Visibility="{Binding PixelSize, Converter={StaticResource ConditionVisibilityConverter}, ConverterParameter=!null}">
+                <TextBlock.Text>
+                    <MultiBinding StringFormat="PixelSize: {0}x{1}">
+                        <Binding Path="PixelSize.Width" />
+                        <Binding Path="PixelSize.Height" />
+                    </MultiBinding>
+                </TextBlock.Text>
+            </TextBlock>
         </Grid>
     </Border>
 </UserControl>

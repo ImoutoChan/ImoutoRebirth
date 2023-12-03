@@ -1,103 +1,61 @@
 ﻿using System.IO;
 using System.Security.Cryptography;
+using System.Windows;
 using System.Windows.Input;
 using ImoutoRebirth.Navigator.Commands;
 using ImoutoRebirth.Navigator.ViewModel.ListEntries;
 
 namespace ImoutoRebirth.Navigator.ViewModel;
 
-class FileInfoVM : VMBase
+internal class FileInfoVM : VMBase
 {
-    #region Fields
-
-    private string _name;
-    private string _hash;
+    private string? _name;
+    private string? _hash;
     private long? _size;
+    private Size? _pixelSize;
     private int _orderNumber;
     private bool _hasValue;
-    private ICommand _calculateHashCommand;
-    private FileInfo _fileInfo;
+    private ICommand? _calculateHashCommand;
+    private FileInfo? _fileInfo;
 
-    #endregion Fields
-
-    #region Properties
-
-    public string Name
+    public string? Name
     {
-        get
-        {
-            return _name;
-        }
-        set
-        {
-            OnPropertyChanged(ref _name, value, () => Name);
-        }
+        get => _name;
+        set => OnPropertyChanged(ref _name, value, () => Name);
     }
 
     public long? Size
     {
-        get
-        {
-            return _size;
-        }
-        set
-        {
-            OnPropertyChanged(ref _size, value, () => Size);
-        }
+        get => _size;
+        set => OnPropertyChanged(ref _size, value, () => Size);
     }
 
-    public string Hash
+    public Size? PixelSize
     {
-        get
-        {
-            return _hash;
-        }
-        set
-        {
-            OnPropertyChanged(ref _hash, value, () => Hash);
-        }
+        get => _pixelSize;
+        set => OnPropertyChanged(ref _pixelSize, value, () => PixelSize);
+    }
+
+    public string? Hash
+    {
+        get => _hash;
+        set => OnPropertyChanged(ref _hash, value, () => Hash);
     }
 
     public int OrderNumber
     {
-        get
-        {
-            return _orderNumber;
-        }
-        set
-        {
-            OnPropertyChanged(ref _orderNumber, value, () => OrderNumber);
-        }
+        get => _orderNumber;
+        set => OnPropertyChanged(ref _orderNumber, value, () => OrderNumber);
     }
 
     public bool HasValue
     {
-        get
-        {
-            return _hasValue;
-        }
-        set
-        {
-            OnPropertyChanged(ref _hasValue, value, () => HasValue);
-        }
+        get => _hasValue;
+        set => OnPropertyChanged(ref _hasValue, value, () => HasValue);
     }
 
-    #endregion Properties
-
-    #region Commands
-
-    public ICommand CalculateHashCommand
-    {
-        get
-        {
-            return _calculateHashCommand ??
-                   (_calculateHashCommand = new RelayCommand((s) => CalculateHash(), (s) => Hash == null));
-        }
-    }
-
-    #endregion Commands
-
-    #region Methods
+    public ICommand CalculateHashCommand 
+        => _calculateHashCommand ??= new RelayCommand(_ => CalculateHash(), _ => Hash == null);
 
     private async void CalculateHash()
     {
@@ -105,7 +63,7 @@ class FileInfoVM : VMBase
 
         Hash = await Task.Run(() =>
         {
-            if (!_fileInfo.Exists)
+            if (_fileInfo?.Exists != true)
                 throw new ArgumentException("File does not exist.");
 
             using var md5 = MD5.Create();
@@ -114,7 +72,7 @@ class FileInfoVM : VMBase
         });
     }
 
-    public void UpdateCurrentInfo(INavigatorListEntry navigatorListEntry, int number)
+    public void UpdateCurrentInfo(INavigatorListEntry? navigatorListEntry, int number)
     {
         OrderNumber = number;
 
@@ -124,22 +82,20 @@ class FileInfoVM : VMBase
             Name = null;
             Size = null;
             Hash = null;
+            PixelSize = null;
             _fileInfo = null;
             return;
         }
 
         var fi = new FileInfo(navigatorListEntry.Path);
         if (!fi.Exists)
-        {
             return;
-        }
 
         HasValue = true;
         Name = fi.Name;
         Size = fi.Length;
         Hash = null;
+        PixelSize = navigatorListEntry is IPixelSizable pixelSizable ? pixelSizable.PixelSize : null;
         _fileInfo = fi;
     }
-
-    #endregion Methods
 }

@@ -2,7 +2,8 @@
 
 ### Navigator
 * Add a command to revert selected items to the previous version,
-so you can fix you mistake if you accidentally miss clicked 
+so you can fix you mistake if you accidentally miss clicked
+* Add pixel size for images and ugoira
 
 # 4.22.0
 

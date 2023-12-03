@@ -5,7 +5,7 @@ using ImoutoRebirth.Navigator.Model;
 
 namespace ImoutoRebirth.Navigator.ViewModel.ListEntries;
 
-internal class ImageEntryVM : BaseEntryVM, INavigatorListEntry
+internal class ImageEntryVM : BaseEntryVM, INavigatorListEntry, IPixelSizable
 {
     #region Constructors
 
@@ -42,6 +42,8 @@ internal class ImageEntryVM : BaseEntryVM, INavigatorListEntry
     public BitmapSource Image => ImageEntry.Image;
 
     public Size ViewPortSize => ImageEntry.ViewPort;
+    
+    public Size? PixelSize => ImageEntry.ImageSize;
 
     public ListEntryType Type { get; private set; }
 
