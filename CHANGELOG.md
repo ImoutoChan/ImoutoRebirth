@@ -3,7 +3,8 @@
 ### Navigator
 * Add a command to revert selected items to the previous version,
 so you can fix you mistake if you accidentally miss clicked
-* Add pixel size for images and ugoira
+* Add pixel size to the file status window for images and ugoira
+* Now you can scroll images with mouse wheel even when mouse cursor is not on the image itself
 
 # 4.22.0
 

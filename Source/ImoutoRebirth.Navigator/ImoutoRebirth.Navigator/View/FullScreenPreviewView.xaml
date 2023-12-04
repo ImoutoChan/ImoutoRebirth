@@ -16,7 +16,7 @@
     <UserControl.InputBindings>
         <MouseBinding Gesture="MiddleClick" Command="{Binding CloseCommand}" />
     </UserControl.InputBindings>
-    <Grid>
+    <Grid Background="Transparent">
         <Grid>
             <Grid.RowDefinitions>
                 <RowDefinition Height="*" />
@@ -24,7 +24,7 @@
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*" />
             </Grid.ColumnDefinitions>
-
+            
             <Image
                 Source="{Binding Path=ImagePath}"
                 Visibility="{Binding Path=Type, Converter={StaticResource ConditionVisibilityConverter}, ConverterParameter=Image}" />
