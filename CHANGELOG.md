@@ -6,6 +6,9 @@ so you can fix you mistake if you accidentally miss clicked
 * Add pixel size to the file status window for images and ugoira
 * Now you can scroll images with mouse wheel even when mouse cursor is not on the image itself
 
+### Arachne
+* Update packages
+
 # 4.22.0
 
 ### Infrastructure
