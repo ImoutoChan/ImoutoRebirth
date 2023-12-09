@@ -7,6 +7,7 @@
         <ImplicitUsings>true</ImplicitUsings>
 
         <IsPackable>false</IsPackable>
+        <IsTestProject>true</IsTestProject>
     </PropertyGroup>
 
     <ItemGroup>

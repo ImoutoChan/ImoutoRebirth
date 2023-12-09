@@ -46,3 +46,5 @@ app.MapWebEndpoints();
 
 app.MigrateIfNecessary<LilinDbContext>();
 app.Run();
+
+public partial class Program;

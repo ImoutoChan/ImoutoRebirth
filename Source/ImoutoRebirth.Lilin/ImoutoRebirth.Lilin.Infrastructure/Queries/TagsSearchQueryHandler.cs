@@ -33,18 +33,23 @@ internal class TagsSearchQueryHandler : IQueryHandler<TagsSearchQuery, IReadOnly
         }
         else
         {
-            searchPattern = searchPattern.ToLower();
+            // uncomment after this is fixed https://github.com/dotnet/efcore/issues/32432 (8.0.2)
+            // searchPattern = searchPattern.ToLower();
+
+            var searchPattern1 = searchPattern.ToLower();
+            var searchPattern2 = searchPattern.ToLower();
+            var searchPattern3 = searchPattern.ToLower();
 
             finalResult = await tagsWithTypes
-                .Where(x => x.Name.ToLower().Equals(searchPattern))
+                .Where(x => x.Name.ToLower().Equals(searchPattern1))
                 .Take(limit)
                 .ToListAsync(cancellationToken: ct);
 
             if (finalResult.Count < limit)
             {
                 var startsWith = await tagsWithTypes
-                    .Where(x => !x.Name.ToLower().Equals(searchPattern))
-                    .Where(x => x.Name.ToLower().StartsWith(searchPattern))
+                    .Where(x => !x.Name.ToLower().Equals(searchPattern1))
+                    .Where(x => x.Name.ToLower().StartsWith(searchPattern2))
                     .Take(limit)
                     .ToListAsync(cancellationToken: ct);
 
@@ -56,9 +61,9 @@ internal class TagsSearchQueryHandler : IQueryHandler<TagsSearchQuery, IReadOnly
                 limit -= finalResult.Count;
 
                 var contains = await tagsWithTypes
-                    .Where(x => !x.Name.ToLower().Equals(searchPattern))
-                    .Where(x => !x.Name.ToLower().StartsWith(searchPattern))
-                    .Where(x => x.Name.ToLower().Contains(searchPattern))
+                    .Where(x => !x.Name.ToLower().Equals(searchPattern1))
+                    .Where(x => !x.Name.ToLower().StartsWith(searchPattern2))
+                    .Where(x => x.Name.ToLower().Contains(searchPattern3))
                     .Take(limit)
                     .ToListAsync(cancellationToken: ct);
 
