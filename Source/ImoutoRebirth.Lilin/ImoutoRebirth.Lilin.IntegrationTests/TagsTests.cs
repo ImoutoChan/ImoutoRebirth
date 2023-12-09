@@ -1,9 +1,6 @@
-﻿using System.Net.Http.Json;
-using System.Text.Json;
-using FluentAssertions;
-using ImoutoRebirth.Lilin.IntegrationTests.Fixtures;
-using ImoutoRebirth.LilinService.WebApi.Client;
+﻿using ImoutoRebirth.LilinService.WebApi.Client;
 using CreateTagCommand = ImoutoRebirth.Lilin.Application.TagSlice.CreateTagCommand;
+using JsonSerializer = System.Text.Json.JsonSerializer;
 using TagsSearchQuery = ImoutoRebirth.Lilin.Application.TagSlice.TagsSearchQuery;
 
 namespace ImoutoRebirth.Lilin.IntegrationTests;
@@ -15,14 +12,12 @@ public class TagsTests(TestWebApplicationFactory<Program> _webApp)
     public async Task GetTagTypes()
     {
         // arrange
-        var context = _webApp.GetDbContext(_webApp.GetScope());
         var httpClient = _webApp.Client;
 
         // act
         var result = await httpClient.GetFromJsonAsync<IReadOnlyCollection<TagType>>("/tags/types");
         
         // assert
-
         result.Should().NotBeNull();
         result.Should().NotBeEmpty();
         result.Should().HaveCount(12);
@@ -40,7 +35,7 @@ public class TagsTests(TestWebApplicationFactory<Program> _webApp)
             types!.First(x => x.Name == "General").Id, 
             "new tag" + Guid.NewGuid(),
             false, 
-            Array.Empty<string>(),
+            [],
             Domain.TagAggregate.TagOptions.None);
 
         // act
@@ -71,7 +66,7 @@ public class TagsTests(TestWebApplicationFactory<Program> _webApp)
             types!.First(x => x.Name == "General").Id, 
             "new tag" + Guid.NewGuid(),
             true, 
-            new []{ "Synonyms"},
+            ["Synonyms"],
             Domain.TagAggregate.TagOptions.Counter);
 
         // act
@@ -94,9 +89,8 @@ public class TagsTests(TestWebApplicationFactory<Program> _webApp)
     public async Task SearchTags()
     {
         // arrange
-        var context = _webApp.GetDbContext(_webApp.GetScope());
         var httpClient = _webApp.Client;
-        var types = await httpClient.GetFromJsonAsync<IReadOnlyCollection<TagType>>("/tags/types")!;
+        var types = await httpClient.GetFromJsonAsync<IReadOnlyCollection<TagType>>("/tags/types");
 
         await CreateNewTag(httpClient, types, "1girl");
         await CreateNewTag(httpClient, types, "2girls");
@@ -121,10 +115,13 @@ public class TagsTests(TestWebApplicationFactory<Program> _webApp)
     private static async Task CreateNewTag(HttpClient client, IReadOnlyCollection<TagType>? types, string namePrefix)
     {
         var typeId = types!.First(x => x.Name == "General").Id;
-        var tag = await client.PostAsJsonAsync(
+        await client.PostAsJsonAsync(
             "/tags",
             new CreateTagCommand(
-                typeId, namePrefix + Guid.NewGuid(), false, Array.Empty<string>(),
+                typeId, 
+                namePrefix + Guid.NewGuid(), 
+                false, 
+                [],
                 Domain.TagAggregate.TagOptions.None));
 
     }

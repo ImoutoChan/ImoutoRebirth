@@ -9,6 +9,9 @@ so you can fix you mistake if you accidentally miss clicked
 ### Arachne
 * Update packages
 
+### Lilin
+* Fix error in searching tags by contains query string
+
 # 4.22.0
 
 ### Infrastructure
