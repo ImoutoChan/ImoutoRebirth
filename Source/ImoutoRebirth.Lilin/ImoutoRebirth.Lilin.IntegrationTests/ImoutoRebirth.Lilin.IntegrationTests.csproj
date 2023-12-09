@@ -34,4 +34,11 @@
         <ProjectReference Include="..\ImoutoRebirth.Lilin.WebApi.Client\ImoutoRebirth.Lilin.WebApi.Client.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+        <Using Include="Xunit" />
+        <Using Include="FluentAssertions" />
+        <Using Include="ImoutoRebirth.Lilin.IntegrationTests.Fixtures" />
+        <Using Include="System.Net.Http.Json" />
+    </ItemGroup>
+
 </Project>
