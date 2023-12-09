@@ -168,7 +168,7 @@ internal class FileService : IFileService
         }
 
         return await _filesClient
-            .CountSearchFilesAsync(new SearchFilesCountQuery(_mapper.Map<List<TagSearchEntry>>(tags)), ct);
+            .CountSearchFilesFastAsync(new SearchFilesFastCountQuery(_mapper.Map<List<TagSearchEntry>>(tags)), ct);
     }
 
     public async Task RemoveFile(Guid fileId)

@@ -22,23 +22,13 @@ internal static class EndpointsMappings
                 => mediator.Send(new RelativesQuery(fileMd5Hash), ct))
             .WithName("GetRelativesInfo");
 
-        files.MapPost(
-            "/relatives",
-            (IReadOnlyCollection<string> fileMd5Hashes, IMediator mediator, CancellationToken ct)
+        files.MapPost("/relatives", (IReadOnlyCollection<string> fileMd5Hashes, IMediator mediator, CancellationToken ct)
                 => mediator.Send(new RelativesBatchQuery(fileMd5Hashes), ct))
             .WithName("GetRelativesInfoBatch");
-
-        files.MapPost("/search", (SearchFilesQuery query, IMediator mediator, CancellationToken ct)
-                => mediator.Send(query, ct))
-            .WithName("SearchFiles");
 
         files.MapPost("/search-fast", (SearchFilesFastQuery query, IMediator mediator, CancellationToken ct)
                 => mediator.Send(query, ct))
             .WithName("SearchFilesFast");
-
-        files.MapPost("/search/count", (SearchFilesCountQuery query, IMediator mediator, CancellationToken ct)
-                => mediator.Send(query, ct))
-            .WithName("CountSearchFiles");
 
         files.MapPost("/search-fast/count", (SearchFilesFastCountQuery query, IMediator mediator, CancellationToken ct)
                 => mediator.Send(query, ct))

@@ -14,112 +14,63 @@ internal enum SearchOptions
 
 internal static class FileTagDbContextSearchExtensions
 {
-    public static IQueryable<FileTagEntity> GetSearchFilesQueryable(
+    public static IQueryable<Guid> GetSearchFilesIdsQueryable(
         this LilinDbContext context,
         IReadOnlyCollection<TagSearchEntry> tagSearchEntries,
         SearchOptions searchOptions = SearchOptions.FileShouldHaveAllIncludedTags)
     {
-        var fileTags = context.FileTags;
-        IQueryable<FileTagEntity> files = context.FileTags;
+        IQueryable<Guid>? queryable;
 
-        // exclude tags
-        var excludeFilters = tagSearchEntries
-            .Where(x => x.TagSearchScope == TagSearchScope.Excluded)
-            .ToArray();
+        var include = tagSearchEntries.Where(x => x.TagSearchScope == TagSearchScope.Included).ToList();
+        var exclude = tagSearchEntries.Where(x => x.TagSearchScope == TagSearchScope.Excluded).ToList();
 
-        if (excludeFilters.Any())
+        if (include.Any())
         {
-            var excludeFilter = MakeOrFilter(fileTags, excludeFilters);
+            var includeFirst = include.First();
 
-            files = files.Where(f => !excludeFilter.Contains(f.FileId));
-        }
+            queryable = context.FileTags
+                .Where(x => x.TagId == includeFirst.TagId)
+                .MakeValueFilter(includeFirst.Value)
+                .Select(x => x.FileId);
 
-        if (searchOptions == SearchOptions.FileShouldHaveAllIncludedTags)
-        {
-            // include tags
-            foreach (var tagSearchEntry in tagSearchEntries.Where(x => x.TagSearchScope == TagSearchScope.Included))
+            foreach (var includeEntry in include.Skip(1))
             {
-                var includeFilter = MakeOrFilter(fileTags, new[] { tagSearchEntry });
-                files = files.Where(f => includeFilter.Contains(f.FileId));
+                if (searchOptions == SearchOptions.FileShouldHaveAllIncludedTags)
+                {
+                    queryable = queryable.Intersect(
+                        context.FileTags
+                            .Where(x => x.TagId == includeEntry.TagId)
+                            .MakeValueFilter(includeEntry.Value)
+                            .Select(x => x.FileId)
+                    );
+                }
+                else if (searchOptions == SearchOptions.FileShouldHaveAnyIncludedTags)
+                {
+                    queryable = queryable.Union(
+                        context.FileTags
+                            .Where(x => x.TagId == includeEntry.TagId)
+                            .MakeValueFilter(includeEntry.Value)
+                            .Select(x => x.FileId)
+                    );
+                }
             }
         }
         else
         {
-            var includedTags = tagSearchEntries.Where(x => x.TagSearchScope == TagSearchScope.Included).ToList();
-
-            var includeFilter = MakeOrFilter(fileTags, includedTags);
-            files = files.Where(f => includeFilter.Contains(f.FileId));
+            queryable = context.FileTags.Select(x => x.FileId);
         }
 
-        return files;
-    }
+        foreach (var excludeEntry in exclude)
+        {
+            queryable = queryable.Except(
+                context.FileTags
+                    .Where(x => x.TagId == excludeEntry.TagId)
+                    .MakeValueFilter(excludeEntry.Value)
+                    .Select(x => x.FileId)
+            );
+        }
 
-    private static IQueryable<Guid> MakeOrFilter(
-        IQueryable<FileTagEntity> fileTags,
-        IReadOnlyCollection<TagSearchEntry> filters)
-    {
-        var query = fileTags;
-
-        Expression<Func<FileTagEntity, bool>>? condition = null;
-        if (filters.Any())
-            foreach (var f in filters)
-            {
-                Expression<Func<FileTagEntity, bool>> predicateExpression;
-
-                // for cases where we should check tag values
-                if (!string.IsNullOrEmpty(f.Value))
-                {
-                    // retrieve whenever we should check tag value for equality or inequality
-                    var (checkEquals, value) = ExtractEqualityFlag(f.Value);
-
-                    // retrieve whenever we should search for given value with * pattern
-                    var (asteriskPlace, extractedValue) = ExtractAsteriskFlag(value);
-                    value = extractedValue;
-
-                    predicateExpression = (checkEquals, asteriskPlace) switch
-                    {
-                        (true, AsteriskPlace.None) => t
-                            => t.TagId == f.TagId && t.Value == value,
-
-                        (true, AsteriskPlace.Start) => t
-                            => t.TagId == f.TagId && t.Value != null && t.Value.EndsWith(value),
-
-                        (true, AsteriskPlace.End) => t
-                            => t.TagId == f.TagId && t.Value != null && t.Value.StartsWith(value),
-
-                        (true, AsteriskPlace.Both) => t
-                            => t.TagId == f.TagId && t.Value != null && t.Value.Contains(value),
-
-                        (false, AsteriskPlace.None) => t
-                            => t.TagId == f.TagId && t.Value != value,
-
-                        (false, AsteriskPlace.Start) => t
-                            => t.TagId == f.TagId && (t.Value == null || !t.Value.EndsWith(value)),
-
-                        (false, AsteriskPlace.End) => t
-                            => t.TagId == f.TagId && (t.Value == null || !t.Value.StartsWith(value)),
-
-                        (false, AsteriskPlace.Both) => t
-                            => t.TagId == f.TagId && (t.Value == null || !t.Value.Contains(value)),
-
-                        _ => throw new NotImplementedException("unsupported pattern scenario")
-                    };
-                }
-
-                // for cases without values
-                else
-                {
-                    predicateExpression = t => t.TagId == f.TagId;
-                }
-
-                condition = condition != null
-                    ? condition.Or(predicateExpression)
-                    : predicateExpression.Get();
-            }
-
-        if (condition != null) query = query.Where(condition);
-
-        return query.Select(x => x.FileId);
+        return queryable;
     }
 
     public static IQueryable<FileTagEntity> MakeValueFilter(

@@ -23,10 +23,9 @@ internal class FilterFilesQueryHandler
                 .Select(x => x with { TagSearchScope = TagSearchScope.Included })
                 .ToArray();
 
-            var allFilesWithAnyInvertedTagQuery = _lilinDbContext.GetSearchFilesQueryable(
+            var allFilesWithAnyInvertedTagQuery = _lilinDbContext.GetSearchFilesIdsQueryable(
                     invertedTagSearchEntries,
                     SearchOptions.FileShouldHaveAnyIncludedTags)
-                .Select(x => x.FileId)
                 .Distinct();
             
             var allFilesWithAnyInvertedTag = await allFilesWithAnyInvertedTagQuery.ToListAsync(ct);
@@ -34,9 +33,8 @@ internal class FilterFilesQueryHandler
             return fileIds.Except(allFilesWithAnyInvertedTag).ToList();
         }
         
-        return await _lilinDbContext.GetSearchFilesQueryable(tagSearchEntries)
-            .Where(x => fileIds.Contains(x.FileId))
-            .Select(x => x.FileId)
+        return await _lilinDbContext.GetSearchFilesIdsQueryable(tagSearchEntries)
+            .Where(x => fileIds.Contains(x))
             .Distinct()
             .ToListAsync(ct);
     }
@@ -51,10 +49,9 @@ internal class FilterFilesQueryHandler
                 .Select(x => x with { TagSearchScope = TagSearchScope.Included })
                 .ToArray();
 
-            var allFilesWithAnyInvertedTagQuery = _lilinDbContext.GetSearchFilesQueryable(
+            var allFilesWithAnyInvertedTagQuery = _lilinDbContext.GetSearchFilesIdsQueryable(
                     invertedTagSearchEntries,
                     SearchOptions.FileShouldHaveAnyIncludedTags)
-                .Select(x => x.FileId)
                 .Distinct();
             
             var allFilesWithAnyInvertedTag = await allFilesWithAnyInvertedTagQuery.ToListAsync(ct);
@@ -62,9 +59,8 @@ internal class FilterFilesQueryHandler
             return fileIds.Except(allFilesWithAnyInvertedTag).Count();
         }
         
-        return await _lilinDbContext.GetSearchFilesQueryable(tagSearchEntries)
-            .Where(x => fileIds.Contains(x.FileId))
-            .Select(x => x.FileId)
+        return await _lilinDbContext.GetSearchFilesIdsQueryable(tagSearchEntries)
+            .Where(x => fileIds.Contains(x))
             .Distinct()
             .CountAsync(ct);
     }

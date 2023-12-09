@@ -61,8 +61,7 @@ internal class RelativesQueryHandler : IQueryHandler<RelativesQuery, IReadOnlyCo
         string? value, 
         [EnumeratorCancellation] CancellationToken cancellationToken)
     {
-        var filesQuery = new SearchFilesQuery(
-            new[] {new TagSearchEntry(tagId, value, TagSearchScope.Included)}, int.MaxValue, 0);
+        var filesQuery = new SearchFilesFastQuery([new(tagId, value, TagSearchScope.Included)]);
 
         var found = await _mediator.Send(filesQuery, cancellationToken);
             
