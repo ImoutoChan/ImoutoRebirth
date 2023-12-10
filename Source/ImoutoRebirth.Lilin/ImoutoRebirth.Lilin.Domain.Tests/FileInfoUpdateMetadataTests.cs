@@ -22,10 +22,10 @@ public class FileInfoUpdateMetadataTests
         var existsFileTag = new FileTag(_fileId, CreateSomeTag().Id, CurrentTagValue, CurrentSource);
         var newFileTag = new FileTag(_fileId, CreateSomeTag().Id, NewTagValue, NewSource);
 
-        var fileInfo = new FileInfo(new [] {existsFileTag}, Array.Empty<FileNote>(), _fileId);
+        var fileInfo = new FileInfo([existsFileTag], Array.Empty<FileNote>(), _fileId);
             
         // act
-        fileInfo.UpdateMetadata(NewSource, new[] {newFileTag}, Array.Empty<FileNote>());
+        fileInfo.UpdateMetadata(NewSource, [newFileTag], Array.Empty<FileNote>());
 
         // assert
         fileInfo.Tags.Should().Contain(existsFileTag);
@@ -38,7 +38,7 @@ public class FileInfoUpdateMetadataTests
         var existingNote = CreateSomeNote(_fileId, CurrentSource);
         var newNote = CreateSomeNote(_fileId, NewSource);
 
-        var fileInfo = new FileInfo(Array.Empty<FileTag>(), new [] {existingNote}, _fileId);
+        var fileInfo = new FileInfo(Array.Empty<FileTag>(), [existingNote], _fileId);
             
         // act
         fileInfo.UpdateMetadata(NewSource, Array.Empty<FileTag>(), new[] { newNote });
@@ -237,36 +237,34 @@ public class FileInfoUpdateMetadataTests
         var source1Tag5 = Guid.NewGuid();
 
         var fileInfo = new FileInfo(
-            new[]
-            {
-                new FileTag(fileId, source1Tag1, null, source1),
-                new FileTag(fileId, source1Tag2, null, source1),
-                new FileTag(fileId, source1Tag3, null, source1),
-            },
-            new[]
-            {
+            [
+                new(fileId, source1Tag1, null, source1),
+                new(fileId, source1Tag2, null, source1),
+                new(fileId, source1Tag3, null, source1),
+            ],
+            [
                 CreateSomeNote(fileId, source1, "note1", 1),
                 CreateSomeNote(fileId, source1, "note2", 2),
-            },
+            ],
             fileId);
         
         // act
-        fileInfo.UpdateMetadata(source1, new []
-        {
-            new FileTag(fileId, source1Tag3, null, source1),
-            new FileTag(fileId, source1Tag4, null, source1),
-            new FileTag(fileId, source1Tag5, null, source1),
-        }, new []
-        {
-            CreateSomeNote(fileId, source1, "note2", 2),
-            CreateSomeNote(fileId, source1, "note3", 3),
-            CreateSomeNote(fileId, source1, "note4", 4),
-        });
+        fileInfo.UpdateMetadata(source1,
+            [
+                new(fileId, source1Tag3, null, source1),
+                new(fileId, source1Tag4, null, source1),
+                new(fileId, source1Tag5, null, source1),
+            ],
+            [
+                CreateSomeNote(fileId, source1, "note2", 2),
+                CreateSomeNote(fileId, source1, "note3", 3),
+                CreateSomeNote(fileId, source1, "note4", 4),
+            ]);
         
         // assert
         fileInfo.Tags.Should().HaveCount(3);
         fileInfo.Notes.Should().HaveCount(3);
-        fileInfo.Tags.Select(x => x.TagId).Should().BeEquivalentTo(new[] { source1Tag3, source1Tag4, source1Tag5 });
+        fileInfo.Tags.Select(x => x.TagId).Should().BeEquivalentTo([source1Tag3, source1Tag4, source1Tag5]);
         fileInfo.Notes.Select(x => x.Label).Should().BeEquivalentTo("note2", "note3", "note4");
     } 
 
@@ -284,17 +282,15 @@ public class FileInfoUpdateMetadataTests
         var source1Tag5 = Guid.NewGuid();
 
         var fileInfo = new FileInfo(
-            new[]
-            {
-                new FileTag(fileId, source1Tag1, null, source1),
-                new FileTag(fileId, source1Tag2, null, source1),
-                new FileTag(fileId, source1Tag3, null, source1),
-            },
-            new[]
-            {
+            [
+                new(fileId, source1Tag1, null, source1),
+                new(fileId, source1Tag2, null, source1),
+                new(fileId, source1Tag3, null, source1),
+            ],
+            [
                 CreateSomeNote(fileId, source1, "note1", 1),
                 CreateSomeNote(fileId, source1, "note2", 2),
-            },
+            ],
             fileId);
         
         // act

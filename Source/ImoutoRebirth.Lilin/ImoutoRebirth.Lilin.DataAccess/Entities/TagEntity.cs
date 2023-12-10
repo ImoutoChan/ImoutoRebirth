@@ -29,7 +29,7 @@ public class TagEntity : EntityBase
     [NotMapped]
     public IReadOnlyCollection<string> SynonymsArray
     {
-        get => Synonyms?.Split(new [] {SynonymsSeparator}, StringSplitOptions.RemoveEmptyEntries) 
+        get => Synonyms?.Split(SynonymsSeparator, StringSplitOptions.RemoveEmptyEntries) 
                ?? Array.Empty<string>();
 
         set => Synonyms = value.Any() 

@@ -1,0 +1,180 @@
+﻿@hostname=localhost
+@port=11302
+
+### fast search 1girl (600ms)
+POST http://{{hostname}}:{{port}}/files/search-fast
+Content-Type: application/json
+
+{
+  "tagSearchEntries": [
+    {
+      "tagId": "446d553d-bec1-4c48-855f-cbd17b621349",
+      "tagSearchScope": "Included"
+    }
+  ]
+}
+
+### fast search include 1girl, solo, blue eyes (1129ms)
+POST http://{{hostname}}:{{port}}/files/search-fast
+Content-Type: application/json
+
+{
+  "tagSearchEntries": [
+    {
+      "tagId": "446d553d-bec1-4c48-855f-cbd17b621349",
+      "tagSearchScope": "Included"
+    },
+    {
+      "tagId": "ca7658f1-43b4-44be-83d6-c28bebae7635",
+      "tagSearchScope": "Included"
+    },
+    {
+      "tagId": "4d4a9693-f4ca-4eb4-b760-a1d25b096506",
+      "tagSearchScope": "Included"
+    }
+  ]
+}
+
+### fast search include 1girl, solo, blue eyes exclude large breasts (1481)
+POST http://{{hostname}}:{{port}}/files/search-fast
+Content-Type: application/json
+
+{
+  "tagSearchEntries": [
+    {
+      "tagId": "446d553d-bec1-4c48-855f-cbd17b621349",
+      "tagSearchScope": "Included"
+    },
+    {
+      "tagId": "ca7658f1-43b4-44be-83d6-c28bebae7635",
+      "tagSearchScope": "Included"
+    },
+    {
+      "tagId": "4d4a9693-f4ca-4eb4-b760-a1d25b096506",
+      "tagSearchScope": "Included"
+    },
+    {
+      "tagId": "d25cbf69-cb60-46bc-aa36-6e385c0c9c6b",
+      "tagSearchScope": "Excluded"
+    }
+  ]
+}
+
+### fast search include 1girl, solo, blue eyes exclude large breasts, Rating:Explicit (1679)
+POST http://{{hostname}}:{{port}}/files/search-fast
+Content-Type: application/json
+
+{
+  "tagSearchEntries": [
+    {
+      "tagId": "446d553d-bec1-4c48-855f-cbd17b621349",
+      "tagSearchScope": "Included"
+    },
+    {
+      "tagId": "ca7658f1-43b4-44be-83d6-c28bebae7635",
+      "tagSearchScope": "Included"
+    },
+    {
+      "tagId": "4d4a9693-f4ca-4eb4-b760-a1d25b096506",
+      "tagSearchScope": "Included"
+    },
+    {
+      "tagId": "d25cbf69-cb60-46bc-aa36-6e385c0c9c6b",
+      "tagSearchScope": "Excluded"
+    },
+    {
+      "tagId": "72ac9355-6fbf-4561-89e2-59236f7f3e26",
+      "tagSearchScope": "Excluded",
+      "value": "Explicit"
+    }
+  ]
+}
+
+### count fast search 1girl (600ms)
+POST http://{{hostname}}:{{port}}/files/search-fast/count
+Content-Type: application/json
+
+{
+  "tagSearchEntries": [
+    {
+      "tagId": "446d553d-bec1-4c48-855f-cbd17b621349",
+      "tagSearchScope": "Included"
+    }
+  ]
+}
+
+### count fast search include 1girl, solo, blue eyes (1129ms)
+POST http://{{hostname}}:{{port}}/files/search-fast/count
+Content-Type: application/json
+
+{
+  "tagSearchEntries": [
+    {
+      "tagId": "446d553d-bec1-4c48-855f-cbd17b621349",
+      "tagSearchScope": "Included"
+    },
+    {
+      "tagId": "ca7658f1-43b4-44be-83d6-c28bebae7635",
+      "tagSearchScope": "Included"
+    },
+    {
+      "tagId": "4d4a9693-f4ca-4eb4-b760-a1d25b096506",
+      "tagSearchScope": "Included"
+    }
+  ]
+}
+
+### count fast search include 1girl, solo, blue eyes exclude large breasts (1481)
+POST http://{{hostname}}:{{port}}/files/search-fast/count
+Content-Type: application/json
+
+{
+  "tagSearchEntries": [
+    {
+      "tagId": "446d553d-bec1-4c48-855f-cbd17b621349",
+      "tagSearchScope": "Included"
+    },
+    {
+      "tagId": "ca7658f1-43b4-44be-83d6-c28bebae7635",
+      "tagSearchScope": "Included"
+    },
+    {
+      "tagId": "4d4a9693-f4ca-4eb4-b760-a1d25b096506",
+      "tagSearchScope": "Included"
+    },
+    {
+      "tagId": "d25cbf69-cb60-46bc-aa36-6e385c0c9c6b",
+      "tagSearchScope": "Excluded"
+    }
+  ]
+}
+
+### count fast search include 1girl, solo, blue eyes exclude large breasts, Rating:Explicit (1679)
+POST http://{{hostname}}:{{port}}/files/search-fast/count
+Content-Type: application/json
+
+{
+  "tagSearchEntries": [
+    {
+      "tagId": "446d553d-bec1-4c48-855f-cbd17b621349",
+      "tagSearchScope": "Included"
+    },
+    {
+      "tagId": "ca7658f1-43b4-44be-83d6-c28bebae7635",
+      "tagSearchScope": "Included"
+    },
+    {
+      "tagId": "4d4a9693-f4ca-4eb4-b760-a1d25b096506",
+      "tagSearchScope": "Included"
+    },
+    {
+      "tagId": "d25cbf69-cb60-46bc-aa36-6e385c0c9c6b",
+      "tagSearchScope": "Excluded"
+    },
+    {
+      "tagId": "72ac9355-6fbf-4561-89e2-59236f7f3e26",
+      "tagSearchScope": "Excluded",
+      "value": "Explicit"
+    }
+  ]
+}

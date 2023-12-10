@@ -6,7 +6,7 @@ public class GZipCompressingHandler : DelegatingHandler
         HttpRequestMessage request,
         CancellationToken ct)
     {
-        if (request.Content != null)
+        if (request.Content != null && request.Content is not CompressedContent)
             request.Content = new CompressedContent(request.Content);
 
         return await base.SendAsync(request, ct);

@@ -30,6 +30,7 @@
     </ItemGroup>
 
     <ItemGroup>
+        <ProjectReference Include="..\..\ImoutoRebirth.Common\ImoutoRebirth.Common.Tests\ImoutoRebirth.Common.Tests.csproj" />
         <ProjectReference Include="..\ImoutoRebirth.Lilin.Host\ImoutoRebirth.Lilin.Host.csproj"/>
         <ProjectReference Include="..\ImoutoRebirth.Lilin.WebApi.Client\ImoutoRebirth.Lilin.WebApi.Client.csproj" />
     </ItemGroup>

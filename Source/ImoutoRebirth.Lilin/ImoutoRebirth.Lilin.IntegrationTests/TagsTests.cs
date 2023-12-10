@@ -1,4 +1,5 @@
-﻿using ImoutoRebirth.LilinService.WebApi.Client;
+﻿using ImoutoRebirth.Common.Tests;
+using ImoutoRebirth.LilinService.WebApi.Client;
 using CreateTagCommand = ImoutoRebirth.Lilin.Application.TagSlice.CreateTagCommand;
 using JsonSerializer = System.Text.Json.JsonSerializer;
 using TagsSearchQuery = ImoutoRebirth.Lilin.Application.TagSlice.TagsSearchQuery;
@@ -98,9 +99,8 @@ public class TagsTests(TestWebApplicationFactory<Program> _webApp)
         await CreateNewTag(httpClient, types, "boy");
 
         // act
-        var result = await httpClient.PostAsJsonAsync("/tags/search", new TagsSearchQuery("girl", 10));
-        var foundTagsString = await result.Content.ReadAsStringAsync();
-        var foundTags = JsonSerializer.Deserialize<IReadOnlyCollection<Tag>>(foundTagsString)!;
+        var foundTags = await httpClient.PostAsJsonAsync("/tags/search", new TagsSearchQuery("girl", 10))
+            .ReadResult<IReadOnlyCollection<Tag>>();
         
         // assert
         foundTags.Should().NotBeNull();

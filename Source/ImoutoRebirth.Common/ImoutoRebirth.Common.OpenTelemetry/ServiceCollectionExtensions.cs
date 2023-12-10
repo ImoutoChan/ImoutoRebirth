@@ -39,11 +39,7 @@ public static class ServiceCollectionExtensions
                     .SetResourceBuilder(ResourceBuilder
                         .CreateDefault()
                         .AddService(applicationName)
-                        .AddAttributes(new []
-                        {
-                            new KeyValuePair<string, object>("environment", environmentName),
-                            new KeyValuePair<string, object>("application", applicationName)
-                        }))
+                        .AddAttributes([new("environment", environmentName), new("application", applicationName)]))
                     .AddRuntimeInstrumentation()
                     .AddAspNetCoreInstrumentation()
                     .AddPrometheusExporter()

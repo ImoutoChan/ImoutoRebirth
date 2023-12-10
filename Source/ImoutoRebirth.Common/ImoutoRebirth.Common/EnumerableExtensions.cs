@@ -7,7 +7,7 @@ public static class EnumerableExtensions
     public static string JoinStrings<T>(this IEnumerable<T> source, Func<T, string> stringSelector, string separator) 
         => string.Join(separator, source.Select(stringSelector));
     
-    public static T[] AsArray<T>(this T item) => new [] { item };
+    public static T[] AsArray<T>(this T item) => [item];
 
     public static bool SafeAny<T>([NotNullWhen(true)] this IEnumerable<T>? source) => source != null && source.Any();
 

@@ -65,7 +65,7 @@ public static class ServiceCollectionExtensions
             c.TagActionsBy(e =>
             {
                 var controllerName = e.RelativePath?.Split("/").FirstOrDefault(x => !string.IsNullOrWhiteSpace(x));
-                return new [] {controllerName?.ToUpperInvariant()[..1] + controllerName?[1..]};
+                return [controllerName?.ToUpperInvariant()[..1] + controllerName?[1..]];
             });
             
             c.CustomOperationIds(e =>

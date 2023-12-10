@@ -149,6 +149,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ImoutoRebirth.Room.Integrat
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ImoutoRebirth.Lilin.IntegrationTests", "ImoutoRebirth.Lilin\ImoutoRebirth.Lilin.IntegrationTests\ImoutoRebirth.Lilin.IntegrationTests.csproj", "{62D5F26A-A32D-4B6C-BA4B-86318E1CD26E}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ImoutoRebirth.Common.Tests", "ImoutoRebirth.Common\ImoutoRebirth.Common.Tests\ImoutoRebirth.Common.Tests.csproj", "{C0102FFF-A2B9-4C90-9906-2F72D05C4D69}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -380,6 +382,10 @@ Global
 		{62D5F26A-A32D-4B6C-BA4B-86318E1CD26E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{62D5F26A-A32D-4B6C-BA4B-86318E1CD26E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{62D5F26A-A32D-4B6C-BA4B-86318E1CD26E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C0102FFF-A2B9-4C90-9906-2F72D05C4D69}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C0102FFF-A2B9-4C90-9906-2F72D05C4D69}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C0102FFF-A2B9-4C90-9906-2F72D05C4D69}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C0102FFF-A2B9-4C90-9906-2F72D05C4D69}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{9BC327CE-D36E-4926-9830-DCEB0CB73884} = {6BEB0A5C-9E6B-4440-93B2-F4C63BE43298}
@@ -437,5 +443,6 @@ Global
 		{46AFCD9F-8AFE-49ED-9FDA-20EF0192A324} = {5198DC62-EAAC-4A81-8728-349F06201287}
 		{F50AC677-879C-4DC6-90BA-EDBC847C38C3} = {5198DC62-EAAC-4A81-8728-349F06201287}
 		{62D5F26A-A32D-4B6C-BA4B-86318E1CD26E} = {9DD31146-A822-409B-B6B7-EE16337740D3}
+		{C0102FFF-A2B9-4C90-9906-2F72D05C4D69} = {4383FD00-3B54-4C2B-9222-BDC045D3FD9B}
 	EndGlobalSection
 EndGlobal

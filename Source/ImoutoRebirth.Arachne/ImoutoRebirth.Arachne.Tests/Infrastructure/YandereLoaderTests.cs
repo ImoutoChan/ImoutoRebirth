@@ -52,7 +52,7 @@ public class YandereLoaderTests
 
         // assert
         post.ChildrenIds.Count.Should().Be(3);
-        post.ChildrenIds.Select(x => x.Id).Should().BeEquivalentTo(new []{ 709435, 753883, 801669 });
+        post.ChildrenIds.Select(x => x.Id).Should().BeEquivalentTo([709435, 753883, 801669]);
         post.ChildrenIds.Select(x => x.Md5Hash).Should().BeEquivalentTo("c1c4a14d4e058fe164482e86b8ea9b6b",
             "6a0e99ff9d228e0155ee5fd80f5217cb", "e038ea4fb55807d03f89e81df062409c");
     }
