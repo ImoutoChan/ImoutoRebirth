@@ -65,6 +65,12 @@ public class TestWebApplicationFactory<TProgram>
 
     protected override void Dispose(bool disposing)
     {
+        if (!disposing)
+        {
+            base.Dispose(disposing);
+            return;
+        }
+        
         // delete test database
         using var connection = new NpgsqlConnection(PostgresConnectionString);
         connection.Open();

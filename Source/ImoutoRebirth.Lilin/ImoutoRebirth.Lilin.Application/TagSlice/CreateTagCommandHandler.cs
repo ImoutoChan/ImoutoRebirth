@@ -36,6 +36,7 @@ internal class CreateTagCommandHandler : ICommandHandler<CreateTagCommand, Tag>
         if (tag != null)
         {
             tag.UpdateHasValue(hasValue);
+            tag.UpdateOptions(options);
 
             if (synonyms != null)
                 tag.UpdateSynonyms(synonyms);
