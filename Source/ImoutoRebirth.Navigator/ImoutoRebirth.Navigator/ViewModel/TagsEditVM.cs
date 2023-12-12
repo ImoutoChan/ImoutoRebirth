@@ -258,10 +258,14 @@ internal class TagsEditVM : VMBase, IDropable
     private async Task UpdateUsersTopTags()
     {
         var popular = await _tagService.GetPopularUserTags(20);
+        var popularCharacters = await _tagService.GetPopularUserCharacterTags(20);
         
         UsersTopTags.Clear();
 
         foreach (var tag in popular) 
+            UsersTopTags.Add(new SearchTagVM(new SearchTag(tag, null)));
+        
+        foreach (var tag in popularCharacters) 
             UsersTopTags.Add(new SearchTagVM(new SearchTag(tag, null)));
     }
 

@@ -63,6 +63,10 @@ internal static class EndpointsMappings
             => mediator.Send(new PopularUserTagsQuery(limit), ct))
             .WithName("GetPopularTags");
 
+        tags.MapGet("/popular-characters", (int limit, IMediator mediator, CancellationToken ct)
+            => mediator.Send(new PopularUserCharacterTagsQuery(limit), ct))
+            .WithName("GetPopularCharactersTags");
+
         tags.MapPost("", (CreateTagCommand command, IMediator mediator, CancellationToken ct)
             => mediator.Send(command, ct))
             .WithName("CreateTag");

@@ -5,6 +5,7 @@
 so you can fix you mistake if you accidentally miss clicked
 * Add pixel size to the file status window for images and ugoira
 * Now you can scroll images with mouse wheel even when mouse cursor is not on the image itself
+* Add popular character tags in tags editor
 
 ### Arachne
 * Update packages

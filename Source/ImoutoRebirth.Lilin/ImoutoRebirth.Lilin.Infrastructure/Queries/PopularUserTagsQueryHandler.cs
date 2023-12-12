@@ -8,7 +8,9 @@ using Microsoft.EntityFrameworkCore;
 
 namespace ImoutoRebirth.Lilin.Infrastructure.Queries;
 
-internal class PopularUserTagsQueryHandler : IQueryHandler<PopularUserTagsQuery, IReadOnlyCollection<Tag>>
+internal class PopularUserTagsQueryHandler 
+    : IQueryHandler<PopularUserTagsQuery, IReadOnlyCollection<Tag>>
+    , IQueryHandler<PopularUserCharacterTagsQuery, IReadOnlyCollection<Tag>>
 {
     private readonly LilinDbContext _lilinDbContext;
 
@@ -20,6 +22,25 @@ internal class PopularUserTagsQueryHandler : IQueryHandler<PopularUserTagsQuery,
             .Include(x => x.Tag)
             .ThenInclude(x => x!.Type)
             .Where(x => x.Source == MetadataSource.Manual && x.Tag!.Type!.Name == "General")
+            .GroupBy(x => new { x.TagId } )
+            .Select(x => new { x.Key.TagId, Count = x.Count() })
+            .OrderByDescending(x => x.Count)
+            .Take(request.Limit)
+            .Select(x => x.TagId);
+
+        var result = await _lilinDbContext.Tags
+            .Include(x => x.Type)
+            .Where(x => tags.Contains(x.Id)).ToListAsync(cancellationToken: ct);
+
+        return result.Select(x => x.ToModel()).ToArray();
+    }
+
+    public async Task<IReadOnlyCollection<Tag>> Handle(PopularUserCharacterTagsQuery request, CancellationToken ct)
+    {
+        var tags = _lilinDbContext.FileTags
+            .Include(x => x.Tag)
+            .ThenInclude(x => x!.Type)
+            .Where(x => x.Source == MetadataSource.Manual && x.Tag!.Type!.Name == "Character")
             .GroupBy(x => new { x.TagId } )
             .Select(x => new { x.Key.TagId, Count = x.Count() })
             .OrderByDescending(x => x.Count)

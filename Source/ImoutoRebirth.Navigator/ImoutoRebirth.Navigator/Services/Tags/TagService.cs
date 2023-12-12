@@ -40,4 +40,10 @@ internal class TagService : ITagService
         var results = await _tagsClient.GetPopularTagsAsync(count);
         return _mapper.Map<IReadOnlyCollection<Tag>>(results);
     }
+
+    public async Task<IReadOnlyCollection<Tag>> GetPopularUserCharacterTags(int count)
+    {
+        var results = await _tagsClient.GetPopularCharactersTagsAsync(count);
+        return _mapper.Map<IReadOnlyCollection<Tag>>(results);
+    }
 }

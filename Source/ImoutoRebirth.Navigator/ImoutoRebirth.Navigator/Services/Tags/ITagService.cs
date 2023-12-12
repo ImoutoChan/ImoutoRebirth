@@ -11,4 +11,6 @@ internal interface ITagService
     Task<IReadOnlyCollection<Tag>> SearchTags(string name, int count);
     
     Task<IReadOnlyCollection<Tag>> GetPopularUserTags(int count);
+
+    Task<IReadOnlyCollection<Tag>> GetPopularUserCharacterTags(int count);
 }
