@@ -1,6 +1,12 @@
 ﻿using ImoutoRebirth.Common.Tests;
+using ImoutoRebirth.Lilin.Application.FileInfoSlice.Commands;
 using ImoutoRebirth.LilinService.WebApi.Client;
+using MassTransit.Testing;
+using MediatR;
+using Microsoft.Extensions.DependencyInjection;
+using BindTagsCommand = ImoutoRebirth.LilinService.WebApi.Client.BindTagsCommand;
 using CreateTagCommand = ImoutoRebirth.Lilin.Application.TagSlice.CreateTagCommand;
+using UnbindTagsCommand = ImoutoRebirth.LilinService.WebApi.Client.UnbindTagsCommand;
 
 namespace ImoutoRebirth.Lilin.IntegrationTests;
 
@@ -11,7 +17,8 @@ public class FileTagsTests(TestWebApplicationFactory<Program> _webApp)
     public async Task BindTags()
     {
         // arrange
-        var context = _webApp.GetDbContext(_webApp.GetScope());
+        using var scope = _webApp.GetScope();
+        var context = _webApp.GetDbContext(scope);
         var httpClient = _webApp.Client;
 
         var file1Id = Guid.NewGuid();
@@ -53,7 +60,6 @@ public class FileTagsTests(TestWebApplicationFactory<Program> _webApp)
     public async Task SearchFilesFast()
     {
         // arrange
-        var context = _webApp.GetDbContext(_webApp.GetScope());
         var httpClient = _webApp.Client;
 
         var file1Id = Guid.NewGuid();
@@ -149,7 +155,6 @@ public class FileTagsTests(TestWebApplicationFactory<Program> _webApp)
     public async Task SearchFilesCountFast()
     {
         // arrange
-        var context = _webApp.GetDbContext(_webApp.GetScope());
         var httpClient = _webApp.Client;
 
         var file1Id = Guid.NewGuid();
@@ -239,7 +244,6 @@ public class FileTagsTests(TestWebApplicationFactory<Program> _webApp)
     public async Task FilterFiles()
     {
         // arrange
-        var context = _webApp.GetDbContext(_webApp.GetScope());
         var httpClient = _webApp.Client;
 
         var file1Id = Guid.NewGuid();
@@ -344,7 +348,6 @@ public class FileTagsTests(TestWebApplicationFactory<Program> _webApp)
     public async Task FilterFilesCount()
     {
         // arrange
-        var context = _webApp.GetDbContext(_webApp.GetScope());
         var httpClient = _webApp.Client;
 
         var file1Id = Guid.NewGuid();
@@ -443,7 +446,8 @@ public class FileTagsTests(TestWebApplicationFactory<Program> _webApp)
     public async Task BindTagsShouldReplaceExistingValues()
     {
         // arrange
-        var context = _webApp.GetDbContext(_webApp.GetScope());
+        using var scope = _webApp.GetScope();
+        var context = _webApp.GetDbContext(scope);
         var httpClient = _webApp.Client;
 
         var file1Id = Guid.NewGuid();
@@ -487,7 +491,8 @@ public class FileTagsTests(TestWebApplicationFactory<Program> _webApp)
     public async Task BindTagsShouldNotReplaceExistingValues()
     {
         // arrange
-        var context = _webApp.GetDbContext(_webApp.GetScope());
+        using var scope = _webApp.GetScope();
+        var context = _webApp.GetDbContext(scope);
         var httpClient = _webApp.Client;
 
         var file1Id = Guid.NewGuid();
@@ -549,7 +554,8 @@ public class FileTagsTests(TestWebApplicationFactory<Program> _webApp)
     public async Task UnbindTagsCommand()
     {
         // arrange
-        var context = _webApp.GetDbContext(_webApp.GetScope());
+        using var scope = _webApp.GetScope();
+        var context = _webApp.GetDbContext(scope);
         var httpClient = _webApp.Client;
 
         var file1Id = Guid.NewGuid();
@@ -587,6 +593,61 @@ public class FileTagsTests(TestWebApplicationFactory<Program> _webApp)
         context.FileTags.FirstOrDefault(x => x.FileId == file1Id).Should().BeNull();
         context.FileTags.FirstOrDefault(x => x.FileId == file2Id && x.TagId == newTag1.Id).Should().BeNull();
         context.FileTags.First(x => x.FileId == file2Id && x.TagId == newTag2.Id).Value.Should().Be("bad");
+    }
+
+    [Fact]
+    public async Task ActualizeFileInfoForSourceCommand()
+    {
+        // arrange
+        using var scope = _webApp.GetScope();
+        var mediator = scope.ServiceProvider.GetRequiredService<IMediator>();
+        var httpClient = _webApp.Client;
+
+        ActualizeTag[] newTags =
+        [
+            new("General", "1girl" + Guid.NewGuid(), null, null, Domain.TagAggregate.TagOptions.None),
+            new("General", "solo" + Guid.NewGuid(), null, null, Domain.TagAggregate.TagOptions.None),
+            new("General", "huge melons" + Guid.NewGuid(), null, null, Domain.TagAggregate.TagOptions.None),
+            new("General", "Rating" + Guid.NewGuid(), "Questionable", new[] { "Rate" }, Domain.TagAggregate.TagOptions.None),
+        ];
+        
+        var command = new ActualizeFileInfoForSourceCommand(
+            Guid.NewGuid(),
+            Domain.FileInfoAggregate.MetadataSource.Danbooru,
+            newTags,
+            [
+                new(
+                    SourceId: 1,
+                    Label: "Bounce sound translation" + Guid.NewGuid(),
+                    PositionFromLeft: 10,
+                    PositionFromTop: 20,
+                    Width: 30,
+                    Height: 40)
+            ]);
+
+        await mediator.Send(command);
+        
+        // act
+        var fileInfo = await httpClient.GetFromJsonAsync<DetailedFileInfo>($"/files/{command.FileId}");
+
+        // assert
+        var tags = fileInfo!.Tags!;
+        var notes = fileInfo.Notes!;
+
+        fileInfo.Should().NotBeNull();
+        tags.Should().HaveCount(4);
+        tags.Should().Contain(x => x.Tag!.Name == newTags[0].Name);
+        tags.Should().Contain(x => x.Tag!.Name == newTags[1].Name);
+        tags.Should().Contain(x => x.Tag!.Name == newTags[2].Name);
+        tags.Should().Contain(x => x.Tag!.Name == newTags[3].Name);
+        tags.First(x => x.Tag!.Name == newTags[3].Name).Value.Should().Be("Questionable");
+        tags.First(x => x.Tag!.Name == newTags[3].Name).Tag!.Synonyms.Should().BeEquivalentTo(newTags[3].Synonyms);
+        notes.Should().HaveCount(1);
+        notes.First().Label.Should().Be(command.Notes.First().Label);
+        notes.First().PositionFromLeft.Should().Be(command.Notes.First().PositionFromLeft);
+        notes.First().PositionFromTop.Should().Be(command.Notes.First().PositionFromTop);
+        notes.First().Width.Should().Be(command.Notes.First().Width);
+        notes.First().Height.Should().Be(command.Notes.First().Height);
     }
 
     private static async Task<Tag> CreateNewTag(

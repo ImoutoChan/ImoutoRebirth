@@ -15,7 +15,7 @@ public class ActualizeFileInfoForSourceCommandTests(TestWebApplicationFactory<Pr
     public async Task ActualizeFileInfoForSourceCommand()
     {
         // arrange
-        var scope = _webApp.GetScope();
+        using var scope = _webApp.GetScope();
         var harness = scope.ServiceProvider.GetRequiredService<ITestHarness>();
         var mediator = scope.ServiceProvider.GetRequiredService<IMediator>();
         var context = _webApp.GetDbContext(scope);
@@ -30,7 +30,7 @@ public class ActualizeFileInfoForSourceCommandTests(TestWebApplicationFactory<Pr
         
         var command = new ActualizeFileInfoForSourceCommand(
             Guid.NewGuid(),
-            ImoutoRebirth.Lilin.Domain.FileInfoAggregate.MetadataSource.Danbooru,
+            Domain.FileInfoAggregate.MetadataSource.Danbooru,
             newTags,
             [
                 new(

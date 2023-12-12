@@ -30,7 +30,8 @@ public class TagsTests(TestWebApplicationFactory<Program> _webApp)
     public async Task CreateTag()
     {
         // arrange
-        var context = _webApp.GetDbContext(_webApp.GetScope());
+        using var scope = _webApp.GetScope();
+        var context = _webApp.GetDbContext(scope);
         var httpClient = _webApp.Client;
         var types = await httpClient.GetFromJsonAsync<IReadOnlyCollection<TagType>>("/tags/types");
 
@@ -61,7 +62,8 @@ public class TagsTests(TestWebApplicationFactory<Program> _webApp)
     public async Task CreateTagShouldUpdateHasValueAndSynonymsWhenTagWithSameNameAndTypeAlreadyExists()
     {
         // arrange
-        var context = _webApp.GetDbContext(_webApp.GetScope());
+        using var scope = _webApp.GetScope();
+        var context = _webApp.GetDbContext(scope);
         var httpClient = _webApp.Client;
         var types = await httpClient.GetFromJsonAsync<IReadOnlyCollection<TagType>>("/tags/types");
 
@@ -101,7 +103,8 @@ public class TagsTests(TestWebApplicationFactory<Program> _webApp)
     public async Task CreateTagWithAdditionalInfo()
     {
         // arrange
-        var context = _webApp.GetDbContext(_webApp.GetScope());
+        using var scope = _webApp.GetScope();
+        var context = _webApp.GetDbContext(scope);
         var httpClient = _webApp.Client;
         var types = await httpClient.GetFromJsonAsync<IReadOnlyCollection<TagType>>("/tags/types");
 

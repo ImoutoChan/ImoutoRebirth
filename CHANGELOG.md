@@ -11,6 +11,7 @@ so you can fix you mistake if you accidentally miss clicked
 
 ### Lilin
 * Fix error in searching tags by contains query string
+* Add integration tests
 
 # 4.22.0
 
