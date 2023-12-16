@@ -64,6 +64,8 @@ internal class FullScreenPreviewVM : VMBase
 
         if (Type == ListEntryType.Ugoira)
             UgoiraFrameDelays = await _ugoiraDelaysGetter(forEntry);
+        
+        CurrentEntryNameChanged?.Invoke(this, System.IO.Path.GetFileName(forEntry.Path));
     }
     
     public ICommand CloseCommand => new RelayCommand(_ => CloseRequested?.Invoke(this, EventArgs.Empty));
@@ -86,4 +88,6 @@ internal class FullScreenPreviewVM : VMBase
     });
 
     public event EventHandler? CloseRequested;
+    
+    public event EventHandler<string>? CurrentEntryNameChanged;
 }

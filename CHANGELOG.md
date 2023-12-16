@@ -7,6 +7,7 @@ so you can fix you mistake if you accidentally miss clicked
 * Now you can scroll images with mouse wheel even when mouse cursor is not on the image itself
 * Add popular character tags in tags editor
 * Add selected files count to the status bar
+* Change title bar to show file name in full screen preview mode
 
 ### Arachne
 * Update packages

@@ -27,12 +27,15 @@ class MainWindowVM : VMBase
 {
     #region Fields
 
+    private const string DefaultTitle = "Imouto Navigator";
+
     private MainWindow _view;
     private int _previewSize = 256;
     private int _totalCount;
     private bool _isLoading;
     private string _status;
     private string _statusToolTip;
+    private string _title = DefaultTitle;
     private readonly IFileService _fileService;
     private readonly IFileTagService _fileTagService;
     private readonly IFileLoadingService _fileLoadingService;
@@ -58,6 +61,8 @@ class MainWindowVM : VMBase
         NavigatorList.CollectionChanged += (_, _) => OnPropertyChanged(() => LoadedCount);
 
         _appendNewContentTimer.Tick += async (_, _) => { /*LoadNew();*/ };
+        
+        Title = DefaultTitle;
     }
 
     private async Task LoadNew()
@@ -162,7 +167,11 @@ class MainWindowVM : VMBase
 
     public ObservableCollection<INavigatorListEntry> NavigatorList { get; } = new();
 
-    public string Title => "Imouto Navigator";
+    public string Title
+    {
+        get => _title;
+        set => OnPropertyChanged(ref _title, value, () => Title);
+    }
 
     public TagSearchVM TagSearchVM { get; set; }
 
@@ -360,10 +369,16 @@ class MainWindowVM : VMBase
 
             return frameData?.Data.Select(x => new DelayItem(x.Delay, x.File)).ToList();
         });
-        vm.SetCurrentEntry(navigatorListEntry, NavigatorList);
+        vm.CurrentEntryNameChanged += OnCurrentEntryNameChanged;
         vm.CloseRequested += OnFullScreenPreviewVMCloseRequested;
+
+        vm.SetCurrentEntry(navigatorListEntry, NavigatorList);
+
         FullScreenPreviewVM = vm;
+        Title = Path.GetFileName(navigatorListEntry.Path);
     }
+
+    private void OnCurrentEntryNameChanged(object? _, string value) => Title = value;
 
     private void OnFullScreenPreviewVMCloseRequested(object? o, EventArgs eventArgs)
     {
@@ -373,7 +388,9 @@ class MainWindowVM : VMBase
             return;
         
         vm.CloseRequested -= OnFullScreenPreviewVMCloseRequested;
+        vm.CurrentEntryNameChanged -= OnCurrentEntryNameChanged;
         FullScreenPreviewVM = null;
+        Title = DefaultTitle;
     }
 
     private static string CreatePlayList(IList<string> videos, string videoPath)
