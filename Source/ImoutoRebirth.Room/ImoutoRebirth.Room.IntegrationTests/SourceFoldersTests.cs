@@ -164,10 +164,13 @@ public class SourceFoldersTests
         // assert
         sourceFolders.Should().NotBeNull();
         sourceFolders.Should().HaveCount(4);
-        sourceFolders![0].Path.Should().Be(command1.Path);
-        sourceFolders[1].Path.Should().Be(command2.Path);
-        sourceFolders[2].Path.Should().Be(command3.Path);
-        sourceFolders[3].Path.Should().Be(command4.Path);
+        sourceFolders!.Select(x => x.Path).Should()
+            .BeEquivalentTo([
+                command1.Path, 
+                command2.Path, 
+                command3.Path, 
+                command4.Path
+            ]);
     }
 
     private static async Task<Guid> CreateCollection(HttpClient httpClient)
