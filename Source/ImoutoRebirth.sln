@@ -45,7 +45,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ImoutoRebirth.Harpy.Host", 
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ImoutoRebirth.Harpy.Services", "ImoutoRebirth.Harpy\ImoutoRebirth.Harpy.Services\ImoutoRebirth.Harpy.Services.csproj", "{5B98782A-8C3C-4BE6-A37B-CA7061DAC3E4}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ImoutoRebirth.Hasami", "ImoutoRebirth.Hasami\ImoutoRebirth.Hasami.csproj", "{D41F6166-0872-4505-9C4C-D029DA5D5530}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ImoutoRebirth.Hasami", "ImoutoRebirth.Hasami\ImoutoRebirth.Hasami\ImoutoRebirth.Hasami.csproj", "{D41F6166-0872-4505-9C4C-D029DA5D5530}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ImoutoRebirth.Kekkai", "ImoutoRebirth.Kekkai", "{A0314C8F-9746-4027-A6A5-5770E80E9A35}"
 EndProject
@@ -150,6 +150,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ImoutoRebirth.Lilin.IntegrationTests", "ImoutoRebirth.Lilin\ImoutoRebirth.Lilin.IntegrationTests\ImoutoRebirth.Lilin.IntegrationTests.csproj", "{62D5F26A-A32D-4B6C-BA4B-86318E1CD26E}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ImoutoRebirth.Common.Tests", "ImoutoRebirth.Common\ImoutoRebirth.Common.Tests\ImoutoRebirth.Common.Tests.csproj", "{C0102FFF-A2B9-4C90-9906-2F72D05C4D69}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ImoutoRebirth.Hasami", "ImoutoRebirth.Hasami", "{4CE46E9F-7AF3-480A-B3E9-78FC230343EB}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -444,5 +446,6 @@ Global
 		{F50AC677-879C-4DC6-90BA-EDBC847C38C3} = {5198DC62-EAAC-4A81-8728-349F06201287}
 		{62D5F26A-A32D-4B6C-BA4B-86318E1CD26E} = {9DD31146-A822-409B-B6B7-EE16337740D3}
 		{C0102FFF-A2B9-4C90-9906-2F72D05C4D69} = {4383FD00-3B54-4C2B-9222-BDC045D3FD9B}
+		{D41F6166-0872-4505-9C4C-D029DA5D5530} = {4CE46E9F-7AF3-480A-B3E9-78FC230343EB}
 	EndGlobalSection
 EndGlobal
