@@ -21,6 +21,7 @@
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="*" />
                             <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="70" />
                             <ColumnDefinition Width="100" />
                             <ColumnDefinition Width="100" />
                             <ColumnDefinition Width="100" />
@@ -29,6 +30,7 @@
                 </ItemsPanelTemplate>
             </StatusBar.ItemsPanel>
 
+            <!-- Status -->
             <StatusBarItem Grid.Column="0">
                 <StackPanel Orientation="Horizontal">
 
@@ -38,7 +40,20 @@
                 </StackPanel>
             </StatusBarItem>
             
+            <!-- Selected count -->
             <StatusBarItem Grid.Column="2">
+                <StackPanel Orientation="Horizontal">
+
+                    <TextBlock Text="Selected: "
+                               Foreground="{StaticResource StatusBarForeground}" />
+
+                    <TextBlock Text="{Binding Path=SelectedItems.Count}"
+                               Foreground="{StaticResource StatusBarForeground}" />
+                </StackPanel>
+            </StatusBarItem>
+            
+            <!-- Volume control -->
+            <StatusBarItem Grid.Column="3">
                 <Slider 
                     Margin="5,-20,5,-20"
                     Height="25" 
@@ -50,7 +65,8 @@
                     LargeChange="1" />
             </StatusBarItem>
 
-            <StatusBarItem Grid.Column="3">
+            <!-- Total count -->
+            <StatusBarItem Grid.Column="4">
                 <StackPanel Orientation="Horizontal">
 
                     <TextBlock Text="Total: "
@@ -61,7 +77,8 @@
                 </StackPanel>
             </StatusBarItem>
 
-            <StatusBarItem Grid.Column="4">
+            <!-- Loaded count -->
+            <StatusBarItem Grid.Column="5">
                 <StackPanel Orientation="Horizontal">
 
                     <TextBlock Text="Loaded: "

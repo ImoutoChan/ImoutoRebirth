@@ -1,11 +1,12 @@
 # Unreleased
 
 ### Navigator
-* Add a command to revert selected items to the previous version,
+* Add a command to revert selected items to the previous version,~~~~
 so you can fix you mistake if you accidentally miss clicked
 * Add pixel size to the file status window for images and ugoira
 * Now you can scroll images with mouse wheel even when mouse cursor is not on the image itself
 * Add popular character tags in tags editor
+* Add selected files count to the status bar
 
 ### Arachne
 * Update packages
@@ -13,6 +14,9 @@ so you can fix you mistake if you accidentally miss clicked
 ### Lilin
 * Fix error in searching tags by contains query string
 * Add integration tests
+
+### Infrastructure
+* Move ImoutoRebirth.Hasami to its own folder
 
 # 4.22.0
 
