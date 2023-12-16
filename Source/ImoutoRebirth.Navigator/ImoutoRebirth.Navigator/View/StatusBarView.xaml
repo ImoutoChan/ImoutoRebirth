@@ -25,6 +25,7 @@
                             <ColumnDefinition Width="100" />
                             <ColumnDefinition Width="100" />
                             <ColumnDefinition Width="100" />
+                            <ColumnDefinition Width="100" />
                         </Grid.ColumnDefinitions>
                     </Grid>
                 </ItemsPanelTemplate>
