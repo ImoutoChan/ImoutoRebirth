@@ -158,7 +158,7 @@ public class TagsTests(TestWebApplicationFactory<Program> _webApp)
     }
 
     [Fact]
-    public async Task GetPopularTags()
+    public async Task GetPopularUserTags()
     {
         // arrange
         var httpClient = _webApp.Client;
@@ -178,9 +178,10 @@ public class TagsTests(TestWebApplicationFactory<Program> _webApp)
         // assert
         foundTags.Should().NotBeNull();
         foundTags.Should().NotBeEmpty();
-        var tag = foundTags!.First();
+        var tag = foundTags!.FirstOrDefault(x => x.Id == newTag1.Id);
 
-        tag.Name.Should().Be(newTag1.Name);
+        tag.Should().NotBeNull();
+        tag!.Name.Should().Be(newTag1.Name);
         tag.Count.Should().Be(0);
         tag.Id.Should().Be(newTag1.Id);
         tag.Options.Should().Be(newTag1.Options);
@@ -188,14 +189,59 @@ public class TagsTests(TestWebApplicationFactory<Program> _webApp)
         tag.Type!.Id.Should().Be(newTag1.Type!.Id);
         
     }
+
+    [Fact]
+    public async Task GetPopularUserCharacterTags()
+    {
+        // arrange
+        var httpClient = _webApp.Client;
+
+        var fileIds = Enumerable.Range(0, 100).Select(_ => Guid.NewGuid()).ToList();
+
+        var types = await httpClient.GetFromJsonAsync<IReadOnlyCollection<TagType>>("/tags/types");
+        var newTagCharacter = await CreateNewTag(httpClient, types, "nora fawn", type: "Character");
+        var newTagGeneral = await CreateNewTag(httpClient, types, "1girl");
+
+        var requestsCharacter = fileIds
+            .Select(x => new BindTag(x, MetadataSource.Manual, newTagCharacter.Id, null))
+            .ToList();
+        await httpClient.PostAsJsonAsync("/files/tags", new BindTagsCommand(
+            requestsCharacter, SameTagHandleStrategy.ReplaceExistingValue));
+       
+        var requestsGeneral = fileIds
+            .Select(x => new BindTag(x, MetadataSource.Manual, newTagGeneral.Id, null))
+            .ToList();
+        await httpClient.PostAsJsonAsync("/files/tags", new BindTagsCommand(
+            requestsGeneral, SameTagHandleStrategy.ReplaceExistingValue));
+        
+        // act
+        var foundTags = await httpClient
+            .GetFromJsonAsync<IReadOnlyCollection<Tag>>("/tags/popular-characters?limit=100");
+        
+        // assert
+        foundTags.Should().NotBeNull();
+        foundTags.Should().NotBeEmpty();
+        var tag = foundTags!.First();
+
+        tag.Name.Should().Be(newTagCharacter.Name);
+        tag.Count.Should().Be(0);
+        tag.Id.Should().Be(newTagCharacter.Id);
+        tag.Options.Should().Be(newTagCharacter.Options);
+        tag.Synonyms.Should().BeEquivalentTo(newTagCharacter.Synonyms);
+        tag.Type!.Id.Should().Be(newTagCharacter.Type!.Id);
+
+        foundTags!.Select(x => x.Id).Should().NotContain(newTagGeneral.Id);
+
+    }
     
     private static async Task<Tag> CreateNewTag(
         HttpClient client,
         IReadOnlyCollection<TagType>? types,
         string namePrefix,
-        bool hasValue = false)
+        bool hasValue = false,
+        string type = "General")
     {
-        var typeId = types!.First(x => x.Name == "General").Id;
+        var typeId = types!.First(x => x.Name == type).Id;
         return await client
             .PostAsJsonAsync(
                 "/tags",

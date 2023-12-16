@@ -1,7 +1,6 @@
 ﻿using ImoutoRebirth.Common.Tests;
 using ImoutoRebirth.Lilin.Application.FileInfoSlice.Commands;
 using ImoutoRebirth.LilinService.WebApi.Client;
-using MassTransit.Testing;
 using MediatR;
 using Microsoft.Extensions.DependencyInjection;
 using BindTagsCommand = ImoutoRebirth.LilinService.WebApi.Client.BindTagsCommand;
@@ -650,11 +649,127 @@ public class FileTagsTests(TestWebApplicationFactory<Program> _webApp)
         notes.First().Height.Should().Be(command.Notes.First().Height);
     }
 
+    [Fact]
+    public async Task GetRelativesInfo()
+    {
+        // arrange
+        var httpClient = _webApp.Client;
+
+        var file1Id = Guid.NewGuid();
+        var file2Id = Guid.NewGuid();
+        var file3Id = Guid.NewGuid();
+        var file4Id = Guid.NewGuid();
+        var file5Id = Guid.NewGuid();
+
+        var types = await httpClient.GetFromJsonAsync<IReadOnlyCollection<TagType>>("/tags/types");
+        var parentTag = await CreateNewTag(httpClient, types, "ParentMd5", true, true);
+        var childTag = await CreateNewTag(httpClient, types, "Child", true, true);
+        var newTag3 = await CreateNewTag(httpClient, types, "solo");
+        var newTag4 = await CreateNewTag(httpClient, types, "1girl");
+
+        await httpClient.PostAsJsonAsync("/files/tags", new BindTagsCommand(
+        [
+            new(file1Id, MetadataSource.Manual, parentTag.Id, "39ddea76d926a396e1f3c2dc6caaa2be"),
+            new(file1Id, MetadataSource.Manual, newTag3.Id, null),
+            new(file1Id, MetadataSource.Manual, newTag4.Id, null),
+
+            new(file2Id, MetadataSource.Manual, parentTag.Id, "39ddea76d926a396e1f3c2dc6caaa2be"),
+            new(file2Id, MetadataSource.Manual, newTag4.Id, null),
+            
+            new(file3Id, MetadataSource.Manual, childTag.Id, "4066000:39ddea76d926a396e1f3c2dc6caaa2be"),
+            new(file3Id, MetadataSource.Manual, childTag.Id, "4066001:49ddea76d926a396e1f3c2dc6caaa2be"),
+            new(file3Id, MetadataSource.Manual, newTag3.Id, null),
+            
+            new(file4Id, MetadataSource.Manual, newTag3.Id, null),
+            new(file4Id, MetadataSource.Manual, newTag4.Id, null),
+
+            new(file5Id, MetadataSource.Manual, parentTag.Id, "49ddea76d926a396e1f3c2dc6caaa2be"),
+        ], SameTagHandleStrategy.AddNewFileTag));
+        
+        
+        // act
+        var relativeInfo1 = await httpClient
+            .GetFromJsonAsync<IReadOnlyCollection<RelativeInfo>>(
+                "/files/39ddea76d926a396e1f3c2dc6caaa2be/relatives");
+
+        var relativeInfo2 = await httpClient
+            .GetFromJsonAsync<IReadOnlyCollection<RelativeInfo>>(
+                "/files/49ddea76d926a396e1f3c2dc6caaa2be/relatives");
+        
+        // assert
+        relativeInfo1.Should().HaveCount(3);
+        relativeInfo1.Should().Contain(x => x.FileInfo!.FileId == file1Id && x.RelativesType == RelativeType.Parent);
+        relativeInfo1.Should().Contain(x => x.FileInfo!.FileId == file2Id && x.RelativesType == RelativeType.Parent);
+        relativeInfo1.Should().Contain(x => x.FileInfo!.FileId == file3Id && x.RelativesType == RelativeType.Child);
+        
+        relativeInfo2.Should().HaveCount(2);
+        relativeInfo2.Should().Contain(x => x.FileInfo!.FileId == file3Id && x.RelativesType == RelativeType.Child);
+        relativeInfo2.Should().Contain(x => x.FileInfo!.FileId == file5Id && x.RelativesType == RelativeType.Parent);
+    }
+
+    [Fact]
+    public async Task GetRelativesInfoBatch()
+    {
+        // arrange
+        var httpClient = _webApp.Client;
+
+        var file1Id = Guid.NewGuid();
+        var file2Id = Guid.NewGuid();
+        var file3Id = Guid.NewGuid();
+        var file4Id = Guid.NewGuid();
+        var file5Id = Guid.NewGuid();
+
+        var types = await httpClient.GetFromJsonAsync<IReadOnlyCollection<TagType>>("/tags/types");
+        var parentTag = await CreateNewTag(httpClient, types, "ParentMd5", true, true);
+        var childTag = await CreateNewTag(httpClient, types, "Child", true, true);
+        var newTag3 = await CreateNewTag(httpClient, types, "solo");
+        var newTag4 = await CreateNewTag(httpClient, types, "1girl");
+
+        await httpClient.PostAsJsonAsync("/files/tags", new BindTagsCommand(
+        [
+            new(file1Id, MetadataSource.Manual, parentTag.Id, "39ddea76d926a396e1f3c2dc6caaa2b1"),
+            new(file1Id, MetadataSource.Manual, newTag3.Id, null),
+            new(file1Id, MetadataSource.Manual, newTag4.Id, null),
+
+            new(file2Id, MetadataSource.Manual, parentTag.Id, "39ddea76d926a396e1f3c2dc6caaa2b1"),
+            new(file2Id, MetadataSource.Manual, newTag4.Id, null),
+            
+            new(file3Id, MetadataSource.Manual, childTag.Id, "4066000:39ddea76d926a396e1f3c2dc6caaa2b1"),
+            new(file3Id, MetadataSource.Manual, childTag.Id, "4066001:49ddea76d926a396e1f3c2dc6caaa2b1"),
+            new(file3Id, MetadataSource.Manual, newTag3.Id, null),
+            
+            new(file4Id, MetadataSource.Manual, newTag3.Id, null),
+            new(file4Id, MetadataSource.Manual, newTag4.Id, null),
+
+            new(file5Id, MetadataSource.Manual, parentTag.Id, "59ddea76d926a396e1f3c2dc6caaa2b1"),
+        ], SameTagHandleStrategy.AddNewFileTag));
+        
+        
+        // act
+        var relativeInfoBatch = await httpClient
+            .PostAsJsonAsync(
+                "/files/relatives", 
+                new[] { "39ddea76d926a396e1f3c2dc6caaa2b1", "49ddea76d926a396e1f3c2dc6caaa2b1" })
+            .ReadResult<IReadOnlyCollection<RelativeShortInfo>>();
+        
+        // assert
+        relativeInfoBatch.Should().HaveCount(2);
+
+        relativeInfoBatch.Should()
+            .Contain(x => x.Hash == "39ddea76d926a396e1f3c2dc6caaa2b1"
+                          && x.RelativeType == RelativeType.Parent);
+        
+        relativeInfoBatch.Should()
+            .Contain(x => x.Hash == "49ddea76d926a396e1f3c2dc6caaa2b1"
+                          && x.RelativeType == RelativeType.Child);
+    }
+    
     private static async Task<Tag> CreateNewTag(
         HttpClient client,
         IReadOnlyCollection<TagType>? types,
         string namePrefix,
-        bool hasValue = false)
+        bool hasValue = false,
+        bool disableRandomness = false)
     {
         var typeId = types!.First(x => x.Name == "General").Id;
         return await client
@@ -662,7 +777,7 @@ public class FileTagsTests(TestWebApplicationFactory<Program> _webApp)
                 "/tags",
                 new CreateTagCommand(
                     typeId,
-                    namePrefix + Guid.NewGuid(),
+                    namePrefix + (disableRandomness ? "" : Guid.NewGuid()),
                     hasValue,
                     [],
                     Domain.TagAggregate.TagOptions.None))
