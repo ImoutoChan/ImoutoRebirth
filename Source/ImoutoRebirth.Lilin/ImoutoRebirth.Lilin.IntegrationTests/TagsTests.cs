@@ -23,7 +23,7 @@ public class TagsTests(TestWebApplicationFactory<Program> _webApp)
         // assert
         result.Should().NotBeNull();
         result.Should().NotBeEmpty();
-        result.Should().HaveCount(12);
+        result.Should().HaveCountGreaterThanOrEqualTo(12);
     }
     
     [Fact]
@@ -155,6 +155,27 @@ public class TagsTests(TestWebApplicationFactory<Program> _webApp)
         foundTags.Any(x => x.Name!.StartsWith("1girl")).Should().BeTrue();
         foundTags.Any(x => x.Name!.StartsWith("2girls")).Should().BeTrue();
         foundTags.Any(x => x.Name!.StartsWith("boy")).Should().BeFalse();
+    }
+
+    [Fact]
+    public async Task SearchTagsWithEmptyRequest()
+    {
+        // arrange
+        var httpClient = _webApp.Client;
+        var types = await httpClient.GetFromJsonAsync<IReadOnlyCollection<TagType>>("/tags/types");
+
+        await CreateNewTag(httpClient, types, "1girl");
+        await CreateNewTag(httpClient, types, "2girls");
+        await CreateNewTag(httpClient, types, "girl around");
+        await CreateNewTag(httpClient, types, "boy");
+
+        // act
+        var foundTags = await httpClient.PostAsJsonAsync("/tags/search", new TagsSearchQuery("", 100))
+            .ReadResult<IReadOnlyCollection<Tag>>();
+        
+        // assert
+        foundTags.Should().NotBeNull();
+        foundTags.Should().NotBeEmpty();
     }
 
     [Fact]

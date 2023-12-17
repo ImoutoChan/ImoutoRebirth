@@ -2,16 +2,26 @@
 using ImoutoRebirth.Lilin.Application.FileInfoSlice.Commands;
 using ImoutoRebirth.LilinService.WebApi.Client;
 using MediatR;
+using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.DependencyInjection;
 using BindTagsCommand = ImoutoRebirth.LilinService.WebApi.Client.BindTagsCommand;
 using CreateTagCommand = ImoutoRebirth.Lilin.Application.TagSlice.CreateTagCommand;
 using UnbindTagsCommand = ImoutoRebirth.LilinService.WebApi.Client.UnbindTagsCommand;
+using AppRelativeShortInfo = ImoutoRebirth.Lilin.Application.FileInfoSlice.Queries.RelativeShortInfo;
+using AppRelativeType = ImoutoRebirth.Lilin.Application.FileInfoSlice.Queries.RelativeType;
 
 namespace ImoutoRebirth.Lilin.IntegrationTests;
 
 [Collection("WebApplication")]
 public class FileTagsTests(TestWebApplicationFactory<Program> _webApp)
 {
+    private const string ImageHash1 = "39ddea76d926a396e1f3c2dc6caaa2b1";
+    private const string ImageHash2 = "49ddea76d926a396e1f3c2dc6caaa2b1";
+    private const string ImageHash3 = "59ddea76d926a396e1f3c2dc6caaa2b1";
+    private const string ImageHash4 = "39ddea76d926a396e1f3c2dc6caaa2be";
+    private const string ImageHash5 = "49ddea76d926a396e1f3c2dc6caaa2be";
+    private const string ImageHash6 = "69ddea76d926a396e1f3c2dc6caaa2be";
+
     [Fact]
     public async Task BindTags()
     {
@@ -669,32 +679,30 @@ public class FileTagsTests(TestWebApplicationFactory<Program> _webApp)
 
         await httpClient.PostAsJsonAsync("/files/tags", new BindTagsCommand(
         [
-            new(file1Id, MetadataSource.Manual, parentTag.Id, "39ddea76d926a396e1f3c2dc6caaa2be"),
+            new(file1Id, MetadataSource.Manual, parentTag.Id, ImageHash4),
             new(file1Id, MetadataSource.Manual, newTag3.Id, null),
             new(file1Id, MetadataSource.Manual, newTag4.Id, null),
 
-            new(file2Id, MetadataSource.Manual, parentTag.Id, "39ddea76d926a396e1f3c2dc6caaa2be"),
+            new(file2Id, MetadataSource.Manual, parentTag.Id, ImageHash4),
             new(file2Id, MetadataSource.Manual, newTag4.Id, null),
             
-            new(file3Id, MetadataSource.Manual, childTag.Id, "4066000:39ddea76d926a396e1f3c2dc6caaa2be"),
-            new(file3Id, MetadataSource.Manual, childTag.Id, "4066001:49ddea76d926a396e1f3c2dc6caaa2be"),
+            new(file3Id, MetadataSource.Manual, childTag.Id, $"4066000:{ImageHash4}"),
+            new(file3Id, MetadataSource.Manual, childTag.Id, $"4066001:{ImageHash5}"),
             new(file3Id, MetadataSource.Manual, newTag3.Id, null),
             
             new(file4Id, MetadataSource.Manual, newTag3.Id, null),
             new(file4Id, MetadataSource.Manual, newTag4.Id, null),
 
-            new(file5Id, MetadataSource.Manual, parentTag.Id, "49ddea76d926a396e1f3c2dc6caaa2be"),
+            new(file5Id, MetadataSource.Manual, parentTag.Id, ImageHash5),
         ], SameTagHandleStrategy.AddNewFileTag));
         
         
         // act
         var relativeInfo1 = await httpClient
-            .GetFromJsonAsync<IReadOnlyCollection<RelativeInfo>>(
-                "/files/39ddea76d926a396e1f3c2dc6caaa2be/relatives");
+            .GetFromJsonAsync<IReadOnlyCollection<RelativeInfo>>($"/files/{ImageHash4}/relatives");
 
         var relativeInfo2 = await httpClient
-            .GetFromJsonAsync<IReadOnlyCollection<RelativeInfo>>(
-                "/files/49ddea76d926a396e1f3c2dc6caaa2be/relatives");
+            .GetFromJsonAsync<IReadOnlyCollection<RelativeInfo>>($"/files/{ImageHash5}/relatives");
         
         // assert
         relativeInfo1.Should().HaveCount(3);
@@ -727,41 +735,171 @@ public class FileTagsTests(TestWebApplicationFactory<Program> _webApp)
 
         await httpClient.PostAsJsonAsync("/files/tags", new BindTagsCommand(
         [
-            new(file1Id, MetadataSource.Manual, parentTag.Id, "39ddea76d926a396e1f3c2dc6caaa2b1"),
+            new(file1Id, MetadataSource.Manual, parentTag.Id, ImageHash1),
             new(file1Id, MetadataSource.Manual, newTag3.Id, null),
             new(file1Id, MetadataSource.Manual, newTag4.Id, null),
 
-            new(file2Id, MetadataSource.Manual, parentTag.Id, "39ddea76d926a396e1f3c2dc6caaa2b1"),
+            new(file2Id, MetadataSource.Manual, parentTag.Id, ImageHash1),
             new(file2Id, MetadataSource.Manual, newTag4.Id, null),
             
-            new(file3Id, MetadataSource.Manual, childTag.Id, "4066000:39ddea76d926a396e1f3c2dc6caaa2b1"),
-            new(file3Id, MetadataSource.Manual, childTag.Id, "4066001:49ddea76d926a396e1f3c2dc6caaa2b1"),
+            new(file3Id, MetadataSource.Manual, childTag.Id, $"4066000:{ImageHash1}"),
+            new(file3Id, MetadataSource.Manual, childTag.Id, $"4066001:{ImageHash2}"),
             new(file3Id, MetadataSource.Manual, newTag3.Id, null),
             
             new(file4Id, MetadataSource.Manual, newTag3.Id, null),
             new(file4Id, MetadataSource.Manual, newTag4.Id, null),
 
-            new(file5Id, MetadataSource.Manual, parentTag.Id, "59ddea76d926a396e1f3c2dc6caaa2b1"),
+            new(file5Id, MetadataSource.Manual, parentTag.Id, ImageHash3),
         ], SameTagHandleStrategy.AddNewFileTag));
         
         
         // act
         var relativeInfoBatch = await httpClient
-            .PostAsJsonAsync(
-                "/files/relatives", 
-                new[] { "39ddea76d926a396e1f3c2dc6caaa2b1", "49ddea76d926a396e1f3c2dc6caaa2b1" })
+            .PostAsJsonAsync("/files/relatives", new[] { ImageHash1, ImageHash2, ImageHash6 })
+            .ReadResult<IReadOnlyCollection<RelativeShortInfo>>();
+        
+        // assert
+        relativeInfoBatch.Should().HaveCount(3);
+        relativeInfoBatch.Should().Contain(x => x.Hash == ImageHash1 && x.RelativeType == RelativeType.Parent);
+        relativeInfoBatch.Should().Contain(x => x.Hash == ImageHash2 && x.RelativeType == RelativeType.Child);
+        relativeInfoBatch.Should().Contain(x => x.Hash == ImageHash6 && x.RelativeType == null);
+    }
+
+    [Fact]
+    public async Task GetRelativesInfoBatchShouldSaveToCache()
+    {
+        // arrange
+        var httpClient = _webApp.Client;
+        var cache = _webApp.GetScope().ServiceProvider.GetRequiredService<IMemoryCache>();
+
+        var file1Id = Guid.NewGuid();
+        var file2Id = Guid.NewGuid();
+        var file3Id = Guid.NewGuid();
+        var file4Id = Guid.NewGuid();
+        var file5Id = Guid.NewGuid();
+
+        var types = await httpClient.GetFromJsonAsync<IReadOnlyCollection<TagType>>("/tags/types");
+        var parentTag = await CreateNewTag(httpClient, types, "ParentMd5", true, true);
+        var childTag = await CreateNewTag(httpClient, types, "Child", true, true);
+        var newTag3 = await CreateNewTag(httpClient, types, "solo");
+        var newTag4 = await CreateNewTag(httpClient, types, "1girl");
+
+        await httpClient.PostAsJsonAsync("/files/tags", new BindTagsCommand(
+        [
+            new(file1Id, MetadataSource.Manual, parentTag.Id, ImageHash1),
+            new(file1Id, MetadataSource.Manual, newTag3.Id, null),
+            new(file1Id, MetadataSource.Manual, newTag4.Id, null),
+
+            new(file2Id, MetadataSource.Manual, parentTag.Id, ImageHash1),
+            new(file2Id, MetadataSource.Manual, newTag4.Id, null),
+            
+            new(file3Id, MetadataSource.Manual, childTag.Id, $"4066000:{ImageHash1}"),
+            new(file3Id, MetadataSource.Manual, childTag.Id, $"4066001:{ImageHash2}"),
+            new(file3Id, MetadataSource.Manual, newTag3.Id, null),
+            
+            new(file4Id, MetadataSource.Manual, newTag3.Id, null),
+            new(file4Id, MetadataSource.Manual, newTag4.Id, null),
+
+            new(file5Id, MetadataSource.Manual, parentTag.Id, ImageHash3),
+        ], SameTagHandleStrategy.AddNewFileTag));
+        
+        // act
+        await httpClient
+            .PostAsJsonAsync("/files/relatives", new[] { ImageHash1, ImageHash2 })
+            .ReadResult<IReadOnlyCollection<RelativeShortInfo>>();
+        
+        // assert
+        var cachedValue =
+            cache.Get<AppRelativeShortInfo>(
+                $"FilterHashes_{ImageHash1}");
+        cachedValue.Should().NotBeNull();
+        cachedValue!.Hash.Should().Be(ImageHash1);
+        cachedValue.RelativeType.Should().Be(AppRelativeType.Parent);
+
+        cachedValue =
+            cache.Get<AppRelativeShortInfo>(
+                $"FilterHashes_{ImageHash2}");
+        cachedValue.Should().NotBeNull();
+        cachedValue!.Hash.Should().Be(ImageHash2);
+        cachedValue.RelativeType.Should().Be(AppRelativeType.Child);
+    }
+
+    [Fact]
+    public async Task GetRelativesInfoBatchShouldUseCacheForNextCalls()
+    {
+        // arrange
+        var httpClient = _webApp.Client;
+        var cache = _webApp.GetScope().ServiceProvider.GetRequiredService<IMemoryCache>();
+
+        var file1Id = Guid.NewGuid();
+        var file2Id = Guid.NewGuid();
+        var file3Id = Guid.NewGuid();
+        var file4Id = Guid.NewGuid();
+        var file5Id = Guid.NewGuid();
+
+        var types = await httpClient.GetFromJsonAsync<IReadOnlyCollection<TagType>>("/tags/types");
+        var parentTag = await CreateNewTag(httpClient, types, "ParentMd5", true, true);
+        var childTag = await CreateNewTag(httpClient, types, "Child", true, true);
+        var newTag3 = await CreateNewTag(httpClient, types, "solo");
+        var newTag4 = await CreateNewTag(httpClient, types, "1girl");
+
+        await httpClient.PostAsJsonAsync("/files/tags", new BindTagsCommand(
+        [
+            new(file1Id, MetadataSource.Manual, parentTag.Id, ImageHash1),
+            new(file1Id, MetadataSource.Manual, newTag3.Id, null),
+            new(file1Id, MetadataSource.Manual, newTag4.Id, null),
+
+            new(file2Id, MetadataSource.Manual, parentTag.Id, ImageHash1),
+            new(file2Id, MetadataSource.Manual, newTag4.Id, null),
+            
+            new(file3Id, MetadataSource.Manual, childTag.Id, $"4066000:{ImageHash1}"),
+            new(file3Id, MetadataSource.Manual, childTag.Id, $"4066001:{ImageHash2}"),
+            new(file3Id, MetadataSource.Manual, newTag3.Id, null),
+            
+            new(file4Id, MetadataSource.Manual, newTag3.Id, null),
+            new(file4Id, MetadataSource.Manual, newTag4.Id, null),
+
+            new(file5Id, MetadataSource.Manual, parentTag.Id, ImageHash3),
+        ], SameTagHandleStrategy.AddNewFileTag));
+        
+        await httpClient
+            .PostAsJsonAsync("/files/relatives", new[] { ImageHash1, ImageHash2 })
+            .ReadResult<IReadOnlyCollection<RelativeShortInfo>>();
+
+        // override cached values to checked that http method actually returns them and not db values
+        cache.Set($"FilterHashes_{ImageHash1}",
+            new AppRelativeShortInfo(
+                ImageHash1, 
+                AppRelativeType.Child));
+        
+        cache.Set($"FilterHashes_{ImageHash2}",
+            new AppRelativeShortInfo(ImageHash2, AppRelativeType.Parent));
+        
+        // act
+        var relativeInfoBatch = await httpClient
+            .PostAsJsonAsync("/files/relatives", new[] { ImageHash1, ImageHash2 })
             .ReadResult<IReadOnlyCollection<RelativeShortInfo>>();
         
         // assert
         relativeInfoBatch.Should().HaveCount(2);
+        relativeInfoBatch.Should().Contain(x => x.Hash == ImageHash1 && x.RelativeType == RelativeType.Child);
+        relativeInfoBatch.Should().Contain(x => x.Hash == ImageHash2 && x.RelativeType == RelativeType.Parent);
+    }
 
-        relativeInfoBatch.Should()
-            .Contain(x => x.Hash == "39ddea76d926a396e1f3c2dc6caaa2b1"
-                          && x.RelativeType == RelativeType.Parent);
+    [Fact]
+    public async Task GetRelativesInfoBatchWithEmptyCollection()
+    {
+        // arrange
+        var httpClient = _webApp.Client;
         
-        relativeInfoBatch.Should()
-            .Contain(x => x.Hash == "49ddea76d926a396e1f3c2dc6caaa2b1"
-                          && x.RelativeType == RelativeType.Child);
+        // act
+        var relativeInfoBatch = await httpClient
+            .PostAsJsonAsync("/files/relatives", Array.Empty<string>())
+            .ReadResult<IReadOnlyCollection<RelativeShortInfo>>();
+        
+        // assert
+        relativeInfoBatch.Should().NotBeNull();
+        relativeInfoBatch.Should().HaveCount(0);
     }
     
     private static async Task<Tag> CreateNewTag(

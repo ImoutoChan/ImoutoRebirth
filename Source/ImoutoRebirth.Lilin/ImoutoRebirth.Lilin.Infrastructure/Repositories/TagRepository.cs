@@ -22,15 +22,6 @@ internal class TagRepository : ITagRepository
         return result?.ToModel();
     }
 
-    public async Task<Tag?> Get(Guid id, CancellationToken ct)
-    {
-        var result = await _lilinDbContext.Tags
-            .Include(x => x.Type)
-            .SingleOrDefaultAsync(x => x.Id == id, cancellationToken: ct);
-
-        return result?.ToModel();
-    }
-
     public async Task Update(Tag tag)
     {
         var loadedTag = await _lilinDbContext.Tags.FirstAsync(x => x.Id == tag.Id);

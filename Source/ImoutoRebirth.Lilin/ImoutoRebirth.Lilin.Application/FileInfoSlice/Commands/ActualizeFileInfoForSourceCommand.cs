@@ -152,6 +152,7 @@ internal class ActualizeFileInfoForSourceCommandHandler : ICommandHandler<Actual
         {
             tag.UpdateHasValue(hasValue);
             tag.UpdateSynonyms(fileTag.Synonyms ?? Array.Empty<string>());
+            tag.UpdateOptions(fileTag.Options);
 
             await _tagRepository.Update(tag);
 
