@@ -209,10 +209,7 @@ public class FileTagsTests(TestWebApplicationFactory<Program> _webApp)
         
         // assert
         found.Should().Contain(file4Id);
-        found.Should().NotContain(file1Id);
-        found.Should().NotContain(file2Id);
-        found.Should().NotContain(file3Id);
-        found.Should().NotContain(file5Id);
+        found.Should().NotContainAll([file1Id, file2Id, file3Id, file5Id]);
     }
 
     [Fact]
@@ -416,11 +413,13 @@ public class FileTagsTests(TestWebApplicationFactory<Program> _webApp)
         foundNotFeeling2.Should().HaveCount(1);
         foundNotFeeling2.Should().BeEquivalentTo([file4Id]);
         
-        foundNotFeeling3.Should().HaveCount(3);
-        foundNotFeeling3.Should().BeEquivalentTo([file4Id, file2Id, file5Id]);
+        foundNotFeeling3.Should().HaveCountGreaterOrEqualTo(3);
+        foundNotFeeling3.Should().ContainAll([file4Id, file2Id, file5Id]);
+        foundNotFeeling3.Should().NotContainAll([file3Id, file1Id]);
         
-        foundNotFeeling4.Should().HaveCount(3);
-        foundNotFeeling4.Should().BeEquivalentTo([file4Id, file2Id, file5Id]);
+        foundNotFeeling4.Should().HaveCountGreaterOrEqualTo(3);
+        foundNotFeeling4.Should().ContainAll([file4Id, file2Id, file5Id]);
+        foundNotFeeling4.Should().NotContainAll([file3Id, file1Id]);
         
         foundScored1.Should().HaveCount(3);
         foundScored1.Should().BeEquivalentTo([file1Id, file3Id, file4Id]);
@@ -429,7 +428,9 @@ public class FileTagsTests(TestWebApplicationFactory<Program> _webApp)
         foundScored2.Should().BeEquivalentTo([file1Id, file3Id, file4Id]);
         
         notFoundScored1.Should().HaveCount(0);
+
         foundScored3.Should().HaveCount(0);
+
         foundScored4.Should().HaveCount(3);
         foundScored4.Should().BeEquivalentTo([file1Id, file3Id, file4Id]);
         

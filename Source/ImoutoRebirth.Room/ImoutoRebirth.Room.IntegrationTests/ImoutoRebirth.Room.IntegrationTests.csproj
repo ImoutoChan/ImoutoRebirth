@@ -26,6 +26,7 @@
     </ItemGroup>
 
     <ItemGroup>
+        <ProjectReference Include="..\..\ImoutoRebirth.Common\ImoutoRebirth.Common.Tests\ImoutoRebirth.Common.Tests.csproj" />
         <ProjectReference Include="..\ImoutoRebirth.Room.Host\ImoutoRebirth.Room.Host.csproj"/>
     </ItemGroup>
 

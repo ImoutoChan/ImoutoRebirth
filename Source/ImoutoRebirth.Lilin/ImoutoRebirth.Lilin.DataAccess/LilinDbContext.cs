@@ -66,15 +66,6 @@ public class LilinDbContext : DbContext, IUnitOfWork
     public async Task SaveEntitiesAsync(CancellationToken cancellationToken = default)
     {
         await SaveChangesAsync(cancellationToken);
-
-        foreach (var domainEvent in ChangeTracker
-                     .Entries()
-                     .Select(x => x.Entity)
-                     .OfType<Entity>()
-                     .SelectMany(x => x.Events))
-        {
-            _eventStorage.Add(domainEvent);
-        }
     }
 
     public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)

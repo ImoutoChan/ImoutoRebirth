@@ -1,6 +1,7 @@
 ﻿using System.Net.Http.Json;
 using FluentAssertions;
 using ImoutoRebirth.Common.MassTransit;
+using ImoutoRebirth.Common.Tests;
 using ImoutoRebirth.Lilin.MessageContracts;
 using ImoutoRebirth.Room.Application.Cqrs;
 using ImoutoRebirth.Room.Application.Cqrs.CollectionFileSlice;
@@ -122,8 +123,7 @@ public class CollectionsApiTests : IDisposable
         
         // assert
         files.Should().HaveCount(2);
-        files.Should().Contain("5f30f9953332c230d11e3f26db5ae9a0");
-        files.Should().Contain("09e56a8fd9d1e8beb62c50e6945632bf");
+        files.Should().ContainAll(["5f30f9953332c230d11e3f26db5ae9a0", "09e56a8fd9d1e8beb62c50e6945632bf"]);
     }
 
     [Fact]
@@ -171,8 +171,7 @@ public class CollectionsApiTests : IDisposable
         
         // assert
         files.Should().HaveCount(2);
-        files.Should().Contain("5f30f9953332c230d11e3f26db5ae9a0");
-        files.Should().Contain("09e56a8fd9d1e8beb62c50e6945632bf");
+        files.Should().ContainAll(["5f30f9953332c230d11e3f26db5ae9a0", "09e56a8fd9d1e8beb62c50e6945632bf"]);
     }
 
     [Fact]

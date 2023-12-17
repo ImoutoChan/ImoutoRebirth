@@ -33,5 +33,16 @@ internal class UpdateMetadataCommandConsumer : IConsumer<IUpdateMetadataCommand>
     }
 
     private static ImoutoRebirth.Lilin.Domain.FileInfoAggregate.MetadataSource Convert(MetadataSource metadata)
-        => (ImoutoRebirth.Lilin.Domain.FileInfoAggregate.MetadataSource) (int) metadata;
+    {
+        return metadata switch
+        {
+            MetadataSource.Yandere => Domain.FileInfoAggregate.MetadataSource.Yandere,
+            MetadataSource.Danbooru => Domain.FileInfoAggregate.MetadataSource.Danbooru,
+            MetadataSource.Sankaku => Domain.FileInfoAggregate.MetadataSource.Sankaku,
+            MetadataSource.Manual => Domain.FileInfoAggregate.MetadataSource.Manual,
+            MetadataSource.Gelbooru => Domain.FileInfoAggregate.MetadataSource.Gelbooru,
+            MetadataSource.Rule34 => Domain.FileInfoAggregate.MetadataSource.Rule34,
+            _ => throw new ArgumentOutOfRangeException(nameof(metadata), metadata, null)
+        };
+    }
 }
