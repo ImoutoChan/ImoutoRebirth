@@ -1,4 +1,5 @@
 using FluentAssertions;
+using ImoutoRebirth.Common.Domain;
 using ImoutoRebirth.Lilin.Domain.FileInfoAggregate;
 using ImoutoRebirth.Lilin.Domain.TagAggregate;
 using ImoutoRebirth.Lilin.Domain.TagTypeAggregate;
@@ -27,6 +28,42 @@ public class FileInfoUpdateTagsTests
 
         // assert
         existsFileInfo.Tags.Should().HaveCount(2);
+    }
+    
+    [Fact]
+    public void ShouldThrow_WhenUpdatingTags_WithWrongStrategy()
+    {
+        // arrange
+        var tag = CreateTag();
+        var fileId = Guid.NewGuid();
+        const string currentValue = "Value";
+        const string newValue = "NewValue";
+
+        var existsFileTag = new FileTag(fileId, tag.Id, currentValue, MetadataSource.Manual);
+        var newFileTag = new FileTag(fileId, tag.Id, newValue, MetadataSource.Manual);
+
+        var existsFileInfo = new FileInfo(new [] {existsFileTag}, Array.Empty<FileNote>(), fileId);
+
+        // act
+        Assert.Throws<ArgumentOutOfRangeException>(() => existsFileInfo.UpdateTags(new []{newFileTag}, (SameTagHandleStrategy)100));
+    }
+    
+    [Fact]
+    public void ShouldThrow_WhenUpdatingTags_WithDifferentSource()
+    {
+        // arrange
+        var tag = CreateTag();
+        var fileId = Guid.NewGuid();
+        const string currentValue = "Value";
+        const string newValue = "NewValue";
+
+        var fileTag1 = new FileTag(fileId, tag.Id, currentValue, MetadataSource.Yandere);
+        var fileTag2 = new FileTag(fileId, tag.Id, newValue, MetadataSource.Danbooru);
+
+        var existsFileInfo = new FileInfo(Array.Empty<FileTag>(), Array.Empty<FileNote>(), fileId);
+
+        // act / assert
+        Assert.Throws<DomainException>(() => existsFileInfo.UpdateTags([fileTag1, fileTag2], SameTagHandleStrategy.AddNewFileTag));
     }
 
     [Fact]
