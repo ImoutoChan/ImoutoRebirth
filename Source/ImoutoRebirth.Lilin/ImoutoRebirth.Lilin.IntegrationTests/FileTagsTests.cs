@@ -161,6 +161,61 @@ public class FileTagsTests(TestWebApplicationFactory<Program> _webApp)
     }
 
     [Fact]
+    public async Task SearchFilesFastWithOnlyExcludedTags()
+    {
+        // arrange
+        var httpClient = _webApp.Client;
+
+        var file1Id = Guid.NewGuid();
+        var file2Id = Guid.NewGuid();
+        var file3Id = Guid.NewGuid();
+        var file4Id = Guid.NewGuid();
+        var file5Id = Guid.NewGuid();
+
+        var types = await httpClient.GetFromJsonAsync<IReadOnlyCollection<TagType>>("/tags/types");
+        var newTag1 = await CreateNewTag(httpClient, types, "1girl");
+        var newTag2 = await CreateNewTag(httpClient, types, "2girl");
+        var newTag3 = await CreateNewTag(httpClient, types, "solo");
+        var newTag4 = await CreateNewTag(httpClient, types, "blue hair");
+
+        await httpClient.PostAsJsonAsync("/files/tags", new BindTagsCommand(
+        [
+            new(file1Id, MetadataSource.Manual, newTag1.Id, null),
+            new(file1Id, MetadataSource.Manual, newTag3.Id, null),
+            new(file1Id, MetadataSource.Manual, newTag4.Id, null),
+
+            new(file2Id, MetadataSource.Manual, newTag2.Id, null),
+            new(file2Id, MetadataSource.Manual, newTag4.Id, null),
+            
+            new(file3Id, MetadataSource.Manual, newTag1.Id, null),
+            new(file3Id, MetadataSource.Manual, newTag3.Id, null),
+            
+            new(file4Id, MetadataSource.Manual, newTag3.Id, null),
+            new(file4Id, MetadataSource.Manual, newTag4.Id, null),
+
+            new(file5Id, MetadataSource.Manual, newTag2.Id, null),
+        ], SameTagHandleStrategy.ReplaceExistingValue));
+        
+        
+        // act
+        var found = await httpClient
+            .PostAsJsonAsync(
+                "/files/search-fast",
+                new SearchFilesFastQuery([
+                    new(newTag1.Id, TagSearchScope.Excluded, null),
+                    new(newTag2.Id, TagSearchScope.Excluded, null),
+                ]))
+            .ReadResult<IReadOnlyCollection<Guid>>();
+        
+        // assert
+        found.Should().Contain(file4Id);
+        found.Should().NotContain(file1Id);
+        found.Should().NotContain(file2Id);
+        found.Should().NotContain(file3Id);
+        found.Should().NotContain(file5Id);
+    }
+
+    [Fact]
     public async Task SearchFilesCountFast()
     {
         // arrange
@@ -248,7 +303,140 @@ public class FileTagsTests(TestWebApplicationFactory<Program> _webApp)
         found2GirlCount.Should().Be(2);
         found1GirlExcludeBlueHairCount.Should().Be(1);
     }
+    
+    
+    [Fact]
+    public async Task SearchFilesWithValuesFast()
+    {
+        // arrange
+        var httpClient = _webApp.Client;
 
+        var file1Id = Guid.NewGuid();
+        var file2Id = Guid.NewGuid();
+        var file3Id = Guid.NewGuid();
+        var file4Id = Guid.NewGuid();
+        var file5Id = Guid.NewGuid();
+
+        var types = await httpClient.GetFromJsonAsync<IReadOnlyCollection<TagType>>("/tags/types");
+        var newTag1 = await CreateNewTag(httpClient, types, "feeling", true);
+        var newTag2 = await CreateNewTag(httpClient, types, "rate", true);
+        var newTag3 = await CreateNewTag(httpClient, types, "score", true);
+
+        await httpClient.PostAsJsonAsync("/files/tags", new BindTagsCommand(
+        [
+            new(file1Id, MetadataSource.Manual, newTag1.Id, "feeling good"),
+            new(file1Id, MetadataSource.Manual, newTag3.Id, "not scored"),
+
+            new(file2Id, MetadataSource.Manual, newTag2.Id, "5"),
+            
+            new(file3Id, MetadataSource.Manual, newTag1.Id, "feeling bad"),
+            new(file3Id, MetadataSource.Manual, newTag3.Id, "scored"),
+            
+            new(file4Id, MetadataSource.Manual, newTag1.Id, "not feeling"),
+            new(file4Id, MetadataSource.Manual, newTag3.Id, "a little bit scored"),
+
+            new(file5Id, MetadataSource.Manual, newTag2.Id, "3"),
+        ], SameTagHandleStrategy.ReplaceExistingValue));
+        
+        
+        // act
+        var foundFeeling = await httpClient
+            .PostAsJsonAsync(
+                "/files/search-fast",
+                new SearchFilesFastQuery([new(newTag1.Id, TagSearchScope.Included, "=feeling*")]))
+            .ReadResult<IReadOnlyCollection<Guid>>();
+        
+        var foundNotFeeling1 = await httpClient
+            .PostAsJsonAsync(
+                "/files/search-fast",
+                new SearchFilesFastQuery([new(newTag1.Id, TagSearchScope.Included, "!=feeling*")]))
+            .ReadResult<IReadOnlyCollection<Guid>>();
+
+        var foundNotFeeling2 = await httpClient
+            .PostAsJsonAsync(
+                "/files/search-fast",
+                new SearchFilesFastQuery([new(newTag1.Id, TagSearchScope.Included, "!feeling*")]))
+            .ReadResult<IReadOnlyCollection<Guid>>();
+        
+        var foundNotFeeling3 = await httpClient
+            .PostAsJsonAsync(
+                "/files/search-fast",
+                new SearchFilesFastQuery([new(newTag1.Id, TagSearchScope.Excluded, "feeling*")]))
+            .ReadResult<IReadOnlyCollection<Guid>>();
+
+        var foundNotFeeling4 = await httpClient
+            .PostAsJsonAsync(
+                "/files/search-fast",
+                new SearchFilesFastQuery([new(newTag1.Id, TagSearchScope.Excluded, "feeling*")]))
+            .ReadResult<IReadOnlyCollection<Guid>>();
+        
+        var foundNotFeeling5 = await httpClient
+            .PostAsJsonAsync(
+                "/files/search-fast",
+                new SearchFilesFastQuery([new(newTag1.Id, TagSearchScope.Included, "!=feeling good")]))
+            .ReadResult<IReadOnlyCollection<Guid>>();
+        
+        var foundScored1 = await httpClient
+            .PostAsJsonAsync(
+                "/files/search-fast",
+                new SearchFilesFastQuery([new(newTag3.Id, TagSearchScope.Included, "*scored")]))
+            .ReadResult<IReadOnlyCollection<Guid>>();
+        
+        var foundScored2 = await httpClient
+            .PostAsJsonAsync(
+                "/files/search-fast",
+                new SearchFilesFastQuery([new(newTag3.Id, TagSearchScope.Included, "*scor*")]))
+            .ReadResult<IReadOnlyCollection<Guid>>();
+        
+        var notFoundScored1 = await httpClient
+            .PostAsJsonAsync(
+                "/files/search-fast",
+                new SearchFilesFastQuery([new(newTag3.Id, TagSearchScope.Included, "*scor")]))
+            .ReadResult<IReadOnlyCollection<Guid>>();
+        
+        var foundScored3 = await httpClient
+            .PostAsJsonAsync(
+                "/files/search-fast",
+                new SearchFilesFastQuery([new(newTag3.Id, TagSearchScope.Included, "!*scor*")]))
+            .ReadResult<IReadOnlyCollection<Guid>>();
+        
+        var foundScored4 = await httpClient
+            .PostAsJsonAsync(
+                "/files/search-fast",
+                new SearchFilesFastQuery([new(newTag3.Id, TagSearchScope.Included, "!*scor")]))
+            .ReadResult<IReadOnlyCollection<Guid>>();
+        
+        // assert
+        foundFeeling.Should().HaveCount(2);
+        foundFeeling.Should().BeEquivalentTo([file1Id, file3Id]);
+        
+        foundNotFeeling1.Should().HaveCount(1);
+        foundNotFeeling1.Should().BeEquivalentTo([file4Id]);
+        
+        foundNotFeeling2.Should().HaveCount(1);
+        foundNotFeeling2.Should().BeEquivalentTo([file4Id]);
+        
+        foundNotFeeling3.Should().HaveCount(3);
+        foundNotFeeling3.Should().BeEquivalentTo([file4Id, file2Id, file5Id]);
+        
+        foundNotFeeling4.Should().HaveCount(3);
+        foundNotFeeling4.Should().BeEquivalentTo([file4Id, file2Id, file5Id]);
+        
+        foundScored1.Should().HaveCount(3);
+        foundScored1.Should().BeEquivalentTo([file1Id, file3Id, file4Id]);
+        
+        foundScored2.Should().HaveCount(3);
+        foundScored2.Should().BeEquivalentTo([file1Id, file3Id, file4Id]);
+        
+        notFoundScored1.Should().HaveCount(0);
+        foundScored3.Should().HaveCount(0);
+        foundScored4.Should().HaveCount(3);
+        foundScored4.Should().BeEquivalentTo([file1Id, file3Id, file4Id]);
+        
+        foundNotFeeling5.Should().HaveCount(2);
+        foundNotFeeling5.Should().BeEquivalentTo([file3Id, file4Id]);
+    }
+    
     [Fact]
     public async Task FilterFiles()
     {
@@ -354,6 +542,67 @@ public class FileTagsTests(TestWebApplicationFactory<Program> _webApp)
     }
 
     [Fact]
+    public async Task FilterFilesOnlyExclude()
+    {
+        // arrange
+        var httpClient = _webApp.Client;
+
+        var file1Id = Guid.NewGuid();
+        var file2Id = Guid.NewGuid();
+        var file3Id = Guid.NewGuid();
+        var file4Id = Guid.NewGuid();
+        var file5Id = Guid.NewGuid();
+        
+        var file6Id = Guid.NewGuid();
+        var file7Id = Guid.NewGuid();
+        var file8Id = Guid.NewGuid();
+        var file9Id = Guid.NewGuid();
+        var file10Id = Guid.NewGuid();
+
+        var allFiles = new[]
+            { file1Id, file2Id, file3Id, file4Id, file5Id, file6Id, file7Id, file8Id, file9Id, file10Id }; 
+
+        var types = await httpClient.GetFromJsonAsync<IReadOnlyCollection<TagType>>("/tags/types");
+        var newTag1 = await CreateNewTag(httpClient, types, "1girl");
+        var newTag2 = await CreateNewTag(httpClient, types, "2girl");
+        var newTag3 = await CreateNewTag(httpClient, types, "solo");
+        var newTag4 = await CreateNewTag(httpClient, types, "blue hair");
+
+        await httpClient.PostAsJsonAsync("/files/tags", new BindTagsCommand(
+        [
+            new(file1Id, MetadataSource.Manual, newTag1.Id, null),
+            new(file1Id, MetadataSource.Manual, newTag3.Id, null),
+            new(file1Id, MetadataSource.Manual, newTag4.Id, null),
+
+            new(file2Id, MetadataSource.Manual, newTag2.Id, null),
+            new(file2Id, MetadataSource.Manual, newTag4.Id, null),
+            
+            new(file3Id, MetadataSource.Manual, newTag1.Id, null),
+            new(file3Id, MetadataSource.Manual, newTag3.Id, null),
+            
+            new(file4Id, MetadataSource.Manual, newTag3.Id, null),
+            new(file4Id, MetadataSource.Manual, newTag4.Id, null),
+
+            new(file5Id, MetadataSource.Manual, newTag2.Id, null),
+        ], SameTagHandleStrategy.ReplaceExistingValue));
+        
+        
+        // act
+        var filtered = await httpClient
+            .PostAsJsonAsync(
+                "/files/filter",
+                new FilterFilesQuery(allFiles, [
+                    new(newTag1.Id, TagSearchScope.Excluded, null),
+                    new(newTag2.Id, TagSearchScope.Excluded, null),
+                ]))
+            .ReadResult<IReadOnlyCollection<Guid>>();
+        
+        // assert
+        filtered.Should().HaveCount(6);
+        filtered.Should().BeEquivalentTo([file4Id, file6Id, file7Id, file8Id, file9Id, file10Id]);
+    }
+
+    [Fact]
     public async Task FilterFilesCount()
     {
         // arrange
@@ -449,6 +698,66 @@ public class FileTagsTests(TestWebApplicationFactory<Program> _webApp)
         filtered1GirlBlueHairCount.Should().Be(1);
         filtered2GirlCount.Should().Be(2);
         filtered1GirlExcludeBlueHairCount.Should().Be(1);
+    }
+
+    [Fact]
+    public async Task FilterFilesCountOnlyExclude()
+    {
+        // arrange
+        var httpClient = _webApp.Client;
+
+        var file1Id = Guid.NewGuid();
+        var file2Id = Guid.NewGuid();
+        var file3Id = Guid.NewGuid();
+        var file4Id = Guid.NewGuid();
+        var file5Id = Guid.NewGuid();
+        
+        var file6Id = Guid.NewGuid();
+        var file7Id = Guid.NewGuid();
+        var file8Id = Guid.NewGuid();
+        var file9Id = Guid.NewGuid();
+        var file10Id = Guid.NewGuid();
+
+        var allFiles = new[]
+            { file1Id, file2Id, file3Id, file4Id, file5Id, file6Id, file7Id, file8Id, file9Id, file10Id }; 
+
+        var types = await httpClient.GetFromJsonAsync<IReadOnlyCollection<TagType>>("/tags/types");
+        var newTag1 = await CreateNewTag(httpClient, types, "1girl");
+        var newTag2 = await CreateNewTag(httpClient, types, "2girl");
+        var newTag3 = await CreateNewTag(httpClient, types, "solo");
+        var newTag4 = await CreateNewTag(httpClient, types, "blue hair");
+
+        await httpClient.PostAsJsonAsync("/files/tags", new BindTagsCommand(
+        [
+            new(file1Id, MetadataSource.Manual, newTag1.Id, null),
+            new(file1Id, MetadataSource.Manual, newTag3.Id, null),
+            new(file1Id, MetadataSource.Manual, newTag4.Id, null),
+
+            new(file2Id, MetadataSource.Manual, newTag2.Id, null),
+            new(file2Id, MetadataSource.Manual, newTag4.Id, null),
+            
+            new(file3Id, MetadataSource.Manual, newTag1.Id, null),
+            new(file3Id, MetadataSource.Manual, newTag3.Id, null),
+            
+            new(file4Id, MetadataSource.Manual, newTag3.Id, null),
+            new(file4Id, MetadataSource.Manual, newTag4.Id, null),
+
+            new(file5Id, MetadataSource.Manual, newTag2.Id, null),
+        ], SameTagHandleStrategy.ReplaceExistingValue));
+        
+        
+        // act
+        var filtered = await httpClient
+            .PostAsJsonAsync(
+                "/files/filter/count",
+                new FilterFilesQuery(allFiles, [
+                    new(newTag1.Id, TagSearchScope.Excluded, null),
+                    new(newTag2.Id, TagSearchScope.Excluded, null),
+                ]))
+            .ReadResult<int>();
+        
+        // assert
+        filtered.Should().Be(6);
     }
 
     [Fact]
@@ -605,7 +914,7 @@ public class FileTagsTests(TestWebApplicationFactory<Program> _webApp)
     }
 
     [Fact]
-    public async Task ActualizeFileInfoForSourceCommand()
+    public async Task GetFileInfo()
     {
         // arrange
         using var scope = _webApp.GetScope();
