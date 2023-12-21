@@ -9,6 +9,7 @@ so you can fix you mistake if you accidentally miss clicked
 * Add selected files count to the status bar
 * Change title bar to show file name in full screen preview mode
 * Add time/length for videos in full screen preview mode
+* Ignore unhandled exception in App.cs
 
 ### Arachne
 * Update packages
