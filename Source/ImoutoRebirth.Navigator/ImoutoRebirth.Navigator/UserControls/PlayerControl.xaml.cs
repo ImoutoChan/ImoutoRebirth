@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System.Diagnostics;
+using System.IO;
 using System.Reflection;
 using System.Windows;
 using System.Windows.Controls;
@@ -52,8 +53,35 @@ public partial class PlayerControl
         
         _control.SourceProvider.CreatePlayer(vlcLibDirectory);
         _control.SourceProvider.MediaPlayer.PositionChanged 
-            += (sender, args) 
-                => Dispatcher.BeginInvoke((Action) (() => { Slider.Value = 100 * args.NewPosition; }));
+            += (_, args) 
+                =>
+            {
+                try
+                {
+                    Dispatcher.BeginInvoke((Action)(() => { Slider.Value = 100 * args.NewPosition; }));
+                }
+                catch (Exception e)
+                {
+                    Debug.WriteLine("Ignoring player error: " + e);
+                }
+            };
+
+        _control.SourceProvider.MediaPlayer.TimeChanged
+            += (_, args)
+                =>
+            {
+                try
+                {
+                    var time = args.NewTime;
+                    var length = _control.SourceProvider.MediaPlayer.Length;
+                    var timeString = $"{GetPrettyTime(time, length)} / {GetPrettyTime(length)}";
+                    Dispatcher.BeginInvoke((Action)(() => TimeTextBlock.Text = timeString));
+                }
+                catch (Exception e)
+                {
+                    Debug.WriteLine("Ignoring player error: " + e);
+                }
+            };
 
         Slider.ValueChanged += (sender, args) =>
         {
@@ -214,5 +242,25 @@ public partial class PlayerControl
     private void PlayButton_OnClick(object sender, RoutedEventArgs e)
     {
         IsPlayed = !IsPlayed;
+    }
+
+    private static string GetPrettyTime(long time, long? length = null)
+    {
+        length ??= time;
+        
+        var timeSpan = TimeSpan.FromMilliseconds(time);
+        var lengthTimeSpan = TimeSpan.FromMilliseconds(length.Value);
+        var hours = timeSpan.Hours;
+        var minutes = timeSpan.Minutes;
+        var seconds = timeSpan.Seconds;
+        var lengthHours = lengthTimeSpan.Hours;
+        var lengthMinutes = lengthTimeSpan.Minutes;
+        var lengthSeconds = lengthTimeSpan.Seconds;
+
+        var hoursString = lengthHours > 0 ? $"{hours:00}:" : string.Empty;
+        var minutesString = $"{minutes:00}:";
+        var secondsString = $"{seconds:00}";
+
+        return $"{hoursString}{minutesString}{secondsString}";
     }
 }

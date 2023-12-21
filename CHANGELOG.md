@@ -1,13 +1,14 @@
 # Unreleased
 
 ### Navigator
-* Add a command to revert selected items to the previous version,~~~~
+* Add a command to revert selected items to the previous version,
 so you can fix you mistake if you accidentally miss clicked
 * Add pixel size to the file status window for images and ugoira
 * Now you can scroll images with mouse wheel even when mouse cursor is not on the image itself
 * Add popular character tags in tags editor
 * Add selected files count to the status bar
 * Change title bar to show file name in full screen preview mode
+* Add time/length for videos in full screen preview mode
 
 ### Arachne
 * Update packages
