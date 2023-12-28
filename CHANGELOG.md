@@ -10,6 +10,7 @@ so you can fix you mistake if you accidentally miss clicked
 * Change title bar to show file name in full screen preview mode
 * Add time/length for videos in full screen preview mode
 * Ignore unhandled exception in App.cs
+* Refactor code style in several common converter and behaviors
 
 ### Arachne
 * Update packages
