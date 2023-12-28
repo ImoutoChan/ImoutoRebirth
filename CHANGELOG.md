@@ -1,5 +1,7 @@
 # Unreleased
 
+# 4.23.0
+
 ### Navigator
 * Add a command to revert selected items to the previous version,
 so you can fix you mistake if you accidentally miss clicked
