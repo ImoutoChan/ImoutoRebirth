@@ -14,7 +14,7 @@ using Tag = ImoutoRebirth.Navigator.Services.Tags.Model.Tag;
 
 namespace ImoutoRebirth.Navigator.ViewModel;
 
-class TagSearchVM : VMBase
+internal class TagSearchVM : VMBase
 {
     #region Fields
 
@@ -656,7 +656,7 @@ class TagSearchVM : VMBase
     #endregion Events
 }
 
-enum Comparator
+internal enum Comparator
 {
     Equal,
     NotEqual
@@ -666,7 +666,7 @@ enum Comparator
     //Less
 }
 
-static class ComparatorExtensions
+internal static class ComparatorExtensions
 {
     public static string ToFriendlyString(this Comparator me)
     {

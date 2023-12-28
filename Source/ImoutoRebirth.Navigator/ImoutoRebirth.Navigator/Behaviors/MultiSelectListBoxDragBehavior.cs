@@ -5,7 +5,7 @@ using ImoutoRebirth.Navigator.ViewModel;
 
 namespace ImoutoRebirth.Navigator.Behaviors;
 
-class MultiSelectListBoxDragBehavior : FrameworkElementDragBehavior
+internal class MultiSelectListBoxDragBehavior : FrameworkElementDragBehavior
 {
     protected override void AssociatedObject_MouseLeave(object sender, MouseEventArgs e)
     {

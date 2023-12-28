@@ -2,7 +2,7 @@
 
 namespace ImoutoRebirth.Navigator.ViewModel;
 
-class TagSourceVM : VMBase
+internal class TagSourceVM : VMBase
 {
     #region Properties
 

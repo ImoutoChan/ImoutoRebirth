@@ -3,9 +3,12 @@ using Microsoft.Xaml.Behaviors;
 
 namespace ImoutoRebirth.Navigator.Behaviors;
 
-class FrameworkElementDropBehavior : Behavior<FrameworkElement>
+internal class FrameworkElementDropBehavior : Behavior<FrameworkElement>
 {
-    protected Type DataType; //the type of the data that can be dropped into this control
+    /// <summary>
+    /// The type of the data that can be dropped into this control
+    /// </summary>
+    protected Type? DataType;
 
     protected override void OnAttached()
     {
@@ -20,50 +23,36 @@ class FrameworkElementDropBehavior : Behavior<FrameworkElement>
 
     protected virtual void AssociatedObject_Drop(object sender, DragEventArgs e)
     {
-        if (DataType != null)
+        if (DataType != null && CanBeDropped(e))
         {
-            //if the data type can be dropped 
-            if (e.Data.GetDataPresent(DataType))
-            {
-                //drop the data
-                IDropable target = AssociatedObject.DataContext as IDropable;
-                target?.Drop(e.Data.GetData(DataType));
-            }
+            var target = AssociatedObject.DataContext as IDropable;
+            var data = e.Data.GetData(DataType);
+                
+            if (data != null)
+                target?.Drop(data);
         }
         e.Handled = true;
     }
 
-    void AssociatedObject_DragLeave(object sender, DragEventArgs e)
+    private void AssociatedObject_DragLeave(object sender, DragEventArgs e)
     {
         DataType = null;
         e.Handled = true;
     }
 
-    void AssociatedObject_DragOver(object sender, DragEventArgs e)
+    private void AssociatedObject_DragOver(object sender, DragEventArgs e)
     {
-        if (DataType != null)
-        {
-            //if item can be dropped
-            if (e.Data.GetDataPresent(DataType))
-            {
-                //give mouse effect
-                SetDragDropEffects(e);
-            }
-        }
+        if (DataType != null && CanBeDropped(e)) 
+            SetDragDropEffects(e);
+
         e.Handled = true;
     }
 
     protected virtual void AssociatedObject_DragEnter(object sender, DragEventArgs e)
     {
-        //if the DataContext implements IDropable, record the data type that can be dropped
-        if (DataType == null)
-        {
-            IDropable dropObject = AssociatedObject.DataContext as IDropable;
-            if (dropObject != null)
-            {
-                DataType = dropObject.DataType;
-            }
-        }
+        // if the DataContext implements IDropable, record the data type that can be dropped
+        if (DataType == null && AssociatedObject.DataContext is IDropable dropObject)
+            DataType = dropObject.DataType;
 
         e.Handled = true;
     }
@@ -71,16 +60,13 @@ class FrameworkElementDropBehavior : Behavior<FrameworkElement>
     /// <summary>
     /// Provides feedback on if the data can be dropped
     /// </summary>
-    /// <param name="e"></param>
     private void SetDragDropEffects(DragEventArgs e)
     {
-        e.Effects = DragDropEffects.None;  //default to None
+        e.Effects = DragDropEffects.None;
 
-        //if the data type can be dropped 
-        if (e.Data.GetDataPresent(DataType))
-        {
+        if (CanBeDropped(e)) 
             e.Effects = DragDropEffects.Copy;
-        }
     }
 
+    protected bool CanBeDropped(DragEventArgs e) => e.Data.GetDataPresent(DataType);
 }

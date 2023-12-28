@@ -7,7 +7,7 @@ using MahApps.Metro.Theming;
 
 namespace ImoutoRebirth.Navigator.ViewModel;
 
-class SettingsVM : VMBase
+internal class SettingsVM : VMBase
 {
     #region Subclasses
 

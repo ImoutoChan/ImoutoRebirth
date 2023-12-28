@@ -2,7 +2,7 @@
 
 namespace ImoutoRebirth.Navigator.Behaviors;
 
-interface IDragable
+internal interface IDragable
 {
     /// <summary>
     /// The data item.

@@ -3,34 +3,25 @@ using System.Windows.Controls;
 
 namespace ImoutoRebirth.Navigator.Behaviors;
 
-class MultiSelectListBoxDropBehavior : FrameworkElementDropBehavior
+internal class MultiSelectListBoxDropBehavior : FrameworkElementDropBehavior
 {
     protected override void AssociatedObject_DragEnter(object sender, DragEventArgs e)
     {
-        //if the DataContext implements IDropable, record the data type that can be dropped
-        if (DataType == null)
-        {
-            var dropObject = (AssociatedObject as ListBox)?.DataContext as IDropable;
-            if (dropObject != null)
-            {
-                DataType = dropObject.DataType;
-            }
-        }
+        if (DataType == null && AssociatedObject is ListBox { DataContext: IDropable dropObject }) 
+            DataType = dropObject.DataType;
 
         e.Handled = true;
     }
 
     protected override void AssociatedObject_Drop(object sender, DragEventArgs e)
     {
-        if (DataType != null)
+        if (DataType != null && CanBeDropped(e))
         {
-            //if the data type can be dropped 
-            if (e.Data.GetDataPresent(DataType))
-            {
-                //drop the data
-                var target = AssociatedObject.DataContext as IDropable;
-                target?.Drop(e.Data.GetData(DataType));
-            }
+            var target = AssociatedObject.DataContext as IDropable;
+            var data = e.Data.GetData(DataType);
+                
+            if (data != null && target != null)
+                target.Drop(data);
         }
         e.Handled = true;
     }

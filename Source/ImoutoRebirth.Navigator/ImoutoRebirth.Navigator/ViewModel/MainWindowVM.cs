@@ -23,7 +23,7 @@ using File = System.IO.File;
 
 namespace ImoutoRebirth.Navigator.ViewModel;
 
-class MainWindowVM : VMBase
+internal class MainWindowVM : VMBase
 {
     #region Fields
 

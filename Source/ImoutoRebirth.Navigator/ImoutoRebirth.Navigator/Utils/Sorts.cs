@@ -123,9 +123,10 @@ public static class Sorts
     public class ReportSortList<T>
     {
         #region Поля
-        List<T> _add;
-        List<T> _move;
-        List<T> _remove;
+
+        private List<T> _add;
+        private List<T> _move;
+        private List<T> _remove;
         #endregion // Поля
 
         #region Коллекции

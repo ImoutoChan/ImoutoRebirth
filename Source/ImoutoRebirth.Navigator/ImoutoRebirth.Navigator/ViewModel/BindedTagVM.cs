@@ -10,7 +10,7 @@ using Tag = ImoutoRebirth.Navigator.Services.Tags.Model.Tag;
 
 namespace ImoutoRebirth.Navigator.ViewModel;
 
-class BindedTagVM : VMBase
+internal class BindedTagVM : VMBase
 {
     private static readonly List<string> TypePriorities = new()
     {

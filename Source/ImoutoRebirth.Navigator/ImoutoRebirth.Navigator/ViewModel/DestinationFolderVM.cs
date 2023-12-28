@@ -5,7 +5,7 @@ using ImoutoRebirth.Navigator.Commands;
 
 namespace ImoutoRebirth.Navigator.ViewModel;
 
-class DestinationFolderVM : FolderVM, IDataErrorInfo
+internal class DestinationFolderVM : FolderVM, IDataErrorInfo
 {
     #region Fields
 

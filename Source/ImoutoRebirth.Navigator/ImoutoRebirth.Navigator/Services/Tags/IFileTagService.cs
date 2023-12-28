@@ -3,7 +3,7 @@ using ImoutoRebirth.Navigator.Services.Tags.Model;
 
 namespace ImoutoRebirth.Navigator.Services.Tags;
 
-interface IFileTagService
+internal interface IFileTagService
 {
     Task SetRate(Guid fileId, Rate rate);
 
@@ -20,4 +20,4 @@ interface IFileTagService
     Task<IReadOnlyCollection<FileTag>> GetFileTags(Guid fileId);
 }
 
-record UnbindTagRequest(Guid FileId, Guid TagId, string? Value, FileTagSource Source);
+internal record UnbindTagRequest(Guid FileId, Guid TagId, string? Value, FileTagSource Source);

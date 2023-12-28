@@ -1,11 +1,10 @@
 ﻿namespace ImoutoRebirth.Navigator.Extensions;
 
-public static class EnumerableCancellationExtensions
+internal static class EnumerableCancellationExtensions
 {
     public static IEnumerable<T> WithCancellation<T>(this IEnumerable<T> source, CancellationToken token)
     {
-        if (source == null)
-            throw new ArgumentNullException(nameof(source));
+        ArgumentNullException.ThrowIfNull(source);
 
         foreach (var item in source)
         {
@@ -29,7 +28,8 @@ public static class EnumerableCancellationExtensions
                 continue;
             }
 
-            if (next) yield return enumerator.Current;
+            if (next) 
+                yield return enumerator.Current;
         }
     }
 }

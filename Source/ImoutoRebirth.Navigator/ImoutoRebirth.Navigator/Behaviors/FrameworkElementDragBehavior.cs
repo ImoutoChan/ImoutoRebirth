@@ -5,7 +5,7 @@ using Microsoft.Xaml.Behaviors;
 
 namespace ImoutoRebirth.Navigator.Behaviors;
 
-class FrameworkElementDragBehavior : Behavior<FrameworkElement>
+internal class FrameworkElementDragBehavior : Behavior<FrameworkElement>
 {
     protected bool IsMouseClicked { get; set; }
 
@@ -17,33 +17,28 @@ class FrameworkElementDragBehavior : Behavior<FrameworkElement>
         AssociatedObject.MouseLeave += AssociatedObject_MouseLeave;
     }
 
-    void AssociatedObject_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
-    {
-        IsMouseClicked = true;
-    }
+    private void AssociatedObject_MouseLeftButtonDown(object sender, MouseButtonEventArgs e) => IsMouseClicked = true;
 
-    void AssociatedObject_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
-    {
-        IsMouseClicked = false;
-    }
+    private void AssociatedObject_MouseLeftButtonUp(object sender, MouseButtonEventArgs e) => IsMouseClicked = false;
 
     protected virtual void AssociatedObject_MouseLeave(object sender, MouseEventArgs e)
     {
-        if (IsMouseClicked)
+        if (!IsMouseClicked) 
+            return;
+        
+        // Set the item's DataContext as the data to be transferred
+        if (AssociatedObject.DataContext is IDragable dragObject)
         {
-            // Set the item's DataContext as the data to be transferred
-            if (AssociatedObject.DataContext is IDragable dragObject)
+            try
             {
-                try
-                {
-                    DragDrop.DoDragDrop(AssociatedObject, dragObject.Data, dragObject.AllowDragDropEffects);
-                }
-                catch (Exception exception)
-                {
-                    Debug.WriteLine(exception);
-                }
+                DragDrop.DoDragDrop(AssociatedObject, dragObject.Data, dragObject.AllowDragDropEffects);
+            }
+            catch (Exception exception)
+            {
+                Debug.WriteLine(exception);
             }
         }
+
         IsMouseClicked = false;
     }
 }

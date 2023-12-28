@@ -8,7 +8,7 @@ using ImoutoRebirth.Navigator.Utils;
 
 namespace ImoutoRebirth.Navigator.ViewModel;
 
-class CollectionVM : VMBase
+internal class CollectionVM : VMBase
 {
     private ICommand _addSourceCommand;
     private ICommand _removeSourceCommand;

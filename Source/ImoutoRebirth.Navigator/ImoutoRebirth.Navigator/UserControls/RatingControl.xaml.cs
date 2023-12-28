@@ -9,7 +9,7 @@ namespace ImoutoRebirth.Navigator.UserControls;
 /// </summary>
 public partial class RatingControl : UserControl
 {
-    int _ratingUnderMouse = 0;
+    private int _ratingUnderMouse = 0;
 
     public RatingControl()
     {

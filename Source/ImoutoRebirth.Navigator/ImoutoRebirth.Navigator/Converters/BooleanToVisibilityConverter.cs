@@ -4,38 +4,28 @@ using System.Windows.Data;
 
 namespace ImoutoRebirth.Navigator.Converters;
 
-[ValueConversion(typeof(Visibility), typeof(Boolean))]
-class BooleanToVisibilityConverter : IValueConverter
+[ValueConversion(typeof(Visibility), typeof(bool))]
+internal class BooleanToVisibilityConverter : IValueConverter
 {
-    public BooleanToVisibilityConverter()
+    public bool IsInvert { private get; set; } = false;
+
+    public object Convert(object? value, Type targetType, object? parameter, CultureInfo culture)
     {
-        IsInvert = false;
-    }
-
-    public bool IsInvert { private get; set; }
-
-    public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
-    {
-        if (!(value is Boolean)) throw new ArgumentException("The input variable has wrong type.");
-
-        var isCheck = (Boolean)value;
+        if (value is not bool boolValue) 
+            throw new ArgumentException("The input variable has wrong type.");
 
         if (IsInvert)
-        {
-            isCheck = !isCheck;
-        }
+            boolValue = !boolValue;
 
-        return isCheck ? Visibility.Visible : Visibility.Collapsed;
+        return boolValue ? Visibility.Visible : Visibility.Collapsed;
     }
 
-    public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+    public object ConvertBack(object? value, Type targetType, object? parameter, CultureInfo culture)
     {
-        if (!(value is Visibility))
-        {
+        if (value is not Visibility visibility)
             throw new ArgumentException("The input variable has wrong type.");
-        }
 
-        bool result = (Visibility)value == Visibility.Visible;
-        return (IsInvert) ? !result : result;
+        var result = visibility == Visibility.Visible;
+        return IsInvert ? !result : result;
     }
 }

@@ -4,56 +4,52 @@ using ImoutoRebirth.Navigator.Utils;
 
 namespace ImoutoRebirth.Navigator.Converters;
 
-class BooleanResultConverter : IValueConverter
+internal class BooleanResultConverter : IValueConverter
 {
-    public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+    public object Convert(object? value, Type targetType, object? parameter, CultureInfo culture)
     {
-        if (parameter != null)
-        {
-            var paramsConv = parameter.ToString();
+        if (parameter == null) 
+            return false;
 
-            return CheckedValue(value, paramsConv);
-        }
-        return false;
+        var paramsConv = parameter.ToString();
+        return CheckedValue(value, paramsConv);
     }
 
-    public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
-    {
-        throw new NotImplementedException();
-    }
+    public object ConvertBack(object? value, Type targetType, object? parameter, CultureInfo culture) 
+        => throw new NotImplementedException();
 
-    public static bool CheckedValue(object value, string param)
+    public static bool CheckedValue(object? value, string? param)
     {
         if (string.IsNullOrWhiteSpace(param))
-        {
             return false;
-        }
+
         var paramToLower = param.Trim().ToLowerInvariant();
         switch (paramToLower)
         {
             case "true":
-                return (Converts.To<bool?>(value) == true) ? true : false;
+                return Converts.To<bool?>(value) == true;
             case "false":
-                return (Converts.To<bool?>(value) == false) ? true : false;
+                return Converts.To<bool?>(value) == false;
             case "null":
-                return (Converts.To<object>(value) == null) ? true : false;
+                return Converts.To<object>(value) == null;
             case "!true":
-                return (Converts.To<bool?>(value) != true) ? true : false;
+                return Converts.To<bool?>(value) != true;
             case "!false":
-                return (Converts.To<bool?>(value) != false) ? true : false;
+                return Converts.To<bool?>(value) != false;
             case "!null":
-                return (Converts.To<object>(value) != null) ? true : false;
+                return Converts.To<object>(value) != null;
             default:
             {
                 var valueStr = Converts.To<string>(value);
-                if (param.StartsWith("!"))
+
+                if (param.StartsWith('!'))
                 {
                     param = param.Remove(0, 1);
-                    return (valueStr != param);
+                    return valueStr != param;
                 }
                 else
                 {
-                    return (valueStr == param);
+                    return valueStr == param;
                 }
             }
         }

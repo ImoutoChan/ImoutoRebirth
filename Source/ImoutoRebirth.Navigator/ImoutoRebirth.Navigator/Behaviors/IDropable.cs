@@ -1,14 +1,14 @@
 ﻿namespace ImoutoRebirth.Navigator.Behaviors;
 
-interface IDropable
+internal interface IDropable
 {
     /// <summary>
-    ///     Type of the data item
+    /// Type of the data item
     /// </summary>
     Type DataType { get; }
 
     /// <summary>
-    ///     Drop data into the collection.
+    /// Drop data into the collection.
     /// </summary>
     /// <param name="data">The data to be dropped</param>
     /// <param name="index">optional: The index location to insert the data</param>
