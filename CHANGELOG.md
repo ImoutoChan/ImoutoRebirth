@@ -1,5 +1,8 @@
 # Unreleased
 
+### Navigator
+* Move extensions to common project
+
 # 4.23.0
 
 ### Navigator

@@ -1,6 +1,6 @@
-﻿namespace ImoutoRebirth.Navigator.Extensions;
+﻿namespace ImoutoRebirth.Common;
 
-internal static class EnumerableCancellationExtensions
+public static class EnumerableCancellationExtensions
 {
     public static IEnumerable<T> WithCancellation<T>(this IEnumerable<T> source, CancellationToken token)
     {
