@@ -1,4 +1,6 @@
 ﻿using System.Text.Json;
+using Flurl.Http.Configuration;
+using Imouto.BooruParser.Implementations.Gelbooru;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 
@@ -13,6 +15,8 @@ internal class DanbooruFavoritesLoader
     private readonly HttpClient _httpClient;
     private readonly ILogger<DanbooruFavoritesLoader> _logger;
     private readonly bool _enabled;
+    private readonly GelbooruApiLoader _gelbooruLoader;
+    private readonly bool _loadThroughGelbooru = false;
 
     public DanbooruFavoritesLoader(
         HttpClient httpClient,
@@ -25,6 +29,11 @@ internal class DanbooruFavoritesLoader
 
         _enabled = !(string.IsNullOrWhiteSpace(_booruConfiguration.Login) ||
                      string.IsNullOrWhiteSpace(_booruConfiguration.BotUserAgent));
+
+        _gelbooruLoader = new(new PerBaseUrlFlurlClientFactory(), Options.Create(new GelbooruSettings()
+        {
+            PauseBetweenRequestsInMs = 0,
+        }));
     }
 
     public async IAsyncEnumerable<Post> GetFavoritesUrls()
@@ -44,11 +53,40 @@ internal class DanbooruFavoritesLoader
             posts = JsonSerializer.Deserialize<Post[]>(result) ?? Array.Empty<Post>();
 
             var notEmptyPosts = posts.Where(x => x is { Md5: not null, FileUrl: not null });
+
+            var gelbooruPosts = GetGelbooruUrls(notEmptyPosts);
             
-            foreach (var post in notEmptyPosts)
+            await foreach (var post in gelbooruPosts)
                 yield return post;
 
             page++;
         } while (posts.Any());
+    }
+
+    private async IAsyncEnumerable<Post> GetGelbooruUrls(IEnumerable<Post> notEmptyPosts)
+    {
+        if (!_loadThroughGelbooru)
+        {
+            foreach (var post in notEmptyPosts)
+                yield return post;
+
+            yield break;
+        }
+        
+        foreach (var post in notEmptyPosts)
+        {
+            Imouto.BooruParser.Post? gelbooruPost;
+            try
+            {
+                gelbooruPost = await _gelbooruLoader.GetPostByMd5Async(post.Md5);
+            }
+            catch
+            {
+                continue;
+            }
+            
+            if (gelbooruPost is { OriginalUrl: not null })
+                yield return new Post() { FileUrl = gelbooruPost.OriginalUrl, Md5 = post.Md5 };
+        }
     }
 }

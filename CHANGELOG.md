@@ -3,6 +3,9 @@
 ### Navigator
 * Move extensions to common project
 
+### Harpy
+* Add ability to download faved danbooru pictures through gelbooru
+
 # 4.23.0
 
 ### Navigator
