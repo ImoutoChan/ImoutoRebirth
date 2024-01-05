@@ -418,12 +418,10 @@ internal class MainWindowVM : VMBase
     {
         lock (NavigatorList)
         {
-            var newCollection = NavigatorList.ToList();
-            Shuffle(newCollection);
+            var copy = NavigatorList.ToList();
 
             NavigatorList.Clear();
-
-            foreach (var navigatorListEntry in newCollection)
+            foreach (var navigatorListEntry in copy.Shuffle())
             {
                 NavigatorList.Add(navigatorListEntry);
             }
@@ -450,21 +448,6 @@ internal class MainWindowVM : VMBase
         }
     }
 
-    private static void Shuffle<T>(IList<T> list)
-    {
-        var randomGenerator = new Random();
-
-        var count = list.Count;
-
-        while (count > 1)
-        {
-            count--;
-
-            var k = randomGenerator.Next(count + 1);
-            (list[k], list[count]) = (list[count], list[k]);
-        }
-    }
-
     public void SetStatusError(string error, string message)
     {
         Status = error;
@@ -477,6 +460,7 @@ internal class MainWindowVM : VMBase
         {
             var tagsToSearch = TagSearchVM.SelectedBindedTags.Select(x => x.Model).ToList();
             var bulkFactor = GetBulkFactorBasedOnTags(tagsToSearch);
+            var autoShuffle = Settings.AutoShuffle;
             
             var loadingTiming = new Stopwatch();
             loadingTiming.Start();
@@ -489,7 +473,10 @@ internal class MainWindowVM : VMBase
                 (x, ct) =>
                 {
                     IsLoading = false;
-                    foreach (var navigatorListEntry in x)
+
+                    var entries = autoShuffle ? x.Shuffle() : x;
+
+                    foreach (var navigatorListEntry in entries)
                     {
                         ct.ThrowIfCancellationRequested();
                         NavigatorList.Add(navigatorListEntry);

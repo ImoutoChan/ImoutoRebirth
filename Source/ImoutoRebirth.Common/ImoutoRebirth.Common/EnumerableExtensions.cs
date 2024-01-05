@@ -17,4 +17,17 @@ public static class EnumerableExtensions
 
     public static IEnumerable<T> WhereNotNull<T>(this IEnumerable<T?> source) => source.Where(x => x != null)!;
 
+    public static IEnumerable<T> Shuffle<T>(this IEnumerable<T> source)
+    {
+        var rng = Random.Shared;
+
+        var elements = source.ToArray();
+        for (var i = elements.Length - 1; i >= 0; i--)
+        {
+            var swapIndex = rng.Next(i + 1);
+            yield return elements[swapIndex];
+            elements[swapIndex] = elements[i];
+        }
+    }
+
 }

@@ -52,6 +52,16 @@ internal class SettingsVM : VMBase
             OnPropertyChanged(() => ShowSystemTags);
         }
     }
+    
+    public bool AutoShuffle
+    {
+        get => Settings.Default.AutoShuffle;
+        set
+        {
+            Settings.Default.AutoShuffle = value;
+            OnPropertyChanged(() => AutoShuffle);
+        }
+    }
 
     public List<AccentColorMenuData> AccentColors { get; }
 

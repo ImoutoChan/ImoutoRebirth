@@ -119,6 +119,10 @@
                                        Header="Show system tags"
                                        IsOn="{Binding ShowSystemTags}" />
 
+                <controls:ToggleSwitch Margin="0,25,0,0"
+                                       Header="Auto shuffle on every load"
+                                       IsOn="{Binding AutoShuffle}" />
+
                 <TextBlock Margin="0,25,0,0"
                            Text="Path Overrides" />
                 
