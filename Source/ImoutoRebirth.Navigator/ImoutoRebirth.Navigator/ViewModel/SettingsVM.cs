@@ -2,6 +2,7 @@
 using System.Windows.Input;
 using System.Windows.Media;
 using ControlzEx.Theming;
+using ImoutoRebirth.Common;
 using ImoutoRebirth.Navigator.Commands;
 using MahApps.Metro.Theming;
 
@@ -9,105 +10,27 @@ namespace ImoutoRebirth.Navigator.ViewModel;
 
 internal class SettingsVM : VMBase
 {
-    #region Subclasses
-
-    public class AccentColorMenuData
-    {
-        public string Name { get; set; }
-
-        public Brush ColorBrush { get; set; }
-
-        public virtual void ChangeAccent(IReadOnlyCollection<AccentColorMenuData>? randomColors = null)
-        {
-            if (randomColors?.Any() == true)
-            {
-                var colors = randomColors.Where(x => x.Name != "Random").ToList();
-                var randomColor = colors[Random.Shared.Next(colors.Count)];
-
-                ThemeManager.Current.ChangeThemeColorScheme(Application.Current, randomColor.Name);
-                Settings.Default.AccentColorName = "Random";
-            }
-            else
-            {
-                ThemeManager.Current.ChangeThemeColorScheme(Application.Current, Name);
-                Settings.Default.AccentColorName = Name;
-            }
-        }
-    }
-    
-    public class CustomTheme : AccentColorMenuData
-    {
-        public override void ChangeAccent(IReadOnlyCollection<AccentColorMenuData>? randomColors = null)
-        {
-            if (!ThemeManager.Current.Themes.Any(x => x.Name == Name))
-            {
-                var darkTheme = ThemeManager.Current.AddLibraryTheme(
-                    new LibraryTheme(
-                        new Uri(
-                            $"pack://application:,,,/ImoutoRebirth.Navigator;component/Themes/ColorSchemes/Dark.{Name}.xaml"),
-                        MahAppsLibraryThemeProvider.DefaultInstance
-                    )
-                );
-                var lightTheme = ThemeManager.Current.AddLibraryTheme(
-                    new LibraryTheme(
-                        new Uri(
-                            $"pack://application:,,,/ImoutoRebirth.Navigator;component/Themes/ColorSchemes/Light.{Name}.xaml"),
-                        MahAppsLibraryThemeProvider.DefaultInstance
-                    )
-                );
-            }
-
-            ThemeManager.Current.ChangeThemeColorScheme(Application.Current, Name);
-            Settings.Default.AccentColorName = Name;
-        }
-    }
-
-    #endregion Subclasses
-
-    #region Fields
-
     private AccentColorMenuData _selectedAccentColor;
     private int _selectedTheme;
-    private ICommand _saveCommand;
+    private ICommand? _saveCommand;
     private string _pathOverrides;
-
-    #endregion Fileds
-
-    #region Constructors
 
     public SettingsVM()
     {
         AccentColors = ThemeManager.Current.Themes
             .GroupBy(x => x.ColorScheme)
             .OrderBy(x => x.Key)
-            .Select(a => new AccentColorMenuData
-            {
-                Name = a.Key,
-                ColorBrush = a.First().ShowcaseBrush
-            })
-            .Append(new AccentColorMenuData
-            {
-                Name = "Random",
-                ColorBrush = Brushes.Black
-            })
-            .Append(new CustomTheme
-            {
-                Name = "Elite",
-                ColorBrush = new SolidColorBrush(Color.FromRgb(0xff, 0xcb, 0x74))
-            })
+            .Select(a => new AccentColorMenuData(a.Key, a.First().ShowcaseBrush))
+            .Append(new AccentColorMenuData("Random", Brushes.Black))
+            .Append(new CustomTheme("Elite", new SolidColorBrush(Color.FromRgb(0xff, 0xcb, 0x74))))
             .ToList();
 
         SelectedAccentColor = AccentColors.First(x => x.Name == Settings.Default.AccentColorName);
-
         SelectedIndexTheme = Settings.Default.ThemeIndex;
 
         ShowPreviewOnSelect = Settings.Default.ActivatePreviewOnSelect;
         PathOverrides = Settings.Default.PathOverrides;
     }
-
-    #endregion Constructors
-
-    #region Properties
 
     public bool ShowPreviewOnSelect
     {
@@ -205,30 +128,76 @@ internal class SettingsVM : VMBase
         set => Settings.Default.RoomHost = value;
     }
 
-    #endregion Properties
+    public ICommand SaveCommand => _saveCommand ??= new RelayCommand(_ => Save());
 
-    #region Commands
+    private static void Save() => Settings.Default.Save();
 
-    public ICommand SaveCommand => _saveCommand ??= new RelayCommand(x => Save());
-
-    private void Save()
-    {
-        Settings.Default.Save();
-    }
-
-    #endregion Commands
-
-    #region Events
-
-    public event EventHandler ShowPreviewOnSelectChanged;
+    public event EventHandler? ShowPreviewOnSelectChanged;
 
     private void OnShowPreviewOnSelectChanged()
     {
         var handler = ShowPreviewOnSelectChanged;
         handler?.Invoke(this, EventArgs.Empty);
     }
-
-    #endregion Events
 }
 
-public record PathOverride(string OldPathPattern, string NewPathPart);
+public class AccentColorMenuData
+{
+    public AccentColorMenuData(string name, Brush colorBrush)
+    {
+        Name = name;
+        ColorBrush = colorBrush;
+    }
+
+    public string Name { get; private set; }
+
+    public Brush ColorBrush { get; private set; }
+
+    public virtual void ChangeAccent(IReadOnlyCollection<AccentColorMenuData>? randomColors = null)
+    {
+        if (randomColors.SafeAny())
+        {
+            var colors = randomColors.Where(x => x.Name != "Random").ToList();
+            var randomColor = colors[Random.Shared.Next(colors.Count)];
+
+            ThemeManager.Current.ChangeThemeColorScheme(Application.Current, randomColor.Name);
+            Settings.Default.AccentColorName = "Random";
+        }
+        else
+        {
+            ThemeManager.Current.ChangeThemeColorScheme(Application.Current, Name);
+            Settings.Default.AccentColorName = Name;
+        }
+    }
+}
+    
+public class CustomTheme : AccentColorMenuData
+{
+    public CustomTheme(string name, Brush colorBrush) : base(name, colorBrush)
+    {
+    }
+
+    public override void ChangeAccent(IReadOnlyCollection<AccentColorMenuData>? randomColors = null)
+    {
+        if (!ThemeManager.Current.Themes.Any(x => x.Name == Name))
+        {
+            var darkTheme = ThemeManager.Current.AddLibraryTheme(
+                new LibraryTheme(
+                    new Uri(
+                        $"pack://application:,,,/ImoutoRebirth.Navigator;component/Themes/ColorSchemes/Dark.{Name}.xaml"),
+                    MahAppsLibraryThemeProvider.DefaultInstance
+                )
+            );
+            var lightTheme = ThemeManager.Current.AddLibraryTheme(
+                new LibraryTheme(
+                    new Uri(
+                        $"pack://application:,,,/ImoutoRebirth.Navigator;component/Themes/ColorSchemes/Light.{Name}.xaml"),
+                    MahAppsLibraryThemeProvider.DefaultInstance
+                )
+            );
+        }
+
+        ThemeManager.Current.ChangeThemeColorScheme(Application.Current, Name);
+        Settings.Default.AccentColorName = Name;
+    }
+}
