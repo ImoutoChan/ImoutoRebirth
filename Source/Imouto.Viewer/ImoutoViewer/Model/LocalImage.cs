@@ -206,7 +206,7 @@ internal class LocalImage
         set => _localZoom = value;
     }
 
-    public BitmapSource Image
+    public BitmapSource? Image
     {
         get
         {
@@ -268,6 +268,9 @@ internal class LocalImage
 
     public void Resize(Size viewPort, ResizeType resizedType = ResizeType.Default)
     {
+        if (Image == null)
+            return;
+
         if (IsZoomFixed)
         {
             _autoResized = 1;
