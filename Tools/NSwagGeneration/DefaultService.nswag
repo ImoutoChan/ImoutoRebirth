@@ -1,5 +1,5 @@
 {
-  "runtime": "Net70",
+  "runtime": "Net80",
   "defaultVariables": "Port=11111,ServiceName=Unknown",
   "documentGenerator": {
     "fromDocument": {
@@ -24,9 +24,9 @@
       "useHttpClientCreationMethod": false,
       "httpClientType": "System.Net.Http.HttpClient",
       "useHttpRequestMessageCreationMethod": false,
-      "useBaseUrl": true,
-      "generateBaseUrlProperty": true,
-      "generateSyncMethods": true,
+      "useBaseUrl": false,
+      "generateBaseUrlProperty": false,
+      "generateSyncMethods": false,
       "generatePrepareRequestAndProcessResponseAsAsyncMethods": false,
       "exposeJsonSerializerSettings": false,
       "clientClassAccessModifier": "public",
@@ -42,8 +42,7 @@
       "queryNullValue": "",
       "className": "{controller}Client",
       "operationGenerationMode": "MultipleClientsFromOperationId",
-      "additionalNamespaceUsages": [
-      ],
+      "additionalNamespaceUsages": [],
       "additionalContractNamespaceUsages": [],
       "generateOptionalParameters": false,
       "generateJsonMethods": false,

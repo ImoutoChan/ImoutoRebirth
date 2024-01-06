@@ -5,165 +5,167 @@ VisualStudioVersion = 17.0.31903.59
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ImoutoRebirth.Arachne", "ImoutoRebirth.Arachne", "{6BEB0A5C-9E6B-4440-93B2-F4C63BE43298}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ImoutoRebirth.Arachne.Core", "ImoutoRebirth.Arachne\ImoutoRebirth.Arachne.Core\ImoutoRebirth.Arachne.Core.csproj", "{9BC327CE-D36E-4926-9830-DCEB0CB73884}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ImoutoRebirth.Arachne.Core", "ImoutoRebirth.Arachne\ImoutoRebirth.Arachne.Core\ImoutoRebirth.Arachne.Core.csproj", "{9BC327CE-D36E-4926-9830-DCEB0CB73884}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ImoutoRebirth.Arachne.Host", "ImoutoRebirth.Arachne\ImoutoRebirth.Arachne.Host\ImoutoRebirth.Arachne.Host.csproj", "{D047E330-806B-4B68-AD5B-F833BB320BC6}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ImoutoRebirth.Arachne.Host", "ImoutoRebirth.Arachne\ImoutoRebirth.Arachne.Host\ImoutoRebirth.Arachne.Host.csproj", "{D047E330-806B-4B68-AD5B-F833BB320BC6}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ImoutoRebirth.Arachne.Infrastructure", "ImoutoRebirth.Arachne\ImoutoRebirth.Arachne.Infrastructure\ImoutoRebirth.Arachne.Infrastructure.csproj", "{BD8D0703-8414-4F85-93BD-0C18AE868A2A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ImoutoRebirth.Arachne.Infrastructure", "ImoutoRebirth.Arachne\ImoutoRebirth.Arachne.Infrastructure\ImoutoRebirth.Arachne.Infrastructure.csproj", "{BD8D0703-8414-4F85-93BD-0C18AE868A2A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ImoutoRebirth.Arachne.MessageContracts", "ImoutoRebirth.Arachne\ImoutoRebirth.Arachne.MessageContracts\ImoutoRebirth.Arachne.MessageContracts.csproj", "{0373356D-B165-4EC7-A379-D923279F43C2}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ImoutoRebirth.Arachne.MessageContracts", "ImoutoRebirth.Arachne\ImoutoRebirth.Arachne.MessageContracts\ImoutoRebirth.Arachne.MessageContracts.csproj", "{0373356D-B165-4EC7-A379-D923279F43C2}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ImoutoRebirth.Arachne.Service", "ImoutoRebirth.Arachne\ImoutoRebirth.Arachne.Service\ImoutoRebirth.Arachne.Service.csproj", "{9EA06863-02F8-405F-9298-E1124F8BF06F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ImoutoRebirth.Arachne.Service", "ImoutoRebirth.Arachne\ImoutoRebirth.Arachne.Service\ImoutoRebirth.Arachne.Service.csproj", "{9EA06863-02F8-405F-9298-E1124F8BF06F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ImoutoRebirth.Arachne.Tests", "ImoutoRebirth.Arachne\ImoutoRebirth.Arachne.Tests\ImoutoRebirth.Arachne.Tests.csproj", "{7E5B9D2B-AC40-4F6A-89BC-864A860E32DA}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ImoutoRebirth.Arachne.Tests", "ImoutoRebirth.Arachne\ImoutoRebirth.Arachne.Tests\ImoutoRebirth.Arachne.Tests.csproj", "{7E5B9D2B-AC40-4F6A-89BC-864A860E32DA}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ImoutoRebirth.Common", "ImoutoRebirth.Common", "{4383FD00-3B54-4C2B-9222-BDC045D3FD9B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ImoutoRebirth.Common", "ImoutoRebirth.Common\ImoutoRebirth.Common\ImoutoRebirth.Common.csproj", "{B7896617-B29B-469A-8732-6B1DB6200CDD}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ImoutoRebirth.Common", "ImoutoRebirth.Common\ImoutoRebirth.Common\ImoutoRebirth.Common.csproj", "{B7896617-B29B-469A-8732-6B1DB6200CDD}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ImoutoRebirth.Common.Cqrs", "ImoutoRebirth.Common\ImoutoRebirth.Common.Cqrs\ImoutoRebirth.Common.Cqrs.csproj", "{D905C139-AAF9-449F-973C-E646A3C05221}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ImoutoRebirth.Common.Cqrs", "ImoutoRebirth.Common\ImoutoRebirth.Common.Cqrs\ImoutoRebirth.Common.Cqrs.csproj", "{D905C139-AAF9-449F-973C-E646A3C05221}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ImoutoRebirth.Common.Domain", "ImoutoRebirth.Common\ImoutoRebirth.Common.Domain\ImoutoRebirth.Common.Domain.csproj", "{7FDCE495-2FA1-4B2C-80E2-B93A0FD24551}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ImoutoRebirth.Common.Domain", "ImoutoRebirth.Common\ImoutoRebirth.Common.Domain\ImoutoRebirth.Common.Domain.csproj", "{7FDCE495-2FA1-4B2C-80E2-B93A0FD24551}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ImoutoRebirth.Common.Domain.EntityFrameworkCore", "ImoutoRebirth.Common\ImoutoRebirth.Common.Domain.EntityFrameworkCore\ImoutoRebirth.Common.Domain.EntityFrameworkCore.csproj", "{362AE1E1-6E67-4DBA-B1B5-06E275E64BFE}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ImoutoRebirth.Common.Domain.EntityFrameworkCore", "ImoutoRebirth.Common\ImoutoRebirth.Common.Domain.EntityFrameworkCore\ImoutoRebirth.Common.Domain.EntityFrameworkCore.csproj", "{362AE1E1-6E67-4DBA-B1B5-06E275E64BFE}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ImoutoRebirth.Common.EntityFrameworkCore", "ImoutoRebirth.Common\ImoutoRebirth.Common.EntityFrameworkCore\ImoutoRebirth.Common.EntityFrameworkCore.csproj", "{0B49D511-8D8B-4444-96F4-19CF6EE089F3}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ImoutoRebirth.Common.EntityFrameworkCore", "ImoutoRebirth.Common\ImoutoRebirth.Common.EntityFrameworkCore\ImoutoRebirth.Common.EntityFrameworkCore.csproj", "{0B49D511-8D8B-4444-96F4-19CF6EE089F3}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ImoutoRebirth.Common.Host", "ImoutoRebirth.Common\ImoutoRebirth.Common.Host\ImoutoRebirth.Common.Host.csproj", "{B53DCC4B-5978-4FDA-A5A0-0FD2F85925A0}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ImoutoRebirth.Common.Host", "ImoutoRebirth.Common\ImoutoRebirth.Common.Host\ImoutoRebirth.Common.Host.csproj", "{B53DCC4B-5978-4FDA-A5A0-0FD2F85925A0}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ImoutoRebirth.Common.Logging", "ImoutoRebirth.Common\ImoutoRebirth.Common.Logging\ImoutoRebirth.Common.Logging.csproj", "{5681136B-CA4C-4735-9C9A-FBCADE0290A3}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ImoutoRebirth.Common.Logging", "ImoutoRebirth.Common\ImoutoRebirth.Common.Logging\ImoutoRebirth.Common.Logging.csproj", "{5681136B-CA4C-4735-9C9A-FBCADE0290A3}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ImoutoRebirth.Common.MassTransit", "ImoutoRebirth.Common\ImoutoRebirth.Common.MassTransit\ImoutoRebirth.Common.MassTransit.csproj", "{9F7AD4FB-8BCD-4397-B93D-6BFEDE114BA3}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ImoutoRebirth.Common.MassTransit", "ImoutoRebirth.Common\ImoutoRebirth.Common.MassTransit\ImoutoRebirth.Common.MassTransit.csproj", "{9F7AD4FB-8BCD-4397-B93D-6BFEDE114BA3}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ImoutoRebirth.Common.Quartz", "ImoutoRebirth.Common\ImoutoRebirth.Common.Quartz\ImoutoRebirth.Common.Quartz.csproj", "{877BB540-89B5-44E5-AB0E-C58E863AF7FC}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ImoutoRebirth.Common.Quartz", "ImoutoRebirth.Common\ImoutoRebirth.Common.Quartz\ImoutoRebirth.Common.Quartz.csproj", "{877BB540-89B5-44E5-AB0E-C58E863AF7FC}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ImoutoRebirth.Common.WebApi", "ImoutoRebirth.Common\ImoutoRebirth.Common.WebApi\ImoutoRebirth.Common.WebApi.csproj", "{C7900E4F-DAE1-4E6B-8E63-3A33556D1A00}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ImoutoRebirth.Common.WebApi", "ImoutoRebirth.Common\ImoutoRebirth.Common.WebApi\ImoutoRebirth.Common.WebApi.csproj", "{C7900E4F-DAE1-4E6B-8E63-3A33556D1A00}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ImoutoRebirth.Harpy", "ImoutoRebirth.Harpy", "{4C37AB18-B2E0-49D5-A5DC-2D8813165911}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ImoutoRebirth.Harpy.Host", "ImoutoRebirth.Harpy\ImoutoRebirth.Harpy.Host\ImoutoRebirth.Harpy.Host.csproj", "{EA593995-5C73-46C8-8C57-3309BE6A9BE3}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ImoutoRebirth.Harpy.Host", "ImoutoRebirth.Harpy\ImoutoRebirth.Harpy.Host\ImoutoRebirth.Harpy.Host.csproj", "{EA593995-5C73-46C8-8C57-3309BE6A9BE3}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ImoutoRebirth.Harpy.Services", "ImoutoRebirth.Harpy\ImoutoRebirth.Harpy.Services\ImoutoRebirth.Harpy.Services.csproj", "{5B98782A-8C3C-4BE6-A37B-CA7061DAC3E4}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ImoutoRebirth.Harpy.Services", "ImoutoRebirth.Harpy\ImoutoRebirth.Harpy.Services\ImoutoRebirth.Harpy.Services.csproj", "{5B98782A-8C3C-4BE6-A37B-CA7061DAC3E4}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ImoutoRebirth.Hasami", "ImoutoRebirth.Hasami\ImoutoRebirth.Hasami\ImoutoRebirth.Hasami.csproj", "{D41F6166-0872-4505-9C4C-D029DA5D5530}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ImoutoRebirth.Hasami", "ImoutoRebirth.Hasami\ImoutoRebirth.Hasami\ImoutoRebirth.Hasami.csproj", "{D41F6166-0872-4505-9C4C-D029DA5D5530}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ImoutoRebirth.Kekkai", "ImoutoRebirth.Kekkai", "{A0314C8F-9746-4027-A6A5-5770E80E9A35}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ImoutoRebirth.Kekkai", "ImoutoRebirth.Kekkai\ImoutoRebirth.Kekkai\ImoutoRebirth.Kekkai.csproj", "{297F2388-840A-4981-BD0B-124DC59586CC}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ImoutoRebirth.Kekkai", "ImoutoRebirth.Kekkai\ImoutoRebirth.Kekkai\ImoutoRebirth.Kekkai.csproj", "{297F2388-840A-4981-BD0B-124DC59586CC}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ImoutoRebirth.Lilin", "ImoutoRebirth.Lilin", "{9DD31146-A822-409B-B6B7-EE16337740D3}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ImoutoRebirth.Lilin.Domain", "ImoutoRebirth.Lilin\ImoutoRebirth.Lilin.Domain\ImoutoRebirth.Lilin.Domain.csproj", "{D4810667-AF36-4E43-A559-B8B41867A508}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ImoutoRebirth.Lilin.Domain", "ImoutoRebirth.Lilin\ImoutoRebirth.Lilin.Domain\ImoutoRebirth.Lilin.Domain.csproj", "{D4810667-AF36-4E43-A559-B8B41867A508}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ImoutoRebirth.Lilin.Domain.Tests", "ImoutoRebirth.Lilin\ImoutoRebirth.Lilin.Domain.Tests\ImoutoRebirth.Lilin.Domain.Tests.csproj", "{2B774E0D-C850-46B0-9BA4-38673827B24C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ImoutoRebirth.Lilin.Domain.Tests", "ImoutoRebirth.Lilin\ImoutoRebirth.Lilin.Domain.Tests\ImoutoRebirth.Lilin.Domain.Tests.csproj", "{2B774E0D-C850-46B0-9BA4-38673827B24C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ImoutoRebirth.Lilin.DataAccess", "ImoutoRebirth.Lilin\ImoutoRebirth.Lilin.DataAccess\ImoutoRebirth.Lilin.DataAccess.csproj", "{8EA5FED5-A8CA-424D-946A-B0C4A05B4D25}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ImoutoRebirth.Lilin.DataAccess", "ImoutoRebirth.Lilin\ImoutoRebirth.Lilin.DataAccess\ImoutoRebirth.Lilin.DataAccess.csproj", "{8EA5FED5-A8CA-424D-946A-B0C4A05B4D25}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ImoutoRebirth.Lilin.Host", "ImoutoRebirth.Lilin\ImoutoRebirth.Lilin.Host\ImoutoRebirth.Lilin.Host.csproj", "{093644E8-59DA-43AB-9C63-327FDEEDD3A1}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ImoutoRebirth.Lilin.Host", "ImoutoRebirth.Lilin\ImoutoRebirth.Lilin.Host\ImoutoRebirth.Lilin.Host.csproj", "{093644E8-59DA-43AB-9C63-327FDEEDD3A1}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ImoutoRebirth.Lilin.Infrastructure", "ImoutoRebirth.Lilin\ImoutoRebirth.Lilin.Infrastructure\ImoutoRebirth.Lilin.Infrastructure.csproj", "{A080D5B3-16EF-488D-9DD6-2807BDC64F6A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ImoutoRebirth.Lilin.Infrastructure", "ImoutoRebirth.Lilin\ImoutoRebirth.Lilin.Infrastructure\ImoutoRebirth.Lilin.Infrastructure.csproj", "{A080D5B3-16EF-488D-9DD6-2807BDC64F6A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ImoutoRebirth.Lilin.MessageContracts", "ImoutoRebirth.Lilin\ImoutoRebirth.Lilin.MessageContracts\ImoutoRebirth.Lilin.MessageContracts.csproj", "{98BEA5D9-CB86-4401-A0B2-84DC5A54E213}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ImoutoRebirth.Lilin.MessageContracts", "ImoutoRebirth.Lilin\ImoutoRebirth.Lilin.MessageContracts\ImoutoRebirth.Lilin.MessageContracts.csproj", "{98BEA5D9-CB86-4401-A0B2-84DC5A54E213}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ImoutoRebirth.Lilin.WebApi.Client", "ImoutoRebirth.Lilin\ImoutoRebirth.Lilin.WebApi.Client\ImoutoRebirth.Lilin.WebApi.Client.csproj", "{E23B3ADE-9C41-49C3-97D1-3D94A87BD7E8}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ImoutoRebirth.Lilin.WebApi.Client", "ImoutoRebirth.Lilin\ImoutoRebirth.Lilin.WebApi.Client\ImoutoRebirth.Lilin.WebApi.Client.csproj", "{E23B3ADE-9C41-49C3-97D1-3D94A87BD7E8}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ImoutoRebirth.Meido", "ImoutoRebirth.Meido", "{614D6032-416A-4B4D-A772-3C86BADFDBDD}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ImoutoRebirth.Meido.DataAccess", "ImoutoRebirth.Meido\ImoutoRebirth.Meido.DataAccess\ImoutoRebirth.Meido.DataAccess.csproj", "{427D1A68-7BFC-4AC5-BE63-FF846298A744}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ImoutoRebirth.Meido.DataAccess", "ImoutoRebirth.Meido\ImoutoRebirth.Meido.DataAccess\ImoutoRebirth.Meido.DataAccess.csproj", "{427D1A68-7BFC-4AC5-BE63-FF846298A744}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ImoutoRebirth.Meido.Host", "ImoutoRebirth.Meido\ImoutoRebirth.Meido.Host\ImoutoRebirth.Meido.Host.csproj", "{26B7754C-7070-424C-941F-BC33EC9451FB}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ImoutoRebirth.Meido.Host", "ImoutoRebirth.Meido\ImoutoRebirth.Meido.Host\ImoutoRebirth.Meido.Host.csproj", "{26B7754C-7070-424C-941F-BC33EC9451FB}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ImoutoRebirth.Meido.Infrastructure", "ImoutoRebirth.Meido\ImoutoRebirth.Meido.Infrastructure\ImoutoRebirth.Meido.Infrastructure.csproj", "{FAD80724-5CFB-47A8-A328-7D3EFE5BC792}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ImoutoRebirth.Meido.Infrastructure", "ImoutoRebirth.Meido\ImoutoRebirth.Meido.Infrastructure\ImoutoRebirth.Meido.Infrastructure.csproj", "{FAD80724-5CFB-47A8-A328-7D3EFE5BC792}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ImoutoRebirth.Meido.MessageContracts", "ImoutoRebirth.Meido\ImoutoRebirth.Meido.MessageContracts\ImoutoRebirth.Meido.MessageContracts.csproj", "{B8EB9620-1D3C-4E20-90EC-D5BF5F533570}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ImoutoRebirth.Meido.MessageContracts", "ImoutoRebirth.Meido\ImoutoRebirth.Meido.MessageContracts\ImoutoRebirth.Meido.MessageContracts.csproj", "{B8EB9620-1D3C-4E20-90EC-D5BF5F533570}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ImoutoRebirth.Navigator", "ImoutoRebirth.Navigator", "{47D5BC7E-1451-431C-87ED-0A1FDA8E6A4B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ImoutoRebirth.Navigator", "ImoutoRebirth.Navigator\ImoutoRebirth.Navigator\ImoutoRebirth.Navigator.csproj", "{5B797DD8-4075-4FBC-9D46-D5A479358B14}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ImoutoRebirth.Navigator", "ImoutoRebirth.Navigator\ImoutoRebirth.Navigator\ImoutoRebirth.Navigator.csproj", "{5B797DD8-4075-4FBC-9D46-D5A479358B14}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ImoutoRebirth.Room", "ImoutoRebirth.Room", "{5198DC62-EAAC-4A81-8728-349F06201287}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ImoutoRebirth.Room.DataAccess", "ImoutoRebirth.Room\ImoutoRebirth.Room.DataAccess\ImoutoRebirth.Room.DataAccess.csproj", "{D5C0014D-B7E5-47D9-A08F-E79124D22AF3}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ImoutoRebirth.Room.DataAccess", "ImoutoRebirth.Room\ImoutoRebirth.Room.DataAccess\ImoutoRebirth.Room.DataAccess.csproj", "{D5C0014D-B7E5-47D9-A08F-E79124D22AF3}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ImoutoRebirth.Room.DataAccess.Tests", "ImoutoRebirth.Room\ImoutoRebirth.Room.DataAccess.Tests\ImoutoRebirth.Room.DataAccess.Tests.csproj", "{66B1BC6D-F45E-405A-9731-80E99789E2B0}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ImoutoRebirth.Room.DataAccess.Tests", "ImoutoRebirth.Room\ImoutoRebirth.Room.DataAccess.Tests\ImoutoRebirth.Room.DataAccess.Tests.csproj", "{66B1BC6D-F45E-405A-9731-80E99789E2B0}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ImoutoRebirth.Room.Database", "ImoutoRebirth.Room\ImoutoRebirth.Room.Database\ImoutoRebirth.Room.Database.csproj", "{3D1DB478-D8E1-4EB1-9A4E-D389B9E17A0B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ImoutoRebirth.Room.Database", "ImoutoRebirth.Room\ImoutoRebirth.Room.Database\ImoutoRebirth.Room.Database.csproj", "{3D1DB478-D8E1-4EB1-9A4E-D389B9E17A0B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ImoutoRebirth.Room.Infrastructure", "ImoutoRebirth.Room\ImoutoRebirth.Room.Infrastructure\ImoutoRebirth.Room.Infrastructure.csproj", "{8C146320-6B0D-49FB-B8AF-231B77BA4E5E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ImoutoRebirth.Room.Infrastructure", "ImoutoRebirth.Room\ImoutoRebirth.Room.Infrastructure\ImoutoRebirth.Room.Infrastructure.csproj", "{8C146320-6B0D-49FB-B8AF-231B77BA4E5E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ImoutoRebirth.Room.WebApi.Client", "ImoutoRebirth.Room\ImoutoRebirth.Room.WebApi.Client\ImoutoRebirth.Room.WebApi.Client.csproj", "{0ECFEE92-4C20-4686-B5FB-A9466252DFA7}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ImoutoRebirth.Room.WebApi.Client", "ImoutoRebirth.Room\ImoutoRebirth.Room.WebApi.Client\ImoutoRebirth.Room.WebApi.Client.csproj", "{0ECFEE92-4C20-4686-B5FB-A9466252DFA7}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ImoutoRebirth.Lilin.UI", "ImoutoRebirth.Lilin\ImoutoRebirth.Lilin.UI\ImoutoRebirth.Lilin.UI.csproj", "{DAAC4859-2DDB-4A6F-9291-D3A764A3ACD9}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ImoutoRebirth.Lilin.UI", "ImoutoRebirth.Lilin\ImoutoRebirth.Lilin.UI\ImoutoRebirth.Lilin.UI.csproj", "{DAAC4859-2DDB-4A6F-9291-D3A764A3ACD9}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tools", "Tools", "{2438D898-F22E-4AD1-950B-4686D50817B3}"
 	ProjectSection(SolutionItems) = preProject
+		..\BuildAndDeploy.ps1 = ..\BuildAndDeploy.ps1
+		..\CHANGELOG.md = ..\CHANGELOG.md
+		..\CHANGELOG.TEMPLATE.md = ..\CHANGELOG.TEMPLATE.md
 		Directory.Build.props = Directory.Build.props
+		..\Docs\Functions.md = ..\Docs\Functions.md
 		global.json = global.json
 		NuGet.config = NuGet.config
 		..\README.md = ..\README.md
 		..\README.RU.md = ..\README.RU.md
 		..\.github\workflows\release.yml = ..\.github\workflows\release.yml
-		..\CHANGELOG.md = ..\CHANGELOG.md
-		..\CHANGELOG.TEMPLATE.md = ..\CHANGELOG.TEMPLATE.md
-		..\Docs\Functions.md = ..\Docs\Functions.md
-		..\BuildAndDeploy.ps1 = ..\BuildAndDeploy.ps1
 	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NukeBuild", "..\Tools\NukeBuild\NukeBuild.csproj", "{DBC3E098-5984-4FD6-9F83-18FBE9A23683}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ImoutoRebirth.Tori", "ImoutoRebirth.Tori", "{97909957-9388-4101-9FC9-7A439D3919F9}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ImoutoRebirth.Tori", "ImoutoRebirth.Tori\ImoutoRebirth.Tori\ImoutoRebirth.Tori.csproj", "{81A6ADFE-E645-4806-B60A-41F01A6334D3}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ImoutoRebirth.Tori", "ImoutoRebirth.Tori\ImoutoRebirth.Tori\ImoutoRebirth.Tori.csproj", "{81A6ADFE-E645-4806-B60A-41F01A6334D3}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Imouto.Viewer", "Imouto.Viewer", "{63E12926-70A2-43BE-9FD1-E0CCED609FB7}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ImoutoViewer", "Imouto.Viewer\ImoutoViewer\ImoutoViewer.csproj", "{4C39EBF1-612C-42B4-B726-6C636298D0F2}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ImoutoViewer", "Imouto.Viewer\ImoutoViewer\ImoutoViewer.csproj", "{4C39EBF1-612C-42B4-B726-6C636298D0F2}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ImoutoRebirth.Lilin.Application", "ImoutoRebirth.Lilin\ImoutoRebirth.Lilin.Application\ImoutoRebirth.Lilin.Application.csproj", "{625ABDC5-3548-4300-97AF-AEFFD1F42A2D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ImoutoRebirth.Lilin.Application", "ImoutoRebirth.Lilin\ImoutoRebirth.Lilin.Application\ImoutoRebirth.Lilin.Application.csproj", "{625ABDC5-3548-4300-97AF-AEFFD1F42A2D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ImoutoRebirth.Common.Infrastructure", "ImoutoRebirth.Common\ImoutoRebirth.Common.Infrastructure\ImoutoRebirth.Common.Infrastructure.csproj", "{5094ED81-85C2-4DA6-92B1-70E1022497D0}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ImoutoRebirth.Common.Infrastructure", "ImoutoRebirth.Common\ImoutoRebirth.Common.Infrastructure\ImoutoRebirth.Common.Infrastructure.csproj", "{5094ED81-85C2-4DA6-92B1-70E1022497D0}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ImoutoRebirth.Common.Application", "ImoutoRebirth.Common\ImoutoRebirth.Common.Application\ImoutoRebirth.Common.Application.csproj", "{4D709AF0-C891-4744-A102-BB9361CF4790}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ImoutoRebirth.Common.Application", "ImoutoRebirth.Common\ImoutoRebirth.Common.Application\ImoutoRebirth.Common.Application.csproj", "{4D709AF0-C891-4744-A102-BB9361CF4790}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ImoutoRebirth.Common.OpenTelemetry", "ImoutoRebirth.Common\ImoutoRebirth.Common.OpenTelemetry\ImoutoRebirth.Common.OpenTelemetry.csproj", "{AE7C331C-BCCD-494E-A545-C16AB3F68DEB}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ImoutoRebirth.Common.OpenTelemetry", "ImoutoRebirth.Common\ImoutoRebirth.Common.OpenTelemetry\ImoutoRebirth.Common.OpenTelemetry.csproj", "{AE7C331C-BCCD-494E-A545-C16AB3F68DEB}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ImoutoRebirth.Common.WebApi.Client", "ImoutoRebirth.Common\ImoutoRebirth.Common.WebApi.Client\ImoutoRebirth.Common.WebApi.Client.csproj", "{D09316A8-F993-41E9-B87D-C22A2C9AA6EB}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ImoutoRebirth.Common.WebApi.Client", "ImoutoRebirth.Common\ImoutoRebirth.Common.WebApi.Client\ImoutoRebirth.Common.WebApi.Client.csproj", "{D09316A8-F993-41E9-B87D-C22A2C9AA6EB}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ImoutoRebirth.Meido.Domain", "ImoutoRebirth.Meido\ImoutoRebirth.Meido.Domain\ImoutoRebirth.Meido.Domain.csproj", "{904A4D4E-FA47-45EF-9FB4-6A3F5820E5D1}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ImoutoRebirth.Meido.Domain", "ImoutoRebirth.Meido\ImoutoRebirth.Meido.Domain\ImoutoRebirth.Meido.Domain.csproj", "{904A4D4E-FA47-45EF-9FB4-6A3F5820E5D1}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ImoutoRebirth.Meido.Application", "ImoutoRebirth.Meido\ImoutoRebirth.Meido.Application\ImoutoRebirth.Meido.Application.csproj", "{BC055FCD-527B-4628-8B3A-78D20AFA322B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ImoutoRebirth.Meido.Application", "ImoutoRebirth.Meido\ImoutoRebirth.Meido.Application\ImoutoRebirth.Meido.Application.csproj", "{BC055FCD-527B-4628-8B3A-78D20AFA322B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ImoutoRebirth.Meido.UI", "ImoutoRebirth.Meido\ImoutoRebirth.Meido.UI\ImoutoRebirth.Meido.UI.csproj", "{ABA7639A-2342-4050-8ACA-F795C9EA59A1}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ImoutoRebirth.Meido.UI", "ImoutoRebirth.Meido\ImoutoRebirth.Meido.UI\ImoutoRebirth.Meido.UI.csproj", "{ABA7639A-2342-4050-8ACA-F795C9EA59A1}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ImoutoRebirth.Common.WebP", "ImoutoRebirth.Common\ImoutoRebirth.Common.WebP\ImoutoRebirth.Common.WebP.csproj", "{36C7BF70-F817-44C8-ABBE-3015D73D2B96}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ImoutoRebirth.Common.WebP", "ImoutoRebirth.Common\ImoutoRebirth.Common.WebP\ImoutoRebirth.Common.WebP.csproj", "{36C7BF70-F817-44C8-ABBE-3015D73D2B96}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ImoutoRebirth.Room.Domain", "ImoutoRebirth.Room\ImoutoRebirth.Room.Domain\ImoutoRebirth.Room.Domain.csproj", "{3B21EC71-EAEB-410E-A21D-2FA886B368F5}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ImoutoRebirth.Room.Domain", "ImoutoRebirth.Room\ImoutoRebirth.Room.Domain\ImoutoRebirth.Room.Domain.csproj", "{3B21EC71-EAEB-410E-A21D-2FA886B368F5}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ImoutoRebirth.Room.Application", "ImoutoRebirth.Room\ImoutoRebirth.Room.Application\ImoutoRebirth.Room.Application.csproj", "{15A3DF4D-1269-45F3-BFAF-3A4ED132DBBC}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ImoutoRebirth.Room.Application", "ImoutoRebirth.Room\ImoutoRebirth.Room.Application\ImoutoRebirth.Room.Application.csproj", "{15A3DF4D-1269-45F3-BFAF-3A4ED132DBBC}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ImoutoRebirth.Room.UI", "ImoutoRebirth.Room\ImoutoRebirth.Room.UI\ImoutoRebirth.Room.UI.csproj", "{DF0662D1-FA61-4F02-905F-154800C67A7E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ImoutoRebirth.Room.UI", "ImoutoRebirth.Room\ImoutoRebirth.Room.UI\ImoutoRebirth.Room.UI.csproj", "{DF0662D1-FA61-4F02-905F-154800C67A7E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ImoutoRebirth.Room.Host", "ImoutoRebirth.Room\ImoutoRebirth.Room.Host\ImoutoRebirth.Room.Host.csproj", "{46AFCD9F-8AFE-49ED-9FDA-20EF0192A324}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ImoutoRebirth.Room.Host", "ImoutoRebirth.Room\ImoutoRebirth.Room.Host\ImoutoRebirth.Room.Host.csproj", "{46AFCD9F-8AFE-49ED-9FDA-20EF0192A324}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ImoutoRebirth.Room.IntegrationTests", "ImoutoRebirth.Room\ImoutoRebirth.Room.IntegrationTests\ImoutoRebirth.Room.IntegrationTests.csproj", "{F50AC677-879C-4DC6-90BA-EDBC847C38C3}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ImoutoRebirth.Room.IntegrationTests", "ImoutoRebirth.Room\ImoutoRebirth.Room.IntegrationTests\ImoutoRebirth.Room.IntegrationTests.csproj", "{F50AC677-879C-4DC6-90BA-EDBC847C38C3}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ImoutoRebirth.Lilin.IntegrationTests", "ImoutoRebirth.Lilin\ImoutoRebirth.Lilin.IntegrationTests\ImoutoRebirth.Lilin.IntegrationTests.csproj", "{62D5F26A-A32D-4B6C-BA4B-86318E1CD26E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ImoutoRebirth.Lilin.IntegrationTests", "ImoutoRebirth.Lilin\ImoutoRebirth.Lilin.IntegrationTests\ImoutoRebirth.Lilin.IntegrationTests.csproj", "{62D5F26A-A32D-4B6C-BA4B-86318E1CD26E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ImoutoRebirth.Common.Tests", "ImoutoRebirth.Common\ImoutoRebirth.Common.Tests\ImoutoRebirth.Common.Tests.csproj", "{C0102FFF-A2B9-4C90-9906-2F72D05C4D69}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ImoutoRebirth.Common.Tests", "ImoutoRebirth.Common\ImoutoRebirth.Common.Tests\ImoutoRebirth.Common.Tests.csproj", "{C0102FFF-A2B9-4C90-9906-2F72D05C4D69}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ImoutoRebirth.Hasami", "ImoutoRebirth.Hasami", "{4CE46E9F-7AF3-480A-B3E9-78FC230343EB}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "NSwagGeneration", "NSwagGeneration", "{6F7CD6F5-C6CC-44E7-B193-BE89EB407961}"
+	ProjectSection(SolutionItems) = preProject
+		..\Tools\NSwagGeneration\DefaultService.nswag = ..\Tools\NSwagGeneration\DefaultService.nswag
+		..\Tools\NSwagGeneration\generate-lilin.ps1 = ..\Tools\NSwagGeneration\generate-lilin.ps1
+		..\Tools\NSwagGeneration\generate-room.ps1 = ..\Tools\NSwagGeneration\generate-room.ps1
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
-	GlobalSection(SolutionProperties) = preSolution
-		HideSolutionNode = FALSE
-	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{DBC3E098-5984-4FD6-9F83-18FBE9A23683}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{DBC3E098-5984-4FD6-9F83-18FBE9A23683}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{9BC327CE-D36E-4926-9830-DCEB0CB73884}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{9BC327CE-D36E-4926-9830-DCEB0CB73884}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9BC327CE-D36E-4926-9830-DCEB0CB73884}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -316,6 +318,8 @@ Global
 		{DAAC4859-2DDB-4A6F-9291-D3A764A3ACD9}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{DAAC4859-2DDB-4A6F-9291-D3A764A3ACD9}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{DAAC4859-2DDB-4A6F-9291-D3A764A3ACD9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DBC3E098-5984-4FD6-9F83-18FBE9A23683}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DBC3E098-5984-4FD6-9F83-18FBE9A23683}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{81A6ADFE-E645-4806-B60A-41F01A6334D3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{81A6ADFE-E645-4806-B60A-41F01A6334D3}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{81A6ADFE-E645-4806-B60A-41F01A6334D3}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -389,6 +393,9 @@ Global
 		{C0102FFF-A2B9-4C90-9906-2F72D05C4D69}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C0102FFF-A2B9-4C90-9906-2F72D05C4D69}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{9BC327CE-D36E-4926-9830-DCEB0CB73884} = {6BEB0A5C-9E6B-4440-93B2-F4C63BE43298}
 		{D047E330-806B-4B68-AD5B-F833BB320BC6} = {6BEB0A5C-9E6B-4440-93B2-F4C63BE43298}
@@ -408,6 +415,7 @@ Global
 		{C7900E4F-DAE1-4E6B-8E63-3A33556D1A00} = {4383FD00-3B54-4C2B-9222-BDC045D3FD9B}
 		{EA593995-5C73-46C8-8C57-3309BE6A9BE3} = {4C37AB18-B2E0-49D5-A5DC-2D8813165911}
 		{5B98782A-8C3C-4BE6-A37B-CA7061DAC3E4} = {4C37AB18-B2E0-49D5-A5DC-2D8813165911}
+		{D41F6166-0872-4505-9C4C-D029DA5D5530} = {4CE46E9F-7AF3-480A-B3E9-78FC230343EB}
 		{297F2388-840A-4981-BD0B-124DC59586CC} = {A0314C8F-9746-4027-A6A5-5770E80E9A35}
 		{D4810667-AF36-4E43-A559-B8B41867A508} = {9DD31146-A822-409B-B6B7-EE16337740D3}
 		{2B774E0D-C850-46B0-9BA4-38673827B24C} = {9DD31146-A822-409B-B6B7-EE16337740D3}
@@ -446,6 +454,9 @@ Global
 		{F50AC677-879C-4DC6-90BA-EDBC847C38C3} = {5198DC62-EAAC-4A81-8728-349F06201287}
 		{62D5F26A-A32D-4B6C-BA4B-86318E1CD26E} = {9DD31146-A822-409B-B6B7-EE16337740D3}
 		{C0102FFF-A2B9-4C90-9906-2F72D05C4D69} = {4383FD00-3B54-4C2B-9222-BDC045D3FD9B}
-		{D41F6166-0872-4505-9C4C-D029DA5D5530} = {4CE46E9F-7AF3-480A-B3E9-78FC230343EB}
+		{6F7CD6F5-C6CC-44E7-B193-BE89EB407961} = {2438D898-F22E-4AD1-950B-4686D50817B3}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {3E48016D-BB6B-49F0-9888-80A5EAF0FAA4}
 	EndGlobalSection
 EndGlobal
