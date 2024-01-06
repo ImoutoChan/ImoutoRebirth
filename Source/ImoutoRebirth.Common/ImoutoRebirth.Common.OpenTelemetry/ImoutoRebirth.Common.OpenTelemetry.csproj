@@ -10,16 +10,16 @@
     <ItemGroup>
         <PackageReference Include="Microsoft.Extensions.Hosting.Abstractions" Version="8.0.0" />
 
-        <PackageReference Include="OpenTelemetry" Version="1.6.0" />
-        <PackageReference Include="OpenTelemetry.Api" Version="1.6.0" />
-        <PackageReference Include="OpenTelemetry.Exporter.OpenTelemetryProtocol" Version="1.6.0" />
-        <PackageReference Include="OpenTelemetry.Extensions.Hosting" Version="1.6.0" />
+        <PackageReference Include="OpenTelemetry" Version="1.7.0" />
+        <PackageReference Include="OpenTelemetry.Api" Version="1.7.0" />
+        <PackageReference Include="OpenTelemetry.Exporter.OpenTelemetryProtocol" Version="1.7.0" />
+        <PackageReference Include="OpenTelemetry.Extensions.Hosting" Version="1.7.0" />
         <PackageReference Include="OpenTelemetry.Exporter.Jaeger" Version="1.5.1" />
         <PackageReference Include="OpenTelemetry.Exporter.Prometheus.AspNetCore" Version="1.5.0-alpha.1" />
 
-        <PackageReference Include="OpenTelemetry.Instrumentation.AspNetCore" Version="1.0.0-rc9.14" />
-        <PackageReference Include="OpenTelemetry.Instrumentation.Http" Version="1.0.0-rc9.14" />
-        <PackageReference Include="OpenTelemetry.Instrumentation.Runtime" Version="1.5.1" />
+        <PackageReference Include="OpenTelemetry.Instrumentation.AspNetCore" Version="1.7.0" />
+        <PackageReference Include="OpenTelemetry.Instrumentation.Http" Version="1.7.0" />
+        <PackageReference Include="OpenTelemetry.Instrumentation.Runtime" Version="1.7.0" />
         <PackageReference Include="Npgsql.OpenTelemetry" Version="8.0.1" />
     </ItemGroup>
 
