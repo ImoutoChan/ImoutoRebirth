@@ -3,7 +3,7 @@ using System.IO.Compression;
 using System.Windows;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
-using ImoutoRebirth.LilinService.WebApi.Client;
+using ImoutoRebirth.Lilin.WebApi.Client;
 
 namespace ImoutoRebirth.Navigator.ViewModel.ListEntries;
 

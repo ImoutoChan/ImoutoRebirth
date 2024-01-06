@@ -1,4 +1,4 @@
-﻿using ImoutoRebirth.RoomService.WebApi.Client;
+﻿using ImoutoRebirth.Room.WebApi.Client;
 
 namespace ImoutoRebirth.Harpy.Services.SaveFavorites.Services.Room;
 

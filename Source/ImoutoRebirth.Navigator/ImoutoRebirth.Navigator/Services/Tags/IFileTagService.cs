@@ -1,4 +1,4 @@
-﻿using ImoutoRebirth.LilinService.WebApi.Client;
+﻿using ImoutoRebirth.Lilin.WebApi.Client;
 using ImoutoRebirth.Navigator.Services.Tags.Model;
 
 namespace ImoutoRebirth.Navigator.Services.Tags;

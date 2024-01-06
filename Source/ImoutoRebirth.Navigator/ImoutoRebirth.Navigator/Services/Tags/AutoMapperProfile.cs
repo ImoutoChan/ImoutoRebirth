@@ -1,12 +1,12 @@
 ﻿using AutoMapper;
-using ImoutoRebirth.LilinService.WebApi.Client;
+using ImoutoRebirth.Lilin.WebApi.Client;
 using ImoutoRebirth.Navigator.Services.Tags.Model;
-using ImoutoRebirth.RoomService.WebApi.Client;
+using ImoutoRebirth.Room.WebApi.Client;
 using FileTag = ImoutoRebirth.Navigator.Services.Tags.Model.FileTag;
 using Tag = ImoutoRebirth.Navigator.Services.Tags.Model.Tag;
-using LilinTag = ImoutoRebirth.LilinService.WebApi.Client.Tag;
-using LilinFileTag = ImoutoRebirth.LilinService.WebApi.Client.DetailedFileTag;
-using LilinTagType = ImoutoRebirth.LilinService.WebApi.Client.TagType;
+using LilinTag = ImoutoRebirth.Lilin.WebApi.Client.Tag;
+using LilinFileTag = ImoutoRebirth.Lilin.WebApi.Client.DetailedFileTag;
+using LilinTagType = ImoutoRebirth.Lilin.WebApi.Client.TagType;
 using TagType = ImoutoRebirth.Navigator.Services.Tags.Model.TagType;
 
 namespace ImoutoRebirth.Navigator.Services.Tags;

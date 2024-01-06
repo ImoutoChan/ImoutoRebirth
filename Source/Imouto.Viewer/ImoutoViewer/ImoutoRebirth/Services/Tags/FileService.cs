@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
-using ImoutoRebirth.LilinService.WebApi.Client;
-using ImoutoRebirth.RoomService.WebApi.Client;
+using ImoutoRebirth.Lilin.WebApi.Client;
+using ImoutoRebirth.Room.WebApi.Client;
 using ImoutoViewer.ImoutoRebirth.Services.Tags.Model;
 
 namespace ImoutoViewer.ImoutoRebirth.Services.Tags;

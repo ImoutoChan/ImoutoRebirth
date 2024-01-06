@@ -1,7 +1,7 @@
 ﻿using System.Diagnostics;
 using System.Windows.Input;
 using System.Windows.Media;
-using ImoutoRebirth.LilinService.WebApi.Client;
+using ImoutoRebirth.Lilin.WebApi.Client;
 using ImoutoRebirth.Navigator.Services;
 using ImoutoRebirth.Navigator.Services.Tags;
 using ImoutoRebirth.Navigator.Services.Tags.Model;

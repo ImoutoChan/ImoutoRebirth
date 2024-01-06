@@ -1,19 +1,19 @@
 ﻿using AutoMapper;
-using ImoutoRebirth.LilinService.WebApi.Client;
-using ImoutoRebirth.RoomService.WebApi.Client;
+using ImoutoRebirth.Lilin.WebApi.Client;
+using ImoutoRebirth.Room.WebApi.Client;
 using ImoutoViewer.ImoutoRebirth.NavigatorArgs;
 using ImoutoViewer.ImoutoRebirth.Services.Tags.Model;
-using FileNote = ImoutoRebirth.LilinService.WebApi.Client.FileNote;
-using FileTag = ImoutoRebirth.LilinService.WebApi.Client.DetailedFileTag;
+using FileNote = ImoutoRebirth.Lilin.WebApi.Client.FileNote;
+using FileTag = ImoutoRebirth.Lilin.WebApi.Client.DetailedFileTag;
 using LocalFileTag = ImoutoViewer.ImoutoRebirth.Services.Tags.Model.FileTag;
 using LocalTag = ImoutoViewer.ImoutoRebirth.Services.Tags.Model.Tag;
 using LocalTagType = ImoutoViewer.ImoutoRebirth.Services.Tags.Model.TagType;
 using LocalNote = ImoutoViewer.ImoutoRebirth.Services.Tags.Model.Note;
 using LocalFileNote = ImoutoViewer.ImoutoRebirth.Services.Tags.Model.FileNote;
-using Note = ImoutoRebirth.LilinService.WebApi.Client.FileNote;
+using Note = ImoutoRebirth.Lilin.WebApi.Client.FileNote;
 using SearchType = ImoutoViewer.ImoutoRebirth.Services.Tags.Model.SearchType;
-using Tag = ImoutoRebirth.LilinService.WebApi.Client.Tag;
-using TagType = ImoutoRebirth.LilinService.WebApi.Client.TagType;
+using Tag = ImoutoRebirth.Lilin.WebApi.Client.Tag;
+using TagType = ImoutoRebirth.Lilin.WebApi.Client.TagType;
 
 namespace ImoutoViewer.ImoutoRebirth.Services.Tags;
 

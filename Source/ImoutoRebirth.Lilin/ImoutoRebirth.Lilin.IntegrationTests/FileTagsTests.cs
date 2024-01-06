@@ -1,12 +1,12 @@
 ﻿using ImoutoRebirth.Common.Tests;
 using ImoutoRebirth.Lilin.Application.FileInfoSlice.Commands;
-using ImoutoRebirth.LilinService.WebApi.Client;
+using ImoutoRebirth.Lilin.WebApi.Client;
 using MediatR;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.DependencyInjection;
-using BindTagsCommand = ImoutoRebirth.LilinService.WebApi.Client.BindTagsCommand;
+using BindTagsCommand = ImoutoRebirth.Lilin.WebApi.Client.BindTagsCommand;
 using CreateTagCommand = ImoutoRebirth.Lilin.Application.TagSlice.CreateTagCommand;
-using UnbindTagsCommand = ImoutoRebirth.LilinService.WebApi.Client.UnbindTagsCommand;
+using UnbindTagsCommand = ImoutoRebirth.Lilin.WebApi.Client.UnbindTagsCommand;
 using AppRelativeShortInfo = ImoutoRebirth.Lilin.Application.FileInfoSlice.Queries.RelativeShortInfo;
 using AppRelativeType = ImoutoRebirth.Lilin.Application.FileInfoSlice.Queries.RelativeType;
 

@@ -1,5 +1,5 @@
 ﻿using AutoMapper;
-using ImoutoRebirth.LilinService.WebApi.Client;
+using ImoutoRebirth.Lilin.WebApi.Client;
 using Tag = ImoutoViewer.ImoutoRebirth.Services.Tags.Model.Tag;
 using TagType = ImoutoViewer.ImoutoRebirth.Services.Tags.Model.TagType;
 

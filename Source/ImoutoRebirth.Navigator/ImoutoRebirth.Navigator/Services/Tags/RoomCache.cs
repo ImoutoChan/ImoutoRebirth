@@ -1,7 +1,7 @@
 ﻿using System.Collections.Concurrent;
 using AutoMapper;
 using ImoutoRebirth.Navigator.Services.Tags.Model;
-using ImoutoRebirth.RoomService.WebApi.Client;
+using ImoutoRebirth.Room.WebApi.Client;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Primitives;
 

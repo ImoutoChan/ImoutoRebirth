@@ -1,9 +1,9 @@
 ﻿using ImoutoRebirth.Common.Tests;
-using ImoutoRebirth.LilinService.WebApi.Client;
-using BindTag = ImoutoRebirth.LilinService.WebApi.Client.BindTag;
-using BindTagsCommand = ImoutoRebirth.LilinService.WebApi.Client.BindTagsCommand;
+using ImoutoRebirth.Lilin.WebApi.Client;
+using BindTag = ImoutoRebirth.Lilin.WebApi.Client.BindTag;
+using BindTagsCommand = ImoutoRebirth.Lilin.WebApi.Client.BindTagsCommand;
 using CreateTagCommand = ImoutoRebirth.Lilin.Application.TagSlice.CreateTagCommand;
-using MetadataSource = ImoutoRebirth.LilinService.WebApi.Client.MetadataSource;
+using MetadataSource = ImoutoRebirth.Lilin.WebApi.Client.MetadataSource;
 using TagsSearchQuery = ImoutoRebirth.Lilin.Application.TagSlice.TagsSearchQuery;
 
 namespace ImoutoRebirth.Lilin.IntegrationTests;

@@ -1,4 +1,4 @@
-using ImoutoRebirth.LilinService.WebApi.Client;
+using ImoutoRebirth.Lilin.WebApi.Client;
 
 namespace ImoutoRebirth.Navigator.ViewModel.ListEntries;
 

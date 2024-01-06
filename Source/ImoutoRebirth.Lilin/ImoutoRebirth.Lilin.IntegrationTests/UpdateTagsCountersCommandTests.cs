@@ -1,6 +1,6 @@
 ﻿using ImoutoRebirth.Common.Tests;
 using ImoutoRebirth.Lilin.Application.TagSlice;
-using ImoutoRebirth.LilinService.WebApi.Client;
+using ImoutoRebirth.Lilin.WebApi.Client;
 using MediatR;
 using Microsoft.Extensions.DependencyInjection;
 using CreateTagCommand = ImoutoRebirth.Lilin.Application.TagSlice.CreateTagCommand;

@@ -2,7 +2,7 @@
 using Imouto.BooruParser;
 using Imouto.BooruParser.Implementations.Danbooru;
 using Imouto.BooruParser.Implementations.Sankaku;
-using ImoutoRebirth.RoomService.WebApi.Client;
+using ImoutoRebirth.Room.WebApi.Client;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -20,7 +20,7 @@ internal static class Scripts
         var hashes = files.Select(x => (File: x, MD5: GetMd5Checksum(x))).ToList();
         var hashesOnly = hashes.Select(x => x.MD5).ToList();
 
-        var roomClient = new CollectionFilesClient("http://localhost:11301", new HttpClient());
+        var roomClient = new CollectionFilesClient(new HttpClient { BaseAddress = new Uri("http://localhost:11301") });
         var found = await roomClient.SearchCollectionFilesAsync(new CollectionFilesQuery(null, null, int.MaxValue, hashesOnly, null, 0));
 
         targetFoundPath.Create();

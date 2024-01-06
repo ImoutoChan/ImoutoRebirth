@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
 using ImoutoRebirth.Common;
-using ImoutoRebirth.LilinService.WebApi.Client;
+using ImoutoRebirth.Lilin.WebApi.Client;
 using ImoutoRebirth.Navigator.Services.Tags.Model;
 using FileTag = ImoutoRebirth.Navigator.Services.Tags.Model.FileTag;
 using Tag = ImoutoRebirth.Navigator.Services.Tags.Model.Tag;

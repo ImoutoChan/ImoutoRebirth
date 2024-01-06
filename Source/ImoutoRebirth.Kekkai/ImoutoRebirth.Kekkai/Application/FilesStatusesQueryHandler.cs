@@ -1,7 +1,7 @@
 ﻿using System.Runtime.CompilerServices;
 using ImoutoRebirth.Common.Cqrs.Abstract;
-using ImoutoRebirth.LilinService.WebApi.Client;
-using ImoutoRebirth.RoomService.WebApi.Client;
+using ImoutoRebirth.Lilin.WebApi.Client;
+using ImoutoRebirth.Room.WebApi.Client;
 
 namespace ImoutoRebirth.Kekkai.Application;
 

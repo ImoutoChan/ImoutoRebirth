@@ -2,7 +2,7 @@
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Windows;
-using ImoutoRebirth.LilinService.WebApi.Client;
+using ImoutoRebirth.Lilin.WebApi.Client;
 using ImoutoRebirth.Navigator.Model;
 
 namespace ImoutoRebirth.Navigator.ViewModel.ListEntries;

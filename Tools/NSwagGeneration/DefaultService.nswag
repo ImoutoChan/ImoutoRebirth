@@ -55,7 +55,7 @@
       "wrapResponseMethods": [],
       "generateResponseClasses": true,
       "responseClass": "SwaggerResponse",
-      "namespace": "$(ServiceName)Service.WebApi.Client",
+      "namespace": "$(ServiceName).WebApi.Client",
       "requiredPropertiesMustBeDefined": false,
       "dateType": "System.DateTimeOffset",
       "jsonConverters": [],

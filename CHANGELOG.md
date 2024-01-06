@@ -7,6 +7,10 @@
 ### Harpy
 * Add ability to download faved danbooru pictures through gelbooru
 
+### Infrastructure
+* Simplify nswag generated clients
+* Add incremental source generator for generating Add*WebApiClients methods
+
 # 4.23.0
 
 ### Navigator
