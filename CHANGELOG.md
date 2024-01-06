@@ -13,6 +13,9 @@
 * Add incremental source generator for generating Add*WebApiClients methods
 * Auto sign all commits and tags
 
+### Viewer
+* Fix infinite loading
+
 # 4.23.0
 
 ### Navigator
