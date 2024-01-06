@@ -5,9 +5,9 @@ namespace ImoutoRebirth.Arachne.Host.Settings;
 
 public class ArachneSettings
 {
-    public DanbooruSettings DanbooruSettings { get; set; } = default!;
+    public required DanbooruSettings DanbooruSettings { get; set; }
 
-    public SankakuSettings SankakuSettings { get; set; } = default!;
+    public required SankakuSettings SankakuSettings { get; set; }
 
-    public RabbitSettings RabbitSettings { get; set; } = default!;
+    public required RabbitSettings RabbitSettings { get; set; }
 }

@@ -718,10 +718,10 @@ internal static class ComparatorExtensions
 internal class UgoiraFrameData
 {
     [JsonProperty("data")]
-    public IReadOnlyCollection<FrameData> Data { get; set; } = default!;
+    public required IReadOnlyCollection<FrameData> Data { get; set; }
 
     [JsonProperty("content_type")]
-    public string ContentType { get; set; } = default!;
+    public required string ContentType { get; set; }
 
     public class FrameData
     {
@@ -729,6 +729,6 @@ internal class UgoiraFrameData
         public int Delay { get; set; }
 
         [JsonProperty("file")]
-        public string File { get; set; } = default!;
+        public required string File { get; set; }
     }
 }

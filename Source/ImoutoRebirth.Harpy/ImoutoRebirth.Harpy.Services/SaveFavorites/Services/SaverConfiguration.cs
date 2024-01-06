@@ -2,7 +2,7 @@
 
 internal class SaverConfiguration
 {
-    public string SaveToPath { get; set; } = default!;
+    public required string SaveToPath { get; set; }
 
-    public string RoomUrl { get; set; } = default!;
+    public required string RoomUrl { get; set; }
 }

@@ -4,5 +4,5 @@ namespace ImoutoRebirth.Meido.Host;
 
 public class MeidoSettings
 {
-    public RabbitSettings RabbitSettings { get; set; } = default!;
+    public required RabbitSettings RabbitSettings { get; set; }
 }

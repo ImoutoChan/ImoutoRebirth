@@ -2,11 +2,11 @@
 
 internal class BooruConfiguration
 {
-    public string Login { get; set; } = default!;
+    public required string Login { get; set; }
 
-    public string ApiKey { get; set; } = default!;
+    public required string ApiKey { get; set; }
 
-    public string BotUserAgent { get; set; } = default!;
+    public required string BotUserAgent { get; set; }
 }
 
 internal class YandereBooruConfiguration : BooruConfiguration

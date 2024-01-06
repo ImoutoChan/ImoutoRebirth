@@ -12,9 +12,9 @@ internal class MeidoDbContext : DbContext, IUnitOfWork
 {
     private readonly IEventStorage _eventStorage;
 
-    public DbSet<ParsingStatus> ParsingStatuses { get; set; } = default!;
+    public required DbSet<ParsingStatus> ParsingStatuses { get; set; }
 
-    public DbSet<SourceActualizingState> SourceActualizingStates { get; set; } = default!;
+    public required DbSet<SourceActualizingState> SourceActualizingStates { get; set; }
 
     public MeidoDbContext(DbContextOptions<MeidoDbContext> options, IEventStorage eventStorage) : base(options)
     {
