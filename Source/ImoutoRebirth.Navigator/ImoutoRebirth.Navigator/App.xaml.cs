@@ -16,10 +16,6 @@ public partial class App : Application
 
     protected override async void OnStartup(StartupEventArgs e)
     {
-        //Start the main window
-        MainWindowVM = new MainWindowVM();
-        await MainWindowVM.InitializeAsync();
-
         DispatcherUnhandledException += OnDispatcherUnhandledException;
         
         TaskScheduler.UnobservedTaskException += (sender, e) =>
@@ -32,6 +28,10 @@ public partial class App : Application
         {
             Debug.WriteLine("Dispatcher Unhandled exception: " + e.IsTerminating + " " + e.ExceptionObject);
         };
+        
+        //Start the main window
+        MainWindowVM = new MainWindowVM();
+        MainWindowVM.ShowApp();
 
         base.OnStartup(e);
     }

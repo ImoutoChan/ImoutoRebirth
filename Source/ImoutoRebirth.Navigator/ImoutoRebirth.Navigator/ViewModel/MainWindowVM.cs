@@ -112,11 +112,15 @@ internal class MainWindowVM : VMBase
         _appendNewContentTimer.Start();
     }
 
-    public async Task InitializeAsync()
+    private async Task InitializeAsync()
     {
         await CollectionManager.ReloadCollectionsAsync();
+        TagSearchVM.AddCollections(CollectionManager.Collections);
+    }
 
-        TagSearchVM = new TagSearchVM(CollectionManager.Collections);
+    public void ShowApp()
+    {
+        TagSearchVM = new TagSearchVM();
         TagSearchVM.SelectedTagsUpdated += TagSearchVM_SelectedTagsUpdated;
         TagSearchVM.SelectedCollectionChanged += TagSearchVMOnSelectedCollectionChanged;
         TagSearchVM.DraftAddRequested += TagSearchVMOnDraftAddRequested;
@@ -134,7 +138,7 @@ internal class MainWindowVM : VMBase
         _view.Show();
     }
 
-    private void OnViewOnSelectedItemsChanged(object sender, EventArgs args)
+    private void OnViewOnSelectedItemsChanged(object? sender, EventArgs args)
     {
         OnPropertyChanged(() => SelectedEntries);
 
@@ -659,15 +663,19 @@ internal class MainWindowVM : VMBase
 
     #region Event handlers
 
-    private async void _view_Loaded(object sender, RoutedEventArgs e) => await Reload();
+    private async void _view_Loaded(object? sender, RoutedEventArgs e)
+    {
+        await InitializeAsync();
+        await Reload();
+    }
 
-    private async void TagSearchVM_SelectedTagsUpdated(object sender, EventArgs e) => await Reload();
+    private async void TagSearchVM_SelectedTagsUpdated(object? sender, EventArgs e) => await Reload();
 
-    private async void TagSearchVMOnSelectedCollectionChanged(object sender, EventArgs eventArgs) => await Reload();
+    private async void TagSearchVMOnSelectedCollectionChanged(object? sender, EventArgs eventArgs) => await Reload();
 
-    private async void TagSearchVMOnDraftAddRequested(object sender, BindedTagVM tag) => this.TagsEdit.DraftAddTag(tag);
+    private async void TagSearchVMOnDraftAddRequested(object? sender, BindedTagVM tag) => this.TagsEdit.DraftAddTag(tag);
 
-    private void Settings_ShowPreviewOnSelectChanged(object sender, EventArgs e) => OnPropertyChanged(() => ShowPreview);
+    private void Settings_ShowPreviewOnSelectChanged(object? sender, EventArgs e) => OnPropertyChanged(() => ShowPreview);
 
     #endregion Event handlers
 }

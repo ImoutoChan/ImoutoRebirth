@@ -11,8 +11,8 @@ internal class CollectionManagerVm : VMBase
 {
     private readonly ICollectionService _collectionService;
 
-    private ICommand _removeCommand;
-    private CollectionVM _selectedCollection;
+    private ICommand? _removeCommand;
+    private CollectionVM? _selectedCollection;
 
     public CollectionManagerVm()
     {

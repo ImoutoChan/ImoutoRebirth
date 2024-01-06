@@ -48,17 +48,12 @@ internal class TagSearchVM : VMBase
 
     #region Constructors
 
-    public TagSearchVM(ObservableCollection<CollectionVM> collections)
+    public TagSearchVM()
     {
         _fileTagService = ServiceLocator.GetService<IFileTagService>();
         _tagService = ServiceLocator.GetService<ITagService>();
 
         Collections.Add(new KeyValuePair<string, Guid?>("All", null));
-
-        foreach (var collectionVm in collections)
-        {
-            Collections.Add(new KeyValuePair<string, Guid?>(collectionVm.Name, collectionVm.Id));
-        }
 
         SelectedCollection = Collections.FirstOrDefault();
 
@@ -226,6 +221,14 @@ internal class TagSearchVM : VMBase
     #endregion Commands
 
     #region Public methods
+
+    public void AddCollections(ObservableCollection<CollectionVM> collections)
+    {
+        foreach (var collectionVm in collections)
+        {
+            Collections.Add(new KeyValuePair<string, Guid?>(collectionVm.Name, collectionVm.Id));
+        }
+    }
 
     public async void UpdateCurrentTags(Guid? fileId)
     {

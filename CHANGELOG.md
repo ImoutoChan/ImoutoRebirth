@@ -3,6 +3,7 @@
 ### Navigator
 * Move extensions to common project
 * Add settings for auto shuffle on every reload (default: false)
+* Improve startup performance
 
 ### Harpy
 * Add ability to download faved danbooru pictures through gelbooru
