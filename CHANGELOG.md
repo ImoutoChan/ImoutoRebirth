@@ -7,6 +7,7 @@
 
 ### Harpy
 * Add ability to download faved danbooru pictures through gelbooru
+* Ignore banned posts without exceptions
 
 ### Infrastructure
 * Simplify nswag generated clients

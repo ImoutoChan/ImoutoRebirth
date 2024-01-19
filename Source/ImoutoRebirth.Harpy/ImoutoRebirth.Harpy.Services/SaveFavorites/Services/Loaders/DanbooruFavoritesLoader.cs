@@ -1,4 +1,5 @@
 ﻿using System.Text.Json;
+using System.Text.Json.Serialization;
 using Flurl.Http.Configuration;
 using Imouto.BooruParser.Implementations.Gelbooru;
 using Microsoft.Extensions.Logging;
@@ -50,7 +51,7 @@ internal class DanbooruFavoritesLoader
         do
         {
             var result = await _httpClient.GetStringAsync(url + $"&page={page}");
-            posts = JsonSerializer.Deserialize<Post[]>(result) ?? Array.Empty<Post>();
+            posts = DeserializePosts(result).ToArray();
 
             var notEmptyPosts = posts.Where(x => x is { Md5: not null, FileUrl: not null });
 
@@ -61,6 +62,21 @@ internal class DanbooruFavoritesLoader
 
             page++;
         } while (posts.Any());
+    }
+
+    private static IEnumerable<Post> DeserializePosts(string result)
+    {
+        // banned posts are returned with null md5 and file_url
+        var optionalPosts = JsonSerializer.Deserialize<OptionalPost[]>(result);
+        
+        if (optionalPosts == null)
+            yield break;
+        
+        foreach (var optionalPost in optionalPosts)
+        {
+            if (optionalPost is { Md5: not null, FileUrl: not null })
+                yield return new() { FileUrl = optionalPost.FileUrl, Md5 = optionalPost.Md5 };
+        }
     }
 
     private async IAsyncEnumerable<Post> GetGelbooruUrls(IEnumerable<Post> notEmptyPosts)
@@ -89,4 +105,18 @@ internal class DanbooruFavoritesLoader
                 yield return new Post() { FileUrl = gelbooruPost.OriginalUrl, Md5 = post.Md5 };
         }
     }
+}
+
+
+
+file class OptionalPost
+{
+    [JsonPropertyName("file_url")]
+    public string? FileUrl { get; set; }
+
+    [JsonPropertyName("md5")]
+    public string? Md5 { get; set; }
+
+    [JsonIgnore]
+    public bool WithoutHash { get; set; }
 }
