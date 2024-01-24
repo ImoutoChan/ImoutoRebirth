@@ -48,7 +48,7 @@
         <PackageReference Include="Microsoft.Xaml.Behaviors.Wpf" Version="1.1.77" />
         <PackageReference Include="Newtonsoft.Json" Version="13.0.3"/>
         <PackageReference Include="rfc1459.AssociationManager" Version="1.1.1"/>
-        <PackageReference Include="System.Drawing.Common" Version="8.0.0" />
+        <PackageReference Include="System.Drawing.Common" Version="8.0.1" />
         <PackageReference Include="WpfAnimatedGif" Version="2.0.2"/>
         <PackageReference Include="GihanSoft.String.NaturalComparer" Version="3.3.0"/>
     </ItemGroup>

@@ -7,7 +7,7 @@ using Microsoft.Extensions.Logging;
 
 namespace ImoutoRebirth.Meido.UI.Consumers;
 
-internal class TagsUpdatedCommandConsumer : IConsumer<ITagsUpdatedCommand>
+public class TagsUpdatedCommandConsumer : IConsumer<ITagsUpdatedCommand>
 {
     private readonly IMediator _mediator;
     private readonly ILogger<TagsUpdatedCommandConsumer> _logger;

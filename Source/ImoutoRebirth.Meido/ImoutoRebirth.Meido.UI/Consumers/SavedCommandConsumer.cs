@@ -6,7 +6,7 @@ using MediatR;
 
 namespace ImoutoRebirth.Meido.UI.Consumers;
 
-internal class SavedCommandConsumer : IConsumer<ISavedCommand>
+public class SavedCommandConsumer : IConsumer<ISavedCommand>
 {
     private readonly IMediator _mediator;
 

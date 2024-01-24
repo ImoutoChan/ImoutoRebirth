@@ -53,7 +53,7 @@ public class TestWebApplicationFactory<TProgram>
                 services.Remove(descriptor);
 
             services.AddDbContext<RoomDbContext>(x => x.UseNpgsql(ConnectionString, y => y.UseNodaTime()));
-            services.AddTrueMassTransitTestHarness(с => с.AddRoomInfrastructureForRabbit());
+            services.AddMassTransitTestHarness(с => с.AddRoomMassTransitSetup());
         });
 
         var host = base.CreateHost(builder);

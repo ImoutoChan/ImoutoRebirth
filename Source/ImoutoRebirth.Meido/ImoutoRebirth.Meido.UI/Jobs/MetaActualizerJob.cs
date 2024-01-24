@@ -19,7 +19,7 @@ internal class MetaActualizerJob : IJob
     }
 
     public async Task Execute(IJobExecutionContext context) 
-        => await _mediator.Send(new RequestActualizationCommand(_actualizerSettings.Value.ActiveSources));
+        => await _mediator.Send(new RequestActualizationCommand(_actualizerSettings.Value.ActiveSources ?? []));
 
     public class Description : IQuartzJobDescription
     {

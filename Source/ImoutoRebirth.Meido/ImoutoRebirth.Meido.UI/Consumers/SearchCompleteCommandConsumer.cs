@@ -6,7 +6,7 @@ using MediatR;
 
 namespace ImoutoRebirth.Meido.UI.Consumers;
 
-internal class SearchCompleteCommandConsumer : IConsumer<ISearchCompleteCommand>
+public class SearchCompleteCommandConsumer : IConsumer<ISearchCompleteCommand>
 {
     private readonly IMediator _mediator;
 

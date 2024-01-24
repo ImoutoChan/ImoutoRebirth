@@ -6,7 +6,7 @@ using MediatR;
 
 namespace ImoutoRebirth.Lilin.UI.Consumers;
 
-internal class UpdateMetadataCommandConsumer : IConsumer<IUpdateMetadataCommand>
+public class UpdateMetadataCommandConsumer : IConsumer<IUpdateMetadataCommand>
 {
     private readonly IMediator _mediator;
 

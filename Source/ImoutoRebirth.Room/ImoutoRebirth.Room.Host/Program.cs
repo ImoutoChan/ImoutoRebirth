@@ -7,7 +7,6 @@ using ImoutoRebirth.Common.Quartz.Extensions;
 using ImoutoRebirth.Room.Application;
 using ImoutoRebirth.Room.DataAccess;
 using ImoutoRebirth.Room.Database;
-using ImoutoRebirth.Room.Host;
 using ImoutoRebirth.Room.Infrastructure;
 using ImoutoRebirth.Room.UI;
 using ImoutoRebirth.Room.UI.WebApi;
@@ -29,17 +28,16 @@ builder.ConfigureSerilog(
             .WithOpenSearch(appConfiguration, hostEnvironment));
 
 var configuration = builder.Configuration;
-var roomSettings = builder.Configuration.GetRequired<RoomSettings>();
 
 builder.Services
     .AddRoomApplication(
         typeof(ImoutoRebirth.Room.Application.ServiceCollectionExtensions).Assembly,
         typeof(ImoutoRebirth.Room.DataAccess.ServiceCollectionExtensions).Assembly)
     .AddRoomDataAccess()
-    .AddRoomDatabase(configuration)
+    .AddRoomDatabase(configuration.GetRequiredConnectionString("RoomDatabase"))
     .AddRoomInfrastructure()
     .AddRoomUi()
-    .AddTrueMassTransit(roomSettings.RabbitSettings, "ImoutoRebirth.Room", с => с.AddRoomInfrastructureForRabbit())
+    .AddSqlMassTransit(builder.Configuration, "room", с => с.AddRoomMassTransitSetup())
     .AddQuartz()
     .AddWebEndpoints()
     .AddOpenTelemetry(builder.Environment, builder.Configuration);

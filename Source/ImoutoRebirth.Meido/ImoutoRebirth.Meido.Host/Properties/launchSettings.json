@@ -1,0 +1,11 @@
+{
+  "profiles": {
+    "ImoutoRebirth.Meido.Host": {
+      "commandName": "Project",
+      "launchBrowser": false,
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development"
+      }
+    }
+  }
+}

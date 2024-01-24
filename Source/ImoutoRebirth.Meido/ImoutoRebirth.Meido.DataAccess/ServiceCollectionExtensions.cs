@@ -2,7 +2,6 @@
 using ImoutoRebirth.Common.EntityFrameworkCore;
 using ImoutoRebirth.Meido.Application.Infrastructure;
 using ImoutoRebirth.Meido.DataAccess.Repositories;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 
@@ -12,8 +11,7 @@ public static class ServiceCollectionExtensions
 {
     public static IServiceCollection AddMeidoDataAccess(this IServiceCollection services, string connectionString)
     {
-        services.AddDbContext<MeidoDbContext>(
-            o => o.UseNpgsql(connectionString, builder => builder.UseNodaTime()));
+        services.AddPostgresDbContext<MeidoDbContext>(connectionString);
 
         services.AddTransient<IUnitOfWork>(provider => provider.GetRequiredService<MeidoDbContext>());
 

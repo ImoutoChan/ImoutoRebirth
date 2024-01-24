@@ -6,10 +6,9 @@ using ImoutoRebirth.Common.OpenTelemetry;
 using ImoutoRebirth.Common.Quartz.Extensions;
 using ImoutoRebirth.Lilin.Application;
 using ImoutoRebirth.Lilin.DataAccess;
-using ImoutoRebirth.Lilin.Host;
 using ImoutoRebirth.Lilin.Infrastructure;
-using ImoutoRebirth.Lilin.MessageContracts;
 using ImoutoRebirth.Lilin.UI;
+using ImoutoRebirth.Lilin.UI.Consumers;
 using ImoutoRebirth.Lilin.UI.WebApi;
 
 const string servicePrefix = "LILIN_";
@@ -28,14 +27,13 @@ builder.ConfigureSerilog(
             .WithInformationRollingFile()
             .WithOpenSearch(appConfiguration, hostEnvironment));
 
-var lilinSettings = builder.Configuration.GetRequired<LilinSettings>();
-
 builder.Services
     .AddLilinApplication(typeof(ImoutoRebirth.Lilin.Infrastructure.ServiceCollectionExtensions).Assembly)
     .AddLilinDataAccess(builder.Configuration.GetRequiredConnectionString("LilinDatabase"))
     .AddLilinInfrastructure()
     .AddLilinUi(builder.Configuration)
-    .AddTrueMassTransit(lilinSettings.RabbitSettings, ReceiverApp.Name, с => с.AddMassTransitUi())
+    .AddSqlMassTransit(builder.Configuration, "lilin", с => с.AddLilinMassTransitSetup(),
+        typeof(UpdateMetadataCommandConsumer).Assembly)
     .AddQuartz()
     .AddWebEndpoints()
     .AddOpenTelemetry(builder.Environment, builder.Configuration);

@@ -8,7 +8,7 @@ using Microsoft.Extensions.Logging;
 
 namespace ImoutoRebirth.Arachne.Service.SearchEngineHistory;
 
-internal class LoadNoteHistoryCommandConsumer : IConsumer<ILoadNoteHistoryCommand>
+public class LoadNoteHistoryCommandConsumer : IConsumer<ILoadNoteHistoryCommand>
 {
     private readonly ILogger<LoadNoteHistoryCommandConsumer> _logger;
     private readonly IArachneSearchService _arachneSearchService;

@@ -13,6 +13,7 @@
 * Simplify nswag generated clients
 * Add incremental source generator for generating Add*WebApiClients methods
 * Auto sign all commits and tags
+* Trying new MassTransit SQL Transport instead of rabbitmq
 
 ### Viewer
 * Fix infinite loading

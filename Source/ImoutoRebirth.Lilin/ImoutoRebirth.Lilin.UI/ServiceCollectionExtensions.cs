@@ -1,6 +1,5 @@
 ﻿using ImoutoRebirth.Common.MassTransit;
 using ImoutoRebirth.Common.Quartz.Extensions;
-using ImoutoRebirth.Lilin.MessageContracts;
 using ImoutoRebirth.Lilin.UI.Consumers;
 using ImoutoRebirth.Lilin.UI.Quartz;
 using ImoutoRebirth.Meido.MessageContracts;
@@ -15,8 +14,6 @@ public static class ServiceCollectionExtensions
         this IServiceCollection services,
         IConfiguration configuration)
     {
-        services.AddTransient<UpdateMetadataCommandConsumer>();
-
         services.AddQuartzJob<RecalculateTagsCountersJob, RecalculateTagsCountersJob.Description>();
         services.AddMemoryCache();
 
@@ -26,13 +23,6 @@ public static class ServiceCollectionExtensions
         return services;
     }
 
-    public static ITrueMassTransitConfigurator AddMassTransitUi(
-        this ITrueMassTransitConfigurator builder)
-    {
-        builder
-            .AddConsumer<UpdateMetadataCommandConsumer, IUpdateMetadataCommand>(Lilin.MessageContracts.ReceiverApp.Name)
-            .AddFireAndForget<ISavedCommand>(Meido.MessageContracts.MeidoReceiverApp.Name);
-
-        return builder;
-    }
+    public static MassTransitConfigurator AddLilinMassTransitSetup(this MassTransitConfigurator builder) 
+        => builder.AddCommand<ISavedCommand>();
 }

@@ -8,7 +8,7 @@ using NodaTime.Extensions;
 
 namespace ImoutoRebirth.Meido.UI.Consumers;
 
-internal class NotesUpdatedCommandConsumer : IConsumer<INotesUpdatedCommand>
+public class NotesUpdatedCommandConsumer : IConsumer<INotesUpdatedCommand>
 {
     private readonly IMediator _mediator;
     private readonly ILogger<NotesUpdatedCommandConsumer> _logger;

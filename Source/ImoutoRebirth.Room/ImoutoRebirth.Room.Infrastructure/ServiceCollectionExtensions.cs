@@ -5,7 +5,6 @@ using ImoutoRebirth.Meido.MessageContracts;
 using ImoutoRebirth.Room.Application.Services;
 using ImoutoRebirth.Room.Infrastructure.Service;
 using Microsoft.Extensions.DependencyInjection;
-using LilinReceiverApp = ImoutoRebirth.Lilin.MessageContracts.ReceiverApp;
 
 namespace ImoutoRebirth.Room.Infrastructure;
 
@@ -20,9 +19,10 @@ public static class ServiceCollectionExtensions
 
         return services;
     }
-
-    public static ITrueMassTransitConfigurator AddRoomInfrastructureForRabbit(this ITrueMassTransitConfigurator builder)
+    
+    public static MassTransitConfigurator AddRoomMassTransitSetup(
+        this MassTransitConfigurator builder)
         => builder
-            .AddFireAndForget<INewFileCommand>(MeidoReceiverApp.Name)
-            .AddFireAndForget<IUpdateMetadataCommand>(LilinReceiverApp.Name);
+            .AddCommand<INewFileCommand>()
+            .AddCommand<IUpdateMetadataCommand>();
 }

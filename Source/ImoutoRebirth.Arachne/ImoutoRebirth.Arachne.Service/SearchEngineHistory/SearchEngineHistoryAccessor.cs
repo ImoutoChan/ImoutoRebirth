@@ -3,7 +3,7 @@ using ImoutoRebirth.Arachne.Core.Models;
 
 namespace ImoutoRebirth.Arachne.Service.SearchEngineHistory;
 
-internal abstract class SearchEngineHistoryAccessor
+public abstract class SearchEngineHistoryAccessor
 {
     private readonly ConcurrentDictionary<SearchEngineType, SemaphoreSlim> _accessor = new();
 

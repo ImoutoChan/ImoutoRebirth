@@ -5,7 +5,7 @@ using MediatR;
 
 namespace ImoutoRebirth.Meido.UI.Consumers;
 
-internal class NewFileCommandConsumer : IConsumer<INewFileCommand>
+public class NewFileCommandConsumer : IConsumer<INewFileCommand>
 {
     private readonly IMediator _mediator;
 

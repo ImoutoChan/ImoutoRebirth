@@ -52,7 +52,7 @@ public class TestWebApplicationFactory<TProgram>
                 services.Remove(descriptor);
 
             services.AddDbContext<LilinDbContext>(x => x.UseNpgsql(ConnectionString, y => y.UseNodaTime()));
-            services.AddTrueMassTransitTestHarness(с => с.AddMassTransitUi());
+            services.AddMassTransitTestHarness(с => с.AddLilinMassTransitSetup());
         });
 
         var host = base.CreateHost(builder);

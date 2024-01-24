@@ -5,10 +5,9 @@ using ImoutoRebirth.Common.OpenTelemetry;
 using ImoutoRebirth.Common.Quartz.Extensions;
 using ImoutoRebirth.Meido.Application;
 using ImoutoRebirth.Meido.DataAccess;
-using ImoutoRebirth.Meido.Host;
 using ImoutoRebirth.Meido.Infrastructure;
-using ImoutoRebirth.Meido.MessageContracts;
 using ImoutoRebirth.Meido.UI;
+using ImoutoRebirth.Meido.UI.Consumers;
 using Microsoft.Extensions.Hosting;
 
 const string servicePrefix = "MEIDO_";
@@ -28,20 +27,14 @@ builder.ConfigureSerilog(
             .WithOpenSearch(appConfiguration, hostEnvironment));
 builder.UseQuartz();
 
-var meidoSettings = builder.Configuration.GetRequired<MeidoSettings>();
-
 builder.Services
     .AddOpenTelemetry(builder.Environment, builder.Configuration)
     .AddMeidoApplication()
     .AddMeidoUi()
     .ConfigureMeidoUi(builder.Configuration)
     .AddMeidoDataAccess(builder.Configuration.GetRequiredConnectionString("MeidoDatabase"))
-    .AddMeidoInfrastructure();
-
-builder.Services.AddTrueMassTransit(
-    meidoSettings.RabbitSettings,
-    MeidoReceiverApp.Name,
-    с => с.AddMeidoServicesForRabbit());
+    .AddMeidoInfrastructure()
+    .AddSqlMassTransit(builder.Configuration, "meido", с => с.AddMeidoMassTransitSetup(), typeof(NewFileCommandConsumer).Assembly);
 
 await builder.Build()
     .MigrateMeido()
