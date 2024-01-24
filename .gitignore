@@ -10,3 +10,4 @@ node_modules/
 /Source/.vs/*
 /CHANGELOG.RESULT.md
 /Source/ImoutoRebirth.Hasami/ImoutoRebirth.Hasami/appsettings.json
+**/appsettings.local.json

@@ -31,15 +31,4 @@
         <ProjectReference Include="..\ImoutoRebirth.Meido.UI\ImoutoRebirth.Meido.UI.csproj"/>
     </ItemGroup>
 
-    <ItemGroup>
-        <None Update="appsettings.json">
-            <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-        </None>
-        <None Update="Properties\launchSettings.json">
-            <CopyToOutputDirectory>Never</CopyToOutputDirectory>
-            <CopyToPublishDirectory>Never</CopyToPublishDirectory>
-            <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
-        </None>
-    </ItemGroup>
-
 </Project>

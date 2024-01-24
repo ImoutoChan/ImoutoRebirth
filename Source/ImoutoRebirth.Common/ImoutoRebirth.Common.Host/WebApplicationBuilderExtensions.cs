@@ -57,9 +57,12 @@ public static class WebApplicationBuilderExtensions
         where TProgram : class
     {
         hostBuilder.Configuration.AddEnvironmentVariables(servicePrefix);
-        
+
         if (hostBuilder.Environment.IsDevelopment())
+        {
             hostBuilder.Configuration.AddUserSecrets<TProgram>();
+            hostBuilder.Configuration.AddJsonFile("appsettings.local.json", true);
+        }
 
         return hostBuilder;
     }
@@ -72,7 +75,10 @@ public static class WebApplicationBuilderExtensions
         hostBuilder.Configuration.AddEnvironmentVariables(servicePrefix);
 
         if (hostBuilder.Environment.IsDevelopment())
+        {
             hostBuilder.Configuration.AddUserSecrets<T>();
+            hostBuilder.Configuration.AddJsonFile("appsettings.local.json", true);
+        }
 
         return hostBuilder;
     }

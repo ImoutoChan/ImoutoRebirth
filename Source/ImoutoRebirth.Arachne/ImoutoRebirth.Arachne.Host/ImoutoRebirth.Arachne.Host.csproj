@@ -29,13 +29,4 @@
         <ProjectReference Include="..\ImoutoRebirth.Arachne.Service\ImoutoRebirth.Arachne.Service.csproj" />
     </ItemGroup>
 
-    <ItemGroup>
-        <None Update="appSettings.Development.json">
-            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-        </None>
-        <None Update="appSettings.json">
-            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-        </None>
-    </ItemGroup>
-
 </Project>
