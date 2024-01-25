@@ -20,6 +20,7 @@ public class ConfigurationBuilder : IConfigurationBuilder
     private readonly string _installLocation;
     private readonly string _kekkaiAuthToken;
     private readonly string _kekkaiPort;
+    private readonly string _massTransitConnectionString;
     private readonly string _lilinConnectionString;
     private readonly string _lilinPort;
     private readonly string _meidoConnectionString;
@@ -27,9 +28,6 @@ public class ConfigurationBuilder : IConfigurationBuilder
     private readonly string _meidoFaultToleranceRepeatEveryMinutes;
     private readonly string _meidoMetadataActualizerRepeatEveryMinutes;
     private readonly string _openSearchUri;
-    private readonly string _rabbitPassword;
-    private readonly string _rabbitUrl;
-    private readonly string _rabbitUsername;
     private readonly string _roomConnectionString;
     private readonly string _roomImoutoPicsUploadUrl;
     private readonly string _roomPort;
@@ -47,15 +45,13 @@ public class ConfigurationBuilder : IConfigurationBuilder
         if (!_globalConfigurationFile.Exists)
             throw new Exception("Unable to find global configuration file!");
 
-        var configurationFileText = _globalConfigurationFile.OpenText().ReadToEnd();
+        var configurationFileText = File.ReadAllText(_globalConfigurationFile.FullName);
 
         _configuration = JsonSerializer.Deserialize<Dictionary<string, string>>(configurationFileText)!;
 
+        Migrate(_globalConfigurationFile, _configuration);
+        
         ValidateConfigurationValues();
-
-        _rabbitUrl = _configuration["RabbitMqUrl"];
-        _rabbitUsername = _configuration["RabbitMqUsername"];
-        _rabbitPassword = _configuration["RabbitMqPassword"];
 
         _danbooruLogin = _configuration["DanbooruLogin"];
         _danbooruApiKey = _configuration["DanbooruApiKey"];
@@ -72,6 +68,7 @@ public class ConfigurationBuilder : IConfigurationBuilder
         _lilinConnectionString = _configuration["LilinConnectionString"];
         _meidoConnectionString = _configuration["MeidoConnectionString"];
         _roomConnectionString = _configuration["RoomConnectionString"];
+        _massTransitConnectionString = _configuration["MassTransitConnectionString"];
 
         _harpySavePath = _configuration["HarpySavePath"].Replace(@"\", @"\\");
         _harpyFavoritesSaveJobRepeatEveryMinutes = _configuration["HarpyFavoritesSaveJobRepeatEveryMinutes"];
@@ -86,6 +83,25 @@ public class ConfigurationBuilder : IConfigurationBuilder
         _installLocation = _configuration["InstallLocation"];
         _jaegerHost = _configuration["JaegerHost"];
         _jaegerPort = _configuration["JaegerPort"];
+    }
+
+    private void Migrate(FileInfo globalConfigurationFile, Dictionary<string, string> configuration)
+    {
+        if (!configuration.ContainsKey("MassTransitConnectionString"))
+        {
+            // version 1 to version 2
+            configuration.Add(
+                "MassTransitConnectionString", 
+                "Server=localhost;Port=5432;Database=masstransit;User Id=postgres;Password=postgres;");
+
+            configuration.Remove("RabbitMqUrl");
+            configuration.Remove("RabbitMqUsername");
+            configuration.Remove("RabbitMqPassword");
+
+            File.WriteAllText(
+              globalConfigurationFile.FullName,
+              JsonSerializer.Serialize(configuration, new JsonSerializerOptions { WriteIndented = true }));
+        }
     }
 
     public void WriteProductionConfigurations(string newVersion)
@@ -113,7 +129,7 @@ public class ConfigurationBuilder : IConfigurationBuilder
             }
             catch (Exception e)
             {
-                throw new Exception("Unable to parse built configuration for {serviceDirectory.Name}", e);
+                throw new Exception($"Unable to parse built configuration for {serviceDirectory.Name}", e);
             }
 
             File.WriteAllText(Path.Combine(serviceDirectory.FullName, "appsettings.Production.json"), configuration);
@@ -126,9 +142,6 @@ public class ConfigurationBuilder : IConfigurationBuilder
     {
         var keys = new[]
         {
-            "RabbitMqUrl",
-            "RabbitMqUsername",
-            "RabbitMqPassword",
             "DanbooruLogin",
             "DanbooruApiKey",
             "SankakuLogin",
@@ -145,6 +158,7 @@ public class ConfigurationBuilder : IConfigurationBuilder
             "LilinConnectionString",
             "MeidoConnectionString",
             "RoomConnectionString",
+            "MassTransitConnectionString",
             "MeidoMetadataActualizerRepeatEveryMinutes",
             "MeidoFaultToleranceRepeatEveryMinutes",
             "MeidoFaultToleranceIsEnabled",
@@ -164,6 +178,9 @@ public class ConfigurationBuilder : IConfigurationBuilder
         return
             $$"""
             {
+              "ConnectionStrings": {
+                "Masstransit": "{{_massTransitConnectionString}}"
+              },
               "DanbooruSettings": {
                 "Login": "{{_danbooruLogin}}",
                 "ApiKey": "{{_danbooruApiKey}}",
@@ -174,11 +191,6 @@ public class ConfigurationBuilder : IConfigurationBuilder
                 "Login": "{{_sankakuLogin}}",
                 "Password": "{{_sankakuPassword}}",
                 "Delay": "6000"
-              },
-              "RabbitSettings": {
-                "Url": "{{_rabbitUrl}}",
-                "Username": "{{_rabbitUsername}}",
-                "Password": "{{_rabbitPassword}}"
               },
               "OpenSearchUri": "{{_openSearchUri}}",
               "Jaeger": {
@@ -225,11 +237,6 @@ public class ConfigurationBuilder : IConfigurationBuilder
             $$"""
             {
               "AuthToken": "{{_kekkaiAuthToken}}",
-              "RabbitSettings": {
-                "Url": "{{_rabbitUrl}}",
-                "Username": "{{_rabbitUsername}}",
-                "Password": "{{_rabbitPassword}}"
-              },
               "OpenSearchUri": "{{_openSearchUri}}",
               "Kestrel": {
                 "EndPoints": {
@@ -252,12 +259,8 @@ public class ConfigurationBuilder : IConfigurationBuilder
             $$"""
             {
               "ConnectionStrings": {
-                "LilinDatabase": "{{_lilinConnectionString}}"
-              },
-              "RabbitSettings": {
-                "Url": "{{_rabbitUrl}}",
-                "Username": "{{_rabbitUsername}}",
-                "Password": "{{_rabbitPassword}}"
+                "LilinDatabase": "{{_lilinConnectionString}}",
+                "Masstransit": "{{_massTransitConnectionString}}"
               },
               "OpenSearchUri": "{{_openSearchUri}}",
               "Kestrel": {
@@ -281,12 +284,8 @@ public class ConfigurationBuilder : IConfigurationBuilder
             $$"""
             {
               "ConnectionStrings": {
-                "MeidoDatabase": "{{_meidoConnectionString}}"
-              },
-              "RabbitSettings": {
-                "Url": "{{_rabbitUrl}}",
-                "Username": "{{_rabbitUsername}}",
-                "Password": "{{_rabbitPassword}}"
+                "MeidoDatabase": "{{_meidoConnectionString}}",
+                "Masstransit": "{{_massTransitConnectionString}}"
               },
               "OpenSearchUri": "{{_openSearchUri}}",
               "MetadataActualizerSettings": {
@@ -320,12 +319,8 @@ public class ConfigurationBuilder : IConfigurationBuilder
                 }
               },
               "ConnectionStrings": {
-                "RoomDatabase": "{{_roomConnectionString}}"
-              },
-              "RabbitSettings": {
-                "Url": "{{_rabbitUrl}}",
-                "Username": "{{_rabbitUsername}}",
-                "Password": "{{_rabbitPassword}}"
+                "RoomDatabase": "{{_roomConnectionString}}",
+                "Masstransit": "{{_massTransitConnectionString}}"
               },
               "OpenSearchUri": "{{_openSearchUri}}",
               "ImoutoPicsUploadUrl": "{{_roomImoutoPicsUploadUrl}}",

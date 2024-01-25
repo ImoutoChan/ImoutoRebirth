@@ -1,7 +1,4 @@
 {
-  "RabbitMqUrl": "rabbitmq://localhost:5672",
-  "RabbitMqUsername": "guest",
-  "RabbitMqPassword": "guest",
   "DanbooruLogin": "",
   "DanbooruApiKey": "",
   "SankakuLogin": "",
@@ -17,6 +14,7 @@
   "LilinConnectionString": "Server=localhost;Port=5432;Database=LilinProd;User Id=postgres;Password=postgres;",
   "MeidoConnectionString": "Server=localhost;Port=5432;Database=MeidoProd;User Id=postgres;Password=postgres;",
   "RoomConnectionString": "Server=localhost;Port=5432;Database=RoomProd;User Id=postgres;Password=postgres;",
+  "MassTransitConnectionString": "Server=localhost;Port=5432;Database=masstransit;User Id=postgres;Password=postgres;",
   "MeidoMetadataActualizerRepeatEveryMinutes": "5",
   "MeidoFaultToleranceRepeatEveryMinutes": "10080",
   "MeidoFaultToleranceIsEnabled": "true",

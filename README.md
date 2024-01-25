@@ -82,7 +82,7 @@ Set-ExecutionPolicy Bypass -Scope Process -Force;
 cd <path to the latest folder>
 ``` 
 
-It will install rabbitmq, postgres, .net runtime (can take some time, especially for Postgres)
+It will install postgres, .net runtime (can take some time, especially for Postgres)
 ```powershell
 ./install-dependencies.ps1
 ```
@@ -102,9 +102,6 @@ Template and default values
 
 ```json
 {
-  "RabbitMqUrl": "rabbitmq://localhost:5672",
-  "RabbitMqUsername": "guest",
-  "RabbitMqPassword": "guest",
   "DanbooruLogin": "",
   "DanbooruApiKey": "",
   "SankakuLogin": "",
@@ -120,6 +117,7 @@ Template and default values
   "LilinConnectionString": "Server=localhost;Port=5432;Database=LilinProd;User Id=postgres;Password=postgres;",
   "MeidoConnectionString": "Server=localhost;Port=5432;Database=MeidoProd;User Id=postgres;Password=postgres;",
   "RoomConnectionString": "Server=localhost;Port=5432;Database=RoomProd;User Id=postgres;Password=postgres;",
+  "MassTransitConnectionString": "Server=localhost;Port=5432;Database=masstransit;User Id=postgres;Password=postgres;",
   "MeidoMetadataActualizerRepeatEveryMinutes": "5",
   "MeidoFaultToleranceRepeatEveryMinutes": "10080",
   "MeidoFaultToleranceIsEnabled": "true",
@@ -131,13 +129,10 @@ Template and default values
 
 | Parameter                                 | Required | Comment                                                                                                                                                                                    |
 |-------------------------------------------|----------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| RabbitMqUrl                               | *        | RabbitMQ host                                                                                                                                                                              |
-| RabbitMqUsername                          | *        | RabbitMQ username                                                                                                                                                                          |
-| RabbitMqPassword                          | *        | RabbitMQ password                                                                                                                                                                          |
 | DanbooruLogin                             |          | Optional but recommended, only if you want ImoutoRebirth to search tags for your files in danbooru                                                                                         |
 | DanbooruApiKey                            |          | Optional but recommended, you can find it at the end of your danbooru profile page, API Key row                                                                                            |
 | SankakuLogin                              |          | Optional, your sankaku login                                                                                                                                                               |
-| SankakuPassword                           |          | Optional, your sankaku password                                                                                          |
+| SankakuPassword                           |          | Optional, your sankaku password                                                                                                                                                            |
 | YandereLogin                              |          | Optional but recommended, only if you want ImoutoRebirth to search tags for your files in yandere                                                                                          |
 | YandereApiKey                             |          | Optional but recommended, you can find it in Profile / Settings                                                                                                                            |
 | RoomPort                                  | *        | Room service will be exposed through this port                                                                                                                                             |
@@ -149,6 +144,7 @@ Template and default values
 | LilinConnectionString                     | *        | Connection string for Lilin service to the postgres database                                                                                                                               |
 | MeidoConnectionString                     | *        | Connection string for Meido service to the postgres database                                                                                                                               |
 | RoomConnectionString                      | *        | Connection string for Room service to the postgres database                                                                                                                                |
+| MassTransitConnectionString               | *        | Connection string for MassTransit SQL transport (replacement for rabbit mq)                                                                                                                |
 | MeidoMetadataActualizerRepeatEveryMinutes | *        | Meido service will request actualization from Danbooru and Yandere in specified interval                                                                                                   |
 | MeidoFaultToleranceRepeatEveryMinutes     | *        | Meido service will request tags for failed files in specified interval                                                                                                                     |
 | MeidoFaultToleranceIsEnabled              | *        | Meido service will repeat tag request for failed file                                                                                                                                      |
@@ -158,7 +154,7 @@ Template and default values
 
 ## ImoutoRebirth Architecture
 
-Beyond the two applications mentioned earlier, ImoutoRebirth internally consists of a bunch of services, each with its own function. These will be installed automatically, and no particular knowledge about them is required. However, for the inquisitive, this section describes the inner workings and purposes of different services, as well as their dependencies. If you follow the installation instructions below, these services will be automatically installed as Windows Services. Also, for the system to operate, Postgres and RabbitMQ will be needed. You can install them independently or use the scripts provided with each release.
+Beyond the two applications mentioned earlier, ImoutoRebirth internally consists of a bunch of services, each with its own function. These will be installed automatically, and no particular knowledge about them is required. However, for the inquisitive, this section describes the inner workings and purposes of different services, as well as their dependencies. If you follow the installation instructions below, these services will be automatically installed as Windows Services. Also, for the system to operate, Postgres will be needed. You can install it independently or use the scripts provided with each release.
 
 You can overview the basic architecture and the interaction of services in greater detail in [this diagram](https://drive.google.com/file/d/1MD8NAIeuV8u_wt9HWjdUUrcOaiZOMNBF/view?usp=drive_link), open it with diagrams.net or draw.io.
 

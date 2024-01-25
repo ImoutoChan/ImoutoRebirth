@@ -81,7 +81,7 @@ Set-ExecutionPolicy Bypass -Scope Process -Force;
 cd <путь к папке latest>
 ``` 
 
-Установить rabbitmq, postgres, .net runtime (может занять несколько минут, особенно долгий Postgres)
+Установить postgres, .net runtime (может занять несколько минут, особенно долгий Postgres)
 ```powershell
 ./install-dependencies.ps1
 ```
@@ -101,9 +101,6 @@ cd <путь к папке latest>
 
 ```json
 {
-  "RabbitMqUrl": "rabbitmq://localhost:5672",
-  "RabbitMqUsername": "guest",
-  "RabbitMqPassword": "guest",
   "DanbooruLogin": "",
   "DanbooruApiKey": "",
   "SankakuLogin": "",
@@ -119,6 +116,7 @@ cd <путь к папке latest>
   "LilinConnectionString": "Server=localhost;Port=5432;Database=LilinProd;User Id=postgres;Password=postgres;",
   "MeidoConnectionString": "Server=localhost;Port=5432;Database=MeidoProd;User Id=postgres;Password=postgres;",
   "RoomConnectionString": "Server=localhost;Port=5432;Database=RoomProd;User Id=postgres;Password=postgres;",
+  "MassTransitConnectionString": "Server=localhost;Port=5432;Database=masstransit;User Id=postgres;Password=postgres;",
   "MeidoMetadataActualizerRepeatEveryMinutes": "5",
   "MeidoFaultToleranceRepeatEveryMinutes": "10080",
   "MeidoFaultToleranceIsEnabled": "true",
@@ -130,9 +128,6 @@ cd <путь к папке latest>
 
 | Parameter                                 | Required | Comment                                                                                                                                                                                               |
 |-------------------------------------------|----------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| RabbitMqUrl                               | *        | RabbitMQ host                                                                                                                                                                                         |
-| RabbitMqUsername                          | *        | RabbitMQ username                                                                                                                                                                                     |
-| RabbitMqPassword                          | *        | RabbitMQ password                                                                                                                                                                                     |
 | DanbooruLogin                             |          | Крайне желательно заполнить, используется для поиска тегов и скачивания любимых картинок                                                                                                              |
 | DanbooruApiKey                            |          | Крайне желательно заполнить, находится на странице вашего профиля на danbooru, строчка API Key                                                                                                        |
 | SankakuLogin                              |          | Опционально, логин с санкаку                                                                                                                                                                          |
@@ -148,6 +143,7 @@ cd <путь к папке latest>
 | LilinConnectionString                     | *        | Строка подключения в постгрес для Lilin                                                                                                                                                               |
 | MeidoConnectionString                     | *        | Строка подключения в постгрес для Meido                                                                                                                                                               |
 | RoomConnectionString                      | *        | Строка подключения в постгрес для Room                                                                                                                                                                |
+| MassTransitConnectionString               | *        | Строка подключения в постгрес для транспорта MassTransit (замена rabbitmq)                                                                                                                            |
 | MeidoMetadataActualizerRepeatEveryMinutes | *        | Meido будет запрашивать актуализацию тегов через указанное количество минут                                                                                                                           |
 | MeidoFaultToleranceRepeatEveryMinutes     | *        | Meido в случае проблем с сетью, через указанное количество минут будет повторно запрашивать поиск                                                                                                     |
 | MeidoFaultToleranceIsEnabled              | *        | Meido нужно ли повторно запрашивать поиск в случае проблем с сетью                                                                                                                                    |
@@ -158,7 +154,7 @@ cd <путь к папке latest>
 ## Как устроен ImoutoRebirth
 
 По мимо двух приложений выше, внутри ImoutoRebirth представляет из себя пачку сервисов, каждый из которых имеет свою функцию. Они будут установлены автоматически, и особые знания про них не требуются, но для любопытных глаз я тут опишу внутреннее устройство и назначения разных сервисов, а так же их зависимости.
-Если вы будете следовать инструкции по установке ниже, эти сервисы установятся автоматически как Windows Service. Так же минимально для работоспособности системы необходим будет Postgres и RabbitMQ. Вы можете уставновить их самостоятельно, или воспользоваться скриптами, которые прилагаются к каждому релизу.
+Если вы будете следовать инструкции по установке ниже, эти сервисы установятся автоматически как Windows Service. Так же минимально для работоспособности системы необходим будет Postgres. Вы можете уставновить его самостоятельно, или воспользоваться скриптами, которые прилагаются к каждому релизу.
 
 Подробнее взаимодействие сервисов и их назначение можно посмотреть на [этой диаграме](https://drive.google.com/file/d/1MD8NAIeuV8u_wt9HWjdUUrcOaiZOMNBF/view?usp=drive_link), открывать с помощью diagrams.net или draw.io.
 

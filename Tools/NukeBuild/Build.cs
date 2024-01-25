@@ -89,7 +89,7 @@ class Build : NukeBuild
         .Executes(() =>
         {
             DotNetRestore(s => s.SetProjectFile(Solution)
-                .SetVerbosity(DotNetVerbosity.Quiet));
+                .SetVerbosity(DotNetVerbosity.quiet));
         });
 
     Target Compile => _ => _
@@ -97,7 +97,7 @@ class Build : NukeBuild
         .Executes(() =>
         {
             DotNetBuild(s => s
-                .SetVerbosity(DotNetVerbosity.Quiet)
+                .SetVerbosity(DotNetVerbosity.quiet)
                 .SetProjectFile(Solution)
                 .SetConfiguration(Configuration)
                 .SetAssemblyVersion(GitVersion.AssemblySemVer)
@@ -113,7 +113,7 @@ class Build : NukeBuild
             var testProjects = SourceDirectory.GlobFiles("**/*.Tests.csproj").ToList();
 
             DotNetTest(t => t
-                .SetVerbosity(DotNetVerbosity.Quiet)
+                .SetVerbosity(DotNetVerbosity.quiet)
                 .SetConfiguration(Configuration)
                 .EnableNoBuild()
                 .CombineWith(testProjects, (_, v) => _.SetProjectFile(v)));
@@ -139,7 +139,7 @@ class Build : NukeBuild
                 };
 
             DotNetPublish(s => s
-                .SetVerbosity(DotNetVerbosity.Quiet)
+                .SetVerbosity(DotNetVerbosity.quiet)
                 .SetConfiguration(Configuration)
                 .SetAssemblyVersion(GitVersion.AssemblySemVer)
                 .SetVersion(GitVersion.NuGetVersionV2)
