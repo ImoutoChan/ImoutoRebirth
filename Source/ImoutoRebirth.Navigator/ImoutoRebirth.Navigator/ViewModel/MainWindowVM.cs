@@ -2,6 +2,7 @@
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Text;
 using System.Windows;
@@ -13,7 +14,6 @@ using ImoutoRebirth.Navigator.Model;
 using ImoutoRebirth.Navigator.Services;
 using ImoutoRebirth.Navigator.Services.ImoutoViewer;
 using ImoutoRebirth.Navigator.Services.Tags;
-using ImoutoRebirth.Navigator.Services.Tags.Model;
 using ImoutoRebirth.Navigator.UserControls;
 using ImoutoRebirth.Navigator.Utils;
 using ImoutoRebirth.Navigator.ViewModel.ListEntries;
@@ -33,9 +33,9 @@ internal class MainWindowVM : VMBase
     private int _previewSize = 256;
     private int _totalCount;
     private bool _isLoading;
-    private string _status;
-    private string _statusToolTip;
-    private string _title = DefaultTitle;
+    private string? _status;
+    private string? _statusToolTip;
+    private string _title;
     private readonly IFileService _fileService;
     private readonly IFileTagService _fileTagService;
     private readonly IFileLoadingService _fileLoadingService;
@@ -60,9 +60,23 @@ internal class MainWindowVM : VMBase
 
         NavigatorList.CollectionChanged += (_, _) => OnPropertyChanged(() => LoadedCount);
 
-        _appendNewContentTimer.Tick += async (_, _) => { /*LoadNew();*/ };
+        _appendNewContentTimer.Tick += (_, _) => { /*LoadNew();*/ };
         
-        Title = DefaultTitle;
+        _title = DefaultTitle;
+
+        TagSearchVM = new TagSearchVM();
+        TagsEdit = new TagsEditVM(this);
+        _view = new MainWindow { DataContext = this };
+        
+        TagSearchVM.SelectedTagsUpdated += TagSearchVM_SelectedTagsUpdated;
+        TagSearchVM.SelectedCollectionChanged += TagSearchVMOnSelectedCollectionChanged;
+        TagSearchVM.DraftAddRequested += TagSearchVMOnDraftAddRequested;
+
+        Settings.ShowPreviewOnSelectChanged += Settings_ShowPreviewOnSelectChanged;
+
+        _view.Loaded += _view_Loaded;
+        _view.SelectedItemsChanged += OnViewOnSelectedItemsChanged;
+        _view.Show();
     }
 
     private async Task LoadNew()
@@ -114,28 +128,10 @@ internal class MainWindowVM : VMBase
 
     private async Task InitializeAsync()
     {
+        var topTagsUpdateTask = TagsEdit.UpdateUsersTopTags();
         await CollectionManager.ReloadCollectionsAsync();
         TagSearchVM.AddCollections(CollectionManager.Collections);
-    }
-
-    public void ShowApp()
-    {
-        TagSearchVM = new TagSearchVM();
-        TagSearchVM.SelectedTagsUpdated += TagSearchVM_SelectedTagsUpdated;
-        TagSearchVM.SelectedCollectionChanged += TagSearchVMOnSelectedCollectionChanged;
-        TagSearchVM.DraftAddRequested += TagSearchVMOnDraftAddRequested;
-
-        Settings.ShowPreviewOnSelectChanged += Settings_ShowPreviewOnSelectChanged;
-
-        TagsEdit = new TagsEditVM(this);
-
-        _view = new MainWindow
-        {
-            DataContext = this
-        };
-        _view.Loaded += _view_Loaded;
-        _view.SelectedItemsChanged += OnViewOnSelectedItemsChanged;
-        _view.Show();
+        await topTagsUpdateTask;
     }
 
     private void OnViewOnSelectedItemsChanged(object? sender, EventArgs args)
@@ -205,13 +201,13 @@ internal class MainWindowVM : VMBase
 
     public int LoadedCount => NavigatorList.Count;
 
-    public string Status
+    public string? Status
     {
         get => _status;
         set => OnPropertyChanged(ref _status, value, () => Status);
     }
 
-    public string StatusToolTip
+    public string? StatusToolTip
     {
         get => _statusToolTip;
         set => OnPropertyChanged(ref _statusToolTip, value, () => StatusToolTip);
@@ -265,6 +261,21 @@ internal class MainWindowVM : VMBase
 
     #region Methods
 
+    [MemberNotNull(nameof(ShuffleCommand))]
+    [MemberNotNull(nameof(ReverseCommand))]
+    [MemberNotNull(nameof(RefreshCommand))]
+    [MemberNotNull(nameof(ZoomInCommand))]
+    [MemberNotNull(nameof(ZoomOutCommand))]
+    [MemberNotNull(nameof(ZoomToRowElementsCommand))]
+    [MemberNotNull(nameof(LoadPreviewsCommand))]
+    [MemberNotNull(nameof(RemoveImageCommand))]
+    [MemberNotNull(nameof(SetAsWallpaperCommand))]
+    [MemberNotNull(nameof(ShowInExplorerCommand))]
+    [MemberNotNull(nameof(CopyCommand))]
+    [MemberNotNull(nameof(OpenFileCommand))]
+    [MemberNotNull(nameof(OpenFullScreenPreviewCommand))]
+    [MemberNotNull(nameof(ToggleShowTagsCommand))]
+    [MemberNotNull(nameof(RevertSelectedItemsCommand))]
     private void InitializeCommands()
     {
         ShuffleCommand = new RelayCommand(_ => ShuffleNavigatorList());
@@ -291,10 +302,11 @@ internal class MainWindowVM : VMBase
 
         ZoomToRowElementsCommand = new RelayCommand(x =>
         {
-            var toElements = int.Parse(x as string);
-
+            if (x is not string param)
+                return;
+            
+            var toElements = int.Parse(param);
             var boxSize = _view.ViewPortWidth / toElements;
-
             _previewSize = (int)(boxSize - 30);
 
             UpdatePreviews();
@@ -413,7 +425,7 @@ internal class MainWindowVM : VMBase
 
         playlist.AppendLine();
 
-        var tempPath = System.IO.Path.GetTempFileName() + ".mpcpl";
+        var tempPath = Path.GetTempFileName() + ".mpcpl";
         File.WriteAllText(tempPath, playlist.ToString());
         return tempPath;
     }
@@ -463,7 +475,7 @@ internal class MainWindowVM : VMBase
         try
         {
             var tagsToSearch = TagSearchVM.SelectedBindedTags.Select(x => x.Model).ToList();
-            var bulkFactor = GetBulkFactorBasedOnTags(tagsToSearch);
+            var bulkFactor = int.MaxValue;
             var autoShuffle = Settings.AutoShuffle;
             
             var loadingTiming = new Stopwatch();
@@ -514,30 +526,6 @@ internal class MainWindowVM : VMBase
         }
     }
 
-    private static int GetBulkFactorBasedOnTags(IReadOnlyCollection<SearchTag> tagsToSearch)
-    {
-        return int.MaxValue;
-        
-        const int defaultSize = 20_000;
-        
-        if (tagsToSearch.None())
-            return defaultSize;
-
-        var min = tagsToSearch.Select(x => x.Tag.Count).Min();
-
-        var factor = tagsToSearch.Count > 1 ? Math.Pow(0.9, tagsToSearch.Count) : 1;
-
-        var predictedCount = (int)(min * factor);
-
-        Debug.WriteLine("Predicted: " + predictedCount);
-        
-        return predictedCount switch
-        {
-            > 40_000 => defaultSize,
-            _ => int.MaxValue
-        };
-    }
-
     private void UpdatePreviews()
     {
         OnPropertyChanged(() => SlotSize);
@@ -564,7 +552,7 @@ internal class MainWindowVM : VMBase
         }
     }
 
-    private async void RemoveImage(object o)
+    private async void RemoveImage(object? o)
     {
         var selectedItem = o as INavigatorListEntry;
 
@@ -628,7 +616,7 @@ internal class MainWindowVM : VMBase
             await _fileTagService.SetWasWallpaper(entry.DbId.Value);
     }
 
-    private void ShowInExplorer(object o)
+    private void ShowInExplorer(object? o)
     {
         var selectedItem = o as INavigatorListEntry;
 
@@ -646,7 +634,7 @@ internal class MainWindowVM : VMBase
         Status = "Wallpaper set";
     }
 
-    private void CopySelected(object o)
+    private void CopySelected(object? o)
     {
         var lastItems = SelectedEntries.Select(x => x.Path).ToArray();
         if (!lastItems.Any())
@@ -673,7 +661,7 @@ internal class MainWindowVM : VMBase
 
     private async void TagSearchVMOnSelectedCollectionChanged(object? sender, EventArgs eventArgs) => await Reload();
 
-    private async void TagSearchVMOnDraftAddRequested(object? sender, BindedTagVM tag) => this.TagsEdit.DraftAddTag(tag);
+    private void TagSearchVMOnDraftAddRequested(object? sender, BindedTagVM tag) => TagsEdit.DraftAddTag(tag);
 
     private void Settings_ShowPreviewOnSelectChanged(object? sender, EventArgs e) => OnPropertyChanged(() => ShowPreview);
 

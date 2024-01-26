@@ -18,14 +18,14 @@ public class VirtualizingWrapPanel : VirtualizingPanel, IScrollInfo
     /// </summary>
     public static readonly DependencyProperty ItemWidthProperty =
         DependencyProperty.Register(
-            "ItemWidth",
+            nameof(ItemWidth),
             typeof(double),
             typeof(VirtualizingWrapPanel),
             new FrameworkPropertyMetadata(
                 double.NaN,
                 FrameworkPropertyMetadataOptions.AffectsMeasure
             ),
-            new ValidateValueCallback(IsWidthHeightValid)
+            IsWidthHeightValid
         );
 
     /// <summary>
@@ -35,8 +35,8 @@ public class VirtualizingWrapPanel : VirtualizingPanel, IScrollInfo
     [TypeConverter(typeof(LengthConverter)), Category("共通")]
     public double ItemWidth
     {
-        get { return (double)GetValue(ItemWidthProperty); }
-        set { SetValue(ItemWidthProperty, value); }
+        get => (double)GetValue(ItemWidthProperty);
+        set => SetValue(ItemWidthProperty, value);
     }
 
     #endregion
@@ -48,14 +48,14 @@ public class VirtualizingWrapPanel : VirtualizingPanel, IScrollInfo
     /// </summary>
     public static readonly DependencyProperty ItemHeightProperty =
         DependencyProperty.Register(
-            "ItemHeight",
+            nameof(ItemHeight),
             typeof(double),
             typeof(VirtualizingWrapPanel),
             new FrameworkPropertyMetadata(
                 double.NaN,
                 FrameworkPropertyMetadataOptions.AffectsMeasure
             ),
-            new ValidateValueCallback(IsWidthHeightValid)
+            IsWidthHeightValid
         );
 
     /// <summary>
@@ -65,8 +65,8 @@ public class VirtualizingWrapPanel : VirtualizingPanel, IScrollInfo
     [TypeConverter(typeof(LengthConverter)), Category("共通")]
     public double ItemHeight
     {
-        get { return (double)GetValue(ItemHeightProperty); }
-        set { SetValue(ItemHeightProperty, value); }
+        get => (double)GetValue(ItemHeightProperty);
+        set => SetValue(ItemHeightProperty, value);
     }
 
     #endregion
@@ -98,7 +98,7 @@ public class VirtualizingWrapPanel : VirtualizingPanel, IScrollInfo
             new FrameworkPropertyMetadata(
                 Orientation.Horizontal,
                 FrameworkPropertyMetadataOptions.AffectsMeasure,
-                new PropertyChangedCallback(OnOrientationChanged)
+                OnOrientationChanged
             )
         );
 
@@ -108,8 +108,8 @@ public class VirtualizingWrapPanel : VirtualizingPanel, IScrollInfo
     [Category("共通")]
     public Orientation Orientation
     {
-        get { return (Orientation)GetValue(OrientationProperty); }
-        set { SetValue(OrientationProperty, value); }
+        get => (Orientation)GetValue(OrientationProperty);
+        set => SetValue(OrientationProperty, value);
     }
 
     /// <summary>
@@ -119,8 +119,8 @@ public class VirtualizingWrapPanel : VirtualizingPanel, IScrollInfo
     /// <param name="e">このプロパティの有効値に対する変更を追跡するイベントによって発行されるイベントデータ。</param>
     private static void OnOrientationChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
     {
-        var panel = d as VirtualizingWrapPanel;
-        panel._offset = default(Point);
+        var panel = (VirtualizingWrapPanel)d;
+        panel._offset = default;
         panel.InvalidateMeasure();
     }
 
@@ -190,7 +190,7 @@ public class VirtualizingWrapPanel : VirtualizingPanel, IScrollInfo
                 if (itemRect.IntersectsWith(viewportRect))
                 {
                     var child = generator.GetOrCreateChild(i);
-                    child.Measure(childAvailable);
+                    child?.Measure(childAvailable);
                     childSize = ContainerSizeForIndex(i);
                 }
 
@@ -256,10 +256,12 @@ public class VirtualizingWrapPanel : VirtualizingPanel, IScrollInfo
             generator.CleanupChildren();
             generator?.Dispose();
 
-            if (ScrollOwner != null)
-                ScrollOwner.InvalidateScrollInfo();
+            ScrollOwner?.InvalidateScrollInfo();
         }
-        catch { }
+        catch
+        {
+            // ignore
+        }
 
         return maxSize;
     }
@@ -280,12 +282,12 @@ public class VirtualizingWrapPanel : VirtualizingPanel, IScrollInfo
         /// <summary>
         /// <see cref="_owner"/> の <see cref="System.Windows.Controls.ItemContainerGenerator"/>。
         /// </summary>
-        private IItemContainerGenerator _generator;
+        private IItemContainerGenerator? _generator;
 
         /// <summary>
         /// <see cref="_generator"/> の生成プロセスの有効期間を追跡するオブジェクト。
         /// </summary>
-        private IDisposable _generatorTracker;
+        private IDisposable? _generatorTracker;
 
         /// <summary>
         /// 表示範囲内にある最初の要素のインデックス。
@@ -315,7 +317,7 @@ public class VirtualizingWrapPanel : VirtualizingPanel, IScrollInfo
             _owner = owner;
 
             // ItemContainerGenerator 取得前に InternalChildren にアクセスしないと null になる
-            var childrenCount = owner.InternalChildren.Count;
+            _ = owner.InternalChildren.Count;
             _generator = owner.ItemContainerGenerator;
         }
 
@@ -347,7 +349,7 @@ public class VirtualizingWrapPanel : VirtualizingPanel, IScrollInfo
         private void BeginGenerate(int index)
         {
             _firstGeneratedIndex = index;
-            var startPos = _generator.GeneratorPositionFromIndex(index);
+            var startPos = _generator!.GeneratorPositionFromIndex(index);
             _currentGenerateIndex = (startPos.Offset == 0) ? startPos.Index : startPos.Index + 1;
             _generatorTracker = _generator.StartAt(startPos, GeneratorDirection.Forward, true);
         }
@@ -357,7 +359,7 @@ public class VirtualizingWrapPanel : VirtualizingPanel, IScrollInfo
         /// </summary>
         /// <param name="index">取得するアイテムのインデックス。</param>
         /// <returns>指定したインデックスのアイテム。</returns>
-        public UIElement GetOrCreateChild(int index)
+        public UIElement? GetOrCreateChild(int index)
         {
             if (_generator == null)
                 return _owner.InternalChildren[index];
@@ -365,9 +367,8 @@ public class VirtualizingWrapPanel : VirtualizingPanel, IScrollInfo
             if (_generatorTracker == null)
                 BeginGenerate(index);
 
-            bool newlyRealized;
-            var child = _generator.GenerateNext(out newlyRealized) as UIElement;
-            if (newlyRealized)
+            var child = _generator.GenerateNext(out var newlyRealized) as UIElement;
+            if (newlyRealized && child != null)
             {
                 if (_currentGenerateIndex >= _owner.InternalChildren.Count)
                     _owner.AddInternalChild(child);
@@ -455,7 +456,7 @@ public class VirtualizingWrapPanel : VirtualizingPanel, IScrollInfo
     {
         var getSize = new Func<int, Size>(idx =>
         {
-            UIElement item = null;
+            UIElement? item = null;
             var itemsOwner = ItemsControl.GetItemsOwner(this);
             var generator = ItemContainerGenerator as ItemContainerGenerator;
 
@@ -544,18 +545,12 @@ public class VirtualizingWrapPanel : VirtualizingPanel, IScrollInfo
     /// <summary>
     /// エクステントの縦幅を取得する。
     /// </summary>
-    public double ExtentHeight
-    {
-        get { return _extent.Height; }
-    }
+    public double ExtentHeight => _extent.Height;
 
     /// <summary>
     /// エクステントの横幅を取得する。
     /// </summary>
-    public double ExtentWidth
-    {
-        get { return _extent.Width; }
-    }
+    public double ExtentWidth => _extent.Width;
 
     #endregion Extent
 
@@ -569,18 +564,12 @@ public class VirtualizingWrapPanel : VirtualizingPanel, IScrollInfo
     /// <summary>
     /// このコンテンツに対するビューポートの縦幅を取得する。
     /// </summary>
-    public double ViewportHeight
-    {
-        get { return _viewport.Height; }
-    }
+    public double ViewportHeight => _viewport.Height;
 
     /// <summary>
     /// このコンテンツに対するビューポートの横幅を取得する。
     /// </summary>
-    public double ViewportWidth
-    {
-        get { return _viewport.Width; }
-    }
+    public double ViewportWidth => _viewport.Width;
 
     #endregion
 
@@ -594,18 +583,12 @@ public class VirtualizingWrapPanel : VirtualizingPanel, IScrollInfo
     /// <summary>
     /// スクロールしたコンテンツの水平オフセットを取得する。
     /// </summary>
-    public double HorizontalOffset
-    {
-        get { return _offset.X; }
-    }
+    public double HorizontalOffset => _offset.X;
 
     /// <summary>
     /// スクロールしたコンテンツの垂直オフセットを取得する。
     /// </summary>
-    public double VerticalOffset
-    {
-        get { return _offset.Y; }
-    }
+    public double VerticalOffset => _offset.Y;
 
     #endregion
 
@@ -614,7 +597,7 @@ public class VirtualizingWrapPanel : VirtualizingPanel, IScrollInfo
     /// スクロール動作を制御する <see cref="System.Windows.Controls.ScrollViewer"/> 要素を
     /// 取得、または設定する。
     /// </summary>
-    public ScrollViewer ScrollOwner { get; set; }
+    public ScrollViewer? ScrollOwner { get; set; }
     #endregion
 
     #region CanHorizontallyScroll
@@ -769,8 +752,7 @@ public class VirtualizingWrapPanel : VirtualizingPanel, IScrollInfo
     {
         var idx = InternalChildren.IndexOf(visual as UIElement);
 
-        var generator = ItemContainerGenerator as IItemContainerGenerator;
-        if (generator != null)
+        if (ItemContainerGenerator is { } generator)
         {
             var pos = new GeneratorPosition(idx, 0);
             idx = generator.IndexFromGeneratorPosition(pos);

@@ -11,7 +11,7 @@ internal abstract class BaseEntryVM : VMBase
 
     private bool _isFavorite;
     private int _rating;
-    private bool _isLoaded = false;
+    private bool _isLoaded;
 
     protected BaseEntryVM(Guid? dbId, FilesClient filesClient)
     {
@@ -32,8 +32,8 @@ internal abstract class BaseEntryVM : VMBase
 
             var info = await _filesClient.GetFileInfoAsync(_dbId.Value);
 
-            IsFavorite = info.Tags.FirstOrDefault(x => x.Tag.Name == "Favorite") != null;
-            var rateValue = info.Tags.FirstOrDefault(x => x.Tag.Name == "Rate")?.Value;
+            IsFavorite = info.Tags?.FirstOrDefault(x => x.Tag?.Name == "Favorite") != null;
+            var rateValue = info.Tags?.FirstOrDefault(x => x.Tag?.Name == "Rate")?.Value;
             if (rateValue is not null && int.TryParse(rateValue, out var rate))
                 Rating = rate;
 

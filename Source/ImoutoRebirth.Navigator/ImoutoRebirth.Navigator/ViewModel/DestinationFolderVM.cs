@@ -7,73 +7,44 @@ namespace ImoutoRebirth.Navigator.ViewModel;
 
 internal class DestinationFolderVM : FolderVM, IDataErrorInfo
 {
-    #region Fields
-
     private bool _needDevideImagesByHash;
     private bool _needRename;
-    private string _incorrectFormatSubpath;
-    private string _incorrectHashSubpath;
-    private string _nonHashSubpath;
+    private string? _incorrectFormatSubpath;
+    private string? _incorrectHashSubpath;
+    private string? _nonHashSubpath;
 
-    #endregion Fields
-
-    #region Properties
+    private ICommand? _removeCommand;
+    private ICommand? _saveCommand;
 
     public bool NeedDevideImagesByHash
     {
-        get { return _needDevideImagesByHash; }
-        set { OnPropertyChanged(ref _needDevideImagesByHash, value, () => this.NeedDevideImagesByHash); }
+        get => _needDevideImagesByHash;
+        set { OnPropertyChanged(ref _needDevideImagesByHash, value, () => NeedDevideImagesByHash); }
     }
 
     public bool NeedRename
     {
-        get { return _needRename; }
-        set { OnPropertyChanged(ref _needRename, value, () => this.NeedRename); }
+        get => _needRename;
+        set => OnPropertyChanged(ref _needRename, value, () => NeedRename);
     }
 
-    public string IncorrectFormatSubpath
+    public string? IncorrectFormatSubpath
     {
-        get { return _incorrectFormatSubpath; }
-        set
-        {
-            if (String.IsNullOrWhiteSpace(value))
-            {
-                //value = "!IncorrectFormat";
-            }
-
-            OnPropertyChanged(ref _incorrectFormatSubpath, value, () => this.IncorrectFormatSubpath);
-        }
+        get => _incorrectFormatSubpath;
+        set => OnPropertyChanged(ref _incorrectFormatSubpath, value, () => IncorrectFormatSubpath);
     }
 
-    public string IncorrectHashSubpath
+    public string? IncorrectHashSubpath
     {
-        get { return _incorrectHashSubpath; }
-        set
-        {
-            if (String.IsNullOrWhiteSpace(value))
-            {
-                //value = "!IncorrectHash";
-            }
-            OnPropertyChanged(ref _incorrectHashSubpath, value, () => this.IncorrectHashSubpath);
-        }
+        get => _incorrectHashSubpath;
+        set => OnPropertyChanged(ref _incorrectHashSubpath, value, () => IncorrectHashSubpath);
     }
 
-    public string NonHashSubpath
+    public string? NonHashSubpath
     {
-        get { return _nonHashSubpath; }
-        set
-        {
-            if (String.IsNullOrWhiteSpace(value))
-            {
-                //value = "!NonHash";
-            }
-            OnPropertyChanged(ref _nonHashSubpath, value, () => this.NonHashSubpath);
-        }
+        get => _nonHashSubpath;
+        set => OnPropertyChanged(ref _nonHashSubpath, value, () => NonHashSubpath);
     }
-
-    #endregion Properties
-
-    #region Constructors
 
     public DestinationFolderVM(Guid? id,
         string path,
@@ -84,58 +55,30 @@ internal class DestinationFolderVM : FolderVM, IDataErrorInfo
         string nonHashSubpath)
         : base(id, path)
     {
-        NeedDevideImagesByHash = needDevideImagesByHash;
-        NeedRename = needRename;
-        IncorrectFormatSubpath = incorrectFormatSubpath;
-        IncorrectHashSubpath = incorrectHashSubpath;
-        NonHashSubpath = nonHashSubpath;
+        _needDevideImagesByHash = needDevideImagesByHash;
+        _needRename = needRename;
+        _incorrectFormatSubpath = incorrectFormatSubpath;
+        _incorrectHashSubpath = incorrectHashSubpath;
+        _nonHashSubpath = nonHashSubpath;
     }
 
-    #endregion Constructors
+    public ICommand RemoveCommand => _removeCommand ??= new RelayCommand((s) => OnRemoveRequest());
 
-    #region Commands
+    public ICommand SaveCommand => _saveCommand ??= new RelayCommand((s) => OnSaveRequest(), (s) => string.IsNullOrWhiteSpace(Error));
 
-    private ICommand _removeCommand;
-    public ICommand RemoveCommand
-    {
-        get
-        {
-            return _removeCommand ?? (_removeCommand = new RelayCommand((s) => OnRemoveRequest()));
-        }
-    }
-    private ICommand _saveCommand;
+    public event EventHandler? RemoveRequest;
 
-    public ICommand SaveCommand
-    {
-        get
-        {
-            return _saveCommand ??
-                   (_saveCommand = new RelayCommand((s) => OnSaveRequest(), (s) => String.IsNullOrWhiteSpace(Error)));
-        }
-    }
-
-    #endregion Commands
-
-    #region Events
-
-    public event EventHandler RemoveRequest;
-    private void OnRemoveRequest()
-    {
-        var handler = RemoveRequest;
-        handler?.Invoke(this, new EventArgs());
-    }
-
-    #endregion Events
+    private void OnRemoveRequest() => RemoveRequest?.Invoke(this, EventArgs.Empty);
 
     public string this[string columnName]
     {
         get
         {
-            String errorMessage = String.Empty;
+            string errorMessage = string.Empty;
             switch (columnName)
             {
                 case "Path":
-                    if (String.IsNullOrWhiteSpace(Path))
+                    if (string.IsNullOrWhiteSpace(Path))
                     {
                         errorMessage = "Path can't be empty";
                     }
@@ -152,7 +95,7 @@ internal class DestinationFolderVM : FolderVM, IDataErrorInfo
                     }
                     break;
                 case "IncorrectFormatSubpath":
-                    if (String.IsNullOrWhiteSpace(IncorrectFormatSubpath))
+                    if (string.IsNullOrWhiteSpace(IncorrectFormatSubpath))
                     {
                         errorMessage = "Can't be empty";
                     }
@@ -169,7 +112,7 @@ internal class DestinationFolderVM : FolderVM, IDataErrorInfo
                     }
                     break;
                 case "IncorrectHashSubpath":
-                    if (String.IsNullOrWhiteSpace(IncorrectHashSubpath))
+                    if (string.IsNullOrWhiteSpace(IncorrectHashSubpath))
                     {
                         errorMessage = "Can't be empty";
                     }
@@ -186,7 +129,7 @@ internal class DestinationFolderVM : FolderVM, IDataErrorInfo
                     }
                     break;
                 case "NonHashSubpath":
-                    if (String.IsNullOrWhiteSpace(NonHashSubpath))
+                    if (string.IsNullOrWhiteSpace(NonHashSubpath))
                     {
                         errorMessage = "Can't be empty";
                     }
@@ -207,14 +150,9 @@ internal class DestinationFolderVM : FolderVM, IDataErrorInfo
         }
     }
 
-    public override string Error
-    {
-        get
-        {
-            return this["Path"] + Environment.NewLine
-                                + this["IncorrectFormatSubpath"] + Environment.NewLine
-                                + this["IncorrectHashSubpath"] + Environment.NewLine
-                                + this["NonHashSubpath"] + Environment.NewLine;
-        } 
-    }
+    public override string Error =>
+        this["Path"] + Environment.NewLine
+                     + this["IncorrectFormatSubpath"] + Environment.NewLine
+                     + this["IncorrectHashSubpath"] + Environment.NewLine
+                     + this["NonHashSubpath"] + Environment.NewLine;
 }

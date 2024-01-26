@@ -20,7 +20,7 @@ internal interface INavigatorListEntry : IDragable
 
     bool IsLoading { get; }
 
-    BitmapSource Image { get; }
+    BitmapSource? Image { get; }
 
     bool IsFavorite { get; }
 

@@ -10,20 +10,22 @@ namespace ImoutoRebirth.Navigator.ViewModel;
 
 internal class CollectionVM : VMBase
 {
-    private ICommand _addSourceCommand;
-    private ICommand _removeSourceCommand;
+    private ICommand? _addSourceCommand;
+    private ICommand? _removeSourceCommand;
+    private ICommand? _createDestinationFolderCommand;
+
     private Guid _id;
     private string _name;
-    private DestinationFolderVM _destination;
-    private SourceFolderVM _selectedSource;
+    private DestinationFolderVM? _destination;
+    private SourceFolderVM? _selectedSource;
     private readonly ICollectionService _collectionService;
     private readonly IDestinationFolderService _destinationFolderService;
     private readonly ISourceFolderService _sourceFolderService;
 
     public CollectionVM(Guid id, string name)
     {
-        Id = id;
-        Name = name;
+        _id = id;
+        _name = name;
 
         _collectionService = ServiceLocator.GetService<ICollectionService>();
         _destinationFolderService = ServiceLocator.GetService<IDestinationFolderService>();
@@ -34,27 +36,27 @@ internal class CollectionVM : VMBase
 
     public Guid Id
     {
-        get { return _id; }
-        set { OnPropertyChanged(ref _id, value, () => Id); }
+        get => _id;
+        set => OnPropertyChanged(ref _id, value, () => Id);
     }
 
     public string Name
     {
-        get { return _name; }
-        set { OnPropertyChanged(ref _name, value, () => Name); }
+        get => _name;
+        set => OnPropertyChanged(ref _name, value, () => Name);
     }
 
-    public ObservableCollection<SourceFolderVM> Sources { get; } = new ObservableCollection<SourceFolderVM>();
+    public ObservableCollection<SourceFolderVM> Sources { get; } = new();
 
-    public SourceFolderVM SelectedSource
+    public SourceFolderVM? SelectedSource
     {
-        get { return _selectedSource; }
+        get => _selectedSource;
         set { OnPropertyChanged(ref _selectedSource, value, () => SelectedSource); }
     }
 
-    public DestinationFolderVM Destination
+    public DestinationFolderVM? Destination
     {
-        get { return _destination; }
+        get => _destination;
         set { OnPropertyChanged(ref _destination, value, () => Destination); }
     }
 
@@ -145,9 +147,10 @@ internal class CollectionVM : VMBase
     #endregion Methods
 
     #region Handlers
-    private async void DestinationFolderVM_RemoveRequest(object sender, EventArgs e)
+    private async void DestinationFolderVM_RemoveRequest(object? sender, EventArgs e)
     {
-        var folderVM = sender as FolderVM;
+        if (sender is not FolderVM folderVM)
+            return;
 
         if (folderVM.Id.HasValue)
         {
@@ -165,9 +168,10 @@ internal class CollectionVM : VMBase
         await LoadFolders();
     }
 
-    private async void FolderVM_SaveSourceRequest(object sender, EventArgs e)
+    private async void FolderVM_SaveSourceRequest(object? sender, EventArgs e)
     {
-        var folderVm = (SourceFolderVM) sender;
+        if (sender is not SourceFolderVM folderVm)
+            return;
 
         var sourceFolder = new SourceFolder(
             folderVm.Id,
@@ -198,9 +202,10 @@ internal class CollectionVM : VMBase
             Debug.WriteLine("Can't save folder: " + ex.Message);
         }
     }
-    private async void FolderVM_SaveDestinationRequest(object sender, EventArgs e)
+    private async void FolderVM_SaveDestinationRequest(object? sender, EventArgs e)
     {
-        var folderVm = (DestinationFolderVM) sender;
+        if (sender is not DestinationFolderVM folderVm)
+            return;
 
         var destinationFolder = new DestinationFolder(
             folderVm.Id,
@@ -208,9 +213,9 @@ internal class CollectionVM : VMBase
             folderVm.Path,
             folderVm.NeedDevideImagesByHash,
             folderVm.NeedRename,
-            folderVm.IncorrectFormatSubpath,
-            folderVm.IncorrectHashSubpath,
-            folderVm.NonHashSubpath);
+            folderVm.IncorrectFormatSubpath ?? "!IncorrectFormat",
+            folderVm.IncorrectHashSubpath ?? "!IncorrectHash",
+            folderVm.NonHashSubpath ?? "!NonHash");
 
         try
         {
@@ -224,34 +229,21 @@ internal class CollectionVM : VMBase
         }
     }
 
-    private void FolderVM_ResetRequest(object sender, EventArgs e)
-    {
-        LoadFolders();
-    }
+    private async void FolderVM_ResetRequest(object? sender, EventArgs e) => await LoadFolders();
 
     #endregion Handlers
 
     #region Commands
 
-    public ICommand AddSourceCommand
-    {
-        get
-        {
-            return _addSourceCommand ?? (_addSourceCommand = new RelayCommand(AddSource));
-        }
-    }
+    public ICommand AddSourceCommand => _addSourceCommand ??= new RelayCommand(AddSource);
 
-    public ICommand RemoveSourceCommand 
-        => _removeSourceCommand ??= new AsyncCommand(RemoveSource, CanRemoveSource);
-
-
-    private ICommand _createDestinationFolderCommand;
+    public ICommand RemoveSourceCommand => _removeSourceCommand ??= new AsyncCommand(RemoveSource, CanRemoveSource);
     public ICommand CreateDestinationFolderCommand 
         => _createDestinationFolderCommand ??= new RelayCommand(CreateDestinationFolder);
 
-    private void CreateDestinationFolder(object obj)
+    private void CreateDestinationFolder(object? obj)
     {
-        var destinationFolderVM = new DestinationFolderVM(null, String.Empty, false, false, "!IncorrectFormat", "!IncorrectHash", "!NonHash");
+        var destinationFolderVM = new DestinationFolderVM(null, string.Empty, false, false, "!IncorrectFormat", "!IncorrectHash", "!NonHash");
         destinationFolderVM.ResetRequest += FolderVM_ResetRequest;
         destinationFolderVM.SaveRequest += FolderVM_SaveDestinationRequest;
         destinationFolderVM.RemoveRequest += DestinationFolderVM_RemoveRequest;
@@ -262,7 +254,7 @@ internal class CollectionVM : VMBase
 
     #region Command Handlers
 
-    private void AddSource(object param)
+    private void AddSource(object? param)
     {
         var newSource = new SourceFolderVM(null, String.Empty, false, false, null, false, false);
         newSource.ResetRequest += FolderVM_ResetRequest;

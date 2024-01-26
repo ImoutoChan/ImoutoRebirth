@@ -17,6 +17,6 @@ public static class Base64Serializer
         var bytes = Convert.FromBase64String(str);
         var compressed = Encoding.UTF8.GetString(bytes);
         var json = compressed.Decompress();
-        return JsonConvert.DeserializeObject<T>(json);
+        return JsonConvert.DeserializeObject<T>(json)!;
     }
 }

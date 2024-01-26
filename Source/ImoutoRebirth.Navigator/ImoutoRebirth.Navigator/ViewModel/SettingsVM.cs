@@ -1,4 +1,5 @@
-﻿using System.Windows;
+﻿using System.Diagnostics.CodeAnalysis;
+using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media;
 using ControlzEx.Theming;
@@ -68,6 +69,8 @@ internal class SettingsVM : VMBase
     public AccentColorMenuData SelectedAccentColor
     {
         get => _selectedAccentColor;
+        
+        [MemberNotNull(nameof(_selectedAccentColor))]
         set
         {
             _selectedAccentColor = value;
@@ -119,6 +122,8 @@ internal class SettingsVM : VMBase
     public string PathOverrides
     {
         get => _pathOverrides;
+        
+        [MemberNotNull(nameof(_pathOverrides))]
         set
         {
             _pathOverrides = value;
@@ -189,7 +194,7 @@ public class CustomTheme : AccentColorMenuData
 
     public override void ChangeAccent(IReadOnlyCollection<AccentColorMenuData>? randomColors = null)
     {
-        if (!ThemeManager.Current.Themes.Any(x => x.Name == Name))
+        if (ThemeManager.Current.Themes.All(x => x.Name != Name))
         {
             var darkTheme = ThemeManager.Current.AddLibraryTheme(
                 new LibraryTheme(

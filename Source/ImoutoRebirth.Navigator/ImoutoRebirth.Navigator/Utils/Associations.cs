@@ -59,8 +59,8 @@ public class Associations
     public static extern uint AssocQueryString(AssocF flags,
         AssocStr str,
         string pszAssoc,
-        string pszExtra,
-        [Out] StringBuilder pszOut,
+        string? pszExtra,
+        [Out] StringBuilder? pszOut,
         ref uint pcchOut);
 
     public static string AssocQueryString(AssocStr association, string extension)

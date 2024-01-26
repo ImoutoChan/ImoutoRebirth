@@ -54,7 +54,7 @@ internal class UgoiraEntryVM : BaseEntryVM, INavigatorListEntry, IPixelSizable
     {
         IsLoading = true;
             
-        LoadRating();
+        var ratingTask = LoadRating();
 
         await using var zipToOpen = new FileStream(Path, FileMode.Open, FileAccess.Read);
         using var archive = new ZipArchive(zipToOpen, ZipArchiveMode.Read);
@@ -73,6 +73,8 @@ internal class UgoiraEntryVM : BaseEntryVM, INavigatorListEntry, IPixelSizable
         OnPropertyChanged(() => Image);
 
         IsLoading = false;
+
+        await ratingTask;
     }
 
     public void UpdatePreview(Size previewSize)

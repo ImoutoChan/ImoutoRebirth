@@ -44,7 +44,7 @@ public partial class TagsSearchView : UserControl
         }
         else if (e.Key == Key.Enter)
         {
-            (DataContext as TagSearchVM).SelectTagCommand.Execute(HintListBox.SelectedItem);
+            ((TagSearchVM)DataContext).SelectTagCommand.Execute(HintListBox.SelectedItem);
             e.Handled = true;
         }
     }

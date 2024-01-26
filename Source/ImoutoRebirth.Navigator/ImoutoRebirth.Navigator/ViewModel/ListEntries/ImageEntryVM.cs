@@ -17,7 +17,7 @@ internal class ImageEntryVM : BaseEntryVM, INavigatorListEntry, IPixelSizable
         : base(dbId, filesClient)
     {
         ImageEntry = new ImageEntry(imagePath, initPreviewSize);
-        ImageEntry.ImageChanged += (s, e) =>
+        ImageEntry.ImageChanged += (_, _) =>
         {
             OnPropertyChanged(() => IsLoading);
             OnPropertyChanged(() => Image);
@@ -39,7 +39,7 @@ internal class ImageEntryVM : BaseEntryVM, INavigatorListEntry, IPixelSizable
 
     public bool IsLoading => ImageEntry.IsLoading;
 
-    public BitmapSource Image => ImageEntry.Image;
+    public BitmapSource? Image => ImageEntry.Image;
 
     public Size ViewPortSize => ImageEntry.ViewPort;
     
@@ -70,7 +70,7 @@ internal class ImageEntryVM : BaseEntryVM, INavigatorListEntry, IPixelSizable
     public async void Load()
     {
         ImageEntry.DoLoadAsync();
-        LoadRating();
+        await LoadRating();
     }
 
     #endregion Public methods

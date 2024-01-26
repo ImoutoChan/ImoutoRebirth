@@ -8,23 +8,17 @@ namespace ImoutoRebirth.Navigator.ViewModel;
 
 internal class SourceFolderVM : FolderVM, IDataErrorInfo
 {
-    #region Fields
-
     private bool _checkFormat;
     private bool _checkNameHash;
     private bool _tagsFromSubfolder;
     private bool _addTagFromFilename;
-
-    #endregion Fields
-
-    #region Constructors
 
     public SourceFolderVM(
         Guid? id, 
         string path, 
         bool checkFormat, 
         bool checkNameHash, 
-        IEnumerable<string> extensions, 
+        IEnumerable<string>? extensions, 
         bool tagsFromSubfolder, 
         bool addTagFromFilename) 
         : base(id, path)
@@ -39,37 +33,21 @@ internal class SourceFolderVM : FolderVM, IDataErrorInfo
             : new ObservableCollection<string>();
     }
 
-    #endregion Constructors
-
-    #region Properties
-
     public bool CheckFormat
     {
-        get
-        {
-            return _checkFormat;
-        }
-        set
-        {
-            OnPropertyChanged(ref _checkFormat, value, () => this.CheckFormat);
-        }
+        get => _checkFormat;
+        set => OnPropertyChanged(ref _checkFormat, value, () => CheckFormat);
     }
 
     public bool CheckNameHash
     {
-        get
-        {
-            return _checkNameHash;
-        }
-        set
-        {
-            OnPropertyChanged(ref _checkNameHash, value, () => this.CheckNameHash);
-        }
+        get => _checkNameHash;
+        set => OnPropertyChanged(ref _checkNameHash, value, () => CheckNameHash);
     }
 
     public string SupportedExtensions
     {
-        get { return String.Join(";", SupportedExtensionsRaw); }
+        get => string.Join(";", SupportedExtensionsRaw);
         set
         {
             try
@@ -81,7 +59,10 @@ internal class SourceFolderVM : FolderVM, IDataErrorInfo
                     SupportedExtensionsRaw.Add(item);
                 }
             }
-            catch { }
+            catch
+            {
+                // ignore
+            }
         }
     }
 
@@ -89,39 +70,25 @@ internal class SourceFolderVM : FolderVM, IDataErrorInfo
 
     public bool TagsFromSubfolder
     {
-        get
-        {
-            return _tagsFromSubfolder;
-        }
-        set
-        {
-            OnPropertyChanged(ref _tagsFromSubfolder, value, () => this.TagsFromSubfolder);
-        }
+        get => _tagsFromSubfolder;
+        set => OnPropertyChanged(ref _tagsFromSubfolder, value, () => TagsFromSubfolder);
     }
 
     public bool AddTagFromFileName
     {
-        get
-        {
-            return _addTagFromFilename;
-        }
-        set
-        {
-            OnPropertyChanged(ref _addTagFromFilename, value, () => this.AddTagFromFileName);
-        }
+        get => _addTagFromFilename;
+        set => OnPropertyChanged(ref _addTagFromFilename, value, () => AddTagFromFileName);
     }
-
-    #endregion Properties
 
     public string this[string columnName]
     {
         get
         {
-            String errorMessage = String.Empty;
+            string errorMessage = string.Empty;
             switch (columnName)
             {
                 case "Path":
-                    if (String.IsNullOrWhiteSpace(Path))
+                    if (string.IsNullOrWhiteSpace(Path))
                     {
                         errorMessage = "Path can't be empty";
                     }
@@ -129,7 +96,7 @@ internal class SourceFolderVM : FolderVM, IDataErrorInfo
                     {
                         try
                         {
-                            var di = new DirectoryInfo(Path);
+                            _ = new DirectoryInfo(Path);
                         }
                         catch (Exception)
                         {
@@ -142,19 +109,10 @@ internal class SourceFolderVM : FolderVM, IDataErrorInfo
         }
     }
 
-    public override string Error
-    {
-        get { return this["Path"]; }
-    }
+    public override string Error => this["Path"];
 
-    private ICommand _saveCommand;
+    private ICommand? _saveCommand;
 
     public ICommand SaveCommand
-    {
-        get
-        {
-            return _saveCommand ??
-                   (_saveCommand = new RelayCommand((s) => OnSaveRequest(), (s) => String.IsNullOrWhiteSpace(Error)));
-        }
-    }
+        => _saveCommand ??= new RelayCommand(_ => OnSaveRequest(), _ => string.IsNullOrWhiteSpace(Error));
 }

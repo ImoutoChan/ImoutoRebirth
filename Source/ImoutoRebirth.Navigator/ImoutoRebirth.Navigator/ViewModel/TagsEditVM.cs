@@ -44,7 +44,6 @@ internal class TagsEditVM : VMBase, IDropable
 
         _fileTagService = ServiceLocator.GetService<IFileTagService>();
         _tagService = ServiceLocator.GetService<ITagService>();
-        UpdateUsersTopTags();
     }
 
     public ObservableCollection<SearchTagVM> FoundTags { get; } = new();
@@ -95,7 +94,7 @@ internal class TagsEditVM : VMBase, IDropable
 
     public ICommand CreateTagCommand => _createTagCommand ??= new RelayCommand(CreateTag);
 
-    private void CreateTag(object _)
+    private void CreateTag(object? _)
     {
         CreateTagVM = new CreateTagVM();
         CreateTagVM.RequestClosing += (_, _) => CreateTagVM = null;
@@ -103,9 +102,9 @@ internal class TagsEditVM : VMBase, IDropable
 
     public ICommand AddTagsCommand => _addTagsCommand ??= new RelayCommand(AddTags, CanAddTags);
 
-    private bool CanAddTags(object obj) => obj is IList<SearchTagVM> or SearchTagVM;
+    private bool CanAddTags(object? obj) => obj is IList<SearchTagVM> or SearchTagVM;
 
-    private void AddTags(object obj)
+    private void AddTags(object? obj)
     {
         var tagVms = obj switch
         {
@@ -129,9 +128,9 @@ internal class TagsEditVM : VMBase, IDropable
 
     public ICommand RemoveTagsCommand => _removeTagsCommand ??= new RelayCommand(RemoveTags, CanRemoveTags);
 
-    private bool CanRemoveTags(object obj) => obj is IList<SearchTagVM> or SearchTagVM;
+    private bool CanRemoveTags(object? obj) => obj is IList<SearchTagVM> or SearchTagVM;
 
-    private void RemoveTags(object obj)
+    private void RemoveTags(object? obj)
     {
         var tagVms = obj switch
         {
@@ -154,9 +153,9 @@ internal class TagsEditVM : VMBase, IDropable
 
     public ICommand SaveCommand => _saveCommand ??= new RelayCommand(Save, CanSave);
 
-    private bool CanSave(object obj) => SelectedEntries.Any() && SelectedTags.Any();
+    private bool CanSave(object? obj) => SelectedEntries.Any() && SelectedTags.Any();
 
-    private async void Save(object obj)
+    private async void Save(object? obj)
     {
         var images = SelectedEntries;
         var tags = SelectedTags;
@@ -199,9 +198,9 @@ internal class TagsEditVM : VMBase, IDropable
 
     public ICommand UnbindCommand => _unbindCommand ??= new RelayCommand(Unbind, CanUnbind);
 
-    private bool CanUnbind(object obj) => SelectedEntries.Any() && SelectedTags.Any();
+    private bool CanUnbind(object? obj) => SelectedEntries.Any() && SelectedTags.Any();
 
-    private async void Unbind(object obj)
+    private async void Unbind(object? obj)
     {
         var images = SelectedEntries;
         var tags = SelectedTags;
@@ -255,7 +254,7 @@ internal class TagsEditVM : VMBase, IDropable
         }
     }
 
-    private async Task UpdateUsersTopTags()
+    public async Task UpdateUsersTopTags()
     {
         var popular = await _tagService.GetPopularUserTags(20);
         var popularCharacters = await _tagService.GetPopularUserCharacterTags(20);
@@ -271,7 +270,7 @@ internal class TagsEditVM : VMBase, IDropable
 
     public ICommand SetTagInfoContextCommand => _setTagInfoContextCommand ??= new RelayCommand(SetTagInfoContext);
 
-    private void SetTagInfoContext(object obj) => TagInfoContext = obj as SearchTagVM;
+    private void SetTagInfoContext(object? obj) => TagInfoContext = obj as SearchTagVM;
 
     public void DraftAddTag(BindedTagVM tag)
     {

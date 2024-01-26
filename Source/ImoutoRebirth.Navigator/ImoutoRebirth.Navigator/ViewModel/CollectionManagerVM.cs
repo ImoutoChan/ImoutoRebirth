@@ -14,10 +14,7 @@ internal class CollectionManagerVm : VMBase
     private ICommand? _removeCommand;
     private CollectionVM? _selectedCollection;
 
-    public CollectionManagerVm()
-    {
-        _collectionService = ServiceLocator.GetService<ICollectionService>();
-    }
+    public CollectionManagerVm() => _collectionService = ServiceLocator.GetService<ICollectionService>();
 
     public async Task ReloadCollectionsAsync()
     {
@@ -56,20 +53,20 @@ internal class CollectionManagerVm : VMBase
 
     public ObservableCollection<CollectionVM> Collections { get; } = new ObservableCollection<CollectionVM>();
 
-    public CollectionVM SelectedCollection
+    public CollectionVM? SelectedCollection
     {
-        get { return _selectedCollection; }
-        set { OnPropertyChanged(ref _selectedCollection, value, () => this.SelectedCollection); }
+        get => _selectedCollection;
+        set => OnPropertyChanged(ref _selectedCollection, value, () => this.SelectedCollection);
     }
 
     #endregion Properties
 
     #region Methods
-    public string Rename(object param)
+    public string? Rename(string param)
     {
         try
         {
-            SelectedCollection?.Rename(param as string);
+            SelectedCollection?.Rename(param);
             return null;
         }
         catch (Exception ex)
@@ -78,7 +75,7 @@ internal class CollectionManagerVm : VMBase
         }
     }
 
-    public async Task<string> CreateCollection(string name)
+    public async Task<string?> CreateCollection(string name)
     {
         try
         {

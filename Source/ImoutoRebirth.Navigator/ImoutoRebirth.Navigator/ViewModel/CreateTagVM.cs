@@ -91,9 +91,9 @@ internal class CreateTagVM : VMBase
 
     public ICommand SaveCommand => _saveCommand ??= new RelayCommand(Save, CanSave);
 
-    private bool CanSave(object _) => SelectedType != null && !string.IsNullOrWhiteSpace(Title);
+    private bool CanSave(object? _) => SelectedType != null && !string.IsNullOrWhiteSpace(Title);
 
-    private async void Save(object _)
+    private async void Save(object? _)
     {
         try
         {
@@ -117,7 +117,7 @@ internal class CreateTagVM : VMBase
 
     public ICommand CancelCommand => _cancelCommand ??= new RelayCommand(Cancel);
 
-    private void Cancel(object _) => OnRequestClosing();
+    private void Cancel(object? _) => OnRequestClosing();
 
     private async void ReloadTagTypesAsync()
     {

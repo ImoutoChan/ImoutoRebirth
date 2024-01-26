@@ -1,4 +1,5 @@
 ﻿using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Reflection;
 using System.Windows;
@@ -39,17 +40,17 @@ public partial class PlayerControl
     public PlayerControl()
     {
         InitializeComponent();
-
         InitializePlayer();
     }
 
+    [MemberNotNull(nameof(_control))]
     private void InitializePlayer()
     {
-        if (!TryGetVlcLibDirectory(out var vlcLibDirectory)) 
-            return;
-
         _control = new VlcControl();
         Container.Content = _control;
+
+        if (!TryGetVlcLibDirectory(out var vlcLibDirectory)) 
+            return;
         
         _control.SourceProvider.CreatePlayer(vlcLibDirectory);
         _control.SourceProvider.MediaPlayer.PositionChanged 
@@ -83,7 +84,7 @@ public partial class PlayerControl
                 }
             };
 
-        Slider.ValueChanged += (sender, args) =>
+        Slider.ValueChanged += (_, args) =>
         {
             var player = _control.SourceProvider.MediaPlayer;
 
@@ -107,7 +108,7 @@ public partial class PlayerControl
         };
     }
 
-    private static bool TryGetVlcLibDirectory(out DirectoryInfo vlcLibDirectory)
+    private static bool TryGetVlcLibDirectory(out DirectoryInfo? vlcLibDirectory)
     {
         var currentAssembly = Assembly.GetEntryAssembly();
         vlcLibDirectory = null;
@@ -254,8 +255,6 @@ public partial class PlayerControl
         var minutes = timeSpan.Minutes;
         var seconds = timeSpan.Seconds;
         var lengthHours = lengthTimeSpan.Hours;
-        var lengthMinutes = lengthTimeSpan.Minutes;
-        var lengthSeconds = lengthTimeSpan.Seconds;
 
         var hoursString = lengthHours > 0 ? $"{hours:00}:" : string.Empty;
         var minutesString = $"{minutes:00}:";

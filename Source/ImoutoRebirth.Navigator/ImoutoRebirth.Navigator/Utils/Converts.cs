@@ -25,7 +25,7 @@ public static class Converts
                         return (T)value;
 
                 if (t.IsGenericType && (t.GetGenericTypeDefinition() == typeof(Nullable<>)))
-                    t = Nullable.GetUnderlyingType(t);
+                    t = Nullable.GetUnderlyingType(t)!;
                 return (T)Convert.ChangeType(value, t);
             }
             catch (Exception ex)
@@ -35,46 +35,5 @@ public static class Converts
                 Debug.WriteLine("Ошибка конвертации в методе To", "Converts");
                 return default(T);
             }
-    }
-    public static bool TryTo<T>(object value, out T result)
-    {
-        try
-        {
-            result = To<T>(value, true);
-        }
-        catch
-        {
-            result = default(T);
-            return false;
-        }
-        return true;
-    }
-    public static bool CanTo<T>(object value)
-    {
-        try
-        {
-            To<T>(value, true);
-        }
-        catch
-        {
-            return false;
-        }
-        return true;
-    }
-
-    public static object To(object value, Type type)
-    {
-        Type t = typeof(Converts);
-        var to = t.GetMethod("To", new Type[] { typeof(object) });
-        return to.MakeGenericMethod(type).Invoke(null, new object[] { value });
-    }
-
-    public static object GetDefault(this Type type)
-    {
-        return typeof(Converts).GetMethod("GetDefault").MakeGenericMethod(type).Invoke(null, new Type[0]);
-    }
-    private static T GetDefault<T>()
-    {
-        return default(T);
     }
 }

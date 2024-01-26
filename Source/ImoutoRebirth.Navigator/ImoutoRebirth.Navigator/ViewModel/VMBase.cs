@@ -6,13 +6,7 @@ namespace ImoutoRebirth.Navigator.ViewModel;
 
 internal class VMBase : INotifyPropertyChanged
 {
-    #region Constructors
-
     protected VMBase() { }
-
-    #endregion Constructors
-
-    #region Debug
 
     [Conditional("DEBUG")]
     [DebuggerStepThrough]
@@ -20,33 +14,27 @@ internal class VMBase : INotifyPropertyChanged
     {
         // Verify that the property name matches a real,  
         // public, instance property on this object.
-        if (TypeDescriptor.GetProperties(this)[propertyName] != null) return;
+        if (TypeDescriptor.GetProperties(this)[propertyName] != null) 
+            return;
 
-        string msg = "Invalid property name: " + propertyName;
+        var msg = $"Invalid property name: {propertyName}";
 
         if (ThrowOnInvalidPropertyName)
-        {
             throw new Exception(msg);
-        }
 
         Debug.Fail(msg);
     }
 
     protected virtual bool ThrowOnInvalidPropertyName { get; private set; }
 
-    #endregion Debug
-
-    #region Implement INotyfyPropertyChanged members
-
-    protected void OnPropertyChanged<T>(ref T value, T newValue, Expression<Func<T>> action)
-    {
-        OnPropertyChanged(ref value, newValue, GetPropertyName(action));
-    }
+    protected void OnPropertyChanged<T>(ref T value, T newValue, Expression<Func<T>> action) 
+        => OnPropertyChanged(ref value, newValue, GetPropertyName(action));
 
     private void OnPropertyChanged<T>(ref T value, T newValue, string propertyName)
     {
         if (EqualityComparer<T>.Default.Equals(value, newValue))
             return;
+
         OnPropertyChanging(ref value, newValue, propertyName);
     }
 
@@ -54,8 +42,8 @@ internal class VMBase : INotifyPropertyChanged
     {
         if (EqualityComparer<T>.Default.Equals(value, newValue))
             return;
-        value = newValue;
 
+        value = newValue;
         RaisePropertyChanged(propertyName);
     }
 
@@ -72,19 +60,14 @@ internal class VMBase : INotifyPropertyChanged
         return propertyName;
     }
 
-    public event PropertyChangedEventHandler PropertyChanged;
+    public event PropertyChangedEventHandler? PropertyChanged;
 
     protected virtual void OnPropertyChanged(string propertyName)
     {
         VerifyPropertyName(propertyName);
-
         RaisePropertyChanged(propertyName);
     }
 
-    private void RaisePropertyChanged(string propertyName)
-    {
-        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-    }
-
-    #endregion Implement INotyfyPropertyChanged members
+    private void RaisePropertyChanged(string propertyName) 
+        => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
 }

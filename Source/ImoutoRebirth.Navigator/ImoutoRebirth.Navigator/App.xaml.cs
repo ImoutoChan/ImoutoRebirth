@@ -12,9 +12,9 @@ public partial class App : Application
 {
     public static Guid AppGuid = Guid.NewGuid();
 
-    internal static MainWindowVM MainWindowVM { get; private set; }
+    internal static MainWindowVM? MainWindowVM { get; private set; }
 
-    protected override async void OnStartup(StartupEventArgs e)
+    protected override void OnStartup(StartupEventArgs e)
     {
         DispatcherUnhandledException += OnDispatcherUnhandledException;
         
@@ -31,7 +31,6 @@ public partial class App : Application
         
         //Start the main window
         MainWindowVM = new MainWindowVM();
-        MainWindowVM.ShowApp();
 
         base.OnStartup(e);
     }

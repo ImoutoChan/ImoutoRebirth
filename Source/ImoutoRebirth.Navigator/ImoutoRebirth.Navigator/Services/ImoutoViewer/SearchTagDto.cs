@@ -6,11 +6,11 @@ internal class SearchTagDto
 {
     public Guid TagId { get; }
 
-    public string Value { get; }
+    public string? Value { get; }
 
     public SearchType SearchType { get; }
 
-    public SearchTagDto(Guid tagId, string value, SearchType searchType)
+    public SearchTagDto(Guid tagId, string? value, SearchType searchType)
     {
         TagId = tagId;
         Value = value;

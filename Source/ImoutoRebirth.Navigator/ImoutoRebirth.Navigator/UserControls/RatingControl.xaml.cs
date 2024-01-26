@@ -7,9 +7,9 @@ namespace ImoutoRebirth.Navigator.UserControls;
 /// <summary>
 ///     Interaction logic for RatingControl.xaml
 /// </summary>
-public partial class RatingControl : UserControl
+public partial class RatingControl
 {
-    private int _ratingUnderMouse = 0;
+    private int _ratingUnderMouse;
 
     public RatingControl()
     {
@@ -78,7 +78,10 @@ public partial class RatingControl : UserControl
 
     private void GetData(object sender, Visibility imgYellowVisibility, Visibility imgGrayVisibility)
     {
-        GetRating(sender as Border);
+        if (sender is not Border border)
+            return;
+        
+        GetRating(border);
         SetImage(_ratingUnderMouse, imgYellowVisibility, imgGrayVisibility);
     }
 
@@ -97,13 +100,16 @@ public partial class RatingControl : UserControl
 
     private void imgRatePlus_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
     {
-        GetRating(sender as Border);
+        if (sender is not Border img)
+            return;
+
+        GetRating(img);
         Value = _ratingUnderMouse;
     }
 
     private void GetRating(Border img)
     {
-        string strImgName = img.Name;
+        var strImgName = img.Name;
         _ratingUnderMouse = Convert.ToInt32(strImgName.Substring(strImgName.Length - 1, 1));
     }
 }

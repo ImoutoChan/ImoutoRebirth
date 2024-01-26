@@ -135,7 +135,7 @@ internal class FileLoadingService : IFileLoadingService
                         new Size(previewSize, previewSize),
                         _filesClient,
                         x.Id))
-                .Where(x => x != null)
+                .WhereNotNull()
                 .SkipExceptions()
                 .WithCancellation(ct)
                 .ToList();

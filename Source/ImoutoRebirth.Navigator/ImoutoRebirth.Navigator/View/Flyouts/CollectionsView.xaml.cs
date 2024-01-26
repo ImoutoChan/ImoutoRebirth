@@ -8,7 +8,7 @@ namespace ImoutoRebirth.Navigator.View.Flyouts;
 /// <summary>
 /// Interaction logic for CollectionsView.xaml
 /// </summary>
-public partial class CollectionsView : UserControl
+public partial class CollectionsView
 {
     public CollectionsView()
     {
@@ -18,7 +18,6 @@ public partial class CollectionsView : UserControl
     private async void CreateButton_Click(object sender, RoutedEventArgs e)
     {
         var parentWindow = Window.GetWindow(this) as MainWindow;
-        //parentWindow.MetroDialogOptions.ColorScheme = MetroDialogColorScheme.Theme;
 
         var result = await parentWindow.ShowInputAsync("Create collection", "Name");
 
@@ -32,7 +31,7 @@ public partial class CollectionsView : UserControl
         }
         else
         {
-            var dialog = (BaseMetroDialog)parentWindow.Resources["SuccessCreateCollectionDialog"];
+            var dialog = (BaseMetroDialog)parentWindow!.Resources["SuccessCreateCollectionDialog"]!;
             dialog = dialog.ShowDialogExternally();
 
             await Task.Delay(500);
@@ -48,17 +47,17 @@ public partial class CollectionsView : UserControl
 
         var result = await parentWindow.ShowInputAsync("Rename collection", "New name");
 
-        if (result == null) //user pressed cancel
+        if (result == null || DataContext is not CollectionManagerVm vm) //user pressed cancel
             return;
 
-        var error = (DataContext as CollectionManagerVm).Rename(result);
+        var error = vm.Rename(result);
         if (error != null)
         {
             await parentWindow.ShowMessageAsync("Can not create collection", error);
         }
         else
         {
-            var dialog = (BaseMetroDialog)parentWindow.Resources["SuccessCreateCollectionDialog"];
+            var dialog = (BaseMetroDialog)(parentWindow!.Resources["SuccessCreateCollectionDialog"])!;
             dialog = dialog.ShowDialogExternally();
 
             await Task.Delay(1500);

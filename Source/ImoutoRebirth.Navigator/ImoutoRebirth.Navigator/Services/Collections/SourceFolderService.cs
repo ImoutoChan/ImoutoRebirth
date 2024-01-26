@@ -1,5 +1,4 @@
-﻿using AutoMapper;
-using ImoutoRebirth.Room.WebApi.Client;
+﻿using ImoutoRebirth.Room.WebApi.Client;
 
 namespace ImoutoRebirth.Navigator.Services.Collections;
 
@@ -17,12 +16,12 @@ internal class SourceFolderService : ISourceFolderService
             .Select(x => new SourceFolder(
                 Id: x.Id,
                 CollectionId: x.CollectionId,
-                Path: x.Path,
+                Path: x.Path!,
                 ShouldCheckFormat: x.ShouldCheckFormat,
                 ShouldCheckHashFromName: x.ShouldCheckHashFromName,
                 ShouldCreateTagsFromSubfolders: x.ShouldCreateTagsFromSubfolders,
                 ShouldAddTagFromFilename: x.ShouldAddTagFromFilename,
-                SupportedExtensions: x.SupportedExtensions
+                SupportedExtensions: x.SupportedExtensions ?? Array.Empty<string>()
             ))
             .ToArray();
     }

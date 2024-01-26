@@ -32,7 +32,7 @@ internal class ImageEntry
 
     public bool IsWebp => _path.EndsWith(".webp", StringComparison.OrdinalIgnoreCase);
     
-    public BitmapSource Image
+    public BitmapSource? Image
     {
         get
         {
@@ -46,7 +46,7 @@ internal class ImageEntry
 
     public bool IsError { get; private set; }
 
-    public string ErrorMessage { get; private set; }
+    public string? ErrorMessage { get; private set; }
 
     public Size? ImageSize => _frameSize;
 
@@ -99,15 +99,12 @@ internal class ImageEntry
             LoadAsync();
     }
 
-    private async void LoadAsync()
+    private void LoadAsync()
     {
         _isLoading = true;
         OnImageChanged();
 
         PreviewLoadingThreadQueue.Add(Load);
-
-        //await Task.Run(() => Load());
-        //OnImageChanged();
     }
 
     private async Task Load()
@@ -220,7 +217,7 @@ internal class ImageEntry
             cancellationToken);
     }
 
-    public event EventHandler ImageChanged;
+    public event EventHandler? ImageChanged;
 
     private void OnImageChanged()
     {

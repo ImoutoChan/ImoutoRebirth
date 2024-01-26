@@ -7,14 +7,14 @@ namespace ImoutoRebirth.Navigator.ViewModel;
 
 internal class FullScreenPreviewVM : VMBase
 {
-    private readonly Func<INavigatorListEntry, Task<List<DelayItem>>> _ugoiraDelaysGetter;
+    private readonly Func<INavigatorListEntry, Task<List<DelayItem>?>> _ugoiraDelaysGetter;
     private string? _path;
     private INavigatorListEntry? _currentEntry;
     private ListEntryType? _type;
     private IList<INavigatorListEntry>? _list;
     private IReadOnlyCollection<DelayItem>? _ugoiraFrameDelays;
 
-    public FullScreenPreviewVM(Func<INavigatorListEntry, Task<List<DelayItem>>> ugoiraDelaysGetter) 
+    public FullScreenPreviewVM(Func<INavigatorListEntry, Task<List<DelayItem>?>> ugoiraDelaysGetter) 
         => _ugoiraDelaysGetter = ugoiraDelaysGetter;
 
     public string? PngPath => _type == ListEntryType.Png ? Path : null;

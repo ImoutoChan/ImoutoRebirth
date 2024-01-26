@@ -7,7 +7,7 @@ public static class RunVisibility
 {
     public static readonly DependencyProperty VisibleProperty =
         DependencyProperty.RegisterAttached("Visible", typeof(bool), typeof(RunVisibility),
-            new FrameworkPropertyMetadata(true, new PropertyChangedCallback(OnVisibilityChanged)));
+            new FrameworkPropertyMetadata(true, OnVisibilityChanged));
 
     public static bool GetVisible(Run d)
     {
@@ -21,21 +21,18 @@ public static class RunVisibility
 
     private static void OnVisibilityChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
     {
-        if (d is Run)
+        if (d is not Run run) 
+            return;
+
+        if ((bool)e.NewValue)
         {
-            var run = (d as Run);
-            if ((bool)e.NewValue == true)
-            {
-                if (run.Tag != null)
-                {
-                    run.FontSize = (double)run.Tag;
-                }
-            }
-            else
-            {
-                run.Tag = run.FontSize;
-                run.FontSize = 0.004;
-            }
+            if (run.Tag != null)
+                run.FontSize = (double)run.Tag;
+        }
+        else
+        {
+            run.Tag = run.FontSize;
+            run.FontSize = 0.004;
         }
     }
 }

@@ -49,9 +49,9 @@ public partial class UgoiraPlayer : UserControl
             typeof (UgoiraPlayer), 
             new UIPropertyMetadata(null, OnFrameDelaysChanged));
 
-    public IEnumerable<DelayItem> FrameDelays
+    public IEnumerable<DelayItem>? FrameDelays
     {
-        get => (IEnumerable<DelayItem>) GetValue(FrameDelaysProperty);
+        get => (IEnumerable<DelayItem>?) GetValue(FrameDelaysProperty);
         set => SetValue(FrameDelaysProperty, value);
     }
 

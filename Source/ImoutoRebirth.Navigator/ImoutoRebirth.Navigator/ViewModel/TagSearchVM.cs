@@ -18,12 +18,12 @@ internal class TagSearchVM : VMBase
 {
     #region Fields
 
-    private string _searchString;
-    private Tag _selectedHintBoxTag;
+    private string? _searchString;
+    private Tag? _selectedHintBoxTag;
     private bool _isValueEnterMode;
-    private string _enteredValue;
-    private List<string> _comparators;
-    private string _selectedComparator;
+    private string? _enteredValue;
+    private List<string>? _comparators;
+    private string? _selectedComparator;
     private KeyValuePair<string, Guid?> _selectedCollection;
 
     private ICommand? _enterValueOkCommand;
@@ -40,7 +40,7 @@ internal class TagSearchVM : VMBase
     private bool _isFavorite;
     private readonly IFileTagService _fileTagService;
     private readonly ITagService _tagService;
-    private IReadOnlyCollection<DelayItem> _ugoiraFrameDelays;
+    private IReadOnlyCollection<DelayItem>? _ugoiraFrameDelays;
     private Tag? _favoriteTag;
     private Tag? _rateTag;
 
@@ -55,7 +55,7 @@ internal class TagSearchVM : VMBase
 
         Collections.Add(new KeyValuePair<string, Guid?>("All", null));
 
-        SelectedCollection = Collections.FirstOrDefault();
+        SelectedCollection = Collections.First();
 
         ResetValueEnter();
     }
@@ -80,7 +80,7 @@ internal class TagSearchVM : VMBase
 
     public ObservableCollection<Tag> HintBoxTags { get; } = new();
 
-    public Tag SelectedHintBoxTag
+    public Tag? SelectedHintBoxTag
     {
         get => _selectedHintBoxTag;
         set
@@ -91,7 +91,7 @@ internal class TagSearchVM : VMBase
 
     public ObservableCollection<SearchTagVM> SelectedBindedTags { get; } = new();
 
-    public string SearchString
+    public string? SearchString
     {
         get => _searchString;
         set
@@ -133,7 +133,7 @@ internal class TagSearchVM : VMBase
         }
     }
 
-    public string SelectedComparator
+    public string? SelectedComparator
     {
         get => _selectedComparator;
         set
@@ -142,7 +142,7 @@ internal class TagSearchVM : VMBase
         }
     }
 
-    public string EnteredValue
+    public string? EnteredValue
     {
         get => _enteredValue;
         set
@@ -151,7 +151,7 @@ internal class TagSearchVM : VMBase
         }
     }
 
-    private Tag EditedTag { get; set; }
+    private Tag? EditedTag { get; set; }
 
     public int Rate
     {
@@ -181,7 +181,7 @@ internal class TagSearchVM : VMBase
         }
     }
 
-    public IReadOnlyCollection<DelayItem> UgoiraFrameDelays
+    public IReadOnlyCollection<DelayItem>? UgoiraFrameDelays
     {
         get => _ugoiraFrameDelays;
         set => OnPropertyChanged(ref _ugoiraFrameDelays, value, () => UgoiraFrameDelays);
@@ -257,13 +257,11 @@ internal class TagSearchVM : VMBase
 
         if (userTags.Any())
         {
-            CurrentTagsSources.Add(new TagSourceVM
-            {
-                Title = "User",
-                Tags = new ObservableCollection<BindedTagVM>(userTags
+            CurrentTagsSources.Add(new TagSourceVM(
+                "User",
+                new ObservableCollection<BindedTagVM>(userTags
                     .OrderBy(x => x.TypePriority)
-                    .ThenBy(x => x.Tag.Title))
-            });
+                    .ThenBy(x => x.Tag.Title))));
         }
 
         var parsedSources = tagVmsCollection.Select(x => x.Model.Source)
@@ -273,15 +271,13 @@ internal class TagSearchVM : VMBase
 
         foreach (var parsedSource in parsedSources)
         {
-            CurrentTagsSources.Add(new TagSourceVM
-            {
-                Title = parsedSource.ToString(),
-                Tags = new ObservableCollection<BindedTagVM>(tagVmsCollection
+            CurrentTagsSources.Add(new TagSourceVM(
+                parsedSource.ToString(),
+                new ObservableCollection<BindedTagVM>(tagVmsCollection
                     .Where(x => Settings.Default.ShowSystemTags || x.Tag.Type.Title != "LocalMeta")
                     .Where(x => x.Model.Source == parsedSource)
                     .OrderBy(x => x.TypePriority)
-                    .ThenBy(x => x.Tag.Title))
-            });
+                    .ThenBy(x => x.Tag.Title))));
         }
 
         GetFavorite(tags);
@@ -327,7 +323,7 @@ internal class TagSearchVM : VMBase
     private Task<IReadOnlyCollection<Tag>> SearchTagsAsyncTask(string searchString) 
         => _tagService.SearchTags(searchString, 50);
 
-    private void SelectTag(object param)
+    private void SelectTag(object? param)
     {
         var tag = param as Tag;
 
@@ -379,7 +375,7 @@ internal class TagSearchVM : VMBase
         OnSelectedTagsUpdated();
     }
 
-    private void ExploreTag(object param)
+    private void ExploreTag(object? param)
     {
         if (param is not BindedTagVM tag)
             return;
@@ -395,7 +391,7 @@ internal class TagSearchVM : VMBase
             OnDraftAddRequested(tag);
     }
 
-    private async void SelectStaticTag(object param)
+    private async void SelectStaticTag(object? param)
     {
         var staticMode = param as string;
 
@@ -465,7 +461,7 @@ internal class TagSearchVM : VMBase
         return _rateTag;
     }
 
-    private void UnselectTag(object param)
+    private void UnselectTag(object? param)
     {
         var tag = param as SearchTagVM;
 
@@ -491,12 +487,12 @@ internal class TagSearchVM : VMBase
         EnteredValue = string.Empty;
     }
 
-    private void EnterValueOk(object obj)
+    private void EnterValueOk(object? obj)
     {
         SelectTag(EditedTag);
     }
 
-    private void InvertSearchType(object param)
+    private void InvertSearchType(object? param)
     {
         var tag = param as SearchTagVM;
 
@@ -516,7 +512,7 @@ internal class TagSearchVM : VMBase
         OnSelectedTagsUpdated();
     }
 
-    private void SelectBindedTag(object param)
+    private void SelectBindedTag(object? param)
     {
         var tag = param as BindedTagVM;
 
@@ -535,17 +531,11 @@ internal class TagSearchVM : VMBase
 
     private void GetRate(IReadOnlyCollection<FileTag> tags)
     {
-        var rateTag = tags.FirstOrDefault(x => x.Tag.Title == "Rate" && x.Tag.HasValue);
-        if (rateTag != null)
+        var rateTag = tags.FirstOrDefault(x => x.Tag is { Title: "Rate", HasValue: true });
+        
+        if (rateTag?.Value != null && int.TryParse(rateTag.Value, out var rate))
         {
-            try
-            {
-                _rate = Int32.Parse(rateTag.Value);
-            }
-            catch (Exception)
-            {
-                _rate = 0;
-            }
+            _rate = rate;
         }
         else
         {
@@ -555,7 +545,7 @@ internal class TagSearchVM : VMBase
         OnPropertyChanged(() => Rate);
     }
 
-    private async Task SetRate(int value, Guid fileId)
+    private async void SetRate(int value, Guid fileId)
     {
         await _fileTagService.SetRate(fileId, new Rate(value));
     }
@@ -574,57 +564,14 @@ internal class TagSearchVM : VMBase
         if (frameDataTag == null || string.IsNullOrEmpty(frameDataTag.Value))
             return;
 
-        var frameData = JsonConvert.DeserializeObject<UgoiraFrameData>(frameDataTag.Value);
+        var frameData = JsonConvert.DeserializeObject<UgoiraFrameData>(frameDataTag.Value)!;
 
         _ugoiraFrameDelays = frameData.Data.Select(x => new DelayItem(x.Delay, x.File)).ToList();
         OnPropertyChanged(() => UgoiraFrameDelays);
     }
 
-    private async Task SetFavorite(bool value, Guid fileId)
+    private async void SetFavorite(bool value, Guid fileId)
     {
-        //var favTag = await ImoutoService.UseAsync(imoutoService =>
-        //{
-        //    return imoutoService.SearchTags("favorite", 1)
-        //                        .FirstOrDefault();
-        //});
-
-        //if (favTag == null)
-        //{
-        //    await ImoutoService.UseAsync(imoutoService =>
-        //    {
-        //        var types = imoutoService.GetTagTypes();
-        //        var type = types.First(x => x.Title == "LocalMeta");
-
-        //        imoutoService.CreateTag(new Tag { Title = "favorite", HasValue = false, Type = type });
-        //    });
-
-        //    favTag = await ImoutoService.UseAsync(imoutoService =>
-        //    {
-        //        return imoutoService.SearchTags("favorite", 1).FirstOrDefault();
-        //    });
-        //}
-
-        //var favTag = await _tagService.GetOrCreateFavTag();
-
-        //var tags = await ImoutoService.UseAsync(imoutoService => imoutoService.GetImageTags(target));
-
-        //var favBindedTag = tags.FirstOrDefault(x => x.Tag.Id == favTag.Id);
-
-        //if (favBindedTag != null && !value)
-        //{
-        //    await ImoutoService.UseAsync(imoutoService =>
-        //    {
-        //        imoutoService.UnbindTag(target, favTag.Id.Value);
-        //    });
-        //}
-        //else if (favBindedTag == null && value)
-        //{
-        //    await ImoutoService.UseAsync(imoutoService =>
-        //    {
-        //        imoutoService.BindTag(target, new BindedTag { Source = Source.User, Tag = favTag, DateAdded = DateTime.Now });
-        //    });
-        //}
-
         await _fileTagService.SetFavorite(fileId, value);
     }
 
@@ -632,15 +579,15 @@ internal class TagSearchVM : VMBase
 
     #region Events
 
-    public event EventHandler SelectedTagsUpdated;
+    public event EventHandler? SelectedTagsUpdated;
 
     private void OnSelectedTagsUpdated()
     {
         var handler = SelectedTagsUpdated;
-        handler?.Invoke(this, new EventArgs());
+        handler?.Invoke(this, EventArgs.Empty);
     }
 
-    public event EventHandler SelectedCollectionChanged;
+    public event EventHandler? SelectedCollectionChanged;
 
     private void OnSelectedCollectionChanged()
     {
@@ -648,7 +595,7 @@ internal class TagSearchVM : VMBase
         handler?.Invoke(this, EventArgs.Empty);
     }
 
-    public event EventHandler<BindedTagVM> DraftAddRequested;
+    public event EventHandler<BindedTagVM>? DraftAddRequested;
 
     private void OnDraftAddRequested(BindedTagVM tag)
     {
