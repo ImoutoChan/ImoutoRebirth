@@ -210,6 +210,7 @@ public class IconManager
         public static extern IntPtr SHGetFileInfo(
             string pszPath, uint dwFileAttributes, ref SHFILEINFO psfi, uint cbFileInfo, uint uFlags);
 
+#pragma warning disable CS0649 // Field is never assigned to, and will always have its default value
         public struct SHFILEINFO
         {
             public const int NAMESIZE = 80;
@@ -223,5 +224,6 @@ public class IconManager
             [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 80)]
             public string szTypeName;
         }
+#pragma warning restore CS0649 // Field is never assigned to, and will always have its default value
     }
 }
