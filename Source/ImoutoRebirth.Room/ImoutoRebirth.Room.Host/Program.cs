@@ -3,7 +3,6 @@ using ImoutoRebirth.Common.Host;
 using ImoutoRebirth.Common.Logging;
 using ImoutoRebirth.Common.MassTransit;
 using ImoutoRebirth.Common.OpenTelemetry;
-using ImoutoRebirth.Common.Quartz.Extensions;
 using ImoutoRebirth.Room.Application;
 using ImoutoRebirth.Room.DataAccess;
 using ImoutoRebirth.Room.Database;
@@ -38,7 +37,6 @@ builder.Services
     .AddRoomInfrastructure()
     .AddRoomUi()
     .AddSqlMassTransit(builder.Configuration, "room", с => с.AddRoomMassTransitSetup())
-    .AddQuartz()
     .AddWebEndpoints()
     .AddOpenTelemetry(builder.Environment, builder.Configuration);
 

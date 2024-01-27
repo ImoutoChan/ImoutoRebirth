@@ -16,8 +16,6 @@ internal class QuartzHostedService : IHostedService
         _jobDescriptions = jobDescriptions.ToArray();
     }
 
-    public void Start() => StartAsync().Wait();
-
     public async Task StartAsync(CancellationToken cancellationToken = default)
     {
         await _scheduler.Start(cancellationToken);
@@ -28,8 +26,6 @@ internal class QuartzHostedService : IHostedService
                 jobDescription.GetJobTrigger(), 
                 cancellationToken);
     }
-
-    public void Stop() => StopAsync().Wait();
 
     public async Task StopAsync(CancellationToken cancellationToken = default)
     {

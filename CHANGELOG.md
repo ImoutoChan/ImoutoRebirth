@@ -22,6 +22,9 @@
 * Fix infinite loading
 * Fix set association for image file types
 
+### Room
+* Remove quartz from Room and use simple PeriodicRunnerHostedService
+
 # 4.23.0
 
 ### Navigator
