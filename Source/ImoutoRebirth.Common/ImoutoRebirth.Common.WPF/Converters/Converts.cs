@@ -1,6 +1,6 @@
 ﻿using System.Diagnostics;
 
-namespace ImoutoRebirth.Navigator.Utils;
+namespace ImoutoRebirth.Common.WPF.Converters;
 
 public static class Converts
 {

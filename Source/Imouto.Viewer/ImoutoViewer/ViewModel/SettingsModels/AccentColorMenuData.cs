@@ -6,8 +6,8 @@ namespace ImoutoViewer.ViewModel.SettingsModels;
 
 internal class AccentColorMenuData
 {
-    public string Name { get; set; }
-    public Brush ColorBrush { get; set; }
+    public required string Name { get; init; }
+    public required Brush ColorBrush { get; init; }
 
     public void ChangeAccent()
     {

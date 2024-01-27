@@ -4,16 +4,17 @@
                     xmlns:converters1="clr-namespace:ImoutoRebirth.Navigator.Converters"
                     xmlns:viewModel="clr-namespace:ImoutoRebirth.Navigator.ViewModel"
                     xmlns:Imouto.Navigator="clr-namespace:ImoutoRebirth.Navigator"
-                    xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks">
+                    xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
+                    xmlns:converters="clr-namespace:ImoutoRebirth.Common.WPF.Converters;assembly=ImoutoRebirth.Common.WPF">
     <ResourceDictionary.MergedDictionaries>
         <ResourceDictionary Source="Resources/Icons.xaml" />
     </ResourceDictionary.MergedDictionaries>
 
     <converters1:IntToColorConverter x:Key="IntToColorConverter" />
 
-    <converters1:ConditionVisibilityConverter x:Key="ConditionVisibilityConverter" />
+    <converters:ConditionVisibilityConverter x:Key="ConditionVisibilityConverter" />
 
-    <converters1:BooleanResultConverter x:Key="BooleanResultConverter" />
+    <converters:BooleanResultConverter x:Key="BooleanResultConverter" />
 
     <ControlTemplate x:Key="SelectableTagElementControlTemplate"
                      TargetType="Button">

@@ -1,11 +1,13 @@
 ﻿using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media.Imaging;
 using System.Windows.Threading;
 using AutoMapper;
+using ImoutoRebirth.Common.WPF;
 using ImoutoViewer.Behavior;
-using ImoutoViewer.Commands;
+using ImoutoRebirth.Common.WPF.Commands;
 using ImoutoViewer.ImoutoRebirth.Services;
 using ImoutoViewer.ImoutoRebirth.Services.Tags.Model;
 using ImoutoViewer.Model;
@@ -22,7 +24,7 @@ internal class MainWindowVM : VMBase, IDragable, IDropable
     private readonly MainWindow _mainWindowView;
     private LocalImageList? _imageList;
     private bool _isSlideShowActive;
-    private DispatcherTimer _timer;
+    private DispatcherTimer? _timer;
     private readonly TagsVM _tagsVM;
     private readonly AddTagVM _addTagVM;
     private readonly CreateTagVM _createTagVM;
@@ -79,7 +81,7 @@ internal class MainWindowVM : VMBase, IDragable, IDropable
         {
             if (_isSlideShowActive)
             {
-                _timer.Stop();
+                _timer?.Stop();
             }
             if (value)
             {
@@ -89,7 +91,7 @@ internal class MainWindowVM : VMBase, IDragable, IDropable
             }
 
             _isSlideShowActive = value;
-            OnPropertyChanged("IsSlideShowActive");
+            OnPropertyChanged(nameof(IsSlideShowActive));
         }
     }
 
@@ -147,7 +149,8 @@ internal class MainWindowVM : VMBase, IDragable, IDropable
             }
 
             int i = (int)Math.Log10(_imageList.DirectoriesCount + 1) + 1;
-            return string.Format("{0," + i + "} / {1," + i + "}",
+            var template = "{0," + i + "} / {1," + i + "}";
+            return string.Format(template,
                 _imageList.CurrentDirectoryIndex + 1,
                 _imageList.DirectoriesCount);
         }
@@ -160,12 +163,12 @@ internal class MainWindowVM : VMBase, IDragable, IDropable
         get
         {
             if (_imageList == null)
-            {
                 return null;
-            }
 
-            int i = (int)Math.Log10(_imageList.ImagesCount) + 1;
-            return string.Format("{0," + i + "} / {1," + i + "}",
+            var i = (int)Math.Log10(_imageList.ImagesCount) + 1;
+            var template = "{0," + i + "} / {1," + i + "}";
+            
+            return string.Format(template,
                 _imageList.CurrentImageIndex + 1,
                 _imageList.ImagesCount);
         }
@@ -214,6 +217,7 @@ internal class MainWindowVM : VMBase, IDragable, IDropable
 
     #region Methods
 
+    [MemberNotNull(nameof(Settings))]
     private void InitializeSettings()
     {
         Settings = new SettingsVM();
@@ -358,26 +362,39 @@ internal class MainWindowVM : VMBase, IDragable, IDropable
 
     #region Commands
 
-    public ICommand SimpleNextImageCommand { get; private set; }
-    public ICommand SimplePrevImageCommand { get; private set; }
-    public ICommand NextImageCommand { get; private set; }
-    public ICommand PrevImageCommand { get; private set; }
-    public ICommand ZoomInCommand { get; private set; }
-    public ICommand ZoomOutCommand { get; private set; }
-    public ICommand NextFolderCommand { get; private set; }
-    public ICommand PrevFolderCommand { get; private set; }
-    public ICommand FixZoomCommand { get; private set; }
-    public ICommand ToggleSlideshowCommand { get; private set; }
+    public ICommand? SimpleNextImageCommand { get; private set; }
+    public ICommand? SimplePrevImageCommand { get; private set; }
+    public ICommand? NextImageCommand { get; private set; }
+    public ICommand? PrevImageCommand { get; private set; }
+    public ICommand? ZoomInCommand { get; private set; }
+    public ICommand? ZoomOutCommand { get; private set; }
+    public ICommand? NextFolderCommand { get; private set; }
+    public ICommand? PrevFolderCommand { get; private set; }
+    public ICommand? FixZoomCommand { get; private set; }
+    public ICommand? ToggleSlideshowCommand { get; private set; }
 
     /// <summary>
     /// Rotation the image. In CommandParameter as string send: 
     /// "right" to rotate image on 90 deg right; 
     /// "left to rotate image on -90 deg left.
     /// </summary>
-    public ICommand RotateCommand { get; private set; }
-    public ICommand ToggleTagsCommand { get; private set; }
-    public ICommand ToggleNotesCommand { get; private set; }
+    public ICommand? RotateCommand { get; private set; }
+    public ICommand? ToggleTagsCommand { get; private set; }
+    public ICommand? ToggleNotesCommand { get; private set; }
 
+    [MemberNotNull(nameof(SimpleNextImageCommand))]
+    [MemberNotNull(nameof(SimplePrevImageCommand))]
+    [MemberNotNull(nameof(NextImageCommand))]
+    [MemberNotNull(nameof(PrevImageCommand))]
+    [MemberNotNull(nameof(ZoomInCommand))]
+    [MemberNotNull(nameof(ZoomOutCommand))]
+    [MemberNotNull(nameof(NextFolderCommand))]
+    [MemberNotNull(nameof(PrevFolderCommand))]
+    [MemberNotNull(nameof(FixZoomCommand))]
+    [MemberNotNull(nameof(ToggleSlideshowCommand))]
+    [MemberNotNull(nameof(RotateCommand))]
+    [MemberNotNull(nameof(ToggleTagsCommand))]
+    [MemberNotNull(nameof(ToggleNotesCommand))]
     private void InitializeCommands()
     {
         SimpleNextImageCommand = new RelayCommand(_ =>

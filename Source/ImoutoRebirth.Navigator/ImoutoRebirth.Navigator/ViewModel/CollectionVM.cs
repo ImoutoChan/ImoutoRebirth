@@ -1,7 +1,8 @@
 ﻿using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Windows.Input;
-using ImoutoRebirth.Navigator.Commands;
+using ImoutoRebirth.Common.WPF;
+using ImoutoRebirth.Common.WPF.Commands;
 using ImoutoRebirth.Navigator.Services;
 using ImoutoRebirth.Navigator.Services.Collections;
 using ImoutoRebirth.Navigator.Utils;

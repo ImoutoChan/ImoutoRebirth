@@ -1,6 +1,7 @@
 ﻿using System.Windows.Input;
 using System.Windows.Media;
-using ImoutoViewer.Commands;
+using ImoutoRebirth.Common.WPF;
+using ImoutoRebirth.Common.WPF.Commands;
 using ImoutoViewer.Extensions;
 using ImoutoViewer.ImoutoRebirth.Services.Tags.Model;
 
@@ -10,8 +11,8 @@ internal class BindedTagVM : VMBase
 {
     private TagsVM _parantVM;
     private FileTag _modelTag;
-    private Brush _typeBrush;
-    private ICommand _unbindCommand;
+    private Brush? _typeBrush;
+    private ICommand? _unbindCommand;
 
     public BindedTagVM(FileTag tag, TagsVM tagsVM)
     {
@@ -36,56 +37,17 @@ internal class BindedTagVM : VMBase
         }
     }
 
-    public Guid Id
-    {
-        get
-        {
-            return _modelTag.Tag.Id;
-        }
-    }
+    public Guid Id => _modelTag.Tag.Id;
 
-    public Brush TypeBrush
-    {
-        get
-        {
-            return _typeBrush ?? (_typeBrush = new SolidColorBrush(ColorExtensions.ToColor(_modelTag.Tag.Type.Color)));
-        }
-    }
+    public Brush TypeBrush => _typeBrush ?? (_typeBrush = new SolidColorBrush(ColorExtensions.ToColor(_modelTag.Tag.Type.Color)));
 
-    public string Source
-    {
-        get
-        {
-            return _modelTag.Source.ToString();
-        }
-    }
+    public string Source => _modelTag.Source.ToString();
 
-    public bool IsEditable
-    {
-        get
-        {
-            return _modelTag.IsEditable;
-        }
-    }
+    public bool IsEditable => _modelTag.IsEditable;
 
-    public int Count
-    {
-        get
-        {
-            return _modelTag.Tag.Count;
-        }
-    }
+    public int Count => _modelTag.Tag.Count;
 
-    public ICommand UnbindCommand
-    {
-        get
-        {
-            return _unbindCommand ?? (_unbindCommand = new RelayCommand(Unbind));
-        }
-    }
+    public ICommand UnbindCommand => _unbindCommand ?? (_unbindCommand = new RelayCommand(Unbind));
 
-    private void Unbind(object obj)
-    {
-        _parantVM.UnbindTagAsync(this);
-    }
+    private void Unbind(object? obj) => _parantVM.UnbindTagAsync(this);
 }

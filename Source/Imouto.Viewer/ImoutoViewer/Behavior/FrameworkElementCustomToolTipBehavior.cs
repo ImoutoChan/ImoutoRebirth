@@ -3,7 +3,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Documents;
 using System.Windows.Input;
-using ImoutoViewer.Extensions;
+using ImoutoRebirth.Common.WPF;
 using Microsoft.Xaml.Behaviors;
 
 namespace ImoutoViewer.Behavior;
@@ -13,9 +13,9 @@ internal class FrameworkElementCustomToolTipBehavior : Behavior<FrameworkElement
     #region Fields
 
     private const int MinToolTipSize = 150;
-    private static FrameworkElement _currentTarget;
+    private static FrameworkElement? _currentTarget;
     private bool _sizeChangeSubscribed;
-    private FrameworkElement _toolTipBorder;
+    private FrameworkElement? _toolTipBorder;
     private bool _isOpened;
 
     #endregion Fields
@@ -24,12 +24,12 @@ internal class FrameworkElementCustomToolTipBehavior : Behavior<FrameworkElement
 
     public ObservableCollection<Inline> InlineList
     {
-        get { return (ObservableCollection<Inline>) GetValue(InlineListProperty); }
-        set { SetValue(InlineListProperty, value); }
+        get => (ObservableCollection<Inline>) GetValue(InlineListProperty);
+        set => SetValue(InlineListProperty, value);
     }
 
     public static readonly DependencyProperty InlineListProperty =
-        DependencyProperty.Register("InlineList", typeof (ObservableCollection<Inline>),
+        DependencyProperty.Register(nameof(InlineList), typeof (ObservableCollection<Inline>),
             typeof (FrameworkElementCustomToolTipBehavior), null);
 
     #endregion DependencyProperty
@@ -159,23 +159,29 @@ internal class FrameworkElementCustomToolTipBehavior : Behavior<FrameworkElement
         _isOpened = false;
     }
 
-    private void PlaceToolTip(UIElement target)
+    private void PlaceToolTip(UIElement? target)
     {
-        var mainWindow = UiHelper.FindVisualParent<Window>(target);
+        if (target == null)
+            return;
+        
+        var mainWindow = UIHelper.FindVisualParent<Window>(target);
         if (mainWindow == null)
             return;
 
-        var area = (UIElement) mainWindow.FindName("GridParent");
+        var area = (UIElement?) mainWindow.FindName("GridParent");
 
+        if (area == null)
+            return;
+        
         if (!_sizeChangeSubscribed)
         {
-            (area as FrameworkElement).SizeChanged += FrameworkElementCustomToolTipBehavior_SizeChanged;
+            ((FrameworkElement)area).SizeChanged += FrameworkElementCustomToolTipBehavior_SizeChanged;
             _sizeChangeSubscribed = true;
         }
 
 
-        _toolTipBorder = (FrameworkElement) mainWindow.FindName("ToolTipBorder");
-        var toolTipTextBlock = (TextBlock) mainWindow.FindName("ToolTipTextBlock");
+        _toolTipBorder = mainWindow.FindName("ToolTipBorder") as FrameworkElement;
+        var toolTipTextBlock = mainWindow.FindName("ToolTipTextBlock") as TextBlock;
 
         var targetPosition = target.TransformToAncestor(area).Transform(new Point(0, 0));
         var targetSize = target.RenderSize;
@@ -247,6 +253,9 @@ internal class FrameworkElementCustomToolTipBehavior : Behavior<FrameworkElement
                 break;
         }
 
+        if (_toolTipBorder == null || toolTipTextBlock == null)
+            return;
+        
         _toolTipBorder.Visibility = Visibility.Collapsed;
 
         _toolTipBorder.Width = toolTipWidth;
@@ -285,7 +294,11 @@ internal class FrameworkElementCustomToolTipBehavior : Behavior<FrameworkElement
     {
         _currentTarget = sender as FrameworkElement;
         PlaceToolTip(_currentTarget);
-        _currentTarget.Unloaded += (o, args) => { HideToolTip(); };
+        
+        if (_currentTarget == null)
+            return;
+        
+        _currentTarget.Unloaded += (_, _) => HideToolTip();
     }
 
     private void AssociatedObject_MouseLeave(object sender, MouseEventArgs e)

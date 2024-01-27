@@ -7,17 +7,6 @@ internal static class Extentions
         Func<TSource, TKey> keySelector,
         bool descending)
     {
-        // if (typeof(TSource) == typeof(string))
-        // {
-        //     return descending
-        //         ? source.OrderByDescending(
-        //             x => (string)(object)keySelector(x)!,
-        //             NaturalComparer.InvariantCultureIgnoreCase)
-        //         : source.OrderBy(
-        //             x => (string)(object)keySelector(x)!, 
-        //             NaturalComparer.InvariantCultureIgnoreCase);
-        // }
-        
         return descending
             ? source.OrderByDescending(keySelector)
             : source.OrderBy(keySelector);

@@ -1,6 +1,8 @@
 ﻿using System.Diagnostics;
 using System.Windows.Input;
 using System.Windows.Media;
+using ImoutoRebirth.Common.WPF;
+using ImoutoRebirth.Common.WPF.Commands;
 using ImoutoRebirth.Lilin.WebApi.Client;
 using ImoutoRebirth.Navigator.Services;
 using ImoutoRebirth.Navigator.Services.Tags;

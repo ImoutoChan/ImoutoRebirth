@@ -6,69 +6,21 @@ internal class MouseWheelGesture : MouseGesture
 {
     private WheelDirection Direction { get; set; }
 
-    public static MouseWheelGesture Up
-    {
-        get
-        {
-            return new MouseWheelGesture { Direction = WheelDirection.Up };
-        }
-    }
+    public static MouseWheelGesture Up => new() { Direction = WheelDirection.Up };
 
-    public static MouseWheelGesture Down
-    {
-        get
-        {
-            return new MouseWheelGesture { Direction = WheelDirection.Down };
-        }
-    }
+    public static MouseWheelGesture Down => new() { Direction = WheelDirection.Down };
 
-    public static MouseWheelGesture CtrlUp
-    {
-        get
-        {
-            return new MouseWheelGesture(ModifierKeys.Control) { Direction = WheelDirection.Up };
-        }
-    }
+    public static MouseWheelGesture CtrlUp => new(ModifierKeys.Control) { Direction = WheelDirection.Up };
 
-    public static MouseWheelGesture CtrlDown
-    {
-        get
-        {
-            return new MouseWheelGesture(ModifierKeys.Control) { Direction = WheelDirection.Down };
-        }
-    }
+    public static MouseWheelGesture CtrlDown => new(ModifierKeys.Control) { Direction = WheelDirection.Down };
 
-    public static MouseWheelGesture AltUp
-    {
-        get
-        {
-            return new MouseWheelGesture(ModifierKeys.Alt) { Direction = WheelDirection.Up };
-        }
-    }
+    public static MouseWheelGesture AltUp => new(ModifierKeys.Alt) { Direction = WheelDirection.Up };
 
-    public static MouseWheelGesture AltDown
-    {
-        get
-        {
-            return new MouseWheelGesture(ModifierKeys.Alt) { Direction = WheelDirection.Down };
-        }
-    }
+    public static MouseWheelGesture AltDown => new(ModifierKeys.Alt) { Direction = WheelDirection.Down };
 
-    public static MouseWheelGesture ShiftUp
-    {
-        get
-        {
-            return new MouseWheelGesture(ModifierKeys.Shift) { Direction = WheelDirection.Up };
-        }
-    }
+    public static MouseWheelGesture ShiftUp => new(ModifierKeys.Shift) { Direction = WheelDirection.Up };
 
-    public static MouseWheelGesture ShiftDown
-    {
-        get
-        {
-            return new MouseWheelGesture(ModifierKeys.Shift) { Direction = WheelDirection.Down };
-        }
-    }
+    public static MouseWheelGesture ShiftDown => new(ModifierKeys.Shift) { Direction = WheelDirection.Down };
 
     public MouseWheelGesture()
         : base(MouseAction.WheelClick)

@@ -13,8 +13,8 @@ internal class DirectorySearchTypeDescriptor
 
     #region Properties
 
-    public string Name { get; private set; }
-    public DirectorySearchFlags Type { get; private set; }
+    public required string Name { get; init; }
+    public required DirectorySearchFlags Type { get; init; }
     public bool IsSelected
     {
         get
@@ -52,11 +52,11 @@ internal class DirectorySearchTypeDescriptor
     {
         return new ObservableCollection<DirectorySearchTypeDescriptor>
         {
-            new DirectorySearchTypeDescriptor { Name = "All Pre", Type = DirectorySearchFlags.AllDepthPrefolder },
-            new DirectorySearchTypeDescriptor { Name = "Pre", Type = DirectorySearchFlags.Prefolders },
-            new DirectorySearchTypeDescriptor { Name = "Cur", Type = DirectorySearchFlags.Folder },
-            new DirectorySearchTypeDescriptor { Name = "Sub", Type = DirectorySearchFlags.Subfolders },
-            new DirectorySearchTypeDescriptor { Name = "All Sub", Type = DirectorySearchFlags.AllDepthSubfolders },
+            new() { Name = "All Pre", Type = DirectorySearchFlags.AllDepthPrefolder },
+            new() { Name = "Pre", Type = DirectorySearchFlags.Prefolders },
+            new() { Name = "Cur", Type = DirectorySearchFlags.Folder },
+            new() { Name = "Sub", Type = DirectorySearchFlags.Subfolders },
+            new() { Name = "All Sub", Type = DirectorySearchFlags.AllDepthSubfolders },
         };
     }
 
@@ -64,14 +64,8 @@ internal class DirectorySearchTypeDescriptor
 
     #region Events
 
-    public event EventHandler SelectedChanged;
-    private void OnSelectedChanged()
-    {
-        if (SelectedChanged != null)
-        {
-            SelectedChanged(this, new EventArgs());
-        }
-    }
+    public event EventHandler? SelectedChanged;
+    private void OnSelectedChanged() => SelectedChanged?.Invoke(this, EventArgs.Empty);
 
     #endregion Events
 }

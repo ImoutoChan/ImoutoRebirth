@@ -1,9 +1,8 @@
 ﻿using System.Globalization;
 using System.Windows;
 using System.Windows.Data;
-using ImoutoRebirth.Navigator.Utils;
 
-namespace ImoutoRebirth.Navigator.Converters;
+namespace ImoutoRebirth.Common.WPF.Converters;
 
 /// <summary>
 /// param: true|false|!null
@@ -11,7 +10,7 @@ namespace ImoutoRebirth.Navigator.Converters;
 /// param[1] compared to value and sets result to hidden if it's match
 /// param[2] compared to value and sets result to visible if it's not match (I don't know why...)
 /// </summary>
-internal class ConditionVisibilityConverter : IValueConverter
+public class ConditionVisibilityConverter : IValueConverter
 {
     public object Convert(object? value, Type targetType, object? parameter, CultureInfo culture)
     {

@@ -2,6 +2,7 @@
 using System.Diagnostics;
 using System.IO;
 using System.Security.Cryptography;
+using ImoutoRebirth.Common.WPF;
 using ImoutoViewer.ImoutoRebirth.Services;
 using ImoutoViewer.ImoutoRebirth.Services.Tags;
 using ImoutoViewer.ImoutoRebirth.Services.Tags.Model;
@@ -80,7 +81,10 @@ internal class TagsVM : VMBase
     {
         try
         {
-            var path = _parent.CurrentLocalImage.Path;
+            var path = _parent.CurrentLocalImage?.Path;
+
+            if (path == null)
+                return;
 
             var needReload = false;
             lock (_currentPath)
@@ -121,7 +125,7 @@ internal class TagsVM : VMBase
         {
             await CreateTagTask(createTagVM);
 
-            _parent.View.ShowMessageDialog("Tag creating", "Tag succsessfully created");
+            _parent.View.ShowMessageDialog("Tag creating", "Tag successfully created");
         }
         catch (Exception ex)
         {
@@ -143,7 +147,7 @@ internal class TagsVM : VMBase
         {
             await UnbindTagTask(CurrentId.Value, bindedTagVM.Id);
 
-            _parent.View.ShowMessageDialog("Removing tag from current image", "Tag succsessfully removed");
+            _parent.View.ShowMessageDialog("Removing tag from current image", "Tag successfully removed");
         }
         catch (Exception ex)
         {
@@ -167,7 +171,7 @@ internal class TagsVM : VMBase
         {
             await BindTagTask(addTagVM);
 
-            _parent.View.ShowMessageDialog("Adding tag to current image", "Tag succsessfully added");
+            _parent.View.ShowMessageDialog("Adding tag to current image", "Tag successfully added");
             _parent.View.CloseAllFlyouts();
         }
         catch (Exception ex)
@@ -186,6 +190,9 @@ internal class TagsVM : VMBase
 
     private Task CreateTagTask(CreateTagVM createTagVm)
     {
+        if (createTagVm.SelectedType == null || createTagVm.Title == null)
+            throw new ArgumentException("Tag type or title is null");
+        
         return _tagService.CreateTag(
             createTagVm.SelectedType.Id,
             createTagVm.Title,
@@ -212,7 +219,7 @@ internal class TagsVM : VMBase
         var tags = await _fileTagService.GetFileTags(file.Id);
         var notes = await _fileTagService.GetFileNotes(file.Id);
 
-        var notesModels = notes.Select(x => new NoteM(x.Label, x.PositionFromLeft,
+        var notesModels = notes.Select(x => new NoteM(x.Label!, x.PositionFromLeft,
             x.PositionFromTop, x.Width, x.Height, x.Source)).ToList();
 
         return (tags, notesModels);
@@ -261,11 +268,7 @@ internal class TagsVM : VMBase
             .Distinct().ToList();
         if (parsedSources.Count() > 1)
         {
-            SourcesCollection.Add(new SourceVM
-            {
-                Title = "Common"
-            });
-
+            SourcesCollection.Add(new SourceVM("Common"));
 
             var commonBindedTagVms = SourcesCollection.Last()
                 .TagsCollection;
@@ -294,13 +297,9 @@ internal class TagsVM : VMBase
             }
         }
 
-        foreach (var source in TagsCollection.Select(x => x.Source)
-                     .Distinct())
+        foreach (var source in TagsCollection.Select(x => x.Source).Distinct())
         {
-            SourcesCollection.Add(new SourceVM
-            {
-                Title = source
-            });
+            SourcesCollection.Add(new SourceVM(source));
 
             TagsCollection.Where(
                     x => x.Source == source && (SourcesCollection.FirstOrDefault()
@@ -362,13 +361,9 @@ internal class TagsVM : VMBase
 
     #region Events
 
-    public event EventHandler TagsLoaded;
+    public event EventHandler? TagsLoaded;
 
-    private void OnTagsLoaded()
-    {
-        var handler = TagsLoaded;
-        handler?.Invoke(this, new EventArgs());
-    }
+    private void OnTagsLoaded() => TagsLoaded?.Invoke(this, EventArgs.Empty);
 
     #endregion Events
 }

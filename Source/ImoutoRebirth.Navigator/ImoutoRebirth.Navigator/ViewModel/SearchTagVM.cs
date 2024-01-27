@@ -1,5 +1,6 @@
 ﻿#nullable enable
 using System.Windows.Media;
+using ImoutoRebirth.Common.WPF;
 using ImoutoRebirth.Navigator.Services.Tags.Model;
 using ImoutoRebirth.Navigator.Utils;
 

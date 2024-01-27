@@ -20,12 +20,12 @@ internal class DestinationFolderService : IDestinationFolderService
         return new DestinationFolder(
             result.Id,
             result.CollectionId,
-            result.Path,
+            result.Path!,
             result.ShouldCreateSubfoldersByHash,
             result.ShouldRenameByHash,
-            result.FormatErrorSubfolder,
-            result.HashErrorSubfolder,
-            result.WithoutHashErrorSubfolder);
+            result.FormatErrorSubfolder!,
+            result.HashErrorSubfolder!,
+            result.WithoutHashErrorSubfolder!);
     }
 
     public async Task<DestinationFolder> SetDestinationFolderAsync(DestinationFolder destinationFolder)

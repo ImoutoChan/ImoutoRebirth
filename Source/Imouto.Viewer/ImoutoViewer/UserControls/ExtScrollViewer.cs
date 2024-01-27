@@ -39,12 +39,13 @@ internal class ExtScrollViewer : ScrollViewer
 
         double hZoomTo = Mouse.GetPosition(this).Y / ActualHeight; //0.5;
         double wZoomTo = Mouse.GetPosition(this).X / ActualWidth; //0.5;
+        
         // Current view offset, range [0;1]
-        double hCVO = (VerticalOffset + ViewportHeight * hZoomTo) / ExtentHeight;
-        double wCVO = (HorizontalOffset + ViewportWidth * wZoomTo) / ExtentWidth;
+        double hCvO = (VerticalOffset + ViewportHeight * hZoomTo) / ExtentHeight;
+        double wCvO = (HorizontalOffset + ViewportWidth * wZoomTo) / ExtentWidth;
 
-        double hNewOffset = e.NewSize.Height * hCVO - ViewportHeight * hZoomTo;
-        double wNewOffset = e.NewSize.Width * wCVO - ViewportWidth * wZoomTo;
+        double hNewOffset = e.NewSize.Height * hCvO - ViewportHeight * hZoomTo;
+        double wNewOffset = e.NewSize.Width * wCvO - ViewportWidth * wZoomTo;
 
         ScrollToVerticalOffset(hNewOffset);
         ScrollToHorizontalOffset(wNewOffset);

@@ -1,11 +1,13 @@
 ﻿using System.Collections.ObjectModel;
 using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
 using System.Reflection;
 using System.Windows;
 using System.Windows.Input;
 using AssociationManager;
 using ControlzEx.Theming;
-using ImoutoViewer.Commands;
+using ImoutoRebirth.Common.WPF;
+using ImoutoRebirth.Common.WPF.Commands;
 using ImoutoViewer.Model;
 using ImoutoViewer.Properties;
 using ImoutoViewer.ViewModel.SettingsModels;
@@ -62,13 +64,13 @@ internal class SettingsVM : VMBase
 
         SelectedIndexTheme = Settings.Default.ThemeIndex;
 
-        SaveCommand = new RelayCommand(x => Save());
+        SaveCommand = new RelayCommand(_ => Save());
 
         ShowTags = Settings.Default.ShowTags;
 
         ShowNotes = Settings.Default.ShowNotes;
 
-        SetFileAssociationsCommand = new RelayCommand(param => SetFileAssociations());
+        SetFileAssociationsCommand = new AsyncCommand(SetFileAssociations);
     }
 
     #endregion Constructors
@@ -77,10 +79,7 @@ internal class SettingsVM : VMBase
 
     public int SlideshowDelay
     {
-        get
-        {
-            return Settings.Default.SlideshowDelay;
-        }
+        get => Settings.Default.SlideshowDelay;
         set
         {
             Settings.Default.SlideshowDelay = value;
@@ -91,10 +90,8 @@ internal class SettingsVM : VMBase
     public List<ResizeTypeDescriptor> ResizeTypes { get; private set; }
     public ResizeTypeDescriptor SelectedResizeType
     {
-        get
-        {
-            return _selectedResizeType;
-        }
+        get => _selectedResizeType;
+        [MemberNotNull(nameof(_selectedResizeType))]
         set
         {
             _selectedResizeType = value;
@@ -104,13 +101,10 @@ internal class SettingsVM : VMBase
     }
 
     public ObservableCollection<DirectorySearchTypeDescriptor> DirectorySearchTypes { get; private set; }
-    public DirectorySearchFlags DirectorySearchFlags
-    {
-        get
-        {
-            return DirectorySearchTypes.Where(item => item.IsSelected).Aggregate(DirectorySearchFlags.None, (current, item) => current | item.Type);
-        }
-    }
+    public DirectorySearchFlags DirectorySearchFlags 
+        => DirectorySearchTypes
+            .Where(item => item.IsSelected)
+            .Aggregate(DirectorySearchFlags.None, (current, item) => current | item.Type);
 
     public List<SortingDescriptor> FilesSortingMethods { get; set; }
 
@@ -118,7 +112,8 @@ internal class SettingsVM : VMBase
 
     public SortingDescriptor SelectedFoldersSorting
     {
-        get { return _selectedFoldersSorting; }
+        get => _selectedFoldersSorting;
+        [MemberNotNull(nameof(_selectedFoldersSorting))]
         set
         {
             _selectedFoldersSorting = value;
@@ -129,7 +124,7 @@ internal class SettingsVM : VMBase
 
     public bool IsSelectedFoldersSortingDescending
     {
-        get { return _isSelectedFoldersSortingDescending; }
+        get => _isSelectedFoldersSortingDescending;
         set
         {
             _isSelectedFoldersSortingDescending = value;
@@ -140,7 +135,8 @@ internal class SettingsVM : VMBase
 
     public SortingDescriptor SelectedFilesSorting
     {
-        get { return _selectedFilesSorting; }
+        get => _selectedFilesSorting;
+        [MemberNotNull(nameof(_selectedFilesSorting))]
         set
         {
             _selectedFilesSorting = value;
@@ -151,7 +147,7 @@ internal class SettingsVM : VMBase
 
     public bool IsSelectedFilesSortingDescending
     {
-        get { return _isSelectedFilesSortingDescending; }
+        get => _isSelectedFilesSortingDescending;
         set
         {
             _isSelectedFilesSortingDescending = value;
@@ -164,10 +160,8 @@ internal class SettingsVM : VMBase
 
     public AccentColorMenuData SelectedAccentColor
     {
-        get
-        {
-            return _selectedAccentColor;
-        }
+        get => _selectedAccentColor;
+        [MemberNotNull(nameof(_selectedAccentColor))]
         set
         {
             _selectedAccentColor = value;
@@ -180,10 +174,7 @@ internal class SettingsVM : VMBase
     /// </summary>
     public int SelectedIndexTheme
     {
-        get
-        {
-            return _selectedTheme;
-        }
+        get => _selectedTheme;
         set
         {
             _selectedTheme = value;
@@ -203,10 +194,7 @@ internal class SettingsVM : VMBase
 
     public bool ShowTags
     {
-        get
-        {
-            return _showTags;
-        }
+        get => _showTags;
         set
         {
             OnPropertyChanged(ref _showTags, value, () => ShowTags);
@@ -217,10 +205,7 @@ internal class SettingsVM : VMBase
 
     public bool ShowNotes
     {
-        get
-        {
-            return _showNotes;
-        }
+        get => _showNotes;
         set
         {
             OnPropertyChanged(ref _showNotes, value, () => ShowNotes);
@@ -252,8 +237,8 @@ internal class SettingsVM : VMBase
         {
             using (var mgr = new FileAssociationManager())
             {
-                foreach (
-                    var ext in SupportedFormatsExtensions.GetSupportedFormatsList(typeof(ImageFormat)).Select(x => x.Substring(1)))
+                foreach (var ext in SupportedFormatsExtensions
+                             .GetSupportedFormatsList(typeof(ImageFormat)).Select(x => x[1..]))
                 {
                     Associate(mgr, ext);
                 }
@@ -263,7 +248,7 @@ internal class SettingsVM : VMBase
                 "Associations are successfully set.",
                 MessageDialogStyle.AffirmativeAndNegative);
         }
-        catch (UnauthorizedAccessException e)
+        catch (UnauthorizedAccessException)
         {
             var result = await MainWindow.CurrentWindow.ShowMessageAsync("File association", 
                 "You need administrative rights to set associations. Application will be restarted with administrative rights.",
@@ -314,67 +299,29 @@ internal class SettingsVM : VMBase
 
     #region Event handlers
 
-    private void item_SelectedChanged(object sender, EventArgs e)
-    {
-        OnSelectedDirectorySearchTypeChanged();
-    }
+    private void item_SelectedChanged(object? sender, EventArgs e) => OnSelectedDirectorySearchTypeChanged();
 
     #endregion  Event handlers
 
     #region Events
 
-    public event EventHandler SelectedResizeTypeChanged;
-    private void OnSelectedResizeTypeChanged()
-    {
-        if (SelectedResizeTypeChanged != null)
-        {
-            SelectedResizeTypeChanged(this, null);
-        }
-    }
+    public event EventHandler? SelectedResizeTypeChanged;
+    private void OnSelectedResizeTypeChanged() => SelectedResizeTypeChanged?.Invoke(this, EventArgs.Empty);
 
-    public event EventHandler SelectedDirectorySearchTypeChanged;
-    private void OnSelectedDirectorySearchTypeChanged()
-    {
-        if (SelectedDirectorySearchTypeChanged != null)
-        {
-            SelectedDirectorySearchTypeChanged(this, null);
-        }
-    }
+    public event EventHandler? SelectedDirectorySearchTypeChanged;
+    private void OnSelectedDirectorySearchTypeChanged() => SelectedDirectorySearchTypeChanged?.Invoke(this, EventArgs.Empty);
 
-    public event EventHandler SelectedFilesSortingChanged;
-    private void OnSelectedFilesSortingChanged()
-    {
-        if (SelectedFilesSortingChanged != null)
-        {
-            SelectedFilesSortingChanged(this, null);
-        }
-    }
+    public event EventHandler? SelectedFilesSortingChanged;
+    private void OnSelectedFilesSortingChanged() => SelectedFilesSortingChanged?.Invoke(this, EventArgs.Empty);
 
-    public event EventHandler SelectedFoldersSortingChanged;
-    private void OnSelectedFoldersSortingChanged()
-    {
-        if (SelectedFoldersSortingChanged != null)
-        {
-            SelectedFoldersSortingChanged(this, null);
-        }
-    }
+    public event EventHandler? SelectedFoldersSortingChanged;
+    private void OnSelectedFoldersSortingChanged() => SelectedFoldersSortingChanged?.Invoke(this, EventArgs.Empty);
 
-    public event EventHandler SelectedTagsModeChanged;
-    private void OnSelectedTagsModeChanged()
-    {
-        if (SelectedTagsModeChanged != null)
-        {
-            SelectedTagsModeChanged(this, null);
-        }
-    }
+    public event EventHandler? SelectedTagsModeChanged;
+    private void OnSelectedTagsModeChanged() => SelectedTagsModeChanged?.Invoke(this, EventArgs.Empty);
 
-    public event EventHandler SelectedNotesModeChanged;
-    private void OnSelectedNotesModeChanged()
-    {
-        var handler = SelectedNotesModeChanged;
-        handler?.Invoke(this, null);
-    }
+    public event EventHandler? SelectedNotesModeChanged;
+    private void OnSelectedNotesModeChanged() => SelectedNotesModeChanged?.Invoke(this, EventArgs.Empty);
 
-        
     #endregion Events
 }

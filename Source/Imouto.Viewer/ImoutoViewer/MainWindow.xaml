@@ -16,6 +16,7 @@
                           xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
                           xmlns:model="clr-namespace:ImoutoViewer.Model"
                           xmlns:viewModel="clr-namespace:ImoutoViewer.ViewModel"
+                          xmlns:converters1="clr-namespace:ImoutoRebirth.Common.WPF.Converters;assembly=ImoutoRebirth.Common.WPF"
                           mc:Ignorable="d"
                           d:DataContext="{d:DesignInstance viewModel:MainWindowVM, IsDesignTimeCreatable=False}"
                           Title="{Binding Path=Title}"
@@ -103,19 +104,15 @@
     </b:Interaction.Behaviors>
 
     <metroControl:MetroWindow.Resources>
-        <converters:BooleanToVisibilityConverter x:Key="VisibilityConverter" />
+        <converters1:BooleanToVisibilityConverter x:Key="VisibilityConverter" />
 
-        <converters:BooleanToVisibilityConverter x:Key="VisibilityInvertConverter"
-                                                IsInvert="True" />
+        <converters1:BooleanToVisibilityConverter x:Key="VisibilityInvertConverter"
+                                                 IsInvert="True" />
 
-        <converters:BooleanToVisibilityConverter x:Key="CollapsedVisibilityConverter"
-                                                CollapsedOnFalse="True" />
+        <converters1:BooleanToVisibilityConverter x:Key="CollapsedVisibilityInvertConverter"
+                                                 IsInvert="True" />
 
-        <converters:BooleanToVisibilityConverter x:Key="CollapsedVisibilityInvertConverter"
-                                                CollapsedOnFalse="True"
-                                                IsInvert="True" />
-
-        <converters:ConditionVisibilityConverter x:Key="ConditionVisibilityConverter" />
+        <converters1:ConditionVisibilityConverter x:Key="ConditionVisibilityConverter" />
     </metroControl:MetroWindow.Resources>
 
     <metroControl:MetroWindow.Flyouts>

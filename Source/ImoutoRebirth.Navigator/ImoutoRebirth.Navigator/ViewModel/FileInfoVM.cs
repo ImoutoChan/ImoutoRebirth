@@ -2,7 +2,8 @@
 using System.Security.Cryptography;
 using System.Windows;
 using System.Windows.Input;
-using ImoutoRebirth.Navigator.Commands;
+using ImoutoRebirth.Common.WPF;
+using ImoutoRebirth.Common.WPF.Commands;
 using ImoutoRebirth.Navigator.ViewModel.ListEntries;
 
 namespace ImoutoRebirth.Navigator.ViewModel;

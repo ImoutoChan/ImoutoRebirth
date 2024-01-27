@@ -11,5 +11,6 @@ internal interface IDropable
     /// Drop data logic.
     /// </summary>
     /// <param name="data">The data to be dropped.</param>
-    void Drop(object data, object sourceGuid);
+    /// <param name="sourceGuid">Drag source</param>
+    void Drop(object data, object? sourceGuid);
 }

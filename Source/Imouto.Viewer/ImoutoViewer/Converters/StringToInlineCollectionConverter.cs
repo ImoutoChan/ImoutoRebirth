@@ -7,7 +7,7 @@ namespace ImoutoViewer.Converters;
 
 internal class StringToInlineCollectionConverter : IValueConverter
 {
-    public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+    public object Convert(object? value, Type targetType, object? parameter, System.Globalization.CultureInfo culture)
     {
         var str = (value as string) + "<";
         str = str.Replace("&lt;", "<");
@@ -115,7 +115,7 @@ internal class StringToInlineCollectionConverter : IValueConverter
         return new ObservableCollection<Inline>(result);
     }
 
-    public object ConvertBack(object value, Type targetType, object parameter,
+    public object ConvertBack(object? value, Type targetType, object? parameter,
         System.Globalization.CultureInfo culture)
     {
         throw new NotImplementedException();

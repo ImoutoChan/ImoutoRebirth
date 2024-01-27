@@ -2,32 +2,18 @@
 
 internal class TagsModeDescriptor
 {
-    #region Properties
+    public required string Name { get; init; }
+    
+    public required byte Value { get; init; }
 
-    public string Name { get; set; }
-    public byte Value { get; set; }
-
-    #endregion Properties
-
-    #region Methods
-
-    public override string ToString()
-    {
-        return Name;
-    }
-
-    #endregion Methods
-
-    #region Static methods
+    public override string ToString() => Name;
 
     public static List<TagsModeDescriptor> GetListForFiles()
     {
         return new List<TagsModeDescriptor>
         {
-            new TagsModeDescriptor { Name = "Show", Value = 1 },
-            new TagsModeDescriptor { Name = "Hide", Value = 0  },
+            new() { Name = "Show", Value = 1 },
+            new() { Name = "Hide", Value = 0  },
         };
     }
-
-    #endregion Static methods
 }

@@ -1,7 +1,7 @@
 ﻿using System.Windows;
 using System.Windows.Media;
 
-namespace ImoutoRebirth.Navigator.Utils.Wpf;
+namespace ImoutoRebirth.Common.WPF;
 
 public static class UIHelper
 {

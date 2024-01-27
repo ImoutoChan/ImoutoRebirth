@@ -4,7 +4,8 @@ using System.Windows.Input;
 using System.Windows.Media;
 using ControlzEx.Theming;
 using ImoutoRebirth.Common;
-using ImoutoRebirth.Navigator.Commands;
+using ImoutoRebirth.Common.WPF;
+using ImoutoRebirth.Common.WPF.Commands;
 using MahApps.Metro.Theming;
 
 namespace ImoutoRebirth.Navigator.ViewModel;

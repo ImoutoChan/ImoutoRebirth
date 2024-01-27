@@ -1,4 +1,5 @@
 ﻿using System.Collections.ObjectModel;
+using ImoutoRebirth.Common.WPF;
 
 namespace ImoutoRebirth.Navigator.ViewModel;
 

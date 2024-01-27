@@ -2,7 +2,8 @@
 using System.Diagnostics;
 using System.Net;
 using System.Windows.Input;
-using ImoutoRebirth.Navigator.Commands;
+using ImoutoRebirth.Common.WPF;
+using ImoutoRebirth.Common.WPF.Commands;
 using ImoutoRebirth.Navigator.Services;
 using ImoutoRebirth.Navigator.Services.Tags;
 using ImoutoRebirth.Navigator.Services.Tags.Model;

@@ -1,149 +1,81 @@
 ﻿using System.Collections.ObjectModel;
 using System.Windows.Input;
-using ImoutoViewer.Commands;
+using ImoutoRebirth.Common.WPF;
+using ImoutoRebirth.Common.WPF.Commands;
 using ImoutoViewer.ImoutoRebirth.Services.Tags.Model;
 
 namespace ImoutoViewer.ViewModel;
 
 internal class CreateTagVM : VMBase
 {
+    private static readonly SemaphoreSlim ReloadTagTypesAsyncSemaphore = new(1, 1);
+
     private MainWindowVM _parent;
-    private bool _tagTypesLoaded = false;
+    private bool _tagTypesLoaded;
+    private TagType? _selectedType;
+    private ObservableCollection<TagType> _tagTypes = new();
+    private string? _title;
+    private string? _synonyms;
+    private bool _hasValue;
+    private ICommand? _saveCommand;
+    private ICommand? _resetCommand;
 
     public CreateTagVM(MainWindowVM _parentVM)
     {
         _parent = _parentVM;
     }
 
-    #region Properties
 
-    private TagType _selectedType;
-
-    public TagType SelectedType
+    public TagType? SelectedType
     {
-        get
-        {
-            return _selectedType;
-        }
-        set
-        {
-            OnPropertyChanged(ref _selectedType, value, () => SelectedType);
-        }
+        get => _selectedType;
+        set => OnPropertyChanged(ref _selectedType, value, () => SelectedType);
     }
 
+    public ObservableCollection<TagType> TagTypes => _tagTypes;
 
-    private ObservableCollection<TagType> _tagTypes = new ObservableCollection<TagType>();
-
-    public ObservableCollection<TagType> TagTypes
+    public string? Title
     {
-        get
-        {
-            return _tagTypes;
-        }
-    }
-
-
-    private string _title;
-
-    public string Title
-    {
-        get
-        {
-            return _title;
-        }
+        get => _title;
         set
         {
             OnPropertyChanged(ref _title, value, () => Title);
         }
     }
 
-
-    private string _synonyms;
-
     /// <summary>
     /// Separator :.:
     /// </summary>
-    public string Synonyms
+    public string? Synonyms
     {
-        get
-        {
-            return _synonyms;
-        }
-        set
-        {
-            OnPropertyChanged(ref _synonyms, value, () => Synonyms);
-        }
+        get => _synonyms;
+        set => OnPropertyChanged(ref _synonyms, value, () => Synonyms);
     }
 
-    public List<string> SynonymsCollection
-    {
-        get
-        {
-            return _synonyms.Split(new[] { ":.:" }, StringSplitOptions.RemoveEmptyEntries).ToList();
-        }
-    }
-
-    private bool _hasValue;
+    public List<string> SynonymsCollection 
+        => _synonyms?.Split([":.:"], StringSplitOptions.RemoveEmptyEntries).ToList() ?? [];
 
     /// <summary>
     /// Separator :.:
     /// </summary>
     public bool HasValue
     {
-        get
-        {
-            return _hasValue;
-        }
-        set
-        {
-            OnPropertyChanged(ref _hasValue, value, () => HasValue);
-        }
+        get => _hasValue;
+        set => OnPropertyChanged(ref _hasValue, value, () => HasValue);
     }
 
-    #endregion Properties
+    public ICommand SaveCommand => _saveCommand ??= new RelayCommand(Save, CanSave);
 
-    #region Commands
+    private bool CanSave(object? obj) => SelectedType != null && !string.IsNullOrWhiteSpace(Title);
 
-    #region Save command
+    private void Save(object? obj) => _parent.Tags.CreateTagAsync(this);
 
-    private ICommand _saveCommand;
-    public ICommand SaveCommand
-    {
-        get
-        {
-            return _saveCommand ?? (_saveCommand = new RelayCommand(Save, CanSave));
-        }
-    }
+    public ICommand ResetCommand => _resetCommand ??= new RelayCommand(Reset);
 
-    private bool CanSave(object obj)
-    {
-        return SelectedType != null && !String.IsNullOrWhiteSpace(Title);
-    }
-
-    private void Save(object obj)
-    {
-        _parent.Tags.CreateTagAsync(this);
-    }
-
-    #endregion Save command
-
-    #region Reset command
-
-    private ICommand _resetCommand;
-    public ICommand ResetCommand
-    {
-        get
-        {
-            return _resetCommand ?? (_resetCommand = new RelayCommand(Reset));
-        }
-    }
-
-    private void Reset(object obj)
+    private void Reset(object? obj)
     {
         if (obj is bool && !(bool)obj)
-        {
             return;
-        }
 
         _tagTypesLoaded = false;
         ReloadTagTypesAsync();
@@ -154,11 +86,6 @@ internal class CreateTagVM : VMBase
     }
 
 
-    #endregion Reset command
-
-    #endregion Commands
-
-    private static SemaphoreSlim ReloadTagTypesAsyncSemaphore = new SemaphoreSlim(1, 1);
     private async void ReloadTagTypesAsync()
     {
         await ReloadTagTypesAsyncSemaphore.WaitAsync();
@@ -190,7 +117,7 @@ internal class CreateTagVM : VMBase
         }
     }
 
-    private void TagTypesLoadFail(Exception e)
+    private void TagTypesLoadFail(Exception _)
     {
         _parent.View.ShowMessageDialog("Tag creating", "Unable to load TagTypes. Creating process terminated");
         _parent.View.CloseAllFlyouts();

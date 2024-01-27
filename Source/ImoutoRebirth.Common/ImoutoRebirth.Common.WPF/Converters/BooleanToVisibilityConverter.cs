@@ -2,10 +2,10 @@
 using System.Windows;
 using System.Windows.Data;
 
-namespace ImoutoRebirth.Navigator.Converters;
+namespace ImoutoRebirth.Common.WPF.Converters;
 
 [ValueConversion(typeof(Visibility), typeof(bool))]
-internal class BooleanToVisibilityConverter : IValueConverter
+public class BooleanToVisibilityConverter : IValueConverter
 {
     public bool IsInvert { private get; set; } = false;
 

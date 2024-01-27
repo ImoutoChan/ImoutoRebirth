@@ -3,8 +3,8 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-             xmlns:Controls="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
-             xmlns:converters1="clr-namespace:ImoutoRebirth.Navigator.Converters"
+             xmlns:controls="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
+             xmlns:converters="clr-namespace:ImoutoRebirth.Common.WPF.Converters;assembly=ImoutoRebirth.Common.WPF"
              mc:Ignorable="d"
              d:DesignHeight="700"
              d:DesignWidth="300">
@@ -12,10 +12,11 @@
         <Style TargetType="{x:Type Button}"
                BasedOn="{StaticResource ButtonStyleDefault}" />
 
-        <converters1:ConditionVisibilityConverter x:Key="ConditionVisibilityConverter" />
+        <converters:ConditionVisibilityConverter x:Key="ConditionVisibilityConverter" />
 
-        <converters1:BooleanResultConverter x:Key="BooleanResultConverter" />
+        <converters:BooleanResultConverter x:Key="BooleanResultConverter" />
     </UserControl.Resources>
+
     <Grid Margin="15,15,5,15">
         <ScrollViewer HorizontalScrollBarVisibility="Disabled"
                       VerticalScrollBarVisibility="Auto"
@@ -96,20 +97,20 @@
                         <TextBox Text="{Binding Path, ValidatesOnDataErrors=True, UpdateSourceTrigger=PropertyChanged}" />
 
 
-                        <Controls:ToggleSwitch IsOn="{Binding CheckNameHash}"
+                        <controls:ToggleSwitch IsOn="{Binding CheckNameHash}"
                                                Content="Check hash in name"
                                                Margin="0,10,0,0" />
 
-                        <Controls:ToggleSwitch IsOn="{Binding CheckFormat}"
+                        <controls:ToggleSwitch IsOn="{Binding CheckFormat}"
                                                Content="Check format before save"
                                                Margin="0,10,0,0"
                                                Name="CheckFormatSwitch" />
 
-                        <Controls:ToggleSwitch IsOn="{Binding TagsFromSubfolder}"
+                        <controls:ToggleSwitch IsOn="{Binding TagsFromSubfolder}"
                                                Content="Add subfolders names as tags"
                                                Margin="0,10,0,0" />
 
-                        <Controls:ToggleSwitch IsOn="{Binding AddTagFromFileName}"
+                        <controls:ToggleSwitch IsOn="{Binding AddTagFromFileName}"
                                                Content="Add file name as tag"
                                                Margin="0,10,0,0" />
 
@@ -153,11 +154,11 @@
                         <TextBox Text="{Binding Path, ValidatesOnDataErrors=True, UpdateSourceTrigger=PropertyChanged}" />
 
 
-                        <Controls:ToggleSwitch IsOn="{Binding NeedDevideImagesByHash}"
+                        <controls:ToggleSwitch IsOn="{Binding NeedDevideImagesByHash}"
                                                Content="Create subfolders"
                                                Margin="0,10,0,0" />
 
-                        <Controls:ToggleSwitch IsOn="{Binding NeedRename}"
+                        <controls:ToggleSwitch IsOn="{Binding NeedRename}"
                                                Content="Change image name to hash"
                                                Margin="0,10,0,0" />
 

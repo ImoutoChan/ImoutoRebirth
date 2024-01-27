@@ -1,10 +1,9 @@
 ﻿using System.Globalization;
 using System.Windows.Data;
-using ImoutoRebirth.Navigator.Utils;
 
-namespace ImoutoRebirth.Navigator.Converters;
+namespace ImoutoRebirth.Common.WPF.Converters;
 
-internal class BooleanResultConverter : IValueConverter
+public class BooleanResultConverter : IValueConverter
 {
     public object Convert(object? value, Type targetType, object? parameter, CultureInfo culture)
     {

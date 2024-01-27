@@ -1,3 +1,4 @@
+using ImoutoRebirth.Common.WPF;
 using ImoutoRebirth.Lilin.WebApi.Client;
 
 namespace ImoutoRebirth.Navigator.ViewModel.ListEntries;

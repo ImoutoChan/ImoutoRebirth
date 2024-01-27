@@ -11,7 +11,7 @@ internal class CollectionService : ICollectionService
     public async Task<IReadOnlyCollection<Collection>> GetAllCollectionsAsync()
     {
         var result = await _collectionsClient.GetAllCollectionsAsync();
-        return result.Select(x => new Collection(x.Id, x.Name)).ToArray();
+        return result.Select(x => new Collection(x.Id, x.Name!)).ToArray();
     }
 
     public async Task<Collection> CreateCollectionAsync(string name)

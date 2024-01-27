@@ -1,6 +1,6 @@
 using System.Diagnostics;
 using System.Windows.Input;
-using ImoutoViewer.Commands;
+using ImoutoRebirth.Common.WPF.Commands;
 using Microsoft.Win32;
 
 namespace ImoutoViewer.ViewModel;
@@ -35,13 +35,13 @@ internal class EditProgram
 
     public bool IsAvailable { get; set; }
 
-    public string Name { get; set; }
+    public required string Name { get; init; }
 
-    private string RegistryPath { get; set; }
+    public required string RegistryPath { get; init; }
 
-    private string ExePath { get; set; }
+    public string? ExePath { get; set; }
 
-    public string IconPath { get; set; }
+    public required string IconPath { get; set; }
 
     #endregion  Properties
 
@@ -49,15 +49,19 @@ internal class EditProgram
 
     public ICommand ClickCommand { get; set; }
 
-    private void Click(object arg)
+    private void Click(object? arg)
     {
-        if (!(arg is string)) return;
+        if (!(arg is string) || ExePath == null) 
+            return;
 
         try
         {
             Process.Start(ExePath, "\"" + arg + "\"");
         }
-        catch { }
+        catch
+        {
+            // ignore
+        }
     }
 
     #endregion  Commands
@@ -89,13 +93,13 @@ internal class EditProgram
 
         foreach (var entry in list)
         {
-            RegistryKey prog = Registry.ClassesRoot.OpenSubKey(@"Applications\" + entry.RegistryPath);
+            RegistryKey? prog = Registry.ClassesRoot.OpenSubKey(@"Applications\" + entry.RegistryPath);
             if (prog != null)
             {
                 entry.ExePath =
-                    prog.GetValue("")
-                        .ToString()
-                        .Split(new char[] { '\"' }, StringSplitOptions.RemoveEmptyEntries)
+                    prog.GetValue("")!
+                        .ToString()!
+                        .Split(new[] { '\"' }, StringSplitOptions.RemoveEmptyEntries)
                         .First();
                 entry.IsAvailable = true;
             }

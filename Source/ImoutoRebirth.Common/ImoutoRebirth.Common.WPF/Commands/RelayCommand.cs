@@ -1,9 +1,9 @@
 ﻿using System.Diagnostics;
 using System.Windows.Input;
 
-namespace ImoutoRebirth.Navigator.Commands;
+namespace ImoutoRebirth.Common.WPF.Commands;
 
-internal class RelayCommand : ICommand
+public class RelayCommand : ICommand
 {
     private readonly Action<object?> _execute;
     private readonly Predicate<object?>? _canExecute;
@@ -26,7 +26,7 @@ internal class RelayCommand : ICommand
     public void Execute(object? parameter) => _execute(parameter);
 }
 
-internal class RelayCommand<T> : ICommand
+public class RelayCommand<T> : ICommand
 {
     private readonly Action<T?> _execute;
     private readonly Predicate<T?>? _canExecute;

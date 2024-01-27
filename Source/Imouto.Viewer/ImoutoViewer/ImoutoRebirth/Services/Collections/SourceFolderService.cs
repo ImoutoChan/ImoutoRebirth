@@ -16,12 +16,12 @@ internal class SourceFolderService : ISourceFolderService
             .Select(x => new SourceFolder(
                 Id: x.Id,
                 CollectionId: x.CollectionId,
-                Path: x.Path,
+                Path: x.Path!,
                 ShouldCheckFormat: x.ShouldCheckFormat,
                 ShouldCheckHashFromName: x.ShouldCheckHashFromName,
                 ShouldCreateTagsFromSubfolders: x.ShouldCreateTagsFromSubfolders,
                 ShouldAddTagFromFilename: x.ShouldAddTagFromFilename,
-                SupportedExtensions: x.SupportedExtensions
+                SupportedExtensions: x.SupportedExtensions ?? Array.Empty<string>()
             ))
             .ToArray();
     }
@@ -43,7 +43,7 @@ internal class SourceFolderService : ISourceFolderService
     public async Task UpdateSourceFolderAsync(SourceFolder sourceFolder)
     {
         if (!sourceFolder.Id.HasValue)
-            throw new ArgumentException("Can't update new collection", nameof(sourceFolder));
+            throw new ArgumentException(nameof(sourceFolder));
 
         await _collectionsClient.UpdateSourceFolderAsync(new(
             sourceFolder.CollectionId,

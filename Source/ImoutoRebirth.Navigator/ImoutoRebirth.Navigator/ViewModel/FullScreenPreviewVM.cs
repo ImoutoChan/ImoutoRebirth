@@ -1,5 +1,6 @@
 ﻿using System.Windows.Input;
-using ImoutoRebirth.Navigator.Commands;
+using ImoutoRebirth.Common.WPF;
+using ImoutoRebirth.Common.WPF.Commands;
 using ImoutoRebirth.Navigator.UserControls;
 using ImoutoRebirth.Navigator.ViewModel.ListEntries;
 

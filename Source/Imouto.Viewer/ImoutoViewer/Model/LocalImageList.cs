@@ -23,24 +23,24 @@ internal class LocalImageList : IEnumerable
 
     public static SortMethod FilesSortMethod
     {
-        private get { return _filesSortMethod; }
-        set { _filesSortMethod = value; }
+        private get => _filesSortMethod;
+        set => _filesSortMethod = value;
     }
 
     public static bool IsFilesSortMethodDescending { private get; set; }
 
     public static SortMethod FoldersSortMethod
     {
-        private get { return _foldersSortMethod; }
-        set { _foldersSortMethod = value; }
+        private get => _foldersSortMethod;
+        set => _foldersSortMethod = value;
     }
 
     public static bool IsFoldersSortMethodDescending { private get; set; }
 
     public static DirectorySearchFlags FilesGettingMethods
     {
-        private get { return _filesGettingMethod; }
-        set { _filesGettingMethod = value; }
+        private get => _filesGettingMethod;
+        set => _filesGettingMethod = value;
     }
 
     #endregion Static Properties
@@ -117,7 +117,7 @@ internal class LocalImageList : IEnumerable
     private List<LocalImage> _imageList;
 
     private readonly List<DirectoryInfo> _directoriesList;
-    private DirectoryInfo _currentDirectory;
+    private DirectoryInfo? _currentDirectory;
     private LocalImage? _currentImage;
 
     #endregion Fields
@@ -169,7 +169,7 @@ internal class LocalImageList : IEnumerable
         {
             LoadImages(imagesList);
             CurrentImage = SelectByIndexOrFirst(_imageList, selectedElementId, selectedFilePath);
-            _directoriesList.Add((new FileInfo(CurrentImage.Path)).Directory);
+            _directoriesList.Add(new FileInfo(CurrentImage.Path).Directory!);
             _currentDirectory = _directoriesList.First();
             IsDirectoryActive = false;
         }
@@ -214,7 +214,7 @@ internal class LocalImageList : IEnumerable
         }
     }
 
-    private static LocalImage? SelectByIndexOrFirst(
+    private static LocalImage SelectByIndexOrFirst(
         IReadOnlyList<LocalImage> imageList, 
         int selectedElementId, 
         string? selectedFilePath)
@@ -229,7 +229,7 @@ internal class LocalImageList : IEnumerable
         if (selectedElementId >= 0 && selectedElementId < imageList.Count)
             return imageList[selectedElementId];
 
-        return imageList.FirstOrDefault();
+        return imageList.First();
     }
 
     #endregion Constructors
@@ -238,7 +238,7 @@ internal class LocalImageList : IEnumerable
 
     public LocalImage? CurrentImage
     {
-        get { return _currentImage; }
+        get => _currentImage;
         private set
         {
             _currentImage = value;
@@ -246,45 +246,15 @@ internal class LocalImageList : IEnumerable
         }
     }
 
-    public int ImagesCount
-    {
-        get
-        {
-            return _imageList.Count;
-        }
-    }
+    public int ImagesCount => _imageList.Count;
 
-    public int CurrentImageIndex
-    {
-        get
-        {
-            return _imageList.IndexOf(CurrentImage);
-        }
-    }
+    public int? CurrentImageIndex => CurrentImage != null ? _imageList.IndexOf(CurrentImage) : 0;
 
-    public DirectoryInfo CurrentDirectory
-    {
-        get
-        {
-            return _currentDirectory;
-        }
-    }
+    public DirectoryInfo? CurrentDirectory => _currentDirectory;
 
-    public int DirectoriesCount
-    {
-        get
-        {
-            return _directoriesList.Count;
-        }
-    }
+    public int DirectoriesCount => _directoriesList.Count;
 
-    public int CurrentDirectoryIndex
-    {
-        get
-        {
-            return _directoriesList.IndexOf(_currentDirectory);
-        }
-    }
+    public int? CurrentDirectoryIndex => _currentDirectory != null ? _directoriesList.IndexOf(_currentDirectory) : 0;
 
     public bool IsEmpty { get; private set; }
 
@@ -296,7 +266,7 @@ internal class LocalImageList : IEnumerable
 
     public void Next()
     {
-        if (IsEmpty)
+        if (IsEmpty || CurrentImage == null)
         {
             return;
         }
@@ -319,10 +289,9 @@ internal class LocalImageList : IEnumerable
 
     public void Previous()
     {
-        if (IsEmpty)
-        {
+        if (IsEmpty || CurrentImage == null)
             return;
-        }
+        
         CurrentImage.FreeMemory();
         CurrentImage.ResetZoom();
 
@@ -364,7 +333,7 @@ internal class LocalImageList : IEnumerable
     private void LoadImages(IEnumerable<string> imagePaths)
     {
 
-        var images = imagePaths.Where(x => ImageExtensions.IsImage(x)).Select(x => new FileInfo(x));
+        var images = imagePaths.Where(x => x.IsImage()).Select(x => new FileInfo(x));
         if (!ApplicationProperties.BoundToNavigatorSearch)
         {
             images = images.OrderByWithDirection(GetFilesOrderProperty, IsFilesSortMethodDescending);
@@ -373,8 +342,11 @@ internal class LocalImageList : IEnumerable
         _imageList.AddRange(images.Select(x => new LocalImage(x.FullName)));
     }
 
-    private void LoadImages(DirectoryInfo sourceFolder)
+    private void LoadImages(DirectoryInfo? sourceFolder)
     {
+        if (sourceFolder == null)
+            return;
+        
         if (!sourceFolder.Exists)
             throw new Exception("Directory not found.");
 
@@ -471,11 +443,12 @@ internal class LocalImageList : IEnumerable
         {
             throw new Exception("Directory not found.");
         }
+
         try
         {
             var files =
                 from file in Directory.GetFiles(sourceFolder.FullName, "*.*")
-                where ImageExtensions.IsImage(file)
+                where file.IsImage()
                 select file;
 
             if (files.Any())
@@ -483,7 +456,10 @@ internal class LocalImageList : IEnumerable
                 _directoriesList.Add(sourceFolder);
             }
         }
-        catch { }
+        catch
+        {
+            // ignore
+        }
     }
 
     private void AddDirectoryRange(IEnumerable<DirectoryInfo> sourceFolders)
@@ -496,7 +472,7 @@ internal class LocalImageList : IEnumerable
 
     private void NextDirectory()
     {
-        if (!IsDirectoryActive)
+        if (!IsDirectoryActive || _currentDirectory == null)
         {
             return;
         }
@@ -524,7 +500,7 @@ internal class LocalImageList : IEnumerable
 
     private void PrevDirectory()
     {
-        if (!IsDirectoryActive)
+        if (!IsDirectoryActive || _currentDirectory == null)
         {
             return;
         }
@@ -554,23 +530,15 @@ internal class LocalImageList : IEnumerable
 
     #region Events
 
-    public event EventHandler CurrentImageChanged;
-    private void OnCurrentImageChanged()
-    {
-        if (CurrentImageChanged != null)
-        {
-            CurrentImageChanged(this, new EventArgs());
-        }
-    }
+    public event EventHandler? CurrentImageChanged;
+    
+    private void OnCurrentImageChanged() => CurrentImageChanged?.Invoke(this, EventArgs.Empty);
 
     #endregion Events
 
     #region IEnumerable members
 
-    public IEnumerator GetEnumerator()
-    {
-        return ((IEnumerable)_imageList).GetEnumerator();
-    }
+    public IEnumerator GetEnumerator() => ((IEnumerable)_imageList).GetEnumerator();
 
     #endregion  IEnumerable members
 }

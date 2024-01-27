@@ -177,7 +177,6 @@ internal class LocalImage
 
     private double _autoResized;
     private double _localZoom;
-    private static RotateFlipType _defaultRotation;
 
     #endregion Fields
 
@@ -221,9 +220,12 @@ internal class LocalImage
 
     public bool IsError { get; private set; }
 
-    public string ErrorMessage { get; private set; }
+    public string? ErrorMessage { get; private set; }
 
-    public Size ResizedSize => new Size(Image.PixelWidth * Zoom, Image.PixelHeight * Zoom);
+    public Size ResizedSize =>
+        Image != null 
+            ? new Size(Image.PixelWidth * Zoom, Image.PixelHeight * Zoom) 
+            : new Size(0, 0);
 
     public ImageFormat ImageFormat
     {
@@ -502,14 +504,9 @@ internal class LocalImage
 
     #region Events
 
-    public event EventHandler ImageChanged;
-    private void OnImageChanged()
-    {
-        if (ImageChanged != null)
-        {
-            ImageChanged(this, new EventArgs());
-        }
-    }
+    public event EventHandler? ImageChanged;
+
+    private void OnImageChanged() => ImageChanged?.Invoke(this, EventArgs.Empty);
 
     #endregion Events
         

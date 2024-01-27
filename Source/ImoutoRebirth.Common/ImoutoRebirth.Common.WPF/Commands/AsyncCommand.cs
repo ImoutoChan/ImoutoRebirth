@@ -1,6 +1,6 @@
 ﻿using System.Windows.Input;
 
-namespace ImoutoRebirth.Navigator.Utils;
+namespace ImoutoRebirth.Common.WPF.Commands;
 
 public interface IAsyncCommand : ICommand
 {

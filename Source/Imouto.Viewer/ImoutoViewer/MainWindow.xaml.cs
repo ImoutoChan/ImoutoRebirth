@@ -13,7 +13,7 @@ namespace ImoutoViewer;
 /// </summary>
 partial class MainWindow
 {
-    public static MetroWindow CurrentWindow { get; private set; }
+    public static MetroWindow CurrentWindow { get; private set; } = default!;
 
     #region Fields
 
@@ -60,14 +60,14 @@ partial class MainWindow
     }
 
     //Open setting flyout
-    private void Button_Click(object sender, RoutedEventArgs e)
+    private void Button_Click(object? sender, RoutedEventArgs? _)
     {
         CloseAllFlyouts();
         SettingFlyout.IsOpen = !SettingFlyout.IsOpen;
     }
 
     //Open OpenWith flyout
-    private void ButtonBase_OnClick(object sender, RoutedEventArgs e)
+    private void ButtonBase_OnClick(object? sender, RoutedEventArgs? e)
     {
         CloseAllFlyouts();
         EditWithFlyout.IsOpen = !EditWithFlyout.IsOpen;
@@ -102,7 +102,7 @@ partial class MainWindow
         }
         else if (e.Key == Key.Escape)
         {
-            (DataContext as MainWindowVM).IsSlideShowActive = false;
+            ((MainWindowVM)DataContext).IsSlideShowActive = false;
             DeactivateFullscreen();
         }
     }
@@ -119,7 +119,7 @@ partial class MainWindow
     //Toggle Slideshow
     private void SlideShowButton_OnClick(object sender, RoutedEventArgs e)
     {
-        (DataContext as MainWindowVM).ToggleSlideshowCommand.Execute(null);
+        ((MainWindowVM)DataContext).ToggleSlideshowCommand?.Execute(null);
     }
 
     //Show add dialog
