@@ -20,6 +20,7 @@
 
 ### Viewer
 * Fix infinite loading
+* Fix set association for image file types
 
 # 4.23.0
 

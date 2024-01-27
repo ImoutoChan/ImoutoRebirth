@@ -23,6 +23,16 @@
         <ApplicationIcon>Resources\49a7b0a953e5106e5942169f3cb0c237_ copy.ico</ApplicationIcon>
     </PropertyGroup>
 
+    <!--    Uncomment to run as admin for debug -->
+    <!--    <PropertyGroup>-->
+    <!--        <ApplicationManifest>app.manifest</ApplicationManifest>-->
+    <!--    </PropertyGroup>-->
+    <!--    <ItemGroup>-->
+    <!--        <None Update="app.manifest">-->
+    <!--            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>-->
+    <!--        </None>-->
+    <!--    </ItemGroup>-->
+
     <ItemGroup>
         <EmbeddedResource Update="Properties\Resources.resx">
             <Generator>ResXFileCodeGenerator</Generator>
@@ -42,13 +52,12 @@
     <ItemGroup>
         <PackageReference Include="AutoMapper" Version="12.0.1"/>
         <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="12.0.1"/>
-        <PackageReference Include="MahApps.Metro" Version="2.4.10" />
+        <PackageReference Include="MahApps.Metro" Version="2.4.10"/>
         <PackageReference Include="MahApps.Metro.IconPacks" Version="4.11.0"/>
-        <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="8.0.0" />
-        <PackageReference Include="Microsoft.Xaml.Behaviors.Wpf" Version="1.1.77" />
+        <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="8.0.0"/>
+        <PackageReference Include="Microsoft.Xaml.Behaviors.Wpf" Version="1.1.77"/>
         <PackageReference Include="Newtonsoft.Json" Version="13.0.3"/>
-        <PackageReference Include="rfc1459.AssociationManager" Version="1.1.1"/>
-        <PackageReference Include="System.Drawing.Common" Version="8.0.1" />
+        <PackageReference Include="System.Drawing.Common" Version="8.0.1"/>
         <PackageReference Include="WpfAnimatedGif" Version="2.0.2"/>
         <PackageReference Include="GihanSoft.String.NaturalComparer" Version="3.3.0"/>
     </ItemGroup>
@@ -67,13 +76,14 @@
             <LastGenOutput>Settings.Designer.cs</LastGenOutput>
         </None>
         <None Update="libwebp.dll">
-          <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
         </None>
     </ItemGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\..\ImoutoRebirth.Common\ImoutoRebirth.Common.WebP\ImoutoRebirth.Common.WebP.csproj" />
-        <ProjectReference Include="..\..\ImoutoRebirth.Common\ImoutoRebirth.Common.WPF\ImoutoRebirth.Common.WPF.csproj" />
+        <ProjectReference Include="..\..\ImoutoRebirth.Common\ImoutoRebirth.Common.WebP\ImoutoRebirth.Common.WebP.csproj"/>
+        <ProjectReference Include="..\..\ImoutoRebirth.Common\ImoutoRebirth.Common.WindowsAssociationManager\ImoutoRebirth.Common.WindowsAssociationManager.csproj"/>
+        <ProjectReference Include="..\..\ImoutoRebirth.Common\ImoutoRebirth.Common.WPF\ImoutoRebirth.Common.WPF.csproj"/>
         <ProjectReference Include="..\..\ImoutoRebirth.Common\ImoutoRebirth.Common\ImoutoRebirth.Common.csproj"/>
         <ProjectReference Include="..\..\ImoutoRebirth.Lilin\ImoutoRebirth.Lilin.WebApi.Client\ImoutoRebirth.Lilin.WebApi.Client.csproj"/>
         <ProjectReference Include="..\..\ImoutoRebirth.Room\ImoutoRebirth.Room.WebApi.Client\ImoutoRebirth.Room.WebApi.Client.csproj"/>

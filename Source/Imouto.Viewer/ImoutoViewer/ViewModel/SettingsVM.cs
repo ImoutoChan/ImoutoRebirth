@@ -1,11 +1,10 @@
 ﻿using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
-using System.Reflection;
 using System.Windows;
 using System.Windows.Input;
-using AssociationManager;
 using ControlzEx.Theming;
+using ImoutoRebirth.Common.WindowsAssociationManager;
 using ImoutoRebirth.Common.WPF;
 using ImoutoRebirth.Common.WPF.Commands;
 using ImoutoViewer.Model;
@@ -235,10 +234,15 @@ internal class SettingsVM : VMBase
     {
         try
         {
-            using (var mgr = new FileAssociationManager())
+            using (var mgr = new FileAssociationManager(
+                       FileAssociationManager.AssociationLocation.CurrentUser,
+                       "ImoutoRebirth", 
+                       "ImoutoViewer",
+                       "Image viewer app"))
             {
                 foreach (var ext in SupportedFormatsExtensions
-                             .GetSupportedFormatsList(typeof(ImageFormat)).Select(x => x[1..]))
+                             .GetSupportedFormatsList(typeof(ImageFormat))
+                             .Select(x => x[1..]))
                 {
                     Associate(mgr, ext);
                 }
@@ -261,7 +265,7 @@ internal class SettingsVM : VMBase
                 {
                     UseShellExecute = true,
                     WorkingDirectory = Environment.CurrentDirectory,
-                    FileName = Assembly.GetExecutingAssembly().Location,
+                    FileName = Process.GetCurrentProcess().MainModule!.FileName,
                     Verb = "runas"
                 };
 
@@ -269,7 +273,7 @@ internal class SettingsVM : VMBase
                 {
                     Process.Start(proc);
                 }
-                catch
+                catch (Exception)
                 {
                     return;
                 }
@@ -285,14 +289,13 @@ internal class SettingsVM : VMBase
 
     private static void Associate(FileAssociationManager mgr, string extension)
     {
-        string executablePath = Assembly.GetExecutingAssembly().Location;
+        var executablePath = Process.GetCurrentProcess().MainModule!.FileName;
 
-        using (var ext = mgr.RegisterFileAssociation(extension))
-        {
-            ext.DefaultIcon = new ApplicationIcon(executablePath);
-            ext.ShellOpenCommand = executablePath;
-            ext.Associated = true;
-        }
+        using var ext = mgr.RegisterFileAssociation(extension);
+
+        ext.DefaultIcon = new ApplicationIcon(executablePath);
+        ext.ShellOpenCommand = executablePath;
+        ext.Associated = true;
     }
 
     #endregion Methods

@@ -164,6 +164,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ImoutoRebirth.Common.WebApi
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ImoutoRebirth.Common.WPF", "ImoutoRebirth.Common\ImoutoRebirth.Common.WPF\ImoutoRebirth.Common.WPF.csproj", "{01B69255-EA58-4AE1-AA3A-93F3DA105316}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ImoutoRebirth.Common.WindowsAssociationManager", "ImoutoRebirth.Common\ImoutoRebirth.Common.WindowsAssociationManager\ImoutoRebirth.Common.WindowsAssociationManager.csproj", "{AAEFC13A-4A80-4079-BC67-AA15FD7BB9C2}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -404,6 +406,10 @@ Global
 		{01B69255-EA58-4AE1-AA3A-93F3DA105316}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{01B69255-EA58-4AE1-AA3A-93F3DA105316}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{01B69255-EA58-4AE1-AA3A-93F3DA105316}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AAEFC13A-4A80-4079-BC67-AA15FD7BB9C2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AAEFC13A-4A80-4079-BC67-AA15FD7BB9C2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AAEFC13A-4A80-4079-BC67-AA15FD7BB9C2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AAEFC13A-4A80-4079-BC67-AA15FD7BB9C2}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -469,6 +475,7 @@ Global
 		{6F7CD6F5-C6CC-44E7-B193-BE89EB407961} = {2438D898-F22E-4AD1-950B-4686D50817B3}
 		{983AA112-65D1-4F5B-8633-6C6478CAC99C} = {4383FD00-3B54-4C2B-9222-BDC045D3FD9B}
 		{01B69255-EA58-4AE1-AA3A-93F3DA105316} = {4383FD00-3B54-4C2B-9222-BDC045D3FD9B}
+		{AAEFC13A-4A80-4079-BC67-AA15FD7BB9C2} = {4383FD00-3B54-4C2B-9222-BDC045D3FD9B}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {3E48016D-BB6B-49F0-9888-80A5EAF0FAA4}
