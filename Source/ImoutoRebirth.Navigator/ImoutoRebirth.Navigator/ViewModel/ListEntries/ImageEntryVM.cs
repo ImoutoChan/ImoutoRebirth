@@ -27,6 +27,7 @@ internal class ImageEntryVM : BaseEntryVM, INavigatorListEntry, IPixelSizable
         {
             ImageFormat.GIF => ListEntryType.Gif,
             ImageFormat.PNG => ListEntryType.Png,
+            ImageFormat.WEBP => ListEntryType.WebP,
             _ => ListEntryType.Image
         };
 

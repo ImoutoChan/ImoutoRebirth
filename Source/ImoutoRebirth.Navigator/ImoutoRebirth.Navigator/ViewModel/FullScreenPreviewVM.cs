@@ -22,6 +22,7 @@ internal class FullScreenPreviewVM : VMBase
     public string? VideoPath => _type == ListEntryType.Video ? Path : null;
     public string? UgoiraPath => _type == ListEntryType.Ugoira ? Path : null;
     public string? ImagePath => _type == ListEntryType.Image ? Path : null;
+    public string? WebPPath => _type == ListEntryType.WebP ? Path : null;
 
     private string? Path
     {
@@ -34,6 +35,7 @@ internal class FullScreenPreviewVM : VMBase
             OnPropertyChanged(nameof(VideoPath));
             OnPropertyChanged(nameof(UgoiraPath));
             OnPropertyChanged(nameof(ImagePath));
+            OnPropertyChanged(nameof(WebPPath));
         }
     }
     

@@ -9,6 +9,7 @@
     xmlns:apngPlayer="clr-namespace:ImoutoRebirth.Navigator.ApngWpfPlayer.ApngPlayer;assembly=ImoutoRebirth.Navigator.ApngWpfPlayer"
     xmlns:gif="http://wpfanimatedgif.codeplex.com"
     xmlns:userControls="clr-namespace:ImoutoRebirth.Navigator.UserControls"
+    xmlns:attachedProperties="clr-namespace:ImoutoRebirth.Common.WPF.AttachedProperties;assembly=ImoutoRebirth.Common.WPF"
     d:DataContext="{d:DesignInstance viewModel:FullScreenPreviewVM, IsDesignTimeCreatable=False}"
     d:DesignHeight="300" 
     d:DesignWidth="300"
@@ -36,6 +37,10 @@
             <Image
                 gif:ImageBehavior.AnimatedSource="{Binding GifPath}"
                 Visibility="{Binding Path=Type, Converter={StaticResource ConditionVisibilityConverter}, ConverterParameter=Gif}" />
+
+            <Image
+                attachedProperties:WebPTools.ImagePath="{Binding WebPPath}"
+                Visibility="{Binding Path=Type, Converter={StaticResource ConditionVisibilityConverter}, ConverterParameter=WebP}" />
 
             <userControls:PlayerControl
                 IsVolumeVisible="True"

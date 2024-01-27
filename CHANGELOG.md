@@ -5,6 +5,8 @@
 * Add settings for auto shuffle on every reload (default: false)
 * Improve startup performance
 * Clean up warnings and enable TreatWarningsAsErrors
+* Support WebP format in FullScreenPreview
+* Add splashscreen
 
 ### Harpy
 * Add ability to download faved danbooru pictures through gelbooru

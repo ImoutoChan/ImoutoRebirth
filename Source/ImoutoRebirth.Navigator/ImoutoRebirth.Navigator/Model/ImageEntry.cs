@@ -29,8 +29,6 @@ internal class ImageEntry
 
         IsError = false;
     }
-
-    public bool IsWebp => _path.EndsWith(".webp", StringComparison.OrdinalIgnoreCase);
     
     public BitmapSource? Image
     {
@@ -61,6 +59,7 @@ internal class ImageEntry
             ".bmp" => ImageFormat.BMP,
             ".tiff" => ImageFormat.TIFF,
             ".png" => ImageFormat.PNG,
+            ".webp" => ImageFormat.WEBP,
             _ => ImageFormat.JPG
         };
 
@@ -122,7 +121,7 @@ internal class ImageEntry
             {
                 if (_viewPort.Width != 0 && _viewPort.Height != 0)
                 {
-                    if (_frameSize == null && !IsWebp)
+                    if (_frameSize == null && ImageFormat is not ImageFormat.WEBP)
                     {
                         var decoder =
                             BitmapDecoder.Create(
@@ -181,7 +180,7 @@ internal class ImageEntry
             {
                 using var stream = new MemoryStream();
                 var useStream = false;
-                if (IsWebp)
+                if (ImageFormat is ImageFormat.WEBP)
                 {
                     var decoder = new SimpleDecoder();
                     var bytes = File.ReadAllBytes(_path);
@@ -337,14 +336,6 @@ internal class ImageEntry
         result.Height = original.Height / wRatio;
         return result;
     }
-
-    public static bool IsImage(string file)
-    {
-        var ci = new CultureInfo("en-US");
-        const string formats = @".jpg|.png|.jpeg|.bmp|.gif|.tiff";
-
-        return formats.Split('|').Any(item => file.EndsWith(item, true, ci));
-    }
 }
 
 public enum ImageFormat
@@ -354,7 +345,8 @@ public enum ImageFormat
     PNG,
     BMP,
     TIFF,
-    GIF
+    GIF,
+    WEBP
 }
 
 public enum VideoFormat

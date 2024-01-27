@@ -6,5 +6,6 @@ internal enum ListEntryType
     Gif,
     Image,
     Ugoira,
-    Png
+    Png,
+    WebP
 }
