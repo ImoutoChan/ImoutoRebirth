@@ -7,6 +7,7 @@
 * Clean up warnings and enable TreatWarningsAsErrors
 * Support WebP format in FullScreenPreview
 * Add splashscreen
+* Show notes in full screen preview
 
 ### Harpy
 * Add ability to download faved danbooru pictures through gelbooru

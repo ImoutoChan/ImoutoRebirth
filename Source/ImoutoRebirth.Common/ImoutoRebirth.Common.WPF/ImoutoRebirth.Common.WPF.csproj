@@ -4,14 +4,17 @@
         <TargetFramework>net8.0-windows</TargetFramework>
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
-        <UseWPF>true</UseWPF>
-        <Nullable>enable</Nullable>
         <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
-        <ImplicitUsings>true</ImplicitUsings>
+
+        <UseWPF>true</UseWPF>
     </PropertyGroup>
 
     <ItemGroup>
         <ProjectReference Include="..\ImoutoRebirth.Common.WebP\ImoutoRebirth.Common.WebP.csproj"/>
+    </ItemGroup>
+
+    <ItemGroup>
+        <PackageReference Include="Microsoft.Xaml.Behaviors.Wpf" Version="1.1.77" />
     </ItemGroup>
 
 </Project>

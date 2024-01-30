@@ -3,46 +3,40 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Documents;
 using System.Windows.Input;
-using ImoutoRebirth.Common.WPF;
 using Microsoft.Xaml.Behaviors;
 
-namespace ImoutoViewer.Behavior;
+namespace ImoutoRebirth.Common.WPF.Notes;
 
-internal class FrameworkElementCustomToolTipBehavior : Behavior<FrameworkElement>
+public class FrameworkElementCustomToolTipBehavior : Behavior<FrameworkElement>
 {
-    #region Fields
-
     private const int MinToolTipSize = 150;
     private static FrameworkElement? _currentTarget;
+
+    public static readonly DependencyProperty InlineListProperty =
+        DependencyProperty.Register(
+            nameof(InlineList),
+            typeof(ObservableCollection<Inline>),
+            typeof(FrameworkElementCustomToolTipBehavior),
+            null);
+
+    private bool _isOpened;
     private bool _sizeChangeSubscribed;
     private FrameworkElement? _toolTipBorder;
-    private bool _isOpened;
-
-    #endregion Fields
-
-    #region DependencyProperty
 
     public ObservableCollection<Inline> InlineList
     {
-        get => (ObservableCollection<Inline>) GetValue(InlineListProperty);
+        get => (ObservableCollection<Inline>)GetValue(InlineListProperty);
         set => SetValue(InlineListProperty, value);
     }
 
-    public static readonly DependencyProperty InlineListProperty =
-        DependencyProperty.Register(nameof(InlineList), typeof (ObservableCollection<Inline>),
-            typeof (FrameworkElementCustomToolTipBehavior), null);
-
-    #endregion DependencyProperty
-
-    #region Methods
-
-    private static void GetToolTipPosition(Size desiredTooltipSize,
+    private static void GetToolTipPosition(
+        Size desiredTooltipSize,
         double bottomSpace,
         double rightSpace,
         Size targetSize,
         double leftSpace,
         double topSpace,
-        out HorisontalPosition horisontalPosition,
+        out HorizontalPosition horizontalPosition,
         out VerticalPosition verticalPosition)
     {
         if (desiredTooltipSize.Height <= bottomSpace)
@@ -51,19 +45,19 @@ internal class FrameworkElementCustomToolTipBehavior : Behavior<FrameworkElement
 
             if (rightSpace + targetSize.Width >= desiredTooltipSize.Width)
             {
-                horisontalPosition = HorisontalPosition.ToRight;
+                horizontalPosition = HorizontalPosition.ToRight;
             }
             else if (leftSpace + targetSize.Width >= desiredTooltipSize.Width)
             {
-                horisontalPosition = HorisontalPosition.ToLeft;
+                horizontalPosition = HorizontalPosition.ToLeft;
             }
             else if (rightSpace + leftSpace + targetSize.Width >= desiredTooltipSize.Width)
             {
-                horisontalPosition = HorisontalPosition.Anywhere;
+                horizontalPosition = HorizontalPosition.Anywhere;
             }
             else
             {
-                horisontalPosition = HorisontalPosition.Nowhere;
+                horizontalPosition = HorizontalPosition.Nowhere;
             }
         }
         else if (desiredTooltipSize.Height <= topSpace)
@@ -72,24 +66,24 @@ internal class FrameworkElementCustomToolTipBehavior : Behavior<FrameworkElement
 
             if (rightSpace + targetSize.Width >= desiredTooltipSize.Width)
             {
-                horisontalPosition = HorisontalPosition.ToRight;
+                horizontalPosition = HorizontalPosition.ToRight;
             }
             else if (leftSpace + targetSize.Width >= desiredTooltipSize.Width)
             {
-                horisontalPosition = HorisontalPosition.ToLeft;
+                horizontalPosition = HorizontalPosition.ToLeft;
             }
             else if (rightSpace + leftSpace + targetSize.Width >= desiredTooltipSize.Width)
             {
-                horisontalPosition = HorisontalPosition.Anywhere;
+                horizontalPosition = HorizontalPosition.Anywhere;
             }
             else
             {
-                horisontalPosition = HorisontalPosition.Nowhere;
+                horizontalPosition = HorizontalPosition.Nowhere;
             }
         }
         else if (desiredTooltipSize.Width <= rightSpace)
         {
-            horisontalPosition = HorisontalPosition.Rigth;
+            horizontalPosition = HorizontalPosition.Right;
 
             if (bottomSpace + targetSize.Height >= desiredTooltipSize.Height)
             {
@@ -110,7 +104,7 @@ internal class FrameworkElementCustomToolTipBehavior : Behavior<FrameworkElement
         }
         else if (desiredTooltipSize.Width <= leftSpace)
         {
-            horisontalPosition = HorisontalPosition.Left;
+            horizontalPosition = HorizontalPosition.Left;
 
             if (bottomSpace + targetSize.Height >= desiredTooltipSize.Height)
             {
@@ -131,7 +125,7 @@ internal class FrameworkElementCustomToolTipBehavior : Behavior<FrameworkElement
         }
         else
         {
-            horisontalPosition = HorisontalPosition.Nowhere;
+            horizontalPosition = HorizontalPosition.Nowhere;
             verticalPosition = VerticalPosition.Nowhere;
         }
     }
@@ -156,6 +150,7 @@ internal class FrameworkElementCustomToolTipBehavior : Behavior<FrameworkElement
         {
             _toolTipBorder.Visibility = Visibility.Collapsed;
         }
+
         _isOpened = false;
     }
 
@@ -163,25 +158,23 @@ internal class FrameworkElementCustomToolTipBehavior : Behavior<FrameworkElement
     {
         if (target == null)
             return;
-        
+
         var mainWindow = UIHelper.FindVisualParent<Window>(target);
         if (mainWindow == null)
             return;
 
-        var area = (UIElement?) mainWindow.FindName("GridParent");
-
+        var area = (UIElement?)UIHelper.FindVisualChild<Grid>(mainWindow, "GridParent");
         if (area == null)
             return;
-        
+
         if (!_sizeChangeSubscribed)
         {
             ((FrameworkElement)area).SizeChanged += FrameworkElementCustomToolTipBehavior_SizeChanged;
             _sizeChangeSubscribed = true;
         }
 
-
-        _toolTipBorder = mainWindow.FindName("ToolTipBorder") as FrameworkElement;
-        var toolTipTextBlock = mainWindow.FindName("ToolTipTextBlock") as TextBlock;
+        _toolTipBorder = UIHelper.FindVisualChild<FrameworkElement>(mainWindow, "ToolTipBorder");
+        var toolTipTextBlock = UIHelper.FindVisualChild<TextBlock>(mainWindow, "ToolTipTextBlock");
 
         var targetPosition = target.TransformToAncestor(area).Transform(new Point(0, 0));
         var targetSize = target.RenderSize;
@@ -192,7 +185,7 @@ internal class FrameworkElementCustomToolTipBehavior : Behavior<FrameworkElement
         var leftSpace = targetPosition.X;
         var rightSpace = areaSize.Width - targetPosition.X - targetSize.Width;
 
-        var toolTipWidth = (targetSize.Width < MinToolTipSize) ? MinToolTipSize : targetSize.Width;
+        var toolTipWidth = targetSize.Width < MinToolTipSize ? MinToolTipSize : targetSize.Width;
         var desiredTooltipSize = GetTextBlockSize(toolTipWidth);
 
         if (Math.Abs(desiredTooltipSize.Width - toolTipWidth) > 0.001)
@@ -200,66 +193,52 @@ internal class FrameworkElementCustomToolTipBehavior : Behavior<FrameworkElement
             desiredTooltipSize.Width = toolTipWidth + 10;
         }
 
-        HorisontalPosition horisontalPosition;
-        VerticalPosition verticalPosition;
+        GetToolTipPosition(
+            desiredTooltipSize,
+            bottomSpace,
+            rightSpace,
+            targetSize,
+            leftSpace,
+            topSpace,
+            out var horizontalPosition,
+            out var verticalPosition);
 
-        GetToolTipPosition(desiredTooltipSize, bottomSpace, rightSpace, targetSize, leftSpace, topSpace,
-            out horisontalPosition, out verticalPosition);
-
-        if (horisontalPosition == HorisontalPosition.Nowhere || verticalPosition == VerticalPosition.Nowhere)
+        if (horizontalPosition == HorizontalPosition.Nowhere || verticalPosition == VerticalPosition.Nowhere)
         {
             return;
         }
 
         var tooltipPosition = new Point();
-        var horisontalAlignment = HorizontalAlignment.Left;
+        var horizontalAlignment = HorizontalAlignment.Left;
         var verticalAlignment = VerticalAlignment.Top;
 
-        switch (verticalPosition)
+        tooltipPosition.Y = verticalPosition switch
         {
-            case VerticalPosition.Bottom:
-                tooltipPosition.Y = targetPosition.Y + targetSize.Height;
-                break;
-            case VerticalPosition.Top:
-                tooltipPosition.Y = targetPosition.Y - desiredTooltipSize.Height;
-                break;
-            case VerticalPosition.ToBottom:
-                tooltipPosition.Y = targetPosition.Y;
-                break;
-            case VerticalPosition.ToTop:
-                tooltipPosition.Y = targetPosition.Y + targetSize.Height - desiredTooltipSize.Height;
-                break;
-            case VerticalPosition.Anywhere:
-                tooltipPosition.Y = areaSize.Height - desiredTooltipSize.Height;
-                break;
-        }
+            VerticalPosition.Bottom => targetPosition.Y + targetSize.Height,
+            VerticalPosition.Top => targetPosition.Y - desiredTooltipSize.Height,
+            VerticalPosition.ToBottom => targetPosition.Y,
+            VerticalPosition.ToTop => targetPosition.Y + targetSize.Height - desiredTooltipSize.Height,
+            VerticalPosition.Anywhere => areaSize.Height - desiredTooltipSize.Height,
+            _ => tooltipPosition.Y
+        };
 
-        switch (horisontalPosition)
+        tooltipPosition.X = horizontalPosition switch
         {
-            case HorisontalPosition.Rigth:
-                tooltipPosition.X = targetPosition.X + targetSize.Width;
-                break;
-            case HorisontalPosition.Left:
-                tooltipPosition.X = targetPosition.X - desiredTooltipSize.Width;
-                break;
-            case HorisontalPosition.ToRight:
-                tooltipPosition.X = targetPosition.X;
-                break;
-            case HorisontalPosition.ToLeft:
-                tooltipPosition.X = targetPosition.X + targetSize.Width - desiredTooltipSize.Width;
-                break;
-            case HorisontalPosition.Anywhere:
-                tooltipPosition.X = areaSize.Width - desiredTooltipSize.Width;
-                break;
-        }
+            HorizontalPosition.Right => targetPosition.X + targetSize.Width,
+            HorizontalPosition.Left => targetPosition.X - desiredTooltipSize.Width,
+            HorizontalPosition.ToRight => targetPosition.X,
+            HorizontalPosition.ToLeft => targetPosition.X + targetSize.Width - desiredTooltipSize.Width,
+            HorizontalPosition.Anywhere => areaSize.Width - desiredTooltipSize.Width,
+            _ => tooltipPosition.X
+        };
 
         if (_toolTipBorder == null || toolTipTextBlock == null)
             return;
-        
+
         _toolTipBorder.Visibility = Visibility.Collapsed;
 
         _toolTipBorder.Width = toolTipWidth;
-        _toolTipBorder.HorizontalAlignment = horisontalAlignment;
+        _toolTipBorder.HorizontalAlignment = horizontalAlignment;
         _toolTipBorder.VerticalAlignment = verticalAlignment;
 
         _toolTipBorder.Margin = new Thickness(tooltipPosition.X, tooltipPosition.Y, 5, 5);
@@ -268,13 +247,8 @@ internal class FrameworkElementCustomToolTipBehavior : Behavior<FrameworkElement
 
         _toolTipBorder.Visibility = Visibility.Visible;
 
-
         _isOpened = true;
     }
-
-    #endregion Methods
-
-    #region Event handlers
 
     protected override void OnAttached()
     {
@@ -294,10 +268,10 @@ internal class FrameworkElementCustomToolTipBehavior : Behavior<FrameworkElement
     {
         _currentTarget = sender as FrameworkElement;
         PlaceToolTip(_currentTarget);
-        
+
         if (_currentTarget == null)
             return;
-        
+
         _currentTarget.Unloaded += (_, _) => HideToolTip();
     }
 
@@ -314,10 +288,6 @@ internal class FrameworkElementCustomToolTipBehavior : Behavior<FrameworkElement
         }
     }
 
-    #endregion Event handlers
-
-    #region Types
-
     private enum VerticalPosition
     {
         ToTop,
@@ -328,15 +298,13 @@ internal class FrameworkElementCustomToolTipBehavior : Behavior<FrameworkElement
         Nowhere
     }
 
-    private enum HorisontalPosition
+    private enum HorizontalPosition
     {
         ToLeft,
         Left,
-        Rigth,
+        Right,
         ToRight,
         Anywhere,
         Nowhere
     }
-
-    #endregion Types
 }

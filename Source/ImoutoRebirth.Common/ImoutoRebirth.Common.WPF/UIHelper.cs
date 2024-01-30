@@ -27,4 +27,46 @@ public static class UIHelper
             _ => FindVisualParent<T>(parentObject)
         };
     }
+
+    public static T? FindVisualChild<T>(DependencyObject? parent, string? withName) 
+        where T : DependencyObject
+    {
+        if (parent == null) 
+            return null;
+
+        var childrenCount = VisualTreeHelper.GetChildrenCount(parent);
+
+        for (var i = 0; i < childrenCount; i++)
+        {
+            var child = VisualTreeHelper.GetChild(parent, i);
+
+            if (child is not T childType)
+            {
+                var foundChild = FindVisualChild<T>(child, withName);
+
+                if (foundChild != null) 
+                    return foundChild;
+            }
+            else if (!string.IsNullOrEmpty(withName))
+            {
+                if (childType is FrameworkElement frameworkElement && frameworkElement.Name == withName)
+                {
+                    return childType;
+                }
+                else
+                {
+                    var foundChild = FindVisualChild<T>(childType, withName);
+                    
+                    if (foundChild != null) 
+                        return foundChild;
+                }
+            }
+            else
+            {
+                return childType;
+            }
+        }
+
+        return null;
+    }
 }

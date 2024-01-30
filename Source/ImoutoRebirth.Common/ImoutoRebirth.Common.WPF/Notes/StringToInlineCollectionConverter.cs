@@ -3,26 +3,28 @@ using System.Windows;
 using System.Windows.Data;
 using System.Windows.Documents;
 
-namespace ImoutoViewer.Converters;
+namespace ImoutoRebirth.Common.WPF.Notes;
 
-internal class StringToInlineCollectionConverter : IValueConverter
+public class StringToInlineCollectionConverter : IValueConverter
 {
     public object Convert(object? value, Type targetType, object? parameter, System.Globalization.CultureInfo culture)
     {
         var str = (value as string) + "<";
         str = str.Replace("&lt;", "<");
         str = str.Replace("&gt;", ">");
-        str = str.Replace("\n", "");
+        str = str.Replace("\n", "<br>");
 
-        List<Inline> result = new List<Inline>();
-        string currentText = String.Empty;
-        string currentTag = String.Empty;
-        Modifier flags = Modifier.None;
+        var result = new List<Inline>();
+        var currentText = string.Empty;
+        var currentTag = string.Empty;
+        var flags = Modifier.None;
+        var tagBrackets = new[] { '<', '>' };
 
-        int parseState = 0; // 1 - tag, 0 - text
-        for (int i = 0; i < str.Length; i++)
+        var parseState = 0; // 1 - tag, 0 - text
+
+        for (var i = 0; i < str.Length; i++)
         {
-            if (!(new [] {'<', '>'}).Contains(str[i]))
+            if (!tagBrackets.Contains(str[i]))
             {
                 if (parseState == 0)
                 {
@@ -38,11 +40,11 @@ internal class StringToInlineCollectionConverter : IValueConverter
                 if (parseState == 1)
                 {
                     currentText = '<' + currentTag;
-                    currentTag = String.Empty;
+                    currentTag = string.Empty;
                 }
 
                 parseState = 1;
-                if (String.IsNullOrEmpty(currentText))
+                if (string.IsNullOrEmpty(currentText))
                 {
                     continue;
                 }
@@ -71,12 +73,12 @@ internal class StringToInlineCollectionConverter : IValueConverter
                 run.Text = currentText;
                 result.Add(run);
 
-                currentText = String.Empty;
+                currentText = string.Empty;
                 flags = Modifier.None;
             }
             else if (str[i] == '>')
             {
-                if (String.IsNullOrEmpty(currentTag))
+                if (string.IsNullOrEmpty(currentTag))
                 {
                     continue;
                 }
@@ -87,36 +89,39 @@ internal class StringToInlineCollectionConverter : IValueConverter
                         result.Add(new LineBreak());
                         break;
                     case "i":
-                        flags = flags | Modifier.Italic;
+                        flags |= Modifier.Italic;
                         break;
                     case "b":
-                        flags = flags | Modifier.Bold;
+                        flags |= Modifier.Bold;
                         break;
                     case "tn":
-                        flags = flags | Modifier.Small;
+                        flags |= Modifier.Small;
                         break;
                     case "big":
-                        flags = flags | Modifier.Big;
+                        flags |= Modifier.Big;
                         break;
                     case "font size=\"3\"":
-                        flags = flags | Modifier.ExtraBig;
+                        flags |= Modifier.ExtraBig;
+                        break;
+                    case "font size=\"+2\"":
+                    case "font size=\"+1\"":
+                        flags |= Modifier.Big;
                         break;
                     case "p class=\"tn\"":
-                        flags = flags | Modifier.Small;
+                        flags |= Modifier.Small;
                         break;
                     default:
                         break;
                 }
 
                 parseState = 0;
-                currentTag = String.Empty;
+                currentTag = string.Empty;
             }
         }
         return new ObservableCollection<Inline>(result);
     }
 
-    public object ConvertBack(object? value, Type targetType, object? parameter,
-        System.Globalization.CultureInfo culture)
+    public object ConvertBack(object? value, Type targetType, object? parameter, System.Globalization.CultureInfo culture)
     {
         throw new NotImplementedException();
     }

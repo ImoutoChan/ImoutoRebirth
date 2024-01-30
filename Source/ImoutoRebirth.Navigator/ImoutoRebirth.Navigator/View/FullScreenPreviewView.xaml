@@ -10,6 +10,10 @@
     xmlns:gif="http://wpfanimatedgif.codeplex.com"
     xmlns:userControls="clr-namespace:ImoutoRebirth.Navigator.UserControls"
     xmlns:attachedProperties="clr-namespace:ImoutoRebirth.Common.WPF.AttachedProperties;assembly=ImoutoRebirth.Common.WPF"
+    xmlns:view="clr-namespace:ImoutoRebirth.Navigator.View"
+    xmlns:b="http://schemas.microsoft.com/xaml/behaviors"
+    xmlns:model="clr-namespace:ImoutoRebirth.Navigator.Services.Tags.Model"
+    xmlns:notes="clr-namespace:ImoutoRebirth.Common.WPF.Notes;assembly=ImoutoRebirth.Common.WPF"
     d:DataContext="{d:DesignInstance viewModel:FullScreenPreviewVM, IsDesignTimeCreatable=False}"
     d:DesignHeight="300" 
     d:DesignWidth="300"
@@ -20,7 +24,7 @@
     </UserControl.InputBindings>
 
     <Grid Background="Transparent">
-        <Grid>
+        <Grid x:Name="GridParent">
             <Grid.RowDefinitions>
                 <RowDefinition Height="*" />
             </Grid.RowDefinitions>
@@ -29,32 +33,120 @@
             </Grid.ColumnDefinitions>
             
             <Image
+                SizeChanged="ViewPort_OnSizeChanged"
                 Source="{Binding Path=ImagePath}"
-                Visibility="{Binding Path=Type, Converter={StaticResource ConditionVisibilityConverter}, ConverterParameter=Image}" />
+                Visibility="{Binding Path=Type, Converter={StaticResource ConditionVisibilityConverter}, ConverterParameter=Image}"
+                IsVisibleChanged="OnIsVisibleChanged" />
 
             <apngPlayer:ApngPlayer
+                HorizontalAlignment="Center"
+                SizeChanged="ViewPort_OnSizeChanged"
                 Source="{Binding Path=PngPath}"
-                Visibility="{Binding Path=Type, Converter={StaticResource ConditionVisibilityConverter}, ConverterParameter=Png}" />
+                Visibility="{Binding Path=Type, Converter={StaticResource ConditionVisibilityConverter}, ConverterParameter=Png}"
+                IsVisibleChanged="OnIsVisibleChanged" />
 
             <Image
                 gif:ImageBehavior.AnimatedSource="{Binding GifPath}"
-                Visibility="{Binding Path=Type, Converter={StaticResource ConditionVisibilityConverter}, ConverterParameter=Gif}" />
+                Visibility="{Binding Path=Type, Converter={StaticResource ConditionVisibilityConverter}, ConverterParameter=Gif}"
+                IsVisibleChanged="OnIsVisibleChanged" />
 
             <Image
                 attachedProperties:WebPTools.ImagePath="{Binding WebPPath}"
-                Visibility="{Binding Path=Type, Converter={StaticResource ConditionVisibilityConverter}, ConverterParameter=WebP}" />
+                Visibility="{Binding Path=Type, Converter={StaticResource ConditionVisibilityConverter}, ConverterParameter=WebP}" 
+                IsVisibleChanged="OnIsVisibleChanged" />
 
             <userControls:PlayerControl
                 IsVolumeVisible="True"
                 InfinityLifespanMode="True"
                 Source="{Binding Path=VideoPath}"
                 Volume="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type Window}}, Path=DataContext.Volume}"
-                Visibility="{Binding Path=Type, Converter={StaticResource ConditionVisibilityConverter}, ConverterParameter=Video}" />
+                Visibility="{Binding Path=Type, Converter={StaticResource ConditionVisibilityConverter}, ConverterParameter=Video}"
+                IsVisibleChanged="OnIsVisibleChanged" />
 
             <userControls:UgoiraPlayer
                 Source="{Binding Path=UgoiraPath}"
                 FrameDelays="{Binding Path=UgoiraFrameDelays}"
-                Visibility="{Binding Path=Type, Converter={StaticResource ConditionVisibilityConverter}, ConverterParameter=Ugoira}" />
+                Visibility="{Binding Path=Type, Converter={StaticResource ConditionVisibilityConverter}, ConverterParameter=Ugoira}"
+                IsVisibleChanged="OnIsVisibleChanged" />
+            
+            <!-- Notes -->
+            <ItemsControl ItemsSource="{Binding FileNotes}"
+                          Visibility="{Binding Path=FileNotes.Count, Converter={StaticResource ConditionVisibilityConverter}, ConverterParameter=!0}">
+                <ItemsControl.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <Canvas />
+                    </ItemsPanelTemplate>
+                </ItemsControl.ItemsPanel>
+
+                <ItemsControl.Resources>
+                    <notes:NoteToMarginResizedConverter x:Key="NoteToMarginResizedConverter" />
+                    <notes:NoteToHeightResizedConverter x:Key="NoteToHeightResizedConverter" />
+                    <notes:NoteToWidthResizedConverter x:Key="NoteToWidthResizedConverter" />
+                    <notes:StringToInlineCollectionConverter x:Key="StringToInlineCollectionConverter" />
+                </ItemsControl.Resources>
+
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate DataType="{x:Type model:FileNote}">
+                        <Border BorderBrush="{DynamicResource MahApps.Brushes.Accent4}"
+                                BorderThickness="2"
+                                Background="{DynamicResource MahApps.Brushes.Accent2}"
+                                Name="NoteItemsControl"
+                                HorizontalAlignment="Left"
+                                VerticalAlignment="Top"
+                                Opacity="0.5">
+                            <b:Interaction.Behaviors>
+                                <notes:FrameworkElementCustomToolTipBehavior
+                                    InlineList="{Binding Label, Converter={StaticResource StringToInlineCollectionConverter}}" />
+                            </b:Interaction.Behaviors>
+
+                            <Border.Width>
+                                <MultiBinding Converter="{StaticResource NoteToWidthResizedConverter}">
+                                    <Binding Path="DataContext.Zoom"
+                                             RelativeSource="{RelativeSource AncestorType={x:Type view:FullScreenPreviewView}}" />
+                                    <Binding Path="Width" />
+                                </MultiBinding>
+                            </Border.Width>
+
+                            <Border.Height>
+                                <MultiBinding Converter="{StaticResource NoteToHeightResizedConverter}">
+                                    <Binding Path="DataContext.Zoom"
+                                             RelativeSource="{RelativeSource AncestorType={x:Type view:FullScreenPreviewView}}" />
+                                    <Binding Path="Height" />
+                                </MultiBinding>
+                            </Border.Height>
+
+                            <Border.Margin>
+                                <MultiBinding Converter="{StaticResource NoteToMarginResizedConverter}">
+                                    <Binding Path="DataContext.Zoom"
+                                             RelativeSource="{RelativeSource AncestorType={x:Type view:FullScreenPreviewView}}" />
+                                    <Binding Path="PositionFromLeft" />
+                                    <Binding Path="PositionFromTop" />
+                                    <Binding ElementName="GridParent" />
+                                    <Binding Path="CurrentPreviewControl" 
+                                             RelativeSource="{RelativeSource AncestorType={x:Type view:FullScreenPreviewView}}" /> 
+                                </MultiBinding>
+                            </Border.Margin>
+                        </Border>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+
+            <Border Background="White"
+                    x:Name="ToolTipBorder"
+                    VerticalAlignment="Top"
+                    HorizontalAlignment="Left"
+                    Visibility="Collapsed">
+                <Border BorderThickness="1"
+                        BorderBrush="Black"
+                        Background="{DynamicResource AccentColorBrush3}"
+                        Opacity="1"
+                        Padding="5">
+                    <TextBlock HorizontalAlignment="Stretch"
+                               VerticalAlignment="Stretch"
+                               TextWrapping="Wrap"
+                               x:Name="ToolTipTextBlock" />
+                </Border>
+            </Border>
         </Grid>
     </Grid>
 </UserControl>

@@ -10,13 +10,13 @@
                           xmlns:mah="http://metro.mahapps.com/winfx/xaml/shared"
                           xmlns:userControl="clr-namespace:ImoutoViewer.UserControls"
                           xmlns:behavior="clr-namespace:ImoutoViewer.Behavior"
-                          xmlns:converters="clr-namespace:ImoutoViewer.Converters"
                           xmlns:view="clr-namespace:ImoutoViewer.View"
                           xmlns:Imouto.Viewer="clr-namespace:ImoutoViewer"
                           xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
                           xmlns:model="clr-namespace:ImoutoViewer.Model"
                           xmlns:viewModel="clr-namespace:ImoutoViewer.ViewModel"
                           xmlns:converters1="clr-namespace:ImoutoRebirth.Common.WPF.Converters;assembly=ImoutoRebirth.Common.WPF"
+                          xmlns:notes="clr-namespace:ImoutoRebirth.Common.WPF.Notes;assembly=ImoutoRebirth.Common.WPF"
                           mc:Ignorable="d"
                           d:DataContext="{d:DesignInstance viewModel:MainWindowVM, IsDesignTimeCreatable=False}"
                           Title="{Binding Path=Title}"
@@ -430,13 +430,10 @@
                             </ItemsPanelTemplate>
                         </ItemsControl.ItemsPanel>
                         <ItemsControl.Resources>
-                            <converters:NoteToMarginResizedConverter x:Key="NoteToMarginResizedConverter" />
-
-                            <converters:NoteToHeightResizedConverter x:Key="NoteToHeightResizedConverter" />
-
-                            <converters:NoteToWidthResizedConverter x:Key="NoteToWidthResizedConverter" />
-
-                            <converters:StringToInlineCollectionConverter x:Key="StringToInlineCollectionConverter" />
+                            <notes:NoteToMarginResizedConverter x:Key="NoteToMarginResizedConverter" />
+                            <notes:NoteToHeightResizedConverter x:Key="NoteToHeightResizedConverter" />
+                            <notes:NoteToWidthResizedConverter x:Key="NoteToWidthResizedConverter" />
+                            <notes:StringToInlineCollectionConverter x:Key="StringToInlineCollectionConverter" />
                         </ItemsControl.Resources>
                         <ItemsControl.ItemTemplate>
                             <DataTemplate DataType="{x:Type model:NoteM}">
@@ -448,7 +445,7 @@
                                         VerticalAlignment="Top"
                                         Opacity="0.5">
                                     <b:Interaction.Behaviors>
-                                        <behavior:FrameworkElementCustomToolTipBehavior
+                                        <notes:FrameworkElementCustomToolTipBehavior
                                             InlineList="{Binding NoteString, Converter={StaticResource StringToInlineCollectionConverter}}" />
                                     </b:Interaction.Behaviors>
 
@@ -456,7 +453,7 @@
                                         <MultiBinding Converter="{StaticResource NoteToWidthResizedConverter}">
                                             <Binding Path="DataContext.Zoom"
                                                      RelativeSource="{RelativeSource AncestorType={x:Type metroControl:MetroWindow}}" />
-                                            <Binding />
+                                            <Binding Path="Width" />
                                         </MultiBinding>
                                     </Border.Width>
 
@@ -464,7 +461,7 @@
                                         <MultiBinding Converter="{StaticResource NoteToHeightResizedConverter}">
                                             <Binding Path="DataContext.Zoom"
                                                      RelativeSource="{RelativeSource AncestorType={x:Type metroControl:MetroWindow}}" />
-                                            <Binding />
+                                            <Binding Path="Height" />
                                         </MultiBinding>
                                     </Border.Height>
 
@@ -472,7 +469,8 @@
                                         <MultiBinding Converter="{StaticResource NoteToMarginResizedConverter}">
                                             <Binding Path="DataContext.Zoom"
                                                      RelativeSource="{RelativeSource AncestorType={x:Type metroControl:MetroWindow}}" />
-                                            <Binding />
+                                            <Binding Path="PositionX" />
+                                            <Binding Path="PositionY" />
                                             <Binding ElementName="GridParent" />
                                             <Binding ElementName="ViewPort" />
                                         </MultiBinding>
