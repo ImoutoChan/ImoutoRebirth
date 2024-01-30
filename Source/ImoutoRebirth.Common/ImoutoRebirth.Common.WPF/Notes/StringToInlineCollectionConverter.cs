@@ -2,6 +2,7 @@
 using System.Windows;
 using System.Windows.Data;
 using System.Windows.Documents;
+using System.Windows.Media;
 
 namespace ImoutoRebirth.Common.WPF.Notes;
 
@@ -71,6 +72,7 @@ public class StringToInlineCollectionConverter : IValueConverter
                     run.FontSize = 16;
                 }
                 run.Text = currentText;
+                run.Foreground = new SolidColorBrush(Colors.Black);
                 result.Add(run);
 
                 currentText = string.Empty;
