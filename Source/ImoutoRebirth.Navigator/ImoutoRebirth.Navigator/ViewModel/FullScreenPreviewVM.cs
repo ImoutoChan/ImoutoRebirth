@@ -1,6 +1,7 @@
 ﻿using System.Windows.Input;
 using ImoutoRebirth.Common.WPF;
 using ImoutoRebirth.Common.WPF.Commands;
+using ImoutoRebirth.Navigator.Services.Tags.Model;
 using ImoutoRebirth.Navigator.UserControls;
 using ImoutoRebirth.Navigator.ViewModel.ListEntries;
 
@@ -9,14 +10,21 @@ namespace ImoutoRebirth.Navigator.ViewModel;
 internal class FullScreenPreviewVM : VMBase
 {
     private readonly Func<INavigatorListEntry, Task<List<DelayItem>?>> _ugoiraDelaysGetter;
+    private readonly Func<INavigatorListEntry, Task<IReadOnlyCollection<FileNote>>> _notesGetter;
     private string? _path;
     private INavigatorListEntry? _currentEntry;
     private ListEntryType? _type;
     private IList<INavigatorListEntry>? _list;
     private IReadOnlyCollection<DelayItem>? _ugoiraFrameDelays;
+    private IReadOnlyCollection<FileNote> _fileNotes = [];
 
-    public FullScreenPreviewVM(Func<INavigatorListEntry, Task<List<DelayItem>?>> ugoiraDelaysGetter) 
-        => _ugoiraDelaysGetter = ugoiraDelaysGetter;
+    public FullScreenPreviewVM(
+        Func<INavigatorListEntry, Task<List<DelayItem>?>> ugoiraDelaysGetter, 
+        Func<INavigatorListEntry, Task<IReadOnlyCollection<FileNote>>> notesGetter)
+    {
+        _ugoiraDelaysGetter = ugoiraDelaysGetter;
+        _notesGetter = notesGetter;
+    }
 
     public string? PngPath => _type == ListEntryType.Png ? Path : null;
     public string? GifPath => _type == ListEntryType.Gif ? Path : null;
@@ -58,6 +66,12 @@ internal class FullScreenPreviewVM : VMBase
         set => OnPropertyChanged(ref _ugoiraFrameDelays, value, () => UgoiraFrameDelays);
     }
     
+    public IReadOnlyCollection<FileNote> FileNotes
+    {
+        get => _fileNotes;
+        set => OnPropertyChanged(ref _fileNotes, value, () => FileNotes);
+    }
+    
     public async void SetCurrentEntry(INavigatorListEntry forEntry, IList<INavigatorListEntry> list)
     {
         Type = forEntry.Type;
@@ -65,8 +79,12 @@ internal class FullScreenPreviewVM : VMBase
         CurrentEntry = forEntry;
         _list = list;
 
+        var notesTask = _notesGetter(forEntry);
+
         if (Type == ListEntryType.Ugoira)
             UgoiraFrameDelays = await _ugoiraDelaysGetter(forEntry);
+
+        FileNotes = await notesTask;
         
         CurrentEntryNameChanged?.Invoke(this, System.IO.Path.GetFileName(forEntry.Path));
     }

@@ -39,6 +39,7 @@ internal class MainWindowVM : VMBase
     private string _title;
     private readonly IFileService _fileService;
     private readonly IFileTagService _fileTagService;
+    private readonly IFileNoteService _fileNoteService;
     private readonly IFileLoadingService _fileLoadingService;
     private readonly IImoutoViewerService _imoutoViewerService;
     private readonly DispatcherTimer _appendNewContentTimer = new() { Interval = TimeSpan.FromSeconds(5) };
@@ -55,6 +56,7 @@ internal class MainWindowVM : VMBase
         _fileLoadingService = ServiceLocator.GetService<IFileLoadingService>();
         _fileService = ServiceLocator.GetService<IFileService>();
         _fileTagService = ServiceLocator.GetService<IFileTagService>();
+        _fileNoteService = ServiceLocator.GetService<IFileNoteService>();
         _imoutoViewerService = ServiceLocator.GetService<IImoutoViewerService>();
 
         InitializeCommands();
@@ -385,7 +387,9 @@ internal class MainWindowVM : VMBase
             var frameData = JsonConvert.DeserializeObject<UgoiraFrameData>(frameDataTag.Value);
 
             return frameData?.Data.Select(x => new DelayItem(x.Delay, x.File)).ToList();
-        });
+        },
+        entry => _fileNoteService.GetFileNotes(entry.DbId!.Value));
+
         vm.CurrentEntryNameChanged += OnCurrentEntryNameChanged;
         vm.CloseRequested += OnFullScreenPreviewVMCloseRequested;
 

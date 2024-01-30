@@ -14,9 +14,11 @@
     d:DesignHeight="300" 
     d:DesignWidth="300"
     PreviewMouseWheel="OnPreviewMouseWheel">
+
     <UserControl.InputBindings>
         <MouseBinding Gesture="MiddleClick" Command="{Binding CloseCommand}" />
     </UserControl.InputBindings>
+
     <Grid Background="Transparent">
         <Grid>
             <Grid.RowDefinitions>

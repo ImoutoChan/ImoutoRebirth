@@ -27,6 +27,7 @@ public static class ServiceLocator
 
         sc.AddTransient<IFileService, FileService>();
         sc.AddTransient<IFileTagService, FileTagService>();
+        sc.AddTransient<IFileNoteService, FileNoteService>();
         sc.AddTransient<ITagService, TagService>();
         sc.AddTransient<IFileLoadingService, FileLoadingService>();
 

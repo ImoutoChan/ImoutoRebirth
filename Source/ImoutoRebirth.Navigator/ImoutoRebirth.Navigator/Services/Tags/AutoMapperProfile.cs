@@ -2,10 +2,12 @@
 using ImoutoRebirth.Lilin.WebApi.Client;
 using ImoutoRebirth.Navigator.Services.Tags.Model;
 using ImoutoRebirth.Room.WebApi.Client;
+using FileNote = ImoutoRebirth.Navigator.Services.Tags.Model.FileNote;
 using FileTag = ImoutoRebirth.Navigator.Services.Tags.Model.FileTag;
 using Tag = ImoutoRebirth.Navigator.Services.Tags.Model.Tag;
 using LilinTag = ImoutoRebirth.Lilin.WebApi.Client.Tag;
 using LilinFileTag = ImoutoRebirth.Lilin.WebApi.Client.DetailedFileTag;
+using LilinFileNote = ImoutoRebirth.Lilin.WebApi.Client.FileNote;
 using LilinTagType = ImoutoRebirth.Lilin.WebApi.Client.TagType;
 using TagType = ImoutoRebirth.Navigator.Services.Tags.Model.TagType;
 
@@ -50,6 +52,7 @@ internal class AutoMapperProfile : Profile
 
         CreateFileTagMaps();
         CreateTagMaps();
+        CreateFileNoteMaps();
     }
 
     private void CreateTagMaps()
@@ -84,5 +87,10 @@ internal class AutoMapperProfile : Profile
                     MetadataSource.Rule34 => FileTagSource.Rule34,
                     _ => throw new NotImplementedException(x.ToString())
                 });
+    }
+
+    private void CreateFileNoteMaps()
+    {
+        CreateMap<LilinFileNote, FileNote>();
     }
 }

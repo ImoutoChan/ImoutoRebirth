@@ -1,3 +1,0 @@
-﻿namespace ImoutoRebirth.Kekkai.Application;
-
-
