@@ -335,7 +335,7 @@ internal class TagSearchVM : VMBase
 
         if (tag.Title == "BooruPostId" && int.TryParse(SearchString, out var number))
         {
-            var value = number.ToString();
+            var value = $"={number}";
 
             SelectedBindedTags.Add(
                 new SearchTagVM(
