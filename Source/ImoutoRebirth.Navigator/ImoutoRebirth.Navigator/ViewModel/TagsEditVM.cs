@@ -278,6 +278,10 @@ internal class TagsEditVM : VMBase, IDropable
         var value = tag.Tag.IsCounter ? "Counter:1" : null;
         
         var searchTagVm = new SearchTagVM(new SearchTag(tag.Tag, value));
+
+        if (SelectedTags.Any(x => x.Tag.Id == searchTagVm.Tag.Id && x.Value == searchTagVm.Value))
+            return;
+
         SelectedTags.Add(searchTagVm);
     }
     

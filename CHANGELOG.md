@@ -8,6 +8,7 @@
 * Support WebP format in FullScreenPreview
 * Add splashscreen
 * Show notes in full screen preview
+* Fix duplicates in TagsEditVM when clicking right mouse button on image tag
 
 ### Harpy
 * Add ability to download faved danbooru pictures through gelbooru
