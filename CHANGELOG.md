@@ -1,5 +1,7 @@
 # Unreleased
 
+# 4.24.0
+
 ### Navigator
 * Move extensions to common project
 * Add settings for auto shuffle on every reload (default: false)
