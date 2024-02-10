@@ -82,12 +82,12 @@ Set-ExecutionPolicy Bypass -Scope Process -Force;
 cd <path to the latest folder>
 ``` 
 
-It will install postgres, .net runtime (can take some time, especially for Postgres)
+This one will install postgres, .net runtime (can take some time, especially for Postgres)
 ```powershell
 ./install-dependencies.ps1
 ```
 
-It will install or update the application itself
+This one will install or update the application itself
 ```powershell
 ./install-update.ps1
 ```
@@ -154,7 +154,7 @@ Template and default values
 
 ## ImoutoRebirth Architecture
 
-Beyond the two applications mentioned earlier, ImoutoRebirth internally consists of a bunch of services, each with its own function. These will be installed automatically, and no particular knowledge about them is required. However, for the inquisitive, this section describes the inner workings and purposes of different services, as well as their dependencies. If you follow the installation instructions below, these services will be automatically installed as Windows Services. Also, for the system to operate, Postgres will be needed. You can install it independently or use the scripts provided with each release.
+Beyond the two applications mentioned earlier, ImoutoRebirth internally consists of a bunch of services, each with its own function. These will be installed automatically, and no particular knowledge about them is required. However, for the inquisitive, this section describes the inner workings and purposes of different services, as well as their dependencies. If you follow the installation instructions above, these services will be automatically installed as Windows Services. Also, for the system to operate, Postgres will be needed. You can install it independently or use the scripts provided with each release.
 
 You can overview the basic architecture and the interaction of services in greater detail in [this diagram](https://drive.google.com/file/d/1MD8NAIeuV8u_wt9HWjdUUrcOaiZOMNBF/view?usp=drive_link), open it with diagrams.net or draw.io.
 
