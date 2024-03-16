@@ -29,6 +29,14 @@ public class LoadTagHistoryCommandConsumer : IConsumer<ILoadTagHistoryCommand>
 
     public async Task Consume(ConsumeContext<ILoadTagHistoryCommand> context)
     {
+        var expired = (DateTime.UtcNow - context.SentTime) > TimeSpan.FromMinutes(1);
+        if (expired)
+        {
+            _logger.LogWarning("Skip tag history request from {SearchEngine} because it's expired",
+                context.Message.SearchEngineType);
+            return;
+        }
+        
         var lastProcessedTagHistoryId = context.Message.LastProcessedTagHistoryId;
         var searchEngineType = context.Message.SearchEngineType.ToModel();
 

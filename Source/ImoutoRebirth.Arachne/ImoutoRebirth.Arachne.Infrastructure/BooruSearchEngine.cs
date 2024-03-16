@@ -65,9 +65,10 @@ internal class BooruSearchEngine : ISearchEngine
                 var changedPostIds = postIds.Union(parentPostIds).ToList();
 
                 _logger.LogInformation(
-                    "Requested tags history loaded with {PostTagUpdatesCount} for {SearchEngine}",
+                    "Requested tags history loaded with {PostTagUpdatesCount} for {SearchEngine} with last history id {LastHistoryId}",
                     history.Count,
-                    SearchEngineType);
+                    SearchEngineType,
+                    lastHistoryId);
 
                 return new LoadedTagsHistory(changedPostIds, lastHistoryId);
             }

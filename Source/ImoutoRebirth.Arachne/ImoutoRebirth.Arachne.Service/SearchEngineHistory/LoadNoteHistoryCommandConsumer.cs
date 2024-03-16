@@ -29,6 +29,14 @@ public class LoadNoteHistoryCommandConsumer : IConsumer<ILoadNoteHistoryCommand>
 
     public async Task Consume(ConsumeContext<ILoadNoteHistoryCommand> context)
     {
+        var expired = (DateTime.UtcNow - context.SentTime) > TimeSpan.FromMinutes(1);
+        if (expired)
+        {
+            _logger.LogWarning("Skip note history request from {SearchEngine} because it's expired",
+                context.Message.SearchEngineType);
+            return;
+        }
+        
         var lastProcessedNoteUpdateAt = context.Message.LastProcessedNoteUpdateAt;
         var searchEngineType = context.Message.SearchEngineType.ToModel();
 
