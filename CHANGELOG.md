@@ -3,6 +3,9 @@
 ### Arachne
 * Ignore old and expired LoadTagHistory and LoadNoteHistory commands from mass transit
 
+### Navigator
+* Fix webp previews in the list view
+
 # 4.24.0
 
 ### Navigator

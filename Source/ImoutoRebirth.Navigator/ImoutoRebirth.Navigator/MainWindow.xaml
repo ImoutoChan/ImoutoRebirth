@@ -19,6 +19,7 @@
                           xmlns:apngPlayer="clr-namespace:ImoutoRebirth.Navigator.ApngWpfPlayer.ApngPlayer;assembly=ImoutoRebirth.Navigator.ApngWpfPlayer"
                           xmlns:behaviors="clr-namespace:ImoutoRebirth.Navigator.Behaviors"
                           xmlns:converters1="clr-namespace:ImoutoRebirth.Common.WPF.Converters;assembly=ImoutoRebirth.Common.WPF"
+                          xmlns:attachedProperties="clr-namespace:ImoutoRebirth.Common.WPF.AttachedProperties;assembly=ImoutoRebirth.Common.WPF"
                           d:DataContext="{d:DesignInstance viewModel:MainWindowVM, IsDesignTimeCreatable=False}"
                           mc:Ignorable="d"
                           WindowStartupLocation="CenterScreen"
@@ -415,6 +416,34 @@
                         </Border>
                     </DataTemplate>
 
+                    <DataTemplate x:Key="WebPListBoxItemTemplate"
+                                  DataType="{x:Type listEntries:ImageEntryVM}">
+                        <Border Margin="0,11,0,11">
+                            <b:Interaction.Behaviors>
+                                <behaviors:FrameworkElementDragBehavior />
+                            </b:Interaction.Behaviors>
+
+                            <Border.Effect>
+                                <DropShadowEffect />
+                            </Border.Effect>
+
+                            <Grid Width="{Binding Path=ViewPortSize.Width}"
+                                  Height="{Binding Path=ViewPortSize.Height}">
+                                <Ellipse Width="10"
+                                         Height="10"
+                                         Fill="{DynamicResource MahApps.Brushes.Gray10}"
+                                         Visibility="{Binding Path=IsLoading,
+                                                            Converter={StaticResource ConditionVisibilityConverter},
+                                                            ConverterParameter=true}" />
+
+                                <Image attachedProperties:WebPTools.ImagePath="{Binding Path}"
+                                       Visibility="{Binding Path=IsLoading,
+                                                            Converter={StaticResource ConditionVisibilityConverter},
+                                                            ConverterParameter=false}" />
+                            </Grid>
+                        </Border>
+                    </DataTemplate>
+
                     <DataTemplate x:Key="VideoListBoxItemTemplate"
                                   DataType="{x:Type listEntries:VideoEntryVM}">
                         <Border Margin="0,11,0,11">
@@ -430,10 +459,11 @@
                                    Height="{Binding Path=ViewPortSize.Height}">
                                 <userControl:PlayerControl
                                     IsVolumeVisible="False"
-                                    Source="{Binding Path}" 
+                                    Source="{Binding Path}"
                                     ShouldPause="{Binding ShouldPause}" 
-                                    Volume="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type Window}},
-                                                                            Path=DataContext.Volume}" />
+                                    Volume="{Binding 
+                                        RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type Window}},
+                                        Path=DataContext.Volume}" />
                             </Grid>
                         </Border>
                     </DataTemplate>
@@ -556,6 +586,26 @@
                                             </MultiDataTrigger.Setters>
                                         </MultiDataTrigger>
 
+                                        <!-- Selected && Webp && ShowPreview -->
+                                        <MultiDataTrigger>
+                                            <MultiDataTrigger.Conditions>
+                                                <Condition Binding="{Binding RelativeSource={RelativeSource Self}, Path=IsSelected}"
+                                                           Value="True" />
+
+                                                <Condition Binding="{Binding Type}"
+                                                           Value="{x:Static listEntries:ListEntryType.WebP}" />
+
+                                                <Condition Binding="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type Window}}, Path=DataContext.ShowPreview}"
+                                                           Value="True" />
+                                            </MultiDataTrigger.Conditions>
+
+                                            <MultiDataTrigger.Setters>
+                                                <Setter Property="ContentTemplate"
+                                                        Value="{StaticResource WebPListBoxItemTemplate}"
+                                                        TargetName="ContentControl" />
+                                            </MultiDataTrigger.Setters>
+                                        </MultiDataTrigger>
+
                                         <!-- Selected && Video && ShowPreview -->
                                         <MultiDataTrigger>
                                             <MultiDataTrigger.Conditions>
@@ -617,7 +667,6 @@
                                         </MultiDataTrigger>
 
                                         <!-- /Data template selection -->
-
 
                                         <!-- Visual -->
                                         <MultiTrigger>

@@ -107,6 +107,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tools", "Tools", "{2438D898
 		..\README.md = ..\README.md
 		..\README.RU.md = ..\README.RU.md
 		..\.github\workflows\release.yml = ..\.github\workflows\release.yml
+		ImoutoRebirth.sln.DotSettings = ImoutoRebirth.sln.DotSettings
 	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NukeBuild", "..\Tools\NukeBuild\NukeBuild.csproj", "{DBC3E098-5984-4FD6-9F83-18FBE9A23683}"
