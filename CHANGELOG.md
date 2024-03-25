@@ -6,6 +6,9 @@
 ### Navigator
 * Fix webp previews in the list view
 
+### Viewer
+* Add jfif to the list of supported image formats
+
 # 4.24.0
 
 ### Navigator
