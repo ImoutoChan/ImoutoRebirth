@@ -1,6 +1,7 @@
 ﻿using System.Runtime.CompilerServices;
 using ImoutoRebirth.Common.Cqrs.Abstract;
 using ImoutoRebirth.Common.Domain;
+using ImoutoRebirth.Room.Application.Cqrs.ImoutoPicsUploadStateSlice;
 using ImoutoRebirth.Room.Application.Services;
 using ImoutoRebirth.Room.Domain;
 using ImoutoRebirth.Room.Domain.CollectionAggregate;
@@ -73,7 +74,11 @@ internal class OverseeCollectionCommandHandler : ICommandHandler<OverseeCollecti
 
         await _remoteCommandService.SaveTags(newId, moved.SourceTags);
         await _remoteCommandService.UpdateMetadataRequest(newId, moved.SystemFile.Md5);
-        await _imoutoPicsUploader.UploadFile(moved.MovedFileInfo.FullName);
+        
+        var isUploadEnabled = await _mediator.Send(new IsImoutoPicsUploaderEnabledQuery());
+        
+        if (isUploadEnabled)
+            await _imoutoPicsUploader.UploadFile(moved.MovedFileInfo.FullName);
     }
 
     private SystemFileMoved MoveFile(Collection collection, SystemFilePreparedToMove preparedToMove)

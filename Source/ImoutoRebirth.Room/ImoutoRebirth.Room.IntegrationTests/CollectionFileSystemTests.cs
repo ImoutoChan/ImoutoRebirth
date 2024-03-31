@@ -11,6 +11,7 @@ using MassTransit.Testing;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
+using Moq;
 using Xunit;
 
 namespace ImoutoRebirth.Room.IntegrationTests;
@@ -805,6 +806,58 @@ public class CollectionFileSystemTests : IDisposable
             .Should().Be(Path.Combine(destFolderPath, "file1-5f30f9953332c230d11e3f26db5ae9a0 (1).jpg"));
         Directory.GetFiles(destFolderPath, "*", SearchOption.AllDirectories).ElementAt(2)
             .Should().Be(Path.Combine(destFolderPath, "file1-5f30f9953332c230d11e3f26db5ae9a0.jpg"));
+    }
+
+    [Fact]
+    public async Task ImoutoPicsUploadCalledWhenImoutoPicsUploaderEnabled()
+    {
+        // arrange
+        var (_, sourceFolderPath, destFolderPath) = await CreateDefaultCollection(
+            sourceShouldCheckFormat:              false,
+            sourceShouldCheckHashFromName:        false ,
+            sourceShouldCreateTagsFromSubfolders: false,
+            sourceShouldAddTagFromFilename:       false,
+            sourceSupportedExtensions:            new []{ "jpg" },
+            destShouldCreateSubfoldersByHash:     false,
+            destShouldRenameByHash:               false);
+        
+        var testFile = new FileInfo(Path.Combine(_webApp.TestsLocation, "Resources", "file1-5f30f9953332c230d11e3f26db5ae9a0.jpg"));
+        
+        await _webApp.Client.PostAsync("/imouto-pics-uploader-enabled", null);
+        
+        // act
+        testFile.CopyTo(Path.Combine(sourceFolderPath, testFile.Name));
+        await _mediator.Send(new OverseeCommand());
+        
+        // assert
+        var file = Path.Combine(destFolderPath, "file1-5f30f9953332c230d11e3f26db5ae9a0.jpg");
+        _webApp.ImoutoPicsUploaderMock.Verify(x => x.UploadFile(file), Times.Once);
+    }
+
+    [Fact()]
+    public async Task ImoutoPicsUploadShouldNotBeCalledWhenImoutoPicsUploaderDisabled()
+    {
+        // arrange
+        var (_, sourceFolderPath, destFolderPath) = await CreateDefaultCollection(
+            sourceShouldCheckFormat:              false,
+            sourceShouldCheckHashFromName:        false ,
+            sourceShouldCreateTagsFromSubfolders: false,
+            sourceShouldAddTagFromFilename:       false,
+            sourceSupportedExtensions:            new []{ "jpg" },
+            destShouldCreateSubfoldersByHash:     false,
+            destShouldRenameByHash:               false);
+        
+        var testFile = new FileInfo(Path.Combine(_webApp.TestsLocation, "Resources", "file1-5f30f9953332c230d11e3f26db5ae9a0.jpg"));
+        
+        await _webApp.Client.DeleteAsync("/imouto-pics-uploader-enabled");
+        
+        // act
+        testFile.CopyTo(Path.Combine(sourceFolderPath, testFile.Name));
+        await _mediator.Send(new OverseeCommand());
+        
+        // assert
+        var file = Path.Combine(destFolderPath, "file1-5f30f9953332c230d11e3f26db5ae9a0.jpg");
+        _webApp.ImoutoPicsUploaderMock.Verify(x => x.UploadFile(file), Times.Never);
     }
 
     private async Task<CreatedCollection> CreateDefaultCollection(

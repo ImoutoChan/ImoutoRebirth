@@ -1,6 +1,7 @@
 ﻿using System.Reflection;
 using ImoutoRebirth.Common.Cqrs;
 using ImoutoRebirth.Room.Application.Cqrs;
+using ImoutoRebirth.Room.Application.Services;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace ImoutoRebirth.Room.Application;
@@ -18,6 +19,8 @@ public static class ServiceCollectionExtensions
         });
         services.AddLoggingBehavior();
         services.AddTransactionBehavior();
+        
+        services.AddSingleton<IImoutoPicsUploaderRepository, ImoutoPicsUploaderRepository>();
 
         return services;
     }

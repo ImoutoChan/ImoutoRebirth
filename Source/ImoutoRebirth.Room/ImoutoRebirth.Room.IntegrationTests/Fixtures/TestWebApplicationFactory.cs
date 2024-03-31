@@ -1,11 +1,13 @@
 ﻿using System.Reflection;
 using ImoutoRebirth.Common.MassTransit;
+using ImoutoRebirth.Room.Application.Services;
 using ImoutoRebirth.Room.Database;
 using ImoutoRebirth.Room.Infrastructure;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Moq;
 using Npgsql;
 using Xunit;
 
@@ -33,6 +35,8 @@ public class TestWebApplicationFactory<TProgram>
     public string TestsLocation 
         => new FileInfo(Assembly.GetExecutingAssembly().Location).Directory!.FullName;
 
+    public Mock<IImoutoPicsUploader> ImoutoPicsUploaderMock { get; } = new();
+    
     protected override IHost CreateHost(IHostBuilder builder)
     {
         builder.ConfigureServices(services =>
@@ -47,6 +51,9 @@ public class TestWebApplicationFactory<TProgram>
                 .Union(services.Where(
                     d => d.ServiceType == typeof(IHostedService)
                          && d.ImplementationType?.Name == "QuartzHostedService"))
+                
+                // replace IImoutoPicsUploader with mock
+                .Union(services.Where(x => x.ServiceType == typeof(IImoutoPicsUploader)))
                 .ToList();
 
             foreach (var descriptor in descriptors)
@@ -54,6 +61,7 @@ public class TestWebApplicationFactory<TProgram>
 
             services.AddDbContext<RoomDbContext>(x => x.UseNpgsql(ConnectionString, y => y.UseNodaTime()));
             services.AddMassTransitTestHarness(с => с.AddRoomMassTransitSetup());
+            services.AddTransient<IImoutoPicsUploader>(x => ImoutoPicsUploaderMock.Object);
         });
 
         var host = base.CreateHost(builder);

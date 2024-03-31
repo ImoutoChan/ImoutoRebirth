@@ -133,6 +133,7 @@ internal class MainWindowVM : VMBase
     {
         var topTagsUpdateTask = TagsEdit.UpdateUsersTopTags();
         await CollectionManager.ReloadCollectionsAsync();
+        await Settings.InitializeAsync();
         TagSearchVM.AddCollections(CollectionManager.Collections);
         await topTagsUpdateTask;
     }

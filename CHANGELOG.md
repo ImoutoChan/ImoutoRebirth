@@ -5,9 +5,14 @@
 
 ### Navigator
 * Fix webp previews in the list view
+* Add button to enable/disable imouto pics upload in Room
 
 ### Viewer
 * Add jfif to the list of supported image formats
+
+### Room
+* Add in-memory settings to enable/disable imouto pics upload and api for it
+* Add tests for the imouto pics upload settings
 
 # 4.24.0
 

@@ -6,6 +6,8 @@ using ControlzEx.Theming;
 using ImoutoRebirth.Common;
 using ImoutoRebirth.Common.WPF;
 using ImoutoRebirth.Common.WPF.Commands;
+using ImoutoRebirth.Navigator.Services;
+using ImoutoRebirth.Navigator.Services.Collections;
 using MahApps.Metro.Theming;
 
 namespace ImoutoRebirth.Navigator.ViewModel;
@@ -15,7 +17,10 @@ internal class SettingsVM : VMBase
     private AccentColorMenuData _selectedAccentColor;
     private int _selectedTheme;
     private ICommand? _saveCommand;
+    private ICommand? _toggleImoutoPicsCommand;
     private string _pathOverrides;
+    private readonly IImoutoPicsUploaderStateService _imoutoPicsUploaderStateService;
+    private bool _isImoutoPicsUploaderEnabled;
 
     public SettingsVM()
     {
@@ -32,6 +37,8 @@ internal class SettingsVM : VMBase
 
         ShowPreviewOnSelect = Settings.Default.ActivatePreviewOnSelect;
         PathOverrides = Settings.Default.PathOverrides;
+
+        _imoutoPicsUploaderStateService = ServiceLocator.GetService<IImoutoPicsUploaderStateService>();
     }
 
     public bool ShowPreviewOnSelect
@@ -138,6 +145,12 @@ internal class SettingsVM : VMBase
         set => Settings.Default.LilinHost = value;
     }
 
+    public bool IsImoutoPicsUploaderEnabled
+    {
+        get => _isImoutoPicsUploaderEnabled;
+        set => OnPropertyChanged(ref _isImoutoPicsUploaderEnabled, value, () => IsImoutoPicsUploaderEnabled);
+    }
+
     public string RoomHost
     {
         get => Settings.Default.RoomHost;
@@ -145,6 +158,8 @@ internal class SettingsVM : VMBase
     }
 
     public ICommand SaveCommand => _saveCommand ??= new RelayCommand(_ => Save());
+
+    public ICommand ToggleImoutoPicsCommand => _toggleImoutoPicsCommand ??= new AsyncCommand(() => ToggleImoutoPics());
 
     private static void Save() => Settings.Default.Save();
 
@@ -154,6 +169,25 @@ internal class SettingsVM : VMBase
     {
         var handler = ShowPreviewOnSelectChanged;
         handler?.Invoke(this, EventArgs.Empty);
+    }
+
+    public async Task InitializeAsync()
+    {
+        IsImoutoPicsUploaderEnabled = await _imoutoPicsUploaderStateService.IsEnabledAsync();
+    }
+    
+    private async Task ToggleImoutoPics()
+    {
+        if (IsImoutoPicsUploaderEnabled)
+        {
+            await _imoutoPicsUploaderStateService.DisableAsync();
+        }
+        else
+        {
+            await _imoutoPicsUploaderStateService.EnableAsync();
+        }
+        
+        IsImoutoPicsUploaderEnabled = await _imoutoPicsUploaderStateService.IsEnabledAsync();
     }
 }
 
