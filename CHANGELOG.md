@@ -1,5 +1,7 @@
 # Unreleased
 
+# 4.25.0
+
 ### Arachne
 * Ignore old and expired LoadTagHistory and LoadNoteHistory commands from mass transit
 
