@@ -1,5 +1,9 @@
 # Unreleased
 
+# Infrastructure
+* Some dependencies were updated.
+* You have to delete all db functions in masstransit sql transport database in order for its migrations to work. 
+
 # 4.25.0
 
 ### Arachne

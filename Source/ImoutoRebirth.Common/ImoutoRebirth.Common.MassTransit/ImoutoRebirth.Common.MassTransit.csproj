@@ -9,7 +9,7 @@
 
     <ItemGroup>
         <PackageReference Include="Humanizer.Core" Version="2.14.1" />
-        <PackageReference Include="MassTransit.SqlTransport.PostgreSQL" Version="8.2.0-develop.1655" />
+        <PackageReference Include="MassTransit.SqlTransport.PostgreSQL" Version="8.2.1" />
     </ItemGroup>
 
 </Project>
