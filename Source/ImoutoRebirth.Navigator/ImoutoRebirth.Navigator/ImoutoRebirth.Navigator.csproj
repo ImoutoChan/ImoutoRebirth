@@ -167,6 +167,9 @@
         <Page Update="View\TagsSearchView.xaml">
             <SubType>Designer</SubType>
         </Page>
+        <Page Update="View\Flyouts\TagsMergeView.xaml">
+            <SubType>Designer</SubType>
+        </Page>
     </ItemGroup>
 
     <ItemGroup>

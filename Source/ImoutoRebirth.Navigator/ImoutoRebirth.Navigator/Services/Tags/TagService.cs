@@ -46,4 +46,14 @@ internal class TagService : ITagService
         var results = await _tagsClient.GetPopularCharactersTagsAsync(count);
         return _mapper.Map<IReadOnlyCollection<Tag>>(results);
     }
+
+    public async Task MergeTags(Guid tagToCleanId, Guid tagToEnrichId)
+    {
+        await _tagsClient.MergeTagsAsync(new MergeTagsCommand(tagToCleanId, tagToEnrichId));
+    }
+
+    public async Task DeleteTag(Guid tagId)
+    {
+        await _tagsClient.DeleteTagAsync(tagId);
+    }
 }

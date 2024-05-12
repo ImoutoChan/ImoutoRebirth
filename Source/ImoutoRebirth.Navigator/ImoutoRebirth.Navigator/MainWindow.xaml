@@ -85,6 +85,15 @@
                                  >
                 <flyouts:TagsEditView />
             </metroControl:Flyout>
+
+            <metroControl:Flyout x:Name="TagsMergeFlyout"
+                                 Height="360"
+                                 Header="Merge tags"
+                                 Position="Bottom"
+                                 DataContext="{Binding Path=TagsMerge}"
+                                 >
+                <flyouts:TagsMergeView />
+            </metroControl:Flyout>
         </metroControl:FlyoutsControl>
     </metroControl:MetroWindow.Flyouts>
 

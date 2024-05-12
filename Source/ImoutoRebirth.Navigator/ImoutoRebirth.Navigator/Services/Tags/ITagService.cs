@@ -13,4 +13,8 @@ internal interface ITagService
     Task<IReadOnlyCollection<Tag>> GetPopularUserTags(int count);
 
     Task<IReadOnlyCollection<Tag>> GetPopularUserCharacterTags(int count);
+
+    Task MergeTags(Guid tagToCleanId, Guid tagToEnrichId);
+
+    Task DeleteTag(Guid tagId);
 }

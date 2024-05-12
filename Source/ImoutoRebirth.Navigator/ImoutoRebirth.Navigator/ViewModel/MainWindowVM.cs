@@ -69,6 +69,7 @@ internal class MainWindowVM : VMBase
 
         TagSearchVM = new TagSearchVM();
         TagsEdit = new TagsEditVM(this);
+        TagsMerge = new TagsMergeVM();
         _view = new MainWindow { DataContext = this };
         
         TagSearchVM.SelectedTagsUpdated += TagSearchVM_SelectedTagsUpdated;
@@ -184,6 +185,8 @@ internal class MainWindowVM : VMBase
     public SettingsVM Settings { get; } = new();
 
     public TagsEditVM TagsEdit { get; set; }
+
+    public TagsMergeVM TagsMerge { get; set; }
 
     public FullScreenPreviewVM? FullScreenPreviewVM
     {

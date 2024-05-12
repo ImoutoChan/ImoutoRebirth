@@ -195,9 +195,16 @@ internal partial class MainWindow
 
     private void UIElement_OnKeyUp(object sender, KeyEventArgs e)
     {
-        // Open TagsEdit flyout.
-        if (e.Key == Key.T)
-            ToggleFlyout(TagsEditFlyout);
+        switch (e.Key)
+        {
+            // Open TagsEdit flyout.
+            case Key.T:
+                ToggleFlyout(TagsEditFlyout);
+                break;
+            case Key.M:
+                ToggleFlyout(TagsMergeFlyout);
+                break;
+        }
     }
 
     private void MainWindow_OnClosing(object? sender, CancelEventArgs e)
