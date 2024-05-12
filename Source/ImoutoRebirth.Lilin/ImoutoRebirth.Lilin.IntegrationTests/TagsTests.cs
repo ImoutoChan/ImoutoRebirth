@@ -252,7 +252,75 @@ public class TagsTests(TestWebApplicationFactory<Program> _webApp)
         tag.Type!.Id.Should().Be(newTagCharacter.Type!.Id);
 
         foundTags!.Select(x => x.Id).Should().NotContain(newTagGeneral.Id);
+    }
+    
+    [Fact]
+    public async Task MergeTags()
+    {
+        // arrange
+        using var scope = _webApp.GetScope();
+        var httpClient = _webApp.Client;
+        var context = _webApp.GetDbContext(scope);
+        var types = await httpClient.GetFromJsonAsync<IReadOnlyCollection<TagType>>("/tags/types");
 
+        var tagToClean = await CreateNewTag(httpClient, types, "tag to clean");
+        var tagToEnrich = await CreateNewTag(httpClient, types, "tag to enrich");
+        
+        var file1Id = Guid.NewGuid();
+        var file2Id = Guid.NewGuid();
+        var file3Id = Guid.NewGuid();
+        var file4Id = Guid.NewGuid();
+        var file5Id = Guid.NewGuid();
+        
+        await httpClient.PostAsJsonAsync("/files/tags", new BindTagsCommand(
+        [
+            new(file1Id, MetadataSource.Manual, tagToClean.Id, null),
+            new(file2Id, MetadataSource.Manual, tagToClean.Id, null),
+            new(file3Id, MetadataSource.Manual, tagToClean.Id, null),
+            new(file4Id, MetadataSource.Manual, tagToClean.Id, null),
+            new(file5Id, MetadataSource.Manual, tagToClean.Id, null),
+            new(file1Id, MetadataSource.Manual, tagToEnrich.Id, null),
+            new(file2Id, MetadataSource.Manual, tagToEnrich.Id, null),
+            new(file3Id, MetadataSource.Manual, tagToEnrich.Id, null),
+            new(file4Id, MetadataSource.Manual, tagToEnrich.Id, null),
+            new(file5Id, MetadataSource.Manual, tagToEnrich.Id, null)
+            
+        ], SameTagHandleStrategy.ReplaceExistingValue));
+        
+        var tagToCleanCountBefore = context.FileTags.Count(x => x.TagId == tagToClean.Id);
+        var tagToEnrichCountBefore = context.FileTags.Count(x => x.TagId == tagToEnrich.Id);
+        
+        // act
+        await httpClient.PostAsJsonAsync($"tags/merge/", new MergeTagsCommand(tagToClean.Id, tagToEnrich.Id));
+        
+        // assert
+        tagToCleanCountBefore.Should().Be(5);
+        tagToEnrichCountBefore.Should().Be(5);
+        
+        var tagToCleanCount = context.FileTags.Count(x => x.TagId == tagToClean.Id);
+        tagToCleanCount.Should().Be(0);
+        
+        var tagToEnrichCount = context.FileTags.Count(x => x.TagId == tagToEnrich.Id);
+        tagToEnrichCount.Should().Be(tagToCleanCountBefore + tagToEnrichCountBefore);
+    }
+    
+    [Fact]
+    public async Task DeleteTag()
+    {
+        // arrange
+        using var scope = _webApp.GetScope();
+        var httpClient = _webApp.Client;
+        var context = _webApp.GetDbContext(scope);
+        var types = await httpClient.GetFromJsonAsync<IReadOnlyCollection<TagType>>("/tags/types");
+
+        var tagToClean = await CreateNewTag(httpClient, types, "tag to clean");
+        
+        // act
+        await httpClient.DeleteAsync($"tags/{tagToClean.Id}");
+        
+        // assert
+        var tagToCleanCount = context.Tags.Count(x => x.Id == tagToClean.Id);
+        tagToCleanCount.Should().Be(0);
     }
     
     private static async Task<Tag> CreateNewTag(
