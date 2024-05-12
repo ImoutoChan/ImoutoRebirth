@@ -13,6 +13,7 @@ using Microsoft.Extensions.Hosting;
 const string servicePrefix = "MEIDO_";
 
 var builder = Host.CreateApplicationBuilder(args);
+
 builder.Services.AddWindowsService();
 builder.SetWorkingDirectory();
 builder.UseEnvironmentFromEnvironmentVariable(servicePrefix);
@@ -25,6 +26,7 @@ builder.ConfigureSerilog(
             .WithAllRollingFile()
             .WithInformationRollingFile()
             .WithOpenSearch(appConfiguration, hostEnvironment));
+
 builder.UseQuartz();
 
 builder.Services
