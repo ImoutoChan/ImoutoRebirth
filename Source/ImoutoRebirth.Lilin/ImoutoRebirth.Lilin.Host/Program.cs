@@ -17,6 +17,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddWindowsService();
 builder.SetWorkingDirectory();
+builder.UseEnvironmentFromEnvironmentVariable(servicePrefix);
 builder.UseConfiguration<Program>(servicePrefix);
 builder.ConfigureSerilog(
     (loggerBuilder, appConfiguration, hostEnvironment)
@@ -28,6 +29,7 @@ builder.ConfigureSerilog(
             .WithOpenSearch(appConfiguration, hostEnvironment));
 
 builder.Services
+    .AddOpenTelemetry(builder.Environment, builder.Configuration)
     .AddLilinApplication(typeof(ImoutoRebirth.Lilin.Infrastructure.ServiceCollectionExtensions).Assembly)
     .AddLilinDataAccess(builder.Configuration.GetRequiredConnectionString("LilinDatabase"))
     .AddLilinInfrastructure()
@@ -35,13 +37,11 @@ builder.Services
     .AddSqlMassTransit(builder.Configuration, "lilin", с => с.AddLilinMassTransitSetup(),
         typeof(UpdateMetadataCommandConsumer).Assembly)
     .AddQuartz()
-    .AddWebEndpoints()
-    .AddOpenTelemetry(builder.Environment, builder.Configuration);
+    .AddWebEndpoints();
 
 var app = builder.Build();
 
 app.MapWebEndpoints();
-
 app.MigrateIfNecessary<LilinDbContext>();
 app.Run();
 

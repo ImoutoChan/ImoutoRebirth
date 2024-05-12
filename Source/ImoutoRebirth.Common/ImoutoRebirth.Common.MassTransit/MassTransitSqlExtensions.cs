@@ -77,6 +77,7 @@ public static class MassTransitSqlExtensions
                 {
                     configurator.ConfigureCustomEndpoint?.Invoke(context, cfg);
                 });
+                x.AddTelemetryListener(true);
             });
 
         return services;

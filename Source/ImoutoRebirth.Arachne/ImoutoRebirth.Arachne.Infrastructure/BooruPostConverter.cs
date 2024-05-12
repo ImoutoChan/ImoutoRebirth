@@ -23,7 +23,7 @@ internal class BooruPostConverter : IBooruPostConverter
             .Select(x => new Tag(x.TagType, x.Tag, x.Value));
         var postTags = metadataParsingDto
             .Tags
-            .Select(x => new Tag(x.TagType.ToLowerInvariant(), x.Tag.ToLowerInvariant(), x.Value, x.Synonyms));
+            .Select(x => new Tag(x.TagType, x.Tag, x.Value, x.Synonyms));
 
         return new Metadata(
             image, 
@@ -79,7 +79,7 @@ internal class BooruPostConverter : IBooruPostConverter
     }
 
     private static MetaParsingTagResults ConvertTag(Imouto.BooruParser.Tag tag) =>
-        new(GetType(tag), tag.Name, Array.Empty<string>(), null);
+        new(GetType(tag), tag.Name.ToLowerInvariant(), Array.Empty<string>(), null);
 
     private static string GetType(Imouto.BooruParser.Tag tag)
     {

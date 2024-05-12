@@ -29,7 +29,6 @@ public static class ServiceCollectionExtensions
     {
         var environmentName = environment.EnvironmentName.ToLower();
         var applicationName = GetApplicationName(environment);
-        var fullApplicationName = environment.ApplicationName;
 
         services.AddOpenTelemetry().WithMetrics(
             builder =>
@@ -55,6 +54,7 @@ public static class ServiceCollectionExtensions
         IConfiguration configuration)
     {
         services.Configure<JaegerExporterOptions>(configuration.GetSection("Jaeger"));
+        var applicationName = GetApplicationName(environment);
 
         services.AddOpenTelemetry().WithTracing(
             builder =>
@@ -62,7 +62,7 @@ public static class ServiceCollectionExtensions
                 builder
                     .SetResourceBuilder(
                         ResourceBuilder.CreateDefault()
-                            .AddService(environment.ApplicationName))
+                            .AddService(applicationName))
                     .AddSource("MongoDB.Driver.Core.Extensions.DiagnosticSources")
                     .AddSource("Quartz")
                     .AddSource("MassTransit")
@@ -94,6 +94,12 @@ public static class ServiceCollectionExtensions
         
         if (name.EndsWith("service"))
             name = name[..^7];
+        
+        if (name.StartsWith("imoutorebirth."))
+            name = name[14..];
+        
+        if (name.EndsWith(".host"))
+            name = name[..^5];
 
         return name;
     }
