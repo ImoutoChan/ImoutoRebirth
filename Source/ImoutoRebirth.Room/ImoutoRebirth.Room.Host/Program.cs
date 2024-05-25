@@ -25,6 +25,7 @@ builder.ConfigureSerilog(
             .WithAllRollingFile()
             .WithInformationRollingFile()
             .WithOpenSearch(appConfiguration, hostEnvironment));
+builder.ConfigureOpenTelemetryLogging();
 
 var configuration = builder.Configuration;
 

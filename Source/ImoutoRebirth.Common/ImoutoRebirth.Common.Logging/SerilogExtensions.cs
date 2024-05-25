@@ -1,7 +1,10 @@
-﻿using Microsoft.Extensions.Configuration;
+﻿using System.Diagnostics;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
 using Serilog;
+using Serilog.Core;
 using Serilog.Events;
+using Serilog.Exceptions;
 
 namespace ImoutoRebirth.Common.Logging;
 
@@ -54,6 +57,8 @@ public static class SerilogExtensions
         var applicationName = hostEnvironment.ApplicationName.ToLower().Replace('.', '-');
 
         configuration.Enrich.WithProperty("Application", GetApplicationName(hostEnvironment));
+        configuration.Enrich.WithExceptionDetails();
+        configuration.Enrich.With<CurrentActivityIdEnricher>();
 
         var indexFormat = hostEnvironment.IsProduction()
             ? $$"""{{applicationName}}-{0:yyyy.MM}"""
@@ -80,4 +85,26 @@ public static class SerilogExtensions
 
         return appName;
     }   
+}
+
+internal class CurrentActivityIdEnricher : ILogEventEnricher
+{
+    public void Enrich(LogEvent logEvent, ILogEventPropertyFactory propertyFactory)
+    {
+        var currentActivityId = Activity.Current?.Id;
+        var currentActivityTraceStateString = Activity.Current?.TraceStateString;
+
+        var traceId = Activity.Current?.IdFormat == ActivityIdFormat.W3C
+            ? Activity.Current.Id?.Split('-')[1]
+            : null;
+
+        if (traceId != null)
+            logEvent.AddPropertyIfAbsent(propertyFactory.CreateProperty("TraceId", traceId));
+
+        if (currentActivityId != null)
+            logEvent.AddPropertyIfAbsent(propertyFactory.CreateProperty("TraceParent", currentActivityId));
+
+        if (currentActivityTraceStateString != null && !string.IsNullOrWhiteSpace(currentActivityTraceStateString))
+            logEvent.AddPropertyIfAbsent(propertyFactory.CreateProperty("TraceState", currentActivityTraceStateString));
+    }
 }

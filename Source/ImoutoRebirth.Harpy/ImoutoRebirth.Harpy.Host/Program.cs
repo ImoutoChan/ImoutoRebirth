@@ -20,6 +20,7 @@ builder.ConfigureSerilog(
             .WithAllRollingFile()
             .WithInformationRollingFile()
             .WithOpenSearch(appConfiguration, hostEnvironment));
+builder.ConfigureOpenTelemetryLogging();
 builder.UseQuartz();
 
 builder.Services

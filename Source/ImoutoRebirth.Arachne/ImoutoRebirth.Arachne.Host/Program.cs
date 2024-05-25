@@ -26,6 +26,7 @@ builder.ConfigureSerilog(
             .WithAllRollingFile()
             .WithInformationRollingFile()
             .WithOpenSearch(appConfiguration, hostEnvironment));
+builder.ConfigureOpenTelemetryLogging();
 
 var arachneSettings = builder.Configuration.GetRequired<ArachneSettings>();
 

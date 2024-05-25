@@ -2,8 +2,10 @@
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
 using Npgsql;
 using OpenTelemetry.Exporter;
+using OpenTelemetry.Logs;
 using OpenTelemetry.Metrics;
 using OpenTelemetry.Resources;
 using OpenTelemetry.Trace;
@@ -20,10 +22,7 @@ public static class ServiceCollectionExtensions
             .AddMetrics(environment)
             .AddTracing(environment, configuration);
 
-    public static IApplicationBuilder UseOpenTelemetry(this IApplicationBuilder app)
-        => app.UseOpenTelemetryPrometheusScrapingEndpoint();
-
-    public static IServiceCollection AddMetrics(
+    private static IServiceCollection AddMetrics(
         this IServiceCollection services,
         IHostEnvironment environment)
     {
@@ -38,7 +37,7 @@ public static class ServiceCollectionExtensions
                     .SetResourceBuilder(ResourceBuilder
                         .CreateDefault()
                         .AddService(applicationName)
-                        .AddAttributes([new("environment", environmentName), new("application", applicationName)]))
+                        .AddAttributes([new("environment", environmentName), new("application", applicationName.ToLowerInvariant())]))
                     .AddRuntimeInstrumentation()
                     .AddAspNetCoreInstrumentation()
                     .AddPrometheusExporter()
@@ -48,7 +47,7 @@ public static class ServiceCollectionExtensions
         return services;
     }
 
-    public static IServiceCollection AddTracing(
+    private static IServiceCollection AddTracing(
         this IServiceCollection services,
         IHostEnvironment environment,
         IConfiguration configuration)
@@ -60,9 +59,7 @@ public static class ServiceCollectionExtensions
             builder =>
             {
                 builder
-                    .SetResourceBuilder(
-                        ResourceBuilder.CreateDefault()
-                            .AddService(applicationName))
+                    .SetResourceBuilder(ResourceBuilder.CreateDefault().AddService(applicationName))
                     .AddSource("MongoDB.Driver.Core.Extensions.DiagnosticSources")
                     .AddSource("Quartz")
                     .AddSource("MassTransit")
@@ -71,8 +68,7 @@ public static class ServiceCollectionExtensions
                         options =>
                         {
                             options.RecordException = true;
-                            options.FilterHttpRequestMessage = x
-                                => x.RequestUri?.Port is not 9200;
+                            options.FilterHttpRequestMessage = x => x.RequestUri?.Port is not 9200;
                         })
                     .AddAspNetCoreInstrumentation(
                         options =>
@@ -82,10 +78,26 @@ public static class ServiceCollectionExtensions
                                 => context.Request.Path.Value?.Contains("health") != true
                                 && context.Request.Path.Value?.Contains("metrics") != true;
                         })
-                    .AddJaegerExporter();
+                    .AddJaegerExporter()
+                    .AddOtlpExporter();
             });
 
         return services;
+    }
+    
+    public static IHostApplicationBuilder ConfigureOpenTelemetryLogging(this IHostApplicationBuilder hostBuilder)
+    {
+        hostBuilder.Logging
+            .AddOpenTelemetry(o =>
+            {
+                o.IncludeScopes = true;
+                o.SetResourceBuilder(ResourceBuilder
+                    .CreateDefault()
+                    .AddService(GetApplicationName(hostBuilder.Environment)));
+                o.AddOtlpExporter();
+            });
+
+        return hostBuilder;
     }
 
     private static string GetApplicationName(IHostEnvironment environment)
@@ -101,6 +113,6 @@ public static class ServiceCollectionExtensions
         if (name.EndsWith(".host"))
             name = name[..^5];
 
-        return name;
+        return name[0..1].ToUpperInvariant() + name[1..];
     }
 }

@@ -29,8 +29,9 @@ builder.ConfigureSerilog(
             .WithAllRollingFile()
             .WithInformationRollingFile()
             .WithOpenSearch(appConfiguration, environment));
-services.Configure<KestrelServerOptions>(x => x.AddServerHeader = false);
+builder.ConfigureOpenTelemetryLogging();
 
+services.Configure<KestrelServerOptions>(x => x.AddServerHeader = false);
 
 services.AddLilinWebApiClients(configuration.GetRequiredValue<string>("LilinUrl"));
 services.AddRoomWebApiClients(configuration.GetRequiredValue<string>("RoomUrl"));
