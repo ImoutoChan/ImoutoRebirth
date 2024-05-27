@@ -1,5 +1,6 @@
+<p align="center"><b>EN</b> | <a href="README.RU.md"><b>RU</b></a></p>
+
 ## Important
-([ru version](https://github.com/ImoutoChan/ImoutoRebirth/blob/master/README.RU.md))
 
 I recently open-sourced the program that I wrote myself and used for many years. Installation instructions are checked on a clean Windows 10 and should be ok, but if you have any problems feel free to create a discussion or an issue. I'm also planning to upload a video with a demo of the installation process in near future, it should help a little.
 
