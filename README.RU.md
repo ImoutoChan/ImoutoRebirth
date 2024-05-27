@@ -1,4 +1,4 @@
-<p align="center"><a href="https://github.com/Danily07/Translumo/blob/master/README.md"><b>EN</b></a> | <b>RU</b></p>
+<p align="center"><a href="https://github.com/ImoutoChan/ImoutoRebirth/blob/master/README.md"><b>EN</b></a> | <b>RU</b></p>
 
 ## Важное
 
