@@ -4,6 +4,9 @@
 * Some dependencies were updated.
 * You have to delete all db functions in masstransit sql transport database in order for its migrations to work. 
 
+# Navigator
+* Add order mode to the settings with the ability to list new entries first
+
 # 4.25.0
 
 ### Arachne

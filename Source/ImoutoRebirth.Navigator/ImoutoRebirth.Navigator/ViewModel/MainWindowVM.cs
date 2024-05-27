@@ -16,7 +16,6 @@ using ImoutoRebirth.Navigator.Services;
 using ImoutoRebirth.Navigator.Services.ImoutoViewer;
 using ImoutoRebirth.Navigator.Services.Tags;
 using ImoutoRebirth.Navigator.UserControls;
-using ImoutoRebirth.Navigator.Utils;
 using ImoutoRebirth.Navigator.ViewModel.ListEntries;
 using MahApps.Metro.Controls.Dialogs;
 using Newtonsoft.Json;
@@ -485,7 +484,7 @@ internal class MainWindowVM : VMBase
         {
             var tagsToSearch = TagSearchVM.SelectedBindedTags.Select(x => x.Model).ToList();
             var bulkFactor = int.MaxValue;
-            var autoShuffle = Settings.AutoShuffle;
+            var orderMode = ImoutoRebirth.Navigator.Settings.Default.OrderMode.ParseEnumOrDefault<OrderMode>();
             
             var loadingTiming = new Stopwatch();
             loadingTiming.Start();
@@ -499,7 +498,13 @@ internal class MainWindowVM : VMBase
                 {
                     IsLoading = false;
 
-                    var entries = autoShuffle ? x.Shuffle() : x;
+                    var entries = orderMode switch
+                    {
+                        OrderMode.OldFirst => x,
+                        OrderMode.Shuffle => x.Shuffle(),
+                        OrderMode.NewFirst => x.Reverse(),
+                        _ => throw new ArgumentOutOfRangeException()
+                    };
 
                     foreach (var navigatorListEntry in entries)
                     {

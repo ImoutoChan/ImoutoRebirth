@@ -6,7 +6,7 @@
              xmlns:controls="http://metro.mahapps.com/winfx/xaml/controls"
              xmlns:viewModel="clr-namespace:ImoutoRebirth.Navigator.ViewModel"
              mc:Ignorable="d"
-             d:DesignHeight="300"
+             d:DesignHeight="600"
              d:DesignWidth="300" 
              d:DataContext="{d:DesignInstance viewModel:SettingsVM, IsDesignTimeCreatable=False}">
     <Grid Margin="20">
@@ -118,10 +118,15 @@
                 <controls:ToggleSwitch Margin="0,25,0,0"
                                        Header="Show system tags"
                                        IsOn="{Binding ShowSystemTags}" />
+                
+                <StackPanel Margin="0,25,0,0">
+                    <TextBlock Text="Order mode" />
 
-                <controls:ToggleSwitch Margin="0,25,0,0"
-                                       Header="Auto shuffle on every load"
-                                       IsOn="{Binding AutoShuffle}" />
+                    <ComboBox Margin="0,5,0,0"
+                              ItemsSource="{Binding AvailableOrderModes, Mode=OneWay}"
+                              SelectedItem="{Binding SelectedOrderMode, Mode=TwoWay}">
+                    </ComboBox>
+                </StackPanel>
 
                 <controls:ToggleSwitch Margin="0,25,0,0"
                                        Header="Is ImoutoPics integration active"

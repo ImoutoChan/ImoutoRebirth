@@ -19,6 +19,9 @@ public static class EnumExtensions
 
         return EnumValueCache<T>.DefinedValues.Contains(enumValue.ToInt32(CultureInfo.InvariantCulture));
     }
+    
+    public static T ParseEnumOrDefault<T>(this string value, T defaultValue = default) where T : struct, IConvertible 
+        => Enum.TryParse(value, true, out T result) ? result : defaultValue;
 
     /// <summary>
     /// Statically caches each defined value for each enum type for which this class is accessed.

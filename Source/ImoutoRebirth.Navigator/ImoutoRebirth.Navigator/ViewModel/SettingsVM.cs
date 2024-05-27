@@ -62,13 +62,15 @@ internal class SettingsVM : VMBase
         }
     }
     
-    public bool AutoShuffle
+    public IReadOnlyCollection<OrderMode> AvailableOrderModes => Enum.GetValues<OrderMode>();
+    
+    public OrderMode SelectedOrderMode
     {
-        get => Settings.Default.AutoShuffle;
+        get => Settings.Default.OrderMode.ParseEnumOrDefault<OrderMode>();
         set
         {
-            Settings.Default.AutoShuffle = value;
-            OnPropertyChanged(() => AutoShuffle);
+            Settings.Default.OrderMode = value.ToString();
+            OnPropertyChanged(() => SelectedOrderMode);
         }
     }
 
@@ -250,4 +252,11 @@ public class CustomTheme : AccentColorMenuData
         ThemeManager.Current.ChangeThemeColorScheme(Application.Current, Name);
         Settings.Default.AccentColorName = Name;
     }
+}
+
+public enum OrderMode
+{
+    OldFirst,
+    Shuffle,
+    NewFirst
 }
