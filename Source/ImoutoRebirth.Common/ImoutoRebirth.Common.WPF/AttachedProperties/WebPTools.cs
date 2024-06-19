@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System.Diagnostics;
+using System.IO;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media.Imaging;
@@ -22,7 +23,14 @@ public static class WebPTools
     {
         if (d is Image image && e.NewValue is string path)
         {
-            LoadAndSetWebPImage(image, path);
+            try
+            {
+                LoadAndSetWebPImage(image, path);
+            }
+            catch (Exception exception)
+            {
+                Debug.WriteLine(exception.Message);
+            }
         }
     }
 

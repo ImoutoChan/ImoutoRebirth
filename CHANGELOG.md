@@ -6,6 +6,7 @@
 
 # Navigator
 * Add order mode to the settings with the ability to list new entries first
+* Fix crash on non-webp images that have webp extension
 
 # 4.25.0
 
