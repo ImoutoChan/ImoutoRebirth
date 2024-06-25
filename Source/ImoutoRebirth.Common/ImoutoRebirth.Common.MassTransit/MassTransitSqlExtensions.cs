@@ -52,7 +52,7 @@ public static class MassTransitSqlExtensions
                 
                 x.UsingPostgres((context, cfg) =>
                 {
-                    cfg.UseDbMessageScheduler();
+                    cfg.UseSqlMessageScheduler();
                     
                     configurator.ConfigureCustomEndpoint?.Invoke(context, cfg);
                     
