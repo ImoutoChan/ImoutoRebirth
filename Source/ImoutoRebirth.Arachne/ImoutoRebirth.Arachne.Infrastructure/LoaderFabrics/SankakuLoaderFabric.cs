@@ -3,6 +3,7 @@ using Imouto.BooruParser;
 using Imouto.BooruParser.Implementations.Sankaku;
 using ImoutoRebirth.Arachne.Core.Models;
 using ImoutoRebirth.Arachne.Infrastructure.Abstract;
+using ImoutoRebirth.Arachne.Infrastructure.Availability;
 using Microsoft.Extensions.Options;
 using SankakuSettings = ImoutoRebirth.Arachne.Infrastructure.Models.Settings.SankakuSettings;
 
@@ -35,4 +36,7 @@ internal class SankakuLoaderFabric : IBooruLoaderFabric
             Password = _settings.Password
         }),
         _sankakuAuthManager);
+
+    public IBooruAvailabilityChecker CreateAvailabilityChecker()
+        => new SimpleAvailabilityChecker(_flurlClientFactory, new Uri("https://chan.sankakucomplex.com"));
 }

@@ -35,7 +35,7 @@ builder.Services
     .AddLilinDataAccess(builder.Configuration.GetRequiredConnectionString("LilinDatabase"))
     .AddLilinInfrastructure()
     .AddLilinUi(builder.Configuration)
-    .AddSqlMassTransit(builder.Configuration, "lilin", с => с.AddLilinMassTransitSetup(),
+    .AddSqlMassTransit(builder.Configuration, "lilin", с => с.AddLilinMassTransitSetup(), true,
         typeof(UpdateMetadataCommandConsumer).Assembly)
     .AddQuartz()
     .AddWebEndpoints();

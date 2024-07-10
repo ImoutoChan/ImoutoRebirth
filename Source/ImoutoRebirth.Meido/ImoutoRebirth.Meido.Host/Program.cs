@@ -37,7 +37,7 @@ builder.Services
     .ConfigureMeidoUi(builder.Configuration)
     .AddMeidoDataAccess(builder.Configuration.GetRequiredConnectionString("MeidoDatabase"))
     .AddMeidoInfrastructure()
-    .AddSqlMassTransit(builder.Configuration, "meido", с => с.AddMeidoMassTransitSetup(), typeof(NewFileCommandConsumer).Assembly);
+    .AddSqlMassTransit(builder.Configuration, "meido", с => с.AddMeidoMassTransitSetup(), true, typeof(NewFileCommandConsumer).Assembly);
 
 await builder.Build()
     .MigrateMeido()

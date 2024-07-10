@@ -3,9 +3,11 @@ using ImoutoRebirth.Arachne.Core.Models;
 
 namespace ImoutoRebirth.Arachne.Infrastructure.Abstract;
 
-internal interface IBooruLoaderFabric
+public interface IBooruLoaderFabric
 {
     SearchEngineType ForType { get; }
 
     IBooruApiLoader Create();
+
+    IBooruAvailabilityChecker CreateAvailabilityChecker();
 }

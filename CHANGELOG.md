@@ -8,6 +8,9 @@
 * Add order mode to the settings with the ability to list new entries first
 * Fix crash on non-webp images that have webp extension
 
+# Arachne
+* Add availability check service that will stop consumers when it's search engine isn't available
+
 # 4.25.0
 
 ### Arachne

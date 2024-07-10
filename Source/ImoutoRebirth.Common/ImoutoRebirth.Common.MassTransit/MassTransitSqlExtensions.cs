@@ -12,7 +12,8 @@ public static class MassTransitSqlExtensions
         this IServiceCollection services,
         IConfiguration configuration,
         string consumingServiceName,
-        Action<MassTransitConfigurator>? configure = null,   
+        Action<MassTransitConfigurator>? configure = null,
+        bool shouldAutoConfigureEndpoints = true,
         params Assembly[] addConsumersFromAssemblies)
     {
         var configurator = new MassTransitConfigurator();
@@ -56,7 +57,8 @@ public static class MassTransitSqlExtensions
                     
                     configurator.ConfigureCustomEndpoint?.Invoke(context, cfg);
                     
-                    cfg.ConfigureEndpoints(context);
+                    if (shouldAutoConfigureEndpoints)
+                        cfg.ConfigureEndpoints(context);
                 });
             });
 

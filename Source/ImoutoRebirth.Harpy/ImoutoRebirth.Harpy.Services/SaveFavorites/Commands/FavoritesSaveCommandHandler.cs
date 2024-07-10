@@ -39,7 +39,7 @@ internal class FavoritesSaveCommandHandler : ICommandHandler<FavoritesSaveComman
                    && !string.IsNullOrWhiteSpace(_saverOptions.Value.RoomUrl);
     }
 
-    public async Task<bool> Handle(FavoritesSaveCommand request, CancellationToken cancellationToken)
+    public async Task<bool> Handle(FavoritesSaveCommand request, CancellationToken ct)
     {
         if (!_enabled)
         {
@@ -51,11 +51,11 @@ internal class FavoritesSaveCommandHandler : ICommandHandler<FavoritesSaveComman
 
         var checkedDanbooruPosts = await GetNewPostsFromBooru(
             _danbooruFavoritesLoader.GetFavoritesUrls(),
-            cancellationToken);
+            ct);
 
         var checkedYanderePosts = await GetNewPostsFromBooru(
             _yandereFavoritesLoader.GetFavoritesUrls(),
-            cancellationToken);
+            ct);
 
         var postsToSave = checkedDanbooruPosts.Reverse().Union(checkedYanderePosts.Reverse()).ToList();
 

@@ -3,6 +3,7 @@ using Imouto.BooruParser;
 using Imouto.BooruParser.Implementations.Danbooru;
 using ImoutoRebirth.Arachne.Core.Models;
 using ImoutoRebirth.Arachne.Infrastructure.Abstract;
+using ImoutoRebirth.Arachne.Infrastructure.Availability;
 using Microsoft.Extensions.Options;
 using DanbooruSettings = ImoutoRebirth.Arachne.Infrastructure.Models.Settings.DanbooruSettings;
 
@@ -30,4 +31,7 @@ internal class DanbooruLoaderFabric : IBooruLoaderFabric
             PauseBetweenRequestsInMs = _settings.Delay,
             BotUserAgent = _settings.BotUserAgent
         }));
+
+    public IBooruAvailabilityChecker CreateAvailabilityChecker()
+        => new SimpleAvailabilityChecker(_flurlClientFactory, new Uri("https://danbooru.donmai.us"));
 }

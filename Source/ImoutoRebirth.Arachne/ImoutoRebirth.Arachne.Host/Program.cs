@@ -1,13 +1,14 @@
 ﻿using ImoutoRebirth.Arachne.Core;
+using ImoutoRebirth.Arachne.Host;
 using ImoutoRebirth.Arachne.Host.Settings;
 using ImoutoRebirth.Arachne.Infrastructure;
-using ImoutoRebirth.Arachne.MessageContracts;
 using ImoutoRebirth.Arachne.Service.Consumers;
 using ImoutoRebirth.Arachne.Service.Extensions;
 using ImoutoRebirth.Common.Host;
 using ImoutoRebirth.Common.Logging;
 using ImoutoRebirth.Common.MassTransit;
 using ImoutoRebirth.Common.OpenTelemetry;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 
 const string servicePrefix = "ARACHNE_";
@@ -34,9 +35,15 @@ builder.Services
     .AddArachneCore()
     .AddArachneServices()
     .AddArachneInfrastructure(arachneSettings.DanbooruSettings, arachneSettings.SankakuSettings)
-    .AddSqlMassTransit(builder.Configuration, "arachne", с => с.AddArachneMassTransitSetup(),
+    .AddSqlMassTransit(
+        builder.Configuration, 
+        "arachne", 
+        с => с.AddArachneMassTransitSetup(),
+        false,
         typeof(EverywhereSearchMetadataCommandConsumer).Assembly)
     .AddOpenTelemetry(builder.Environment, builder.Configuration);
+
+builder.Services.AddHostedService<AvailabilityCheckerBackgroundService>();
 
 builder.Build().Run();
 

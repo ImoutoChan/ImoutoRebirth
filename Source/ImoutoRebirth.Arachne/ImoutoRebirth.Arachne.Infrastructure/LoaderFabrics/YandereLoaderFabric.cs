@@ -3,6 +3,7 @@ using Imouto.BooruParser;
 using Imouto.BooruParser.Implementations.Yandere;
 using ImoutoRebirth.Arachne.Core.Models;
 using ImoutoRebirth.Arachne.Infrastructure.Abstract;
+using ImoutoRebirth.Arachne.Infrastructure.Availability;
 using Microsoft.Extensions.Options;
 
 namespace ImoutoRebirth.Arachne.Infrastructure.LoaderFabrics;
@@ -18,4 +19,7 @@ internal class YandereLoaderFabric : IBooruLoaderFabric
     public IBooruApiLoader Create() => new YandereApiLoader(
         _flurlClientFactory,
         Options.Create(new YandereSettings { PauseBetweenRequestsInMs = 0 }));
+
+    public IBooruAvailabilityChecker CreateAvailabilityChecker()
+        => new SimpleAvailabilityChecker(_flurlClientFactory, new Uri("https://yande.re"));
 }
