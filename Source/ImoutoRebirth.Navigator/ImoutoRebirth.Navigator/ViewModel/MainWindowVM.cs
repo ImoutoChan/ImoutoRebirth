@@ -379,6 +379,9 @@ internal class MainWindowVM : VMBase
         if (navigatorListEntry == null)
             return;
 
+        if (navigatorListEntry is VideoEntryVM video)
+            video.Pause();
+        
         var vm = new FullScreenPreviewVM(async entry =>
         {
             var tags = await _fileTagService.GetFileTags(entry.DbId!.Value);

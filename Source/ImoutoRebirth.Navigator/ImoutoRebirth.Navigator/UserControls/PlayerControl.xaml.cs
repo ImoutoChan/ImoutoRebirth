@@ -1,4 +1,5 @@
-﻿using System.Diagnostics;
+﻿using System.Collections.Concurrent;
+using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Reflection;
@@ -13,6 +14,8 @@ namespace ImoutoRebirth.Navigator.UserControls;
 /// </summary>
 public partial class PlayerControl
 {
+    private static readonly ConcurrentDictionary<string, long> LastMediaPositionValues = new();
+    
     private bool _isPlayed;
     private VlcControl _control;
 
@@ -76,7 +79,11 @@ public partial class PlayerControl
                     var time = args.NewTime;
                     var length = _control.SourceProvider.MediaPlayer.Length;
                     var timeString = $"{GetPrettyTime(time, length)} / {GetPrettyTime(length)}";
-                    Dispatcher.BeginInvoke((Action)(() => TimeTextBlock.Text = timeString));
+                    Dispatcher.BeginInvoke((Action)(() =>
+                    {
+                        LastMediaPositionValues[Source] = time;
+                        TimeTextBlock.Text = timeString;
+                    }));
                 }
                 catch (Exception e)
                 {
@@ -173,6 +180,10 @@ public partial class PlayerControl
             else
             {
                 var mediaOptions = new[] { "input-repeat=65535" };
+                
+                if (LastMediaPositionValues.TryGetValue(newPropertyValue, out var position))
+                    mediaOptions = mediaOptions.Append("start-time=" + position / 1000).ToArray();
+                
                 player.SetMedia(new FileInfo(newPropertyValue), mediaOptions);
                 control.IsPlayed = true;
             }
@@ -197,7 +208,7 @@ public partial class PlayerControl
         var shouldPause = (bool) e.NewValue;
         var control = (PlayerControl) d;
             
-        if (shouldPause)
+        if (shouldPause && control.IsPlayed)
         {
             control.IsPlayed = false;
         }

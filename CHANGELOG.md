@@ -7,7 +7,9 @@
 # Navigator
 * Add order mode to the settings with the ability to list new entries first
 * Fix crash on non-webp images that have webp extension
-
+* Pause preview video when opening full screen preview
+* Remember video timing when switching between preview and fullscreen preview
+                                            
 # Arachne
 * Add availability check service that will stop consumers when it's search engine isn't available
 
