@@ -32,6 +32,28 @@ internal class TagTypeRepository : ITagTypeRepository
         return newType.ToModel();
     }
 
+    public async Task<IReadOnlyCollection<TagType>> GetOrCreateBatch(
+        IReadOnlyCollection<string> names, 
+        CancellationToken ct)
+    {
+        var types = await _lilinDbContext.TagTypes.Where(x => names.Contains(x.Name)).ToListAsync(ct);
+        var missingTypes = names
+            .Except(types.Select(x => x.Name))
+            .Select(x => new TagTypeEntity
+            {
+                Id = Guid.NewGuid(),
+                Name = x
+            })
+            .ToList();
+
+        foreach (var missingType in missingTypes)
+            await _lilinDbContext.TagTypes.AddAsync(missingType, ct);
+        
+        await _lilinDbContext.SaveChangesAsync(ct);
+
+        return types.Union(missingTypes).Select(x => x.ToModel()).ToList();
+    }
+
     public async Task<TagType?> Get(Guid id, CancellationToken ct) 
         => (await _lilinDbContext.TagTypes.SingleOrDefaultAsync(x => x.Id == id, cancellationToken: ct))?.ToModel();
 

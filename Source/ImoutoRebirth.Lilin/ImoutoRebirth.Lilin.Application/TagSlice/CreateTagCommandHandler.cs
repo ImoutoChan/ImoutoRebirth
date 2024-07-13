@@ -31,7 +31,7 @@ internal class CreateTagCommandHandler : ICommandHandler<CreateTagCommand, Tag>
     {
         var (typeId, name, hasValue, synonyms, options) = command;
 
-        var tag = await _tagRepository.Get(name, typeId, ct);
+        var tag = await _tagRepository.Get(new(name, typeId), ct);
 
         if (tag != null)
         {
@@ -52,6 +52,6 @@ internal class CreateTagCommandHandler : ICommandHandler<CreateTagCommand, Tag>
             await _tagRepository.Create(tag);
         }
 
-        return await _tagRepository.Get(name, typeId, ct).GetAggregateOrThrow();
+        return await _tagRepository.Get(new(name, typeId), ct).GetAggregateOrThrow();
     }
 }

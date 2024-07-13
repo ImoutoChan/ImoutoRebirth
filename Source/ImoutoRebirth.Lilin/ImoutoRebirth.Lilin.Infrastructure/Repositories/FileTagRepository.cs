@@ -29,9 +29,17 @@ internal class FileTagRepository : IFileTagRepository
         await _lilinDbContext.SaveChangesAsync();
     }
 
+    public async Task AddBatch(IReadOnlyCollection<FileTag> fileTags)
+    {
+        var entities = fileTags.Select(x => x.ToNewEntity());
+        await _lilinDbContext.AddRangeAsync(entities);
+        await _lilinDbContext.SaveChangesAsync();
+    }
+
     public async Task Delete(FileTag fileTag)
     {
-        var tagsToDelete = await _lilinDbContext.FileTags.Where(
+        var tagsToDelete = await _lilinDbContext.FileTags
+            .Where(
                 x => x.Source == fileTag.Source
                      && x.TagId == fileTag.TagId
                      && x.FileId == fileTag.FileId
@@ -39,6 +47,23 @@ internal class FileTagRepository : IFileTagRepository
             .ToListAsync();
 
         _lilinDbContext.FileTags.RemoveRange(tagsToDelete);
+        await _lilinDbContext.SaveChangesAsync();
+    }
+
+    public async Task DeleteBatch(IReadOnlyCollection<FileTag> fileTags)
+    {
+        foreach (var fileTag in fileTags)
+        {
+            var tagsToDelete = await _lilinDbContext.FileTags
+                .Where(
+                    x => x.Source == fileTag.Source
+                         && x.TagId == fileTag.TagId
+                         && x.FileId == fileTag.FileId
+                         && x.Value == fileTag.Value)
+                .ToListAsync();
+
+            _lilinDbContext.FileTags.RemoveRange(tagsToDelete);
+        }
         await _lilinDbContext.SaveChangesAsync();
     }
 }

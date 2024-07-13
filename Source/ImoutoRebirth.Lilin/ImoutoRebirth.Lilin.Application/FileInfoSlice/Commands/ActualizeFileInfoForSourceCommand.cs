@@ -95,68 +95,82 @@ internal class ActualizeFileInfoForSourceCommandHandler : ICommandHandler<Actual
         IReadOnlyCollection<ActualizeTag> tags)
     {
         if (tags.None())
-            return Array.Empty<FileTag>();
+            return [];
 
         var typesByName = await GetOrCreateTagTypes(tags);
-
-        return await GetOrCreateTags(tags, typesByName, fileId, source).ToReadOnlyListAsync();
+        return await GetOrCreateTags(tags, typesByName, fileId, source);
     }
 
     private async Task<IReadOnlyDictionary<string, TagType>> GetOrCreateTagTypes(
         IReadOnlyCollection<ActualizeTag> tags)
     {
-        var typeNames = tags
-            .Select(x => x.Type)
-            .Distinct();
-
-        var types = new List<TagType>();
-        foreach (var typeName in typeNames)
-        {
-            var type = await _tagTypeRepository.Get(typeName);
-            types.Add(type);
-        }
-        
+        var typeNames = tags.Select(x => x.Type).Distinct().ToList();
+        var types = await _tagTypeRepository.GetOrCreateBatch(typeNames);
         return types.ToDictionary(x => x.Name);
     }
 
-    private async IAsyncEnumerable<FileTag> GetOrCreateTags(
+    private async Task<IReadOnlyCollection<FileTag>> GetOrCreateTags(
         IReadOnlyCollection<ActualizeTag> tags, 
         IReadOnlyDictionary<string, TagType> typesByName, 
         Guid fileId,
         MetadataSource source)
     {
-        foreach (var fileTag in tags)
-        {
-            var type = typesByName[fileTag.Type];
+        var tagsToProcess = tags
+            .Select(x => new TagToProcess(x, typesByName[x.Type], !string.IsNullOrWhiteSpace(x.Value)))
+            .ToList();
+        
+        var foundTags = await SearchForTags(tagsToProcess);
+        await UpdateFoundTagsProperties(tagsToProcess, foundTags);
+        
+        var toCreate = tagsToProcess
+            .Where(x => !foundTags.Any(y => y.Name == x.Tag.Name && y.Type.Id == x.Type.Id))
+            .Select(x => Tag.Create(x.Type, x.Tag.Name, x.HasValue, x.Tag.Synonyms, x.Tag.Options))
+            .ToList();
 
-            var tag = await GetOrCreateTag(fileTag, type);
+        await _tagRepository.CreateBatch(toCreate);
 
-            yield return new FileTag(fileId, tag.Id, fileTag.Value, source);
-        }
+        return tagsToProcess
+            .Select(x =>
+            {
+                var tag = foundTags.FirstOrDefault(y => y.Name == x.Tag.Name && y.Type.Id == x.Type.Id)
+                       ?? toCreate.First(y => y.Name == x.Tag.Name && y.Type.Id == x.Type.Id);
+                
+                return new FileTag(fileId, tag.Id, x.Tag.Value, source);
+            })
+            .ToList();
     }
 
-    private async Task<Tag> GetOrCreateTag(ActualizeTag fileTag, TagType type)
+    private async Task<IReadOnlyCollection<Tag>> SearchForTags(
+        IReadOnlyCollection<TagToProcess> tagsToProcess)
     {
-        var hasValue = !string.IsNullOrWhiteSpace(fileTag.Value);
+        var toSearch = tagsToProcess.Select(x => new TagIdentifier(x.Tag.Name, x.Type.Id)).ToList();
+        return await _tagRepository.GetBatch(toSearch);
+    }
 
-        var tag = await _tagRepository.Get(fileTag.Name, type.Id, default);
-
-        if (tag == null)
+    private async Task UpdateFoundTagsProperties(
+        IReadOnlyCollection<TagToProcess> tagsToProcess, 
+        IReadOnlyCollection<Tag> foundTags)
+    {
+        foreach (var foundTag in foundTags)
         {
-            var newTag = Tag.Create(type, fileTag.Name, hasValue, fileTag.Synonyms, fileTag.Options);
-            await _tagRepository.Create(newTag);
+            var sourceTag = tagsToProcess.First(x => x.Tag.Name == foundTag.Name && x.Type.Id == foundTag.Type.Id);
 
-            return newTag;
-        }
-        else
-        {
-            tag.UpdateHasValue(hasValue);
-            tag.UpdateSynonyms(fileTag.Synonyms ?? Array.Empty<string>());
-            tag.UpdateOptions(fileTag.Options);
+            var arePropertiesTheSame
+                = foundTag.HasValue == sourceTag.HasValue
+                  && foundTag.Synonyms.SequenceEqual(sourceTag.Tag.Synonyms ?? [])
+                  && foundTag.Options == sourceTag.Tag.Options;
+            
+            if (arePropertiesTheSame)
+                continue;
 
-            await _tagRepository.Update(tag);
+            foundTag.UpdateHasValue(sourceTag.HasValue);
+            foundTag.UpdateSynonyms(sourceTag.Tag.Synonyms ?? []);
+            foundTag.UpdateOptions(sourceTag.Tag.Options);
 
-            return tag;
+            await _tagRepository.Update(foundTag);
         }
     }
+
+    private record TagToProcess(ActualizeTag Tag, TagType Type, bool HasValue);
 }
+

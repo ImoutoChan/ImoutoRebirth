@@ -8,5 +8,9 @@ public interface IFileTagRepository
 
     Task Add(FileTag fileTag);
 
+    Task AddBatch(IReadOnlyCollection<FileTag> fileTags);
+
     Task Delete(FileTag fileTag);
+
+    Task DeleteBatch(IReadOnlyCollection<FileTag> fileTags);
 }

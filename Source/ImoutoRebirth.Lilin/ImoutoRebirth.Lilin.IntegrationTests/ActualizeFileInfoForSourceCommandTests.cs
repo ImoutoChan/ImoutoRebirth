@@ -1,5 +1,6 @@
 ﻿using ImoutoRebirth.Common.MassTransit;
 using ImoutoRebirth.Lilin.Application.FileInfoSlice.Commands;
+using ImoutoRebirth.Lilin.Domain.FileInfoAggregate;
 using ImoutoRebirth.Lilin.Domain.TagAggregate;
 using ImoutoRebirth.Meido.MessageContracts;
 using MassTransit.Testing;
@@ -312,5 +313,197 @@ public class ActualizeFileInfoForSourceCommandTests(TestWebApplicationFactory<Pr
         firstTag!.Options.Should().Be(expected.Options);
         firstTag!.HasValue.Should().Be(true);
         firstTag!.SynonymsArray.Should().BeEquivalentTo(expected.Synonyms);
+    }
+    
+    [Fact]
+    public async Task ActualizeFileInfoForSourceShouldReplaceExistingTagsCommand()
+    {
+        // arrange
+        using var scope = _webApp.GetScope();
+        var harness = scope.ServiceProvider.GetRequiredService<ITestHarness>();
+        var mediator = scope.ServiceProvider.GetRequiredService<IMediator>();
+        var context = _webApp.GetDbContext(scope);
+
+        var fileId = Guid.NewGuid();
+        
+        ActualizeTag[] newTags =
+        [
+            new("General", "1girl" + Guid.NewGuid(), null, null, Domain.TagAggregate.TagOptions.None),
+            new("General", "solo" + Guid.NewGuid(), null, null, Domain.TagAggregate.TagOptions.None),
+            new("General", "huge melons" + Guid.NewGuid(), null, null, Domain.TagAggregate.TagOptions.None),
+            new("General", "Rating" + Guid.NewGuid(), "Questionable", new[] { "Rate" }, Domain.TagAggregate.TagOptions.None),
+        ];
+        
+        var command = new ActualizeFileInfoForSourceCommand(
+            fileId,
+            Domain.FileInfoAggregate.MetadataSource.Danbooru,
+            newTags,
+            [
+                new(
+                    SourceId: 1,
+                    Label: "Bounce sound translation" + Guid.NewGuid(),
+                    PositionFromLeft: 10,
+                    PositionFromTop: 20,
+                    Width: 30,
+                    Height: 40)
+            ]);
+
+        await mediator.Send(command);
+
+        ActualizeTag[] newTags2 =
+        [
+            newTags[0],
+            newTags[1],
+            
+            // this tag is replaced
+            new("General", "small melons" + Guid.NewGuid(), null, null, Domain.TagAggregate.TagOptions.None),
+            
+            // this tag has other value
+            new("General", newTags[3].Name, "Explicit", new[] { "NewSynonim" }, Domain.TagAggregate.TagOptions.None)
+        ];
+        
+        var command2 = new ActualizeFileInfoForSourceCommand(
+            fileId,
+            Domain.FileInfoAggregate.MetadataSource.Danbooru,
+            newTags2,
+            [
+                new(
+                    SourceId: 1,
+                    Label: "Bounce sound translation" + Guid.NewGuid(),
+                    PositionFromLeft: 100,
+                    PositionFromTop: 200,
+                    Width: 300,
+                    Height: 400)
+            ]);
+        
+        // act
+        await mediator.Send(command2);
+
+        // assert
+        var fileTags = context.FileTags.Include(x => x.Tag).ThenInclude(x => x!.Type!).ToList();
+        fileTags.Where(x => x.FileId == fileId).Should().HaveCount(4);
+
+        var firstFileTag = fileTags.FirstOrDefault(x => x.Tag!.Name == newTags[0].Name && x.FileId == fileId);
+        firstFileTag.Should().NotBeNull();
+
+        var secondFileTag = fileTags.FirstOrDefault(x => x.Tag!.Name == newTags[1].Name && x.FileId == fileId);
+        secondFileTag.Should().NotBeNull(); 
+
+        var thirdFileTag = fileTags.FirstOrDefault(x => x.Tag!.Name == newTags2[2].Name && x.FileId == fileId);
+        thirdFileTag.Should().NotBeNull();
+
+        var fourthFileTag = fileTags.FirstOrDefault(x => x.Tag!.Name == newTags2[3].Name && x.FileId == fileId);
+        fourthFileTag.Should().NotBeNull();
+        fourthFileTag!.Value.Should().Be(newTags2[3].Value);
+        fourthFileTag!.Tag!.Synonyms.Should().ContainAll(newTags2[3].Synonyms);
+        
+        var fileNotes = context.Notes;
+        var firstFileNoteCount = fileNotes.Count(x => x.FileId == command2.FileId);
+        firstFileNoteCount.Should().Be(1);
+        
+        var firstFileNote = fileNotes.FirstOrDefault(x => x.FileId == command2.FileId);
+        var expectedFileNote = command2.Notes.First();
+        firstFileNote.Should().NotBeNull();
+        firstFileNote!.SourceId.Should().Be(expectedFileNote.SourceId);
+        firstFileNote.Label.Should().Be(expectedFileNote.Label);
+        firstFileNote.PositionFromLeft.Should().Be(expectedFileNote.PositionFromLeft);
+        firstFileNote.PositionFromTop.Should().Be(expectedFileNote.PositionFromTop);
+        firstFileNote.Width.Should().Be(expectedFileNote.Width);
+        firstFileNote.Height.Should().Be(expectedFileNote.Height);
+        
+        harness.Sent
+            .AnyMessage<ISavedCommand>(x => x.FileId == fileId && x.SourceId == (int)command.MetadataSource)
+            .Should().BeTrue();
+    }
+    
+    [Fact]
+    public async Task ActualizeFileInfoForSourceShouldNotReplaceOtherSourceTags()
+    {
+        // arrange
+        using var scope = _webApp.GetScope();
+        var harness = scope.ServiceProvider.GetRequiredService<ITestHarness>();
+        var mediator = scope.ServiceProvider.GetRequiredService<IMediator>();
+        var context = _webApp.GetDbContext(scope);
+
+        var fileId = Guid.NewGuid();
+        
+        ActualizeTag[] newTags =
+        [
+            new("General", "1girl" + Guid.NewGuid(), null, null, Domain.TagAggregate.TagOptions.None),
+            new("General", "solo" + Guid.NewGuid(), null, null, Domain.TagAggregate.TagOptions.None),
+            new("General", "huge melons" + Guid.NewGuid(), null, null, Domain.TagAggregate.TagOptions.None),
+            new("General", "Rating" + Guid.NewGuid(), "Questionable", new[] { "Rate" }, Domain.TagAggregate.TagOptions.None),
+        ];
+        
+        var commandDanbooru = new ActualizeFileInfoForSourceCommand(
+            fileId,
+            Domain.FileInfoAggregate.MetadataSource.Danbooru,
+            newTags,
+            [
+                new(
+                    SourceId: 1,
+                    Label: "Bounce sound translation" + Guid.NewGuid(),
+                    PositionFromLeft: 10,
+                    PositionFromTop: 20,
+                    Width: 30,
+                    Height: 40)
+            ]);
+
+        await mediator.Send(commandDanbooru);
+
+        ActualizeTag[] newTagsYandere =
+        [
+            new("General", "1girl" + Guid.NewGuid(), null, null, Domain.TagAggregate.TagOptions.None),
+            new("General", "solo" + Guid.NewGuid(), null, null, Domain.TagAggregate.TagOptions.None),
+            new("General", "huge melons" + Guid.NewGuid(), null, null, Domain.TagAggregate.TagOptions.None),
+            new("General", "Rating" + Guid.NewGuid(), "Questionable", new[] { "Rate" }, Domain.TagAggregate.TagOptions.None),
+        ];
+        
+        var commandYandere = new ActualizeFileInfoForSourceCommand(
+            fileId,
+            Domain.FileInfoAggregate.MetadataSource.Yandere,
+            newTagsYandere,
+            [
+                new(
+                    SourceId: 1,
+                    Label: "Bounce sound translation" + Guid.NewGuid(),
+                    PositionFromLeft: 10,
+                    PositionFromTop: 20,
+                    Width: 30,
+                    Height: 40)
+            ]);
+
+        // act
+        await mediator.Send(commandYandere);
+
+        // assert
+        var fileTags = context.FileTags.Include(x => x.Tag).ThenInclude(x => x!.Type!).ToList();
+        fileTags.Where(x => x.FileId == fileId).Should().HaveCount(8);
+
+        foreach (var tag in commandDanbooru.Tags)
+        {
+            var fileTag = fileTags.FirstOrDefault(x => x.Tag!.Name == tag.Name && x.FileId == fileId && x.Source == MetadataSource.Danbooru);
+            fileTag.Should().NotBeNull();
+            fileTag!.Tag!.Type!.Name.Should().Be(tag.Type);
+        }
+        
+        foreach (var tag in commandYandere.Tags)
+        {
+            var fileTag = fileTags.FirstOrDefault(x => x.Tag!.Name == tag.Name && x.FileId == fileId && x.Source == MetadataSource.Yandere);
+            fileTag.Should().NotBeNull();
+            fileTag!.Tag!.Type!.Name.Should().Be(tag.Type);
+        }
+        
+        var fileNotes = context.Notes;
+        var firstFileNoteCount = fileNotes.Count(x => x.FileId == fileId);
+        firstFileNoteCount.Should().Be(2);
+        
+        harness.Sent
+            .AnyMessage<ISavedCommand>(x => x.FileId == fileId && x.SourceId == (int)MetadataSource.Danbooru)
+            .Should().BeTrue();
+        
+        harness.Sent
+            .AnyMessage<ISavedCommand>(x => x.FileId == fileId && x.SourceId == (int)MetadataSource.Yandere)
+            .Should().BeTrue();
     }
 }

@@ -63,7 +63,8 @@ internal class FileInfoRepository : IFileInfoRepository
     private async Task SaveTags(FileInfo file)
     {
         var existingTags = (await _fileTagRepository.GetForFile(file.FileId)).ToList();
-        
+
+        var toAdd = new List<FileTag>();
         foreach (var newTag in file.Tags)
         {
             var existedTag = existingTags.FirstOrDefault(x => x.Equals(newTag));
@@ -74,13 +75,11 @@ internal class FileInfoRepository : IFileInfoRepository
             }
             else
             {
-                await _fileTagRepository.Add(newTag);
+                toAdd.Add(newTag);
             }
         }
-
-        foreach (var existingTag in existingTags)
-        {
-            await _fileTagRepository.Delete(existingTag);
-        }
+        
+        await _fileTagRepository.AddBatch(toAdd);
+        await _fileTagRepository.DeleteBatch(existingTags);
     }
 }

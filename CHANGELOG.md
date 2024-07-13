@@ -20,8 +20,11 @@
 ### Arachne
 * Add availability check service that will stop consumers when it's search engine isn't available
 
-# Room
+### Room
 * Create activity for each PeriodicJob in Room
+
+### Lilin
+* Optimize db queries for saving new parsed tags
 
 # 4.25.0
 
