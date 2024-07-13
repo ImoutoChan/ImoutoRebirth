@@ -1,17 +1,27 @@
 # Unreleased
 
-# Infrastructure
+### Infrastructure
 * Some dependencies were updated.
-* You have to delete all db functions in masstransit sql transport database in order for its migrations to work. 
+* You have to delete all db functions in masstransit sql transport database in order for its migrations to work.
+* Improve open telemetry support:
+  * Use otel-collector
+  * Remove Jaeger/Prometheus exporters
+  * Add docker compose and configurations to run:
+    * otel-collector
+    * jaeger
+    * prometheus
 
-# Navigator
+### Navigator
 * Add order mode to the settings with the ability to list new entries first
 * Fix crash on non-webp images that have webp extension
 * Pause preview video when opening full screen preview
 * Remember video timing when switching between preview and fullscreen preview
-                                            
-# Arachne
+
+### Arachne
 * Add availability check service that will stop consumers when it's search engine isn't available
+
+# Room
+* Create activity for each PeriodicJob in Room
 
 # 4.25.0
 
