@@ -1,0 +1,33 @@
+version: "3"
+services:
+
+  otel-collector:
+    image: otel/opentelemetry-collector:latest
+    command: [ "--config=/etc/otel-collector.yml" ]
+    volumes:
+      - ./collector.yml:/etc/otel-collector.yml
+    ports:
+      - "4318:4318"
+      - "9201:9201"
+  
+  jaeger:
+    image: jaegertracing/all-in-one:latest
+    ports:
+      - "16686:16686"
+      - "4317:4317"
+    environment:
+      #- LOG_LEVEL=debug
+      # Since v0.105 the OTEL Collector components default hostname to 'localhost'.
+      # However, that does not work inside a Docker container, so we listen on all IPs.
+      - COLLECTOR_OTLP_GRPC_HOST_PORT=0.0.0.0:4317
+
+  prometheus:
+    image: prom/prometheus:latest
+    command:
+      - --config.file=/etc/prometheus.yaml
+      - --web.enable-remote-write-receiver
+      - --enable-feature=exemplar-storage
+    volumes:
+      - ./prometheus.yaml:/etc/prometheus.yaml
+    ports:
+      - "9090:9090"

@@ -1,9 +1,7 @@
-﻿using Microsoft.AspNetCore.Builder;
-using Microsoft.Extensions.Configuration;
+﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
-using Npgsql;
 using OpenTelemetry.Exporter;
 using OpenTelemetry.Logs;
 using OpenTelemetry.Metrics;
@@ -14,6 +12,9 @@ namespace ImoutoRebirth.Common.OpenTelemetry;
 
 public static class ServiceCollectionExtensions
 {
+    private const string OtlpEndpoint = "http://localhost:4318";
+    private const int ExportIntervalMilliseconds = 1000;
+
     public static IServiceCollection AddOpenTelemetry(
         this IServiceCollection services,
         IHostEnvironment environment,
@@ -33,26 +34,31 @@ public static class ServiceCollectionExtensions
             builder =>
             {
                 builder
-                    .AddMeter(environment.ApplicationName)
                     .SetResourceBuilder(ResourceBuilder
                         .CreateDefault()
                         .AddService(applicationName)
                         .AddAttributes([new("environment", environmentName), new("application", applicationName.ToLowerInvariant())]))
+                    .AddNpgsql()
                     .AddRuntimeInstrumentation()
                     .AddAspNetCoreInstrumentation()
-                    .AddPrometheusExporter()
-                    .AddOtlpExporter();
+                    .SetExemplarFilter(ExemplarFilterType.TraceBased)
+                    .AddOtlpExporter((options, optionsReader) =>
+                    {
+                        options.Endpoint = new Uri(OtlpEndpoint);
+                        options.Protocol = OtlpExportProtocol.Grpc;
+                        options.BatchExportProcessorOptions.ScheduledDelayMilliseconds = ExportIntervalMilliseconds;
+                        optionsReader.PeriodicExportingMetricReaderOptions.ExportIntervalMilliseconds = ExportIntervalMilliseconds;
+                    });
             });
 
         return services;
     }
-
+    
     private static IServiceCollection AddTracing(
         this IServiceCollection services,
         IHostEnvironment environment,
         IConfiguration configuration)
     {
-        services.Configure<JaegerExporterOptions>(configuration.GetSection("Jaeger"));
         var applicationName = GetApplicationName(environment);
 
         services.AddOpenTelemetry().WithTracing(
@@ -63,7 +69,6 @@ public static class ServiceCollectionExtensions
                     .AddSource("MongoDB.Driver.Core.Extensions.DiagnosticSources")
                     .AddSource("Quartz")
                     .AddSource("MassTransit")
-                    .AddNpgsql()
                     .AddHttpClientInstrumentation(
                         options =>
                         {
@@ -78,8 +83,11 @@ public static class ServiceCollectionExtensions
                                 => context.Request.Path.Value?.Contains("health") != true
                                 && context.Request.Path.Value?.Contains("metrics") != true;
                         })
-                    .AddJaegerExporter()
-                    .AddOtlpExporter();
+                    .AddOtlpExporter(options =>
+                    {
+                        options.Endpoint = new Uri(OtlpEndpoint);
+                        options.Protocol = OtlpExportProtocol.Grpc;
+                    });
             });
 
         return services;
@@ -94,7 +102,12 @@ public static class ServiceCollectionExtensions
                 o.SetResourceBuilder(ResourceBuilder
                     .CreateDefault()
                     .AddService(GetApplicationName(hostBuilder.Environment)));
-                o.AddOtlpExporter();
+                o.AddOtlpExporter((options, optionsReader) =>
+                {
+                    options.Endpoint = new Uri(OtlpEndpoint);
+                    options.Protocol = OtlpExportProtocol.Grpc;
+                    optionsReader.BatchExportProcessorOptions.ScheduledDelayMilliseconds = ExportIntervalMilliseconds;
+                });
             });
 
         return hostBuilder;
@@ -114,5 +127,31 @@ public static class ServiceCollectionExtensions
             name = name[..^5];
 
         return name[0..1].ToUpperInvariant() + name[1..];
+    }
+}
+
+file static class NpgsqlMeterBuilderExtensions
+{
+    /// <summary>
+    /// https://github.com/dotnet/aspire/blob/681f2e754dc849f96abafcd2829783e69155abf1/src/Components/Aspire.Npgsql/NpgsqlCommon.cs#L14
+    /// Only works with reassigned boundaries, the npgsql metrics are reported in seconds
+    /// and the default boundaries are in milliseconds.
+    /// </summary>
+    public static MeterProviderBuilder AddNpgsql(this MeterProviderBuilder builder)
+    {
+        double[] secondsBuckets = [0, 0.005, 0.01, 0.025, 0.05, 0.075, 0.1, 0.25, 0.5, 0.75, 1, 2.5, 5, 7.5, 10];
+        
+        return builder
+            .AddMeter("Npgsql")
+            .AddView("db.client.commands.duration",
+                new ExplicitBucketHistogramConfiguration
+                {
+                    Boundaries = secondsBuckets
+                })
+            .AddView("db.client.connections.create_time",
+                new ExplicitBucketHistogramConfiguration
+                {
+                    Boundaries = secondsBuckets
+                });
     }
 }

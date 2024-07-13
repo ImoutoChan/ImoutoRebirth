@@ -167,6 +167,14 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ImoutoRebirth.Common.WPF", 
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ImoutoRebirth.Common.WindowsAssociationManager", "ImoutoRebirth.Common\ImoutoRebirth.Common.WindowsAssociationManager\ImoutoRebirth.Common.WindowsAssociationManager.csproj", "{AAEFC13A-4A80-4079-BC67-AA15FD7BB9C2}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "OpenTelemetry", "OpenTelemetry", "{1BB082C3-0D59-4ECF-A008-BA6C0098E771}"
+	ProjectSection(SolutionItems) = preProject
+		..\Tools\Dependencies\OpenTelemetry\collector.yml = ..\Tools\Dependencies\OpenTelemetry\collector.yml
+		..\Tools\Dependencies\OpenTelemetry\docker-compose.yml = ..\Tools\Dependencies\OpenTelemetry\docker-compose.yml
+		..\Tools\Dependencies\OpenTelemetry\prometheus.yaml = ..\Tools\Dependencies\OpenTelemetry\prometheus.yaml
+		..\Tools\Dependencies\OpenTelemetry\README.md = ..\Tools\Dependencies\OpenTelemetry\README.md
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -477,6 +485,7 @@ Global
 		{983AA112-65D1-4F5B-8633-6C6478CAC99C} = {4383FD00-3B54-4C2B-9222-BDC045D3FD9B}
 		{01B69255-EA58-4AE1-AA3A-93F3DA105316} = {4383FD00-3B54-4C2B-9222-BDC045D3FD9B}
 		{AAEFC13A-4A80-4079-BC67-AA15FD7BB9C2} = {4383FD00-3B54-4C2B-9222-BDC045D3FD9B}
+		{1BB082C3-0D59-4ECF-A008-BA6C0098E771} = {2438D898-F22E-4AD1-950B-4686D50817B3}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {3E48016D-BB6B-49F0-9888-80A5EAF0FAA4}
