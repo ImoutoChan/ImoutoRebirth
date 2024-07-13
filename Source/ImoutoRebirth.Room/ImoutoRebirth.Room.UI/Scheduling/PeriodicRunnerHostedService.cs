@@ -7,6 +7,8 @@ namespace ImoutoRebirth.Room.UI.Scheduling;
 
 internal class PeriodicRunnerHostedService : BackgroundService
 {
+    private static readonly ActivitySource ActivitySource = new("ImoutoRebirth");
+
     private readonly IOptions<PeriodicRunnerOptions> _options;
     private readonly IServiceProvider _serviceProvider;
 
@@ -49,17 +51,10 @@ internal class PeriodicRunnerHostedService : BackgroundService
 
     private static async Task RunPeriodicJob(IPeriodicRunningJob job, CancellationToken ct)
     {
-        using var activity = new Activity(job.GetType().Name);
-        activity.Start();
+        using var activity = ActivitySource.CreateActivity(job.GetType().Name, ActivityKind.Internal)?.Start();
+        await job.Run(ct);
+        activity?.Stop();
 
-        try
-        {
-            await job.Run(ct);
-            await Task.Delay(job.PeriodDelay, ct);
-        }
-        finally
-        {
-            activity.Stop();
-        }
+        await Task.Delay(job.PeriodDelay, ct);
     }
 }

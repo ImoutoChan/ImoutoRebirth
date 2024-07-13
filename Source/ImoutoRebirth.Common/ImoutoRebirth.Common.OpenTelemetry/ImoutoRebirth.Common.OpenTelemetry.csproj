@@ -21,4 +21,10 @@
         <PackageReference Include="Npgsql.OpenTelemetry" Version="8.0.3" />
     </ItemGroup>
 
+    <ItemGroup>
+        <PackageReference Include="IgnoresAccessChecksToGenerator" Version="0.7.0" PrivateAssets="All" />
+        <InternalsAssemblyName Include="OpenTelemetry.Instrumentation.Http" />
+        <InternalsAssemblyName Include="OpenTelemetry.Instrumentation.AspNetCore" />
+    </ItemGroup>
+
 </Project>

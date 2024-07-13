@@ -2,6 +2,7 @@
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using Npgsql;
 using OpenTelemetry.Exporter;
 using OpenTelemetry.Logs;
 using OpenTelemetry.Metrics;
@@ -34,6 +35,7 @@ public static class ServiceCollectionExtensions
             builder =>
             {
                 builder
+                    .AddMeter("ImoutoRebirth")
                     .SetResourceBuilder(ResourceBuilder
                         .CreateDefault()
                         .AddService(applicationName)
@@ -69,11 +71,14 @@ public static class ServiceCollectionExtensions
                     .AddSource("MongoDB.Driver.Core.Extensions.DiagnosticSources")
                     .AddSource("Quartz")
                     .AddSource("MassTransit")
+                    .AddSource("ImoutoRebirth")
+                    .AddNpgsql()
                     .AddHttpClientInstrumentation(
                         options =>
                         {
                             options.RecordException = true;
                             options.FilterHttpRequestMessage = x => x.RequestUri?.Port is not 9200;
+                            options.DisableUrlQueryRedaction = true;
                         })
                     .AddAspNetCoreInstrumentation(
                         options =>
@@ -82,6 +87,7 @@ public static class ServiceCollectionExtensions
                             options.Filter = context
                                 => context.Request.Path.Value?.Contains("health") != true
                                 && context.Request.Path.Value?.Contains("metrics") != true;
+                            options.DisableUrlQueryRedaction = true;
                         })
                     .AddOtlpExporter(options =>
                     {
