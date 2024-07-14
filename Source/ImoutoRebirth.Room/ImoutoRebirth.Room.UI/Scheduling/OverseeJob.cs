@@ -15,32 +15,25 @@ internal class OverseeJob : IPeriodicRunningJob
         _logger = logger;
     }
 
-    public TimeSpan PeriodDelay => TimeSpan.FromSeconds(5);
+    public TimeSpan PeriodDelay { get; private set; } = TimeSpan.FromSeconds(5);
+    
+    public bool RequestRapidRun { get; private set; }
 
     public async Task Run(CancellationToken ct)
     {
-        var runMoreTimes = 0;
-        do
+        try
         {
-            var anyFileMoved = false;
-            try
+            var result = await _mediator.Send(new OverseeCommand(), ct);
+
+            if (result.AnyFileMoved)
             {
-                anyFileMoved |= (await _mediator.Send(new OverseeCommand(), ct)).AnyFileMoved;
+                PeriodDelay = TimeSpan.FromMilliseconds(500);
+                RequestRapidRun = true;
             }
-            catch (Exception e)
-            {
-                _logger.LogError(e, "Oversee process error");
-                break;
-            }
-
-            if (anyFileMoved)
-                runMoreTimes = 10;
-
-            runMoreTimes--;
-
-            if (runMoreTimes > 0)
-                await Task.Delay(500, ct);
-
-        } while (runMoreTimes > 0);
+        }
+        catch (Exception e)
+        {
+            _logger.LogError(e, "Oversee process error");
+        }
     }
 }

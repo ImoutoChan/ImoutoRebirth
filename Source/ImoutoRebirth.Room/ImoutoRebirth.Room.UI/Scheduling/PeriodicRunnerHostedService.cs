@@ -12,6 +12,9 @@ internal class PeriodicRunnerHostedService : BackgroundService
     private readonly IOptions<PeriodicRunnerOptions> _options;
     private readonly IServiceProvider _serviceProvider;
 
+    private int _rapidRunCounter = 0;
+    private TimeSpan _rapidRunDelay = TimeSpan.MaxValue;
+
     public PeriodicRunnerHostedService(IOptions<PeriodicRunnerOptions> options, IServiceProvider serviceProvider)
     {
         _options = options;
@@ -49,12 +52,26 @@ internal class PeriodicRunnerHostedService : BackgroundService
         } while (!ct.IsCancellationRequested);
     }
 
-    private static async Task RunPeriodicJob(IPeriodicRunningJob job, CancellationToken ct)
+    private async Task RunPeriodicJob(IPeriodicRunningJob job, CancellationToken ct)
     {
         using var activity = ActivitySource.CreateActivity(job.GetType().Name, ActivityKind.Internal)?.Start();
         await job.Run(ct);
         activity?.Stop();
+        
+        if (_rapidRunCounter > 0)
+        {
+            _rapidRunCounter--;
+            await Task.Delay(_rapidRunDelay, ct);
+        }
+        else
+        {
+            await Task.Delay(job.PeriodDelay, ct);
+        }
 
-        await Task.Delay(job.PeriodDelay, ct);
+        if (job.RequestRapidRun)
+        {
+            _rapidRunCounter = 10;
+            _rapidRunDelay = job.PeriodDelay;
+        }
     }
 }
