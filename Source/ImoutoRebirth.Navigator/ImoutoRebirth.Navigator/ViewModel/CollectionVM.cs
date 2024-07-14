@@ -238,7 +238,7 @@ internal class CollectionVM : VMBase
 
     public ICommand AddSourceCommand => _addSourceCommand ??= new RelayCommand(AddSource);
 
-    public ICommand RemoveSourceCommand => _removeSourceCommand ??= new AsyncCommand(RemoveSource, CanRemoveSource);
+    public ICommand RemoveSourceCommand => _removeSourceCommand ??= new AsyncCommand<SourceFolderVM>(RemoveSource, x => x != null);
     public ICommand CreateDestinationFolderCommand 
         => _createDestinationFolderCommand ??= new RelayCommand(CreateDestinationFolder);
 
@@ -257,39 +257,31 @@ internal class CollectionVM : VMBase
 
     private void AddSource(object? param)
     {
-        var newSource = new SourceFolderVM(null, String.Empty, false, false, null, false, false);
+        var newSource = new SourceFolderVM(null, string.Empty, false, false, null, false, false);
         newSource.ResetRequest += FolderVM_ResetRequest;
         newSource.SaveRequest += FolderVM_SaveSourceRequest;
         Sources.Add(newSource);
     }
 
-    private async Task RemoveSource()
+    private async Task RemoveSource(SourceFolderVM? sourceFolderVM)
     {
-        if (SelectedSource != null)
-        { 
-            var folderVM = SelectedSource as FolderVM;
-
-            if (folderVM.Id.HasValue)
+        if (sourceFolderVM is not FolderVM folderVM)
+            return;
+        
+        if (folderVM.Id.HasValue)
+        {
+            try
             {
-                try
-                {
-                    await _sourceFolderService.DeleteSourceFolderAsync(Id, folderVM.Id.Value);
-                }
-                catch (Exception ex)
-                {
-                    App.MainWindowVM?.SetStatusError("Can't remove folder", ex.Message);
-                    Debug.WriteLine("Can't remove folder: " + ex.Message);
-                }
+                await _sourceFolderService.DeleteSourceFolderAsync(Id, folderVM.Id.Value);
             }
-
-            await LoadFolders();
+            catch (Exception ex)
+            {
+                App.MainWindowVM?.SetStatusError("Can't remove folder", ex.Message);
+                Debug.WriteLine("Can't remove folder: " + ex.Message);
+            }
         }
-    }
 
-
-    public bool CanRemoveSource()
-    {
-        return SelectedSource != null;
+        await LoadFolders();
     }
 
     #endregion Command Handlers

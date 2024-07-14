@@ -28,7 +28,7 @@
                            FontWeight="Bold" />
                 <ComboBox ItemsSource="{Binding Collections}"
                           SelectedItem="{Binding SelectedCollection}"
-                          Name="Collectons"
+                          Name="Collections"
                           DisplayMemberPath="Name"
                           Margin="10,0,0,0" />
 
@@ -38,7 +38,7 @@
                     <Button Content="Rename"
                             Click="RenameButton_Click"
                             Margin="10,0,0,0"
-                            IsEnabled="{Binding ElementName=Collectons, Path=SelectedItem, Converter={StaticResource BooleanResultConverter}, ConverterParameter=!null}" />
+                            IsEnabled="{Binding ElementName=Collections, Path=SelectedItem, Converter={StaticResource BooleanResultConverter}, ConverterParameter=!null}" />
 
                     <Button Content="Delete"
                             Command="{Binding RemoveCommand}"
@@ -49,15 +49,15 @@
                             Margin="10,0,0,0" />
                 </StackPanel>
 
-                <StackPanel Visibility="{Binding ElementName=Collectons, Path=SelectedItem, Converter={StaticResource ConditionVisibilityConverter}, ConverterParameter=!null}">
+                <StackPanel Visibility="{Binding ElementName=Collections, Path=SelectedItem, Converter={StaticResource ConditionVisibilityConverter}, ConverterParameter=!null}">
                     <TextBlock Text="Sources"
                                Margin="0,10,0,0"
                                FontSize="17"
                                FontWeight="Bold" />
 
-                    <ListBox ItemsSource="{Binding ElementName=Collectons, Path=SelectedItem.Sources}"
+                    <ListBox ItemsSource="{Binding ElementName=Collections, Path=SelectedItem.Sources}"
                              Height="150"
-                             SelectedItem="{Binding ElementName=Collectons, Path=SelectedItem.SelectedSource}"
+                             SelectedItem="{Binding ElementName=Collections, Path=SelectedItem.SelectedSource}"
                              Name="Sources"
                              Margin="10,0,0,0">
                         <ListBox.ItemTemplate>
@@ -75,10 +75,11 @@
                                 Orientation="Horizontal"
                                 Margin="0,5,0,0">
                         <Button Content="Remove"
-                                Command="{Binding ElementName=Collectons, Path=SelectedItem.RemoveSourceCommand}" />
+                                Command="{Binding ElementName=Collections, Path=SelectedItem.RemoveSourceCommand}"
+                                CommandParameter="{Binding ElementName=Collections, Path=SelectedItem.SelectedSource}" />
 
                         <Button Content="Add"
-                                Command="{Binding ElementName=Collectons, Path=SelectedItem.AddSourceCommand}"
+                                Command="{Binding ElementName=Collections, Path=SelectedItem.AddSourceCommand}"
                                 Margin="10,0,0,0" />
                     </StackPanel>
 
@@ -140,8 +141,8 @@
                     </StackPanel>
 
                     <StackPanel Margin="10,20,0,0"
-                                DataContext="{Binding ElementName=Collectons, Path=SelectedItem.Destination}"
-                                Visibility="{Binding ElementName=Collectons, Path=SelectedItem.Destination, Converter={StaticResource ConditionVisibilityConverter}, ConverterParameter=!null}">
+                                DataContext="{Binding ElementName=Collections, Path=SelectedItem.Destination}"
+                                Visibility="{Binding ElementName=Collections, Path=SelectedItem.Destination, Converter={StaticResource ConditionVisibilityConverter}, ConverterParameter=!null}">
                         <TextBlock Text="Destination folder"
                                    FontSize="17"
                                    FontWeight="Bold"
@@ -191,7 +192,7 @@
                     </StackPanel>
 
                     <StackPanel Margin="10,20,0,0"
-                                Visibility="{Binding ElementName=Collectons, Path=SelectedItem.Destination, Converter={StaticResource ConditionVisibilityConverter}, ConverterParameter=null}">
+                                Visibility="{Binding ElementName=Collections, Path=SelectedItem.Destination, Converter={StaticResource ConditionVisibilityConverter}, ConverterParameter=null}">
                         <TextBlock Text="Destination folder"
                                    FontSize="17"
                                    FontWeight="Bold"
@@ -200,7 +201,7 @@
                         <StackPanel HorizontalAlignment="Right"
                                     Orientation="Horizontal"
                                     Margin="0,5,0,0"
-                                    DataContext="{Binding ElementName=Collectons, Path=SelectedItem}">
+                                    DataContext="{Binding ElementName=Collections, Path=SelectedItem}">
                             <Button Content="Create"
                                     Command="{Binding CreateDestinationFolderCommand}" />
                         </StackPanel>
