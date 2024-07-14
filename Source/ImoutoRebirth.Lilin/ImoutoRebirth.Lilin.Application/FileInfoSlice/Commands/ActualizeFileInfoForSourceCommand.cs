@@ -155,9 +155,12 @@ internal class ActualizeFileInfoForSourceCommandHandler : ICommandHandler<Actual
         {
             var sourceTag = tagsToProcess.First(x => x.Tag.Name == foundTag.Name && x.Type.Id == foundTag.Type.Id);
 
+            var areSynonymsTheSame = sourceTag.Tag.Synonyms.SafeNone()
+                                     || sourceTag.Tag.Synonyms!.All(x => foundTag.Synonyms.Contains(x));
+
             var arePropertiesTheSame
                 = foundTag.HasValue == sourceTag.HasValue
-                  && foundTag.Synonyms.SequenceEqual(sourceTag.Tag.Synonyms ?? [])
+                  && areSynonymsTheSame
                   && foundTag.Options == sourceTag.Tag.Options;
             
             if (arePropertiesTheSame)
