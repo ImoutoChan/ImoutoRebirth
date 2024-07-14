@@ -16,6 +16,7 @@
 * Fix crash on non-webp images that have webp extension
 * Pause preview video when opening full screen preview
 * Remember video timing when switching between preview and fullscreen preview
+* Fix source deletion in the collection settings
 
 ### Arachne
 * Add availability check service that will stop consumers when it's search engine isn't available
@@ -23,6 +24,7 @@
 ### Room
 * Create activity for each PeriodicJob
 * Improve rapid run scenario
+* Remove periodic jobs, use file system watcher instead to track changes in source folders
 
 ### Lilin
 * Optimize db queries for saving new parsed tags

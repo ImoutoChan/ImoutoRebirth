@@ -16,9 +16,13 @@ public record AddSourceFolderCommand(
 internal class AddSourceFolderCommandHandler : ICommandHandler<AddSourceFolderCommand, Guid>
 {
     private readonly ICollectionRepository _collectionRepository;
+    private readonly IEventStorage _eventStorage;
 
-    public AddSourceFolderCommandHandler(ICollectionRepository collectionFileRepository) 
-        => _collectionRepository = collectionFileRepository;
+    public AddSourceFolderCommandHandler(ICollectionRepository collectionFileRepository, IEventStorage eventStorage)
+    {
+        _collectionRepository = collectionFileRepository;
+        _eventStorage = eventStorage;
+    }
 
     public async Task<Guid> Handle(AddSourceFolderCommand request, CancellationToken cancellationToken)
     {
@@ -26,7 +30,7 @@ internal class AddSourceFolderCommandHandler : ICommandHandler<AddSourceFolderCo
             shouldAddTagFromFilename, supportedExtensions) = request;
         var collection = await _collectionRepository.GetById(collectionId).GetAggregateOrThrow();
 
-        var id = collection.AddSourceFolder(
+        var result = collection.AddSourceFolder(
             path,
             shouldCheckFormat,
             shouldCheckHashFromName,
@@ -34,8 +38,9 @@ internal class AddSourceFolderCommandHandler : ICommandHandler<AddSourceFolderCo
             shouldAddTagFromFilename,
             supportedExtensions);
 
+        _eventStorage.AddRange(result.EventsCollection);
         await _collectionRepository.Update(collection);
 
-        return id;
+        return result.Result;
     }
 }

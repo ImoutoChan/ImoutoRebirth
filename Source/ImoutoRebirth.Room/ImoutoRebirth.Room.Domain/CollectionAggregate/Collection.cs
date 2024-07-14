@@ -1,4 +1,6 @@
-﻿namespace ImoutoRebirth.Room.Domain.CollectionAggregate;
+﻿using ImoutoRebirth.Common.Domain;
+
+namespace ImoutoRebirth.Room.Domain.CollectionAggregate;
 
 public class Collection
 {
@@ -59,7 +61,7 @@ public class Collection
         DestinationFolder = DestinationFolder.Default;
     }
 
-    public Guid AddSourceFolder(
+    public DomainResult<Guid> AddSourceFolder(
         string path,
         bool shouldCheckFormat,
         bool shouldCheckHashFromName,
@@ -79,15 +81,20 @@ public class Collection
         
         SourceFolders = SourceFolders.Append(sourceFolder).ToList();
 
-        return id;
+        return new DomainResult<Guid>(id)
+        {
+            new SourceFoldersUpdatedDomainEvent()
+        };
     }
 
-    public void RemoveSourceFolder(Guid id)
+    public DomainResult RemoveSourceFolder(Guid id)
     {
         SourceFolders = SourceFolders.Where(x => x.Id != id).ToList();
+
+        return [new SourceFoldersUpdatedDomainEvent()];
     }
 
-    public void UpdateSourceFolder(
+    public DomainResult UpdateSourceFolder(
         Guid sourceFolderId,
         string path,
         bool shouldCheckFormat,
@@ -110,5 +117,9 @@ public class Collection
             supportedExtensions);
         
         SourceFolders = SourceFolders.Where(x => x.Id != sourceFolderId).Append(sourceFolder).ToList();
+
+        return [new SourceFoldersUpdatedDomainEvent()];
     }
 }
+
+public record SourceFoldersUpdatedDomainEvent : IDomainEvent;

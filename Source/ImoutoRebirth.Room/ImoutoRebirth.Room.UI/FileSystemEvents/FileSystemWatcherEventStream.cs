@@ -1,11 +1,18 @@
 ﻿using System.Reactive.Linq;
 using System.Reactive.Subjects;
 
-namespace ImoutoRebirth.Room.UI.Scheduling.FileSystem;
+namespace ImoutoRebirth.Room.UI.FileSystemEvents;
 
+public enum FileSystemWatcherEventType { Changed, Created, Deleted, Renamed }
+
+public record FileSystemWatcherEvent(string Folder, FileSystemWatcherEventType Type, FileSystemEventArgs Args);
+
+/// <summary>
+/// Encapsulation of FileSystemWatcher, that provide reactive event stream for the provided folders. 
+/// </summary>
 public class FileSystemWatcherEventStream
 {
-    private readonly ISubject<FileSystemWatcherEvent> _subject;
+    private readonly ISubject<FileSystemWatcherEvent> _subject = new Subject<FileSystemWatcherEvent>();
     private readonly List<FileSystemWatcher> _watchers = new();
 
     public FileSystemWatcherEventStream(
@@ -14,7 +21,6 @@ public class FileSystemWatcherEventStream
         bool includeSubdirectories,
         CancellationToken completionToken)
     {
-        _subject = new Subject<FileSystemWatcherEvent>();
         Observable = _subject.ToAsyncObservable();
 
         completionToken.Register(() =>
@@ -30,6 +36,9 @@ public class FileSystemWatcherEventStream
         
         foreach (var folder in folders)
         {
+            if (!Directory.Exists(folder))
+                continue;
+            
             var watcher = new FileSystemWatcher(folder)
             {
                 NotifyFilter = filters,
@@ -49,6 +58,17 @@ public class FileSystemWatcherEventStream
             
             _watchers.Add(watcher);
         }
+    }
+    
+    public void Complete()
+    {
+        foreach (var watcher in _watchers)
+        {
+            watcher.EnableRaisingEvents = false;
+            watcher.Dispose();
+        }
+
+        _subject.OnCompleted();
     }
 
     public IAsyncObservable<FileSystemWatcherEvent> Observable { get; }

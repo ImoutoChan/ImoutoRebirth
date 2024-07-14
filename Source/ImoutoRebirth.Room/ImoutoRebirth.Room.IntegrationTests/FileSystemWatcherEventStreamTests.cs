@@ -1,6 +1,6 @@
 ﻿using System.Reactive.Linq;
 using FluentAssertions;
-using ImoutoRebirth.Room.UI.Scheduling.FileSystem;
+using ImoutoRebirth.Room.UI.FileSystemEvents;
 using Xunit;
 
 namespace ImoutoRebirth.Room.IntegrationTests;

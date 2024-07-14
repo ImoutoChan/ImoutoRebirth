@@ -1,6 +1,6 @@
-﻿namespace ImoutoRebirth.Room.UI.Scheduling.FileSystem;
+﻿namespace ImoutoRebirth.Room.Application.Services;
 
-internal interface ISourceFolderWatcher
+public interface ISourceFolderWatcher
 {
-    Task Refresh(CancellationToken ct);
+    Task Refresh(IReadOnlyCollection<string>? folders, CancellationToken ct);
 }

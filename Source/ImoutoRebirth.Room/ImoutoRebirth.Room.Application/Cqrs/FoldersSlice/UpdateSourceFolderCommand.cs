@@ -17,9 +17,13 @@ public record UpdateSourceFolderCommand(
 internal class UpdateSourceFolderCommandHandler : ICommandHandler<UpdateSourceFolderCommand>
 {
     private readonly ICollectionRepository _collectionRepository;
+    private readonly IEventStorage _eventStorage;
 
-    public UpdateSourceFolderCommandHandler(ICollectionRepository collectionFileRepository) 
-        => _collectionRepository = collectionFileRepository;
+    public UpdateSourceFolderCommandHandler(ICollectionRepository collectionFileRepository, IEventStorage eventStorage)
+    {
+        _collectionRepository = collectionFileRepository;
+        _eventStorage = eventStorage;
+    }
 
     public async Task Handle(UpdateSourceFolderCommand request, CancellationToken cancellationToken)
     {
@@ -27,7 +31,7 @@ internal class UpdateSourceFolderCommandHandler : ICommandHandler<UpdateSourceFo
             shouldCreateTagsFromSubfolders, shouldAddTagFromFilename, supportedExtensions) = request;
         var collection = await _collectionRepository.GetById(collectionId).GetAggregateOrThrow();
 
-        collection.UpdateSourceFolder(
+        var result = collection.UpdateSourceFolder(
             sourceFolderId,
             path,
             shouldCheckFormat,
@@ -36,6 +40,7 @@ internal class UpdateSourceFolderCommandHandler : ICommandHandler<UpdateSourceFo
             shouldAddTagFromFilename,
             supportedExtensions);
 
+        _eventStorage.AddRange(result.EventsCollection);
         await _collectionRepository.Update(collection);
     }
 }
