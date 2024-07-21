@@ -32,6 +32,7 @@ internal class SourceFolderWatcherHostedService : BackgroundService
     private async Task RunChangesReactor()
     {
         await _watcher.Observable
+            .Where(x => x.Type != FileSystemWatcherEventType.Deleted)
             .Throttle(TimeSpan.FromMilliseconds(250))
             .SubscribeAsync(async _ => await TriggerOversee());
     }
