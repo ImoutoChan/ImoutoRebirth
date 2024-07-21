@@ -6,9 +6,9 @@ public interface ICollectionFileRepository
 {
     Task Create(CollectionFile collectionFile);
 
-    Task<bool> AnyWithPath(
+    Task<IReadOnlyCollection<string>> FilterOutExistingPaths(
         Guid collectionId,
-        string path,
+        IReadOnlyCollection<string> inputPaths,
         CancellationToken ct = default);
 
     Task Remove(Guid id);

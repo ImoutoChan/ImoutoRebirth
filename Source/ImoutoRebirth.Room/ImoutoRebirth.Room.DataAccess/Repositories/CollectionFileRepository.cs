@@ -41,18 +41,43 @@ internal class CollectionFileRepository : ICollectionFileRepository
         _md5PresenceCache.Remove(entity.Md5);
     }
 
-    public async Task<bool> AnyWithPath(Guid collectionId, string path, CancellationToken ct)
+    public async Task<IReadOnlyCollection<string>> FilterOutExistingPaths(
+        Guid collectionId,
+        IReadOnlyCollection<string> inputPaths,
+        CancellationToken ct = default)
     {
-        var key = collectionId + path;
-        if (_memoryCache.TryGetValue(key, out bool value) && value)
-            return true;
+        var pathExistsStatus = new Dictionary<string, bool?>(inputPaths.Count);
 
-        var result = await CheckInDatabaseWithRemoved(collectionId, path, ct);
+        foreach (var inputPath in inputPaths)
+        {
+            var cacheKey = collectionId + inputPath;
+            pathExistsStatus[inputPath] = _memoryCache.TryGetValue(cacheKey, out bool value) ? value : null;
+        }
 
-        if (result)
-            _memoryCache.Set(key, result);
+        var checkInDatabasePaths = pathExistsStatus
+            .Where(x => x.Value == null)
+            .Select(x => x.Key)
+            .ToList();
 
-        return result;
+        if (checkInDatabasePaths.Any())
+        {
+            var found = await _roomDbContext.CollectionFiles
+                .IgnoreQueryFilters()
+                .Where(x => x.CollectionId == collectionId)
+                .Select(x => x.Path)
+                .Where(x => checkInDatabasePaths.Contains(x))
+                .ToListAsync(cancellationToken: ct);
+
+            foreach (var checkInDatabasePath in checkInDatabasePaths)
+            {
+                pathExistsStatus[checkInDatabasePath] = found.Contains(checkInDatabasePath);
+                
+                var cacheKey = collectionId + checkInDatabasePath;
+                _memoryCache.Set(cacheKey, found.Contains(checkInDatabasePath));
+            }
+        }
+
+        return pathExistsStatus.Where(x => x.Value == false).Select(x => x.Key).ToList();
     }
 
     public async Task Remove(Guid id)
@@ -85,12 +110,4 @@ internal class CollectionFileRepository : ICollectionFileRepository
 
         return file?.OriginalPath;
     }
-
-    private async Task<bool> CheckInDatabaseWithRemoved(Guid collectionId, string path, CancellationToken ct)
-        => await _roomDbContext
-            .CollectionFiles
-            .IgnoreQueryFilters()
-            .Where(x => x.CollectionId == collectionId)
-            .Select(x => x.Path)
-            .AnyAsync(x => x == path, cancellationToken: ct);
 }

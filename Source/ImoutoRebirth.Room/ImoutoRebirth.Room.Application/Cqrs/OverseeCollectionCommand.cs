@@ -126,10 +126,10 @@ internal class OverseeCollectionCommandHandler : ICommandHandler<OverseeCollecti
         SourceFolder sourceFolder,
         [EnumeratorCancellation] CancellationToken ct)
     {
-        var files = sourceFolder.GetAllFileInfo();
-        var filteredFiles = FilterOutExistingFiles(collectionId, files, ct);
+        var files = sourceFolder.GetAllFileInfo().ToList();
+        var filteredFiles = await FilterOutExistingFiles(collectionId, files, ct);
 
-        await foreach (var file in filteredFiles)
+        foreach (var file in filteredFiles)
         {
             var systemFile = SystemFile.Create(file);
 
@@ -149,19 +149,14 @@ internal class OverseeCollectionCommandHandler : ICommandHandler<OverseeCollecti
         }
     }
 
-    private async IAsyncEnumerable<FileInfo> FilterOutExistingFiles(
+    private async Task<IReadOnlyCollection<FileInfo>> FilterOutExistingFiles(
         Guid collectionId,
-        IEnumerable<FileInfo> files,
-        [EnumeratorCancellation] CancellationToken ct = default)
+        IReadOnlyCollection<FileInfo> files,
+        CancellationToken ct = default)
     {
-        foreach (var fileInfo in files)
-        {
-            var exists = await _collectionFileRepository.AnyWithPath(collectionId, fileInfo.FullName, ct);
-
-            if (exists)
-                continue;
-
-            yield return fileInfo;
-        }
+        var filePaths = files.Select(x => x.FullName).ToList();
+        var newPaths = await _collectionFileRepository.FilterOutExistingPaths(collectionId, filePaths, ct);
+        newPaths = newPaths.ToHashSet();
+        return files.Where(x => newPaths.Contains(x.FullName)).ToList();
     }
 }
