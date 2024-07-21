@@ -1,5 +1,4 @@
 ﻿using ImoutoRebirth.Arachne.Infrastructure.Models.Settings;
-using ImoutoRebirth.Common.MassTransit;
 
 namespace ImoutoRebirth.Arachne.Host.Settings;
 

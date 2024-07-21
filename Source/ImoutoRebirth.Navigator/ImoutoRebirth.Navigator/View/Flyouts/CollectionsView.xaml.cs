@@ -1,5 +1,4 @@
 ﻿using System.Windows;
-using System.Windows.Controls;
 using ImoutoRebirth.Navigator.ViewModel;
 using MahApps.Metro.Controls.Dialogs;
 

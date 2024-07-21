@@ -3,7 +3,6 @@ using ImoutoRebirth.Room.Application.Cqrs.CollectionFileSlice;
 using ImoutoRebirth.Room.DataAccess.Cache;
 using ImoutoRebirth.Room.Database;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Caching.Memory;
 
 namespace ImoutoRebirth.Room.DataAccess.Queries;
 

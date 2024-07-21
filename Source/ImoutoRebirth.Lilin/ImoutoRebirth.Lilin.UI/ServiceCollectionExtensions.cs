@@ -1,6 +1,5 @@
 ﻿using ImoutoRebirth.Common.MassTransit;
 using ImoutoRebirth.Common.Quartz.Extensions;
-using ImoutoRebirth.Lilin.UI.Consumers;
 using ImoutoRebirth.Lilin.UI.Quartz;
 using ImoutoRebirth.Meido.MessageContracts;
 using Microsoft.Extensions.Configuration;

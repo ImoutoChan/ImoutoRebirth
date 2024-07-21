@@ -1,9 +1,6 @@
-﻿using ImoutoRebirth.Arachne.MessageContracts;
-using ImoutoRebirth.Arachne.MessageContracts.Commands;
+﻿using ImoutoRebirth.Arachne.MessageContracts.Commands;
 using ImoutoRebirth.Common.MassTransit;
 using ImoutoRebirth.Common.Quartz.Extensions;
-using ImoutoRebirth.Meido.MessageContracts;
-using ImoutoRebirth.Meido.UI.Consumers;
 using ImoutoRebirth.Meido.UI.Jobs;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;

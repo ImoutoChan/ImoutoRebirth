@@ -5,7 +5,6 @@ using ImoutoRebirth.Common.WPF;
 using ImoutoRebirth.Common.WPF.Commands;
 using ImoutoRebirth.Navigator.Services;
 using ImoutoRebirth.Navigator.Services.Collections;
-using ImoutoRebirth.Navigator.Utils;
 
 namespace ImoutoRebirth.Navigator.ViewModel;
 
