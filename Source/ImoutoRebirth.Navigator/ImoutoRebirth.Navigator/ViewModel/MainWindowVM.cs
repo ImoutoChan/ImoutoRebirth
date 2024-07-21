@@ -69,7 +69,6 @@ internal class MainWindowVM : VMBase
         TagSearchVM = new TagSearchVM();
         TagsEdit = new TagsEditVM(this);
         TagsMerge = new TagsMergeVM();
-        _view = new MainWindow { DataContext = this };
         
         TagSearchVM.SelectedTagsUpdated += TagSearchVM_SelectedTagsUpdated;
         TagSearchVM.SelectedCollectionChanged += TagSearchVMOnSelectedCollectionChanged;
@@ -77,10 +76,11 @@ internal class MainWindowVM : VMBase
 
         Settings.ShowPreviewOnSelectChanged += Settings_ShowPreviewOnSelectChanged;
 
-        _view.Loaded += _view_Loaded;
+        _view = new MainWindow { DataContext = this };
         _view.SelectedItemsChanged += OnViewOnSelectedItemsChanged;
-        _view.Show();
     }
+
+    public void ShowWindow() => _view.Show();
 
     private async Task LoadNew()
     {
@@ -668,7 +668,7 @@ internal class MainWindowVM : VMBase
 
     #region Event handlers
 
-    private async void _view_Loaded(object? sender, RoutedEventArgs e)
+    public async Task InitializeContextAsync()
     {
         await InitializeAsync();
         await Reload();

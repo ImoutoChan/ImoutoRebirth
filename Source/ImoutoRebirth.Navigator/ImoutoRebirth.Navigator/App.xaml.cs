@@ -10,29 +10,40 @@ namespace ImoutoRebirth.Navigator;
 /// </summary>
 public partial class App : Application
 {
+    public App() => Startup += async (_, _) => await RunApp();
+
+    private async Task RunApp()
+    {
+        var splashScreen = new SplashScreen(@"\Resources\Icon\appicon.png");
+        splashScreen.Show(autoClose: false, topMost: false);
+        
+        MainWindowVM = new MainWindowVM();
+        await MainWindowVM.InitializeContextAsync();
+        MainWindowVM.ShowWindow();
+        
+        splashScreen.Close(fadeoutDuration: TimeSpan.FromMilliseconds(100));
+    }
+
     public static Guid AppGuid = Guid.NewGuid();
 
     internal static MainWindowVM? MainWindowVM { get; private set; }
 
-    protected override void OnStartup(StartupEventArgs e)
+    protected override void OnStartup(StartupEventArgs startupEventArgs)
     {
         DispatcherUnhandledException += OnDispatcherUnhandledException;
         
-        TaskScheduler.UnobservedTaskException += (sender, e) =>
+        TaskScheduler.UnobservedTaskException += (_, e) =>
         {
             Debug.WriteLine("Dispatcher Unhandled exception: " + e.Exception.Message);
             e.SetObserved();
         };
         
-        AppDomain.CurrentDomain.UnhandledException += (sender, e) =>
+        AppDomain.CurrentDomain.UnhandledException += (_, e) =>
         {
             Debug.WriteLine("Dispatcher Unhandled exception: " + e.IsTerminating + " " + e.ExceptionObject);
         };
-        
-        //Start the main window
-        MainWindowVM = new MainWindowVM();
 
-        base.OnStartup(e);
+        base.OnStartup(startupEventArgs);
     }
 
     private static void OnDispatcherUnhandledException(object sender, DispatcherUnhandledExceptionEventArgs e)
