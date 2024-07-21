@@ -10,6 +10,7 @@
     * otel-collector
     * jaeger
     * prometheus
+* Don't deploy after failed build in BuildAndDeploy.ps1 file
 
 ### Navigator
 * Add order mode to the settings with the ability to list new entries first
@@ -25,6 +26,7 @@
 * Create activity for each PeriodicJob
 * Improve rapid run scenario
 * Remove periodic jobs, use file system watcher instead to track changes in source folders
+* Optimize checking for existing files in one-folder scenario (1 db query instead of 1 per file)
 
 ### Lilin
 * Optimize db queries for saving new parsed tags

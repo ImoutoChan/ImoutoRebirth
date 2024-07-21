@@ -71,7 +71,7 @@ class Build : NukeBuild
     [Solution(GenerateProjects = true)]
     readonly Solution Solution;
 
-    [GitVersion]
+    [GitVersion(NoFetch = true)]
     readonly GitVersion GitVersion;
     
     string VersionedName => "ImoutoRebirth-" + GitVersion.NuGetVersionV2;
