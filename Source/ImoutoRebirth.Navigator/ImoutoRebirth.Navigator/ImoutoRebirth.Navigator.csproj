@@ -33,7 +33,7 @@
         <None Update="Resources\Icon\appicon.png">
             <CopyToOutputDirectory>Always</CopyToOutputDirectory>
         </None>
-        <Resource Include="Resources\Icon\appicon.png">
+        <Resource Include="Resources\Icon\splashscreen.png">
             <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
         </Resource>
     </ItemGroup>

@@ -14,7 +14,7 @@ public partial class App : Application
 
     private async Task RunApp()
     {
-        var splashScreen = new SplashScreen(@"\Resources\Icon\appicon.png");
+        var splashScreen = new SplashScreen(@"\Resources\Icon\splashscreen.png");
         splashScreen.Show(autoClose: false, topMost: false);
         
         MainWindowVM = new MainWindowVM();
