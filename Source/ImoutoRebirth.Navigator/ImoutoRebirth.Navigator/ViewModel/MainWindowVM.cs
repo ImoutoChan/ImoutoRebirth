@@ -13,6 +13,7 @@ using ImoutoRebirth.Navigator.Model;
 using ImoutoRebirth.Navigator.Services;
 using ImoutoRebirth.Navigator.Services.ImoutoViewer;
 using ImoutoRebirth.Navigator.Services.Tags;
+using ImoutoRebirth.Navigator.Slices.QuickTagging;
 using ImoutoRebirth.Navigator.UserControls;
 using ImoutoRebirth.Navigator.ViewModel.ListEntries;
 using ImoutoRebirth.Navigator.ViewModel.SettingsSlice;
@@ -75,6 +76,7 @@ internal partial class MainWindowVM : ObservableObject
 
         TagSearchVM = new TagSearchVM();
         TagsEdit = new TagsEditVM(this);
+        QuickTagging = new QuickTaggingVM(this);
         TagsMerge = new TagsMergeVM();
         
         TagSearchVM.SelectedTagsUpdated += TagSearchVM_SelectedTagsUpdated;
@@ -169,6 +171,8 @@ internal partial class MainWindowVM : ObservableObject
     public SettingsVM Settings { get; } = new();
 
     public TagsEditVM TagsEdit { get; set; }
+
+    public QuickTaggingVM QuickTagging { get; set; }
 
     public TagsMergeVM TagsMerge { get; set; }
 
