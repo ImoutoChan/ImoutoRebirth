@@ -4,11 +4,8 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using ImoutoRebirth.Navigator.Services;
 using ImoutoRebirth.Navigator.Services.Collections;
-using DestinationFolderVM = ImoutoRebirth.Navigator.ViewModel.SettingsSlice.DestinationFolderVM;
-using FolderVM = ImoutoRebirth.Navigator.ViewModel.SettingsSlice.FolderVM;
-using SourceFolderVM = ImoutoRebirth.Navigator.ViewModel.SettingsSlice.SourceFolderVM;
 
-namespace ImoutoRebirth.Navigator.ViewModel;
+namespace ImoutoRebirth.Navigator.ViewModel.SettingsSlice;
 
 internal partial class CollectionVM : ObservableObject
 {

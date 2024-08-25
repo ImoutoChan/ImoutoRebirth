@@ -1,5 +1,5 @@
 ﻿using System.Windows;
-using ImoutoRebirth.Navigator.ViewModel;
+using ImoutoRebirth.Navigator.ViewModel.SettingsSlice;
 using MahApps.Metro.Controls.Dialogs;
 
 namespace ImoutoRebirth.Navigator.View.Flyouts;

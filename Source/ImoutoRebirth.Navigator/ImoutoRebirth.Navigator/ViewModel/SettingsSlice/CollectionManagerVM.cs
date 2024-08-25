@@ -5,7 +5,7 @@ using CommunityToolkit.Mvvm.Input;
 using ImoutoRebirth.Navigator.Services;
 using ImoutoRebirth.Navigator.Services.Collections;
 
-namespace ImoutoRebirth.Navigator.ViewModel;
+namespace ImoutoRebirth.Navigator.ViewModel.SettingsSlice;
 
 internal partial class CollectionManagerVm : ObservableObject
 {

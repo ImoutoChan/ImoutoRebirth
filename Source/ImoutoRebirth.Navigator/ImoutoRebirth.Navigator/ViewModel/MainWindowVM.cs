@@ -15,6 +15,7 @@ using ImoutoRebirth.Navigator.Services.ImoutoViewer;
 using ImoutoRebirth.Navigator.Services.Tags;
 using ImoutoRebirth.Navigator.UserControls;
 using ImoutoRebirth.Navigator.ViewModel.ListEntries;
+using ImoutoRebirth.Navigator.ViewModel.SettingsSlice;
 using MahApps.Metro.Controls.Dialogs;
 using Newtonsoft.Json;
 using File = System.IO.File;
