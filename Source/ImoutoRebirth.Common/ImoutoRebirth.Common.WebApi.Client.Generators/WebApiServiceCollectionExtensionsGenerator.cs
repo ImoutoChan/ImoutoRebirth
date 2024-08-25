@@ -34,21 +34,15 @@ public class WebApiServiceCollectionExtensionsGenerator : IIncrementalGenerator
                     ct.ThrowIfCancellationRequested();
                     return (Class: x.client, ClassType: x.clientSymbol);
                 });
-
-        var compilationAndClientClasses = context.CompilationProvider.Combine(clients.Collect());
-
         
         context.RegisterSourceOutput(
-            compilationAndClientClasses,
+            clients.Collect(),
             (spc, c) =>
             { 
-                if (c.Right.IsEmpty)
-                    return;
-
                 spc.AddSource(
                     $"ClientsDiExtensions.g.cs",
                     SourceText.From(
-                        GenerateRegistration(c.Right),
+                        GenerateRegistration(c),
                         Encoding.UTF8));
             });
     }
