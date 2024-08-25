@@ -18,6 +18,8 @@
 * Pause preview video when opening full screen preview
 * Remember video timing when switching between preview and fullscreen preview
 * Fix source deletion in the collection settings
+* Improve splashscreen
+* Migrate project to CommunityToolkit.Mvvm
 
 ### Arachne
 * Add availability check service that will stop consumers when it's search engine isn't available
