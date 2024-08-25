@@ -1,11 +1,16 @@
-﻿using System.Windows.Input;
-using ImoutoRebirth.Common.WPF;
-using ImoutoRebirth.Common.WPF.Commands;
+﻿using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
+using ImoutoRebirth.Navigator.ViewModel.SettingsSlice.ValidationAttributes;
 
-namespace ImoutoRebirth.Navigator.ViewModel;
+namespace ImoutoRebirth.Navigator.ViewModel.SettingsSlice;
 
-internal abstract class FolderVM : VMBase
+internal abstract partial class FolderVM : ObservableValidator
 {
+    [ObservableProperty]
+    [NotifyCanExecuteChangedFor(nameof(SaveCommand))]
+    [NotifyDataErrorInfo]
+    [NotNullOrWhiteSpace("Please enter path to the folder")]
+    [Directory("Please enter valid path to the folder")]
     private string _path;
 
     protected FolderVM(Guid? id, string path)
@@ -16,31 +21,23 @@ internal abstract class FolderVM : VMBase
 
     public Guid? Id { get; }
 
-    public string Path
-    {
-        get => _path;
-        set { OnPropertyChanged(ref _path, value, () => Path); }
-    }
-
-    private ICommand? _resetCommand;
-
-    public ICommand ResetCommand => _resetCommand ??= new RelayCommand(_ => OnResetRequest());
-
-    public event EventHandler? ResetRequest;
-
-    private void OnResetRequest()
+    [RelayCommand]
+    private void Reset()
     {
         var handler = ResetRequest;
         handler?.Invoke(this, EventArgs.Empty);
     }
 
-    public event EventHandler? SaveRequest;
-
-    protected void OnSaveRequest()
+    [RelayCommand(CanExecute = nameof(CanSave))]
+    private void Save()
     {
         var handler = SaveRequest;
         handler?.Invoke(this, EventArgs.Empty);
     }
 
-    public abstract string Error { get; }
+    private bool CanSave() => !HasErrors;
+    
+    public event EventHandler? ResetRequest;
+
+    public event EventHandler? SaveRequest;
 }

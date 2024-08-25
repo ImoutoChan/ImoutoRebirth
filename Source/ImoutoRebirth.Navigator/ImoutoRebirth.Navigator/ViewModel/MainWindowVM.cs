@@ -2,15 +2,13 @@
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.Diagnostics;
-using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Text;
 using System.Windows;
-using System.Windows.Input;
 using System.Windows.Threading;
+using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
 using ImoutoRebirth.Common;
-using ImoutoRebirth.Common.WPF;
-using ImoutoRebirth.Common.WPF.Commands;
 using ImoutoRebirth.Navigator.Model;
 using ImoutoRebirth.Navigator.Services;
 using ImoutoRebirth.Navigator.Services.ImoutoViewer;
@@ -23,32 +21,42 @@ using File = System.IO.File;
 
 namespace ImoutoRebirth.Navigator.ViewModel;
 
-internal class MainWindowVM : VMBase
+internal partial class MainWindowVM : ObservableObject
 {
-    #region Fields
-
     private const string DefaultTitle = "Imouto Navigator";
 
     private MainWindow _view;
     private int _previewSize = 256;
-    private int _totalCount;
-    private bool _isLoading;
-    private string? _status;
-    private string? _statusToolTip;
-    private string _title;
     private readonly IFileService _fileService;
     private readonly IFileTagService _fileTagService;
     private readonly IFileNoteService _fileNoteService;
     private readonly IFileLoadingService _fileLoadingService;
     private readonly IImoutoViewerService _imoutoViewerService;
     private readonly DispatcherTimer _appendNewContentTimer = new() { Interval = TimeSpan.FromSeconds(5) };
-    private int _volume = 100;
+
+    [ObservableProperty]
     private bool _showTags = true;
+    
+    [ObservableProperty]
+    private int _volume = 100;
+
+    [ObservableProperty]
+    private string _title;
+
+    [ObservableProperty]
     private FullScreenPreviewVM? _fullScreenPreviewVM;
 
-    #endregion Fields
+    [ObservableProperty]
+    private int _totalCount;
 
-    #region Constructors
+    [ObservableProperty]
+    private bool _isLoading;
+
+    [ObservableProperty]
+    private string? _status;
+
+    [ObservableProperty]
+    private string? _statusToolTip;
 
     public MainWindowVM()
     {
@@ -58,9 +66,7 @@ internal class MainWindowVM : VMBase
         _fileNoteService = ServiceLocator.GetService<IFileNoteService>();
         _imoutoViewerService = ServiceLocator.GetService<IImoutoViewerService>();
 
-        InitializeCommands();
-
-        NavigatorList.CollectionChanged += (_, _) => OnPropertyChanged(() => LoadedCount);
+        NavigatorList.CollectionChanged += (_, _) => OnPropertyChanged(nameof(LoadedCount));
 
         _appendNewContentTimer.Tick += (_, _) => { /*LoadNew();*/ };
         
@@ -82,52 +88,52 @@ internal class MainWindowVM : VMBase
 
     public void ShowWindow() => _view.Show();
 
-    private async Task LoadNew()
-    {
-        _appendNewContentTimer.Stop();
-        UpdatePreviews();
-
-        var total = TotalCount;
-
-        var newTotal = await _fileLoadingService.GetCount(
-            TagSearchVM.SelectedCollection.Value,
-            TagSearchVM.SelectedBindedTags.Select(x => x.Model).ToList());
-
-        if (newTotal <= total)
-        {
-            _appendNewContentTimer.Start();
-            return;
-        }
-
-        try
-        {
-            await _fileLoadingService.LoadFiles(
-                10_000,
-                _previewSize,
-                TagSearchVM.SelectedCollection.Value,
-                TagSearchVM.SelectedBindedTags.Select(x => x.Model).ToList(),
-                x => TotalCount = x,
-                (x, ct) =>
-                {
-                    foreach (var navigatorListEntry in x)
-                    {
-                        ct.ThrowIfCancellationRequested();
-                        NavigatorList.Add(navigatorListEntry);
-                    }
-                },
-                () => TotalCount = total,
-                () => { },
-                () => { },
-                total);
-        }
-        catch (Exception ex)
-        {
-            Debug.WriteLine("Can't load images from collection: " + ex.Message);
-            SetStatusError("Can't load images from collection", ex.Message);
-        }
-
-        _appendNewContentTimer.Start();
-    }
+    // private async Task LoadNew()
+    // {
+    //     _appendNewContentTimer.Stop();
+    //     UpdatePreviews();
+    //
+    //     var total = TotalCount;
+    //
+    //     var newTotal = await _fileLoadingService.GetCount(
+    //         TagSearchVM.SelectedCollection.Value,
+    //         TagSearchVM.SelectedBindedTags.Select(x => x.Model).ToList());
+    //
+    //     if (newTotal <= total)
+    //     {
+    //         _appendNewContentTimer.Start();
+    //         return;
+    //     }
+    //
+    //     try
+    //     {
+    //         await _fileLoadingService.LoadFiles(
+    //             10_000,
+    //             _previewSize,
+    //             TagSearchVM.SelectedCollection.Value,
+    //             TagSearchVM.SelectedBindedTags.Select(x => x.Model).ToList(),
+    //             x => TotalCount = x,
+    //             (x, ct) =>
+    //             {
+    //                 foreach (var navigatorListEntry in x)
+    //                 {
+    //                     ct.ThrowIfCancellationRequested();
+    //                     NavigatorList.Add(navigatorListEntry);
+    //                 }
+    //             },
+    //             () => TotalCount = total,
+    //             () => { },
+    //             () => { },
+    //             total);
+    //     }
+    //     catch (Exception ex)
+    //     {
+    //         Debug.WriteLine("Can't load images from collection: " + ex.Message);
+    //         SetStatusError("Can't load images from collection", ex.Message);
+    //     }
+    //
+    //     _appendNewContentTimer.Start();
+    // }
 
     private async Task InitializeAsync()
     {
@@ -140,7 +146,7 @@ internal class MainWindowVM : VMBase
 
     private void OnViewOnSelectedItemsChanged(object? sender, EventArgs args)
     {
-        OnPropertyChanged(() => SelectedEntries);
+        OnPropertyChanged(nameof(SelectedEntries));
 
         if (SelectedItem == null)
             return;
@@ -149,33 +155,11 @@ internal class MainWindowVM : VMBase
         FileInfoVM.UpdateCurrentInfo(SelectedItem, NavigatorList.IndexOf(SelectedItem));
     }
 
-    #endregion Constructors
-
-    #region Properties
-
-    public int Volume
-    {
-        get => _volume;
-        set => OnPropertyChanged(ref _volume, value, () => Volume);
-    }
-    
-    public bool ShowTags
-    {
-        get => _showTags;
-        set => OnPropertyChanged(ref _showTags, value, () => ShowTags);
-    }
-
     public Size SlotSize => new(_previewSize + 30, _previewSize + 30);
 
     private Size PreviewSize => new(_previewSize, _previewSize);
 
     public ObservableCollection<INavigatorListEntry> NavigatorList { get; } = new();
-
-    public string Title
-    {
-        get => _title;
-        set => OnPropertyChanged(ref _title, value, () => Title);
-    }
 
     public TagSearchVM TagSearchVM { get; set; }
 
@@ -187,37 +171,7 @@ internal class MainWindowVM : VMBase
 
     public TagsMergeVM TagsMerge { get; set; }
 
-    public FullScreenPreviewVM? FullScreenPreviewVM
-    {
-        get => _fullScreenPreviewVM;
-        private set => OnPropertyChanged(ref _fullScreenPreviewVM, value, () => FullScreenPreviewVM);
-    }
-
-    public bool IsLoading
-    {
-        get => _isLoading;
-        private set => OnPropertyChanged(ref _isLoading, value, () => IsLoading);
-    }
-
-    public int TotalCount
-    {
-        get => _totalCount;
-        set => OnPropertyChanged(ref _totalCount, value, () => TotalCount);
-    }
-
     public int LoadedCount => NavigatorList.Count;
-
-    public string? Status
-    {
-        get => _status;
-        set => OnPropertyChanged(ref _status, value, () => Status);
-    }
-
-    public string? StatusToolTip
-    {
-        get => _statusToolTip;
-        set => OnPropertyChanged(ref _statusToolTip, value, () => StatusToolTip);
-    }
 
     public bool ShowPreview => Settings.ShowPreviewOnSelect;
 
@@ -229,109 +183,45 @@ internal class MainWindowVM : VMBase
 
     public INavigatorListEntry? SelectedItem => _view.ListBoxElement.SelectedItem as INavigatorListEntry;
 
-    #endregion Properties
+    [RelayCommand]
+    private void RevertSelectedItems() => _view.RevertSelectedItems();
 
-    #region Commands
+    [RelayCommand]
+    private void ToggleShowTags() => ShowTags = !ShowTags;
 
-    public ICommand ShuffleCommand { get; set; }
-
-    public ICommand ReverseCommand { get; set; }
-
-    public ICommand RefreshCommand { get; set; }
-
-    public ICommand ZoomInCommand { get; set; }
-
-    public ICommand ZoomOutCommand { get; set; }
-
-    public ICommand ZoomToRowElementsCommand { get; set; }
-
-    public ICommand LoadPreviewsCommand { get; set; }
-
-    public ICommand RemoveImageCommand { get; set; }
-
-    public ICommand SetAsWallpaperCommand { get; set; }
-    
-    public ICommand ShowInExplorerCommand { get; set; }
-
-    public ICommand CopyCommand { get; set; }
-
-    public ICommand OpenFileCommand { get; set; }
-    
-    public ICommand OpenFullScreenPreviewCommand { get; set; }
-
-    public ICommand ToggleShowTagsCommand { get; set; }
-
-    public ICommand RevertSelectedItemsCommand { get; set; }
-
-    #endregion Commands
-
-    #region Methods
-
-    [MemberNotNull(nameof(ShuffleCommand))]
-    [MemberNotNull(nameof(ReverseCommand))]
-    [MemberNotNull(nameof(RefreshCommand))]
-    [MemberNotNull(nameof(ZoomInCommand))]
-    [MemberNotNull(nameof(ZoomOutCommand))]
-    [MemberNotNull(nameof(ZoomToRowElementsCommand))]
-    [MemberNotNull(nameof(LoadPreviewsCommand))]
-    [MemberNotNull(nameof(RemoveImageCommand))]
-    [MemberNotNull(nameof(SetAsWallpaperCommand))]
-    [MemberNotNull(nameof(ShowInExplorerCommand))]
-    [MemberNotNull(nameof(CopyCommand))]
-    [MemberNotNull(nameof(OpenFileCommand))]
-    [MemberNotNull(nameof(OpenFullScreenPreviewCommand))]
-    [MemberNotNull(nameof(ToggleShowTagsCommand))]
-    [MemberNotNull(nameof(RevertSelectedItemsCommand))]
-    private void InitializeCommands()
+    [RelayCommand]
+    private void ZoomToRowElements(object? x)
     {
-        ShuffleCommand = new RelayCommand(_ => ShuffleNavigatorList());
+        if (x is not string param) 
+            return;
 
-        ReverseCommand = new RelayCommand(_ => ReverseNavigatorList());
-        
-        RefreshCommand = new AsyncCommand(Reload);
+        var toElements = int.Parse(param);
+        var boxSize = _view.ViewPortWidth / toElements;
+        _previewSize = (int)(boxSize - 30);
 
-        ZoomInCommand = new RelayCommand(_ =>
-        {
-            _previewSize = Convert.ToInt32(Math.Floor(_previewSize * 1.1));
-            UpdatePreviews();
-        });
-
-        ZoomOutCommand = new RelayCommand(_ =>
-        {
-            if (_previewSize < 64)
-            {
-                return;
-            }
-            _previewSize = Convert.ToInt32(Math.Floor(_previewSize * 0.9));
-            UpdatePreviews();
-        });
-
-        ZoomToRowElementsCommand = new RelayCommand(x =>
-        {
-            if (x is not string param)
-                return;
-            
-            var toElements = int.Parse(param);
-            var boxSize = _view.ViewPortWidth / toElements;
-            _previewSize = (int)(boxSize - 30);
-
-            UpdatePreviews();
-        });
-
-        LoadPreviewsCommand = new RelayCommand(_ => LoadPreviews());
-        RemoveImageCommand = new RelayCommand(RemoveImage);
-        SetAsWallpaperCommand = new AsyncCommand<INavigatorListEntry>(SetAsWallpaper);
-        ShowInExplorerCommand = new RelayCommand(ShowInExplorer);
-
-        CopyCommand = new RelayCommand(CopySelected);
-
-        OpenFileCommand = new RelayCommand<INavigatorListEntry>(OpenFile);
-        OpenFullScreenPreviewCommand = new RelayCommand<INavigatorListEntry>(OpenFullScreenPreview);
-
-        ToggleShowTagsCommand = new RelayCommand(_ => ShowTags = !ShowTags);
-        RevertSelectedItemsCommand = new RelayCommand(_ => _view.RevertSelectedItems());
+        UpdatePreviews();
     }
 
+    [RelayCommand]
+    private void ZoomOut()
+    {
+        if (_previewSize < 64)
+        {
+            return;
+        }
+
+        _previewSize = Convert.ToInt32(Math.Floor(_previewSize * 0.9));
+        UpdatePreviews();
+    }
+
+    [RelayCommand]
+    private void ZoomIn()
+    {
+        _previewSize = Convert.ToInt32(Math.Floor(_previewSize * 1.1));
+        UpdatePreviews();
+    }
+
+    [RelayCommand]
     private void OpenFile(INavigatorListEntry? navigatorListEntry)
     {
         switch (navigatorListEntry)
@@ -374,6 +264,7 @@ internal class MainWindowVM : VMBase
         }
     }
     
+    [RelayCommand]
     private void OpenFullScreenPreview(INavigatorListEntry? navigatorListEntry)
     {
         if (navigatorListEntry == null)
@@ -441,7 +332,8 @@ internal class MainWindowVM : VMBase
         return tempPath;
     }
 
-    private void ShuffleNavigatorList()
+    [RelayCommand]
+    private void Shuffle()
     {
         lock (NavigatorList)
         {
@@ -455,7 +347,8 @@ internal class MainWindowVM : VMBase
         }
     }
 
-    private void ReverseNavigatorList()
+    [RelayCommand]
+    private void Reverse()
     {
         lock (NavigatorList)
         {
@@ -481,7 +374,8 @@ internal class MainWindowVM : VMBase
         StatusToolTip = message;
     }
 
-    private async Task Reload()
+    [RelayCommand]
+    private async Task Refresh()
     {
         try
         {
@@ -545,7 +439,7 @@ internal class MainWindowVM : VMBase
 
     private void UpdatePreviews()
     {
-        OnPropertyChanged(() => SlotSize);
+        OnPropertyChanged(nameof(SlotSize));
 
         //Performance ?
         lock (NavigatorList)
@@ -559,6 +453,7 @@ internal class MainWindowVM : VMBase
         LoadPreviews();
     }
 
+    [RelayCommand]
     private void LoadPreviews()
     {
         ImageEntry.PreviewLoadingThreadQueue.ClearQueue();
@@ -569,16 +464,13 @@ internal class MainWindowVM : VMBase
         }
     }
 
-    private async void RemoveImage(object? o)
+    [RelayCommand]
+    private async Task RemoveImage(INavigatorListEntry? selectedItem)
     {
-        var selectedItem = o as INavigatorListEntry;
-
         var dbId = selectedItem?.DbId;
 
         if (dbId == null)
-        {
             return;
-        }
 
         var mySettings = new MetroDialogSettings
         {
@@ -616,6 +508,7 @@ internal class MainWindowVM : VMBase
         Status = "File successfully removed";
     }
 
+    [RelayCommand]
     private async Task SetAsWallpaper(INavigatorListEntry? entry)
     {
         var path = entry?.Path;
@@ -633,10 +526,9 @@ internal class MainWindowVM : VMBase
             await _fileTagService.SetWasWallpaper(entry.DbId.Value);
     }
 
-    private void ShowInExplorer(object? o)
+    [RelayCommand]
+    private void ShowInExplorer(INavigatorListEntry? selectedItem)
     {
-        var selectedItem = o as INavigatorListEntry;
-
         var path = selectedItem?.Path;
         if (path == null)
             return;
@@ -651,7 +543,8 @@ internal class MainWindowVM : VMBase
         Status = "Wallpaper set";
     }
 
-    private void CopySelected(object? o)
+    [RelayCommand]
+    private void Copy()
     {
         var lastItems = SelectedEntries.Select(x => x.Path).ToArray();
         if (!lastItems.Any())
@@ -664,23 +557,17 @@ internal class MainWindowVM : VMBase
         Clipboard.SetFileDropList(fileCollection);
     }
 
-    #endregion Methods
-
-    #region Event handlers
-
     public async Task InitializeContextAsync()
     {
         await InitializeAsync();
-        await Reload();
+        await Refresh();
     }
 
-    private async void TagSearchVM_SelectedTagsUpdated(object? sender, EventArgs e) => await Reload();
+    private async void TagSearchVM_SelectedTagsUpdated(object? sender, EventArgs e) => await Refresh();
 
-    private async void TagSearchVMOnSelectedCollectionChanged(object? sender, EventArgs eventArgs) => await Reload();
+    private async void TagSearchVMOnSelectedCollectionChanged(object? sender, EventArgs eventArgs) => await Refresh();
 
     private void TagSearchVMOnDraftAddRequested(object? sender, BindedTagVM tag) => TagsEdit.DraftAddTag(tag);
 
-    private void Settings_ShowPreviewOnSelectChanged(object? sender, EventArgs e) => OnPropertyChanged(() => ShowPreview);
-
-    #endregion Event handlers
+    private void Settings_ShowPreviewOnSelectChanged(object? sender, EventArgs e) => OnPropertyChanged(nameof(ShowPreview));
 }

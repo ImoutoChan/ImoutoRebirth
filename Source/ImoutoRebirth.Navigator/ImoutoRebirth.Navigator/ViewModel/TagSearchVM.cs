@@ -1,9 +1,8 @@
 ﻿using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Net;
-using System.Windows.Input;
-using ImoutoRebirth.Common.WPF;
-using ImoutoRebirth.Common.WPF.Commands;
+using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
 using ImoutoRebirth.Navigator.Services;
 using ImoutoRebirth.Navigator.Services.Tags;
 using ImoutoRebirth.Navigator.Services.Tags.Model;
@@ -15,39 +14,36 @@ using Tag = ImoutoRebirth.Navigator.Services.Tags.Model.Tag;
 
 namespace ImoutoRebirth.Navigator.ViewModel;
 
-internal class TagSearchVM : VMBase
+internal partial class TagSearchVM : ObservableObject
 {
-    #region Fields
-
     private string? _searchString;
-    private Tag? _selectedHintBoxTag;
-    private bool _isValueEnterMode;
-    private string? _enteredValue;
     private List<string>? _comparators;
-    private string? _selectedComparator;
     private KeyValuePair<string, Guid?> _selectedCollection;
-
-    private ICommand? _enterValueOkCommand;
-    private ICommand? _unselectTagCommand;
-    private ICommand? _selectTagCommand;
-    private ICommand? _selectStaticTagCommand;
-    private ICommand? _invertSearchTypeCommand;
-    private ICommand? _selectBindedTag;
-    private ICommand? _exploreTag;
-    private ICommand? _draftAddTag;
     private int _rate;
-    private Guid? _lastListEntryId = null;
-    private bool _isRateSetted;
+    private Guid? _lastListEntryId;
     private bool _isFavorite;
     private readonly IFileTagService _fileTagService;
     private readonly ITagService _tagService;
-    private IReadOnlyCollection<DelayItem>? _ugoiraFrameDelays;
     private Tag? _favoriteTag;
     private Tag? _rateTag;
+    
+    [ObservableProperty]
+    private bool _valueEnterMode;
 
-    #endregion Fields
+    [ObservableProperty]
+    private string? _selectedComparator;
 
-    #region Constructors
+    [ObservableProperty]
+    private IReadOnlyCollection<DelayItem>? _ugoiraFrameDelays;
+
+    [ObservableProperty]
+    private bool _isRateSetted;
+
+    [ObservableProperty]
+    private string? _enteredValue;
+
+    [ObservableProperty]
+    private Tag? _selectedHintBoxTag;
 
     public TagSearchVM()
     {
@@ -61,10 +57,6 @@ internal class TagSearchVM : VMBase
         ResetValueEnter();
     }
 
-    #endregion Constructors
-
-    #region Properties
-
     public ObservableCollection<TagSourceVM> CurrentTagsSources { get; } = new();
 
     public ObservableCollection<KeyValuePair<string, Guid?>> Collections { get; } = new();
@@ -74,21 +66,13 @@ internal class TagSearchVM : VMBase
         get => _selectedCollection;
         set
         {
-            OnPropertyChanged(ref _selectedCollection, value, () => SelectedCollection);
+            _selectedCollection = value;
+            OnPropertyChanged();
             OnSelectedCollectionChanged();
         }
     }
 
     public ObservableCollection<Tag> HintBoxTags { get; } = new();
-
-    public Tag? SelectedHintBoxTag
-    {
-        get => _selectedHintBoxTag;
-        set
-        {
-            OnPropertyChanged(ref _selectedHintBoxTag, value, () => SelectedHintBoxTag);
-        }
-    }
 
     public ObservableCollection<SearchTagVM> SelectedBindedTags { get; } = new();
 
@@ -111,16 +95,8 @@ internal class TagSearchVM : VMBase
                 SearchTagsAsync(value);
             }
 
-            OnPropertyChanged(ref _searchString, value, () => SearchString);
-        }
-    }
-
-    public bool ValueEnterMode
-    {
-        get => _isValueEnterMode;
-        set
-        {
-            OnPropertyChanged(ref _isValueEnterMode, value, () => ValueEnterMode);
+            _searchString = value;
+            OnPropertyChanged();
         }
     }
 
@@ -134,24 +110,6 @@ internal class TagSearchVM : VMBase
         }
     }
 
-    public string? SelectedComparator
-    {
-        get => _selectedComparator;
-        set
-        {
-            OnPropertyChanged(ref _selectedComparator, value, () => SelectedComparator);
-        }
-    }
-
-    public string? EnteredValue
-    {
-        get => _enteredValue;
-        set
-        {
-            OnPropertyChanged(ref _enteredValue, value, () => EnteredValue);
-        }
-    }
-
     private Tag? EditedTag { get; set; }
 
     public int Rate
@@ -159,7 +117,8 @@ internal class TagSearchVM : VMBase
         get => _rate;
         set
         {
-            OnPropertyChanged(ref _rate, value, () => Rate);
+            _rate = value;
+            OnPropertyChanged();
 
             if (_lastListEntryId != null)
             {
@@ -173,7 +132,8 @@ internal class TagSearchVM : VMBase
         get => _isFavorite;
         set
         {
-            OnPropertyChanged(ref _isFavorite, value, () => IsFavorite);
+            _isFavorite = value;
+            OnPropertyChanged();
 
             if (_lastListEntryId != null)
             {
@@ -181,47 +141,6 @@ internal class TagSearchVM : VMBase
             }
         }
     }
-
-    public IReadOnlyCollection<DelayItem>? UgoiraFrameDelays
-    {
-        get => _ugoiraFrameDelays;
-        set => OnPropertyChanged(ref _ugoiraFrameDelays, value, () => UgoiraFrameDelays);
-    }
-
-
-
-    public bool IsRateSetted
-    {
-        get => _isRateSetted;
-        set
-        {
-            OnPropertyChanged(ref _isRateSetted, value, () => IsRateSetted);
-        }
-    }
-
-    #endregion Properties
-
-    #region Commands
-
-    public ICommand InvertSearchTypeCommand => _invertSearchTypeCommand ??= new RelayCommand(InvertSearchType);
-
-    public ICommand SelectTagCommand => _selectTagCommand ??= new RelayCommand(SelectTag);
-
-    public ICommand SelectStaticTagCommand => _selectStaticTagCommand ??= new RelayCommand(SelectStaticTag);
-
-    public ICommand UnselectTagCommand => _unselectTagCommand ??= new RelayCommand(UnselectTag);
-
-    public ICommand EnterValueOkCommand => _enterValueOkCommand ??= new RelayCommand(EnterValueOk);
-
-    public ICommand SelectBindedTagCommand => _selectBindedTag ??= new RelayCommand(SelectBindedTag);
-
-    public ICommand ExploreTagCommand => _exploreTag ??= new RelayCommand(ExploreTag);
-
-    public ICommand DraftAddTagCommand => _draftAddTag ??= new RelayCommand<BindedTagVM>(DraftAddTag);
-
-    #endregion Commands
-
-    #region Public methods
 
     public void AddCollections(ObservableCollection<CollectionVM> collections)
     {
@@ -287,10 +206,6 @@ internal class TagSearchVM : VMBase
         IsRateSetted = true;
     }
 
-    #endregion Public methods
-
-    #region Private Methods
-
     private async void SearchTagsAsync(string searchString)
     {
         HintBoxTags.Clear();
@@ -324,6 +239,7 @@ internal class TagSearchVM : VMBase
     private Task<IReadOnlyCollection<Tag>> SearchTagsAsyncTask(string searchString) 
         => _tagService.SearchTags(searchString, 50);
 
+    [RelayCommand]
     private void SelectTag(object? param)
     {
         var tag = param as Tag;
@@ -376,6 +292,7 @@ internal class TagSearchVM : VMBase
         OnSelectedTagsUpdated();
     }
 
+    [RelayCommand]
     private void ExploreTag(object? param)
     {
         if (param is not BindedTagVM tag)
@@ -386,13 +303,15 @@ internal class TagSearchVM : VMBase
             { UseShellExecute = true });
     }
 
+    [RelayCommand]
     private void DraftAddTag(BindedTagVM? tag)
     {
         if (tag != null)
             OnDraftAddRequested(tag);
     }
 
-    private async void SelectStaticTag(object? param)
+    [RelayCommand]
+    private async Task SelectStaticTag(object? param)
     {
         var staticMode = param as string;
 
@@ -462,6 +381,7 @@ internal class TagSearchVM : VMBase
         return _rateTag;
     }
 
+    [RelayCommand]
     private void UnselectTag(object? param)
     {
         var tag = param as SearchTagVM;
@@ -488,11 +408,13 @@ internal class TagSearchVM : VMBase
         EnteredValue = string.Empty;
     }
 
+    [RelayCommand]
     private void EnterValueOk(object? obj)
     {
         SelectTag(EditedTag);
     }
 
+    [RelayCommand]
     private void InvertSearchType(object? param)
     {
         var tag = param as SearchTagVM;
@@ -513,6 +435,7 @@ internal class TagSearchVM : VMBase
         OnSelectedTagsUpdated();
     }
 
+    [RelayCommand]
     private void SelectBindedTag(object? param)
     {
         var tag = param as BindedTagVM;
@@ -543,7 +466,7 @@ internal class TagSearchVM : VMBase
             _rate = 0;
         }
 
-        OnPropertyChanged(() => Rate);
+        OnPropertyChanged(nameof(Rate));
     }
 
     private async void SetRate(int value, Guid fileId)
@@ -555,7 +478,7 @@ internal class TagSearchVM : VMBase
     {
         var favTag = tags.FirstOrDefault(x => x.Tag.Title == "Favorite");
         _isFavorite = favTag != null;
-        OnPropertyChanged(() => IsFavorite);
+        OnPropertyChanged(nameof(IsFavorite));
     }
 
     private void GetUgoiraFrameData(IReadOnlyCollection<FileTag> tags)
@@ -567,18 +490,13 @@ internal class TagSearchVM : VMBase
 
         var frameData = JsonConvert.DeserializeObject<UgoiraFrameData>(frameDataTag.Value)!;
 
-        _ugoiraFrameDelays = frameData.Data.Select(x => new DelayItem(x.Delay, x.File)).ToList();
-        OnPropertyChanged(() => UgoiraFrameDelays);
+        UgoiraFrameDelays = frameData.Data.Select(x => new DelayItem(x.Delay, x.File)).ToList();
     }
 
     private async void SetFavorite(bool value, Guid fileId)
     {
         await _fileTagService.SetFavorite(fileId, value);
     }
-
-    #endregion Private Methods
-
-    #region Events
 
     public event EventHandler? SelectedTagsUpdated;
 
@@ -603,8 +521,6 @@ internal class TagSearchVM : VMBase
         var handler = DraftAddRequested;
         handler?.Invoke(this, tag);
     }
-
-    #endregion Events
 }
 
 internal enum Comparator

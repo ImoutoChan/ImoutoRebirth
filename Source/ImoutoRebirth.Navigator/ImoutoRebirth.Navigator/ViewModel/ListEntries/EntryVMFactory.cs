@@ -1,5 +1,4 @@
-﻿#nullable enable
-using System.Runtime.InteropServices;
+﻿using System.Runtime.InteropServices;
 using System.Text;
 using System.Windows;
 using ImoutoRebirth.Lilin.WebApi.Client;

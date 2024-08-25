@@ -1,64 +1,39 @@
 ﻿using System.IO;
 using System.Security.Cryptography;
 using System.Windows;
-using System.Windows.Input;
-using ImoutoRebirth.Common.WPF;
-using ImoutoRebirth.Common.WPF.Commands;
+using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
 using ImoutoRebirth.Navigator.ViewModel.ListEntries;
 
 namespace ImoutoRebirth.Navigator.ViewModel;
 
-internal class FileInfoVM : VMBase
+internal partial class FileInfoVM : ObservableObject
 {
-    private string? _name;
-    private string? _hash;
-    private long? _size;
-    private Size? _pixelSize;
-    private int _orderNumber;
-    private bool _hasValue;
-    private ICommand? _calculateHashCommand;
     private FileInfo? _fileInfo;
 
-    public string? Name
-    {
-        get => _name;
-        set => OnPropertyChanged(ref _name, value, () => Name);
-    }
+    [ObservableProperty]
+    private string? _name;
 
-    public long? Size
-    {
-        get => _size;
-        set => OnPropertyChanged(ref _size, value, () => Size);
-    }
+    [ObservableProperty]
+    private long? _size;
 
-    public Size? PixelSize
-    {
-        get => _pixelSize;
-        set => OnPropertyChanged(ref _pixelSize, value, () => PixelSize);
-    }
+    [ObservableProperty]
+    private Size? _pixelSize;
 
-    public string? Hash
-    {
-        get => _hash;
-        set => OnPropertyChanged(ref _hash, value, () => Hash);
-    }
+    [ObservableProperty]
+    [NotifyCanExecuteChangedFor(nameof(CalculateHashCommand))]
+    private string? _hash;
 
-    public int OrderNumber
-    {
-        get => _orderNumber;
-        set => OnPropertyChanged(ref _orderNumber, value, () => OrderNumber);
-    }
+    [ObservableProperty]
+    private int _orderNumber;
 
-    public bool HasValue
-    {
-        get => _hasValue;
-        set => OnPropertyChanged(ref _hasValue, value, () => HasValue);
-    }
+    [ObservableProperty]
+    private bool _hasValue;
 
-    public ICommand CalculateHashCommand 
-        => _calculateHashCommand ??= new RelayCommand(_ => CalculateHash(), _ => Hash == null);
-
-    private async void CalculateHash()
+    private bool CanCalculateHash() => Hash == null;
+    
+    [RelayCommand(CanExecute = nameof(CanCalculateHash))]
+    private async Task CalculateHashAsync()
     {
         Hash = "Calculating...";
 
@@ -84,6 +59,7 @@ internal class FileInfoVM : VMBase
             Size = null;
             Hash = null;
             PixelSize = null;
+
             _fileInfo = null;
             return;
         }
@@ -97,6 +73,7 @@ internal class FileInfoVM : VMBase
         Size = fi.Length;
         Hash = null;
         PixelSize = navigatorListEntry is IPixelSizable pixelSizable ? pixelSizable.PixelSize : null;
+
         _fileInfo = fi;
     }
 }

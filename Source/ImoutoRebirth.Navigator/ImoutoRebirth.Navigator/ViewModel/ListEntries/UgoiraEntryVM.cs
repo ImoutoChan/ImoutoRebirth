@@ -2,14 +2,21 @@ using System.IO;
 using System.IO.Compression;
 using System.Windows;
 using System.Windows.Media.Imaging;
+using CommunityToolkit.Mvvm.ComponentModel;
 using ImoutoRebirth.Lilin.WebApi.Client;
 
 namespace ImoutoRebirth.Navigator.ViewModel.ListEntries;
 
-internal class UgoiraEntryVM : BaseEntryVM, INavigatorListEntry, IPixelSizable
+internal partial class UgoiraEntryVM : BaseEntryVM, INavigatorListEntry, IPixelSizable
 {
-    private Size _size;
+    [ObservableProperty]
+    private Size _viewPortSize;
+
+    [ObservableProperty]
     private bool _isLoading;
+    
+    [ObservableProperty]
+    private BitmapSource? _image;
 
     public UgoiraEntryVM(
         string path,
@@ -24,24 +31,10 @@ internal class UgoiraEntryVM : BaseEntryVM, INavigatorListEntry, IPixelSizable
     }
 
     public ListEntryType Type => ListEntryType.Ugoira;
-        
-    public Size ViewPortSize
-    {
-        get => _size;
-        private set => OnPropertyChanged(ref _size, value, () => ViewPortSize);
-    }
-        
-    public bool IsLoading
-    {
-        get => _isLoading;
-        private set => OnPropertyChanged(ref _isLoading, value, () => IsLoading);
-    }
 
     public Guid? DbId { get; }
 
     public string Path { get; }
-
-    public BitmapSource? Image { get; private set; }
 
     public Size? PixelSize => Image != null ? new Size(Image.PixelWidth, Image.PixelHeight) : null;
 
@@ -69,7 +62,6 @@ internal class UgoiraEntryVM : BaseEntryVM, INavigatorListEntry, IPixelSizable
         resultImage.Position = 0;
 
         Image = BitmapFrame.Create(resultImage, BitmapCreateOptions.None, BitmapCacheOption.OnLoad);
-        OnPropertyChanged(() => Image);
 
         IsLoading = false;
 

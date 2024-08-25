@@ -1,26 +1,32 @@
 ﻿using System.Collections.ObjectModel;
 using System.Diagnostics;
-using System.Windows.Input;
-using ImoutoRebirth.Common.WPF;
-using ImoutoRebirth.Common.WPF.Commands;
+using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
 using ImoutoRebirth.Navigator.Services;
 using ImoutoRebirth.Navigator.Services.Collections;
+using DestinationFolderVM = ImoutoRebirth.Navigator.ViewModel.SettingsSlice.DestinationFolderVM;
+using FolderVM = ImoutoRebirth.Navigator.ViewModel.SettingsSlice.FolderVM;
+using SourceFolderVM = ImoutoRebirth.Navigator.ViewModel.SettingsSlice.SourceFolderVM;
 
 namespace ImoutoRebirth.Navigator.ViewModel;
 
-internal class CollectionVM : VMBase
+internal partial class CollectionVM : ObservableObject
 {
-    private ICommand? _addSourceCommand;
-    private ICommand? _removeSourceCommand;
-    private ICommand? _createDestinationFolderCommand;
-
-    private Guid _id;
-    private string _name;
-    private DestinationFolderVM? _destination;
-    private SourceFolderVM? _selectedSource;
     private readonly ICollectionService _collectionService;
     private readonly IDestinationFolderService _destinationFolderService;
     private readonly ISourceFolderService _sourceFolderService;
+
+    [ObservableProperty]
+    private Guid _id;
+
+    [ObservableProperty]
+    private string _name;
+
+    [ObservableProperty]
+    private SourceFolderVM? _selectedSource;
+
+    [ObservableProperty]
+    private DestinationFolderVM? _destination;
 
     public CollectionVM(Guid id, string name)
     {
@@ -32,37 +38,7 @@ internal class CollectionVM : VMBase
         _sourceFolderService = ServiceLocator.GetService<ISourceFolderService>();
     }
 
-    #region Properties
-
-    public Guid Id
-    {
-        get => _id;
-        set => OnPropertyChanged(ref _id, value, () => Id);
-    }
-
-    public string Name
-    {
-        get => _name;
-        set => OnPropertyChanged(ref _name, value, () => Name);
-    }
-
     public ObservableCollection<SourceFolderVM> Sources { get; } = new();
-
-    public SourceFolderVM? SelectedSource
-    {
-        get => _selectedSource;
-        set { OnPropertyChanged(ref _selectedSource, value, () => SelectedSource); }
-    }
-
-    public DestinationFolderVM? Destination
-    {
-        get => _destination;
-        set { OnPropertyChanged(ref _destination, value, () => Destination); }
-    }
-
-    #endregion Properties
-
-    #region Methods
 
     public async Task LoadFolders()
     {
@@ -144,9 +120,6 @@ internal class CollectionVM : VMBase
         }
     }
 
-    #endregion Methods
-
-    #region Handlers
     private async void DestinationFolderVM_RemoveRequest(object? sender, EventArgs e)
     {
         if (sender is not FolderVM folderVM)
@@ -202,6 +175,7 @@ internal class CollectionVM : VMBase
             Debug.WriteLine("Can't save folder: " + ex.Message);
         }
     }
+
     private async void FolderVM_SaveDestinationRequest(object? sender, EventArgs e)
     {
         if (sender is not DestinationFolderVM folderVm)
@@ -231,16 +205,7 @@ internal class CollectionVM : VMBase
 
     private async void FolderVM_ResetRequest(object? sender, EventArgs e) => await LoadFolders();
 
-    #endregion Handlers
-
-    #region Commands
-
-    public ICommand AddSourceCommand => _addSourceCommand ??= new RelayCommand(AddSource);
-
-    public ICommand RemoveSourceCommand => _removeSourceCommand ??= new AsyncCommand<SourceFolderVM>(RemoveSource, x => x != null);
-    public ICommand CreateDestinationFolderCommand 
-        => _createDestinationFolderCommand ??= new RelayCommand(CreateDestinationFolder);
-
+    [RelayCommand]
     private void CreateDestinationFolder(object? obj)
     {
         var destinationFolderVM = new DestinationFolderVM(null, string.Empty, false, false, "!IncorrectFormat", "!IncorrectHash", "!NonHash");
@@ -250,10 +215,7 @@ internal class CollectionVM : VMBase
         Destination = destinationFolderVM;
     }
 
-    #endregion Commands
-
-    #region Command Handlers
-
+    [RelayCommand]
     private void AddSource(object? param)
     {
         var newSource = new SourceFolderVM(null, string.Empty, false, false, null, false, false);
@@ -262,6 +224,7 @@ internal class CollectionVM : VMBase
         Sources.Add(newSource);
     }
 
+    [RelayCommand(CanExecute = nameof(CanRemoveSource))]
     private async Task RemoveSource(SourceFolderVM? sourceFolderVM)
     {
         if (sourceFolderVM is not FolderVM folderVM)
@@ -283,5 +246,5 @@ internal class CollectionVM : VMBase
         await LoadFolders();
     }
 
-    #endregion Command Handlers
+    private static bool CanRemoveSource(SourceFolderVM? x) => x != null;
 }

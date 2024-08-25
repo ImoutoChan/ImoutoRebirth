@@ -81,7 +81,11 @@ public partial class PlayerControl
                     var timeString = $"{GetPrettyTime(time, length)} / {GetPrettyTime(length)}";
                     Dispatcher.BeginInvoke((Action)(() =>
                     {
-                        LastMediaPositionValues[Source] = time;
+                        var source = Source;
+                        if (source == null) 
+                            return;
+                        
+                        LastMediaPositionValues[source] = time;
                         TimeTextBlock.Text = timeString;
                     }));
                 }
@@ -136,13 +140,13 @@ public partial class PlayerControl
     public static readonly DependencyProperty SourceProperty 
         = DependencyProperty.Register(
             nameof(Source), 
-            typeof (string), 
-            typeof (PlayerControl), 
+            typeof(string), 
+            typeof(PlayerControl), 
             new UIPropertyMetadata(null, OnSourceChanged));
 
-    public string Source
+    public string? Source
     {
-        get => (string) GetValue(SourceProperty);
+        get => (string?) GetValue(SourceProperty);
         set => SetValue(SourceProperty, value);
     }
 
@@ -161,7 +165,7 @@ public partial class PlayerControl
 
     private static void OnSourceChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
     {
-        var newPropertyValue = (string) e.NewValue;
+        var newPropertyValue = (string?) e.NewValue;
         var control = (PlayerControl) d;
         var player = control._control.SourceProvider.MediaPlayer;
 
@@ -170,7 +174,9 @@ public partial class PlayerControl
             if (newPropertyValue == null)
             {
                 if (!control.InfinityLifespanMode)
+                {
                     Task.Run(() => control._control.Dispose());
+                }
                 else
                 {
                     player?.Pause();

@@ -1,25 +1,25 @@
 ﻿using System.Diagnostics.CodeAnalysis;
 using System.Windows;
-using System.Windows.Input;
 using System.Windows.Media;
+using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
 using ControlzEx.Theming;
 using ImoutoRebirth.Common;
-using ImoutoRebirth.Common.WPF;
-using ImoutoRebirth.Common.WPF.Commands;
 using ImoutoRebirth.Navigator.Services;
 using ImoutoRebirth.Navigator.Services.Collections;
 using MahApps.Metro.Theming;
 
 namespace ImoutoRebirth.Navigator.ViewModel;
 
-internal class SettingsVM : VMBase
+internal partial class SettingsVM : ObservableObject
 {
+    private readonly IImoutoPicsUploaderStateService _imoutoPicsUploaderStateService;
+
     private AccentColorMenuData _selectedAccentColor;
     private int _selectedTheme;
-    private ICommand? _saveCommand;
-    private ICommand? _toggleImoutoPicsCommand;
     private string _pathOverrides;
-    private readonly IImoutoPicsUploaderStateService _imoutoPicsUploaderStateService;
+
+    [ObservableProperty]
     private bool _isImoutoPicsUploaderEnabled;
 
     public SettingsVM()
@@ -47,7 +47,7 @@ internal class SettingsVM : VMBase
         set
         {
             Settings.Default.ActivatePreviewOnSelect = value;
-            OnPropertyChanged(() => ShowPreviewOnSelect);
+            OnPropertyChanged();
             OnShowPreviewOnSelectChanged();
         }
     }
@@ -58,7 +58,7 @@ internal class SettingsVM : VMBase
         set
         {
             Settings.Default.ShowSystemTags = value;
-            OnPropertyChanged(() => ShowSystemTags);
+            OnPropertyChanged();
         }
     }
     
@@ -70,7 +70,7 @@ internal class SettingsVM : VMBase
         set
         {
             Settings.Default.OrderMode = value.ToString();
-            OnPropertyChanged(() => SelectedOrderMode);
+            OnPropertyChanged();
         }
     }
 
@@ -147,22 +147,13 @@ internal class SettingsVM : VMBase
         set => Settings.Default.LilinHost = value;
     }
 
-    public bool IsImoutoPicsUploaderEnabled
-    {
-        get => _isImoutoPicsUploaderEnabled;
-        set => OnPropertyChanged(ref _isImoutoPicsUploaderEnabled, value, () => IsImoutoPicsUploaderEnabled);
-    }
-
     public string RoomHost
     {
         get => Settings.Default.RoomHost;
         set => Settings.Default.RoomHost = value;
     }
 
-    public ICommand SaveCommand => _saveCommand ??= new RelayCommand(_ => Save());
-
-    public ICommand ToggleImoutoPicsCommand => _toggleImoutoPicsCommand ??= new AsyncCommand(() => ToggleImoutoPics());
-
+    [RelayCommand]
     private static void Save() => Settings.Default.Save();
 
     public event EventHandler? ShowPreviewOnSelectChanged;
@@ -178,6 +169,7 @@ internal class SettingsVM : VMBase
         IsImoutoPicsUploaderEnabled = await _imoutoPicsUploaderStateService.IsEnabledAsync();
     }
     
+    [RelayCommand]
     private async Task ToggleImoutoPics()
     {
         if (IsImoutoPicsUploaderEnabled)

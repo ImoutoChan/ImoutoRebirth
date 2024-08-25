@@ -1,12 +1,11 @@
-﻿#nullable enable
-using System.Windows.Media;
-using ImoutoRebirth.Common.WPF;
+﻿using System.Windows.Media;
+using CommunityToolkit.Mvvm.ComponentModel;
 using ImoutoRebirth.Navigator.Services.Tags.Model;
 using ImoutoRebirth.Navigator.Utils;
 
 namespace ImoutoRebirth.Navigator.ViewModel;
 
-internal class SearchTagVM : VMBase
+internal class SearchTagVM : ObservableObject
 {
     private readonly SearchTag _model;
 
@@ -22,11 +21,15 @@ internal class SearchTagVM : VMBase
         set
         {
             _model.Value = value;
-            OnPropertyChanged(() => Value);
+            OnPropertyChanged();
+            OnPropertyChanged(nameof(ValueView));
         }
     }
 
-    public string? ValueView => string.IsNullOrWhiteSpace(Value) ? null : "= " + Value?[1..];
+    public string? ValueView 
+        => string.IsNullOrWhiteSpace(Value) 
+            ? null 
+            : "= " + (Value?.StartsWith('=') == true ? Value?[1..] : Value);
 
     public string Hint => $"{Tag.Title} : {Value}";
 
@@ -36,7 +39,7 @@ internal class SearchTagVM : VMBase
         set
         {
             _model.SearchType = value;
-            OnPropertyChanged(() => SearchType);
+            OnPropertyChanged();
         }
     }
 

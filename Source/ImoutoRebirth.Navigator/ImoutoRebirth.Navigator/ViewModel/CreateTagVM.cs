@@ -1,29 +1,43 @@
 ﻿using System.Collections.ObjectModel;
 using System.Diagnostics;
-using System.Windows.Input;
-using ImoutoRebirth.Common.WPF;
-using ImoutoRebirth.Common.WPF.Commands;
+using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
 using ImoutoRebirth.Navigator.Services;
 using ImoutoRebirth.Navigator.Services.Tags;
 using TagType = ImoutoRebirth.Navigator.Services.Tags.Model.TagType;
 
 namespace ImoutoRebirth.Navigator.ViewModel;
 
-internal class CreateTagVM : VMBase
+internal partial class CreateTagVM : ObservableObject
 {
     private static readonly SemaphoreSlim ReloadTagTypesAsyncSemaphore = new(1, 1);
     
     private bool _tagTypesLoaded;
-    private bool _isSaving;
-    private bool _isSuccess;
-    private string? _title;
-    private TagType? _selectedType;
-    private string? _synonyms;
-    private bool _hasValue;
     private bool _isCounter;
-    private ICommand? _saveCommand;
-    private ICommand? _cancelCommand;
     private readonly ITagService _tagService;
+    
+    [ObservableProperty]
+    [NotifyCanExecuteChangedFor(nameof(SaveCommand))]
+    private TagType? _selectedType;
+
+    [ObservableProperty]
+    [NotifyCanExecuteChangedFor(nameof(SaveCommand))]
+    private string? _title;
+
+    /// <summary>
+    ///     Separator :.:
+    /// </summary>
+    [ObservableProperty]
+    private string? _synonyms;
+
+    [ObservableProperty]
+    private bool _hasValue;
+
+    [ObservableProperty]
+    private bool _isSaving;
+
+    [ObservableProperty]
+    private bool _isSuccess;
 
     public CreateTagVM()
     {
@@ -31,70 +45,28 @@ internal class CreateTagVM : VMBase
         ReloadTagTypesAsync();
     }
 
-    public TagType? SelectedType
-    {
-        get => _selectedType;
-        set => OnPropertyChanged(ref _selectedType, value, () => SelectedType);
-    }
+    public ObservableCollection<TagType> TagTypes { get; } = new();
 
-    public ObservableCollection<TagType> TagTypes { get; } = new ObservableCollection<TagType>();
-
-    public string? Title
-    {
-        get => _title;
-        set => OnPropertyChanged(ref _title, value, () => Title);
-    }
-
-    /// <summary>
-    ///     Separator :.:
-    /// </summary>
-    public string? Synonyms
-    {
-        get => _synonyms;
-        set => OnPropertyChanged(ref _synonyms, value, () => Synonyms);
-    }
-
-    public List<string> SynonymsCollection 
-        => _synonyms
-               ?.Split(new[] { ":.:" }, StringSplitOptions.RemoveEmptyEntries)
-               .ToList() 
-           ?? new List<string>();
-
-    public bool HasValue
-    {
-        get => _hasValue;
-        set => OnPropertyChanged(ref _hasValue, value, () => HasValue);
-    }
+    public List<string> SynonymsCollection
+        => Synonyms?.Split([":.:"], StringSplitOptions.RemoveEmptyEntries).ToList() ?? [];
 
     public bool IsCounter
     {
         get => _isCounter;
         set
         {
-            OnPropertyChanged(ref _isCounter, value, () => IsCounter);
+            _isCounter = value;
+            OnPropertyChanged();
 
             if (value)
                 HasValue = true;
         }
     }
 
-    public bool IsSaving
-    {
-        get => _isSaving;
-        set => OnPropertyChanged(ref _isSaving, value, () => IsSaving);
-    }
+    private bool CanSave() => SelectedType != null && !string.IsNullOrWhiteSpace(Title);
 
-    public bool IsSuccess
-    {
-        get => _isSuccess;
-        set => OnPropertyChanged(ref _isSuccess, value, () => IsSuccess);
-    }
-
-    public ICommand SaveCommand => _saveCommand ??= new RelayCommand(Save, CanSave);
-
-    private bool CanSave(object? _) => SelectedType != null && !string.IsNullOrWhiteSpace(Title);
-
-    private async void Save(object? _)
+    [RelayCommand(CanExecute = nameof(CanSave))]
+    private async Task Save()
     {
         try
         {
@@ -115,10 +87,8 @@ internal class CreateTagVM : VMBase
         }
     }
 
-
-    public ICommand CancelCommand => _cancelCommand ??= new RelayCommand(Cancel);
-
-    private void Cancel(object? _) => OnRequestClosing();
+    [RelayCommand]
+    private void Cancel() => OnRequestClosing();
 
     private async void ReloadTagTypesAsync()
     {

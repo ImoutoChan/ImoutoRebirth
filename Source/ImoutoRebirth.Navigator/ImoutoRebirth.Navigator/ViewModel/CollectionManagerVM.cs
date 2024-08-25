@@ -1,21 +1,51 @@
 ﻿using System.Collections.ObjectModel;
 using System.Diagnostics;
-using System.Windows.Input;
-using ImoutoRebirth.Common.WPF;
-using ImoutoRebirth.Common.WPF.Commands;
+using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
 using ImoutoRebirth.Navigator.Services;
 using ImoutoRebirth.Navigator.Services.Collections;
 
 namespace ImoutoRebirth.Navigator.ViewModel;
 
-internal class CollectionManagerVm : VMBase
+internal partial class CollectionManagerVm : ObservableObject
 {
     private readonly ICollectionService _collectionService;
 
-    private ICommand? _removeCommand;
+    [ObservableProperty]
     private CollectionVM? _selectedCollection;
 
     public CollectionManagerVm() => _collectionService = ServiceLocator.GetService<ICollectionService>();
+
+    public ObservableCollection<CollectionVM> Collections { get; } = new();
+
+    public string? Rename(string param)
+    {
+        try
+        {
+            SelectedCollection?.Rename(param);
+            return null;
+        }
+        catch (Exception ex)
+        {
+            return ex.Message;
+        }
+    }
+
+    public async Task<string?> CreateCollection(string name)
+    {
+        try
+        {
+            await _collectionService.CreateCollectionAsync(name);
+            await ReloadCollectionsAsync();
+
+            return null;
+        }
+        catch (Exception ex)
+        {
+            Debug.WriteLine("Cannot create collection: " + ex.Message);
+            return ex.Message;
+        }
+    }
 
     public async Task ReloadCollectionsAsync()
     {
@@ -50,61 +80,8 @@ internal class CollectionManagerVm : VMBase
         }
     }
 
-    #region Properties
 
-    public ObservableCollection<CollectionVM> Collections { get; } = new ObservableCollection<CollectionVM>();
-
-    public CollectionVM? SelectedCollection
-    {
-        get => _selectedCollection;
-        set => OnPropertyChanged(ref _selectedCollection, value, () => this.SelectedCollection);
-    }
-
-    #endregion Properties
-
-    #region Methods
-    public string? Rename(string param)
-    {
-        try
-        {
-            SelectedCollection?.Rename(param);
-            return null;
-        }
-        catch (Exception ex)
-        {
-            return ex.Message;
-        }
-    }
-
-    public async Task<string?> CreateCollection(string name)
-    {
-        try
-        {
-            await _collectionService.CreateCollectionAsync(name);
-
-            await ReloadCollectionsAsync();
-
-            return null;
-        }
-        catch (Exception ex)
-        {
-            Debug.WriteLine("Cannot create collection: " + ex.Message);
-            return ex.Message;
-        }
-    }
-
-    #endregion Methods
-
-    #region Commands
-
-    public ICommand RemoveCommand
-        => _removeCommand ??= new AsyncCommand(Remove, CanDoCollectionCommand);
-
-    #endregion Commands
-
-    #region Command Handlers
-
-
+    [RelayCommand(CanExecute = nameof(CanDoCollectionCommand))]
     private async Task Remove()
     {
         if (SelectedCollection != null)
@@ -114,10 +91,5 @@ internal class CollectionManagerVm : VMBase
         }
     }
 
-    private bool CanDoCollectionCommand()
-    {
-        return SelectedCollection != null;
-    }
-
-    #endregion Command Handlers
+    private bool CanDoCollectionCommand() => SelectedCollection != null;
 }

@@ -1,5 +1,4 @@
-﻿#nullable enable
-using ImoutoRebirth.Room.WebApi.Client;
+﻿using ImoutoRebirth.Room.WebApi.Client;
 
 namespace ImoutoRebirth.Navigator.Services.Collections;
 

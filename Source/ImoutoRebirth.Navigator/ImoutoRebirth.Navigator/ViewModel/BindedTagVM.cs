@@ -1,8 +1,7 @@
 ﻿using System.Diagnostics;
-using System.Windows.Input;
 using System.Windows.Media;
-using ImoutoRebirth.Common.WPF;
-using ImoutoRebirth.Common.WPF.Commands;
+using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
 using ImoutoRebirth.Lilin.WebApi.Client;
 using ImoutoRebirth.Navigator.Services;
 using ImoutoRebirth.Navigator.Services.Tags;
@@ -12,7 +11,7 @@ using Tag = ImoutoRebirth.Navigator.Services.Tags.Model.Tag;
 
 namespace ImoutoRebirth.Navigator.ViewModel;
 
-internal class BindedTagVM : VMBase
+internal partial class BindedTagVM : ObservableObject
 {
     private static readonly List<string> TypePriorities = new()
     {
@@ -26,13 +25,13 @@ internal class BindedTagVM : VMBase
         "Meta",
         "General"
     };
+    
+    [ObservableProperty]
+    private SearchType _searchType;
 
-    private ICommand? _incrementCounterCommand;
-    private ICommand? _unbindCommand;
     private readonly Guid? _fileId;
     private readonly Action? _updateAction;
     private readonly IFileTagService _fileTagService;
-    private SearchType _searchType;
 
     public BindedTagVM(FileTag model, Guid? fileId, Action? updateAction)
     {
@@ -40,16 +39,6 @@ internal class BindedTagVM : VMBase
         _fileTagService = ServiceLocator.GetService<IFileTagService>();
         _fileId = fileId;
         _updateAction = updateAction;
-    }
-
-    public SearchType SearchType
-    {
-        get => _searchType;
-        set
-        {
-            _searchType = value;
-            OnPropertyChanged(() => SearchType);
-        }
     }
 
     public Tag Tag => Model.Tag;
@@ -64,7 +53,7 @@ internal class BindedTagVM : VMBase
         set
         {
             Model.Value = value;
-            OnPropertyChanged(() => Value);
+            OnPropertyChanged();
         }
     }
 
@@ -99,11 +88,8 @@ internal class BindedTagVM : VMBase
             return (priority >= 0) ? priority : 100;
         }
     }
-
-    public ICommand UnbindCommand => _unbindCommand ??= new AsyncCommand(UnbindAsync);
     
-    public ICommand IncrementCounterCommand => _incrementCounterCommand ??= new AsyncCommand(IncrementCounter);
-
+    [RelayCommand]
     private async Task UnbindAsync()
     {
         if (_fileId == null || Model?.Tag?.Id == null)
@@ -122,6 +108,7 @@ internal class BindedTagVM : VMBase
         }
     }
 
+    [RelayCommand]
     private async Task IncrementCounter()
     {
         if (_fileId == null || Model?.Tag?.Id == null || !IsCounterTag)

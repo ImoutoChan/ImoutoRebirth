@@ -29,7 +29,7 @@ public class VMBase : INotifyPropertyChanged
 
     protected void OnPropertyChanged<T>(ref T value, T newValue, Expression<Func<T>> action) 
         => OnPropertyChanged(ref value, newValue, GetPropertyName(action));
-
+    
     private void OnPropertyChanged<T>(ref T value, T newValue, string propertyName)
     {
         if (EqualityComparer<T>.Default.Equals(value, newValue))

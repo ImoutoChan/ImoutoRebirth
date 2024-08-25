@@ -1,9 +1,9 @@
 ﻿using System.Collections.ObjectModel;
-using ImoutoRebirth.Common.WPF;
+using CommunityToolkit.Mvvm.ComponentModel;
 
 namespace ImoutoRebirth.Navigator.ViewModel;
 
-internal class TagSourceVM : VMBase
+internal class TagSourceVM : ObservableObject
 {
     public TagSourceVM(string title, ObservableCollection<BindedTagVM> tags)
     {

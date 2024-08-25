@@ -1,10 +1,9 @@
 ﻿using System.Collections;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
-using System.Windows.Input;
+using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
 using ImoutoRebirth.Common;
-using ImoutoRebirth.Common.WPF;
-using ImoutoRebirth.Common.WPF.Commands;
 using ImoutoRebirth.Navigator.Behaviors;
 using ImoutoRebirth.Navigator.Services;
 using ImoutoRebirth.Navigator.Services.Tags;
@@ -14,37 +13,55 @@ using Tag = ImoutoRebirth.Navigator.Services.Tags.Model.Tag;
 
 namespace ImoutoRebirth.Navigator.ViewModel;
 
-internal class TagsEditVM : VMBase, IDropable
+internal partial class TagsEditVM : ObservableObject, IDropable
 {
     private readonly IFileTagService _fileTagService;
     private readonly ITagService _tagService;
     private readonly MainWindowVM _parentVm;
 
     private string? _searchText;
-    private ICommand? _createTagCommand;
-    private ICommand? _addTagsCommand;
-    private ICommand? _removeTagsCommand;
-    private ICommand? _saveCommand;
-    private ICommand? _unbindCommand;
-    private ICommand? _setTagInfoContextCommand;
-    private CreateTagVM? _createTagVm;
+
+    [ObservableProperty]
+    private CreateTagVM? _createTagVM;
+
+    [ObservableProperty]
     private bool _isSaving;
+
+    [ObservableProperty]
     private bool _isSuccess;
+    
+    [ObservableProperty]
     private SearchTagVM? _tagInfoContext;
 
     public TagsEditVM(MainWindowVM parentVm)
     {
         parentVm.PropertyChanged += (_, args) =>
         {
-            if (args.PropertyName == "SelectedEntries")
+            if (args.PropertyName == nameof(MainWindowVM.SelectedEntries))
             {
-                OnPropertyChanged(() => SelectedEntries);
+                OnPropertyChanged(nameof(SelectedEntries));
+                SaveCommand.NotifyCanExecuteChanged();
+                UnbindCommand.NotifyCanExecuteChanged();
+            }
+
+            if (args.PropertyName == nameof(MainWindowVM.SelectedItems))
+            {
+                OnPropertyChanged(nameof(SelectedItems));
+                SaveCommand.NotifyCanExecuteChanged();
+                UnbindCommand.NotifyCanExecuteChanged();
             }
         };
+
         _parentVm = parentVm;
 
         _fileTagService = ServiceLocator.GetService<IFileTagService>();
         _tagService = ServiceLocator.GetService<ITagService>();
+        
+        SelectedTags.CollectionChanged += (_, _) =>
+        {
+            SaveCommand.NotifyCanExecuteChanged();
+            UnbindCommand.NotifyCanExecuteChanged();
+        };
     }
 
     public ObservableCollection<SearchTagVM> FoundTags { get; } = new();
@@ -60,51 +77,26 @@ internal class TagsEditVM : VMBase, IDropable
         get => _searchText;
         set
         {
-            OnPropertyChanged(ref _searchText, value, () => SearchText);
+            _searchText = value;
+            OnPropertyChanged();
             SearchTagsAsync();
         }
-    }
-
-    public SearchTagVM? TagInfoContext
-    {
-        get => _tagInfoContext;
-        set => OnPropertyChanged(ref _tagInfoContext, value, () => TagInfoContext);
     }
 
     public IEnumerable<INavigatorListEntry> SelectedEntries => _parentVm.SelectedEntries;
 
     public IList SelectedItems => _parentVm.SelectedItems;
 
-    public CreateTagVM? CreateTagVM
-    {
-        get => _createTagVm;
-        private set => OnPropertyChanged(ref _createTagVm, value, () => CreateTagVM);
-    }
-
-    public bool IsSaving
-    {
-        get => _isSaving;
-        set => OnPropertyChanged(ref _isSaving, value, () => IsSaving);
-    }
-
-    public bool IsSuccess
-    {
-        get => _isSuccess;
-        set => OnPropertyChanged(ref _isSuccess, value, () => IsSuccess);
-    }
-
-    public ICommand CreateTagCommand => _createTagCommand ??= new RelayCommand(CreateTag);
-
+    [RelayCommand]
     private void CreateTag(object? _)
     {
         CreateTagVM = new CreateTagVM();
         CreateTagVM.RequestClosing += (_, _) => CreateTagVM = null;
     }
 
-    public ICommand AddTagsCommand => _addTagsCommand ??= new RelayCommand(AddTags, CanAddTags);
+    private static bool CanAddTags(object? obj) => obj is IList<SearchTagVM> or SearchTagVM;
 
-    private bool CanAddTags(object? obj) => obj is IList<SearchTagVM> or SearchTagVM;
-
+    [RelayCommand(CanExecute = nameof(CanAddTags))]
     private void AddTags(object? obj)
     {
         var tagVms = obj switch
@@ -127,10 +119,9 @@ internal class TagsEditVM : VMBase, IDropable
         }
     }
 
-    public ICommand RemoveTagsCommand => _removeTagsCommand ??= new RelayCommand(RemoveTags, CanRemoveTags);
-
     private bool CanRemoveTags(object? obj) => obj is IList<SearchTagVM> or SearchTagVM;
 
+    [RelayCommand(CanExecute = nameof(CanRemoveTags))]
     private void RemoveTags(object? obj)
     {
         var tagVms = obj switch
@@ -152,11 +143,10 @@ internal class TagsEditVM : VMBase, IDropable
         }
     }
 
-    public ICommand SaveCommand => _saveCommand ??= new RelayCommand(Save, CanSave);
-
     private bool CanSave(object? obj) => SelectedEntries.Any() && SelectedTags.Any();
 
-    private async void Save(object? obj)
+    [RelayCommand(CanExecute = nameof(CanSave))]
+    private async Task Save(object? obj)
     {
         var images = SelectedEntries;
         var tags = SelectedTags;
@@ -197,11 +187,10 @@ internal class TagsEditVM : VMBase, IDropable
         }
     }
 
-    public ICommand UnbindCommand => _unbindCommand ??= new RelayCommand(Unbind, CanUnbind);
-
     private bool CanUnbind(object? obj) => SelectedEntries.Any() && SelectedTags.Any();
 
-    private async void Unbind(object? obj)
+    [RelayCommand(CanExecute = nameof(CanUnbind))]
+    private async Task Unbind(object? obj)
     {
         var images = SelectedEntries;
         var tags = SelectedTags;
@@ -237,6 +226,9 @@ internal class TagsEditVM : VMBase, IDropable
         }
     }
 
+    [RelayCommand]
+    private void SetTagInfoContext(object? obj) => TagInfoContext = obj as SearchTagVM;
+    
     private void UpdateRecentlyTags(IEnumerable<SearchTagVM> selectedTags)
     {
         foreach (var selectedTag in selectedTags)
@@ -268,10 +260,6 @@ internal class TagsEditVM : VMBase, IDropable
         foreach (var tag in popularCharacters) 
             UsersTopTags.Add(new SearchTagVM(new SearchTag(tag, null)));
     }
-
-    public ICommand SetTagInfoContextCommand => _setTagInfoContextCommand ??= new RelayCommand(SetTagInfoContext);
-
-    private void SetTagInfoContext(object? obj) => TagInfoContext = obj as SearchTagVM;
 
     public void DraftAddTag(BindedTagVM tag)
     {

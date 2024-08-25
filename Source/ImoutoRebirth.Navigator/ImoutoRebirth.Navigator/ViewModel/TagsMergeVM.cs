@@ -1,103 +1,71 @@
 ﻿using System.Collections.ObjectModel;
 using System.Diagnostics;
-using System.Windows.Input;
-using ImoutoRebirth.Common.WPF;
-using ImoutoRebirth.Common.WPF.Commands;
+using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
 using ImoutoRebirth.Navigator.Services;
 using ImoutoRebirth.Navigator.Services.Tags;
 using ImoutoRebirth.Navigator.Services.Tags.Model;
 
 namespace ImoutoRebirth.Navigator.ViewModel;
 
-internal class TagsMergeVM : VMBase
+internal partial class TagsMergeVM : ObservableObject
 {
     private readonly ITagService _tagService;
 
     private string? _searchText;
-    private ICommand? _mergeTagsCommand;
-    private ICommand? _deleteCleanedTagCommand;
     
-    private ICommand? _selectTagToCleanCommand;
-    private ICommand? _selectTagToEnrichCommand;
-    
+    [ObservableProperty]
+    [NotifyCanExecuteChangedFor(nameof(MergeTagsCommand))]
     private SearchTagVM? _tagToClean;
+
+    [ObservableProperty]
+    [NotifyCanExecuteChangedFor(nameof(MergeTagsCommand))]
     private SearchTagVM? _tagToEnrich;
+
+    [ObservableProperty]
+    [NotifyCanExecuteChangedFor(nameof(DeleteCleanedTagCommand))]
     private SearchTagVM? _cleanedTag;
-    
+
+    [ObservableProperty]
     private ObservableCollection<SearchTagVM> _foundTags = new();
-    
+
+    [ObservableProperty]
     private bool _isInProgress;
+
+    [ObservableProperty]
     private bool _isSuccess;
 
-    public TagsMergeVM()
-    {
-        _tagService = ServiceLocator.GetService<ITagService>();
-    }
-
-    public ObservableCollection<SearchTagVM> FoundTags
-    {
-        get => _foundTags;
-        set => OnPropertyChanged(ref _foundTags, value, () => FoundTags);
-    }
+    public TagsMergeVM() => _tagService = ServiceLocator.GetService<ITagService>();
 
     public string? SearchText
     {
         get => _searchText;
         set
         {
-            OnPropertyChanged(ref _searchText, value, () => SearchText);
+            _searchText = value;
+            OnPropertyChanged();
             SearchTagsAsync();
         }
     }
 
-    public SearchTagVM? TagToClean
+    [RelayCommand]
+    private void SelectTagToClean(SearchTagVM? x)
     {
-        get => _tagToClean;
-        set => OnPropertyChanged(ref _tagToClean, value, () => TagToClean);
-    }
-    
-    public SearchTagVM? CleanedTag
-    {
-        get => _cleanedTag;
-        set => OnPropertyChanged(ref _cleanedTag, value, () => CleanedTag);
+        TagToClean = x;
+        CleanedTag = null;
     }
 
-    public SearchTagVM? TagToEnrich
+    [RelayCommand]
+    private void SelectTagToEnrich(SearchTagVM? x)
     {
-        get => _tagToEnrich;
-        set => OnPropertyChanged(ref _tagToEnrich, value, () => TagToEnrich);
+        TagToEnrich = x;
     }
 
-    public bool IsInProgress
-    {
-        get => _isInProgress;
-        set => OnPropertyChanged(ref _isInProgress, value, () => IsInProgress);
-    }
-
-    public bool IsSuccess
-    {
-        get => _isSuccess;
-        set => OnPropertyChanged(ref _isSuccess, value, () => IsSuccess);
-    }
-
-    public ICommand MergeTagsCommand => _mergeTagsCommand ??= new RelayCommand(MergeTags, CanMergeTags);
-    
-    public ICommand DeleteCleanedTagCommand => _deleteCleanedTagCommand ??= new RelayCommand(DeleteCleanedTag, CanDeleteCleanedTag);
-    
-    public ICommand SelectTagToCleanCommand
-        => _selectTagToCleanCommand ??= new RelayCommand<SearchTagVM>(x =>
-        {
-            TagToClean = x;
-            CleanedTag = null;
-        });
-    
-    public ICommand SelectTagToEnrichCommand
-        => _selectTagToEnrichCommand ??= new RelayCommand<SearchTagVM>(x => TagToEnrich = x);
-    
 
     private bool CanMergeTags(object? obj) => TagToClean != null && TagToEnrich != null;
 
-    private async void MergeTags(object? obj)
+    [RelayCommand(CanExecute = nameof(CanMergeTags))]
+    private async Task MergeTags(object? obj)
     {
         var tagToClean = TagToClean;
         var tagToEnrich = TagToEnrich;
@@ -123,13 +91,14 @@ internal class TagsMergeVM : VMBase
         }
     }
     
-    private bool CanDeleteCleanedTag(object? obj) => CleanedTag != null && obj == CleanedTag;
+    private bool CanDeleteCleanedTag(SearchTagVM? param) => CleanedTag != null && param == CleanedTag;
     
-    private async void DeleteCleanedTag(object? obj)
+    [RelayCommand(CanExecute = nameof(CanDeleteCleanedTag))]
+    private async Task DeleteCleanedTag(SearchTagVM? param)
     {
         var cleanedTag = CleanedTag;
 
-        if (cleanedTag == null || obj != CleanedTag)
+        if (cleanedTag == null || param != CleanedTag)
             return;
 
         try

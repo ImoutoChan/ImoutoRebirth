@@ -1,17 +1,23 @@
 ﻿using System.Collections.ObjectModel;
-using System.ComponentModel;
-using System.IO;
-using System.Windows.Input;
-using ImoutoRebirth.Common.WPF.Commands;
+using CommunityToolkit.Mvvm.ComponentModel;
 
-namespace ImoutoRebirth.Navigator.ViewModel;
+namespace ImoutoRebirth.Navigator.ViewModel.SettingsSlice;
 
-internal class SourceFolderVM : FolderVM, IDataErrorInfo
+internal partial class SourceFolderVM : FolderVM
 {
+    [ObservableProperty]
     private bool _checkFormat;
+
+    [ObservableProperty]
     private bool _checkNameHash;
+
+    [ObservableProperty]
     private bool _tagsFromSubfolder;
-    private bool _addTagFromFilename;
+
+    [ObservableProperty]
+    private bool _addTagFromFileName;
+
+    public ObservableCollection<string> SupportedExtensionsRaw { get; }
 
     public SourceFolderVM(
         Guid? id, 
@@ -31,18 +37,6 @@ internal class SourceFolderVM : FolderVM, IDataErrorInfo
         SupportedExtensionsRaw = extensions != null
             ? new ObservableCollection<string>(extensions) 
             : new ObservableCollection<string>();
-    }
-
-    public bool CheckFormat
-    {
-        get => _checkFormat;
-        set => OnPropertyChanged(ref _checkFormat, value, () => CheckFormat);
-    }
-
-    public bool CheckNameHash
-    {
-        get => _checkNameHash;
-        set => OnPropertyChanged(ref _checkNameHash, value, () => CheckNameHash);
     }
 
     public string SupportedExtensions
@@ -65,54 +59,4 @@ internal class SourceFolderVM : FolderVM, IDataErrorInfo
             }
         }
     }
-
-    public ObservableCollection<string> SupportedExtensionsRaw { get; }
-
-    public bool TagsFromSubfolder
-    {
-        get => _tagsFromSubfolder;
-        set => OnPropertyChanged(ref _tagsFromSubfolder, value, () => TagsFromSubfolder);
-    }
-
-    public bool AddTagFromFileName
-    {
-        get => _addTagFromFilename;
-        set => OnPropertyChanged(ref _addTagFromFilename, value, () => AddTagFromFileName);
-    }
-
-    public string this[string columnName]
-    {
-        get
-        {
-            string errorMessage = string.Empty;
-            switch (columnName)
-            {
-                case "Path":
-                    if (string.IsNullOrWhiteSpace(Path))
-                    {
-                        errorMessage = "Path can't be empty";
-                    }
-                    else
-                    {
-                        try
-                        {
-                            _ = new DirectoryInfo(Path);
-                        }
-                        catch (Exception)
-                        {
-                            errorMessage = "Incorrect path format";
-                        }
-                    }
-                    break;
-            }
-            return errorMessage;
-        }
-    }
-
-    public override string Error => this["Path"];
-
-    private ICommand? _saveCommand;
-
-    public ICommand SaveCommand
-        => _saveCommand ??= new RelayCommand(_ => OnSaveRequest(), _ => string.IsNullOrWhiteSpace(Error));
 }

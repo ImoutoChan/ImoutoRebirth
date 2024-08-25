@@ -7,20 +7,15 @@ namespace ImoutoRebirth.Navigator.ViewModel.ListEntries;
 
 internal class ImageEntryVM : BaseEntryVM, INavigatorListEntry, IPixelSizable
 {
-    #region Constructors
-
-    public ImageEntryVM(
-        string imagePath,
-        FilesClient filesClient,
-        Size initPreviewSize,
-        Guid? dbId)
+    public ImageEntryVM(string imagePath, FilesClient filesClient, Size initPreviewSize, Guid? dbId)
         : base(dbId, filesClient)
     {
         ImageEntry = new ImageEntry(imagePath, initPreviewSize);
+        
         ImageEntry.ImageChanged += (_, _) =>
         {
-            OnPropertyChanged(() => IsLoading);
-            OnPropertyChanged(() => Image);
+            OnPropertyChanged(nameof(IsLoading));
+            OnPropertyChanged(nameof(Image));
         };
 
         Type = ImageEntry.ImageFormat switch
@@ -33,10 +28,6 @@ internal class ImageEntryVM : BaseEntryVM, INavigatorListEntry, IPixelSizable
 
         DbId = dbId;
     }
-
-    #endregion Constructors
-
-    #region Properties
 
     public bool IsLoading => ImageEntry.IsLoading;
 
@@ -54,18 +45,10 @@ internal class ImageEntryVM : BaseEntryVM, INavigatorListEntry, IPixelSizable
 
     public string Path => ImageEntry.FullName;
 
-    #endregion Properties
-
-    #region Commands
-
-    #endregion Commands
-
-    #region Public methods
-
     public void UpdatePreview(Size previewSize)
     {
         ImageEntry.UpdatePreview(previewSize);
-        OnPropertyChanged(() => ViewPortSize);
+        OnPropertyChanged(nameof(ViewPortSize));
     }
 
     public async void Load()
@@ -74,16 +57,7 @@ internal class ImageEntryVM : BaseEntryVM, INavigatorListEntry, IPixelSizable
         await LoadRating();
     }
 
-    #endregion Public methods
-
-    #region IDragable members
-
-    public object Data => new DataObject(DataFormats.FileDrop, new[]
-    {
-        ImageEntry.FullName
-    });
+    public object Data => new DataObject(DataFormats.FileDrop, new[] { ImageEntry.FullName });
 
     public DragDropEffects AllowDragDropEffects => DragDropEffects.Copy;
-
-    #endregion IDragable members
 }
