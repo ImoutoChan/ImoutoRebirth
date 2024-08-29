@@ -1,9 +1,11 @@
 ﻿using System.Collections;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
+using ImoutoRebirth.Navigator.Slices.QuickTagging;
 using ImoutoRebirth.Navigator.ViewModel;
 using ImoutoRebirth.Navigator.ViewModel.ListEntries;
 using MahApps.Metro.Controls;
@@ -34,7 +36,7 @@ internal partial class MainWindow
                 viewModel?.LoadPreviewsCommand.Execute(null);
             };
 
-            ListBoxElement.SelectionChanged += OnSelectedItemsChanged;
+            MediaListBox.SelectionChanged += OnSelectedItemsChanged;
 
             ScrollViewerElement.ScrollChanged += (_, _) =>
             {
@@ -57,22 +59,24 @@ internal partial class MainWindow
         };
     }
 
+    internal MainWindowVM DataContextVM => (MainWindowVM)DataContext;
+
     #region Properties
 
     public IEnumerable<INavigatorListEntry> VisibleItems =>
-        from INavigatorListEntry item in ListBoxElement.Items
-        let listBoxItem = (UIElement)ListBoxElement.ItemContainerGenerator.ContainerFromItem(item)
+        from INavigatorListEntry item in MediaListBox.Items
+        let listBoxItem = (UIElement)MediaListBox.ItemContainerGenerator.ContainerFromItem(item)
         where IsFullyOrPartiallyVisible(listBoxItem, ScrollViewerElement)
         select item;
 
     public IEnumerable<INavigatorListEntry> SelectedEntries
-        => ListBoxElement.SelectedItems.Cast<INavigatorListEntry>();
+        => MediaListBox.SelectedItems.Cast<INavigatorListEntry>();
 
-    public IList SelectedItems => ListBoxElement.SelectedItems;
+    public IList SelectedItems => MediaListBox.SelectedItems;
 
     public double ViewPortWidth => ScrollViewerElement.ViewportWidth;
 
-    private ScrollViewer ScrollViewerElement => _scrollViewerElement ??= FindFirstVisualChildOfType<ScrollViewer>(ListBoxElement)!;
+    private ScrollViewer ScrollViewerElement => _scrollViewerElement ??= FindFirstVisualChildOfType<ScrollViewer>(MediaListBox)!;
 
     #endregion Properties
 
@@ -126,16 +130,16 @@ internal partial class MainWindow
         if (!_lastSelectedItems.TryPop(out var revertTo))
             return;
         
-        ListBoxElement.SelectionChanged -= OnSelectedItemsChanged;
+        MediaListBox.SelectionChanged -= OnSelectedItemsChanged;
         
-        ListBoxElement.SelectedItems.Clear();
+        MediaListBox.SelectedItems.Clear();
         foreach (var item in revertTo)
         {
             if (item.TryGetTarget(out var target))
-                ListBoxElement.SelectedItems.Add(target);
+                MediaListBox.SelectedItems.Add(target);
         }
 
-        ListBoxElement.SelectionChanged += OnSelectedItemsChanged;
+        MediaListBox.SelectionChanged += OnSelectedItemsChanged;
         
         _currentSelectedItems = SelectedEntries.Select(x => new WeakReference<INavigatorListEntry>(x)).ToList();
         SelectedItemsChanged?.Invoke(this, EventArgs.Empty);
@@ -193,17 +197,11 @@ internal partial class MainWindow
         }
     }
 
-    private void UIElement_OnKeyUp(object sender, KeyEventArgs e)
+    private void MainWindow_OnPreviewKeyDown(object sender, KeyEventArgs e)
     {
-        switch (e.Key)
+        if (e.Key == Key.Q && Keyboard.Modifiers.HasFlag(ModifierKeys.Control))
         {
-            // Open TagsEdit flyout.
-            case Key.T:
-                ToggleFlyout(TagsEditFlyout);
-                break;
-            case Key.M:
-                ToggleFlyout(TagsMergeFlyout);
-                break;
+            DataContextVM.ToggleQuickTaggingCommand.Execute(null);
         }
     }
 
@@ -215,6 +213,57 @@ internal partial class MainWindow
         
         viewModel.FullScreenPreviewVM.CloseCommand.Execute(null);
         e.Cancel = true;
+    }
+
+    private void QuickTagging_OnIsVisibleChanged(object sender, DependencyPropertyChangedEventArgs e)
+    {
+        if (Visibility == Visibility.Visible)
+        {
+            var item = (ListBoxItem)MediaListBox.ItemContainerGenerator.ContainerFromIndex(MediaListBox.SelectedIndex);
+            item?.Focus();
+        }
+
+    }
+
+    private void MediaListBox_OnKeyUp(object sender, KeyEventArgs e)
+    {
+        switch (e.Key)
+        {
+            // Open TagsEdit flyout.
+            case Key.T:
+                ToggleFlyout(TagsEditFlyout);
+                break;
+            case Key.M:
+                ToggleFlyout(TagsMergeFlyout);
+                break;
+        }
+
+        Key? toRelease = e.Key switch
+        {
+            Key.W => Key.Up,
+            Key.A => Key.Left,
+            Key.S => Key.Down,
+            Key.D => Key.Right,
+            _ => null
+        };
+
+        if (toRelease.HasValue)
+            VirtualKeyboard.Release(toRelease.Value);
+    }
+
+    private void MediaListBox_OnKeyDown(object sender, KeyEventArgs e)
+    {
+        Key? toPress = e.Key switch
+        {
+            Key.W => Key.Up,
+            Key.A => Key.Left,
+            Key.S => Key.Down,
+            Key.D => Key.Right,
+            _ => null
+        };
+
+        if (toPress.HasValue)
+            VirtualKeyboard.Press(toPress.Value);
     }
 
     #endregion Event handlers

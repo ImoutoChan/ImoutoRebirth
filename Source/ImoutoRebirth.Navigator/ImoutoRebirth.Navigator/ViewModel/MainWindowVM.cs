@@ -38,6 +38,9 @@ internal partial class MainWindowVM : ObservableObject
 
     [ObservableProperty]
     private bool _showTags = true;
+
+    [ObservableProperty]
+    private bool _showQuickTagging = false;
     
     [ObservableProperty]
     private int _volume = 100;
@@ -47,6 +50,9 @@ internal partial class MainWindowVM : ObservableObject
 
     [ObservableProperty]
     private FullScreenPreviewVM? _fullScreenPreviewVM;
+
+    [ObservableProperty]
+    private QuickTaggingVM? _quickTagging;
 
     [ObservableProperty]
     private int _totalCount;
@@ -172,8 +178,6 @@ internal partial class MainWindowVM : ObservableObject
 
     public TagsEditVM TagsEdit { get; set; }
 
-    public QuickTaggingVM QuickTagging { get; set; }
-
     public TagsMergeVM TagsMerge { get; set; }
 
     public int LoadedCount => NavigatorList.Count;
@@ -186,7 +190,7 @@ internal partial class MainWindowVM : ObservableObject
 
     public FileInfoVM FileInfoVM { get; } = new();
 
-    public INavigatorListEntry? SelectedItem => _view.ListBoxElement.SelectedItem as INavigatorListEntry;
+    public INavigatorListEntry? SelectedItem => _view.MediaListBox.SelectedItem as INavigatorListEntry;
 
     [RelayCommand]
     private void RevertSelectedItems() => _view.RevertSelectedItems();
@@ -561,6 +565,9 @@ internal partial class MainWindowVM : ObservableObject
         fileCollection.AddRange(lastItems);
         Clipboard.SetFileDropList(fileCollection);
     }
+
+    [RelayCommand]
+    private void ToggleQuickTagging() => ShowQuickTagging = !ShowQuickTagging;
 
     public async Task InitializeContextAsync()
     {

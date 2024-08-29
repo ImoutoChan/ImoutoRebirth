@@ -12,6 +12,8 @@ public static class EnumerableExtensions
     public static bool SafeAny<T>([NotNullWhen(true)] this IEnumerable<T>? source) => source != null && source.Any();
 
     public static bool None<T>(this IEnumerable<T> source) => !source.Any();
+
+    public static bool None<T>(this IEnumerable<T> source, Func<T, bool> predicate) => !source.Any(predicate);
     
     public static bool SafeNone<T>([NotNullWhen(false)] this IEnumerable<T>? source) => source == null || !source.Any();
 

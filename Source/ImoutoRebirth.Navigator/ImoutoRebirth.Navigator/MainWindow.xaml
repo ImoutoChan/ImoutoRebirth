@@ -20,6 +20,7 @@
                           xmlns:behaviors="clr-namespace:ImoutoRebirth.Navigator.Behaviors"
                           xmlns:converters1="clr-namespace:ImoutoRebirth.Common.WPF.Converters;assembly=ImoutoRebirth.Common.WPF"
                           xmlns:attachedProperties="clr-namespace:ImoutoRebirth.Common.WPF.AttachedProperties;assembly=ImoutoRebirth.Common.WPF"
+                          xmlns:quickTagging="clr-namespace:ImoutoRebirth.Navigator.Slices.QuickTagging"
                           d:DataContext="{d:DesignInstance viewModel:MainWindowVM, IsDesignTimeCreatable=False}"
                           mc:Ignorable="d"
                           WindowStartupLocation="CenterScreen"
@@ -34,7 +35,8 @@
                           ResizeBorderThickness="5"
                           Icon="pack://application:,,,/ImoutoRebirth.Navigator;component/Resources/Icon/window-icon.ico"
                           ShowIconOnTitleBar="False"
-                          Closing="MainWindow_OnClosing">
+                          Closing="MainWindow_OnClosing"
+                          PreviewKeyDown="MainWindow_OnPreviewKeyDown">
     <metroControl:MetroWindow.Resources>
         <converters1:ConditionVisibilityConverter x:Key="ConditionVisibilityConverter" />
         <converters:MultiBooleanVisibilityConverter x:Key="MultiBooleanVisibilityConverter" />
@@ -169,7 +171,7 @@
                                        Grid.RowSpan="2"
                                        Visibility="{Binding Path=IsLoading, Converter={StaticResource ConditionVisibilityConverter}, ConverterParameter=true, Mode=OneWay}" />
             
-            <ListBox x:Name="ListBoxElement"
+            <ListBox x:Name="MediaListBox"
                      Grid.Row="0"
                      Grid.Column="1"
                      Grid.RowSpan="2"
@@ -178,7 +180,8 @@
                      SelectionMode="Extended"
                      Visibility="{Binding Path=IsLoading, Converter={StaticResource ConditionVisibilityConverter}, ConverterParameter=false, Mode=OneWay}"
                      ItemContainerStyle="{DynamicResource ListBoxItemStyle}"
-                     KeyUp="UIElement_OnKeyUp">
+                     KeyUp="MediaListBox_OnKeyUp"
+                     KeyDown="MediaListBox_OnKeyDown">
                 <ListBox.InputBindings>
                     <MouseBinding Command="{Binding Path=ZoomOutCommand}"
                                   Gesture="{x:Static userControl:MouseWheelGesture.CtrlDown}" />
@@ -797,6 +800,27 @@
             <view:StatusBarView Grid.Row="2"
                                 Grid.Column="0"
                                 Grid.ColumnSpan="2" />
+        </Grid>
+        
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*" />
+                <RowDefinition Height="Auto" />
+            </Grid.RowDefinitions>
+
+            <quickTagging:QuickTaggingView
+                x:Name="QuickTagging"
+                Grid.Row="1"
+                DataContext="{Binding Path=QuickTagging}"
+                Margin="0,0,0,25"
+                Width="1000"
+                Height="500"
+                Visibility="{Binding 
+                    Path=DataContext.ShowQuickTagging, 
+                    RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type metroControl:MetroWindow}},
+                    Converter={StaticResource ConditionVisibilityConverter},
+                    ConverterParameter=true|false}"
+                IsVisibleChanged="QuickTagging_OnIsVisibleChanged" />
         </Grid>
     </Grid>
 </metroControl:MetroWindow>
