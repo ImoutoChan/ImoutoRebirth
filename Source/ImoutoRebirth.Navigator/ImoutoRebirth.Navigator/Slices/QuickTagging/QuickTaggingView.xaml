@@ -13,7 +13,7 @@
              mc:Ignorable="d"
              d:DesignHeight="300"
              d:DesignWidth="700"
-             d:DataContext="{d:DesignInstance Type={x:Type viewModel:DesignQuickTaggingVM}, d:IsDesignTimeCreatable=True}"
+             d:DataContext="{d:DesignInstance Type={x:Type viewModel:QuickTaggingVM}, d:IsDesignTimeCreatable=True}"
              Background="{DynamicResource MahApps.Brushes.Flyout.Background}"
              PreviewKeyDown="QuickTaggingView_OnPreviewKeyDown"
              IsVisibleChanged="QuickTaggingView_OnIsVisibleChanged">
@@ -89,6 +89,7 @@
                     <RowDefinition Height="Auto" />   
                 </Grid.RowDefinitions>
 
+                <!-- SELECTED -->
                 <TextBlock Grid.Row="0" FontSize="16">
                     <Run Text="Selected" />
 
@@ -122,15 +123,18 @@
                     </ItemsControl.ItemContainerStyle>
                 </ItemsControl>
 
-                <TextBlock Grid.Row="2" Height="50">
+                <TextBlock Grid.Row="2" Height="65">
                     <Run Text="CTRL + ↵  | Apply Selected" />
                     <LineBreak />
                     <Run Text="CTRL + → | Create pack" />
                     <LineBreak />
                     <Run Text="CTRL + X  | Clear selected" />
+                    <LineBreak />
+                    <Run Text="CTRL + SHIFT + X | Clear quick apply" />
                 </TextBlock>
             </Grid>
 
+            <!-- SEARCH -->
             <DockPanel Grid.Column="1">
                 <TextBox DockPanel.Dock="Top"
                          Margin="10,0,10,0"
@@ -139,9 +143,9 @@
                          PreviewKeyDown="SearchTextBox_OnPreviewKeyDown" />
 
                 <TextBlock DockPanel.Dock="Bottom"
-                           Text="{Binding SelectedItemsCount}">
-                    <Run Text="" />
-                    <Run Text="{Binding SelectedItemsCount}" />
+                           Margin="10,0,10,0">
+                    <Run Text="Apply to media:" />
+                    <Run Text="{Binding SelectedMediaEntriesCount}" />
                 </TextBlock>
 
                 <ListBox Name="FoundTagsListBox"
@@ -151,6 +155,7 @@
                          ItemTemplate="{StaticResource SimpleTagDataTemplate}" />
             </DockPanel>
             
+            <!-- TAG PACKS -->
             <Grid Grid.Column="2"
                   Margin="10,0,0,0">
                 <Grid.RowDefinitions>
@@ -160,7 +165,7 @@
 
                 <TextBlock Grid.Row="0" Text="Quick Apply" FontSize="16" />
 
-                <ItemsControl Grid.Row="1" ItemsSource="{Binding TagsPacks}">
+                <ItemsControl Grid.Row="1" ItemsSource="{Binding TagsPacks.Packs}">
                     <ItemsControl.ItemsPanel>
                         <ItemsPanelTemplate>
                             <userControls:VirtualizingWrapPanel IsItemsHost="True"
@@ -183,7 +188,7 @@
                     </ItemsControl.Template>
 
                     <ItemsControl.ItemTemplate>
-                        <DataTemplate DataType="{x:Type viewModel:TagsPack}">
+                        <DataTemplate DataType="{x:Type viewModel:TagsPackVM}">
                             <StackPanel Margin="5,15,5,5">
                                 <TextBlock FontSize="12" FontWeight="Bold" Margin="0,0,0,10">
                                     <Run Text="CTRL +" />

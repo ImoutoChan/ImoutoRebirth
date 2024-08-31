@@ -84,6 +84,13 @@ public partial class QuickTaggingView : UserControl
             e.Handled = true;
         }
 
+        // clear packs
+        if (e.Key is Key.X && Keyboard.Modifiers.HasFlag(ModifierKeys.Control | ModifierKeys.Shift))
+        {
+            DataContextVM.ClearTagPacksCommand.Execute(null);
+            e.Handled = true;
+        }
+
         // apply packs
         if (Keyboard.Modifiers.HasFlag(ModifierKeys.Control))
         {

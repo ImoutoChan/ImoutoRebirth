@@ -16,6 +16,7 @@ internal partial class QuickTaggingVM : ObservableObject
     private readonly MainWindowVM _mainWindowVM;
     private readonly ITagService _tagsService;
     private readonly IFileTagService _fileTagService;
+
     private CancellationTokenSource? _searchTagsCancellation;
 
     [ObservableProperty]
@@ -27,8 +28,8 @@ internal partial class QuickTaggingVM : ObservableObject
     [ObservableProperty] 
     private ObservableCollection<Tag> _selectedTags = new();
 
-    [ObservableProperty] 
-    private ObservableCollection<TagsPack> _tagsPacks = new();
+    [ObservableProperty]
+    private TagsPacksVM _tagsPacks = new();
 
     [ObservableProperty]
     private bool? _isSelectedTagsApplicationSuccess = null;
@@ -40,9 +41,12 @@ internal partial class QuickTaggingVM : ObservableObject
         _tagsService = ServiceLocator.GetService<ITagService>();
 
         PropertyChanged += ReactOnPropertyChanged;
+        _mainWindowVM.PropertyChanged += ReactOnMainWindowVMPropertyChanged;
     }
 
-    private IEnumerable<INavigatorListEntry> SelectedEntries => _mainWindowVM.SelectedEntries;
+    private IEnumerable<INavigatorListEntry> SelectedMediaEntries => _mainWindowVM.SelectedEntries;
+
+    public int SelectedMediaEntriesCount => _mainWindowVM.SelectedItems.Count;
 
     [RelayCommand]
     private void SelectTag(Tag? tag)
@@ -83,12 +87,7 @@ internal partial class QuickTaggingVM : ObservableObject
         if (SelectedTags.None())
             return;
 
-        TagsPacks.Add(
-            new TagsPack(
-                SelectedTags.ToList(),
-                Guid.NewGuid(),
-                TagsPacks.LastOrDefault()?.Key));
-
+        TagsPacks.AddNext(SelectedTags.ToList());
         SelectedTags.Clear();
     }
 
@@ -96,9 +95,12 @@ internal partial class QuickTaggingVM : ObservableObject
     private void ClearSelectedTags() => SelectedTags.Clear();
 
     [RelayCommand]
+    private void ClearTagPacks() => TagsPacks.Clear();
+
+    [RelayCommand]
     private async Task ApplySelectedTags()
     {
-        var images = SelectedEntries.ToList();
+        var images = SelectedMediaEntries.ToList();
         var tags = SelectedTags.ToList();
 
         var imageIds = images
@@ -134,7 +136,7 @@ internal partial class QuickTaggingVM : ObservableObject
     [RelayCommand]
     private async Task UndoSelectedTags()
     {
-        var images = SelectedEntries.ToList();
+        var images = SelectedMediaEntries.ToList();
         var tags = SelectedTags.ToList();
 
         var imageIds = images
@@ -156,12 +158,12 @@ internal partial class QuickTaggingVM : ObservableObject
     [RelayCommand]
     private async Task ApplyPack(char tagsPackKey)
     {
-        var pack = TagsPacks.FirstOrDefault(x => x.Key == tagsPackKey);
+        var pack = TagsPacks.GetByKeyOrDefault(tagsPackKey);
 
         if (pack == null)
             return;
 
-        var images = SelectedEntries.ToList();
+        var images = SelectedMediaEntries.ToList();
         var tags = pack.Tags.ToList();
 
         var imageIds = images
@@ -197,12 +199,12 @@ internal partial class QuickTaggingVM : ObservableObject
     [RelayCommand]
     private async Task UndoPack(char tagsPackKey)
     {
-        var pack = TagsPacks.FirstOrDefault(x => x.Key == tagsPackKey);
+        var pack = TagsPacks.GetByKeyOrDefault(tagsPackKey);
 
         if (pack == null)
             return;
 
-        var images = SelectedEntries.ToList();
+        var images = SelectedMediaEntries.ToList();
         var tags = pack.Tags.ToList();
 
         var imageIds = images
@@ -235,22 +237,59 @@ internal partial class QuickTaggingVM : ObservableObject
         }
     }
 
-    private async void ReactOnPropertyChanged(object? sender, System.ComponentModel.PropertyChangedEventArgs e)
+    private async void ReactOnPropertyChanged(object? _, System.ComponentModel.PropertyChangedEventArgs e)
     {
         if (e.PropertyName == nameof(SearchText))
         {
             await SearchTagsCommand.ExecuteAsync(SearchText);
         }
     }
+
+    private void ReactOnMainWindowVMPropertyChanged(object? _, System.ComponentModel.PropertyChangedEventArgs e)
+    {
+        if (e.PropertyName == nameof(MainWindowVM.SelectedEntries))
+        {
+            OnPropertyChanged(nameof(SelectedMediaEntries));
+            OnPropertyChanged(nameof(SelectedMediaEntriesCount));
+        }
+    }
 }
 
-internal partial class TagsPack : ObservableObject
+internal partial class TagsPacksVM : ObservableObject
+{
+    public ObservableCollection<TagsPackVM> Packs { get; } = new();
+
+    public void AddNext(IReadOnlyCollection<Tag> tags)
+    {
+        var lastKey = Packs.LastOrDefault()?.Key;
+        var nextKey = GetNextKey(lastKey);
+
+        if (nextKey == '_')
+        {
+            Packs.Add(new EmptyTagPackVM());
+            nextKey = GetNextKey(nextKey);
+        }
+
+        Packs.Add(new TagsPackVM(tags, nextKey));
+    }
+
+    private static char GetNextKey(char? lastKey)
+    {
+        return !lastKey.HasValue
+            ? AvailableKeys[0]
+            : AvailableKeys[Array.IndexOf(AvailableKeys, lastKey.Value) + 1];
+    }
+
+    private static readonly char[] AvailableKeys = ("12345" + "_WERT" + "ASDFG" + "ZXCVB").ToCharArray();
+
+    public TagsPackVM? GetByKeyOrDefault(char key) => Packs.FirstOrDefault(x => x.Key == key);
+
+    public void Clear() => Packs.Clear();
+}
+internal partial class TagsPackVM : ObservableObject
 {
     [ObservableProperty]
     private IReadOnlyCollection<Tag> _tags;
-
-    [ObservableProperty]
-    private Guid _id;
 
     [ObservableProperty]
     private char _key;
@@ -258,54 +297,58 @@ internal partial class TagsPack : ObservableObject
     [ObservableProperty]
     private bool? _isSuccess = null;
 
-    public TagsPack(IReadOnlyCollection<Tag> tags, Guid id, char? lastKey)
+    public TagsPackVM(IReadOnlyCollection<Tag> tags, char key)
     {
         _tags = tags;
-        _id = id;
-        _key = !lastKey.HasValue ? AvailableKeys[0] : AvailableKeys[Array.IndexOf(AvailableKeys, lastKey.Value) + 1];
+        _key = key;
     }
-
-    private static readonly char[] AvailableKeys = ("12345" + "_WERT" + "ASDFG" + "ZXCVB").ToCharArray();
 }
 
-internal class DesignQuickTaggingVM : QuickTaggingVM
+internal class EmptyTagPackVM : TagsPackVM
 {
-    public DesignQuickTaggingVM() : base(null!)
+    public EmptyTagPackVM() : base([], '_')
     {
-        SearchText = "solo";
-        SelectedTags = new ObservableCollection<Tag>([
-            new Tag(Guid.NewGuid(), "solo 1", new TagType(Guid.NewGuid(), "general", 0), [], false, false, 0),
-            new Tag(Guid.NewGuid(), "solo 2", new TagType(Guid.NewGuid(), "general", 0), [], false, false, 0),
-            new Tag(Guid.NewGuid(), "solo 3", new TagType(Guid.NewGuid(), "general", 0), [], false, false, 0),
-        ]);
-        TagsPacks = new ObservableCollection<TagsPack>([
-            new TagsPack(
-                new[]
-                {
-                    new Tag(Guid.NewGuid(), "solo 1", new TagType(Guid.NewGuid(), "general", 0), [], false, false, 0),
-                    new Tag(Guid.NewGuid(), "solo 2", new TagType(Guid.NewGuid(), "general", 0), [], false, false, 0),
-                    new Tag(Guid.NewGuid(), "solo 3", new TagType(Guid.NewGuid(), "general", 0), [], false, false, 0),
-                },
-                Guid.NewGuid(),
-                'A'),
-            new TagsPack(
-                new[]
-                {
-                    new Tag(Guid.NewGuid(), "solo 4", new TagType(Guid.NewGuid(), "general", 0), [], false, false, 0),
-                    new Tag(Guid.NewGuid(), "solo 5", new TagType(Guid.NewGuid(), "general", 0), [], false, false, 0),
-                    new Tag(Guid.NewGuid(), "solo 6", new TagType(Guid.NewGuid(), "general", 0), [], false, false, 0),
-                },
-                Guid.NewGuid(),
-                'B'),
-        ]);
-        FoundTags = new[]
-        {
-            new Tag(Guid.NewGuid(), "solo 1", new TagType(Guid.NewGuid(), "general", 0), [], false, false, 0),
-            new Tag(Guid.NewGuid(), "solo 2", new TagType(Guid.NewGuid(), "general", 0), [], false, false, 0),
-            new Tag(Guid.NewGuid(), "solo 3", new TagType(Guid.NewGuid(), "general", 0), [], false, false, 0),
-            new Tag(Guid.NewGuid(), "solo 4", new TagType(Guid.NewGuid(), "general", 0), [], false, false, 0),
-            new Tag(Guid.NewGuid(), "solo 5", new TagType(Guid.NewGuid(), "general", 0), [], false, false, 0),
-            new Tag(Guid.NewGuid(), "solo 5", new TagType(Guid.NewGuid(), "general", 0), [], false, false, 0),
-        };
     }
 }
+
+//internal class DesignQuickTaggingVM : QuickTaggingVM
+//{
+//    public DesignQuickTaggingVM() : base(null!)
+//    {
+//        SearchText = "solo";
+//        SelectedTags = new ObservableCollection<Tag>([
+//            new Tag(Guid.NewGuid(), "solo 1", new TagType(Guid.NewGuid(), "general", 0), [], false, false, 0),
+//            new Tag(Guid.NewGuid(), "solo 2", new TagType(Guid.NewGuid(), "general", 0), [], false, false, 0),
+//            new Tag(Guid.NewGuid(), "solo 3", new TagType(Guid.NewGuid(), "general", 0), [], false, false, 0),
+//        ]);
+//        TagsPacks = new ObservableCollection<TagsPackVM>([
+//            new TagsPackVM(
+//                new[]
+//                {
+//                    new Tag(Guid.NewGuid(), "solo 1", new TagType(Guid.NewGuid(), "general", 0), [], false, false, 0),
+//                    new Tag(Guid.NewGuid(), "solo 2", new TagType(Guid.NewGuid(), "general", 0), [], false, false, 0),
+//                    new Tag(Guid.NewGuid(), "solo 3", new TagType(Guid.NewGuid(), "general", 0), [], false, false, 0),
+//                },
+//                Guid.NewGuid(),
+//                'A'),
+//            new TagsPackVM(
+//                new[]
+//                {
+//                    new Tag(Guid.NewGuid(), "solo 4", new TagType(Guid.NewGuid(), "general", 0), [], false, false, 0),
+//                    new Tag(Guid.NewGuid(), "solo 5", new TagType(Guid.NewGuid(), "general", 0), [], false, false, 0),
+//                    new Tag(Guid.NewGuid(), "solo 6", new TagType(Guid.NewGuid(), "general", 0), [], false, false, 0),
+//                },
+//                Guid.NewGuid(),
+//                'B'),
+//        ]);
+//        FoundTags = new[]
+//        {
+//            new Tag(Guid.NewGuid(), "solo 1", new TagType(Guid.NewGuid(), "general", 0), [], false, false, 0),
+//            new Tag(Guid.NewGuid(), "solo 2", new TagType(Guid.NewGuid(), "general", 0), [], false, false, 0),
+//            new Tag(Guid.NewGuid(), "solo 3", new TagType(Guid.NewGuid(), "general", 0), [], false, false, 0),
+//            new Tag(Guid.NewGuid(), "solo 4", new TagType(Guid.NewGuid(), "general", 0), [], false, false, 0),
+//            new Tag(Guid.NewGuid(), "solo 5", new TagType(Guid.NewGuid(), "general", 0), [], false, false, 0),
+//            new Tag(Guid.NewGuid(), "solo 5", new TagType(Guid.NewGuid(), "general", 0), [], false, false, 0),
+//        };
+//    }
+//}
