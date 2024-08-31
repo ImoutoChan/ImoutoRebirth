@@ -36,8 +36,7 @@
 
                 <TextBox Grid.Row="1"
                          Margin="5"
-                         metroControl:TextBoxHelper.Watermark="Search tag"
-                         Style="{DynamicResource SearchMetroTextBox}"
+                         metroControl:TextBoxHelper.Watermark="Search for tags"
                          FontSize="14"
                          Text="{Binding Path=SearchString, UpdateSourceTrigger=PropertyChanged}"
                          PreviewKeyDown="TextBox_KeyDown" />

@@ -1,5 +1,6 @@
 ﻿using System.Collections.ObjectModel;
 using System.Diagnostics;
+using System.Text.Json;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using ImoutoRebirth.Common;
@@ -237,6 +238,24 @@ internal partial class QuickTaggingVM : ObservableObject
         }
     }
 
+    [RelayCommand]
+    private void RemovePack(TagsPackVM pack) => TagsPacks.Remove(pack);
+
+    [RelayCommand]
+    private void SavePacks()
+    {
+        var serialized = TagsPacks.Save();
+        Settings.Default.TagsPacks = serialized;
+        Settings.Default.Save();
+    }
+    
+    [RelayCommand]
+    private void LoadPacks()
+    {
+        var serialized = Settings.Default.TagsPacks;
+        TagsPacks.Load(serialized);
+    }
+
     private async void ReactOnPropertyChanged(object? _, System.ComponentModel.PropertyChangedEventArgs e)
     {
         if (e.PropertyName == nameof(SearchText))
@@ -270,6 +289,12 @@ internal partial class TagsPacksVM : ObservableObject
             nextKey = GetNextKey(nextKey);
         }
 
+        if (nextKey == '-')
+        {
+            Packs.Add(new EmptyTagPackVM());
+            nextKey = GetNextKey(nextKey);
+        }
+
         Packs.Add(new TagsPackVM(tags, nextKey));
     }
 
@@ -280,11 +305,33 @@ internal partial class TagsPacksVM : ObservableObject
             : AvailableKeys[Array.IndexOf(AvailableKeys, lastKey.Value) + 1];
     }
 
-    private static readonly char[] AvailableKeys = ("12345" + "_WERT" + "ASDFG" + "ZXCVB").ToCharArray();
+    private static readonly char[] AvailableKeys = ("12345" + "_WERT" + "ASDFG" + "Z-CVB").ToCharArray();
 
-    public TagsPackVM? GetByKeyOrDefault(char key) => Packs.FirstOrDefault(x => x.Key == key);
+    public TagsPackVM? GetByKeyOrDefault(char key) 
+        => Packs.FirstOrDefault(x => string.Equals(x.Key.ToString(), key.ToString(), StringComparison.OrdinalIgnoreCase));
 
     public void Clear() => Packs.Clear();
+
+    public string Save() => JsonSerializer.Serialize(Packs.Select(x => x.Tags).ToList());
+
+    public void Load(string serialized)
+    {
+        var tags = JsonSerializer.Deserialize<IReadOnlyCollection<IReadOnlyCollection<Tag>>>(serialized);
+
+        if (tags == null)
+            return;
+
+        Clear();
+
+        foreach (var pack in tags.Where(x => x.Any()))
+            AddNext(pack);
+    }
+
+    public void Remove(TagsPackVM pack)
+    {
+        if (Packs.Contains(pack))
+            Packs.Remove(pack);
+    }
 }
 internal partial class TagsPackVM : ObservableObject
 {

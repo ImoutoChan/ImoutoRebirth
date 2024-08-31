@@ -97,25 +97,32 @@ public partial class PlayerControl
 
         Slider.ValueChanged += (_, args) =>
         {
-            var player = _control.SourceProvider.MediaPlayer;
+            try
+            {
+                var player = _control.SourceProvider.MediaPlayer;
 
-            if (player == null)
-                return;
+                if (player == null)
+                    return;
 
-            var newValue = (float) args.NewValue / 100;
-            var oldValue = player.Position;
+                var newValue = (float) args.NewValue / 100;
+                var oldValue = player.Position;
 
-            var absoluteDiff = Math.Abs(oldValue - newValue);
-            var length = player.Length;
+                var absoluteDiff = Math.Abs(oldValue - newValue);
+                var length = player.Length;
 
-            var msDiff = absoluteDiff * length;
+                var msDiff = absoluteDiff * length;
 
-            if (msDiff < 1000) 
-                return;
+                if (msDiff < 1000) 
+                    return;
 
-            var set = (float) args.NewValue / 100;
+                var set = (float) args.NewValue / 100;
 
-            Task.Run(() => player.Position = set);
+                Task.Run(() => player.Position = set);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+            }
         };
     }
 
