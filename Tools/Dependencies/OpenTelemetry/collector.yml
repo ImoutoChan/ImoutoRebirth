@@ -6,6 +6,11 @@ receivers:
 
 processors:
   batch:
+  filter:
+    error_mode: ignore
+    traces:
+      span:
+        - attributes["db.name"] == "masstransit"
 
 exporters:
   prometheus:
@@ -32,5 +37,5 @@ service:
       exporters: [prometheus]
     traces:
       receivers: [otlp]
-      processors: [batch]
+      processors: [filter,batch]
       exporters: [otlp/jaeger]
