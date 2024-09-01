@@ -1,5 +1,4 @@
 ﻿using System.Collections.ObjectModel;
-using System.Diagnostics;
 using System.Text.Json;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
@@ -9,6 +8,7 @@ using ImoutoRebirth.Navigator.Services.Tags;
 using ImoutoRebirth.Navigator.Services.Tags.Model;
 using ImoutoRebirth.Navigator.ViewModel;
 using ImoutoRebirth.Navigator.ViewModel.ListEntries;
+using Serilog;
 
 namespace ImoutoRebirth.Navigator.Slices.QuickTagging;
 
@@ -130,7 +130,7 @@ internal partial class QuickTaggingVM : ObservableObject
             await Task.Delay(1500);
             IsSelectedTagsApplicationSuccess = null;
             
-            Debug.WriteLine(e.Message);
+            Log.Error(e, "Error while applying tags");
         }
     }
 
@@ -193,7 +193,7 @@ internal partial class QuickTaggingVM : ObservableObject
             await Task.Delay(1500);
             pack.IsSuccess = null;
             
-            Debug.WriteLine(e.Message);
+            Log.Error(e, "Error while applying tags pack");
         }
     }
 
@@ -234,7 +234,7 @@ internal partial class QuickTaggingVM : ObservableObject
             await Task.Delay(1500);
             pack.IsSuccess = null;
             
-            Debug.WriteLine(e.Message);
+            Log.Error(e, "Error while undoing tags pack");
         }
     }
 

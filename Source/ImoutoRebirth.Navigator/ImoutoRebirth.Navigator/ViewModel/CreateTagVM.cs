@@ -1,9 +1,9 @@
 ﻿using System.Collections.ObjectModel;
-using System.Diagnostics;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using ImoutoRebirth.Navigator.Services;
 using ImoutoRebirth.Navigator.Services.Tags;
+using Serilog;
 using TagType = ImoutoRebirth.Navigator.Services.Tags.Model.TagType;
 
 namespace ImoutoRebirth.Navigator.ViewModel;
@@ -77,13 +77,13 @@ internal partial class CreateTagVM : ObservableObject
             await Task.Delay(500);
             OnRequestClosing();
 
-            Debug.WriteLine("Tag creating", "Tag successfully created");
+            Log.Information("Tag successfully created");
         }
         catch (Exception ex)
         {
             IsSaving = false;
 
-            Debug.WriteLine("Tag creating", "Error while creating: " + ex.Message);
+            Log.Error(ex, "Error while creating tag");
         }
     }
 
@@ -109,9 +109,9 @@ internal partial class CreateTagVM : ObservableObject
 
             _tagTypesLoaded = true;
         }
-        catch
+        catch (Exception ex)
         {
-            Debug.WriteLine("Tag creating", "Unable to load TagTypes. Creating process terminated");
+            Log.Error(ex, "Unable to load TagTypes. Creating process terminated");
         }
         finally
         {

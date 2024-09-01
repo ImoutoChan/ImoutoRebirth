@@ -1,10 +1,10 @@
 ﻿using System.Collections.Concurrent;
-using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Reflection;
 using System.Windows;
 using System.Windows.Controls;
+using Serilog;
 using Vlc.DotNet.Wpf;
 
 namespace ImoutoRebirth.Navigator.UserControls;
@@ -66,7 +66,7 @@ public partial class PlayerControl
                 }
                 catch (Exception e)
                 {
-                    Debug.WriteLine("Ignoring player error: " + e);
+                    Log.Warning(e, "Ignoring player error on position change");
                 }
             };
 
@@ -91,7 +91,7 @@ public partial class PlayerControl
                 }
                 catch (Exception e)
                 {
-                    Debug.WriteLine("Ignoring player error: " + e);
+                    Log.Warning(e, "Ignoring player error on time change");
                 }
             };
 
@@ -121,7 +121,7 @@ public partial class PlayerControl
             }
             catch (Exception e)
             {
-                Console.WriteLine(e);
+                Log.Warning(e, "Ignoring player error on slider change");
             }
         };
     }

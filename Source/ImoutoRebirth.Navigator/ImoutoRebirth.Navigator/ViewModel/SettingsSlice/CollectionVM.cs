@@ -1,9 +1,9 @@
 ﻿using System.Collections.ObjectModel;
-using System.Diagnostics;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using ImoutoRebirth.Navigator.Services;
 using ImoutoRebirth.Navigator.Services.Collections;
+using Serilog;
 
 namespace ImoutoRebirth.Navigator.ViewModel.SettingsSlice;
 
@@ -85,7 +85,7 @@ internal partial class CollectionVM : ObservableObject
         catch (Exception ex)
         {
             App.MainWindowVM?.SetStatusError("Folders reload error", ex.Message);
-            Debug.WriteLine("Folders reload error: " + ex.Message);
+            Log.Error(ex, "Folders reload error");
         }
     }
         
@@ -98,7 +98,7 @@ internal partial class CollectionVM : ObservableObject
         catch (Exception ex)
         {
             App.MainWindowVM?.SetStatusError("Can't remove collection", ex.Message);
-            Debug.WriteLine("Can't remove collection: " + ex.Message);
+            Log.Error(ex, "Can't remove collection");
         }
     }
 
@@ -113,7 +113,7 @@ internal partial class CollectionVM : ObservableObject
         catch (Exception ex)
         {
             App.MainWindowVM?.SetStatusError("Can't rename collection", ex.Message);
-            Debug.WriteLine("Can't rename collection: " + ex.Message);
+            Log.Error(ex, "Can't rename collection");
         }
     }
 
@@ -131,7 +131,7 @@ internal partial class CollectionVM : ObservableObject
             catch (Exception ex)
             {
                 App.MainWindowVM?.SetStatusError("Can't remove folder", ex.Message);
-                Debug.WriteLine("Can't remove folder: " + ex.Message);
+                Log.Error(ex, "Can't remove folder");
             }
         }
 
@@ -169,7 +169,7 @@ internal partial class CollectionVM : ObservableObject
         catch (Exception ex)
         {
             App.MainWindowVM?.SetStatusError("Can't save folder", ex.Message);
-            Debug.WriteLine("Can't save folder: " + ex.Message);
+            Log.Error(ex, "Can't save folder");
         }
     }
 
@@ -196,7 +196,7 @@ internal partial class CollectionVM : ObservableObject
         catch (Exception ex)
         {
             App.MainWindowVM?.SetStatusError("Can't save folder", ex.Message);
-            Debug.WriteLine("Can't save folder: " + ex.Message);
+            Log.Error(ex, "Can't save folder");
         }
     }
 
@@ -236,7 +236,7 @@ internal partial class CollectionVM : ObservableObject
             catch (Exception ex)
             {
                 App.MainWindowVM?.SetStatusError("Can't remove folder", ex.Message);
-                Debug.WriteLine("Can't remove folder: " + ex.Message);
+                Log.Error(ex, "Can't remove folder");
             }
         }
 

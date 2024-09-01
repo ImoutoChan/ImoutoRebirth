@@ -19,6 +19,7 @@ using ImoutoRebirth.Navigator.ViewModel.ListEntries;
 using ImoutoRebirth.Navigator.ViewModel.SettingsSlice;
 using MahApps.Metro.Controls.Dialogs;
 using Newtonsoft.Json;
+using Serilog;
 using File = System.IO.File;
 
 namespace ImoutoRebirth.Navigator.ViewModel;
@@ -27,14 +28,15 @@ internal partial class MainWindowVM : ObservableObject
 {
     private const string DefaultTitle = "Imouto Navigator";
 
-    private MainWindow _view;
-    private int _previewSize = 256;
+    private readonly MainWindow _view;
     private readonly IFileService _fileService;
     private readonly IFileTagService _fileTagService;
     private readonly IFileNoteService _fileNoteService;
     private readonly IFileLoadingService _fileLoadingService;
     private readonly IImoutoViewerService _imoutoViewerService;
     private readonly DispatcherTimer _appendNewContentTimer = new() { Interval = TimeSpan.FromSeconds(5) };
+
+    private int _previewSize = 256;
 
     [ObservableProperty]
     private bool _showTags = true;
@@ -96,53 +98,6 @@ internal partial class MainWindowVM : ObservableObject
     }
 
     public void ShowWindow() => _view.Show();
-
-    // private async Task LoadNew()
-    // {
-    //     _appendNewContentTimer.Stop();
-    //     UpdatePreviews();
-    //
-    //     var total = TotalCount;
-    //
-    //     var newTotal = await _fileLoadingService.GetCount(
-    //         TagSearchVM.SelectedCollection.Value,
-    //         TagSearchVM.SelectedBindedTags.Select(x => x.Model).ToList());
-    //
-    //     if (newTotal <= total)
-    //     {
-    //         _appendNewContentTimer.Start();
-    //         return;
-    //     }
-    //
-    //     try
-    //     {
-    //         await _fileLoadingService.LoadFiles(
-    //             10_000,
-    //             _previewSize,
-    //             TagSearchVM.SelectedCollection.Value,
-    //             TagSearchVM.SelectedBindedTags.Select(x => x.Model).ToList(),
-    //             x => TotalCount = x,
-    //             (x, ct) =>
-    //             {
-    //                 foreach (var navigatorListEntry in x)
-    //                 {
-    //                     ct.ThrowIfCancellationRequested();
-    //                     NavigatorList.Add(navigatorListEntry);
-    //                 }
-    //             },
-    //             () => TotalCount = total,
-    //             () => { },
-    //             () => { },
-    //             total);
-    //     }
-    //     catch (Exception ex)
-    //     {
-    //         Debug.WriteLine("Can't load images from collection: " + ex.Message);
-    //         SetStatusError("Can't load images from collection", ex.Message);
-    //     }
-    //
-    //     _appendNewContentTimer.Start();
-    // }
 
     private async Task InitializeAsync()
     {
@@ -268,7 +223,7 @@ internal partial class MainWindowVM : ObservableObject
                 break;
             }
             default:
-                Debug.WriteLine("Can't open unsupported entry type" + navigatorListEntry?.GetType().FullName);
+                Log.Error("Can't open unsupported entry type {Type}", navigatorListEntry?.GetType().FullName);
                 break;
         }
     }
@@ -437,11 +392,11 @@ internal partial class MainWindowVM : ObservableObject
                     _appendNewContentTimer.Start();
                 });
             loadingTiming.Stop();
-            Debug.WriteLine("Loading time: " + loadingTiming.ElapsedMilliseconds);
+            Log.Information("Loading time: {Time}", loadingTiming.ElapsedMilliseconds);
         }
         catch (Exception ex)
         {
-            Debug.WriteLine("Can't load images from collection: " + ex.Message);
+            Log.Error(ex, "Can't load images from collection");
             SetStatusError("Can't load images from collection", ex.Message);
         }
     }

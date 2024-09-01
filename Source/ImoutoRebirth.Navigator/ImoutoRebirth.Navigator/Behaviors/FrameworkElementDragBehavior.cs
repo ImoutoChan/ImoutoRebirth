@@ -1,7 +1,7 @@
-﻿using System.Diagnostics;
-using System.Windows;
+﻿using System.Windows;
 using System.Windows.Input;
 using Microsoft.Xaml.Behaviors;
+using Serilog;
 
 namespace ImoutoRebirth.Navigator.Behaviors;
 
@@ -33,9 +33,9 @@ internal class FrameworkElementDragBehavior : Behavior<FrameworkElement>
             {
                 DragDrop.DoDragDrop(AssociatedObject, dragObject.Data, dragObject.AllowDragDropEffects);
             }
-            catch (Exception exception)
+            catch (Exception ex)
             {
-                Debug.WriteLine(exception);
+                Log.Error(ex, "Error during drag and drop");
             }
         }
 

@@ -804,13 +804,28 @@
         
         <Grid>
             <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
                 <RowDefinition Height="*" />
                 <RowDefinition Height="Auto" />
             </Grid.RowDefinitions>
 
             <quickTagging:QuickTaggingView
-                x:Name="QuickTagging"
-                Grid.Row="1"
+                x:Name="QuickTagging1"
+                Grid.Row="0"
+                DataContext="{Binding Path=QuickTagging}"
+                Margin="0,0,0,25"
+                Width="1000"
+                Height="500"
+                Visibility="{Binding 
+                    Path=DataContext.ShowQuickTagging, 
+                    RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type metroControl:MetroWindow}},
+                    Converter={StaticResource ConditionVisibilityConverter},
+                    ConverterParameter=true|false}"
+                IsVisibleChanged="QuickTagging_OnIsVisibleChanged" />
+
+            <quickTagging:QuickTaggingView
+                x:Name="QuickTagging2"
+                Grid.Row="2"
                 DataContext="{Binding Path=QuickTagging}"
                 Margin="0,0,0,25"
                 Width="1000"

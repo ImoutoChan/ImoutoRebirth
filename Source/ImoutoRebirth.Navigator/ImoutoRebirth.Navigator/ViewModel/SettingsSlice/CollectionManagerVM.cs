@@ -4,6 +4,7 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using ImoutoRebirth.Navigator.Services;
 using ImoutoRebirth.Navigator.Services.Collections;
+using Serilog;
 
 namespace ImoutoRebirth.Navigator.ViewModel.SettingsSlice;
 
@@ -42,7 +43,7 @@ internal partial class CollectionManagerVm : ObservableObject
         }
         catch (Exception ex)
         {
-            Debug.WriteLine("Cannot create collection: " + ex.Message);
+            Log.Error(ex, "Cannot create collection");
             return ex.Message;
         }
     }
@@ -57,7 +58,7 @@ internal partial class CollectionManagerVm : ObservableObject
             var collections = await _collectionService.GetAllCollectionsAsync();
 
             sw.Stop();
-            Debug.WriteLine($"Collections reloaded in {sw.ElapsedMilliseconds}ms.");
+            Log.Information("Collections reloaded in {ElapsedMilliseconds}ms.", sw.ElapsedMilliseconds);
 
             Collections.Clear();
 
@@ -76,7 +77,7 @@ internal partial class CollectionManagerVm : ObservableObject
         catch (Exception ex)
         {
             App.MainWindowVM?.SetStatusError("Can't reload collections", ex.Message);
-            Debug.WriteLine("Collections reload error: " + ex.Message);
+            Log.Error(ex, "Collections reload error");
         }
     }
 

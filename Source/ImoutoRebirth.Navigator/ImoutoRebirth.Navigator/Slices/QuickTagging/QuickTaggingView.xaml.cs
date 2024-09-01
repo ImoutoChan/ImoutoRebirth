@@ -1,5 +1,4 @@
-﻿using System.Diagnostics;
-using System.Windows;
+﻿using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 
@@ -16,6 +15,8 @@ public partial class QuickTaggingView : UserControl
     }
 
     internal QuickTaggingVM DataContextVM => (QuickTaggingVM)DataContext;
+
+    public bool IsPanelDown { get; set; }
 
     private void SearchTextBox_OnPreviewKeyDown(object sender, KeyEventArgs e)
     {
@@ -135,4 +136,6 @@ public partial class QuickTaggingView : UserControl
             >= Key.A and <= Key.Z => (char)('a' + (key - Key.A)),
             _ => null
         };
+
+    private void TogglePanelPosition(object sender, RoutedEventArgs e) => IsPanelDown = !IsPanelDown;
 }

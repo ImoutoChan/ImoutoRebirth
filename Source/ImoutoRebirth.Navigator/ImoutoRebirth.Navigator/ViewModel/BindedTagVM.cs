@@ -1,5 +1,4 @@
-﻿using System.Diagnostics;
-using System.Windows.Media;
+﻿using System.Windows.Media;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using ImoutoRebirth.Lilin.WebApi.Client;
@@ -7,6 +6,7 @@ using ImoutoRebirth.Navigator.Services;
 using ImoutoRebirth.Navigator.Services.Tags;
 using ImoutoRebirth.Navigator.Services.Tags.Model;
 using ImoutoRebirth.Navigator.Utils;
+using Serilog;
 using Tag = ImoutoRebirth.Navigator.Services.Tags.Model.Tag;
 
 namespace ImoutoRebirth.Navigator.ViewModel;
@@ -104,7 +104,7 @@ internal partial class BindedTagVM : ObservableObject
         }
         catch (Exception ex)
         {
-            Debug.WriteLine(ex.Message);
+            Log.Error(ex, "Failed to unbind tag");
         }
     }
 
@@ -126,7 +126,7 @@ internal partial class BindedTagVM : ObservableObject
         }
         catch (Exception ex)
         {
-            Debug.WriteLine(ex.Message);
+            Log.Error(ex, "Failed to increment counter");
         }
     }
 

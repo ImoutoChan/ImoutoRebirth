@@ -10,6 +10,7 @@ using ImoutoRebirth.Navigator.UserControls;
 using ImoutoRebirth.Navigator.Utils;
 using ImoutoRebirth.Navigator.ViewModel.SettingsSlice;
 using Newtonsoft.Json;
+using Serilog;
 using SearchType = ImoutoRebirth.Navigator.Services.Tags.Model.SearchType;
 using Tag = ImoutoRebirth.Navigator.Services.Tags.Model.Tag;
 
@@ -233,7 +234,7 @@ internal partial class TagSearchVM : ObservableObject
         catch (Exception ex)
         {
             App.MainWindowVM?.SetStatusError("Error while searching tags", ex.Message);
-            Debug.WriteLine("Error while searching tags: " + ex.Message);
+            Log.Error(ex, "Error while searching tags");
         }
     }
 

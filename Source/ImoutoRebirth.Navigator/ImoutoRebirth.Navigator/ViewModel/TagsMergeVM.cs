@@ -1,10 +1,10 @@
 ﻿using System.Collections.ObjectModel;
-using System.Diagnostics;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using ImoutoRebirth.Navigator.Services;
 using ImoutoRebirth.Navigator.Services.Tags;
 using ImoutoRebirth.Navigator.Services.Tags.Model;
+using Serilog;
 
 namespace ImoutoRebirth.Navigator.ViewModel;
 
@@ -135,7 +135,7 @@ internal partial class TagsMergeVM : ObservableObject
         }
         catch (Exception ex)
         {
-            Debug.WriteLine("Tags load error: " + ex.Message);
+            Log.Error(ex, "Tags load error");
         }
     }
 

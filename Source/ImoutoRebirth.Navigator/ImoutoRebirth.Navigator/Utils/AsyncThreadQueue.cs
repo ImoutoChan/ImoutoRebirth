@@ -1,5 +1,7 @@
 ﻿using System.Collections.Concurrent;
 using System.Diagnostics;
+using Serilog;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace ImoutoRebirth.Navigator.Utils;
 
@@ -47,7 +49,7 @@ public class AsyncThreadQueue : IDisposable
                 }
                 catch (Exception ex)
                 {
-                    Debug.WriteLine("Error in method: {0}", ex.Message);
+                    Log.Error(ex, "Error in method");
                 }
 
             }

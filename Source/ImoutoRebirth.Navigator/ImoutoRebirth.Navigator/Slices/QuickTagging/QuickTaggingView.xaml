@@ -17,7 +17,8 @@
              d:DataContext="{d:DesignInstance Type={x:Type viewModel:QuickTaggingVM}, d:IsDesignTimeCreatable=True}"
              Background="{DynamicResource MahApps.Brushes.Flyout.Background}"
              PreviewKeyDown="QuickTaggingView_OnPreviewKeyDown"
-             IsVisibleChanged="QuickTaggingView_OnIsVisibleChanged">
+             IsVisibleChanged="QuickTaggingView_OnIsVisibleChanged"
+             x:Name="View">
     <UserControl.Resources>
         <converters:ConditionVisibilityConverter x:Key="ConditionVisibilityConverter" />
 
@@ -166,38 +167,61 @@
                     <RowDefinition Height="*" />
                 </Grid.RowDefinitions>
 
-                <TextBlock Grid.Row="0" FontSize="16">
-                    <Run Text="Quick Apply" />
-                    <Button HorizontalAlignment="Right"
+                <!-- HEADER -->
+                <DockPanel Grid.Row="0">
+                    <TextBlock DockPanel.Dock="Left" FontSize="16">
+                        <Run Text="Quick Apply" />
+                        <Button HorizontalAlignment="Right"
+                                Width="25"
+                                Height="25"
+                                Margin="25,0,0,-8"
+                                Style="{DynamicResource MahApps.Styles.Button.Circle}"
+                                Command="{Binding SavePacksCommand}"
+                                ToolTip="Save current quick applies">
+                            <iconPacks:PackIconModern
+                                Width="12"
+                                Height="12"
+                                Kind="Save">
+                            </iconPacks:PackIconModern>
+                        </Button>
+                        <Button HorizontalAlignment="Right"
+                                Width="25"
+                                Height="25"
+                                Margin="0,0,0,-8"
+                                Style="{DynamicResource MahApps.Styles.Button.Circle}"
+                                Command="{Binding LoadPacksCommand}"
+                                ToolTip="Load current quick applies">
+                            <iconPacks:PackIconModern
+                                Width="12"
+                                Height="12"
+                                Kind="Download">
+                            </iconPacks:PackIconModern>
+                        </Button>
+                    </TextBlock>
+
+                    <Button DockPanel.Dock="Right" HorizontalAlignment="Right"
                             Width="25"
                             Height="25"
-                            Margin="25,0,0,-8"
-                            Style="{DynamicResource MahApps.Styles.Button.Circle}"
-                            Command="{Binding SavePacksCommand}"
-                            ToolTip="Save current quick applies">
-                        <iconPacks:PackIconModern
-                            Width="12"
-                            Height="12"
-                            Kind="Save">
-                        </iconPacks:PackIconModern>
-                    </Button>
-                    <Button HorizontalAlignment="Right"
-                            Width="25"
-                            Height="25"
-                            Margin="0,0,0,-8"
+                            Margin="0,0,10,0"
                             Style="{DynamicResource MahApps.Styles.Button.Circle}"
                             Command="{Binding LoadPacksCommand}"
-                            ToolTip="Load current quick applies">
-                        <iconPacks:PackIconModern
-                            Width="12"
-                            Height="12"
-                            Kind="Download">
-                        </iconPacks:PackIconModern>
+                            ToolTip="Load current quick applies"
+                            Click="TogglePanelPosition">
+                        <Grid>
+                            <iconPacks:PackIconModern
+                                Width="12"
+                                Height="12"
+                                Kind="ArrowUp"
+                                Visibility="{Binding ElementName=View, Path=IsPanelDown, Converter={StaticResource ConditionVisibilityConverter}, ConverterParameter=true}" />
+                            <iconPacks:PackIconModern
+                                Width="12"
+                                Height="12"
+                                Kind="ArrowDown"
+                                Visibility="{Binding ElementName=View, Path=IsPanelDown, Converter={StaticResource ConditionVisibilityConverter}, ConverterParameter=false}"/>
+                        </Grid>
                     </Button>
-                </TextBlock>
-
+                </DockPanel>
                 
-
                 <ItemsControl Grid.Row="1" ItemsSource="{Binding TagsPacks.Packs}">
                     <ItemsControl.ItemsPanel>
                         <ItemsPanelTemplate>

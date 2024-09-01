@@ -1,16 +1,23 @@
-﻿using System.Diagnostics;
-using System.Windows;
+﻿using System.Windows;
 using System.Windows.Threading;
 using ImoutoRebirth.Navigator.ViewModel;
+using Serilog;
 
 namespace ImoutoRebirth.Navigator;
 
-/// <summary>
-/// Interaction logic for App.xaml
-/// </summary>
 public partial class App : Application
 {
-    public App() => Startup += async (_, _) => await RunApp();
+    public App() => Startup += async (_, _) =>
+    {
+        try
+        {
+            await RunApp();
+        }
+        catch (Exception e)
+        {
+            Log.Error(e, "Error during application startup");
+        }
+    };
 
     private async Task RunApp()
     {
@@ -30,17 +37,25 @@ public partial class App : Application
 
     protected override void OnStartup(StartupEventArgs startupEventArgs)
     {
+        Log.Logger = new LoggerConfiguration()
+            .MinimumLevel.Debug()
+            .WriteTo.Console() 
+            .WriteTo.File("logs/log.txt", rollingInterval: RollingInterval.Day, retainedFileCountLimit: 10)
+            .Enrich.WithThreadId()
+            .Enrich.WithThreadName()
+            .CreateLogger();
+
         DispatcherUnhandledException += OnDispatcherUnhandledException;
         
         TaskScheduler.UnobservedTaskException += (_, e) =>
         {
-            Debug.WriteLine("Dispatcher Unhandled exception: " + e.Exception.Message);
+            Log.Error(e.Exception, "Dispatcher Unhandled exception");
             e.SetObserved();
         };
         
         AppDomain.CurrentDomain.UnhandledException += (_, e) =>
         {
-            Debug.WriteLine("Dispatcher Unhandled exception: " + e.IsTerminating + " " + e.ExceptionObject);
+            Log.Error((Exception)e.ExceptionObject, "Dispatcher Unhandled exception: " + e.IsTerminating);
         };
 
         base.OnStartup(startupEventArgs);
@@ -48,7 +63,15 @@ public partial class App : Application
 
     private static void OnDispatcherUnhandledException(object sender, DispatcherUnhandledExceptionEventArgs e)
     {
-        Debug.WriteLine("Dispatcher Unhandled exception: " + e.Exception.Message);
+        Log.Error(e.Exception, "Dispatcher Unhandled exception");
         e.Handled = true;
+    }
+
+    protected override void OnExit(ExitEventArgs e)
+    {
+        Log.Information("Application Exiting");
+        Log.CloseAndFlush();
+
+        base.OnExit(e);
     }
 }
