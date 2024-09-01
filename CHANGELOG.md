@@ -20,6 +20,7 @@
 * Fix source deletion in the collection settings
 * Improve splashscreen
 * Migrate project to CommunityToolkit.Mvvm
+* New tool: quick tagging, CTRL+Q to open
 
 ### Arachne
 * Add availability check service that will stop consumers when it's search engine isn't available
