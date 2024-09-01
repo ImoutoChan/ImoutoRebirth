@@ -135,9 +135,9 @@ internal static partial class VirtualKeyboard
 
         var inputs = new Input[1];
 
-        inputs[1].type = InputKeyboard;
-        inputs[1].u.ki.wVk = virtualKey;
-        inputs[1].u.ki.dwFlags = KeyEventFKeyUp;
+        inputs[0].type = InputKeyboard;
+        inputs[0].u.ki.wVk = virtualKey;
+        inputs[0].u.ki.dwFlags = KeyEventFKeyUp;
 
         SendInput((uint)inputs.Length, inputs, Marshal.SizeOf(typeof(Input)));
     }

@@ -4,7 +4,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-             xmlns:viewModel="clr-namespace:ImoutoRebirth.Navigator.Slices.QuickTagging"
+             xmlns:slice="clr-namespace:ImoutoRebirth.Navigator.Slices.QuickTagging"
              xmlns:b="http://schemas.microsoft.com/xaml/behaviors"
              xmlns:model="clr-namespace:ImoutoRebirth.Navigator.Services.Tags.Model"
              xmlns:userControls="clr-namespace:ImoutoRebirth.Navigator.UserControls"
@@ -14,7 +14,7 @@
              mc:Ignorable="d"
              d:DesignHeight="300"
              d:DesignWidth="700"
-             d:DataContext="{d:DesignInstance Type={x:Type viewModel:QuickTaggingVM}, d:IsDesignTimeCreatable=True}"
+             d:DataContext="{d:DesignInstance Type={x:Type slice:QuickTaggingVM}, d:IsDesignTimeCreatable=True}"
              Background="{DynamicResource MahApps.Brushes.Flyout.Background}"
              PreviewKeyDown="QuickTaggingView_OnPreviewKeyDown"
              IsVisibleChanged="QuickTaggingView_OnIsVisibleChanged"
@@ -25,7 +25,18 @@
         <DataTemplate x:Key="SelectableTagDataTemplate" DataType="{x:Type model:Tag}">
             <Label Name="Label"
                    HorizontalContentAlignment="Stretch"
-                   Padding="10,4,5,2">
+                   Padding="10,4,5,2"
+                   Cursor="Hand">
+                <Label.InputBindings>
+                    <MouseBinding Gesture="LeftClick"
+                                  Command="{Binding 
+								    RelativeSource={RelativeSource 
+									    FindAncestor, 
+										AncestorType={x:Type slice:QuickTaggingView}}, 
+									Path=DataContext.RemoveSelectedTagCommand}"
+                                  CommandParameter="{Binding}" />
+                </Label.InputBindings>
+
                 <Label.Style>
                     <Style TargetType="Label">
                         <Setter Property="Background" Value="Transparent" />
@@ -56,11 +67,22 @@
             </Label>
         </DataTemplate>
 
-        <DataTemplate x:Key="SimpleTagDataTemplate" DataType="{x:Type model:Tag}">
+        <DataTemplate x:Key="SearchResultTagDataTemplate" DataType="{x:Type model:Tag}">
             <TextBlock TextAlignment="Left"
                        TextWrapping="Wrap"
                        ToolTip="{Binding Title, Mode=OneWay}"
-                       VerticalAlignment="Center">
+                       VerticalAlignment="Center"
+                       Cursor="Hand">
+                <TextBlock.InputBindings>
+                    <MouseBinding Gesture="LeftClick"
+                                  Command="{Binding 
+								    RelativeSource={RelativeSource 
+									    FindAncestor, 
+										AncestorType={x:Type slice:QuickTaggingView}}, 
+									Path=DataContext.SelectTagCommand}"
+                                  CommandParameter="{Binding}" />
+                </TextBlock.InputBindings>
+
                 <Run Text="{Binding Title, Mode=OneWay}"
                      FontSize="13"
                      FontWeight="Bold"
@@ -73,7 +95,7 @@
         </DataTemplate>
     </UserControl.Resources>
 
-    <Border BorderThickness="2,2,2,0"
+    <Border BorderThickness="2,2,2,2"
             BorderBrush="{DynamicResource MahApps.Brushes.Accent}">
         <Grid Margin="10,5,5,5">
             <Grid.ColumnDefinitions>
@@ -156,7 +178,7 @@
                          Margin="10,0,10,10"
                          ItemsSource="{Binding FoundTags}"
                          PreviewKeyDown="FoundTagsListBox_OnPreviewKeyDown"
-                         ItemTemplate="{StaticResource SimpleTagDataTemplate}" />
+                         ItemTemplate="{StaticResource SearchResultTagDataTemplate}" />
             </DockPanel>
             
             <!-- TAG PACKS -->
@@ -172,12 +194,12 @@
                     <TextBlock DockPanel.Dock="Left" FontSize="16">
                         <Run Text="Quick Apply" />
                         <Button HorizontalAlignment="Right"
-                                Width="25"
-                                Height="25"
+                                Width="26"
+                                Height="26"
                                 Margin="25,0,0,-8"
                                 Style="{DynamicResource MahApps.Styles.Button.Circle}"
-                                Command="{Binding SavePacksCommand}"
-                                ToolTip="Save current quick applies">
+                                Command="{Binding SavePacksSetsCommand}"
+                                ToolTip="Save current quick applies to settings and clipboard">
                             <iconPacks:PackIconModern
                                 Width="12"
                                 Height="12"
@@ -185,44 +207,63 @@
                             </iconPacks:PackIconModern>
                         </Button>
                         <Button HorizontalAlignment="Right"
-                                Width="25"
-                                Height="25"
+                                Width="26"
+                                Height="26"
                                 Margin="0,0,0,-8"
                                 Style="{DynamicResource MahApps.Styles.Button.Circle}"
-                                Command="{Binding LoadPacksCommand}"
-                                ToolTip="Load current quick applies">
+                                ToolTip="Rename current set"
+                                Click="RenameCurrentSet">
                             <iconPacks:PackIconModern
+                                Margin="0,-1,0,0"
                                 Width="12"
                                 Height="12"
-                                Kind="Download">
+                                Kind="DrawPencil">
+                            </iconPacks:PackIconModern>
+                        </Button>
+                        <Button HorizontalAlignment="Right"
+                                Width="26"
+                                Height="26"
+                                Margin="0,0,0,-8"
+                                Style="{DynamicResource MahApps.Styles.Button.Circle}"
+                                Command="{Binding DeleteSelectedPacksSetCommand}"
+                                ToolTip="Delete current set">
+                            <iconPacks:PackIconModern
+                                Margin="1,0,0,0"
+                                Width="12"
+                                Height="12"
+                                Kind="Delete">
                             </iconPacks:PackIconModern>
                         </Button>
                     </TextBlock>
 
                     <Button DockPanel.Dock="Right" HorizontalAlignment="Right"
-                            Width="25"
-                            Height="25"
-                            Margin="0,0,10,0"
+                            Width="26"
+                            Height="26"
+                            Margin="0,0,0,0"
                             Style="{DynamicResource MahApps.Styles.Button.Circle}"
-                            Command="{Binding LoadPacksCommand}"
-                            ToolTip="Load current quick applies"
+                            ToolTip="Move panel up and down"
                             Click="TogglePanelPosition">
-                        <Grid>
+                        <Grid Margin="1,0,0,0">
                             <iconPacks:PackIconModern
                                 Width="12"
                                 Height="12"
                                 Kind="ArrowUp"
-                                Visibility="{Binding ElementName=View, Path=IsPanelDown, Converter={StaticResource ConditionVisibilityConverter}, ConverterParameter=true}" />
+                                Visibility="{Binding ElementName=View, Path=VerticalAlignment, Converter={StaticResource ConditionVisibilityConverter}, ConverterParameter=Bottom}" />
                             <iconPacks:PackIconModern
                                 Width="12"
                                 Height="12"
                                 Kind="ArrowDown"
-                                Visibility="{Binding ElementName=View, Path=IsPanelDown, Converter={StaticResource ConditionVisibilityConverter}, ConverterParameter=false}"/>
+                                Visibility="{Binding ElementName=View, Path=VerticalAlignment, Converter={StaticResource ConditionVisibilityConverter}, ConverterParameter=Top}"/>
                         </Grid>
                     </Button>
+
+                    <ComboBox Margin="80,0,10,0" 
+                              ItemsSource="{Binding AvailableTagPacksSets.Sets}"
+                              SelectedItem="{Binding AvailableTagPacksSets.Selected}"
+                              DisplayMemberPath="Name" />
                 </DockPanel>
                 
-                <ItemsControl Grid.Row="1" ItemsSource="{Binding TagsPacks.Packs}">
+                <ItemsControl Grid.Row="1" ItemsSource="{Binding AvailableTagPacksSets.Selected.Packs}">
                     <ItemsControl.ItemsPanel>
                         <ItemsPanelTemplate>
                             <userControls:VirtualizingWrapPanel IsItemsHost="True"
@@ -245,7 +286,7 @@
                     </ItemsControl.Template>
 
                     <ItemsControl.ItemTemplate>
-                        <DataTemplate DataType="{x:Type viewModel:TagsPackVM}">
+                        <DataTemplate DataType="{x:Type slice:TagsPackVM}">
                             <StackPanel Margin="5,15,5,5">
                                 <TextBlock FontSize="12" FontWeight="Bold" Margin="0,0,0,10">
                                     <Run Text="CTRL +" />

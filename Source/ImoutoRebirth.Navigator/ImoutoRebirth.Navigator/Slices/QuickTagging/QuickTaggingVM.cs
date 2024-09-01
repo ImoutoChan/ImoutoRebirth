@@ -1,5 +1,4 @@
 ﻿using System.Collections.ObjectModel;
-using System.Text.Json;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using ImoutoRebirth.Common;
@@ -30,10 +29,9 @@ internal partial class QuickTaggingVM : ObservableObject
     private ObservableCollection<Tag> _selectedTags = new();
 
     [ObservableProperty]
-    private TagsPacksVM _tagsPacks = new();
-
-    [ObservableProperty]
     private bool? _isSelectedTagsApplicationSuccess = null;
+
+    public AvailableTagPacksSetsVM AvailableTagPacksSets { get; } = new();
 
     public QuickTaggingVM(MainWindowVM mainWindowVM)
     {
@@ -88,7 +86,7 @@ internal partial class QuickTaggingVM : ObservableObject
         if (SelectedTags.None())
             return;
 
-        TagsPacks.AddNext(SelectedTags.ToList());
+        AvailableTagPacksSets.Selected.AddNext(SelectedTags.ToList());
         SelectedTags.Clear();
     }
 
@@ -96,7 +94,7 @@ internal partial class QuickTaggingVM : ObservableObject
     private void ClearSelectedTags() => SelectedTags.Clear();
 
     [RelayCommand]
-    private void ClearTagPacks() => TagsPacks.Clear();
+    private void ClearTagPacks() => AvailableTagPacksSets.Selected.Clear();
 
     [RelayCommand]
     private async Task ApplySelectedTags()
@@ -157,9 +155,12 @@ internal partial class QuickTaggingVM : ObservableObject
     }
 
     [RelayCommand]
+    private void RemoveSelectedTag(Tag tag) => SelectedTags.Remove(tag);
+
+    [RelayCommand]
     private async Task ApplyPack(char tagsPackKey)
     {
-        var pack = TagsPacks.GetByKeyOrDefault(tagsPackKey);
+        var pack = AvailableTagPacksSets.Selected.GetByKeyOrDefault(tagsPackKey);
 
         if (pack == null)
             return;
@@ -200,7 +201,7 @@ internal partial class QuickTaggingVM : ObservableObject
     [RelayCommand]
     private async Task UndoPack(char tagsPackKey)
     {
-        var pack = TagsPacks.GetByKeyOrDefault(tagsPackKey);
+        var pack = AvailableTagPacksSets.Selected.GetByKeyOrDefault(tagsPackKey);
 
         if (pack == null)
             return;
@@ -239,22 +240,16 @@ internal partial class QuickTaggingVM : ObservableObject
     }
 
     [RelayCommand]
-    private void RemovePack(TagsPackVM pack) => TagsPacks.Remove(pack);
+    private void RemovePack(TagsPackVM pack) => AvailableTagPacksSets.Selected.Remove(pack);
 
     [RelayCommand]
-    private void SavePacks()
-    {
-        var serialized = TagsPacks.Save();
-        Settings.Default.TagsPacks = serialized;
-        Settings.Default.Save();
-    }
-    
+    private void SavePacksSets() => AvailableTagPacksSets.SaveSets();
+
     [RelayCommand]
-    private void LoadPacks()
-    {
-        var serialized = Settings.Default.TagsPacks;
-        TagsPacks.Load(serialized);
-    }
+    private void DeleteSelectedPacksSet() => AvailableTagPacksSets.DeleteSelected();
+
+    [RelayCommand]
+    private void RenameSelectedTagsPacksSet(string newTitle) => AvailableTagPacksSets.Selected.Rename(newTitle);
 
     private async void ReactOnPropertyChanged(object? _, System.ComponentModel.PropertyChangedEventArgs e)
     {
@@ -273,129 +268,3 @@ internal partial class QuickTaggingVM : ObservableObject
         }
     }
 }
-
-internal partial class TagsPacksVM : ObservableObject
-{
-    public ObservableCollection<TagsPackVM> Packs { get; } = new();
-
-    public void AddNext(IReadOnlyCollection<Tag> tags)
-    {
-        var lastKey = Packs.LastOrDefault()?.Key;
-        var nextKey = GetNextKey(lastKey);
-
-        if (nextKey == '_')
-        {
-            Packs.Add(new EmptyTagPackVM());
-            nextKey = GetNextKey(nextKey);
-        }
-
-        if (nextKey == '-')
-        {
-            Packs.Add(new EmptyTagPackVM());
-            nextKey = GetNextKey(nextKey);
-        }
-
-        Packs.Add(new TagsPackVM(tags, nextKey));
-    }
-
-    private static char GetNextKey(char? lastKey)
-    {
-        return !lastKey.HasValue
-            ? AvailableKeys[0]
-            : AvailableKeys[Array.IndexOf(AvailableKeys, lastKey.Value) + 1];
-    }
-
-    private static readonly char[] AvailableKeys = ("12345" + "_WERT" + "ASDFG" + "Z-CVB").ToCharArray();
-
-    public TagsPackVM? GetByKeyOrDefault(char key) 
-        => Packs.FirstOrDefault(x => string.Equals(x.Key.ToString(), key.ToString(), StringComparison.OrdinalIgnoreCase));
-
-    public void Clear() => Packs.Clear();
-
-    public string Save() => JsonSerializer.Serialize(Packs.Select(x => x.Tags).ToList());
-
-    public void Load(string serialized)
-    {
-        var tags = JsonSerializer.Deserialize<IReadOnlyCollection<IReadOnlyCollection<Tag>>>(serialized);
-
-        if (tags == null)
-            return;
-
-        Clear();
-
-        foreach (var pack in tags.Where(x => x.Any()))
-            AddNext(pack);
-    }
-
-    public void Remove(TagsPackVM pack)
-    {
-        if (Packs.Contains(pack))
-            Packs.Remove(pack);
-    }
-}
-internal partial class TagsPackVM : ObservableObject
-{
-    [ObservableProperty]
-    private IReadOnlyCollection<Tag> _tags;
-
-    [ObservableProperty]
-    private char _key;
-
-    [ObservableProperty]
-    private bool? _isSuccess = null;
-
-    public TagsPackVM(IReadOnlyCollection<Tag> tags, char key)
-    {
-        _tags = tags;
-        _key = key;
-    }
-}
-
-internal class EmptyTagPackVM : TagsPackVM
-{
-    public EmptyTagPackVM() : base([], '_')
-    {
-    }
-}
-
-//internal class DesignQuickTaggingVM : QuickTaggingVM
-//{
-//    public DesignQuickTaggingVM() : base(null!)
-//    {
-//        SearchText = "solo";
-//        SelectedTags = new ObservableCollection<Tag>([
-//            new Tag(Guid.NewGuid(), "solo 1", new TagType(Guid.NewGuid(), "general", 0), [], false, false, 0),
-//            new Tag(Guid.NewGuid(), "solo 2", new TagType(Guid.NewGuid(), "general", 0), [], false, false, 0),
-//            new Tag(Guid.NewGuid(), "solo 3", new TagType(Guid.NewGuid(), "general", 0), [], false, false, 0),
-//        ]);
-//        TagsPacks = new ObservableCollection<TagsPackVM>([
-//            new TagsPackVM(
-//                new[]
-//                {
-//                    new Tag(Guid.NewGuid(), "solo 1", new TagType(Guid.NewGuid(), "general", 0), [], false, false, 0),
-//                    new Tag(Guid.NewGuid(), "solo 2", new TagType(Guid.NewGuid(), "general", 0), [], false, false, 0),
-//                    new Tag(Guid.NewGuid(), "solo 3", new TagType(Guid.NewGuid(), "general", 0), [], false, false, 0),
-//                },
-//                Guid.NewGuid(),
-//                'A'),
-//            new TagsPackVM(
-//                new[]
-//                {
-//                    new Tag(Guid.NewGuid(), "solo 4", new TagType(Guid.NewGuid(), "general", 0), [], false, false, 0),
-//                    new Tag(Guid.NewGuid(), "solo 5", new TagType(Guid.NewGuid(), "general", 0), [], false, false, 0),
-//                    new Tag(Guid.NewGuid(), "solo 6", new TagType(Guid.NewGuid(), "general", 0), [], false, false, 0),
-//                },
-//                Guid.NewGuid(),
-//                'B'),
-//        ]);
-//        FoundTags = new[]
-//        {
-//            new Tag(Guid.NewGuid(), "solo 1", new TagType(Guid.NewGuid(), "general", 0), [], false, false, 0),
-//            new Tag(Guid.NewGuid(), "solo 2", new TagType(Guid.NewGuid(), "general", 0), [], false, false, 0),
-//            new Tag(Guid.NewGuid(), "solo 3", new TagType(Guid.NewGuid(), "general", 0), [], false, false, 0),
-//            new Tag(Guid.NewGuid(), "solo 4", new TagType(Guid.NewGuid(), "general", 0), [], false, false, 0),
-//            new Tag(Guid.NewGuid(), "solo 5", new TagType(Guid.NewGuid(), "general", 0), [], false, false, 0),
-//            new Tag(Guid.NewGuid(), "solo 5", new TagType(Guid.NewGuid(), "general", 0), [], false, false, 0),
-//        };
-//    }
-//}

@@ -6,6 +6,7 @@ using System.Windows;
 using System.Windows.Controls;
 using Serilog;
 using Vlc.DotNet.Wpf;
+using Application = System.Windows.Application;
 
 namespace ImoutoRebirth.Navigator.UserControls;
 
@@ -18,6 +19,7 @@ public partial class PlayerControl
     
     private bool _isPlayed;
     private VlcControl _control;
+    private bool _isDisposed = false;
 
     private bool IsPlayed
     {
@@ -95,36 +97,47 @@ public partial class PlayerControl
                 }
             };
 
-        Slider.ValueChanged += (_, args) =>
-        {
-            try
-            {
-                var player = _control.SourceProvider.MediaPlayer;
-
-                if (player == null)
-                    return;
-
-                var newValue = (float) args.NewValue / 100;
-                var oldValue = player.Position;
-
-                var absoluteDiff = Math.Abs(oldValue - newValue);
-                var length = player.Length;
-
-                var msDiff = absoluteDiff * length;
-
-                if (msDiff < 1000) 
-                    return;
-
-                var set = (float) args.NewValue / 100;
-
-                Task.Run(() => player.Position = set);
-            }
-            catch (Exception e)
-            {
-                Log.Warning(e, "Ignoring player error on slider change");
-            }
-        };
+        Slider.ValueChanged += OnSliderOnValueChanged;
     }
+    
+    private void OnSliderOnValueChanged(object _, RoutedPropertyChangedEventArgs<double> args)
+    {
+        try
+        {
+            if (_control.SourceProvider.MediaPlayer == null || _isDisposed)
+                return;
+
+            var newValue = (float)args.NewValue / 100;
+
+            if (_isDisposed)
+                return;
+
+            var oldValue = _control.SourceProvider.MediaPlayer.Position;
+
+            var absoluteDiff = Math.Abs(oldValue - newValue);
+
+            if (_isDisposed)
+                return;
+
+            var length = _control.SourceProvider.MediaPlayer.Length;
+
+            var msDiff = absoluteDiff * length;
+
+            if (msDiff < 1000) return;
+
+            var set = (float)args.NewValue / 100;
+
+            if (_isDisposed)
+                return;
+
+            Task.Run(() => _control.SourceProvider.MediaPlayer.Position = set);
+        }
+        catch (Exception e)
+        {
+            Log.Warning(e, "Ignoring player error on slider change");
+        }
+    }
+
 
     private static bool TryGetVlcLibDirectory(out DirectoryInfo? vlcLibDirectory)
     {
@@ -182,7 +195,11 @@ public partial class PlayerControl
             {
                 if (!control.InfinityLifespanMode)
                 {
-                    Task.Run(() => control._control.Dispose());
+                    Task.Run(() =>
+                    {
+                        control._isDisposed = true;
+                        control._control.Dispose();
+                    });
                 }
                 else
                 {

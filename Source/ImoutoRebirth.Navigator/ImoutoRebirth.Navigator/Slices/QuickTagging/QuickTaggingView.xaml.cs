@@ -1,4 +1,6 @@
-﻿using System.Windows;
+﻿using ImoutoRebirth.Navigator.ViewModel.SettingsSlice;
+using MahApps.Metro.Controls.Dialogs;
+using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 
@@ -15,8 +17,6 @@ public partial class QuickTaggingView : UserControl
     }
 
     internal QuickTaggingVM DataContextVM => (QuickTaggingVM)DataContext;
-
-    public bool IsPanelDown { get; set; }
 
     private void SearchTextBox_OnPreviewKeyDown(object sender, KeyEventArgs e)
     {
@@ -137,5 +137,21 @@ public partial class QuickTaggingView : UserControl
             _ => null
         };
 
-    private void TogglePanelPosition(object sender, RoutedEventArgs e) => IsPanelDown = !IsPanelDown;
+    private void TogglePanelPosition(object sender, RoutedEventArgs e)
+        => View.VerticalAlignment
+            = View.VerticalAlignment == VerticalAlignment.Top
+                ? VerticalAlignment.Bottom
+                : VerticalAlignment.Top;
+
+    private async void RenameCurrentSet(object sender, RoutedEventArgs e)
+    {
+        var parentWindow = Window.GetWindow(this) as MainWindow;
+
+        var result = await parentWindow.ShowInputAsync("Rename set", "New title");
+
+        if (result == null)
+            return;
+
+        DataContextVM.RenameSelectedTagsPacksSetCommand.Execute(result);
+    }
 }

@@ -26,7 +26,7 @@
     <Setting Name="OrderMode" Type="System.String" Scope="User">
       <Value Profile="(Default)">OldFirst</Value>
     </Setting>
-    <Setting Name="TagsPacks" Type="System.String" Scope="User">
+    <Setting Name="SavedTagPacks" Type="System.String" Scope="User">
       <Value Profile="(Default)">[]</Value>
     </Setting>
   </Settings>

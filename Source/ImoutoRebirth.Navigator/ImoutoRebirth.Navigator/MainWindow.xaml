@@ -21,6 +21,7 @@
                           xmlns:converters1="clr-namespace:ImoutoRebirth.Common.WPF.Converters;assembly=ImoutoRebirth.Common.WPF"
                           xmlns:attachedProperties="clr-namespace:ImoutoRebirth.Common.WPF.AttachedProperties;assembly=ImoutoRebirth.Common.WPF"
                           xmlns:quickTagging="clr-namespace:ImoutoRebirth.Navigator.Slices.QuickTagging"
+                          xmlns:navigator="clr-namespace:ImoutoRebirth.Navigator"
                           d:DataContext="{d:DesignInstance viewModel:MainWindowVM, IsDesignTimeCreatable=False}"
                           mc:Ignorable="d"
                           WindowStartupLocation="CenterScreen"
@@ -513,14 +514,22 @@
                                             SnapsToDevicePixels="True"
                                             Margin="2">
                                         <Border.InputBindings>
-                                            <MouseBinding Command="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type Window}},
-                                                                            Path=DataContext.OpenFileCommand}"
-                                                          CommandParameter="{Binding}"
-                                                          Gesture="LeftDoubleClick" />
-                                            <MouseBinding Command="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type Window}},
-                                                                            Path=DataContext.OpenFullScreenPreviewCommand}"
-                                                          CommandParameter="{Binding}"
-                                                          Gesture="MiddleClick" />
+                                            <MouseBinding 
+                                                Command="{Binding 
+                                                    RelativeSource={RelativeSource 
+                                                        Mode=FindAncestor, 
+                                                        AncestorType={x:Type navigator:MainWindow}},
+                                                    Path=DataContext.OpenFileCommand}"
+                                                CommandParameter="{Binding}"
+                                                Gesture="LeftDoubleClick" />
+                                            <MouseBinding 
+                                                Command="{Binding 
+                                                    RelativeSource={RelativeSource 
+                                                        Mode=FindAncestor, 
+                                                        AncestorType={x:Type navigator:MainWindow}},
+                                                    Path=DataContext.OpenFullScreenPreviewCommand}"
+                                                CommandParameter="{Binding}"
+                                                Gesture="MiddleClick" />
                                         </Border.InputBindings>
 
                                         <ContentControl Name="ContentControl"
@@ -804,28 +813,13 @@
         
         <Grid>
             <Grid.RowDefinitions>
-                <RowDefinition Height="Auto" />
                 <RowDefinition Height="*" />
-                <RowDefinition Height="Auto" />
             </Grid.RowDefinitions>
 
             <quickTagging:QuickTaggingView
-                x:Name="QuickTagging1"
+                x:Name="QuickTagging"
                 Grid.Row="0"
-                DataContext="{Binding Path=QuickTagging}"
-                Margin="0,0,0,25"
-                Width="1000"
-                Height="500"
-                Visibility="{Binding 
-                    Path=DataContext.ShowQuickTagging, 
-                    RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type metroControl:MetroWindow}},
-                    Converter={StaticResource ConditionVisibilityConverter},
-                    ConverterParameter=true|false}"
-                IsVisibleChanged="QuickTagging_OnIsVisibleChanged" />
-
-            <quickTagging:QuickTaggingView
-                x:Name="QuickTagging2"
-                Grid.Row="2"
+                VerticalAlignment="Bottom"
                 DataContext="{Binding Path=QuickTagging}"
                 Margin="0,0,0,25"
                 Width="1000"

@@ -122,12 +122,12 @@ namespace ImoutoRebirth.Navigator {
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("[]")]
-        public string TagsPacks {
+        public string SavedTagPacks {
             get {
-                return ((string)(this["TagsPacks"]));
+                return ((string)(this["SavedTagPacks"]));
             }
             set {
-                this["TagsPacks"] = value;
+                this["SavedTagPacks"] = value;
             }
         }
     }

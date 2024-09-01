@@ -57,7 +57,8 @@
                         <DataTemplate>
                             <Label Name="Label"
                                    HorizontalContentAlignment="Stretch"
-                                   Padding="10,4,5,2">
+                                   Padding="10,4,5,2"
+                                   Cursor="Hand">
                                 <Label.Style>
                                     <Style TargetType="Label">
                                         <Setter Property="Background"
