@@ -1,25 +1,25 @@
 ﻿using System.Collections.Concurrent;
-using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Reflection;
 using System.Windows;
 using System.Windows.Controls;
+using LibVLCSharp.Shared;
 using Serilog;
-using Vlc.DotNet.Wpf;
 using Application = System.Windows.Application;
 
 namespace ImoutoRebirth.Navigator.UserControls;
 
 /// <summary>
-///     Interaction logic for PlayerControl.xaml
+///     Interaction logic for AltPlayerControl.xaml
 /// </summary>
-public partial class PlayerControl
+public partial class AltPlayerControl
 {
     private static readonly ConcurrentDictionary<string, long> LastMediaPositionValues = new();
     
     private bool _isPlayed;
-    private VlcControl _control;
     private bool _isDisposed = false;
+    private LibVLC? _libVlc;
+    private MediaPlayer? _mediaPlayer;
 
     private bool IsPlayed
     {
@@ -31,80 +31,104 @@ public partial class PlayerControl
             switch (_isPlayed)
             {
                 case false:
-                    _control.SourceProvider.MediaPlayer?.Pause();
+                    _mediaPlayer?.Pause();
                     PlayButton.Template = Application.Current.FindResource("VideoPlayOverlayIcon") as ControlTemplate;
                     break;
                 case true:
-                    _control.SourceProvider.MediaPlayer?.Play();
+                    _mediaPlayer?.Play();
                     PlayButton.Template = Application.Current.FindResource("VideoPauseOverlayIcon") as ControlTemplate;
                     break;
             }
         }
     }
 
-    public PlayerControl()
+    public AltPlayerControl()
     {
         InitializeComponent();
-        InitializePlayer();
+
+        VideoView.IsVisibleChanged += VideoView_Loaded;
+        VideoView.IsVisibleChanged += VideoView_Unloaded;
     }
 
-    [MemberNotNull(nameof(_control))]
+    private void VideoView_Unloaded(object sender, DependencyPropertyChangedEventArgs dependencyPropertyChangedEventArgs)
+    {
+        if (!VideoView.IsVisible)
+        {
+            _isDisposed = true;
+            _mediaPlayer?.Stop();
+            _mediaPlayer?.Dispose();
+            _libVlc?.Dispose();
+        }
+    }
+
+    private void VideoView_Loaded(object sender, DependencyPropertyChangedEventArgs dependencyPropertyChangedEventArgs)
+    {
+        if (VideoView.IsVisible)
+            InitializePlayer();
+    }
+
     private void InitializePlayer()
     {
-        _control = new VlcControl();
-        Container.Content = _control;
+        _libVlc = new LibVLC(enableDebugLogs: true);
+        VideoView.MediaPlayer = new MediaPlayer(_libVlc);
 
-        if (!TryGetVlcLibDirectory(out var vlcLibDirectory)) 
-            return;
-        
-        _control.SourceProvider.CreatePlayer(vlcLibDirectory);
-        _control.SourceProvider.MediaPlayer.PositionChanged 
-            += (_, args) 
-                =>
-            {
-                try
-                {
-                    Dispatcher.BeginInvoke((Action)(() => { Slider.Value = 100 * args.NewPosition; }));
-                }
-                catch (Exception e)
-                {
-                    Log.Warning(e, "Ignoring player error on position change");
-                }
-            };
+        //if (!TryGetVlcLibDirectory(out var vlcLibDirectory)) 
+        //    return;
 
-        _control.SourceProvider.MediaPlayer.TimeChanged
-            += (_, args)
-                =>
-            {
-                try
-                {
-                    var time = args.NewTime;
-                    var length = _control.SourceProvider.MediaPlayer.Length;
-                    var timeString = $"{GetPrettyTime(time, length)} / {GetPrettyTime(length)}";
-                    Dispatcher.BeginInvoke((Action)(() =>
-                    {
-                        var source = Source;
-                        if (source == null) 
-                            return;
-                        
-                        LastMediaPositionValues[source] = time;
-                        TimeTextBlock.Text = timeString;
-                    }));
-                }
-                catch (Exception e)
-                {
-                    Log.Warning(e, "Ignoring player error on time change");
-                }
-            };
+        _mediaPlayer = VideoView.MediaPlayer;
+        if (Source != null)
+        {
+            _mediaPlayer.Media = new Media(_libVlc, new Uri(Source));
+            IsPlayed = true;
+        }
 
-        Slider.ValueChanged += OnSliderOnValueChanged;
+        //_mediaPlayer.PositionChanged 
+        //    += (_, args) 
+        //        =>
+        //    {
+        //        try
+        //        {
+        //            Dispatcher.BeginInvoke((Action)(() => { Slider.Value = 100 * args.Position; }));
+        //        }
+        //        catch (Exception e)
+        //        {
+        //            Log.Warning(e, "Ignoring player error on position change");
+        //        }
+        //    };
+
+        //_mediaPlayer.TimeChanged
+        //    += (_, args)
+        //        =>
+        //    {
+        //        try
+        //        {
+        //            var time = args.Time;
+        //            var length = _mediaPlayer.Length;
+        //            var timeString = $"{GetPrettyTime(time, length)} / {GetPrettyTime(length)}";
+        //            Dispatcher.BeginInvoke((Action)(() =>
+        //            {
+        //                var source = Source;
+        //                if (source == null) 
+        //                    return;
+
+        //                LastMediaPositionValues[source] = time;
+        //                TimeTextBlock.Text = timeString;
+        //            }));
+        //        }
+        //        catch (Exception e)
+        //        {
+        //            Log.Warning(e, "Ignoring player error on time change");
+        //        }
+        //    };
+
+        //Slider.ValueChanged += OnSliderOnValueChanged;
     }
     
     private void OnSliderOnValueChanged(object _, RoutedPropertyChangedEventArgs<double> args)
     {
         try
         {
-            if (_control.SourceProvider.MediaPlayer == null || _isDisposed)
+            if (_mediaPlayer == null || _isDisposed)
                 return;
 
             var newValue = (float)args.NewValue / 100;
@@ -112,14 +136,14 @@ public partial class PlayerControl
             if (_isDisposed)
                 return;
 
-            var oldValue = _control.SourceProvider.MediaPlayer.Position;
+            var oldValue = _mediaPlayer.Position;
 
             var absoluteDiff = Math.Abs(oldValue - newValue);
 
             if (_isDisposed)
                 return;
 
-            var length = _control.SourceProvider.MediaPlayer.Length;
+            var length = _mediaPlayer.Length;
 
             var msDiff = absoluteDiff * length;
 
@@ -130,7 +154,7 @@ public partial class PlayerControl
             if (_isDisposed)
                 return;
 
-            Task.Run(() => _control.SourceProvider.MediaPlayer.Position = set);
+            Task.Run(() => _mediaPlayer.Position = set);
         }
         catch (Exception e)
         {
@@ -161,7 +185,7 @@ public partial class PlayerControl
         = DependencyProperty.Register(
             nameof(Source), 
             typeof(string), 
-            typeof(PlayerControl), 
+            typeof(AltPlayerControl), 
             new UIPropertyMetadata(null, OnSourceChanged));
 
     public string? Source
@@ -174,7 +198,7 @@ public partial class PlayerControl
         = DependencyProperty.Register(
             nameof(InfinityLifespanMode), 
             typeof (bool), 
-            typeof (PlayerControl), 
+            typeof (AltPlayerControl), 
             new UIPropertyMetadata(false, null));
 
     public bool InfinityLifespanMode
@@ -186,8 +210,8 @@ public partial class PlayerControl
     private static void OnSourceChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
     {
         var newPropertyValue = (string?) e.NewValue;
-        var control = (PlayerControl) d;
-        var player = control._control.SourceProvider.MediaPlayer;
+        var control = (AltPlayerControl) d;
+        var player = control._mediaPlayer;
 
         control.Dispatcher.BeginInvoke((Action)(() =>
         {
@@ -198,7 +222,7 @@ public partial class PlayerControl
                     Task.Run(() =>
                     {
                         control._isDisposed = true;
-                        control._control.Dispose();
+                        // ?
                     });
                 }
                 else
@@ -214,7 +238,10 @@ public partial class PlayerControl
                 if (LastMediaPositionValues.TryGetValue(newPropertyValue, out var position))
                     mediaOptions = mediaOptions.Append("start-time=" + position / 1000).ToArray();
                 
-                player.SetMedia(new FileInfo(newPropertyValue), mediaOptions);
+                if (player == null || control._libVlc == null)
+                    return;
+                
+                player.Media = new Media(control._libVlc, new Uri(newPropertyValue));
                 control.IsPlayed = true;
             }
         }));
@@ -230,13 +257,13 @@ public partial class PlayerControl
         = DependencyProperty.Register(
             nameof(ShouldPause), 
             typeof (bool), 
-            typeof (PlayerControl), 
+            typeof (AltPlayerControl), 
             new UIPropertyMetadata(false, OnShouldPauseChanged));
 
     private static void OnShouldPauseChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
     {
         var shouldPause = (bool) e.NewValue;
-        var control = (PlayerControl) d;
+        var control = (AltPlayerControl) d;
             
         if (shouldPause && control.IsPlayed)
         {
@@ -254,7 +281,7 @@ public partial class PlayerControl
         = DependencyProperty.Register(
             nameof(Volume), 
             typeof (int), 
-            typeof (PlayerControl), 
+            typeof (AltPlayerControl), 
             new UIPropertyMetadata(0, OnVolumeChanged));
 
     public bool IsVolumeVisible
@@ -267,18 +294,19 @@ public partial class PlayerControl
         = DependencyProperty.Register(
             nameof(IsVolumeVisible), 
             typeof (bool), 
-            typeof (PlayerControl), 
+            typeof (AltPlayerControl), 
             new UIPropertyMetadata(false));
 
     private static void OnVolumeChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
     {
         var volume = (int) e.NewValue;
-        var control = (PlayerControl) d;
+        var control = (AltPlayerControl) d;
 
-        var provider = control._control.SourceProvider;
 
-        if (provider != null)
-            provider.MediaPlayer.Audio.Volume = volume;
+        if (control._mediaPlayer == null)
+            return;
+
+        control._mediaPlayer.Volume = volume;
     }
 
     private void PlayButton_OnClick(object sender, RoutedEventArgs e)

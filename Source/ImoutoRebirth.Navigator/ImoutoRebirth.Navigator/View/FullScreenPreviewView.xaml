@@ -55,7 +55,7 @@
                 Visibility="{Binding Path=Type, Converter={StaticResource ConditionVisibilityConverter}, ConverterParameter=WebP}" 
                 IsVisibleChanged="OnIsVisibleChanged" />
 
-            <userControls:PlayerControl
+            <userControls:AltPlayerControl
                 IsVolumeVisible="True"
                 InfinityLifespanMode="True"
                 Source="{Binding Path=VideoPath}"

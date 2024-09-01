@@ -40,7 +40,7 @@
 
     <ItemGroup>
         <PackageReference Include="AutoMapper" Version="13.0.1" />
-        <PackageReference Include="CommunityToolkit.Mvvm" Version="8.2.2" />
+        <PackageReference Include="CommunityToolkit.Mvvm" Version="8.3.0" />
         <PackageReference Include="ImoutoRebirth.ApngWpfPlayer" Version="1.4.2" />
         <PackageReference Include="MahApps.Metro" Version="2.4.10" />
         <PackageReference Include="MahApps.Metro.IconPacks" Version="5.0.0" />
@@ -53,10 +53,10 @@
         <PackageReference Include="Serilog.Enrichers.Thread" Version="4.0.0" />
         <PackageReference Include="Serilog.Sinks.Console" Version="6.0.0" />
         <PackageReference Include="Serilog.Sinks.File" Version="6.0.0" />
-        <PackageReference Include="VideoLAN.LibVLC.Windows" Version="3.0.20" />
-        <PackageReference Include="Vlc.DotNet.Wpf" Version="3.1.0" />
         <PackageReference Include="WpfAnimatedGif" Version="2.0.2" />
         <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+        <PackageReference Include="VideoLAN.LibVLC.Windows" Version="3.0.20" />
+        <PackageReference Include="LibVLCSharp.WPF" Version="3.9.0" />
     </ItemGroup>
 
     <ItemGroup>
@@ -86,8 +86,8 @@
         <Compile Update="UserControls\FavoriteControl.xaml.cs">
             <DependentUpon>FavoriteControl.xaml</DependentUpon>
         </Compile>
-        <Compile Update="UserControls\PlayerControl.xaml.cs">
-            <DependentUpon>PlayerControl.xaml</DependentUpon>
+        <Compile Update="UserControls\AltPlayerControl.xaml.cs">
+          <DependentUpon>AltPlayerControl.xaml</DependentUpon>
         </Compile>
         <Compile Update="UserControls\RatingControl.xaml.cs">
             <DependentUpon>RatingControl.xaml</DependentUpon>
@@ -141,9 +141,6 @@
         <Page Update="UserControls\FavoriteControl.xaml">
             <SubType>Designer</SubType>
         </Page>
-        <Page Update="UserControls\PlayerControl.xaml">
-            <SubType>Designer</SubType>
-        </Page>
         <Page Update="UserControls\RatingControl.xaml">
             <SubType>Designer</SubType>
         </Page>
@@ -185,10 +182,8 @@
         <ProjectReference Include="..\..\ImoutoRebirth.Common\ImoutoRebirth.Common.WebP\ImoutoRebirth.Common.WebP.csproj" />
         <ProjectReference Include="..\..\ImoutoRebirth.Common\ImoutoRebirth.Common.WPF\ImoutoRebirth.Common.WPF.csproj" />
         <ProjectReference Include="..\..\ImoutoRebirth.Common\ImoutoRebirth.Common\ImoutoRebirth.Common.csproj" />
-        <ProjectReference
-            Include="..\..\ImoutoRebirth.Lilin\ImoutoRebirth.Lilin.WebApi.Client\ImoutoRebirth.Lilin.WebApi.Client.csproj" />
-        <ProjectReference
-            Include="..\..\ImoutoRebirth.Room\ImoutoRebirth.Room.WebApi.Client\ImoutoRebirth.Room.WebApi.Client.csproj" />
+        <ProjectReference Include="..\..\ImoutoRebirth.Lilin\ImoutoRebirth.Lilin.WebApi.Client\ImoutoRebirth.Lilin.WebApi.Client.csproj" />
+        <ProjectReference Include="..\..\ImoutoRebirth.Room\ImoutoRebirth.Room.WebApi.Client\ImoutoRebirth.Room.WebApi.Client.csproj" />
     </ItemGroup>
 
 </Project>

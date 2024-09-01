@@ -470,7 +470,7 @@
 
                              <Grid Width="{Binding Path=ViewPortSize.Width}"
                                    Height="{Binding Path=ViewPortSize.Height}">
-                                <userControl:PlayerControl
+                                <userControl:AltPlayerControl
                                     IsVolumeVisible="False"
                                     Source="{Binding Path}"
                                     ShouldPause="{Binding ShouldPause}" 
