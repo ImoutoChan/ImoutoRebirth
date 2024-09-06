@@ -2,6 +2,7 @@
 using System.Text.Json;
 using System.Windows;
 using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
 using ImoutoRebirth.Common;
 using ImoutoRebirth.Navigator.Services.Tags.Model;
 
@@ -53,15 +54,12 @@ internal partial class AvailableTagPacksSetsVM : ObservableObject
 
         foreach (var set in savedSets) 
             Sets.Add(set);
+    }
 
-        //foreach (var savedSet in savedSets.Where(x => x.Packs.Any(y => y.Any())))
-        //{
-        //    var set = new TagsPacksSetVM();
-        //    set.
-        //    foreach (var pack in savedSet.Packs.Where(x => x.Any())) 
-        //        set.AddNext(pack);
-
-        //    Sets.Add(set);
-        //}
+    [RelayCommand]
+    private void SelectNext()
+    {
+        var index = Sets.IndexOf(Selected);
+        Selected = index == Sets.Count - 1 ? Sets.First() : Sets[index + 1];
     }
 }

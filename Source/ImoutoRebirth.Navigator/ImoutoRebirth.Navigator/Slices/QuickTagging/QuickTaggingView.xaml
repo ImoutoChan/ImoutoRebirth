@@ -147,7 +147,7 @@
                     </ItemsControl.ItemContainerStyle>
                 </ItemsControl>
 
-                <TextBlock Grid.Row="2" Height="65">
+                <TextBlock Grid.Row="2" Height="85">
                     <Run Text="CTRL + ↵  | Apply Selected" />
                     <LineBreak />
                     <Run Text="CTRL + → | Create pack" />
@@ -155,6 +155,8 @@
                     <Run Text="CTRL + X  | Clear selected" />
                     <LineBreak />
                     <Run Text="CTRL + SHIFT + X | Clear quick apply" />
+                    <LineBreak />
+                    <Run Text="CTRL + SPACE | Next set" />
                 </TextBlock>
             </Grid>
 

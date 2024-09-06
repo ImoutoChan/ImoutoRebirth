@@ -16,6 +16,7 @@ public partial class App : Application
         catch (Exception e)
         {
             Log.Error(e, "Error during application startup");
+            Application.Current.Shutdown();
         }
     };
 
@@ -39,7 +40,7 @@ public partial class App : Application
     {
         Log.Logger = new LoggerConfiguration()
             .MinimumLevel.Debug()
-            .WriteTo.Console() 
+            .WriteTo.Console()
             .WriteTo.File("logs/log.txt", rollingInterval: RollingInterval.Day, retainedFileCountLimit: 10)
             .Enrich.WithThreadId()
             .Enrich.WithThreadName()
