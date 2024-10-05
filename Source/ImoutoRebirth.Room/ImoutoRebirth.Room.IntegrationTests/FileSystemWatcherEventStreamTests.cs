@@ -1,6 +1,7 @@
 ﻿using System.Reactive.Linq;
 using FluentAssertions;
 using ImoutoRebirth.Room.UI.FileSystemEvents;
+using Microsoft.Extensions.Logging.Abstractions;
 using Xunit;
 
 namespace ImoutoRebirth.Room.IntegrationTests;
@@ -46,7 +47,8 @@ public class FileSystemWatcherEventStreamTests
             [directory.FullName],
             NotifyFilters.FileName | NotifyFilters.DirectoryName | NotifyFilters.LastWrite, 
             true,
-            CancellationToken.None);
+            CancellationToken.None,
+            NullLogger.Instance);
 
         var task = new TaskCompletionSource<bool>();
         await stream.Observable.SubscribeAsync(x =>
@@ -75,7 +77,8 @@ public class FileSystemWatcherEventStreamTests
             [directory.FullName],
             NotifyFilters.FileName | NotifyFilters.DirectoryName | NotifyFilters.LastWrite, 
             true,
-            CancellationToken.None);
+            CancellationToken.None,
+            NullLogger.Instance);
 
         var counterCalls = 0;
         var filesCount = 0;
@@ -110,7 +113,8 @@ public class FileSystemWatcherEventStreamTests
             [directory.FullName],
             NotifyFilters.FileName | NotifyFilters.DirectoryName | NotifyFilters.LastWrite, 
             true,
-            CancellationToken.None);
+            CancellationToken.None,
+            NullLogger.Instance);
 
         var counterCalls = 0;
         var filesCount = 0;

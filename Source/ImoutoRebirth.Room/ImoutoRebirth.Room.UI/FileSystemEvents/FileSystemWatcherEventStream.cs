@@ -1,5 +1,6 @@
 ﻿using System.Reactive.Linq;
 using System.Reactive.Subjects;
+using Microsoft.Extensions.Logging;
 
 namespace ImoutoRebirth.Room.UI.FileSystemEvents;
 
@@ -19,7 +20,8 @@ public class FileSystemWatcherEventStream
         IReadOnlyCollection<string> folders, 
         NotifyFilters filters, 
         bool includeSubdirectories,
-        CancellationToken completionToken)
+        CancellationToken completionToken, 
+        ILogger logger)
     {
         Observable = _subject.ToAsyncObservable();
 
@@ -46,13 +48,13 @@ public class FileSystemWatcherEventStream
             };
 
             watcher.Changed += (_, args)
-                => _subject.OnNext(new(folder, FileSystemWatcherEventType.Changed, args));
+                => _subject.OnSafeNext(new(folder, FileSystemWatcherEventType.Changed, args), logger);
             watcher.Created += (_, args)
-                => _subject.OnNext(new(folder, FileSystemWatcherEventType.Created, args));
+                => _subject.OnSafeNext(new(folder, FileSystemWatcherEventType.Created, args), logger);
             watcher.Deleted += (_, args)
-                => _subject.OnNext(new(folder, FileSystemWatcherEventType.Deleted, args));
+                => _subject.OnSafeNext(new(folder, FileSystemWatcherEventType.Deleted, args), logger);
             watcher.Renamed += (_, args)
-                => _subject.OnNext(new(folder, FileSystemWatcherEventType.Renamed, args));
+                => _subject.OnSafeNext(new(folder, FileSystemWatcherEventType.Renamed, args), logger);
 
             watcher.EnableRaisingEvents = true;
             
@@ -72,4 +74,19 @@ public class FileSystemWatcherEventStream
     }
 
     public IAsyncObservable<FileSystemWatcherEvent> Observable { get; }
+}
+
+public static class ObserverExtensions
+{
+    public static void OnSafeNext<T>(this IObserver<T> observer, T value, ILogger? logger = null)
+    {
+        try
+        {
+            observer.OnNext(value);
+        }
+        catch (Exception e)
+        {
+            logger?.LogWarning(e, "Error while trying to observe next value");
+        }
+    }
 }

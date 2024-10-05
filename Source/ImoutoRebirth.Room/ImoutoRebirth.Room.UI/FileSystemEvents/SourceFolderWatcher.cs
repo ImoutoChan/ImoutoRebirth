@@ -43,7 +43,8 @@ internal class SourceFolderWatcher : ISourceFolderWatcher
             folders,
             NotifyFilters.LastWrite | NotifyFilters.FileName | NotifyFilters.DirectoryName,
             true,
-            ct);
+            ct,
+            _logger);
 
         _subscriptionToken = await _currentEventStream.Observable
             .SubscribeAsync(
