@@ -67,6 +67,8 @@ For viewing individual images. Its use is not mandatory, you can use your favori
 
 # Installation
 
+**[NEW]** **Video guide with installation and initial configuration**: https://youtu.be/rEg0WMQgmoE
+
 The main idea of the app is that you have different collections with media that store your images/videos. After installation, you have to set up this collection in ImoutoNavigator app. Each collection has source folders and (optionally) a destination folder. The app monitors each source folder, takes files from there, processes them, and moves them to the destination folder. After that files are observable in ImoutoNavigator app. Installation itself looks like this:
 
 1. Download ImoutoRebirth.exe to any folder from [latest release](https://github.com/ImoutoChan/ImoutoRebirth/releases/latest)
