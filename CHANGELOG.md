@@ -11,6 +11,8 @@
     * jaeger
     * prometheus
 * Don't deploy after failed build in BuildAndDeploy.ps1 file
+* Some dependencies were updated v2
+* Use central package versioning
 
 ### Navigator
 * Add order mode to the settings with the ability to list new entries first
