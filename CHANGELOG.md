@@ -1,7 +1,9 @@
 # Unreleased
 
+# 4.26.0
+
 ### Infrastructure
-* Some dependencies were updated.
+* Some dependencies were updated
 * You have to delete all db functions in masstransit sql transport database in order for its migrations to work.
 * Improve open telemetry support:
   * Use otel-collector
@@ -23,6 +25,7 @@
 * Improve splashscreen
 * Migrate project to CommunityToolkit.Mvvm
 * New tool: quick tagging, CTRL+Q to open
+* Show splashscreen longer until the app is fully loaded
 
 ### Arachne
 * Add availability check service that will stop consumers when it's search engine isn't available
@@ -32,7 +35,6 @@
 * Improve rapid run scenario
 * Remove periodic jobs, use file system watcher instead to track changes in source folders
 * Optimize checking for existing files in one-folder scenario (1 db query instead of 1 per file)
-* Show splashscreen longer until the app is fully loaded
 * Fix crashes in FileSystemWatcherEventStream
 
 ### Lilin
