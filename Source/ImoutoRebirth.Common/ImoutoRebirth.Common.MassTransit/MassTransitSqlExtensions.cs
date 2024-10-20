@@ -1,7 +1,10 @@
 ﻿using System.Reflection;
 using MassTransit;
+using MassTransit.SqlTransport;
+using MassTransit.SqlTransport.PostgreSql;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 using Npgsql;
 
 namespace ImoutoRebirth.Common.MassTransit;
@@ -33,6 +36,10 @@ public static class MassTransitSqlExtensions
             options.AdminPassword = builder.Password;
         });
         services.AddPostgresMigrationHostedService();
+        
+        services.RemoveAll<ISqlTransportDatabaseMigrator>();
+        services.AddTransient<PostgresDatabaseMigrator>();
+        services.AddTransient<ISqlTransportDatabaseMigrator, UpgradablePostgresDatabaseMigrator>();
         
         services.AddMassTransit(
             x =>
