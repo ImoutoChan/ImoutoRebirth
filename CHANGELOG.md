@@ -1,5 +1,7 @@
 # Unreleased
 
+# 4.26.1
+
 ### Infrastructure
 * Fix the issue with migrating masstransit schema, now it will be done automatically
 
