@@ -13,22 +13,22 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="8.0.10">
+        <PackageReference Include="Microsoft.EntityFrameworkCore.Design">
             <PrivateAssets>all</PrivateAssets>
             <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageReference>
-        <PackageReference Include="Microsoft.Extensions.Hosting.WindowsServices" Version="8.0.1" />
+        <PackageReference Include="Microsoft.Extensions.Hosting.WindowsServices" />
     </ItemGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\..\ImoutoRebirth.Common\ImoutoRebirth.Common.Host\ImoutoRebirth.Common.Host.csproj"/>
-        <ProjectReference Include="..\..\ImoutoRebirth.Common\ImoutoRebirth.Common.Logging\ImoutoRebirth.Common.Logging.csproj"/>
-        <ProjectReference Include="..\..\ImoutoRebirth.Common\ImoutoRebirth.Common.MassTransit\ImoutoRebirth.Common.MassTransit.csproj"/>
-        <ProjectReference Include="..\..\ImoutoRebirth.Common\ImoutoRebirth.Common.OpenTelemetry\ImoutoRebirth.Common.OpenTelemetry.csproj"/>
-        <ProjectReference Include="..\..\ImoutoRebirth.Common\ImoutoRebirth.Common.Quartz\ImoutoRebirth.Common.Quartz.csproj"/>
-        <ProjectReference Include="..\ImoutoRebirth.Meido.DataAccess\ImoutoRebirth.Meido.DataAccess.csproj"/>
-        <ProjectReference Include="..\ImoutoRebirth.Meido.Infrastructure\ImoutoRebirth.Meido.Infrastructure.csproj"/>
-        <ProjectReference Include="..\ImoutoRebirth.Meido.UI\ImoutoRebirth.Meido.UI.csproj"/>
+        <ProjectReference Include="..\..\ImoutoRebirth.Common\ImoutoRebirth.Common.Host\ImoutoRebirth.Common.Host.csproj" />
+        <ProjectReference Include="..\..\ImoutoRebirth.Common\ImoutoRebirth.Common.Logging\ImoutoRebirth.Common.Logging.csproj" />
+        <ProjectReference Include="..\..\ImoutoRebirth.Common\ImoutoRebirth.Common.MassTransit\ImoutoRebirth.Common.MassTransit.csproj" />
+        <ProjectReference Include="..\..\ImoutoRebirth.Common\ImoutoRebirth.Common.OpenTelemetry\ImoutoRebirth.Common.OpenTelemetry.csproj" />
+        <ProjectReference Include="..\..\ImoutoRebirth.Common\ImoutoRebirth.Common.Quartz\ImoutoRebirth.Common.Quartz.csproj" />
+        <ProjectReference Include="..\ImoutoRebirth.Meido.DataAccess\ImoutoRebirth.Meido.DataAccess.csproj" />
+        <ProjectReference Include="..\ImoutoRebirth.Meido.Infrastructure\ImoutoRebirth.Meido.Infrastructure.csproj" />
+        <ProjectReference Include="..\ImoutoRebirth.Meido.UI\ImoutoRebirth.Meido.UI.csproj" />
     </ItemGroup>
 
 </Project>

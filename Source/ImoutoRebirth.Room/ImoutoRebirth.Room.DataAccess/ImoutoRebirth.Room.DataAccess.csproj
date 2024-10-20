@@ -10,10 +10,10 @@
     <ItemGroup>
         <ProjectReference Include="..\..\ImoutoRebirth.Common\ImoutoRebirth.Common.Cqrs\ImoutoRebirth.Common.Cqrs.csproj" />
         <ProjectReference Include="..\ImoutoRebirth.Room.Application\ImoutoRebirth.Room.Application.csproj" />
-        <ProjectReference Include="..\ImoutoRebirth.Room.Database\ImoutoRebirth.Room.Database.csproj"/>
+        <ProjectReference Include="..\ImoutoRebirth.Room.Database\ImoutoRebirth.Room.Database.csproj" />
         <ProjectReference Include="..\ImoutoRebirth.Room.Domain\ImoutoRebirth.Room.Domain.csproj" />
     </ItemGroup>
-    
+
     <ItemGroup>
         <InternalsVisibleTo Include="ImoutoRebirth.Room.DataAccess.Tests" />
     </ItemGroup>

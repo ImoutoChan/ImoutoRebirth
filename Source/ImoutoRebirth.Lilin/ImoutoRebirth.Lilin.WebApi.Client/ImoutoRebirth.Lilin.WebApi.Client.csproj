@@ -6,20 +6,20 @@
         <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
         <ImplicitUsings>true</ImplicitUsings>
 
-	    <EmitCompilerGeneratedFiles>true</EmitCompilerGeneratedFiles>
-	    <CompilerGeneratedFilesOutputPath>$(BaseIntermediateOutputPath)\GeneratedFiles</CompilerGeneratedFilesOutputPath>
+        <EmitCompilerGeneratedFiles>true</EmitCompilerGeneratedFiles>
+        <CompilerGeneratedFilesOutputPath>$(BaseIntermediateOutputPath)\GeneratedFiles</CompilerGeneratedFilesOutputPath>
     </PropertyGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\..\ImoutoRebirth.Common\ImoutoRebirth.Common.WebApi.Client\ImoutoRebirth.Common.WebApi.Client.csproj"/>
+        <ProjectReference Include="..\..\ImoutoRebirth.Common\ImoutoRebirth.Common.WebApi.Client\ImoutoRebirth.Common.WebApi.Client.csproj" />
     </ItemGroup>
 
-	<ItemGroup>
-		<ProjectReference 
-			Include="..\..\ImoutoRebirth.Common\ImoutoRebirth.Common.WebApi.Client.Generators\ImoutoRebirth.Common.WebApi.Client.Generators.csproj" 
-			OutputItemType="Analyzer" 
-			ReferenceOutputAssembly="false"
-			SetTargetFramework="TargetFramework=netstandard2.0"/>
-	</ItemGroup>
+    <ItemGroup>
+        <ProjectReference
+                Include="..\..\ImoutoRebirth.Common\ImoutoRebirth.Common.WebApi.Client.Generators\ImoutoRebirth.Common.WebApi.Client.Generators.csproj"
+                OutputItemType="Analyzer"
+                ReferenceOutputAssembly="false"
+                SetTargetFramework="TargetFramework=netstandard2.0" />
+    </ItemGroup>
 
 </Project>

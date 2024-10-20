@@ -42,23 +42,23 @@
     </ItemGroup>
 
     <ItemGroup>
-        <Resource Include="Resources\img\nothing.png"/>
-        <Resource Include="Resources\49a7b0a953e5106e5942169f3cb0c237_ copy.ico"/>
-        <Resource Include="Resources\img\edit\irfan_view.ico"/>
-        <Resource Include="Resources\img\edit\ms_paint.ico"/>
-        <Resource Include="Resources\img\edit\photoshop.ico"/>
+        <Resource Include="Resources\img\nothing.png" />
+        <Resource Include="Resources\49a7b0a953e5106e5942169f3cb0c237_ copy.ico" />
+        <Resource Include="Resources\img\edit\irfan_view.ico" />
+        <Resource Include="Resources\img\edit\ms_paint.ico" />
+        <Resource Include="Resources\img\edit\photoshop.ico" />
     </ItemGroup>
 
     <ItemGroup>
-        <PackageReference Include="AutoMapper" Version="13.0.1" />
-        <PackageReference Include="MahApps.Metro" Version="2.4.10"/>
-        <PackageReference Include="MahApps.Metro.IconPacks" Version="5.0.1" />
-        <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="8.0.1" />
-        <PackageReference Include="Microsoft.Xaml.Behaviors.Wpf" Version="1.1.135" />
-        <PackageReference Include="Newtonsoft.Json" Version="13.0.3"/>
-        <PackageReference Include="System.Drawing.Common" Version="8.0.10" />
-        <PackageReference Include="WpfAnimatedGif" Version="2.0.2"/>
-        <PackageReference Include="GihanSoft.String.NaturalComparer" Version="3.3.0"/>
+        <PackageReference Include="AutoMapper" />
+        <PackageReference Include="MahApps.Metro" />
+        <PackageReference Include="MahApps.Metro.IconPacks" />
+        <PackageReference Include="Microsoft.Extensions.DependencyInjection" />
+        <PackageReference Include="Microsoft.Xaml.Behaviors.Wpf" />
+        <PackageReference Include="Newtonsoft.Json" />
+        <PackageReference Include="System.Drawing.Common" />
+        <PackageReference Include="WpfAnimatedGif" />
+        <PackageReference Include="GihanSoft.String.NaturalComparer" />
     </ItemGroup>
 
     <ItemGroup>
@@ -80,12 +80,12 @@
     </ItemGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\..\ImoutoRebirth.Common\ImoutoRebirth.Common.WebP\ImoutoRebirth.Common.WebP.csproj"/>
-        <ProjectReference Include="..\..\ImoutoRebirth.Common\ImoutoRebirth.Common.WindowsAssociationManager\ImoutoRebirth.Common.WindowsAssociationManager.csproj"/>
-        <ProjectReference Include="..\..\ImoutoRebirth.Common\ImoutoRebirth.Common.WPF\ImoutoRebirth.Common.WPF.csproj"/>
-        <ProjectReference Include="..\..\ImoutoRebirth.Common\ImoutoRebirth.Common\ImoutoRebirth.Common.csproj"/>
-        <ProjectReference Include="..\..\ImoutoRebirth.Lilin\ImoutoRebirth.Lilin.WebApi.Client\ImoutoRebirth.Lilin.WebApi.Client.csproj"/>
-        <ProjectReference Include="..\..\ImoutoRebirth.Room\ImoutoRebirth.Room.WebApi.Client\ImoutoRebirth.Room.WebApi.Client.csproj"/>
+        <ProjectReference Include="..\..\ImoutoRebirth.Common\ImoutoRebirth.Common.WebP\ImoutoRebirth.Common.WebP.csproj" />
+        <ProjectReference Include="..\..\ImoutoRebirth.Common\ImoutoRebirth.Common.WindowsAssociationManager\ImoutoRebirth.Common.WindowsAssociationManager.csproj" />
+        <ProjectReference Include="..\..\ImoutoRebirth.Common\ImoutoRebirth.Common.WPF\ImoutoRebirth.Common.WPF.csproj" />
+        <ProjectReference Include="..\..\ImoutoRebirth.Common\ImoutoRebirth.Common\ImoutoRebirth.Common.csproj" />
+        <ProjectReference Include="..\..\ImoutoRebirth.Lilin\ImoutoRebirth.Lilin.WebApi.Client\ImoutoRebirth.Lilin.WebApi.Client.csproj" />
+        <ProjectReference Include="..\..\ImoutoRebirth.Room\ImoutoRebirth.Room.WebApi.Client\ImoutoRebirth.Room.WebApi.Client.csproj" />
     </ItemGroup>
 
 </Project>

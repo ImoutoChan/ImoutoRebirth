@@ -10,11 +10,11 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\ImoutoRebirth.Common.WebP\ImoutoRebirth.Common.WebP.csproj"/>
+        <ProjectReference Include="..\ImoutoRebirth.Common.WebP\ImoutoRebirth.Common.WebP.csproj" />
     </ItemGroup>
 
     <ItemGroup>
-        <PackageReference Include="Microsoft.Xaml.Behaviors.Wpf" Version="1.1.135" />
+        <PackageReference Include="Microsoft.Xaml.Behaviors.Wpf" />
     </ItemGroup>
 
 </Project>

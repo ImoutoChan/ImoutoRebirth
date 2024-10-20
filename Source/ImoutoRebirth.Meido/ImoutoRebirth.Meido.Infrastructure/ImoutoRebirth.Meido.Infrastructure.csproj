@@ -11,7 +11,7 @@
         <ProjectReference Include="..\..\ImoutoRebirth.Arachne\ImoutoRebirth.Arachne.MessageContracts\ImoutoRebirth.Arachne.MessageContracts.csproj" />
         <ProjectReference Include="..\..\ImoutoRebirth.Common\ImoutoRebirth.Common.Infrastructure\ImoutoRebirth.Common.Infrastructure.csproj" />
         <ProjectReference Include="..\ImoutoRebirth.Meido.Application\ImoutoRebirth.Meido.Application.csproj" />
-        <ProjectReference Include="..\ImoutoRebirth.Meido.DataAccess\ImoutoRebirth.Meido.DataAccess.csproj"/>
+        <ProjectReference Include="..\ImoutoRebirth.Meido.DataAccess\ImoutoRebirth.Meido.DataAccess.csproj" />
         <ProjectReference Include="..\ImoutoRebirth.Meido.Domain\ImoutoRebirth.Meido.Domain.csproj" />
     </ItemGroup>
 
