@@ -10,6 +10,7 @@ using ImoutoRebirth.Lilin.Infrastructure;
 using ImoutoRebirth.Lilin.UI;
 using ImoutoRebirth.Lilin.UI.Consumers;
 using ImoutoRebirth.Lilin.UI.WebApi;
+using ResQueue;
 
 const string servicePrefix = "LILIN_";
 
@@ -44,6 +45,7 @@ var app = builder.Build();
 
 app.MapWebEndpoints();
 app.MigrateIfNecessary<LilinDbContext>();
+app.UseResQueue("resqueue");
 app.Run();
 
 public partial class Program;
