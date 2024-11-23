@@ -46,6 +46,9 @@ internal class UpgradablePostgresDatabaseMigrator : ISqlTransportDatabaseMigrato
         _logger = logger;
     }
 
+    public Task CreateSchemaIfNotExist(SqlTransportOptions options, CancellationToken cancellationToken) 
+        => _defaultMigrator.CreateSchemaIfNotExist(options, cancellationToken);
+
     public async Task CreateInfrastructure(SqlTransportOptions options, CancellationToken ct)
     {
         try

@@ -1,5 +1,11 @@
 # Unreleased
 
+### This version update requires for you to run ./install-dependencies.ps1 again
+
+### Infrastructure
+* Migrate to .NET 9
+* Update all dependencies
+
 # 4.26.1
 
 ### Infrastructure
