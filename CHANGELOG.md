@@ -5,6 +5,7 @@
 ### Infrastructure
 * Migrate to .NET 9
 * Update all dependencies
+* Add Resqueue dashboard
 
 # 4.26.1
 
