@@ -6,6 +6,7 @@
 * Migrate to .NET 9
 * Update all dependencies
 * Add Resqueue dashboard
+* Add new videos in README for the initial launch and configuration of collections
 
 # 4.26.1
 
