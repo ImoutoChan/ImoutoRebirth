@@ -67,7 +67,8 @@ For viewing individual images. Its use is not mandatory, you can use your favori
 
 # Installation
 
-**[NEW]** **Video guide with installation and initial configuration**: https://youtu.be/rEg0WMQgmoE
+**Video guide with installation and initial configuration**: https://youtu.be/rEg0WMQgmoE
+**[NEW]** **Video guide with first launch, collection configuration, demo some features, Imouto Extensions demo**: https://youtu.be/7Gnbc3296GU
 
 The main idea of the app is that you have different collections with media that store your images/videos. After installation, you have to set up this collection in ImoutoNavigator app. Each collection has source folders and (optionally) a destination folder. The app monitors each source folder, takes files from there, processes them, and moves them to the destination folder. After that files are observable in ImoutoNavigator app. Installation itself looks like this:
 
