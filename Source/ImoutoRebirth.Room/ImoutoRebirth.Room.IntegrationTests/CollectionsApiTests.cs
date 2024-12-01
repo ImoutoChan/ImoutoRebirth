@@ -1,4 +1,5 @@
 ﻿using System.Net.Http.Json;
+using System.Text.Json;
 using FluentAssertions;
 using ImoutoRebirth.Common.MassTransit;
 using ImoutoRebirth.Common.Tests;
@@ -13,6 +14,8 @@ using MassTransit.Testing;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
+using NodaTime;
+using NodaTime.Serialization.SystemTextJson;
 using Xunit;
 
 namespace ImoutoRebirth.Room.IntegrationTests;
@@ -209,6 +212,43 @@ public class CollectionsApiTests : IDisposable
         
         // assert
         files.Should().HaveCount(2);
+    }
+
+    [Fact]
+    public async Task GetCollectionFileMetadata()
+    {
+        // arrange
+        var (collectionId, sourceFolderPath, destFolderPath) = await CreateDefaultCollection(
+            sourceShouldCheckFormat:              false,
+            sourceShouldCheckHashFromName:        false,
+            sourceShouldCreateTagsFromSubfolders: false,
+            sourceShouldAddTagFromFilename:       false,
+            sourceSupportedExtensions:            new[] { "jpg" },
+            destShouldCreateSubfoldersByHash:     false,
+            destShouldRenameByHash:               false);
+
+        var testFile1 = new FileInfo(Path.Combine(_webApp.TestsLocation, "Resources", "file1-5f30f9953332c230d11e3f26db5ae9a0.jpg"));
+
+        testFile1.CopyTo(Path.Combine(sourceFolderPath, testFile1.Name));
+        await _mediator.Send(new OverseeCommand());
+
+        var fileId = _context.CollectionFiles
+            .Where(x => x.CollectionId == collectionId)
+            .Select(x => x.Id)
+            .First();
+
+        // act
+        var response = await _httpClient.GetAsync($"/collection-files/{fileId}");
+        var file = await response.Content
+            .ReadFromJsonAsync<CollectionFileMetadata>(
+                new JsonSerializerOptions(JsonSerializerOptions.Web)
+                    .ConfigureForNodaTime(DateTimeZoneProviders.Tzdb));
+
+        // assert
+        file.Should().NotBeNull();
+        file!.Id.Should().Be(fileId);
+        file.StoredMd5.Should().Be("5f30f9953332c230d11e3f26db5ae9a0");
+        (SystemClock.Instance.GetCurrentInstant() - file.AddedOn).TotalMinutes.Should().BeLessThan(1);
     }
 
     [Fact]

@@ -11,7 +11,6 @@ using Nuke.Common.Tooling;
 using Nuke.Common.Tools.DotNet;
 using Nuke.Common.Tools.GitVersion;
 using static Nuke.Common.Tools.DotNet.DotNetTasks;
-using static Nuke.Common.IO.FileSystemTasks;
 using static Z7Tasks;
 
 [CustomBuildCmdPathGitHubActions(
@@ -151,7 +150,7 @@ class Build : NukeBuild
                 directoryToDelete.DeleteDirectory();
 
             foreach (var nukeFileToPublish in NukeFilesToPublish)
-                CopyFileToDirectory(nukeFileToPublish, OutputLatestDirectory, FileExistsPolicy.Overwrite);
+                nukeFileToPublish.CopyToDirectory(OutputLatestDirectory, ExistsPolicy.FileOverwrite);
             
             return;
             

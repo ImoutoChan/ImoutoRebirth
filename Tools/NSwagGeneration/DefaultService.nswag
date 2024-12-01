@@ -56,7 +56,7 @@
       "generateResponseClasses": true,
       "responseClass": "SwaggerResponse",
       "namespace": "$(ServiceName).WebApi.Client",
-      "requiredPropertiesMustBeDefined": false,
+      "requiredPropertiesMustBeDefined": true,
       "dateType": "System.DateTimeOffset",
       "jsonConverters": [],
       "anyType": "object",

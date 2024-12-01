@@ -154,6 +154,12 @@ internal class FileService : IFileService
         return roomIds.Count(x => lilinIdsHashSet.Contains(x));
     }
 
+    public async Task<FileMetadata> GetFileMetadata(Guid fileId)
+    {
+        var meta = await _collectionFilesClient.GetCollectionFileMetadataAsync(fileId);
+        return new FileMetadata(fileId, meta.StoredMd5, meta.AddedOn);
+    }
+
     public async Task<int> CountFiles1(
         Guid? collectionId,
         IReadOnlyCollection<SearchTag> tags,

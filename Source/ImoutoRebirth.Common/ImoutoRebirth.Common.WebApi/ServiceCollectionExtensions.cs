@@ -55,6 +55,8 @@ public static class ServiceCollectionExtensions
         {
             c.SchemaFilter<EnumFilter>();
             c.SchemaFilter<RequireValueTypePropertiesSchemaFilter>();
+            c.SupportNonNullableReferenceTypes();
+            c.NonNullableReferenceTypesAsRequired();
 
             c.SwaggerDoc("v1.0", new OpenApiInfo
             {
@@ -76,7 +78,7 @@ public static class ServiceCollectionExtensions
                 
                 return upperControllerName + '_' + name;
             });
-            
+
             configure?.Invoke(c);
         });
 

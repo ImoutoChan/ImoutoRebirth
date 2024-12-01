@@ -8,6 +8,11 @@
 * Add Resqueue dashboard
 * Add new videos in README for the initial launch and configuration of collections
 
+### Navigator
+* Add date in file info
+* When you click calculate hash, it will be compared with the stored hash for the file; 
+if they are different, the hash will be highlighted in red
+
 # 4.26.1
 
 ### Infrastructure

@@ -1,9 +1,14 @@
 ﻿using System.IO.Compression;
+using System.Text.Encodings.Web;
+using System.Text.Json;
 using System.Text.Json.Serialization;
 using ImoutoRebirth.Common.WebApi;
+using ImoutoRebirth.Common.WebApi.NodaTime;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.ResponseCompression;
 using Microsoft.Extensions.DependencyInjection;
+using NodaTime;
+using NodaTime.Serialization.SystemTextJson;
 
 namespace ImoutoRebirth.Room.UI.WebApi;
 
@@ -11,13 +16,12 @@ public static class WebEndpointsExtensions
 {
     public static IServiceCollection AddWebEndpoints(this IServiceCollection services)
     {
-        services.Configure<Microsoft.AspNetCore.Http.Json.JsonOptions>(x =>
-            x.SerializerOptions.Converters.Add(new JsonStringEnumConverter()));
+        services.Configure<Microsoft.AspNetCore.Http.Json.JsonOptions>(x => ConfigureDefaults(x.SerializerOptions));
+        services.Configure<Microsoft.AspNetCore.Mvc.JsonOptions>(x => ConfigureDefaults(x.JsonSerializerOptions));
 
-        services.Configure<Microsoft.AspNetCore.Mvc.JsonOptions>(x =>
-            x.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter()));
-        
-        services.AddMinimalSwagger("ImoutoRebirth.Room WebApi Client");
+        services.AddMinimalSwagger(
+            "ImoutoRebirth.Room WebApi Client",
+            x => x.ConfigureForNodaTime(ConfigureDefaults(new JsonSerializerOptions())));
         
         services.AddResponseCompression(options =>
         {
@@ -49,5 +53,13 @@ public static class WebEndpointsExtensions
         app.MapImoutoPicsUploaderEnabled();
         
         return app;
+    }
+
+    private static JsonSerializerOptions ConfigureDefaults(JsonSerializerOptions options)
+    {
+        options.Converters.Add(new JsonStringEnumConverter());
+        options.ConfigureForNodaTime(DateTimeZoneProviders.Tzdb);
+        options.Encoder = JavaScriptEncoder.UnsafeRelaxedJsonEscaping;
+        return options;
     }
 }

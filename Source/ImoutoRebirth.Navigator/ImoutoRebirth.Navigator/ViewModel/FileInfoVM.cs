@@ -3,12 +3,16 @@ using System.Security.Cryptography;
 using System.Windows;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using ImoutoRebirth.Navigator.Services;
+using ImoutoRebirth.Navigator.Services.Tags;
 using ImoutoRebirth.Navigator.ViewModel.ListEntries;
 
 namespace ImoutoRebirth.Navigator.ViewModel;
 
 internal partial class FileInfoVM : ObservableObject
 {
+    private readonly IFileService _fileService;
+
     private FileInfo? _fileInfo;
 
     [ObservableProperty]
@@ -22,6 +26,7 @@ internal partial class FileInfoVM : ObservableObject
 
     [ObservableProperty]
     [NotifyCanExecuteChangedFor(nameof(CalculateHashCommand))]
+    [NotifyPropertyChangedFor(nameof(IsHashValid))]
     private string? _hash;
 
     [ObservableProperty]
@@ -29,6 +34,20 @@ internal partial class FileInfoVM : ObservableObject
 
     [ObservableProperty]
     private bool _hasValue;
+
+    [ObservableProperty]
+    private DateTimeOffset? _addedOn;
+
+    [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(IsHashValid))]
+    private string? _storedHash;
+
+    public bool IsHashValid => Hash == null || StoredHash == null || Hash == StoredHash;
+
+    public FileInfoVM()
+    {
+        _fileService = ServiceLocator.GetService<IFileService>();
+    }
 
     private bool CanCalculateHash() => Hash == null;
     
@@ -48,7 +67,7 @@ internal partial class FileInfoVM : ObservableObject
         });
     }
 
-    public void UpdateCurrentInfo(INavigatorListEntry? navigatorListEntry, int number)
+    public async void UpdateCurrentInfo(INavigatorListEntry? navigatorListEntry, int number)
     {
         OrderNumber = number;
 
@@ -75,5 +94,12 @@ internal partial class FileInfoVM : ObservableObject
         PixelSize = navigatorListEntry is IPixelSizable pixelSizable ? pixelSizable.PixelSize : null;
 
         _fileInfo = fi;
+
+        if (navigatorListEntry.DbId.HasValue)
+        {
+            var metadata = await _fileService.GetFileMetadata(navigatorListEntry.DbId.Value);
+            AddedOn = metadata.AddedOn;
+            StoredHash = metadata.StoredMd5;
+        }
     }
 }

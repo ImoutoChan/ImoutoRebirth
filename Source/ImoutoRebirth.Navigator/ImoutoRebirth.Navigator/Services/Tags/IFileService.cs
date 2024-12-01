@@ -16,5 +16,7 @@ internal interface IFileService
         IReadOnlyCollection<SearchTag> tags,
         CancellationToken cancellationToken);
 
+    Task<FileMetadata> GetFileMetadata(Guid fileId);
+
     Task RemoveFile(Guid fileId);
 }

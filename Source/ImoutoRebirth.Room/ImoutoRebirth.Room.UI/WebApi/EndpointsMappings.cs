@@ -65,6 +65,10 @@ internal static class EndpointsMappings
         files.MapDelete("/{id:guid}", (Guid id, IMediator mediator, CancellationToken ct)
                 => mediator.Send(new DeleteCollectionFileCommand(id), ct))
             .WithName("DeleteCollectionFile");
+
+        files.MapGet("/{id:guid}", (Guid id, IMediator mediator, CancellationToken ct)
+                => mediator.Send(new CollectionFileMetadataQuery(id), ct))
+            .WithName("GetCollectionFileMetadata");
     }
 
     public static void MapDestinationFoldersEndpoints(this WebApplication app)

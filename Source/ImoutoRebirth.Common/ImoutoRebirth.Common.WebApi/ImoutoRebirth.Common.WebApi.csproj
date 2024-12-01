@@ -9,6 +9,8 @@
 
     <ItemGroup>
         <PackageReference Include="Swashbuckle.AspNetCore" />
+        <PackageReference Include="NodaTime" />
+        <PackageReference Include="NodaTime.Serialization.SystemTextJson" />
     </ItemGroup>
 
 </Project>

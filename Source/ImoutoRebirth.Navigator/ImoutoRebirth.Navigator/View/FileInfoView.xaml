@@ -26,6 +26,8 @@
                 <RowDefinition Height="Auto" />
                 <RowDefinition Height="5" />
                 <RowDefinition Height="Auto" />
+                <RowDefinition Height="5" />
+                <RowDefinition Height="Auto" />
             </Grid.RowDefinitions>
 
             <TextBlock Grid.Row="0"
@@ -55,7 +57,15 @@
                        Visibility="{Binding Hash, Converter={StaticResource ConditionVisibilityConverter}, ConverterParameter=!null}">
                 <Run Text="Hash: " />
                 
-                <Run Text="{Binding Hash}" />
+                <TextBlock
+                    Text="{Binding Hash}"
+                    Foreground="DarkRed"
+                    TextDecorations="Underline"
+                    ToolTip="The calculated hash does not match the stored value; the file is either corrupted or has been modified"
+                    Visibility="{Binding IsHashValid, Converter={StaticResource ConditionVisibilityConverter}, ConverterParameter=false}"/>
+                <TextBlock
+                    Text="{Binding Hash}"
+                    Visibility="{Binding IsHashValid, Converter={StaticResource ConditionVisibilityConverter}, ConverterParameter=true}" />
             </TextBlock>
 
             <TextBlock Grid.Row="6"
@@ -69,6 +79,13 @@
                         <Binding Path="PixelSize.Height" />
                     </MultiBinding>
                 </TextBlock.Text>
+            </TextBlock>
+
+            <TextBlock Grid.Row="10"
+                       Visibility="{Binding AddedOn, Converter={StaticResource ConditionVisibilityConverter}, ConverterParameter=!null}">
+                <Run Text="Added on: " />
+
+                <Run Text="{Binding AddedOn, StringFormat={}{0:dd.MM.yyyy HH:mm}}" />
             </TextBlock>
         </Grid>
     </Border>
