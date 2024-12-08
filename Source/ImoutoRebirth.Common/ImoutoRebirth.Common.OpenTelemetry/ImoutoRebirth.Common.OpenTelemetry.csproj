@@ -23,8 +23,8 @@
 
     <ItemGroup>
         <PackageReference Include="IgnoresAccessChecksToGenerator" PrivateAssets="All" />
-        <InternalsAssemblyName Include="OpenTelemetry.Instrumentation.Http" />
-        <InternalsAssemblyName Include="OpenTelemetry.Instrumentation.AspNetCore" />
+        <IgnoresAccessChecksTo Include="OpenTelemetry.Instrumentation.Http" />
+        <IgnoresAccessChecksTo Include="OpenTelemetry.Instrumentation.AspNetCore" />
     </ItemGroup>
 
 </Project>

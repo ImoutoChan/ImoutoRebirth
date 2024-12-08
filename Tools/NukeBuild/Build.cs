@@ -165,13 +165,13 @@ class Build : NukeBuild
         .DependsOn(Publish)
         .Executes(() =>
         {
-            PackAs7z(s => s
+            PackAs7Z(s => s
                 .CreateArchive()
                 .AsSfx()
                 .SetOutputArchiveFile(OutputLatestDirectory.Parent / $"{VersionedName}.exe")
                 .SetSourceDirectory(OutputLatestDirectory));
             
-            PackAs7z(s => s
+            PackAs7Z(s => s
                 .CreateArchive()
                 .SetOutputArchiveFile(OutputLatestDirectory.Parent / $"{VersionedName}.7z")
                 .SetSourceDirectory(OutputLatestDirectory));

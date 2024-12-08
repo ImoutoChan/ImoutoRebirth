@@ -109,7 +109,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tools", "Tools", "{2438D898
 		..\.github\workflows\release.yml = ..\.github\workflows\release.yml
 		ImoutoRebirth.sln.DotSettings = ImoutoRebirth.sln.DotSettings
 		Directory.Packages.props = Directory.Packages.props
-		..\Tools\Dependencies\OpenSearch\docker-compose.yml = ..\Tools\Dependencies\OpenSearch\docker-compose.yml
 	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NukeBuild", "..\Tools\NukeBuild\NukeBuild.csproj", "{DBC3E098-5984-4FD6-9F83-18FBE9A23683}"
@@ -180,6 +179,11 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "OpenSearch", "OpenSearch", "{B16254AF-E3CE-482E-AAE8-7F2552B49B32}"
 	ProjectSection(SolutionItems) = preProject
 		..\Tools\Dependencies\OpenSearch\docker-compose.yml = ..\Tools\Dependencies\OpenSearch\docker-compose.yml
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ResQueue", "ResQueue", "{33AC8603-2432-4141-8072-51A426466565}"
+	ProjectSection(SolutionItems) = preProject
+		..\Tools\Dependencies\ResQueue\docker-compose.yml = ..\Tools\Dependencies\ResQueue\docker-compose.yml
 	EndProjectSection
 EndProject
 Global
@@ -494,6 +498,7 @@ Global
 		{AAEFC13A-4A80-4079-BC67-AA15FD7BB9C2} = {4383FD00-3B54-4C2B-9222-BDC045D3FD9B}
 		{1BB082C3-0D59-4ECF-A008-BA6C0098E771} = {2438D898-F22E-4AD1-950B-4686D50817B3}
 		{B16254AF-E3CE-482E-AAE8-7F2552B49B32} = {2438D898-F22E-4AD1-950B-4686D50817B3}
+		{33AC8603-2432-4141-8072-51A426466565} = {2438D898-F22E-4AD1-950B-4686D50817B3}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {3E48016D-BB6B-49F0-9888-80A5EAF0FAA4}

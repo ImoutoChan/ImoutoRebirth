@@ -7,9 +7,10 @@
 * Update all dependencies
 * Add Resqueue dashboard
 * Add new videos in README for the initial launch and configuration of collections
+* Fix various issues after migration to .NET 9 
 
 ### Navigator
-* Add date in file info
+* Add date in file info (left bottom corner)
 * When you click calculate hash, it will be compared with the stored hash for the file; 
 if they are different, the hash will be highlighted in red
 

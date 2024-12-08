@@ -51,7 +51,9 @@ public class TestWebApplicationFactory<TProgram>
             foreach (var descriptor in descriptors)
                 services.Remove(descriptor);
 
-            services.AddDbContext<LilinDbContext>(x => x.UseNpgsql(ConnectionString, y => y.UseNodaTime()));
+            services.AddDbContext<LilinDbContext>(x =>
+                x.UseNpgsql(ConnectionString, y => y.UseNodaTime()).EnableSensitiveDataLogging());
+
             services.AddMassTransitTestHarness(с => с.AddLilinMassTransitSetup());
         });
 

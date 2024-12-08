@@ -1,0 +1,9 @@
+version: '3'
+services:
+  resqueue:
+    image: ghcr.io/filipbekic01/resqueue:latest
+    ports:
+      - 8080:8080
+    environment:
+      - "ResQueue:SqlEngine=Postgres"
+      - "SqlTransport:ConnectionString=Server=host.docker.internal;Port=5432;Database=masstransit;User Id=postgres;Password=postgres;"

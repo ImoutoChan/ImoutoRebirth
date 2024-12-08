@@ -5,7 +5,7 @@ using Nuke.Common.Tooling;
 
 public static class Z7Tasks
 {
-    public static void PackAs7z(Action<Z7SfxSettings> configurator)
+    public static void PackAs7Z(Action<Z7SfxSettings> configurator)
     {
         var settings = new Z7SfxSettings();
         configurator(settings);
@@ -66,20 +66,6 @@ public static class Z7Tasks
         {
             SourceName = sourceName;
             return this;
-        }
-
-        protected Arguments ConfigureProcessArguments(Arguments arguments)
-        {
-            var resultArguments = arguments
-                .Add(Command);
-            
-            if (!string.IsNullOrWhiteSpace(Switch))
-                resultArguments = resultArguments
-                    .Add(Switch);
-
-            return resultArguments
-                .Add("\"{0}\"", ArchiveName)
-                .Add("\"{0}\\", SourceName);
         }
 
         public string GetArguments()

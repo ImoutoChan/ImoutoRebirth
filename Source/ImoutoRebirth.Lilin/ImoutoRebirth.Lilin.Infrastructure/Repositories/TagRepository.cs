@@ -1,4 +1,5 @@
 ﻿using ImoutoRebirth.Common;
+using ImoutoRebirth.Common.EntityFrameworkCore;
 using ImoutoRebirth.Lilin.Application.Persistence;
 using ImoutoRebirth.Lilin.Domain.TagAggregate;
 using ImoutoRebirth.Lilin.DataAccess;
@@ -29,24 +30,14 @@ internal class TagRepository : ITagRepository
         IReadOnlyCollection<TagIdentifier> tags,
         CancellationToken ct)
     {
-        if (tags.None())
+        if (!tags.Any())
             return [];
-        
-        var query = _lilinDbContext.Tags
-            .Where(x => x.Name == tags.First().Name && x.TypeId == tags.First().TypeId);
 
-        foreach (var tag in tags.Skip(1))
-        {
-            query = query.Union(
-                _lilinDbContext.Tags
-                    .Where(x => x.Name == tag.Name && x.TypeId == tag.TypeId));
-        }
-
-        var result = await query
+        return await _lilinDbContext.Tags
+            .Where(x => _lilinDbContext.AsQueryable(tags).Any(t => x.Name == t.Name && x.TypeId == t.TypeId))
             .Include(x => x.Type)
+            .Select(x => x.ToModel())
             .ToListAsync(ct);
-
-        return result.Select(x => x.ToModel()).ToList();
     }
 
     public async Task Update(Tag tag)
