@@ -20,7 +20,7 @@ internal partial class SettingsVM : ObservableObject
     private string _pathOverrides;
 
     [ObservableProperty]
-    private bool _isImoutoPicsUploaderEnabled;
+    public partial bool IsImoutoPicsUploaderEnabled { get; set; }
 
     public SettingsVM()
     {

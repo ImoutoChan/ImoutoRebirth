@@ -11,12 +11,12 @@ internal abstract partial class FolderVM : ObservableValidator
     [NotifyDataErrorInfo]
     [NotNullOrWhiteSpace("Please enter path to the folder")]
     [Directory("Please enter valid path to the folder")]
-    private string _path;
+    public partial string Path { get; set; }
 
     protected FolderVM(Guid? id, string path)
     {
         Id = id;
-        _path = path;
+        Path = path;
     }
 
     public Guid? Id { get; }

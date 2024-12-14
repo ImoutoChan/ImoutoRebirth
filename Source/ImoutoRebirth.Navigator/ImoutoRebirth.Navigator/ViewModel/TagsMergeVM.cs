@@ -13,27 +13,27 @@ internal partial class TagsMergeVM : ObservableObject
     private readonly ITagService _tagService;
 
     private string? _searchText;
-    
-    [ObservableProperty]
-    [NotifyCanExecuteChangedFor(nameof(MergeTagsCommand))]
-    private SearchTagVM? _tagToClean;
 
     [ObservableProperty]
     [NotifyCanExecuteChangedFor(nameof(MergeTagsCommand))]
-    private SearchTagVM? _tagToEnrich;
+    public partial SearchTagVM? TagToClean { get; set; }
+
+    [ObservableProperty]
+    [NotifyCanExecuteChangedFor(nameof(MergeTagsCommand))]
+    public partial SearchTagVM? TagToEnrich { get; set; }
 
     [ObservableProperty]
     [NotifyCanExecuteChangedFor(nameof(DeleteCleanedTagCommand))]
-    private SearchTagVM? _cleanedTag;
+    public partial SearchTagVM? CleanedTag { get; set; }
 
     [ObservableProperty]
-    private ObservableCollection<SearchTagVM> _foundTags = new();
+    public partial ObservableCollection<SearchTagVM> FoundTags { get; set; } = new();
 
     [ObservableProperty]
-    private bool _isInProgress;
+    public partial bool IsInProgress { get; set; }
 
     [ObservableProperty]
-    private bool _isSuccess;
+    public partial bool IsSuccess { get; set; }
 
     public TagsMergeVM() => _tagService = ServiceLocator.GetService<ITagService>();
 

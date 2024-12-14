@@ -12,14 +12,14 @@ internal partial class VideoEntryVM: BaseEntryVM, INavigatorListEntry
     private readonly object _loaderLocker = new();
 
     [ObservableProperty]
-    private Size _viewPortSize;
+    public partial Size ViewPortSize { get; set; }
 
     [ObservableProperty]
-    private bool _isLoading;
+    public partial bool IsLoading { get; set; }
 
     [ObservableProperty]
-    private bool _shouldPause;
-    
+    public partial bool ShouldPause { get; set; }
+
     [ObservableProperty]
     private BitmapSource? _image;
 

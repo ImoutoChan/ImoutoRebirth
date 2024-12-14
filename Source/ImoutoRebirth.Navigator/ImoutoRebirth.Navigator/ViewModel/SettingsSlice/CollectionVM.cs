@@ -14,21 +14,21 @@ internal partial class CollectionVM : ObservableObject
     private readonly ISourceFolderService _sourceFolderService;
 
     [ObservableProperty]
-    private Guid _id;
+    public partial Guid Id { get; set; }
 
     [ObservableProperty]
-    private string _name;
+    public partial string Name { get; set; }
 
     [ObservableProperty]
-    private SourceFolderVM? _selectedSource;
+    public partial SourceFolderVM? SelectedSource { get; set; }
 
     [ObservableProperty]
-    private DestinationFolderVM? _destination;
+    public partial DestinationFolderVM? Destination { get; set; }
 
     public CollectionVM(Guid id, string name)
     {
-        _id = id;
-        _name = name;
+        Id = id;
+        Name = name;
 
         _collectionService = ServiceLocator.GetService<ICollectionService>();
         _destinationFolderService = ServiceLocator.GetService<IDestinationFolderService>();

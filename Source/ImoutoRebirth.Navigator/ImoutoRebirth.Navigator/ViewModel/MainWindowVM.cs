@@ -39,34 +39,34 @@ internal partial class MainWindowVM : ObservableObject
     private int _previewSize = 256;
 
     [ObservableProperty]
-    private bool _showTags = true;
+    public partial bool ShowTags { get; set; } = true;
 
     [ObservableProperty]
-    private bool _showQuickTagging = false;
-    
+    public partial bool ShowQuickTagging { get; set; } = false;
+
     [ObservableProperty]
     private int _volume = 100;
 
     [ObservableProperty]
-    private string _title;
+    public partial string Title { get; set; }
 
     [ObservableProperty]
-    private FullScreenPreviewVM? _fullScreenPreviewVM;
+    public partial FullScreenPreviewVM? FullScreenPreviewVM { get; set; }
 
     [ObservableProperty]
-    private QuickTaggingVM? _quickTagging;
+    public partial QuickTaggingVM? QuickTagging { get; set; }
 
     [ObservableProperty]
-    private int _totalCount;
+    public partial int TotalCount { get; set; }
 
     [ObservableProperty]
-    private bool _isLoading;
+    public partial bool IsLoading { get; set; }
 
     [ObservableProperty]
-    private string? _status;
+    public partial string? Status { get; set; }
 
     [ObservableProperty]
-    private string? _statusToolTip;
+    public partial string? StatusToolTip { get; set; }
 
     public MainWindowVM()
     {
@@ -79,8 +79,7 @@ internal partial class MainWindowVM : ObservableObject
         NavigatorList.CollectionChanged += (_, _) => OnPropertyChanged(nameof(LoadedCount));
 
         _appendNewContentTimer.Tick += (_, _) => { /*LoadNew();*/ };
-        
-        _title = DefaultTitle;
+        Title = DefaultTitle;
 
         TagSearchVM = new TagSearchVM();
         TagsEdit = new TagsEditVM(this);

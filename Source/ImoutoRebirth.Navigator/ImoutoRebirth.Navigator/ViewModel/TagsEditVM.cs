@@ -22,14 +22,14 @@ internal partial class TagsEditVM : ObservableObject, IDropable
     private string? _searchText;
 
     [ObservableProperty]
-    private CreateTagVM? _createTagVM;
+    public partial CreateTagVM? CreateTagVM { get; set; }
 
     [ObservableProperty]
-    private bool _isSaving;
+    public partial bool IsSaving { get; set; }
 
     [ObservableProperty]
-    private bool _isSuccess;
-    
+    public partial bool IsSuccess { get; set; }
+
     [ObservableProperty]
     private SearchTagVM? _tagInfoContext;
 

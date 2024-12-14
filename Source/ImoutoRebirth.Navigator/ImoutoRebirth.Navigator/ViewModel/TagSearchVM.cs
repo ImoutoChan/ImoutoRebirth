@@ -28,24 +28,24 @@ internal partial class TagSearchVM : ObservableObject
     private readonly ITagService _tagService;
     private Tag? _favoriteTag;
     private Tag? _rateTag;
-    
-    [ObservableProperty]
-    private bool _valueEnterMode;
 
     [ObservableProperty]
-    private string? _selectedComparator;
+    public partial bool ValueEnterMode { get; set; }
 
     [ObservableProperty]
-    private IReadOnlyCollection<DelayItem>? _ugoiraFrameDelays;
+    public partial string? SelectedComparator { get; set; }
 
     [ObservableProperty]
-    private bool _isRateSetted;
+    public partial IReadOnlyCollection<DelayItem>? UgoiraFrameDelays { get; set; }
 
     [ObservableProperty]
-    private string? _enteredValue;
+    public partial bool IsRateSetted { get; set; }
 
     [ObservableProperty]
-    private Tag? _selectedHintBoxTag;
+    public partial string? EnteredValue { get; set; }
+
+    [ObservableProperty]
+    public partial Tag? SelectedHintBoxTag { get; set; }
 
     public TagSearchVM()
     {

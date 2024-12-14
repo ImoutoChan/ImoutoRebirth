@@ -20,16 +20,16 @@ internal partial class QuickTaggingVM : ObservableObject
     private CancellationTokenSource? _searchTagsCancellation;
 
     [ObservableProperty]
-    private string? _searchText;
-
-    [ObservableProperty] 
-    private IReadOnlyCollection<Tag> _foundTags = [];
-
-    [ObservableProperty] 
-    private ObservableCollection<Tag> _selectedTags = new();
+    public partial string? SearchText { get; set; }
 
     [ObservableProperty]
-    private bool? _isSelectedTagsApplicationSuccess = null;
+    public partial IReadOnlyCollection<Tag> FoundTags { get; set; } = [];
+
+    [ObservableProperty]
+    public partial ObservableCollection<Tag> SelectedTags { get; set; } = new();
+
+    [ObservableProperty]
+    public partial bool? IsSelectedTagsApplicationSuccess { get; set; } = null;
 
     public AvailableTagPacksSetsVM AvailableTagPacksSets { get; } = new();
 

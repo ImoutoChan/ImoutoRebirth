@@ -16,31 +16,31 @@ internal partial class FileInfoVM : ObservableObject
     private FileInfo? _fileInfo;
 
     [ObservableProperty]
-    private string? _name;
+    public partial string? Name { get; set; }
 
     [ObservableProperty]
-    private long? _size;
+    public partial long? Size { get; set; }
 
     [ObservableProperty]
-    private Size? _pixelSize;
+    public partial Size? PixelSize { get; set; }
 
     [ObservableProperty]
     [NotifyCanExecuteChangedFor(nameof(CalculateHashCommand))]
     [NotifyPropertyChangedFor(nameof(IsHashValid))]
-    private string? _hash;
+    public partial string? Hash { get; set; }
 
     [ObservableProperty]
-    private int _orderNumber;
+    public partial int OrderNumber { get; set; }
 
     [ObservableProperty]
-    private bool _hasValue;
+    public partial bool HasValue { get; set; }
 
     [ObservableProperty]
-    private DateTimeOffset? _addedOn;
+    public partial DateTimeOffset? AddedOn { get; set; }
 
     [ObservableProperty]
     [NotifyPropertyChangedFor(nameof(IsHashValid))]
-    private string? _storedHash;
+    public partial string? StoredHash { get; set; }
 
     public bool IsHashValid => Hash == null || StoredHash == null || Hash == StoredHash;
 

@@ -15,29 +15,29 @@ internal partial class CreateTagVM : ObservableObject
     private bool _tagTypesLoaded;
     private bool _isCounter;
     private readonly ITagService _tagService;
-    
-    [ObservableProperty]
-    [NotifyCanExecuteChangedFor(nameof(SaveCommand))]
-    private TagType? _selectedType;
 
     [ObservableProperty]
     [NotifyCanExecuteChangedFor(nameof(SaveCommand))]
-    private string? _title;
+    public partial TagType? SelectedType { get; set; }
+
+    [ObservableProperty]
+    [NotifyCanExecuteChangedFor(nameof(SaveCommand))]
+    public partial string? Title { get; set; }
 
     /// <summary>
     ///     Separator :.:
     /// </summary>
     [ObservableProperty]
-    private string? _synonyms;
+    public partial string? Synonyms { get; set; }
 
     [ObservableProperty]
-    private bool _hasValue;
+    public partial bool HasValue { get; set; }
 
     [ObservableProperty]
-    private bool _isSaving;
+    public partial bool IsSaving { get; set; }
 
     [ObservableProperty]
-    private bool _isSuccess;
+    public partial bool IsSuccess { get; set; }
 
     public CreateTagVM()
     {
