@@ -1,4 +1,5 @@
-﻿using ImoutoRebirth.Lilin.WebApi.Client;
+﻿using CommunityToolkit.Mvvm.Messaging;
+using ImoutoRebirth.Lilin.WebApi.Client;
 using ImoutoRebirth.Navigator.Services.Collections;
 using ImoutoRebirth.Navigator.Services.ImoutoViewer;
 using ImoutoRebirth.Navigator.Services.Tags;
@@ -30,6 +31,7 @@ public static class ServiceLocator
         sc.AddTransient<IFileNoteService, FileNoteService>();
         sc.AddTransient<ITagService, TagService>();
         sc.AddTransient<IFileLoadingService, FileLoadingService>();
+        sc.AddTransient<IMessenger, WeakReferenceMessenger>();
 
         sc.AddRoomWebApiClients(Settings.Default.RoomHost);
         sc.AddLilinWebApiClients(Settings.Default.LilinHost);
