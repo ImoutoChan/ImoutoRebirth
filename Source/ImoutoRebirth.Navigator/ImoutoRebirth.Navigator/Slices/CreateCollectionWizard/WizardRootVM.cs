@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System.Collections.ObjectModel;
+using System.IO;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Messaging;
 using ImoutoRebirth.Navigator.Services;
@@ -62,5 +63,17 @@ internal partial class WizardRootVM : ObservableObject, IRecipient<CreateCollect
             var singleSourceFolder = State.SourceFolders.First();
             await _sourceFolderService.AddSourceFolderAsync(singleSourceFolder.PrepareToSave(createdCollection.Id));
         }
+    }
+}
+
+internal class DesignTimeWizardRootVM : WizardRootVM
+{
+    public DesignTimeWizardRootVM()
+    {
+        State = new WizardStateVM
+        {
+            CollectionName = "Art",
+            CollectionPath = "C:\\Path\\To\\Folder",
+        };
     }
 }
