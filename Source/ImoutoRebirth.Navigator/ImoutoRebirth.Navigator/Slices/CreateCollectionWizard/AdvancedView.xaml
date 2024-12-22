@@ -1,0 +1,79 @@
+﻿<UserControl x:Class="ImoutoRebirth.Navigator.Slices.CreateCollectionWizard.AdvancedView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:local="clr-namespace:ImoutoRebirth.Navigator.Slices.CreateCollectionWizard"
+             mc:Ignorable="d"
+             d:DesignHeight="524"
+             d:DesignWidth="928"
+             d:DataContext="{d:DesignInstance Type={x:Type local:DesignTimeWizardRootVM}, d:IsDesignTimeCreatable=True}"
+             FontFamily="Roboto">
+    <UserControl.Resources>
+        <Style TargetType="TextBox" BasedOn="{StaticResource {x:Type TextBox}}">
+            <Setter Property="Height" Value="40" />
+            <Setter Property="FontSize" Value="26" />
+            <Setter Property="Padding" Value="11 0" />
+        </Style>
+
+        <Style TargetType="TextBlock" BasedOn="{StaticResource {x:Type TextBlock}}">
+            <Setter Property="FontWeight" Value="Regular" />
+            <Setter Property="Foreground" Value="#F6F6F6" />
+        </Style>
+
+        <Style TargetType="Button" BasedOn="{StaticResource MahApps.Styles.Button.Flat}">
+            <Setter Property="FontSize" Value="16" />
+            <Setter Property="Padding" Value="0" />
+            <Setter Property="FontFamily" Value="Roboto" />
+            <Setter Property="FontWeight" Value="Regular" />
+            <Setter Property="Background" Value="#2F2F2F" />
+        </Style>
+    </UserControl.Resources>
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
+
+        <Button Grid.Column="0" Height="293" Width="331">
+            <TextBlock Margin="25 0 25 0" Foreground="#F6F6F6">
+                <TextBlock Text="one-folder setup" FontSize="27" Margin="42 0 0 0" />
+                <LineBreak />
+                <TextBlock Text="•" Margin="0 -16 5 0" FontSize="40" />
+                <TextBlock Text="you already have some folder with your files, and you don’t want to move or rename them"
+                           Margin="0 12 15 0" TextWrapping="Wrap" />
+                <LineBreak />
+                <TextBlock Text="•" Margin="0 4 5 0" FontSize="40" />
+                <TextBlock Text="files will be scanned and added to the newly created collection" Margin="0 15 15 0"
+                           TextWrapping="Wrap" />
+                <LineBreak />
+                <TextBlock Text="•" Margin="0 4 5 0" FontSize="40" />
+                <TextBlock Text="files should be saved as originals if you want to get tags from boorus"
+                           Margin="0 15 15 0" TextWrapping="Wrap" />
+                <LineBreak />
+                <TextBlock Text="•" Margin="0 4 5 0" FontSize="40" />
+                <TextBlock Text="" Margin="0 15 15 0" TextWrapping="Wrap">
+                    <Run Text="subfolder names will be used as file tags " /><Run FontSize="9">*use advanced settings to disable</Run>
+                </TextBlock>
+            </TextBlock>
+        </Button>
+
+        <Button Grid.Column="1" Height="293" Width="331">
+            <TextBlock Margin="25 0 25 0" Foreground="#F6F6F6">
+                <TextBlock Text="dedicated folder setup" FontSize="27" Margin="6 0 0 0" />
+                <LineBreak />
+                <TextBlock Text="•" Margin="0 -55 5 0" FontSize="40" />
+                <TextBlock Text="you want to store your collection in well-managed manner, using source folders to place new files and destination folder to store your collection"
+                           Margin="0 12 0 0" TextWrapping="Wrap" />
+                <LineBreak />
+                <TextBlock Text="•" Margin="0 7 5 0" FontSize="40" />
+                <TextBlock Text="files will be moved from source folders to the destination folder" Margin="0 15 0 0"
+                           TextWrapping="Wrap" />
+                <LineBreak />
+                <TextBlock Text="•" Margin="0 6 5 0" FontSize="40" />
+                <TextBlock Text="use advanced to change source and destination folder settings"
+                           Margin="0 15 0 0" TextWrapping="Wrap" />
+            </TextBlock>
+        </Button>
+    </Grid>
+</UserControl>
