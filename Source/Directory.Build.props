@@ -1,6 +1,16 @@
 <Project>
+
     <PropertyGroup>
         <!-- Ignore unavailable nuget sources -->
         <NoWarn>$(NoWarn);NU1801</NoWarn>
     </PropertyGroup>
+
+    <PropertyGroup>
+        <InterceptorsPreviewNamespaces>$(InterceptorsPreviewNamespaces);Microsoft.Extensions.Logging.AutoLoggerMessage</InterceptorsPreviewNamespaces>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <PackageReference Include="stbychkov.AutoLoggerMessage" NoWarn="NU1608" />
+    </ItemGroup>
+
 </Project>
