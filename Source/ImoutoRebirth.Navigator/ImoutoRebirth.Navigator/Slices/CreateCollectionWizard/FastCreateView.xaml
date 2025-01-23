@@ -10,26 +10,22 @@
              d:DataContext="{d:DesignInstance Type={x:Type local:DesignTimeWizardRootVM}, d:IsDesignTimeCreatable=True}"
              FontFamily="Roboto">
     <UserControl.Resources>
-        <Style TargetType="TextBox" BasedOn="{StaticResource {x:Type TextBox}}">
-            <Setter Property="Height" Value="40" />
-            <Setter Property="FontSize" Value="26" />
-            <Setter Property="Padding" Value="11 0" />
-        </Style>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="WizardControls.xaml" />
+            </ResourceDictionary.MergedDictionaries>
 
-        <Style TargetType="TextBlock" BasedOn="{StaticResource {x:Type TextBlock}}">
-            <Setter Property="FontSize" Value="19" />
-            <Setter Property="Foreground" Value="{DynamicResource MahApps.Brushes.Gray2}" />
-        </Style>
+            <Style TargetType="TextBox" BasedOn="{StaticResource {x:Type TextBox}}">
+                <Setter Property="Height" Value="40" />
+                <Setter Property="FontSize" Value="26" />
+                <Setter Property="Padding" Value="11 0" />
+            </Style>
 
-        <Style TargetType="Button" BasedOn="{StaticResource MahApps.Styles.Button.Flat}">
-            <Setter Property="Width" Value="168" />
-            <Setter Property="Height" Value="40" />
-            <Setter Property="Margin" Value="35 0 0 0" />
-            <Setter Property="FontSize" Value="24" />
-            <Setter Property="Padding" Value="0" />
-            <Setter Property="FontFamily" Value="Roboto" />
-            <Setter Property="FontWeight" Value="Regular" />
-        </Style>
+            <Style TargetType="TextBlock" BasedOn="{StaticResource {x:Type TextBlock}}">
+                <Setter Property="FontSize" Value="19" />
+                <Setter Property="Foreground" Value="{DynamicResource MahApps.Brushes.Gray2}" />
+            </Style>
+        </ResourceDictionary>
     </UserControl.Resources>
 
     <Grid>
@@ -39,7 +35,7 @@
             <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
 
-        <TextBlock Grid.Row="0" Text="New collection" FontSize="41" />
+        <TextBlock Grid.Row="0" Text="New collection" FontSize="41" Foreground="{DynamicResource MahApps.Brushes.Flyout.Foreground}" />
 
         <StackPanel Grid.Row="1" Margin="94 70 94 70">
             <StackPanel Margin="0 0 204 30">
@@ -59,7 +55,7 @@
 
                     <TextBox Grid.Column="0" Text="{Binding State.CollectionPath}" />
 
-                    <Button Grid.Column="1" Content="browse" />
+                    <Button Grid.Column="1" Content="browse" Style="{DynamicResource Styles.Button.Regular}" />
                 </Grid>
             </StackPanel>
 
@@ -72,10 +68,12 @@
 
         <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Right">
             <Button Content="advanced"
-                    Command="{Binding State.OpenAdvancedCommand}" />
+                    Command="{Binding State.OpenAdvancedCommand}"
+                    Style="{DynamicResource Styles.Button.Regular}" />
 
             <Button Content="create"
-                    Command="{Binding State.FastCreateCommand}" />
+                    Command="{Binding State.FastCreateCommand}"
+                    Style="{DynamicResource Styles.Button.Accent}" />
         </StackPanel>
     </Grid>
 </UserControl>

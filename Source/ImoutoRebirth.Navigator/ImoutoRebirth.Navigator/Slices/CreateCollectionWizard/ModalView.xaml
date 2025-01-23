@@ -10,7 +10,8 @@
              d:DataContext="{d:DesignInstance Type={x:Type local:DesignTimeWizardRootVM}, d:IsDesignTimeCreatable=True}"
              Background="{DynamicResource MahApps.Brushes.Flyout.Background}"
              FontFamily="Roboto">
-    <Grid Margin="50 40 50 50">
-        <local:FastCreateView />
+    <Grid Margin="50 40 50 40">
+        <local:FastCreateView Visibility="{Binding State.WizardStage, Converter={StaticResource ConditionVisibilityConverter}, ConverterParameter=FirstNameAndPath}" />
+        <local:AdvancedView Visibility="{Binding State.WizardStage, Converter={StaticResource ConditionVisibilityConverter}, ConverterParameter=SecondAdvancedCollectionType}" />
     </Grid>
 </UserControl>

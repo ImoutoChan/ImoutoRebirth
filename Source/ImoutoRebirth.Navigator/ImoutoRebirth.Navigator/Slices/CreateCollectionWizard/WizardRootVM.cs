@@ -74,6 +74,7 @@ internal class DesignTimeWizardRootVM : WizardRootVM
         {
             CollectionName = "Art",
             CollectionPath = "C:\\Path\\To\\Folder",
+            WizardStage = WizardStage.FirstNameAndPath
         };
     }
 }

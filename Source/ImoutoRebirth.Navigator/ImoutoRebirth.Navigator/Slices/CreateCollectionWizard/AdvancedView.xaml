@@ -10,33 +10,53 @@
              d:DataContext="{d:DesignInstance Type={x:Type local:DesignTimeWizardRootVM}, d:IsDesignTimeCreatable=True}"
              FontFamily="Roboto">
     <UserControl.Resources>
-        <Style TargetType="TextBox" BasedOn="{StaticResource {x:Type TextBox}}">
-            <Setter Property="Height" Value="40" />
-            <Setter Property="FontSize" Value="26" />
-            <Setter Property="Padding" Value="11 0" />
-        </Style>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="WizardControls.xaml" />
+            </ResourceDictionary.MergedDictionaries>
 
-        <Style TargetType="TextBlock" BasedOn="{StaticResource {x:Type TextBlock}}">
-            <Setter Property="FontWeight" Value="Regular" />
-            <Setter Property="Foreground" Value="#F6F6F6" />
-        </Style>
+            <Style TargetType="TextBox" BasedOn="{StaticResource {x:Type TextBox}}">
+                <Setter Property="Height" Value="40" />
+                <Setter Property="FontSize" Value="26" />
+                <Setter Property="Padding" Value="11 0" />
+            </Style>
 
-        <Style TargetType="Button" BasedOn="{StaticResource MahApps.Styles.Button.Flat}">
-            <Setter Property="FontSize" Value="16" />
-            <Setter Property="Padding" Value="0" />
-            <Setter Property="FontFamily" Value="Roboto" />
-            <Setter Property="FontWeight" Value="Regular" />
-            <Setter Property="Background" Value="#2F2F2F" />
-        </Style>
+            <Style TargetType="TextBlock" BasedOn="{StaticResource {x:Type TextBlock}}">
+                <Setter Property="FontWeight" Value="Regular" />
+                <Setter Property="Foreground" Value="#F6F6F6" />
+            </Style>
+
+            <Style TargetType="Button" BasedOn="{StaticResource MahApps.Styles.Button.Flat}" x:Key="CollectionTypeButton">
+                <Setter Property="FontSize" Value="16" />
+                <Setter Property="Padding" Value="0" />
+                <Setter Property="FontFamily" Value="Roboto" />
+                <Setter Property="FontWeight" Value="Regular" />
+                <Setter Property="Background" Value="#2F2F2F" />
+                <Setter Property="BorderBrush" Value="#F6F6F6" />
+                <Setter Property="BorderThickness" Value="1" />
+            </Style>
+        </ResourceDictionary>
     </UserControl.Resources>
-    <Grid>
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="*" />
-            <ColumnDefinition Width="*" />
-        </Grid.ColumnDefinitions>
 
-        <Button Grid.Column="0" Height="293" Width="331">
-            <TextBlock Margin="25 0 25 0" Foreground="#F6F6F6">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+
+        <TextBlock Grid.Row="0" Text="{Binding State.CollectionName}" FontSize="41" Foreground="{DynamicResource MahApps.Brushes.Flyout.Foreground}" />
+
+        <TextBlock Grid.Row="0" Text="2 / 3 " FontSize="41" Foreground="{DynamicResource MahApps.Brushes.Flyout.Foreground}" HorizontalAlignment="Right" />
+
+        <Grid Grid.Row="1">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+
+            <Button Grid.Column="0" Height="293" Width="331" Style="{DynamicResource CollectionTypeButton}" Command="{Binding State.SelectOneFolderSetupCommand}">
+                <TextBlock Margin="25 0 25 0" Foreground="#F6F6F6">
                 <TextBlock Text="one-folder setup" FontSize="27" Margin="42 0 0 0" />
                 <LineBreak />
                 <TextBlock Text="•" Margin="0 -16 5 0" FontSize="40" />
@@ -53,13 +73,13 @@
                 <LineBreak />
                 <TextBlock Text="•" Margin="0 4 5 0" FontSize="40" />
                 <TextBlock Text="" Margin="0 15 15 0" TextWrapping="Wrap">
-                    <Run Text="subfolder names will be used as file tags " /><Run FontSize="9">*use advanced settings to disable</Run>
+                    <Run Text="subfolder names will be used as file tags " /><Run FontSize="9">*click next for settings to disable</Run>
                 </TextBlock>
             </TextBlock>
-        </Button>
+            </Button>
 
-        <Button Grid.Column="1" Height="293" Width="331">
-            <TextBlock Margin="25 0 25 0" Foreground="#F6F6F6">
+            <Button Grid.Column="1" Height="293" Width="331" Style="{DynamicResource CollectionTypeButton}" Command="{Binding State.SelectDedicatedFolderSetupCommand}">
+                <TextBlock Margin="25 0 25 0" Foreground="#F6F6F6">
                 <TextBlock Text="dedicated folder setup" FontSize="27" Margin="6 0 0 0" />
                 <LineBreak />
                 <TextBlock Text="•" Margin="0 -55 5 0" FontSize="40" />
@@ -67,13 +87,25 @@
                            Margin="0 12 0 0" TextWrapping="Wrap" />
                 <LineBreak />
                 <TextBlock Text="•" Margin="0 7 5 0" FontSize="40" />
-                <TextBlock Text="files will be moved from source folders to the destination folder" Margin="0 15 0 0"
+                <TextBlock Text="files will be moved from source folders to the destination folder" Margin="0 15 5 0"
                            TextWrapping="Wrap" />
                 <LineBreak />
                 <TextBlock Text="•" Margin="0 6 5 0" FontSize="40" />
-                <TextBlock Text="use advanced to change source and destination folder settings"
+                <TextBlock Text="click next to change source and destination folder settings"
                            Margin="0 15 0 0" TextWrapping="Wrap" />
             </TextBlock>
-        </Button>
+            </Button>
+        </Grid>
+
+        <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Right">
+            <Button Content="back"
+                    Command="{Binding State.BackCommand}"
+                    Style="{DynamicResource Styles.Button.Regular}" />
+
+            <Button Content="next"
+                    Command="{Binding State.ConfigureFoldersCommand}"
+                    Style="{DynamicResource Styles.Button.Accent}"
+                    Foreground="#F6F6F6"/>
+        </StackPanel>
     </Grid>
 </UserControl>

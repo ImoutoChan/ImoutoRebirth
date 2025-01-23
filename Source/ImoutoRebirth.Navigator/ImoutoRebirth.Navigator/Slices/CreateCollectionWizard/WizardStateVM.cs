@@ -70,6 +70,21 @@ internal partial class WizardStateVM : ObservableValidator
         WizardStage = WizardStage.SecondAdvancedCollectionType;
     }
 
+    [RelayCommand]
+    private void Back()
+    {
+        WizardStage 
+            = WizardStage == WizardStage.SecondAdvancedCollectionType 
+                ? WizardStage.FirstNameAndPath 
+                : WizardStage.SecondAdvancedCollectionType;
+    }
+
+    [RelayCommand]
+    private void SelectDedicatedFolderSetup() => WizardStage = WizardStage.ThirdWithDestinationFolder;
+
+    [RelayCommand]
+    private void SelectOneFolderSetup() => WizardStage = WizardStage.ThirdWithoutDestinationFolder;
+
     private bool CanOpenAdvanced() => !HasErrors;
 
     [RelayCommand(CanExecute = nameof(CanConfigureFolders))]
