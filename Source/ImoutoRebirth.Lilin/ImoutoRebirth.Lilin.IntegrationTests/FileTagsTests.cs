@@ -413,11 +413,11 @@ public class FileTagsTests(TestWebApplicationFactory<Program> _webApp)
         foundNotFeeling2.Should().HaveCount(1);
         foundNotFeeling2.Should().BeEquivalentTo([file4Id]);
         
-        foundNotFeeling3.Should().HaveCountGreaterOrEqualTo(3);
+        foundNotFeeling3.Should().HaveCountGreaterThanOrEqualTo(3);
         foundNotFeeling3.Should().ContainAll([file4Id, file2Id, file5Id]);
         foundNotFeeling3.Should().NotContainAll([file3Id, file1Id]);
         
-        foundNotFeeling4.Should().HaveCountGreaterOrEqualTo(3);
+        foundNotFeeling4.Should().HaveCountGreaterThanOrEqualTo(3);
         foundNotFeeling4.Should().ContainAll([file4Id, file2Id, file5Id]);
         foundNotFeeling4.Should().NotContainAll([file3Id, file1Id]);
         

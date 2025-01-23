@@ -150,7 +150,7 @@ public class TagsTests(TestWebApplicationFactory<Program> _webApp)
         // assert
         foundTags.Should().NotBeNull();
         foundTags.Should().NotBeEmpty();
-        foundTags.Should().HaveCountGreaterOrEqualTo(3);
+        foundTags.Should().HaveCountGreaterThanOrEqualTo(3);
         foundTags.Any(x => x.Name!.StartsWith("girl around")).Should().BeTrue();
         foundTags.Any(x => x.Name!.StartsWith("1girl")).Should().BeTrue();
         foundTags.Any(x => x.Name!.StartsWith("2girls")).Should().BeTrue();
