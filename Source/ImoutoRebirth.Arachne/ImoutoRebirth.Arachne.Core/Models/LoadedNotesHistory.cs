@@ -2,17 +2,17 @@
 
 public class LoadedNotesHistory
 {
-    public LoadedNotesHistory(int[] changedPostIds, DateTimeOffset lastNoteUpdateDate)
+    public LoadedNotesHistory(string[] changedPostIds, DateTimeOffset lastNoteUpdateDate)
     {
         ChangedPostIds = changedPostIds;
         LastNoteUpdateDate = lastNoteUpdateDate;
     }
 
-    public int[] ChangedPostIds { get; }
+    public string[] ChangedPostIds { get; }
 
     public DateTimeOffset LastNoteUpdateDate { get; }
 
-    public void Deconstruct(out int[] changedPostIds, out DateTimeOffset lastNoteUpdateDate)
+    public void Deconstruct(out string[] changedPostIds, out DateTimeOffset lastNoteUpdateDate)
     {
         changedPostIds = ChangedPostIds;
         lastNoteUpdateDate = LastNoteUpdateDate;

@@ -9,7 +9,7 @@ public class NoteEntity : EntityBase
 
     public MetadataSource Source { get; set; }
 
-    public int? SourceId { get; set; }
+    public string? SourceId { get; set; }
 
     [Required]
     public required string Label { get; set; }

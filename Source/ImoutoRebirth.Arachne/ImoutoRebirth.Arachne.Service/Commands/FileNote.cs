@@ -4,7 +4,7 @@ namespace ImoutoRebirth.Arachne.Service.Commands;
 
 public class FileNote : IFileNote
 {
-    public int? SourceId { get; set; }
+    public string? SourceId { get; set; }
 
     public string Label { get; set; } = default!;
 

@@ -936,7 +936,7 @@ public class FileTagsTests(TestWebApplicationFactory<Program> _webApp)
             newTags,
             [
                 new(
-                    SourceId: 1,
+                    SourceId: "1",
                     Label: "Bounce sound translation" + Guid.NewGuid(),
                     PositionFromLeft: 10,
                     PositionFromTop: 20,

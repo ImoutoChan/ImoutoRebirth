@@ -320,6 +320,6 @@ public class FileInfoUpdateMetadataTests
         return new Tag(Guid.NewGuid(), tagType, "Tag", true, Array.Empty<string>(), TagOptions.None, default);
     }
         
-    private static FileNote CreateSomeNote(Guid fileId, MetadataSource source, string text = "", int? sourceId = default) 
-        => new(fileId, text, default, default, default, default, source, sourceId);
+    private static FileNote CreateSomeNote(Guid fileId, MetadataSource source, string text = "", int? sourceId = null)
+        => new(fileId, text, default, default, default, default, source, sourceId.ToString());
 }

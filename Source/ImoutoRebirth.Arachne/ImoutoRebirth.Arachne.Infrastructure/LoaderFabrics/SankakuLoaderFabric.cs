@@ -13,22 +13,22 @@ internal class SankakuLoaderFabric : IBooruLoaderFabric
 {
     private readonly SankakuSettings _settings;
     private readonly ISankakuAuthManager _sankakuAuthManager;
-    private readonly IFlurlClientFactory _flurlClientFactory;
+    private readonly IFlurlClientCache _flurlClientCache;
 
     public SearchEngineType ForType => SearchEngineType.Sankaku;
 
     public SankakuLoaderFabric(
         SankakuSettings settings,
         ISankakuAuthManager sankakuAuthManager,
-        IFlurlClientFactory flurlClientFactory)
+        IFlurlClientCache flurlClientCache)
     {
         _settings = settings;
         _sankakuAuthManager = sankakuAuthManager;
-        _flurlClientFactory = flurlClientFactory;
+        _flurlClientCache = flurlClientCache;
     }
     
     public IBooruApiLoader Create() => new SankakuApiLoader(
-        _flurlClientFactory,
+        _flurlClientCache,
         Options.Create(new Imouto.BooruParser.Implementations.Sankaku.SankakuSettings
         {
             PauseBetweenRequestsInMs = _settings.Delay,
@@ -38,5 +38,5 @@ internal class SankakuLoaderFabric : IBooruLoaderFabric
         _sankakuAuthManager);
 
     public IBooruAvailabilityChecker CreateAvailabilityChecker()
-        => new SimpleAvailabilityChecker(_flurlClientFactory, new Uri("https://chan.sankakucomplex.com"));
+        => new SimpleAvailabilityChecker(_flurlClientCache, new Uri("https://chan.sankakucomplex.com"));
 }

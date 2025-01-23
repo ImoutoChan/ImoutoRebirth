@@ -19,11 +19,11 @@ internal class ParsingStatusRepository : IParsingStatusRepository
         => _meidoDbContext.ParsingStatuses.FindAsync(fileId, source);
 
     public async Task<IReadOnlyCollection<ParsingStatus>> GetBySourcePostIds(
-        IReadOnlyCollection<int> postIds,
+        IReadOnlyCollection<string> postIds,
         MetadataSource source)
     {
         return await _meidoDbContext.ParsingStatuses
-            .Where(x => x.Source == source && x.FileIdFromSource != null && postIds.Contains(x.FileIdFromSource.Value))
+            .Where(x => x.Source == source && x.FileIdFromSource != null && postIds.Contains(x.FileIdFromSource))
             .ToListAsync();
     }
 

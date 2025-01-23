@@ -4,5 +4,5 @@ namespace ImoutoRebirth.Meido.Domain.SourceActualizingStateAggregate;
 
 public record ActualizationRequestedDomainEvent(SourceActualizingState Entity) : IDomainEvent;
 
-public record PostsUpdatedDomainEvent(SourceActualizingState Entity, IReadOnlyCollection<int> PostsIdsWithUpdatedNotes)
+public record PostsUpdatedDomainEvent(SourceActualizingState Entity, IReadOnlyCollection<string> PostsIdsWithUpdatedNotes)
     : IDomainEvent;

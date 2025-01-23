@@ -31,7 +31,7 @@ internal class DanbooruFavoritesLoader
         _enabled = !(string.IsNullOrWhiteSpace(_booruConfiguration.Login) ||
                      string.IsNullOrWhiteSpace(_booruConfiguration.BotUserAgent));
 
-        _gelbooruLoader = new(new PerBaseUrlFlurlClientFactory(), Options.Create(new GelbooruSettings()
+        _gelbooruLoader = new(new FlurlClientCache(), Options.Create(new GelbooruSettings()
         {
             PauseBetweenRequestsInMs = 0,
         }));

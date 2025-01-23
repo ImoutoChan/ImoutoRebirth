@@ -10,16 +10,16 @@ namespace ImoutoRebirth.Arachne.Infrastructure.LoaderFabrics;
 
 internal class GelbooruLoaderFabric : IBooruLoaderFabric
 {
-    private readonly IFlurlClientFactory _flurlClientFactory;
+    private readonly IFlurlClientCache _flurlClientCache;
 
     public SearchEngineType ForType => SearchEngineType.Gelbooru;
 
-    public GelbooruLoaderFabric(IFlurlClientFactory flurlClientFactory) => _flurlClientFactory = flurlClientFactory;
+    public GelbooruLoaderFabric(IFlurlClientCache flurlClientCache) => _flurlClientCache = flurlClientCache;
 
     public IBooruApiLoader Create() => new GelbooruApiLoader(
-        _flurlClientFactory,
+        _flurlClientCache,
         Options.Create(new GelbooruSettings() { PauseBetweenRequestsInMs = 1 }));
 
     public IBooruAvailabilityChecker CreateAvailabilityChecker()
-        => new SimpleAvailabilityChecker(_flurlClientFactory, new Uri("https://gelbooru.com"));
+        => new SimpleAvailabilityChecker(_flurlClientCache, new Uri("https://gelbooru.com"));
 }

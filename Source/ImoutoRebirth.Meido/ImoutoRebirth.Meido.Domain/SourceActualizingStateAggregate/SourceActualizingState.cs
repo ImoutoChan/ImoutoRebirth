@@ -43,7 +43,7 @@ public class SourceActualizingState
 
     public DomainResult MarkNotesUpdated(
         Instant lastProcessedNoteUpdateAt,
-        IReadOnlyCollection<int> postsWithUpdatedNotesIds)
+        IReadOnlyCollection<string> postsWithUpdatedNotesIds)
     {
         LastProcessedNoteUpdateAt = lastProcessedNoteUpdateAt;
 
@@ -52,7 +52,7 @@ public class SourceActualizingState
 
     public DomainResult MarkTagsUpdated(
         int lastProcessedTagUpdateId,
-        IReadOnlyCollection<int> postsWithUpdatedNotesIds, 
+        IReadOnlyCollection<string> postsWithUpdatedNotesIds,
         Instant now)
     {
         LastProcessedTagHistoryId = lastProcessedTagUpdateId;

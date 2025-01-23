@@ -58,8 +58,8 @@ internal class BooruSearchEngine : ISearchEngine
                 var lastHistoryId = history.MaxBy(x => x.HistoryId)!.HistoryId;
                 var postIds = history.Select(x => x.PostId).ToArray();
                 var parentPostIds = history
-                    .Where(x => x.ParentChanged && x.ParentId != null)
-                    .Select(x => x.ParentId!.Value)
+                    .Where(x => x.ParentChanged && !string.IsNullOrWhiteSpace(x.ParentId))
+                    .Select(x => x.ParentId!)
                     .ToArray();
 
                 var changedPostIds = postIds.Union(parentPostIds).ToList();
@@ -74,7 +74,7 @@ internal class BooruSearchEngine : ISearchEngine
             }
                 
             _logger.LogWarning("Requested tags history is empty");
-            return new LoadedTagsHistory(Array.Empty<int>(), historyId);
+            return new LoadedTagsHistory([], historyId);
         }
         catch (Exception e)
         {
@@ -104,7 +104,7 @@ internal class BooruSearchEngine : ISearchEngine
             }
 
             _logger.LogWarning("Requested notes history is empty");
-            return new LoadedNotesHistory(Array.Empty<int>(), lastProcessedNoteUpdateAt);
+            return new LoadedNotesHistory([], lastProcessedNoteUpdateAt);
         }
         catch (Exception e)
         {
@@ -117,7 +117,7 @@ internal class BooruSearchEngine : ISearchEngine
         => _booruLoader.GetNoteHistoryToDateTimeAsync(lastProcessedNoteUpdateAt).ToListAsync();
 
     private Task<IReadOnlyCollection<TagHistoryEntry>> LoadTagHistory(int historyId)
-        => historyId == default
+        => historyId == 0
             ? _booruLoader.GetTagHistoryFirstPageAsync()
             : _booruLoader.GetTagHistoryFromIdToPresentAsync(historyId).ToListAsync();
 

@@ -2,7 +2,7 @@
 
 public interface IFileNote
 {
-    int? SourceId { get; }
+    string? SourceId { get; }
 
     string Label { get; }
 

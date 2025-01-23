@@ -26,7 +26,7 @@ public record ActualizeTag(
     TagOptions Options);
 
 public record ActualizeNote(
-    int? SourceId,
+    string? SourceId,
     string Label,
     int PositionFromLeft,
     int PositionFromTop,

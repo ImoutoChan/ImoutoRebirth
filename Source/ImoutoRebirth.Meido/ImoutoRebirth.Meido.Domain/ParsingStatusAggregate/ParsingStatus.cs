@@ -12,7 +12,7 @@ public class ParsingStatus
 
     public MetadataSource Source { get; }
 
-    public int? FileIdFromSource { get; private set; }
+    public string? FileIdFromSource { get; private set; }
 
     public Instant UpdatedAt { get; private set; }
 
@@ -36,7 +36,7 @@ public class ParsingStatus
 
     public static DomainResult<ParsingStatus> Create(Guid fileId, string md5, MetadataSource source, Instant now)
     {
-        ArgumentValidator.Requires(() => fileId != default, nameof(fileId));
+        ArgumentValidator.Requires(() => fileId != Guid.Empty, nameof(fileId));
         ArgumentValidator.NotNullOrWhiteSpace(() => md5);
         ArgumentValidator.IsEnumDefined(() => source);
 
@@ -48,7 +48,7 @@ public class ParsingStatus
         };
     }
 
-    public DomainResult SetSearchResult(SearchStatus result, int? fileIdFromSource, string? error, Instant now)
+    public DomainResult SetSearchResult(SearchStatus result, string? fileIdFromSource, string? error, Instant now)
     {
         return result switch
         {
@@ -60,7 +60,7 @@ public class ParsingStatus
     }
     
     
-    private DomainResult SetSearchFound(int? fileIdFromSource, Instant now)
+    private DomainResult SetSearchFound(string? fileIdFromSource, Instant now)
     {
         ArgumentValidator.NotNull(fileIdFromSource, nameof(fileIdFromSource));
         
@@ -69,7 +69,7 @@ public class ParsingStatus
             return new DomainResult(new DisallowedStatusTransfer(this, Status.SearchFound));
 
         Status = Status.SearchFound;
-        FileIdFromSource = fileIdFromSource.Value;
+        FileIdFromSource = fileIdFromSource;
         UpdatedAt = now;
 
         return DomainResult.Empty;

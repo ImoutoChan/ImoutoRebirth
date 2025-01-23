@@ -8,7 +8,7 @@ namespace ImoutoRebirth.Meido.Application.SourceActualizingStateSlice.Commands;
 
 public record MarkNotesUpdatedCommand(
         MetadataSource Source,
-        IReadOnlyCollection<int> PostIds,
+        IReadOnlyCollection<string> PostIds,
         Instant LastNoteUpdateDate)
     : ICommand;
 

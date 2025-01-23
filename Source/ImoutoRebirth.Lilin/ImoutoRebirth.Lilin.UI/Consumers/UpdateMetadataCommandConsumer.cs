@@ -22,12 +22,12 @@ public class UpdateMetadataCommandConsumer : IConsumer<IUpdateMetadataCommand>
 
             message.FileTags
                 ?.Select(x => new ActualizeTag(x.Type, x.Name, x.Value, x.Synonyms, TagOptions.None))
-                .ToArray() ?? Array.Empty<ActualizeTag>(),
+                .ToArray() ?? [],
 
             message.FileNotes
                 ?.Select(x =>
                     new ActualizeNote(x.SourceId, x.Label, x.PositionFromLeft, x.PositionFromTop, x.Width, x.Height))
-                .ToArray() ?? Array.Empty<ActualizeNote>());
+                .ToArray() ?? []);
 
         await _mediator.Send(command);
     }

@@ -4,7 +4,7 @@ public interface INotesUpdatedCommand
 {
     int SourceId { get; }
 
-    int[] PostIds { get; }
+    string[] PostIds { get; }
 
     DateTimeOffset LastNoteUpdateDate { get; }
 }

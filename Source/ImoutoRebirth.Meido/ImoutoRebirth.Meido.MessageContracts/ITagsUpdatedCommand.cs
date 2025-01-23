@@ -4,7 +4,7 @@ public interface ITagsUpdatedCommand
 {
     int SourceId { get; }
 
-    int[] PostIds { get; }
+    string[] PostIds { get; }
 
     int LastHistoryId { get; }
 }

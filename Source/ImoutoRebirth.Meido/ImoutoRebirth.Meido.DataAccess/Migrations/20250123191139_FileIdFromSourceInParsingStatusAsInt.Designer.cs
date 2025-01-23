@@ -3,6 +3,7 @@ using System;
 using ImoutoRebirth.Meido.DataAccess;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using NodaTime;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
@@ -12,9 +13,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace ImoutoRebirth.Meido.DataAccess.Migrations
 {
     [DbContext(typeof(MeidoDbContext))]
-    partial class MeidoDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250123191139_FileIdFromSourceInParsingStatusAsInt")]
+    partial class FileIdFromSourceInParsingStatusAsInt
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

@@ -10,16 +10,16 @@ namespace ImoutoRebirth.Arachne.Infrastructure.LoaderFabrics;
 
 internal class Rule34LoaderFabric : IBooruLoaderFabric
 {
-    private readonly IFlurlClientFactory _flurlClientFactory;
+    private readonly IFlurlClientCache _flurlClientCache;
 
     public SearchEngineType ForType => SearchEngineType.Rule34;
 
-    public Rule34LoaderFabric(IFlurlClientFactory flurlClientFactory) => _flurlClientFactory = flurlClientFactory;
+    public Rule34LoaderFabric(IFlurlClientCache flurlClientCache) => _flurlClientCache = flurlClientCache;
 
     public IBooruApiLoader Create() => new Rule34ApiLoader(
-        _flurlClientFactory,
+        _flurlClientCache,
         Options.Create(new Rule34Settings { PauseBetweenRequestsInMs = 1 }));
 
     public IBooruAvailabilityChecker CreateAvailabilityChecker()
-        => new SimpleAvailabilityChecker(_flurlClientFactory, new Uri("https://rule34.xxx"));
+        => new SimpleAvailabilityChecker(_flurlClientCache, new Uri("https://rule34.xxx"));
 }

@@ -36,7 +36,7 @@ public class ActualizeFileInfoForSourceCommandTests(TestWebApplicationFactory<Pr
             newTags,
             [
                 new(
-                    SourceId: 1,
+                    SourceId: "1",
                     Label: "Bounce sound translation" + Guid.NewGuid(),
                     PositionFromLeft: 10,
                     PositionFromTop: 20,
@@ -109,7 +109,7 @@ public class ActualizeFileInfoForSourceCommandTests(TestWebApplicationFactory<Pr
         var context = _webApp.GetDbContext(scope);
 
         var noteVersion1 = new ActualizeNote(
-            SourceId: 1,
+            SourceId: "1",
             Label: "Bounce sound translation" + Guid.NewGuid(),
             PositionFromLeft: 10,
             PositionFromTop: 20,
@@ -127,7 +127,7 @@ public class ActualizeFileInfoForSourceCommandTests(TestWebApplicationFactory<Pr
         
         // act
         var noteVersion2 = new ActualizeNote(
-            SourceId: 1,
+            SourceId: "1",
             Label: "Bounce sound translation version 2" + Guid.NewGuid(),
             PositionFromLeft: 11,
             PositionFromTop: 21,
@@ -173,7 +173,7 @@ public class ActualizeFileInfoForSourceCommandTests(TestWebApplicationFactory<Pr
         var context = _webApp.GetDbContext(scope);
 
         var noteVersion1 = new ActualizeNote(
-            SourceId: 1,
+            SourceId: "1",
             Label: "Bounce sound translation" + Guid.NewGuid(),
             PositionFromLeft: 10,
             PositionFromTop: 20,
@@ -191,7 +191,7 @@ public class ActualizeFileInfoForSourceCommandTests(TestWebApplicationFactory<Pr
         
         // act
         var noteVersion2 = new ActualizeNote(
-            SourceId: 2,
+            SourceId: "2",
             Label: "Bounce sound translation NEW 2" + Guid.NewGuid(),
             PositionFromLeft: 11,
             PositionFromTop: 21,
@@ -340,7 +340,7 @@ public class ActualizeFileInfoForSourceCommandTests(TestWebApplicationFactory<Pr
             newTags,
             [
                 new(
-                    SourceId: 1,
+                    SourceId: "1",
                     Label: "Bounce sound translation" + Guid.NewGuid(),
                     PositionFromLeft: 10,
                     PositionFromTop: 20,
@@ -368,7 +368,7 @@ public class ActualizeFileInfoForSourceCommandTests(TestWebApplicationFactory<Pr
             newTags2,
             [
                 new(
-                    SourceId: 1,
+                    SourceId: "1",
                     Label: "Bounce sound translation" + Guid.NewGuid(),
                     PositionFromLeft: 100,
                     PositionFromTop: 200,
@@ -441,7 +441,7 @@ public class ActualizeFileInfoForSourceCommandTests(TestWebApplicationFactory<Pr
             newTags,
             [
                 new(
-                    SourceId: 1,
+                    SourceId: "1",
                     Label: "Bounce sound translation" + Guid.NewGuid(),
                     PositionFromLeft: 10,
                     PositionFromTop: 20,
@@ -465,7 +465,7 @@ public class ActualizeFileInfoForSourceCommandTests(TestWebApplicationFactory<Pr
             newTagsYandere,
             [
                 new(
-                    SourceId: 1,
+                    SourceId: "1",
                     Label: "Bounce sound translation" + Guid.NewGuid(),
                     PositionFromLeft: 10,
                     PositionFromTop: 20,

@@ -10,7 +10,7 @@ public class Metadata : SearchResult
 
     public IReadOnlyCollection<Note> Notes { get; }
 
-    public int? FileIdFromSource { get; }
+    public string? FileIdFromSource { get; }
 
     public Metadata(
         Image image,
@@ -18,7 +18,7 @@ public class Metadata : SearchResult
         bool isFound,
         IReadOnlyCollection<Tag> tags,
         IReadOnlyCollection<Note> notes,
-        int? fileIdFromSource) 
+        string? fileIdFromSource)
         : base(image, source)
     {
         ArgumentValidator.NotNull(() => image, () => tags, () => notes);

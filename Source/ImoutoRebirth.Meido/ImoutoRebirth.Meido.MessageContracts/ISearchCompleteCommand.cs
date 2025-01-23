@@ -10,5 +10,5 @@ public interface ISearchCompleteCommand
 
     string? ErrorText { get; }
 
-    int? FileIdFromSource { get; }
+    string? FileIdFromSource { get; }
 }

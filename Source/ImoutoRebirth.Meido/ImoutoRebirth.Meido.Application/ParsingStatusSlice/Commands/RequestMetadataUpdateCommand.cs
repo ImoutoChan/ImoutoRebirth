@@ -6,7 +6,7 @@ using NodaTime;
 
 namespace ImoutoRebirth.Meido.Application.ParsingStatusSlice.Commands;
 
-public record RequestMetadataUpdateCommand(IReadOnlyCollection<int> PostIds, MetadataSource Source) : ICommand;
+public record RequestMetadataUpdateCommand(IReadOnlyCollection<string> PostIds, MetadataSource Source) : ICommand;
     
 internal class RequestMetadataUpdateCommandHandler : ICommandHandler<RequestMetadataUpdateCommand>
 {

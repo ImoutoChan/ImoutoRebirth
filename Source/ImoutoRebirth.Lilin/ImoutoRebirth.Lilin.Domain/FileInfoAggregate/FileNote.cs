@@ -21,7 +21,7 @@ public class FileNote
     /// <summary>
     /// External id on source booru site.
     /// </summary>
-    public int? SourceId { get; }
+    public string? SourceId { get; }
 
     public FileNote(
         Guid fileId,
@@ -31,7 +31,7 @@ public class FileNote
         int width,
         int height,
         MetadataSource source,
-        int? sourceId)
+        string? sourceId)
     {
         ArgumentValidator.NotNull(() => label);
 
@@ -50,7 +50,7 @@ public class FileNote
         && Source == note.Source
         && SourceId == note.SourceId;
     
-    public (Guid FileId, MetadataSource Source, int? SourceId) GetIdentity() => (FileId, Source, SourceId);
+    public (Guid FileId, MetadataSource Source, string? SourceId) GetIdentity() => (FileId, Source, SourceId);
 
     public bool IsSameContent(FileNote note) =>
         Label == note.Label
@@ -67,7 +67,7 @@ public class FileNote
         int width,
         int height,
         MetadataSource source,
-        int? sourceId)
+        string? sourceId)
         => new(
             fileId,
             label, 

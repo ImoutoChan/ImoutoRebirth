@@ -48,6 +48,6 @@ public class MeidoReporter : IMeidoReporter
 
         public string? ErrorText { get; set; }
 
-        public int? FileIdFromSource { get; set; }
+        public string? FileIdFromSource { get; set; }
     }
 }

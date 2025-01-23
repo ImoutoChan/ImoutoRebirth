@@ -12,18 +12,18 @@ namespace ImoutoRebirth.Arachne.Infrastructure.LoaderFabrics;
 internal class DanbooruLoaderFabric : IBooruLoaderFabric
 {
     private readonly DanbooruSettings _settings;
-    private readonly IFlurlClientFactory _flurlClientFactory;
+    private readonly IFlurlClientCache _flurlClientCache;
 
     public SearchEngineType ForType => SearchEngineType.Danbooru;
 
-    public DanbooruLoaderFabric(DanbooruSettings settings, IFlurlClientFactory flurlClientFactory)
+    public DanbooruLoaderFabric(DanbooruSettings settings, IFlurlClientCache flurlClientCache)
     {
         _settings = settings;
-        _flurlClientFactory = flurlClientFactory;
+        _flurlClientCache = flurlClientCache;
     }
 
     public IBooruApiLoader Create() => new DanbooruApiLoader(
-        _flurlClientFactory,
+        _flurlClientCache,
         Options.Create(new Imouto.BooruParser.Implementations.Danbooru.DanbooruSettings()
         {
             ApiKey = _settings.ApiKey,
@@ -33,5 +33,5 @@ internal class DanbooruLoaderFabric : IBooruLoaderFabric
         }));
 
     public IBooruAvailabilityChecker CreateAvailabilityChecker()
-        => new SimpleAvailabilityChecker(_flurlClientFactory, new Uri("https://danbooru.donmai.us"));
+        => new SimpleAvailabilityChecker(_flurlClientCache, new Uri("https://danbooru.donmai.us"));
 }

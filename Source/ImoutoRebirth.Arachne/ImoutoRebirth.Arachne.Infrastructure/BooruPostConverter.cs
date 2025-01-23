@@ -36,8 +36,8 @@ internal class BooruPostConverter : IBooruPostConverter
 
     private static MetaParsingResults ToMetadataParsingResults(Post post)
     {
-        var uploaderId = post.UploaderId.Id > 0 ? post.UploaderId.Id.ToString() : null;
-        var uploaderName = !string.IsNullOrWhiteSpace(post.UploaderId.Name) ? post.UploaderId.Id.ToString() : null;
+        var uploaderId = post.UploaderId.Id.TrimToNull();
+        var uploaderName = post.UploaderId.Name.TrimToNull();
 
         return new MetaParsingResults(
             post.Source!,
@@ -49,8 +49,8 @@ internal class BooruPostConverter : IBooruPostConverter
             uploaderName,
             post.Rating.ToString(),
             post.RatingSafeLevel.ToString(),
-            post.Parent?.Id > 0 ? post.Parent.Id.ToString() : null,
-            post.Parent != null && !string.IsNullOrWhiteSpace(post.Parent.Md5Hash) ? post.Parent.Md5Hash : null,
+            post.Parent?.Id.TrimToNull(),
+            post.Parent?.Md5Hash.TrimToNull(),
             post.ChildrenIds.Select(x => $"{x.Id}:{x.Md5Hash}").ToList(),
             post.Pools.Select(x => x.Id + "||" + x.Name + "|||" + x.Position).ToArray(),
             post.Tags.Where(x => x.Type.ToLower() != "deprecated").Select(ConvertTag).ToArray(),

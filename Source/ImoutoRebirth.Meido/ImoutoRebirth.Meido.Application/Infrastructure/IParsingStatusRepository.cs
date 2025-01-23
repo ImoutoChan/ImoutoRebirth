@@ -11,7 +11,7 @@ public interface IParsingStatusRepository
     ValueTask<ParsingStatus?> Get(Guid fileId, MetadataSource source);
 
     Task<IReadOnlyCollection<ParsingStatus>> GetBySourcePostIds(
-        IReadOnlyCollection<int> postIds,
+        IReadOnlyCollection<string> postIds,
         MetadataSource source);
 
     Task<IReadOnlyCollection<ParsingStatus>> GetFaultedParsingStatuses(Instant earlierThan);

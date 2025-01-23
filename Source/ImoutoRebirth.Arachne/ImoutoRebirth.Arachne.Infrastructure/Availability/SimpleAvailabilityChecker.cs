@@ -1,23 +1,25 @@
-﻿using Flurl.Http;
+﻿using Flurl;
+using Flurl.Http;
 using Flurl.Http.Configuration;
+using Imouto.BooruParser.Extensions;
 using ImoutoRebirth.Arachne.Infrastructure.Abstract;
 
 namespace ImoutoRebirth.Arachne.Infrastructure.Availability;
 
 internal class SimpleAvailabilityChecker : IBooruAvailabilityChecker
 {
-    private readonly IFlurlClientFactory _clientFactory;
+    private readonly IFlurlClientCache _flurlClientCache;
     private readonly Uri _domain;
 
-    public SimpleAvailabilityChecker(IFlurlClientFactory clientFactory, Uri domain)
+    public SimpleAvailabilityChecker(IFlurlClientCache flurlClientCache, Uri domain)
     {
-        _clientFactory = clientFactory;
+        _flurlClientCache = flurlClientCache;
         _domain = domain;
     }
 
     public async Task<bool> IsAvailable(CancellationToken ct)
     {
-        var client = _clientFactory.Get(_domain);
+        var client = _flurlClientCache.GetForDomain(_domain);
 
         var isHostAvailable = false;
         try

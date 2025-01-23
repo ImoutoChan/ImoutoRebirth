@@ -13,7 +13,7 @@ public record SaveCompletedSearchCommand(
     Guid FileId,
     SearchStatus ResultStatus,
     string? ErrorText,
-    int? FileIdFromSource) : ICommand;
+    string? FileIdFromSource) : ICommand;
 
 internal class SaveCompletedSearchCommandHandler : ICommandHandler<SaveCompletedSearchCommand>
 {
@@ -51,7 +51,7 @@ internal class SaveCompletedSearchCommandHandler : ICommandHandler<SaveCompleted
         MetadataSource source,
         Guid fileId,
         SearchStatus resultStatus,
-        int? fileIdFromSource,
+        string? fileIdFromSource,
         string? errorText)
     {
         var now = _clock.GetCurrentInstant();

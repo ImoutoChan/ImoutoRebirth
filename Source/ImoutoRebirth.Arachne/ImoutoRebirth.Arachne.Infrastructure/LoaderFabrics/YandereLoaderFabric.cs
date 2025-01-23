@@ -10,16 +10,16 @@ namespace ImoutoRebirth.Arachne.Infrastructure.LoaderFabrics;
 
 internal class YandereLoaderFabric : IBooruLoaderFabric
 {
-    private readonly IFlurlClientFactory _flurlClientFactory;
+    private readonly IFlurlClientCache _flurlClientCache;
 
     public SearchEngineType ForType => SearchEngineType.Yandere;
 
-    public YandereLoaderFabric(IFlurlClientFactory flurlClientFactory) => _flurlClientFactory = flurlClientFactory;
+    public YandereLoaderFabric(IFlurlClientCache flurlClientCache) => _flurlClientCache = flurlClientCache;
 
     public IBooruApiLoader Create() => new YandereApiLoader(
-        _flurlClientFactory,
+        _flurlClientCache,
         Options.Create(new YandereSettings { PauseBetweenRequestsInMs = 0 }));
 
     public IBooruAvailabilityChecker CreateAvailabilityChecker()
-        => new SimpleAvailabilityChecker(_flurlClientFactory, new Uri("https://yande.re"));
+        => new SimpleAvailabilityChecker(_flurlClientCache, new Uri("https://yande.re"));
 }

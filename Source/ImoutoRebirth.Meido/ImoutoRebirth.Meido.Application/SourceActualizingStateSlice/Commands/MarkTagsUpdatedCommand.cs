@@ -8,7 +8,7 @@ namespace ImoutoRebirth.Meido.Application.SourceActualizingStateSlice.Commands;
 
 public record MarkTagsUpdatedCommand(
         MetadataSource Source,
-        IReadOnlyCollection<int> PostIds,
+        IReadOnlyCollection<string> PostIds,
         int LastHistoryId)
     : ICommand;
 

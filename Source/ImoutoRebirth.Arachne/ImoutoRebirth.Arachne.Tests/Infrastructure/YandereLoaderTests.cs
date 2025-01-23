@@ -1,5 +1,6 @@
 using FluentAssertions;
 using Flurl.Http.Configuration;
+using Imouto.BooruParser;
 using Imouto.BooruParser.Implementations.Sankaku;
 using ImoutoRebirth.Arachne.Infrastructure.LoaderFabrics;
 using Microsoft.Extensions.Caching.Memory;
@@ -30,7 +31,7 @@ public class YandereLoaderTests
                         Password = settings.Password,
                         PauseBetweenRequestsInMs = settings.Delay
                     }),
-                new PerBaseUrlFlurlClientFactory()), new PerBaseUrlFlurlClientFactory());
+                new FlurlClientCache()), new FlurlClientCache());
         var loader = fabric.Create();
         
         // act
@@ -44,7 +45,7 @@ public class YandereLoaderTests
     public async Task ShouldHaveMd5OnChildren()
     {
         // arrange
-        var fabric = new YandereLoaderFabric(new PerBaseUrlFlurlClientFactory());
+        var fabric = new YandereLoaderFabric(new FlurlClientCache());
         var loader = fabric.Create();
         
         // act
@@ -61,7 +62,7 @@ public class YandereLoaderTests
     public async Task ShouldHaveMd5OnParentPost()
     {
         // arrange
-        var fabric = new YandereLoaderFabric(new PerBaseUrlFlurlClientFactory());
+        var fabric = new YandereLoaderFabric(new FlurlClientCache());
         var loader = fabric.Create();
         
         // act
@@ -69,7 +70,7 @@ public class YandereLoaderTests
 
         // assert
         post.Parent.Should().NotBeNull();
-        post.Parent!.Id.Should().Be(801490);
+        post.Parent!.Id.Should().Be("801490");
         post.Parent.Md5Hash.Should().Be("67da0e3e0466397a72a714f895cd1024");
     }
     
@@ -77,7 +78,7 @@ public class YandereLoaderTests
     public async Task ShouldWorkWithPostWithoutSiblings()
     {
         // arrange
-        var fabric = new YandereLoaderFabric(new PerBaseUrlFlurlClientFactory());
+        var fabric = new YandereLoaderFabric(new FlurlClientCache());
         var loader = fabric.Create();
         
         // act
