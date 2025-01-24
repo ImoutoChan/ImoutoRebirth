@@ -612,6 +612,7 @@
                             <ColumnDefinition Width="*" />
                             <ColumnDefinition Width="100" />
                             <ColumnDefinition Width="100" />
+                            <ColumnDefinition Width="100" />
                         </Grid.ColumnDefinitions>
                     </Grid>
                 </ItemsPanelTemplate>
@@ -649,7 +650,12 @@
                 </StackPanel>
             </StatusBarItem>
 
-            <StatusBarItem Grid.Column="5">
+            <StatusBarItem Grid.Column="5"
+                           Visibility="{Binding LoadingProgress, Converter={StaticResource ConditionVisibilityConverter}, ConverterParameter=!100}">
+                <ProgressBar Minimum="0" Maximum="100" Value="{Binding LoadingProgress, Mode=OneWay}" Height="20" Width="90" />
+            </StatusBarItem>
+
+            <StatusBarItem Grid.Column="6">
                 <StackPanel Orientation="Horizontal">
                     <TextBlock Text="File "
                                Foreground="{StaticResource StatusBarForeground}" />
@@ -659,7 +665,7 @@
                 </StackPanel>
             </StatusBarItem>
 
-            <StatusBarItem Grid.Column="6">
+            <StatusBarItem Grid.Column="7">
                 <StackPanel Orientation="Horizontal"
                             ToolTip="{Binding DirStatusToolTip}">
                     <TextBlock Text="Dir "

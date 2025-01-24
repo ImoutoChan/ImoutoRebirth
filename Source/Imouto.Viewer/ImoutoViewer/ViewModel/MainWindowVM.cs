@@ -5,12 +5,14 @@ using System.Windows.Input;
 using System.Windows.Media.Imaging;
 using System.Windows.Threading;
 using AutoMapper;
+using ImoutoRebirth.Common;
 using ImoutoRebirth.Common.WPF;
 using ImoutoViewer.Behavior;
 using ImoutoRebirth.Common.WPF.Commands;
 using ImoutoViewer.ImoutoRebirth.Services;
 using ImoutoViewer.ImoutoRebirth.Services.Tags.Model;
 using ImoutoViewer.Model;
+using ImoutoViewer.Model.ArchiveSupport;
 using ImoutoViewer.ViewModel.SettingsModels;
 
 namespace ImoutoViewer.ViewModel;
@@ -22,7 +24,7 @@ internal class MainWindowVM : VMBase, IDragable, IDropable
     private readonly Guid _appGuid = Guid.NewGuid();
 
     private readonly MainWindow _mainWindowView;
-    private LocalImageList? _imageList;
+    private ILocalImageList? _imageList;
     private bool _isSlideShowActive;
     private DispatcherTimer? _timer;
     private readonly TagsVM _tagsVM;
@@ -195,6 +197,8 @@ internal class MainWindowVM : VMBase, IDragable, IDropable
 
     public bool IsLoading { get; private set; }
 
+    public int LoadingProgress { get; private set; } = 100;
+
     public double ViewportHeight => CurrentLocalImage?.ResizedSize.Height ?? 0;
 
     public double ViewportWidth => CurrentLocalImage?.ResizedSize.Width ?? 0;
@@ -247,13 +251,31 @@ internal class MainWindowVM : VMBase, IDragable, IDropable
         Tags.ShowTags = Settings.ShowTags;
     }
 
-    private async Task InitializeImageList(IEnumerable<string>? images)
+    private async Task InitializeImageList(IReadOnlyCollection<string>? images)
     {
+        TemporaryDirectoryManager.CleanupOldTempDirectories();
+        if (_imageList != null)
+        {
+            _imageList.CurrentImageChanged -= _imageList_CurrentImageChanged;
+            _imageList?.Dispose();
+            _imageList = null;
+            OnPropertyChanged(nameof(CurrentLocalImage));
+            UpdateView();
+        }
+
         ApplicationProperties.BoundToNavigatorSearch = false;
 
-        LocalImageList imageList;
-        
-        if (images != null)
+        ILocalImageList imageList;
+
+        if (images?.Count == 1 && ArchiveImageList.IsSupportedArchive(images.First()))
+        {
+            imageList = new ArchiveImageList(images.First(), progress =>
+            {
+                LoadingProgress = (int)(progress * 100);
+                UpdateView();
+            });
+        }
+        else if (images != null)
         {
             imageList = new LocalImageList(images);
         }
@@ -266,9 +288,9 @@ internal class MainWindowVM : VMBase, IDragable, IDropable
             try
             {
                 var files = await _fileLoadingService.LoadFiles(
-                    searchParams.CollectionId, 
+                    searchParams.CollectionId,
                     _mapper.Map<IReadOnlyCollection<SearchTag>>(searchParams.SearchTags));
-                
+
                 if (files.Any())
                 {
                     imageList = new LocalImageList(files, -1, ApplicationProperties.FileNamesToOpen?.FirstOrDefault());
@@ -298,7 +320,6 @@ internal class MainWindowVM : VMBase, IDragable, IDropable
         }
 
         imageList.CurrentImageChanged += _imageList_CurrentImageChanged;
-
         _imageList = imageList;
     }
 
@@ -324,6 +345,7 @@ internal class MainWindowVM : VMBase, IDragable, IDropable
             OnPropertyChanged("ZoomString");
             OnPropertyChanged("ImagePath");
             OnPropertyChanged("Zoom");
+            OnPropertyChanged(nameof(LoadingProgress));
 
             if (_mainWindowView.ScrollViewerObject.IsNeedScrollHome)
             {
@@ -344,7 +366,7 @@ internal class MainWindowVM : VMBase, IDragable, IDropable
         }
     }
 
-    private async void InitializeImageListAsync(IEnumerable<string>? images = null)
+    private async void InitializeImageListAsync(IReadOnlyCollection<string>? images = null)
     {
         IsLoading = true;
         OnPropertyChanged("Status");

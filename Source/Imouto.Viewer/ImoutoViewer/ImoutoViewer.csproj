@@ -59,6 +59,7 @@
         <PackageReference Include="System.Drawing.Common" />
         <PackageReference Include="WpfAnimatedGif" />
         <PackageReference Include="GihanSoft.String.NaturalComparer" />
+        <PackageReference Include="SharpCompress" />
     </ItemGroup>
 
     <ItemGroup>

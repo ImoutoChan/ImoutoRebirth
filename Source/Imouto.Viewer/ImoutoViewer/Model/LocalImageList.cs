@@ -4,7 +4,7 @@ using ImoutoViewer.Extensions;
 
 namespace ImoutoViewer.Model;
 
-internal class LocalImageList : IEnumerable
+internal class LocalImageList : IEnumerable, ILocalImageList
 {
     #region Static members
 
@@ -319,7 +319,7 @@ internal class LocalImageList : IEnumerable
         CurrentImage = _imageList.Last();
     }
 
-    internal void ResortFiles()
+    public void ResortFiles()
     {
         var ordered = _imageList
             .OrderByWithDirection(x => GetFilesOrderProperty(new FileInfo(x.Path)), IsFilesSortMethodDescending);
@@ -383,7 +383,6 @@ internal class LocalImageList : IEnumerable
         {
             AddDirectoryRange(GetDirectories(sourceFolder));
         }
-
 
         if (IsFlagged(flags, DirectorySearchFlags.AllDepthPrefolder))
         {
@@ -541,4 +540,8 @@ internal class LocalImageList : IEnumerable
     public IEnumerator GetEnumerator() => ((IEnumerable)_imageList).GetEnumerator();
 
     #endregion  IEnumerable members
+
+    public void Dispose()
+    {
+    }
 }
