@@ -312,7 +312,18 @@ internal class MainWindowVM : VMBase, IDragable, IDropable
             var fileNames = ApplicationProperties.FileNamesToOpen;
             ApplicationProperties.FileNamesToOpen = ArraySegment<string>.Empty;
 
-            imageList = new LocalImageList(fileNames);
+            if (fileNames.Count == 1 && ArchiveImageList.IsSupportedArchive(fileNames.First()))
+            {
+                imageList = new ArchiveImageList(fileNames.First(), progress =>
+                {
+                    LoadingProgress = (int)(progress * 100);
+                    UpdateView();
+                });
+            }
+            else
+            {
+                imageList = new LocalImageList(fileNames);
+            }
         }
         else
         {
