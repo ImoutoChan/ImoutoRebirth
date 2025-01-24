@@ -14,24 +14,32 @@ internal class ArchiveImageList : ILocalImageList
 
     public ArchiveImageList(string archiveFilePath, Action<double> loadingProgressReportAction)
     {
+        var archive = new FileInfo(archiveFilePath);
+
         _loadingProgressReportAction = loadingProgressReportAction;
-        if (!IsSupportedArchive(archiveFilePath))
+
+        if (!IsSupportedArchive(archive))
             throw new ArgumentException("Unsupported archive type", nameof(archiveFilePath));
 
         _tempDirManager = new TemporaryDirectoryManager();
-        _images = LoadImagesFromArchive(archiveFilePath);
+        _images = LoadImagesFromArchive(archive);
         ResortFiles();
         _currentIndex = _images.Any() ? 0 : -1;
     }
 
-    public static bool IsSupportedArchive(string archiveFilePath)
+    public static bool IsSupportedArchive(string archiveFile) => IsSupportedArchive(new FileInfo(archiveFile));
+
+    public static bool IsSupportedArchive(FileInfo archiveFile)
     {
-        return new FileInfo(archiveFilePath).Extension switch
+        if (archiveFile.Extension is "" or null)
+            return false;
+
+        return archiveFile.Extension switch
         {
             ".zip" => true,
             ".cbz" => true,
             _ => false
-        } || ArchiveFactory.IsArchive(archiveFilePath, out _);
+        } || ArchiveFactory.IsArchive(archiveFile.FullName, out _);
     }
 
     public LocalImage? CurrentImage => _currentIndex >= 0 && _currentIndex < _images.Count
@@ -81,11 +89,11 @@ internal class ArchiveImageList : ILocalImageList
         _images.Sort((img1, img2) => string.Compare(img1.Path, img2.Path, StringComparison.OrdinalIgnoreCase));
     }
 
-    private List<LocalImage> LoadImagesFromArchive(string archiveFilePath)
+    private List<LocalImage> LoadImagesFromArchive(FileInfo archiveFile)
     {
         try
         {
-            var imagePaths = ExtractImagePaths(archiveFilePath);
+            var imagePaths = ExtractImagePaths(archiveFile);
             return imagePaths.Select(path => new LocalImage(path)).ToList();
         }
         catch (Exception e)
@@ -95,18 +103,18 @@ internal class ArchiveImageList : ILocalImageList
         }
     }
 
-    private List<string> ExtractImagePaths(string archiveFilePath)
+    private List<string> ExtractImagePaths(FileInfo archiveFile)
     {
-        var extension = new FileInfo(archiveFilePath).Extension.ToLower();
+        var extension = archiveFile.Extension.ToLower();
         var imagePaths = new List<string>();
 
         if (extension is ".zip" or ".cbz")
         {
-            ZipFile.ExtractToDirectory(archiveFilePath, _tempDirManager.TempDirectoryPath);
+            ZipFile.ExtractToDirectory(archiveFile.FullName, _tempDirManager.TempDirectoryPath);
         }
         else // if (extension is ".rar" or ".7z" or ...)
         {
-            using var archive = ArchiveFactory.Open(archiveFilePath);
+            using var archive = ArchiveFactory.Open(archiveFile.FullName);
             archive.ExtractToDirectory(_tempDirManager.TempDirectoryPath, _loadingProgressReportAction);
         }
 
