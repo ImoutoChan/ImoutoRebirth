@@ -7,12 +7,20 @@
 * Update all dependencies
 * Add Resqueue dashboard
 * Add new videos in README for the initial launch and configuration of collections
-* Fix various issues after migration to .NET 9 
+* Fix various issues after migration to .NET 9
 
 ### Navigator
 * Add date in file info (left bottom corner)
 * When you click calculate hash, it will be compared with the stored hash for the file; 
 if they are different, the hash will be highlighted in red
+
+### Viewer
+* Support opening zipped galleries: zip 7z rar cbz cbr etc It will be extracted to a temporary folder and opened 
+as a folder. You can set up ImoutoViewer as a default app to open cbz for example.
+
+### Room
+* File formats are only checked if the file has a supported image extension. So it means you are no longer required
+to create 2 different source folder entry with and without this flag.
 
 # 4.26.1
 

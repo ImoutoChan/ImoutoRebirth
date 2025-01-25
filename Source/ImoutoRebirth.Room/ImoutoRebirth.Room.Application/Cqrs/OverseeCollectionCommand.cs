@@ -140,10 +140,15 @@ internal class OverseeCollectionCommandHandler : ICommandHandler<OverseeCollecti
             }
 
             var existingFile = await _collectionFileRepository.GetWithMd5(collectionId, systemFile.Md5, ct);
+
+            var isCorrectIfImage
+                = !_imageService.IsImageHasSupportedExtension(systemFile)
+                  || _imageService.IsImageCorrect(systemFile);
+
             var preparedToMove = sourceFolder.PrepareFileToMove(
                 systemFile,
                 existingFile != null,
-                _imageService.IsImageCorrect(systemFile));
+                isCorrectIfImage);
 
             yield return preparedToMove;
         }
