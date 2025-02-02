@@ -32,4 +32,6 @@ public static class EnumerableExtensions
         }
     }
 
+    public static bool ContainsIgnoreCase(this IEnumerable<string> source, string value)
+        => source.Any(x => x.EqualsIgnoreCase(value));
 }
