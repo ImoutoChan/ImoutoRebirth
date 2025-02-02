@@ -45,6 +45,7 @@ public static class WebEndpointsExtensions
         });
         app.MapOpenApi();
         app.MapScalarApiReference();
+        app.MapRootTo("swagger");
 
         app.MapFilesEndpoints();
         app.MapTagsEndpoints();

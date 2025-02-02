@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.ResponseCompression;
 using Microsoft.Extensions.DependencyInjection;
 using NodaTime;
 using NodaTime.Serialization.SystemTextJson;
+using Scalar.AspNetCore;
 
 namespace ImoutoRebirth.Room.UI.WebApi;
 
@@ -48,6 +49,7 @@ public static class WebEndpointsExtensions
         });
         app.MapOpenApi();
         app.MapScalarApiReference();
+        app.MapRootTo("swagger");
 
         app.MapCollectionsEndpoints();
         app.MapCollectionFilesEndpoints();

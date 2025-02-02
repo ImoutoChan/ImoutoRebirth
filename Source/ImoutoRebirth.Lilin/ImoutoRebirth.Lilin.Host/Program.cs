@@ -45,7 +45,6 @@ var app = builder.Build();
 
 app.MapWebEndpoints();
 app.MigrateIfNecessary<LilinDbContext>();
-app.UseResQueue("resqueue");
 app.Run();
 
 public partial class Program;

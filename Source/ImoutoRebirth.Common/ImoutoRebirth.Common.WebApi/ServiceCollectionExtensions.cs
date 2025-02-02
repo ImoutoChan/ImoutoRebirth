@@ -1,4 +1,6 @@
 ﻿using System.Reflection;
+using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc.Controllers;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.DependencyInjection;
@@ -83,5 +85,15 @@ public static class ServiceCollectionExtensions
         });
 
         return services;
+    }
+
+    public static WebApplication MapRootTo(this WebApplication app, string redirectPath)
+    {
+        var normalizedPath = redirectPath.StartsWith('/') ? redirectPath : $"/{redirectPath}";
+
+        app.MapGet("/", () => Results.Redirect(normalizedPath))
+            .ExcludeFromDescription();
+
+        return app;
     }
 }
