@@ -6,6 +6,7 @@ using Flurl;
 using Flurl.Http;
 using ImoutoRebirth.Arachne.Core.Models;
 using ImoutoRebirth.Arachne.Infrastructure.Abstract;
+using ImoutoRebirth.Common;
 using Microsoft.Extensions.Logging;
 
 namespace ImoutoRebirth.Arachne.Infrastructure.ExHentai;
@@ -90,6 +91,14 @@ public sealed class ExHentaiMetadataProvider : IExHentaiMetadataProvider, IAvail
         {
             _logger.LogDebug("Starting metadata search for {GalleryName}", galleryName);
 
+            var ids = await GetGalleryIds(galleryName);
+
+            if (ids.None())
+            {
+                _logger.LogDebug("No galleries found for query '{Query}'", galleryName);
+                return [];
+            }
+
             var response = await "https://api.e-hentai.org/api.php"
                 .WithCookies(GetAuthCookies())
                 .WithHeader("User-Agent", _authConfig.UserAgent)
@@ -97,7 +106,7 @@ public sealed class ExHentaiMetadataProvider : IExHentaiMetadataProvider, IAvail
                     new
                     {
                         method = "gdata",
-                        gidlist = await GetGalleryIds(galleryName),
+                        gidlist = ids,
                         @namespace = 1
                     })
                 .ReceiveJson<ExHentaiApiResponse>();

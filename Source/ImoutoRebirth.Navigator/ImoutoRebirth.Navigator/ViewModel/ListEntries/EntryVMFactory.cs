@@ -25,8 +25,15 @@ internal static class EntryVMFactory
         if (IsVideo(path))
             return new VideoEntryVM(path, filesClient, initPreviewSize, dbId);
 
-        if (path.EndsWith(".zip"))
+        if (path.EndsWith(".zip")
+            || path.EndsWith(".cbz")
+            || path.EndsWith(".rar")
+            || path.EndsWith(".cbr")
+            || path.EndsWith(".7z")
+            || path.EndsWith(".cb7"))
+        {
             return new UgoiraEntryVM(path, filesClient, initPreviewSize, dbId);
+        }
 
         return null;
     }

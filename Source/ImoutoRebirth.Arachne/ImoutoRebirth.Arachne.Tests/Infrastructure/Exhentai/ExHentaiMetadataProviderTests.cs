@@ -13,12 +13,14 @@ public class ExHentaiMetadataProviderTests : IClassFixture<TestConfiguration>
     private readonly Mock<ILogger<ExHentaiMetadataProvider>> _loggerMock;
     private readonly ExHentaiAuthConfig _authConfig;
     private readonly ExHentaiAuthConfig _emptyAuthConfig;
+    private readonly ExHentaiAuthConfig _halfEmptyAuthConfig;
 
     public ExHentaiMetadataProviderTests(TestConfiguration configuration)
     {
         _loggerMock = new Mock<ILogger<ExHentaiMetadataProvider>>();
         _authConfig = configuration.GetExHentaiAuthConfig();
         _emptyAuthConfig = new ExHentaiAuthConfig(null, null, null, null);
+        _halfEmptyAuthConfig = new ExHentaiAuthConfig(null, null, null, _authConfig.UserAgent);
     }
 
     /// <summary>
@@ -124,6 +126,22 @@ public class ExHentaiMetadataProviderTests : IClassFixture<TestConfiguration>
                     "https://ehgt.org/w/01/493/96471-sdkeqwcd.webp",
                     2921730,
                     "d97ebe632e"));
+    }
+
+    [Fact]
+    public async Task SearchMetadataAsync_ValidResponseWithAuth_ReturnsParsedMetadata5()
+    {
+        // arrange
+        var provider = new ExHentaiMetadataProvider(_authConfig, _loggerMock.Object);
+        var engine = new ExHentaiSearchEngine(provider, NullLogger<ExHentaiSearchEngine>.Instance);
+
+        // act
+        var result = await engine.Search(new Image("", "[Akitsuki Itsuki] Where Love is Bound [English] =The Lost Light="));
+
+        // assert
+        result.Should().BeOfType<Metadata>();
+        ((Metadata)result).IsFound.Should().BeTrue();
+        ((Metadata)result).Tags.Should().NotBeEmpty();
     }
 
     [Fact]
