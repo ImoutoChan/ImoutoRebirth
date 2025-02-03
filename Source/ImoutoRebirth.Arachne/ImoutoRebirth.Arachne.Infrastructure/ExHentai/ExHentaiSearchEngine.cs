@@ -63,6 +63,16 @@ public partial class ExHentaiSearchEngine : ISearchEngine
         if (!string.IsNullOrWhiteSpace(metadata.Publisher))
             yield return new Tag("General", metadata.Publisher);
 
+        if (!string.IsNullOrWhiteSpace(metadata.Category))
+            yield return new Tag("General", metadata.Category.ToLower());
+
+        if (!string.IsNullOrWhiteSpace(metadata.UploaderName))
+            yield return new Tag("LocalMeta", "PostedByUsername", metadata.UploaderName);
+
+        yield return new Tag("LocalMeta", "FilesCount", metadata.FilesCount.ToString());
+        yield return new Tag("LocalMeta", "FileSize", metadata.FileSize.ToString());
+        yield return new Tag("LocalMeta", "PostedDateTime", metadata.PostedAt.ToString(Constants.DateTimeFormat));
+
         foreach (var tag in metadata.Tags)
         {
             if (tag.StartsWith("language:"))

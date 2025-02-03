@@ -19,6 +19,8 @@ internal static class SearchEngineTypeExtensions
                 return MetadataSource.Gelbooru;
             case SearchEngineType.Rule34:
                 return MetadataSource.Rule34;
+            case SearchEngineType.ExHentai:
+                return MetadataSource.ExHentai;
             default:
                 throw new ArgumentOutOfRangeException(nameof(searchEngineType), searchEngineType, null);
         }

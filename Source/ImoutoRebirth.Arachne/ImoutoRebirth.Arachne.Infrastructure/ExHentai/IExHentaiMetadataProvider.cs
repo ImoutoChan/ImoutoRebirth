@@ -25,7 +25,15 @@ public record FoundMetadata(
     decimal Rating,
     string ThumbnailUrl,
     int GalleryId,
-    string GalleryToken)
+    string GalleryToken,
+    string Category,
+    string UploaderName,
+    int FilesCount,
+    int FileSize,
+    bool IsExpunged,
+    int TorrentCount,
+    string JapaneseTitle,
+    DateTimeOffset PostedAt)
 {
     public string FileIdFromSource => $"{GalleryId}|{GalleryToken}";
 }
@@ -205,7 +213,15 @@ public sealed class ExHentaiMetadataProvider : IExHentaiMetadataProvider, IAvail
                         rating,
                         gmetadata.Thumb,
                         gmetadata.Gid,
-                        gmetadata.Token
+                        gmetadata.Token,
+                        gmetadata.Category,
+                        gmetadata.Uploader,
+                        gmetadata.FileCount.GetIntOrDefault() ?? 0,
+                        gmetadata.FileSize,
+                        gmetadata.IsExpunged,
+                        gmetadata.TorrentCount.GetInt(),
+                        gmetadata.TitleJpn,
+                        DateTimeOffset.FromUnixTimeSeconds(gmetadata.Posted.GetInt())
                     ));
 
                 _logger.LogTrace("Processed metadata for gallery {GalleryId}", gmetadata.Gid);
@@ -248,8 +264,8 @@ public sealed class ExHentaiMetadataProvider : IExHentaiMetadataProvider, IAvail
         var match = pattern.Match(title);
         return (
             Title: match.Groups["title"].Value.Trim(),
-            Author: match.Groups["author"].Success ? match.Groups["author"].Value : "Unknown",
-            Publisher: match.Groups["publisher"].Success ? match.Groups["publisher"].Value : "Unknown"
+            Author: match.Groups["author"].Success ? match.Groups["author"].Value : "",
+            Publisher: match.Groups["publisher"].Success ? match.Groups["publisher"].Value : ""
         );
     }
 
