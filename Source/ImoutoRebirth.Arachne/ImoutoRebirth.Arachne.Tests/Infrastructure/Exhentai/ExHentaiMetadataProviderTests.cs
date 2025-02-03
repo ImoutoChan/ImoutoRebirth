@@ -24,7 +24,7 @@ public class ExHentaiMetadataProviderTests : IClassFixture<TestConfiguration>
     /// <summary>
     /// Works only with vpn from dev pc.
     /// </summary>
-    [Fact]
+    [Fact(Skip = "Manual debug")]
     public async Task AvailabilityChecker_ShouldReturnAvailable()
     {
         // arrange
