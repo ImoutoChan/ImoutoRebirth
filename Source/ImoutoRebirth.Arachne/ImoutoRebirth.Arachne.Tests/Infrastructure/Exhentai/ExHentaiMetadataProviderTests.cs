@@ -314,8 +314,8 @@ public class ExHentaiMetadataProviderTests : IClassFixture<TestConfiguration>
             new Tag("LocalMeta", "BooruPostId", "1007805|1d5c9d5deb"),
             new Tag("LocalMeta", "Md5", ""),
             new Tag("LocalMeta", "Score", "4.18"),
-            new Tag("Copyright", "LR-03"),
-            new Tag("General", "C83"),
+            new Tag("Copyright", "lr-03"),
+            new Tag("General", "c83"),
 
             new Tag("General", "doujinshi"),
             new Tag("LocalMeta", "PostedByUsername", "drift49187"),
@@ -326,9 +326,9 @@ public class ExHentaiMetadataProviderTests : IClassFixture<TestConfiguration>
             new Tag("Meta", "russian"),
             new Tag("Meta", "translated"),
             new Tag("Copyright", "sword art online"),
-            new Tag("Character", "kazuto kirigaya"),
+            new Tag("Character", "kirigaya kazuto"),
             new Tag("Character", "lyfa"),
-            new Tag("Character", "suguha kirigaya"),
+            new Tag("Character", "kirigaya suguha"),
             new Tag("Artist", "locker room"),
             new Tag("Artist", "100yen locker"),
 

@@ -58,10 +58,10 @@ public partial class ExHentaiSearchEngine : ISearchEngine
         yield return new Tag("LocalMeta", "BooruPostId", metadata.FileIdFromSource);
         yield return new Tag("LocalMeta", "Md5", imageMd5);
         yield return new Tag("LocalMeta", "Score", metadata.Rating.ToString(CultureInfo.InvariantCulture));
-        yield return new Tag("Copyright", metadata.Title);
+        yield return new Tag("Copyright", metadata.Title.ToLower());
 
         if (!string.IsNullOrWhiteSpace(metadata.Publisher))
-            yield return new Tag("General", metadata.Publisher);
+            yield return new Tag("General", metadata.Publisher.ToLower());
 
         if (!string.IsNullOrWhiteSpace(metadata.Category))
             yield return new Tag("General", metadata.Category.ToLower());
@@ -94,7 +94,7 @@ public partial class ExHentaiSearchEngine : ISearchEngine
                 yield return new Tag("General", tag["mixed:".Length..]);
 
             else if (tag.StartsWith("character:"))
-                yield return new Tag("Character", tag["character:".Length..]);
+                yield return new Tag("Character", FlipCharacterName(tag["character:".Length..]));
 
             else
             {
@@ -106,6 +106,12 @@ public partial class ExHentaiSearchEngine : ISearchEngine
                 }
             }
         }
+    }
+
+    private static string FlipCharacterName(string name)
+    {
+        var split = name.Split(' ');
+        return split.Length == 2 ? $"{split[1]} {split[0]}" : name;
     }
 
     public Task<LoadedTagsHistory> LoadChangesForTagsSinceHistoryId(int historyId)
