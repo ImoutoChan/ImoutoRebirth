@@ -1921,7 +1921,7 @@ namespace ImoutoRebirth.Lilin.WebApi.Client
         Rule34 = 5,
 
         [System.Runtime.Serialization.EnumMember(Value = @"ExHentai")]
-        ExHentai = 6
+        ExHentai = 6,
 
     }
 
