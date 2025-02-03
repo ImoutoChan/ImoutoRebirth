@@ -110,6 +110,7 @@ internal class AvailabilityCheckerBackgroundService : BackgroundService
                 SearchEngineType.Sankaku => _busControl.ConnectNewConsumer<SankakuSearchMetadataCommandConsumer>(_serviceProvider),
                 SearchEngineType.Gelbooru => _busControl.ConnectNewConsumer<GelbooruSearchMetadataCommandConsumer>(_serviceProvider),
                 SearchEngineType.Rule34 => _busControl.ConnectNewConsumer<Rule34SearchMetadataCommandConsumer>(_serviceProvider),
+                SearchEngineType.ExHentai => _busControl.ConnectNewConsumer<ExHentaiSearchMetadataCommandConsumer>(_serviceProvider),
                 _ => throw new ArgumentOutOfRangeException()
             };
             _endpointHandles[booruType] = handle;

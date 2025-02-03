@@ -29,6 +29,6 @@ public class Metadata : SearchResult
         FileIdFromSource = fileIdFromSource;
     }
 
-    public static Metadata NotFound(Image image, SearchEngineType source)
-        => new Metadata(image, source, false, Array.Empty<Tag>(), Array.Empty<Note>(), null);
+    public static Metadata NotFound(Image image, SearchEngineType source) =>
+        new(image, source, false, [], [], null);
 }

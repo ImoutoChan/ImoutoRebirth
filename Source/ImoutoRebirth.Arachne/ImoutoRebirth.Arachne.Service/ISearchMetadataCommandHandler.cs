@@ -6,5 +6,5 @@ namespace ImoutoRebirth.Arachne.Service;
 
 public interface ISearchMetadataCommandHandler
 {
-    Task Search(ConsumeContext<ISearchMetadataCommand> context, SearchEngineType where);
+    Task Search(ConsumeContext<SearchMetadataCommand> context, SearchEngineType where);
 }

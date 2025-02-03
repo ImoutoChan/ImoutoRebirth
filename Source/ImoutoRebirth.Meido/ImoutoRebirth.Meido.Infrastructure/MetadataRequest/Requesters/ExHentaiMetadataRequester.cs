@@ -4,14 +4,14 @@ using MassTransit;
 
 namespace ImoutoRebirth.Meido.Infrastructure.MetadataRequest.Requesters;
 
-internal class SankakuMetadataRequester : IMetadataRequester
+internal class ExHentaiMetadataRequester : IMetadataRequester
 {
     private readonly IBus _bus;
 
-    public SankakuMetadataRequester(IBus bus) => _bus = bus;
+    public ExHentaiMetadataRequester(IBus bus) => _bus = bus;
 
-    public MetadataSource Source => MetadataSource.Sankaku;
+    public MetadataSource Source => MetadataSource.ExHentai;
 
     public Task SendRequestCommand(Guid fileId, string md5, string fileName)
-        => _bus.Send(new SankakuSearchMetadataCommand(md5, fileId, fileName));
+        => _bus.Send(new ExHentaiSearchMetadataCommand(md5, fileId, fileName));
 }

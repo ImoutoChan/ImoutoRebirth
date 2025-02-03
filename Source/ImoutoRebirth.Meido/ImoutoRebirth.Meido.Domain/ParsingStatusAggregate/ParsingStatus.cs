@@ -20,27 +20,36 @@ public class ParsingStatus
 
     public string? ErrorMessage { get; private set; }
 
+    public string FileName { get; private set; }
+
     private ParsingStatus(
         Guid fileId,
         string md5,
+        string fileName,
         MetadataSource source,
         Instant updatedAt,
         Status status)
     {
         FileId = fileId;
         Md5 = md5;
+        FileName = fileName;
         UpdatedAt = updatedAt;
         Status = status;
         Source = source;
     }
 
-    public static DomainResult<ParsingStatus> Create(Guid fileId, string md5, MetadataSource source, Instant now)
+    public static DomainResult<ParsingStatus> Create(
+        Guid fileId,
+        string md5,
+        string fileName,
+        MetadataSource source,
+        Instant now)
     {
         ArgumentValidator.Requires(() => fileId != Guid.Empty, nameof(fileId));
         ArgumentValidator.NotNullOrWhiteSpace(() => md5);
         ArgumentValidator.IsEnumDefined(() => source);
 
-        var created = new ParsingStatus(fileId, md5, source, now, Status.SearchRequested);
+        var created = new ParsingStatus(fileId, md5, fileName, source, now, Status.SearchRequested);
 
         return new DomainResult<ParsingStatus>(created)
         {

@@ -1,6 +1,8 @@
 ﻿using FluentAssertions;
+using ImoutoRebirth.Arachne.Core.Models;
 using ImoutoRebirth.Arachne.Infrastructure.ExHentai;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging.Abstractions;
 using Moq;
 using Xunit;
 
@@ -36,8 +38,11 @@ public class ExHentaiMetadataProviderTests : IClassFixture<TestConfiguration>
                     [
                         "language:english",
                         "language:translated",
+
                         "parody:original",
+
                         "group:mint no chicchai oana",
+
                         "male:blackmail",
                         "male:netorare",
                         "male:rape",
@@ -143,6 +148,69 @@ public class ExHentaiMetadataProviderTests : IClassFixture<TestConfiguration>
                     2867085,
                     "7fa0159874"),
                 ]);
+    }
+
+    [Fact]
+    public async Task SearchMetadataAsync_ValidResponse_ReturnsParsedMetadata4()
+    {
+        // arrange
+        AssertionConfiguration.Current.Formatting.MaxLines = Int32.MaxValue;
+
+        var provider = new ExHentaiMetadataProvider(_authConfig, _loggerMock.Object);
+        var engine = new ExHentaiSearchEngine(provider, NullLogger<ExHentaiSearchEngine>.Instance);
+
+        // act
+        var result = await engine.Search(
+            new Image(
+                "",
+                "(C83) [LockerRoom (100 Yen Locker)] LR-03 (Sword Art Online) [Russian] [Witcher000].zip"));
+
+        // assert
+        result.Should().BeOfType<Metadata>();
+        var metadata = (Metadata)result;
+        metadata.FileIdFromSource.Should().Be("1007805|1d5c9d5deb");
+        metadata.IsFound.Should().BeTrue();
+
+        var expectedTags = new [] {
+            new Tag("LocalMeta", "BooruPostId", "1007805|1d5c9d5deb"),
+            new Tag("LocalMeta", "Md5", ""),
+            new Tag("LocalMeta", "Score", "4.18"),
+            new Tag("Copyright", "LR-03"),
+            new Tag("General", "C83"),
+            new Tag("Meta", "russian"),
+            new Tag("Meta", "translated"),
+            new Tag("Copyright", "sword art online"),
+            new Tag("Character", "kazuto kirigaya"),
+            new Tag("Character", "lyfa"),
+            new Tag("Character", "suguha kirigaya"),
+            new Tag("Artist", "locker room"),
+            new Tag("Artist", "100yen locker"),
+
+            new Tag("General", "male:elf"),
+            new Tag("General", "elf"),
+            new Tag("General", "male:sole male"),
+            new Tag("General", "sole male"),
+            new Tag("General", "male:virginity"),
+            new Tag("General", "virginity"),
+
+            new Tag("General", "female:big breasts"),
+            new Tag("General", "big breasts"),
+            new Tag("General", "female:cousin"),
+            new Tag("General", "cousin"),
+            new Tag("General", "female:elf"),
+            new Tag("General", "female:masturbation"),
+            new Tag("General", "masturbation"),
+            new Tag("General", "female:tracksuit"),
+            new Tag("General", "tracksuit"),
+
+            new Tag("General", "incest"),
+            new Tag("Meta", "full color")
+        };
+
+        foreach (var expectedTag in expectedTags)
+        {
+            metadata.Tags.Should().ContainEquivalentOf(expectedTag);
+        }
     }
 
     [Fact]

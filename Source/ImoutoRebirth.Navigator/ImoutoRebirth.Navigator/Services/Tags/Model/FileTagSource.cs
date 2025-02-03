@@ -7,5 +7,6 @@ internal enum FileTagSource
     Sankaku = 2,
     Manual = 3,
     Gelbooru = 4,
-    Rule34 = 5
+    Rule34 = 5,
+    ExHentai = 6
 }

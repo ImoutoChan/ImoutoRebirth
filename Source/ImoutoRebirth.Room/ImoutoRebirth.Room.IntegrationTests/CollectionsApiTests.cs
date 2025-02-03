@@ -363,13 +363,13 @@ public class CollectionsApiTests : IDisposable
         var files = await _context.CollectionFiles.Where(x => x.CollectionId == collectionId).ToListAsync();
         
         // assert
-        _harness.Sent.SelectMessages<IUpdateMetadataCommand>().Any(x =>
+        _harness.Sent.SelectMessages<UpdateMetadataCommand>().Any(x =>
             x.MetadataSource == MetadataSource.Manual
             && x.FileId == files[0].Id || x.FileId == files[1].Id
             && x.FileTags.Any(y => y is { Name: "inner", Type: "Location" })
             && x.FileTags.Any(y => y is { Name: "file1-5f30f9953332c230d11e3f26db5ae9a0.jpg", Type: "Location" })
             ).Should().BeTrue();
-        _harness.Sent.SelectMessages<IUpdateMetadataCommand>().Any(x =>
+        _harness.Sent.SelectMessages<UpdateMetadataCommand>().Any(x =>
             x.MetadataSource == MetadataSource.Manual
             && x.FileId == files[0].Id || x.FileId == files[1].Id
             && x.FileTags.Any(y => y is { Name: "inner", Type: "Location" })

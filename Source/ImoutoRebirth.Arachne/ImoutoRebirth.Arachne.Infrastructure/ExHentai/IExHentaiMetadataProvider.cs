@@ -20,8 +20,10 @@ public record FoundMetadata(
     decimal Rating,
     string ThumbnailUrl,
     int GalleryId,
-    string GalleryToken
-);
+    string GalleryToken)
+{
+    public string FileIdFromSource => $"{GalleryId}|{GalleryToken}";
+}
 
 public sealed class ExHentaiMetadataProvider : IExHentaiMetadataProvider
 {

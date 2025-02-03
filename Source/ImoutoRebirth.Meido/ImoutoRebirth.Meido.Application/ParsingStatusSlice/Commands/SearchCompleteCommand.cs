@@ -79,7 +79,13 @@ internal class SaveCompletedSearchCommandHandler : ICommandHandler<SaveCompleted
             return;
         }
 
-        var result = ParsingStatus.Create(fileId, danbooruStatus.Md5, MetadataSource.Gelbooru, now);
+        var result = ParsingStatus.Create(
+            fileId,
+            danbooruStatus.Md5,
+            danbooruStatus.FileName,
+            MetadataSource.Gelbooru,
+            now);
+
         await _parsingStatusRepository.Add(result.Result);
         _eventStorage.AddRange(result.EventsCollection);
     }
@@ -100,7 +106,13 @@ internal class SaveCompletedSearchCommandHandler : ICommandHandler<SaveCompleted
             return;
         }
 
-        var result = ParsingStatus.Create(fileId, danbooruStatus.Md5, MetadataSource.Rule34, now);
+        var result = ParsingStatus.Create(
+            fileId,
+            danbooruStatus.Md5,
+            danbooruStatus.FileName,
+            MetadataSource.Rule34,
+            now);
+
         await _parsingStatusRepository.Add(result.Result);
         _eventStorage.AddRange(result.EventsCollection);
     }

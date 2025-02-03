@@ -1,4 +1,4 @@
-﻿using ImoutoRebirth.Arachne.MessageContracts.Commands;
+﻿using ImoutoRebirth.Arachne.MessageContracts;
 using ImoutoRebirth.Meido.Domain;
 using MassTransit;
 
@@ -12,6 +12,6 @@ internal class Rule34MetadataRequester : IMetadataRequester
 
     public MetadataSource Source => MetadataSource.Rule34;
 
-    public Task SendRequestCommand(Guid fileId, string md5) 
-        => _bus.Send<IRule34SearchMetadataCommand>(new {FileId = fileId, Md5 = md5});
+    public Task SendRequestCommand(Guid fileId, string md5, string fileName)
+        => _bus.Send(new Rule34SearchMetadataCommand(md5, fileId, fileName));
 }

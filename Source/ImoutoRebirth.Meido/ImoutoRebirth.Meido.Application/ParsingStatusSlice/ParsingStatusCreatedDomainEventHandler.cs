@@ -11,6 +11,10 @@ internal class ParsingStatusCreatedDomainEventHandler : DomainEventNotificationH
     public ParsingStatusCreatedDomainEventHandler(ISourceMetadataRequester metadataRequester) 
         => _metadataRequester = metadataRequester;
 
-    protected override Task Handle(ParsingStatusCreated domainEvent, CancellationToken cancellationToken) 
-        => _metadataRequester.Request(domainEvent.Entity.Source, domainEvent.Entity.FileId, domainEvent.Entity.Md5);
+    protected override Task Handle(ParsingStatusCreated domainEvent, CancellationToken ct)
+        => _metadataRequester.Request(
+            domainEvent.Entity.Source,
+            domainEvent.Entity.FileId,
+            domainEvent.Entity.Md5,
+            domainEvent.Entity.FileName);
 }

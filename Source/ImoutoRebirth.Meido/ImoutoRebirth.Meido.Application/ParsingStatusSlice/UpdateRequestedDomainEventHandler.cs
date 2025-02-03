@@ -11,6 +11,10 @@ internal class UpdateRequestedDomainEventHandler : DomainEventNotificationHandle
     public UpdateRequestedDomainEventHandler(ISourceMetadataRequester metadataRequester) 
         => _metadataRequester = metadataRequester;
 
-    protected override async Task Handle(UpdateRequested domainEvent, CancellationToken cancellationToken) 
-        => await _metadataRequester.Request(domainEvent.Entity.Source, domainEvent.Entity.FileId, domainEvent.Entity.Md5);
+    protected override async Task Handle(UpdateRequested domainEvent, CancellationToken ct)
+        => await _metadataRequester.Request(
+            domainEvent.Entity.Source,
+            domainEvent.Entity.FileId,
+            domainEvent.Entity.Md5,
+            domainEvent.Entity.FileName);
 }

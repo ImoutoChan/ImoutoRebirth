@@ -23,6 +23,6 @@ public static class ServiceCollectionExtensions
     public static MassTransitConfigurator AddRoomMassTransitSetup(
         this MassTransitConfigurator builder)
         => builder
-            .AddCommand<INewFileCommand>()
-            .AddCommand<IUpdateMetadataCommand>();
+            .AddCommand<NewFileCommand>()
+            .AddCommand<UpdateMetadataCommand>();
 }

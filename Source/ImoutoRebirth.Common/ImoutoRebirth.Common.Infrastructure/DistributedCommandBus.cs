@@ -9,7 +9,6 @@ internal class DistributedCommandBus : IDistributedCommandBus
 
     public DistributedCommandBus(IBus bus) => _bus = bus;
 
-    public async Task SendAsync<TCommand>(object command, CancellationToken token = default)
-        where TCommand : class
-        => await _bus.Send<TCommand>(command, token);
+    public async Task SendAsync<TCommand>(TCommand command, CancellationToken token = default) where TCommand : class
+        => await _bus.Send(command, cancellationToken: token);
 }
