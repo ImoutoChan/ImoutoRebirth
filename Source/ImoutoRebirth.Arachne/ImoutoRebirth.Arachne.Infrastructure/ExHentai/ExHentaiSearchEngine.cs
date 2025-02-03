@@ -4,6 +4,7 @@ using ImoutoRebirth.Arachne.Core.Models;
 using ImoutoRebirth.Common;
 using Microsoft.Extensions.Logging;
 using System.Text.RegularExpressions;
+using ImoutoRebirth.Arachne.Infrastructure.Abstract;
 
 namespace ImoutoRebirth.Arachne.Infrastructure.ExHentai;
 

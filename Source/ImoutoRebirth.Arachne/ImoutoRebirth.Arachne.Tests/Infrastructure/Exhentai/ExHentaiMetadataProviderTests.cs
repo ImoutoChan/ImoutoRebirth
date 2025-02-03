@@ -12,11 +12,32 @@ public class ExHentaiMetadataProviderTests : IClassFixture<TestConfiguration>
 {
     private readonly Mock<ILogger<ExHentaiMetadataProvider>> _loggerMock;
     private readonly ExHentaiAuthConfig _authConfig;
+    private readonly ExHentaiAuthConfig _emptyAuthConfig;
 
     public ExHentaiMetadataProviderTests(TestConfiguration configuration)
     {
         _loggerMock = new Mock<ILogger<ExHentaiMetadataProvider>>();
         _authConfig = configuration.GetExHentaiAuthConfig();
+        _emptyAuthConfig = new ExHentaiAuthConfig(null, null, null, null);
+    }
+
+    /// <summary>
+    /// Works only with vpn from dev pc.
+    /// </summary>
+    [Fact]
+    public async Task AvailabilityChecker_ShouldReturnAvailable()
+    {
+        // arrange
+        var providerAuth = new ExHentaiMetadataProvider(_authConfig, _loggerMock.Object);
+        var providerWithoutAuth = new ExHentaiMetadataProvider(_emptyAuthConfig, _loggerMock.Object);
+
+        // act
+        var withAuthAvailable = await providerAuth.IsAvailable(CancellationToken.None);
+        var withoutAuthAvailable = await providerWithoutAuth.IsAvailable(CancellationToken.None);
+
+        // assert
+        withAuthAvailable.Should().BeFalse();
+        withoutAuthAvailable.Should().BeTrue();
     }
 
     [Fact]
@@ -24,6 +45,49 @@ public class ExHentaiMetadataProviderTests : IClassFixture<TestConfiguration>
     {
         // arrange
         var provider = new ExHentaiMetadataProvider(_authConfig, _loggerMock.Object);
+
+        // act
+        var result = await provider.SearchMetadataAsync("[Mint no Chicchai Oana (Mint Muzzlini)] Toxic JK Netorare Jigo Houkoku... [English] [Solid Rose]");
+
+        // assert
+        result.Should().ContainSingle()
+            .Which.Should().BeEquivalentTo(
+                new FoundMetadata(
+                    "Toxic JK Netorare Jigo Houkoku...",
+                    ["Mint no Chicchai Oana (Mint Muzzlini)"],
+                    "Unknown",
+                    [
+                        "language:english",
+                        "language:translated",
+
+                        "parody:original",
+
+                        "group:mint no chicchai oana",
+
+                        "male:blackmail",
+                        "male:netorare",
+                        "male:rape",
+                        "male:sole male",
+                        "female:big breasts",
+                        "female:blackmail",
+                        "female:blowjob",
+                        "female:femdom",
+                        "female:schoolgirl uniform",
+                        "female:twintails",
+                        "other:mosaic censorship"
+                    ],
+                    ["english", "translated"],
+                    4.53m,
+                    "https://ehgt.org/w/01/493/96471-sdkeqwcd.webp",
+                    2921730,
+                    "d97ebe632e"));
+    }
+
+    [Fact]
+    public async Task SearchMetadataAsync_ValidResponseWithoutAuth_ReturnsParsedMetadata1()
+    {
+        // arrange
+        var provider = new ExHentaiMetadataProvider(_emptyAuthConfig, _loggerMock.Object);
 
         // act
         var result = await provider.SearchMetadataAsync("[Mint no Chicchai Oana (Mint Muzzlini)] Toxic JK Netorare Jigo Houkoku... [English] [Solid Rose]");

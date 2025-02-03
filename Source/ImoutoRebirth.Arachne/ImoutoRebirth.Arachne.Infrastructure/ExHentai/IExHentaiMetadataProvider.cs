@@ -1,7 +1,11 @@
-﻿using System.Text.Json.Serialization;
+﻿using System.Collections.ObjectModel;
+using System.Diagnostics.CodeAnalysis;
+using System.Text.Json.Serialization;
 using System.Text.RegularExpressions;
 using Flurl;
 using Flurl.Http;
+using ImoutoRebirth.Arachne.Core.Models;
+using ImoutoRebirth.Arachne.Infrastructure.Abstract;
 using Microsoft.Extensions.Logging;
 
 namespace ImoutoRebirth.Arachne.Infrastructure.ExHentai;
@@ -25,17 +29,46 @@ public record FoundMetadata(
     public string FileIdFromSource => $"{GalleryId}|{GalleryToken}";
 }
 
-public sealed class ExHentaiMetadataProvider : IExHentaiMetadataProvider
+public sealed class ExHentaiMetadataProvider : IExHentaiMetadataProvider, IAvailabilityProvider, IAvailabilityChecker
 {
     private readonly ExHentaiAuthConfig _authConfig;
     private readonly ILogger<ExHentaiMetadataProvider> _logger;
+    private readonly bool _exHentaiMode;
 
     public ExHentaiMetadataProvider(
         ExHentaiAuthConfig authConfig,
         ILogger<ExHentaiMetadataProvider> logger)
     {
-        _authConfig = authConfig ?? throw new ArgumentNullException(nameof(authConfig));
-        _logger = logger ?? throw new ArgumentNullException(nameof(logger));
+        if (authConfig.IsFilled())
+            _exHentaiMode = true;
+
+        _authConfig = authConfig;
+        _logger = logger;
+    }
+
+    public SearchEngineType ForType => SearchEngineType.ExHentai;
+
+    public IAvailabilityChecker CreateAvailabilityChecker() => this;
+
+    public async Task<bool> IsAvailable(CancellationToken ct)
+    {
+        var isHostAvailable = false;
+        try
+        {
+            var response = await GetBaseUrl()
+                .WithCookies(GetAuthCookies())
+                .WithHeader("User-Agent", _authConfig.UserAgent)
+                .WithTimeout(TimeSpan.FromSeconds(15))
+                .HeadAsync(cancellationToken: ct);
+
+            isHostAvailable = response.StatusCode / 100 == 2;
+        }
+        catch
+        {
+            // ignored
+        }
+
+        return isHostAvailable;
     }
 
     public async Task<IReadOnlyCollection<FoundMetadata>> SearchMetadataAsync(string galleryName)
@@ -96,7 +129,7 @@ public sealed class ExHentaiMetadataProvider : IExHentaiMetadataProvider
     {
         try
         {
-            var searchUrl = "https://exhentai.org/"
+            var searchUrl = GetBaseUrl()
                 .SetQueryParams(
                     new
                     {
@@ -132,6 +165,8 @@ public sealed class ExHentaiMetadataProvider : IExHentaiMetadataProvider
             return [];
         }
     }
+
+    private string GetBaseUrl() => _exHentaiMode ? "https://exhentai.org/" : "https://e-hentai.org/";
 
     private IReadOnlyCollection<FoundMetadata> ProcessApiResponse(ExHentaiApiResponse? response)
     {
@@ -179,12 +214,20 @@ public sealed class ExHentaiMetadataProvider : IExHentaiMetadataProvider
         return result.AsReadOnly();
     }
 
-    private Dictionary<string, string> GetAuthCookies() => new()
+    private IReadOnlyDictionary<string, string> GetAuthCookies()
     {
-        ["ipb_member_id"] = _authConfig.IpbMemberId,
-        ["ipb_pass_hash"] = _authConfig.IpbPassHash,
-        ["igneous"] = _authConfig.Igneous
-    };
+        if (_authConfig.IsFilled())
+        {
+            return new Dictionary<string, string>
+            {
+                ["ipb_member_id"] = _authConfig.IpbMemberId,
+                ["ipb_pass_hash"] = _authConfig.IpbPassHash,
+                ["igneous"] = _authConfig.Igneous
+            };
+        }
+
+        return ReadOnlyDictionary<string, string>.Empty;
+    }
 
     public static (string Title, string Author, string Publisher) ParseTitle(string title)
     {
@@ -216,21 +259,29 @@ public sealed class ExHentaiMetadataProvider : IExHentaiMetadataProvider
 
 public record ExHentaiAuthConfig(
     [property: JsonPropertyName("ipb_member_id")]
-    string IpbMemberId,
+    string? IpbMemberId,
     [property: JsonPropertyName("ipb_pass_hash")]
-    string IpbPassHash,
+    string? IpbPassHash,
     [property: JsonPropertyName("igneous")]
-    string Igneous,
+    string? Igneous,
     [property: JsonPropertyName("user_agent")]
-    string UserAgent);
+    string? UserAgent)
+{
+    [MemberNotNullWhen(true, nameof(IpbMemberId), nameof(IpbPassHash), nameof(Igneous), nameof(UserAgent))]
+    public bool IsFilled()
+        => !string.IsNullOrWhiteSpace(IpbMemberId)
+           && !string.IsNullOrWhiteSpace(IpbPassHash)
+           && !string.IsNullOrWhiteSpace(Igneous)
+           && !string.IsNullOrWhiteSpace(UserAgent);
+}
 
-public class ExHentaiApiResponse
+internal class ExHentaiApiResponse
 {
     [JsonPropertyName("gmetadata")]
     public IReadOnlyCollection<GalleryMetadata>? GalleryMetadata { get; init; }
 }
 
-public class GalleryMetadata
+internal class GalleryMetadata
 {
     [JsonPropertyName("title")]
     public required string Title { get; init; }
@@ -278,7 +329,7 @@ public class GalleryMetadata
     public required IReadOnlyCollection<GalleryTorrent> Torrents { get; init; }
 }
 
-public class GalleryTorrent
+internal class GalleryTorrent
 {
     [JsonPropertyName("hash")]
     public required string Hash { get; init; }

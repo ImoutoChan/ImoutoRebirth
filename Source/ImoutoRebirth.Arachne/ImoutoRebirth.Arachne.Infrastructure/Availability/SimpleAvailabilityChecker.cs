@@ -6,7 +6,7 @@ using ImoutoRebirth.Arachne.Infrastructure.Abstract;
 
 namespace ImoutoRebirth.Arachne.Infrastructure.Availability;
 
-internal class SimpleAvailabilityChecker : IBooruAvailabilityChecker
+internal class SimpleAvailabilityChecker : IAvailabilityChecker
 {
     private readonly IFlurlClientCache _flurlClientCache;
     private readonly Uri _domain;

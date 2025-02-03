@@ -9,7 +9,7 @@ using DanbooruSettings = ImoutoRebirth.Arachne.Infrastructure.Models.Settings.Da
 
 namespace ImoutoRebirth.Arachne.Infrastructure.LoaderFabrics;
 
-internal class DanbooruLoaderFabric : IBooruLoaderFabric
+internal class DanbooruLoaderFabric : IBooruLoaderFabric, IAvailabilityProvider
 {
     private readonly DanbooruSettings _settings;
     private readonly IFlurlClientCache _flurlClientCache;
@@ -32,6 +32,6 @@ internal class DanbooruLoaderFabric : IBooruLoaderFabric
             BotUserAgent = _settings.BotUserAgent
         }));
 
-    public IBooruAvailabilityChecker CreateAvailabilityChecker()
+    public IAvailabilityChecker CreateAvailabilityChecker()
         => new SimpleAvailabilityChecker(_flurlClientCache, new Uri("https://danbooru.donmai.us"));
 }

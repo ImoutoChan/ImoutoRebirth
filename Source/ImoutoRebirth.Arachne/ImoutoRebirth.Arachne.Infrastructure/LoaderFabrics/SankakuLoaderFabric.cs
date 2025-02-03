@@ -9,7 +9,7 @@ using SankakuSettings = ImoutoRebirth.Arachne.Infrastructure.Models.Settings.San
 
 namespace ImoutoRebirth.Arachne.Infrastructure.LoaderFabrics;
 
-internal class SankakuLoaderFabric : IBooruLoaderFabric
+internal class SankakuLoaderFabric : IBooruLoaderFabric, IAvailabilityProvider
 {
     private readonly SankakuSettings _settings;
     private readonly ISankakuAuthManager _sankakuAuthManager;
@@ -37,6 +37,6 @@ internal class SankakuLoaderFabric : IBooruLoaderFabric
         }),
         _sankakuAuthManager);
 
-    public IBooruAvailabilityChecker CreateAvailabilityChecker()
+    public IAvailabilityChecker CreateAvailabilityChecker()
         => new SimpleAvailabilityChecker(_flurlClientCache, new Uri("https://chan.sankakucomplex.com"));
 }
