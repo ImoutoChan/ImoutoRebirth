@@ -22,9 +22,11 @@ internal partial class FullScreenPreviewVM : ObservableObject
     [NotifyPropertyChangedFor(nameof(UgoiraPath))]
     [NotifyPropertyChangedFor(nameof(ImagePath))]
     [NotifyPropertyChangedFor(nameof(WebPPath))]
+    [NotifyPropertyChangedFor(nameof(DodjiImage))]
     private string? _path;
 
     [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(DodjiImage))]
     private INavigatorListEntry? _currentEntry;
 
     [ObservableProperty]
@@ -34,6 +36,7 @@ internal partial class FullScreenPreviewVM : ObservableObject
     [NotifyPropertyChangedFor(nameof(UgoiraPath))]
     [NotifyPropertyChangedFor(nameof(ImagePath))]
     [NotifyPropertyChangedFor(nameof(WebPPath))]
+    [NotifyPropertyChangedFor(nameof(DodjiImage))]
     private ListEntryType? _type;
 
     [ObservableProperty]
