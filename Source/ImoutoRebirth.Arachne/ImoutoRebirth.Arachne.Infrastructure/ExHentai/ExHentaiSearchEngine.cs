@@ -160,7 +160,7 @@ public partial class ExHentaiSearchEngine : ISearchEngine
     [GeneratedRegex(@"\[([^\]]+)\]")]
     private static partial Regex NameLanguageRegex();
 
-    [GeneratedRegex(@"\{[^{}]+\}", RegexOptions.Compiled | RegexOptions.NonBacktracking)]
+    [GeneratedRegex(@"(\{[^{}]+\}|\(Updated.+\))", RegexOptions.Compiled | RegexOptions.NonBacktracking | RegexOptions.IgnoreCase)]
     private static partial Regex NameCleanRegex();
 }
 
