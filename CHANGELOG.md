@@ -24,7 +24,7 @@ as a folder. You can set up ImoutoViewer as a default app to open cbz for exampl
 to create 2 different source folder entry with and without this flag.
 
 ### Arachne
-* ExHentai support as tags provider for files (".zip", ".rar", ".7z", ".tar", ".ace", ~~~~".cbz", ".cbr", ".cb7", ".cbt", ".cba")
+* ExHentai support as tags provider for files (.zip, .rar, .7z, .tar, .ace, .cbz, .cbr, .cb7, .cbt, .cba)
 * Fill the login data in the config from cookies
 
 # 4.26.1
