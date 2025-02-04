@@ -32,7 +32,7 @@ public partial class ExHentaiSearchEngine : ISearchEngine
             var metadata = await _metadataProvider.SearchMetadataAsync(searchString);
 
             if (metadata.None())
-                return new SearchError(image, SearchEngineType, "Metadata not found");
+                return Metadata.NotFound(image, SearchEngineType);
 
             var chosenMetadata = ChooseMetadata(image.FileName, metadata);
 

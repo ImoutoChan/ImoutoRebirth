@@ -60,6 +60,7 @@ internal partial class FullScreenPreviewVM : ObservableObject
     public string? UgoiraPath => Type == ListEntryType.Ugoira ? Path : null;
     public string? ImagePath => Type == ListEntryType.Image ? Path : null;
     public string? WebPPath => Type == ListEntryType.WebP ? Path : null;
+    public BitmapSource? DodjiImage => Type == ListEntryType.Dodji ? CurrentEntry?.Image : null;
 
     public double Zoom => ViewPortSize.Width / _bitmapImage?.PixelWidth ?? 1;
 
