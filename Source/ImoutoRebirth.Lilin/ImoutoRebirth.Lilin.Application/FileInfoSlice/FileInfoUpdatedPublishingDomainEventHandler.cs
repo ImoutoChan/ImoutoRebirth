@@ -17,12 +17,10 @@ internal class FileInfoUpdatedPublishingDomainEventHandler : DomainEventNotifica
         if (domainEvent.MetadataSource == MetadataSource.Manual)
             return;
 
-        var command = new
-        {
-            FileId = domainEvent.Aggregate.FileId,
-            SourceId = (int) domainEvent.MetadataSource
-        };
+        var command = new SavedCommand(
+            domainEvent.Aggregate.FileId,
+            (int)domainEvent.MetadataSource);
 
-        await _distributedCommandBus.SendAsync<ISavedCommand>(command, ct);
+        await _distributedCommandBus.SendAsync(command, ct);
     }
 }

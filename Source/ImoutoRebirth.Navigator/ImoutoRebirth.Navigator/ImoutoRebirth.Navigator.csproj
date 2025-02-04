@@ -57,6 +57,7 @@
         <PackageReference Include="Vlc.DotNet.Wpf" />
         <PackageReference Include="WpfAnimatedGif" />
         <PackageReference Include="Newtonsoft.Json" />
+        <PackageReference Include="SharpCompress" />
     </ItemGroup>
 
     <ItemGroup>

@@ -8,7 +8,7 @@ using Microsoft.Extensions.Options;
 
 namespace ImoutoRebirth.Arachne.Infrastructure.LoaderFabrics;
 
-internal class YandereLoaderFabric : IBooruLoaderFabric
+internal class YandereLoaderFabric : IBooruLoaderFabric, IAvailabilityProvider
 {
     private readonly IFlurlClientCache _flurlClientCache;
 
@@ -20,6 +20,6 @@ internal class YandereLoaderFabric : IBooruLoaderFabric
         _flurlClientCache,
         Options.Create(new YandereSettings { PauseBetweenRequestsInMs = 0 }));
 
-    public IBooruAvailabilityChecker CreateAvailabilityChecker()
+    public IAvailabilityChecker CreateAvailabilityChecker()
         => new SimpleAvailabilityChecker(_flurlClientCache, new Uri("https://yande.re"));
 }

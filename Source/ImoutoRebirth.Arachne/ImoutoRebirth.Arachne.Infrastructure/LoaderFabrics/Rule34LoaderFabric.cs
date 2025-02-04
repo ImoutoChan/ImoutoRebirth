@@ -8,7 +8,7 @@ using Microsoft.Extensions.Options;
 
 namespace ImoutoRebirth.Arachne.Infrastructure.LoaderFabrics;
 
-internal class Rule34LoaderFabric : IBooruLoaderFabric
+internal class Rule34LoaderFabric : IBooruLoaderFabric, IAvailabilityProvider
 {
     private readonly IFlurlClientCache _flurlClientCache;
 
@@ -20,6 +20,6 @@ internal class Rule34LoaderFabric : IBooruLoaderFabric
         _flurlClientCache,
         Options.Create(new Rule34Settings { PauseBetweenRequestsInMs = 1 }));
 
-    public IBooruAvailabilityChecker CreateAvailabilityChecker()
+    public IAvailabilityChecker CreateAvailabilityChecker()
         => new SimpleAvailabilityChecker(_flurlClientCache, new Uri("https://rule34.xxx"));
 }

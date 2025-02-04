@@ -22,8 +22,8 @@ public static class ServiceCollectionExtensions
     public static MassTransitConfigurator AddArachneMassTransitSetup(
         this MassTransitConfigurator builder)
         => builder
-            .AddCommand<IUpdateMetadataCommand>()
-            .AddCommand<ISearchCompleteCommand>()
-            .AddCommand<INotesUpdatedCommand>()
-            .AddCommand<ITagsUpdatedCommand>();
+            .AddCommand<UpdateMetadataCommand>()
+            .AddCommand<SearchCompleteCommand>()
+            .AddCommand<NotesUpdatedCommand>()
+            .AddCommand<TagsUpdatedCommand>();
 }

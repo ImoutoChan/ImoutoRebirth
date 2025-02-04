@@ -40,6 +40,10 @@ namespace ImoutoRebirth.Meido.DataAccess.Migrations
                     b.Property<string>("FileIdFromSource")
                         .HasColumnType("text");
 
+                    b.Property<string>("FileName")
+                        .IsRequired()
+                        .HasColumnType("text");
+
                     b.Property<string>("Md5")
                         .IsRequired()
                         .HasColumnType("text");

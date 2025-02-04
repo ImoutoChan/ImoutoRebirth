@@ -1,4 +1,4 @@
-﻿using ImoutoRebirth.Arachne.MessageContracts.Commands;
+﻿using ImoutoRebirth.Arachne.MessageContracts;
 using ImoutoRebirth.Meido.Domain;
 using MassTransit;
 
@@ -12,6 +12,6 @@ internal class YandereMetadataRequester : IMetadataRequester
 
     public MetadataSource Source => MetadataSource.Yandere;
 
-    public Task SendRequestCommand(Guid fileId, string md5) 
-        => _bus.Send<IYandereSearchMetadataCommand>(new {FileId = fileId, Md5 = md5});
+    public Task SendRequestCommand(Guid fileId, string md5, string fileName)
+        => _bus.Send(new YandereSearchMetadataCommand(md5, fileId, fileName));
 }

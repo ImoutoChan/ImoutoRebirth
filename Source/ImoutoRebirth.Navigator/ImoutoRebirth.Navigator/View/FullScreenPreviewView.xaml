@@ -38,6 +38,12 @@
                 Visibility="{Binding Path=Type, Converter={StaticResource ConditionVisibilityConverter}, ConverterParameter=Image}"
                 IsVisibleChanged="OnIsVisibleChanged" />
 
+            <Image
+                SizeChanged="ViewPort_OnSizeChanged"
+                Source="{Binding Path=DodjiImage}"
+                Visibility="{Binding Path=Type, Converter={StaticResource ConditionVisibilityConverter}, ConverterParameter=Dodji}"
+                IsVisibleChanged="OnIsVisibleChanged" />
+
             <apngPlayer:ApngPlayer
                 HorizontalAlignment="Center"
                 SizeChanged="ViewPort_OnSizeChanged"

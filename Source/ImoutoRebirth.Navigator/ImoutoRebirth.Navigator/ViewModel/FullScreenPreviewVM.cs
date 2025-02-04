@@ -22,9 +22,11 @@ internal partial class FullScreenPreviewVM : ObservableObject
     [NotifyPropertyChangedFor(nameof(UgoiraPath))]
     [NotifyPropertyChangedFor(nameof(ImagePath))]
     [NotifyPropertyChangedFor(nameof(WebPPath))]
+    [NotifyPropertyChangedFor(nameof(DodjiImage))]
     private string? _path;
 
     [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(DodjiImage))]
     private INavigatorListEntry? _currentEntry;
 
     [ObservableProperty]
@@ -34,6 +36,7 @@ internal partial class FullScreenPreviewVM : ObservableObject
     [NotifyPropertyChangedFor(nameof(UgoiraPath))]
     [NotifyPropertyChangedFor(nameof(ImagePath))]
     [NotifyPropertyChangedFor(nameof(WebPPath))]
+    [NotifyPropertyChangedFor(nameof(DodjiImage))]
     private ListEntryType? _type;
 
     [ObservableProperty]
@@ -60,6 +63,7 @@ internal partial class FullScreenPreviewVM : ObservableObject
     public string? UgoiraPath => Type == ListEntryType.Ugoira ? Path : null;
     public string? ImagePath => Type == ListEntryType.Image ? Path : null;
     public string? WebPPath => Type == ListEntryType.WebP ? Path : null;
+    public BitmapSource? DodjiImage => Type == ListEntryType.Dodji ? CurrentEntry?.Image : null;
 
     public double Zoom => ViewPortSize.Width / _bitmapImage?.PixelWidth ?? 1;
 

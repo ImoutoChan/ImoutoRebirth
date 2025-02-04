@@ -8,7 +8,7 @@ using NodaTime.Extensions;
 
 namespace ImoutoRebirth.Meido.UI.Consumers;
 
-public class NotesUpdatedCommandConsumer : IConsumer<INotesUpdatedCommand>
+public class NotesUpdatedCommandConsumer : IConsumer<NotesUpdatedCommand>
 {
     private readonly IMediator _mediator;
     private readonly ILogger<NotesUpdatedCommandConsumer> _logger;
@@ -19,7 +19,7 @@ public class NotesUpdatedCommandConsumer : IConsumer<INotesUpdatedCommand>
         _logger = logger;
     }
 
-    public async Task Consume(ConsumeContext<INotesUpdatedCommand> context)
+    public async Task Consume(ConsumeContext<NotesUpdatedCommand> context)
     {
         if (!context.Message.PostIds.Any())
         {

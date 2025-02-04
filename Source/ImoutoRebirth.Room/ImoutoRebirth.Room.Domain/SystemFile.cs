@@ -46,7 +46,7 @@ public partial class SystemFile
         return true;
     }
 
-    public IReadOnlyCollection<string> GetTagsFromName() => new[] {File.Name};
+    public IReadOnlyCollection<string> GetTagsFromName() => [File.Name];
 
     public IReadOnlyCollection<string> GetTagsFromPathForSourceFolder(SourceFolder sourceFolder) 
         => GetTags(sourceFolder).ToList();

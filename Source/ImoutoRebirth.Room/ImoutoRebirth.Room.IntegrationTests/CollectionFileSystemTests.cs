@@ -101,13 +101,18 @@ public class CollectionFileSystemTests : IDisposable
         savedFile.Size.Should().Be(150881);
         savedFile.IsRemoved.Should().BeFalse();
         savedFile.OriginalPath.Should().Be(Path.Combine(sourceFolderPath, file.Name));
-            
+
         _harness.Sent
-            .AnyMessage<INewFileCommand>(x => x.FileId == savedFile.Id && x.Md5 == "5f30f9953332c230d11e3f26db5ae9a0")
+            .AnyMessage<NewFileCommand>(
+                x => x.FileId == savedFile.Id && x is
+                {
+                    Md5: "5f30f9953332c230d11e3f26db5ae9a0",
+                    FileName: "file1-5f30f9953332c230d11e3f26db5ae9a0.jpg"
+                })
             .Should().BeTrue();
 
         _harness.Sent
-            .AnyMessage<IUpdateMetadataCommand>(x
+            .AnyMessage<UpdateMetadataCommand>(x
                 => x.FileId == savedFile.Id
                    && x.MetadataSource == MetadataSource.Manual
                    && x.FileTags.Any(y => y is { Type: "Location", Name: "file1-5f30f9953332c230d11e3f26db5ae9a0.jpg" }))
@@ -146,11 +151,14 @@ public class CollectionFileSystemTests : IDisposable
         savedFile.OriginalPath.Should().Be(testFilePath);
 
         _harness.Sent
-            .AnyMessage<INewFileCommand>(x => x.FileId == savedFile.Id && x.Md5 == "5f30f9953332c230d11e3f26db5ae9a0")
+            .AnyMessage<NewFileCommand>(
+                x => x.FileId == savedFile.Id
+                     && x.Md5 == "5f30f9953332c230d11e3f26db5ae9a0"
+                     && x.FileName == file.Name)
             .Should().BeTrue();
 
         _harness.Sent
-            .AnyMessage<IUpdateMetadataCommand>(x
+            .AnyMessage<UpdateMetadataCommand>(x
                 => x.FileId == savedFile.Id
                    && x.MetadataSource == MetadataSource.Manual
                    && x.FileTags.Any(y => y is { Type: "Location", Name: "file1-5f30f9953332c230d11e3f26db5ae9a0.jpg" })
@@ -417,7 +425,7 @@ public class CollectionFileSystemTests : IDisposable
         var dbFile = _context.CollectionFiles.First(x => x.CollectionId == collectionId);
 
         _harness.Sent
-            .AnyMessage<IUpdateMetadataCommand>(x
+            .AnyMessage<UpdateMetadataCommand>(x
                 => x.FileId == dbFile.Id
                    && x.MetadataSource == MetadataSource.Manual
                    && x.FileTags.Any(y => y is { Type: "Location", Name: "file1-5f30f9953332c230d11e3f26db5ae9a0.jpg" }))
@@ -449,7 +457,7 @@ public class CollectionFileSystemTests : IDisposable
         var dbFile = _context.CollectionFiles.First(x => x.CollectionId == collectionId);
         
         _harness.Sent
-            .AnyMessage<IUpdateMetadataCommand>(x
+            .AnyMessage<UpdateMetadataCommand>(x
                 => x.FileId == dbFile.Id && x.FileTags.Any(y => y.Name == "file1-5f30f9953332c230d11e3f26db5ae9a0.jpg"))
             .Should().BeFalse();
     }
@@ -479,11 +487,17 @@ public class CollectionFileSystemTests : IDisposable
         var savedFile = await _context.CollectionFiles.FirstAsync(x => x.CollectionId == collectionId);
 
         _harness.Sent
-            .AnyMessage<INewFileCommand>(x => x.FileId == savedFile.Id && x.Md5 == "5f30f9953332c230d11e3f26db5ae9a0")
+            .AnyMessage<NewFileCommand>(
+                x => x.FileId == savedFile.Id
+                     && x is
+                     {
+                         Md5: "5f30f9953332c230d11e3f26db5ae9a0",
+                         FileName: "file1-5f30f9953332c230d11e3f26db5ae9a0.jpg"
+                     })
             .Should().BeTrue();
 
         _harness.Sent
-            .AnyMessage<IUpdateMetadataCommand>(x
+            .AnyMessage<UpdateMetadataCommand>(x
                 => x.FileId == savedFile.Id
                    && x.MetadataSource == MetadataSource.Manual
                    && x.FileTags.Any(y => y is { Type: "Location", Name: "inner" }))
@@ -515,11 +529,14 @@ public class CollectionFileSystemTests : IDisposable
         var savedFile = await _context.CollectionFiles.FirstAsync(x => x.CollectionId == collectionId);
 
         _harness.Sent
-            .AnyMessage<INewFileCommand>(x => x.FileId == savedFile.Id && x.Md5 == "5f30f9953332c230d11e3f26db5ae9a0")
+            .AnyMessage<NewFileCommand>(
+                x => x.FileId == savedFile.Id
+                     && x.Md5 == "5f30f9953332c230d11e3f26db5ae9a0"
+                     && x.FileName == file.Name)
             .Should().BeTrue();
 
         _harness.Sent
-            .AnyMessage<IUpdateMetadataCommand>(x
+            .AnyMessage<UpdateMetadataCommand>(x
                 => x.FileId == savedFile.Id
                    && x.MetadataSource == MetadataSource.Manual
                    && x.FileTags.Any(y => y is { Type: "Location", Name: "inner" }))
@@ -535,7 +552,7 @@ public class CollectionFileSystemTests : IDisposable
             sourceShouldCheckHashFromName:        false ,
             sourceShouldCreateTagsFromSubfolders: false,
             sourceShouldAddTagFromFilename:       false,
-            sourceSupportedExtensions:            new[] { "png" },
+            sourceSupportedExtensions:            ["png"],
             destShouldCreateSubfoldersByHash:     true,
             destShouldRenameByHash:               true);
         
@@ -559,7 +576,7 @@ public class CollectionFileSystemTests : IDisposable
             sourceShouldCheckHashFromName:        false ,
             sourceShouldCreateTagsFromSubfolders: false,
             sourceShouldAddTagFromFilename:       false,
-            sourceSupportedExtensions:            Array.Empty<string>(),
+            sourceSupportedExtensions:            [],
             destShouldCreateSubfoldersByHash:     true,
             destShouldRenameByHash:               true);
         
@@ -607,7 +624,7 @@ public class CollectionFileSystemTests : IDisposable
             sourceShouldCheckHashFromName:        false ,
             sourceShouldCreateTagsFromSubfolders: false,
             sourceShouldAddTagFromFilename:       false,
-            sourceSupportedExtensions:            Array.Empty<string>(),
+            sourceSupportedExtensions:            [],
             destShouldCreateSubfoldersByHash:     false,
             destShouldRenameByHash:               true);
         
@@ -633,7 +650,7 @@ public class CollectionFileSystemTests : IDisposable
             sourceShouldCheckHashFromName:        false ,
             sourceShouldCreateTagsFromSubfolders: false,
             sourceShouldAddTagFromFilename:       false,
-            sourceSupportedExtensions:            Array.Empty<string>(),
+            sourceSupportedExtensions:            [],
             destShouldCreateSubfoldersByHash:     false,
             destShouldRenameByHash:               false);
         
@@ -659,7 +676,7 @@ public class CollectionFileSystemTests : IDisposable
             sourceShouldCheckHashFromName:        false ,
             sourceShouldCreateTagsFromSubfolders: false,
             sourceShouldAddTagFromFilename:       false,
-            sourceSupportedExtensions:            Array.Empty<string>(),
+            sourceSupportedExtensions:            [],
             destShouldCreateSubfoldersByHash:     true,
             destShouldRenameByHash:               true);
         
@@ -686,7 +703,7 @@ public class CollectionFileSystemTests : IDisposable
             sourceShouldCheckHashFromName:        false ,
             sourceShouldCreateTagsFromSubfolders: false,
             sourceShouldAddTagFromFilename:       false,
-            sourceSupportedExtensions:            Array.Empty<string>(),
+            sourceSupportedExtensions:            [],
             destShouldCreateSubfoldersByHash:     false,
             destShouldRenameByHash:               true);
         
@@ -712,7 +729,7 @@ public class CollectionFileSystemTests : IDisposable
             sourceShouldCheckHashFromName:        false ,
             sourceShouldCreateTagsFromSubfolders: false,
             sourceShouldAddTagFromFilename:       false,
-            sourceSupportedExtensions:            Array.Empty<string>(),
+            sourceSupportedExtensions:            [],
             destShouldCreateSubfoldersByHash:     true,
             destShouldRenameByHash:               false);
         
@@ -745,7 +762,7 @@ public class CollectionFileSystemTests : IDisposable
             sourceShouldCheckHashFromName:        false ,
             sourceShouldCreateTagsFromSubfolders: false,
             sourceShouldAddTagFromFilename:       false,
-            sourceSupportedExtensions:            Array.Empty<string>(),
+            sourceSupportedExtensions:            [],
             destShouldCreateSubfoldersByHash:     false,
             destShouldRenameByHash:               false);
         
@@ -778,7 +795,7 @@ public class CollectionFileSystemTests : IDisposable
             sourceShouldCheckHashFromName:        false ,
             sourceShouldCreateTagsFromSubfolders: false,
             sourceShouldAddTagFromFilename:       false,
-            sourceSupportedExtensions:            Array.Empty<string>(),
+            sourceSupportedExtensions:            [],
             destShouldCreateSubfoldersByHash:     false,
             destShouldRenameByHash:               false);
         
@@ -869,8 +886,8 @@ public class CollectionFileSystemTests : IDisposable
         bool destShouldCreateSubfoldersByHash = false,
         bool destShouldRenameByHash = false)
     {
-        sourceSupportedExtensions ??= Array.Empty<string>();
-        
+        sourceSupportedExtensions ??= [];
+
         var collectionId = await CreateCollection();
         var collectionPath = Guid.NewGuid().ToString();
         

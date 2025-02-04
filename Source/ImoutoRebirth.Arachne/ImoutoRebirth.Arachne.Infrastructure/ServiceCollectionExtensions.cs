@@ -2,6 +2,7 @@
 using Imouto.BooruParser;
 using ImoutoRebirth.Arachne.Core.InfrastructureContracts;
 using ImoutoRebirth.Arachne.Infrastructure.Abstract;
+using ImoutoRebirth.Arachne.Infrastructure.ExHentai;
 using ImoutoRebirth.Arachne.Infrastructure.LoaderFabrics;
 using ImoutoRebirth.Arachne.Infrastructure.Models.Settings;
 using Microsoft.Extensions.DependencyInjection;
@@ -16,17 +17,27 @@ public static class ServiceCollectionExtensions
     public static IServiceCollection AddArachneInfrastructure(
         this IServiceCollection services, 
         DanbooruSettings danbooruSettings, 
-        SankakuSettings sankakuSettings)
+        SankakuSettings sankakuSettings,
+        ExHentaiSettings exHentaiSettings)
     {
+        services.AddTransient<IExHentaiMetadataProvider, ExHentaiMetadataProvider>();
+        services.AddTransient<ExHentaiMetadataProvider>();
+
+        services.AddTransient<ISearchEngine, ExHentaiSearchEngine>();
+        services.AddTransient<ExHentaiSearchEngine>();
+
+        services.AddTransient<ExHentaiAuthConfig>(
+            _ => new ExHentaiAuthConfig(
+                exHentaiSettings.IpbMemberId,
+                exHentaiSettings.IpbPassHash,
+                exHentaiSettings.Igneous,
+                exHentaiSettings.UserAgent));
+
         // singleton: contains cache of loaders (ensure delays and such)
         services.AddSingleton<ISearchEngineProvider, SearchEngineProvider>();
 
         // todo find all ifactory and register them
         services.RegisterTypedFactory<BooruSearchEngine.IFactory>().ForConcreteType<BooruSearchEngine>();
-
-        var policy 
-            = HttpPolicyExtensions.HandleTransientHttpError()
-                .WaitAndRetryAsync(2, i => TimeSpan.FromMilliseconds(100 * Math.Pow(10, i)));
 
         services.AddTransient<YandereLoaderFabric>();
         services.AddTransient<DanbooruLoaderFabric>();
@@ -34,12 +45,19 @@ public static class ServiceCollectionExtensions
         services.AddTransient<GelbooruLoaderFabric>();
         services.AddTransient<Rule34LoaderFabric>();
 
-        services.AddTransient<IBooruLoaderFabric>(provider => provider.GetRequiredService<YandereLoaderFabric>());
-        services.AddTransient<IBooruLoaderFabric>(provider => provider.GetRequiredService<DanbooruLoaderFabric>());
-        services.AddTransient<IBooruLoaderFabric>(provider => provider.GetRequiredService<SankakuLoaderFabric>());
-        services.AddTransient<IBooruLoaderFabric>(provider => provider.GetRequiredService<GelbooruLoaderFabric>());
-        services.AddTransient<IBooruLoaderFabric>(provider => provider.GetRequiredService<Rule34LoaderFabric>());
-            
+        services.AddTransient<IBooruLoaderFabric, YandereLoaderFabric>();
+        services.AddTransient<IBooruLoaderFabric, DanbooruLoaderFabric>();
+        services.AddTransient<IBooruLoaderFabric, SankakuLoaderFabric>();
+        services.AddTransient<IBooruLoaderFabric, GelbooruLoaderFabric>();
+        services.AddTransient<IBooruLoaderFabric, Rule34LoaderFabric>();
+
+        services.AddTransient<IAvailabilityProvider, YandereLoaderFabric>();
+        services.AddTransient<IAvailabilityProvider, DanbooruLoaderFabric>();
+        services.AddTransient<IAvailabilityProvider, SankakuLoaderFabric>();
+        services.AddTransient<IAvailabilityProvider, GelbooruLoaderFabric>();
+        services.AddTransient<IAvailabilityProvider, Rule34LoaderFabric>();
+        services.AddTransient<IAvailabilityProvider, ExHentaiMetadataProvider>();
+
 
         services.AddTransient<DanbooruSettings>(x => danbooruSettings);
         services.AddTransient<SankakuSettings>(x => sankakuSettings);

@@ -8,7 +8,7 @@ using Microsoft.Extensions.Options;
 
 namespace ImoutoRebirth.Arachne.Infrastructure.LoaderFabrics;
 
-internal class GelbooruLoaderFabric : IBooruLoaderFabric
+internal class GelbooruLoaderFabric : IBooruLoaderFabric, IAvailabilityProvider
 {
     private readonly IFlurlClientCache _flurlClientCache;
 
@@ -20,6 +20,6 @@ internal class GelbooruLoaderFabric : IBooruLoaderFabric
         _flurlClientCache,
         Options.Create(new GelbooruSettings() { PauseBetweenRequestsInMs = 1 }));
 
-    public IBooruAvailabilityChecker CreateAvailabilityChecker()
+    public IAvailabilityChecker CreateAvailabilityChecker()
         => new SimpleAvailabilityChecker(_flurlClientCache, new Uri("https://gelbooru.com"));
 }

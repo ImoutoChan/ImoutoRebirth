@@ -7,7 +7,7 @@ using Microsoft.Extensions.Logging;
 
 namespace ImoutoRebirth.Meido.UI.Consumers;
 
-public class TagsUpdatedCommandConsumer : IConsumer<ITagsUpdatedCommand>
+public class TagsUpdatedCommandConsumer : IConsumer<TagsUpdatedCommand>
 {
     private readonly IMediator _mediator;
     private readonly ILogger<TagsUpdatedCommandConsumer> _logger;
@@ -18,7 +18,7 @@ public class TagsUpdatedCommandConsumer : IConsumer<ITagsUpdatedCommand>
         _logger = logger;
     }
 
-    public async Task Consume(ConsumeContext<ITagsUpdatedCommand> context)
+    public async Task Consume(ConsumeContext<TagsUpdatedCommand> context)
     {
         if (!context.Message.PostIds.Any())
         {

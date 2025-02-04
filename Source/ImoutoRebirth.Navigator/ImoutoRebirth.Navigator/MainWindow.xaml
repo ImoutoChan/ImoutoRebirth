@@ -265,6 +265,28 @@
                                     <Label HorizontalAlignment="Left"
                                            VerticalAlignment="Top"
                                            Margin="5,5,5,5"
+                                           Visibility="{Binding Path=Type, Converter={StaticResource ConditionVisibilityConverter}, ConverterParameter=Dodji}">
+                                        <Label.Effect>
+                                            <DropShadowEffect Color="{Binding Source={StaticResource MahApps.Brushes.ThemeBackground}, Path=Color, Mode=OneTime}"
+                                                              BlurRadius="5"
+                                                              Opacity="0.9"
+                                                              Direction="315"
+                                                              ShadowDepth="3" />
+                                        </Label.Effect>
+                                        <Label.Template>
+                                            <ControlTemplate>
+                                                <iconPacks:PackIconModern
+                                                    Width="19"
+                                                    Height="19"
+                                                    Kind="BookHardcoverOpenWriting">
+                                                </iconPacks:PackIconModern>
+                                            </ControlTemplate>
+                                        </Label.Template>
+                                    </Label>
+
+                                    <Label HorizontalAlignment="Left"
+                                           VerticalAlignment="Top"
+                                           Margin="5,5,5,5"
                                            Visibility="{Binding Path=Type, Converter={StaticResource ConditionVisibilityConverter}, ConverterParameter=Gif}">
                                         <Label.Effect>
                                             <DropShadowEffect Color="{Binding Source={StaticResource MahApps.Brushes.ThemeBackground}, Path=Color, Mode=OneTime}"
@@ -675,6 +697,26 @@
 
                                                 <Condition Binding="{Binding Type}"
                                                            Value="{x:Static listEntries:ListEntryType.Image}" />
+
+                                                <Condition Binding="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type Window}}, Path=DataContext.ShowPreview}"
+                                                           Value="True" />
+                                            </MultiDataTrigger.Conditions>
+
+                                            <MultiDataTrigger.Setters>
+                                                <Setter Property="ContentTemplate"
+                                                        Value="{StaticResource PreviewListBoxItemTemplate}"
+                                                        TargetName="ContentControl" />
+                                            </MultiDataTrigger.Setters>
+                                        </MultiDataTrigger>
+
+                                        <!-- Selected && Dodji && ShowPreview -->
+                                        <MultiDataTrigger>
+                                            <MultiDataTrigger.Conditions>
+                                                <Condition Binding="{Binding RelativeSource={RelativeSource Self}, Path=IsSelected}"
+                                                           Value="True" />
+
+                                                <Condition Binding="{Binding Type}"
+                                                           Value="{x:Static listEntries:ListEntryType.Dodji}" />
 
                                                 <Condition Binding="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type Window}}, Path=DataContext.ShowPreview}"
                                                            Value="True" />

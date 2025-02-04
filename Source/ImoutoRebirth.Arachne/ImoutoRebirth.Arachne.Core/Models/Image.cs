@@ -4,8 +4,11 @@ public class Image
 {
     public string Md5 { get; }
 
-    public Image(string md5)
+    public string FileName { get; }
+
+    public Image(string md5, string fileName)
     {
         Md5 = md5;
+        FileName = fileName;
     }
 }

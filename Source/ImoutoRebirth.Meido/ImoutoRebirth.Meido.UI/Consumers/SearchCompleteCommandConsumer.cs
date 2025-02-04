@@ -6,13 +6,13 @@ using MediatR;
 
 namespace ImoutoRebirth.Meido.UI.Consumers;
 
-public class SearchCompleteCommandConsumer : IConsumer<ISearchCompleteCommand>
+public class SearchCompleteCommandConsumer : IConsumer<SearchCompleteCommand>
 {
     private readonly IMediator _mediator;
 
     public SearchCompleteCommandConsumer(IMediator mediator) => _mediator = mediator;
 
-    public async Task Consume(ConsumeContext<ISearchCompleteCommand> context)
+    public async Task Consume(ConsumeContext<SearchCompleteCommand> context)
     {
         var command = new SaveCompletedSearchCommand(
             (MetadataSource)context.Message.SourceId,

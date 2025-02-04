@@ -3,7 +3,9 @@
     "ImoutoRebirth.Arachne.Host": {
       "commandName": "Project",
       "environmentVariables": {
-        "ASP_ENVIRONMENT": "Development",
+        "ARACHNE_ENVIRONMENT": "Development",
+        "ASPNETCORE_ENVIRONMENT": "Development",
+        "DOTNET_ENVIRONMENT": "Development",
         "ARACHNE_Serilog__Properties__Application": "ImoutoRebirth.Arachne"
       }
     }

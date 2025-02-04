@@ -22,5 +22,9 @@
   "InstallLocation": "C:\\Program Files\\Imouto",
   "OpenSearchUri": "http://localhost:9200/",
   "JaegerHost": "localhost",
-  "JaegerPort": "6831"
+  "JaegerPort": "6831",
+  "ExHentaiIpbMemberId": "",
+  "ExHentaiIpbPassHash": "",
+  "ExHentaiIgneous": "",
+  "ExHentaiUserAgent": ""
 }

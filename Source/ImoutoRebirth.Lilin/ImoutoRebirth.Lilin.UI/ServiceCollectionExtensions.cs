@@ -23,5 +23,5 @@ public static class ServiceCollectionExtensions
     }
 
     public static MassTransitConfigurator AddLilinMassTransitSetup(this MassTransitConfigurator builder) 
-        => builder.AddCommand<ISavedCommand>();
+        => builder.AddCommand<SavedCommand>();
 }

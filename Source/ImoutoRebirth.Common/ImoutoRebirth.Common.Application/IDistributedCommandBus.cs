@@ -2,6 +2,6 @@
 
 public interface IDistributedCommandBus
 {
-    Task SendAsync<TCommand>(object command, CancellationToken token = default)
+    Task SendAsync<TCommand>(TCommand command, CancellationToken token = default)
         where TCommand : class;
 }
