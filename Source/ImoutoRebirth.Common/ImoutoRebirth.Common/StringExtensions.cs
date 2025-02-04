@@ -13,6 +13,9 @@ public static class StringExtensions
     public static bool EqualsIgnoreCase(this string? str1, string? str2)
         => string.Equals(str1, str2, StringComparison.OrdinalIgnoreCase);
 
+    public static bool EndsWithIgnoreCase(this string? str1, string str2)
+        => str1?.EndsWith(str2, StringComparison.OrdinalIgnoreCase) ?? false;
+
     public static int? GetIntOrDefault(this string? str)
     {
         if (int.TryParse(str, out var result))

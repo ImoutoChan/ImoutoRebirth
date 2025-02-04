@@ -3,6 +3,7 @@ using System.IO.Compression;
 using System.Windows;
 using System.Windows.Media.Imaging;
 using CommunityToolkit.Mvvm.ComponentModel;
+using ImoutoRebirth.Common;
 using ImoutoRebirth.Lilin.WebApi.Client;
 using SharpCompress.Archives;
 
@@ -55,7 +56,17 @@ internal partial class DodjiEntryVM : BaseEntryVM, INavigatorListEntry, IPixelSi
         var ratingTask = LoadRating();
 
         using var archive = ArchiveFactory.Open(Path);
-        var preview = archive.Entries.FirstOrDefault(x => x.Size != 0);
+        var preview = archive.Entries
+          .FirstOrDefault(
+              x => x is
+                   {
+                       Size: > 0,
+                       IsDirectory: false
+                   }
+                   && (x.Key.EndsWithIgnoreCase(".jpg")
+                       || x.Key.EndsWithIgnoreCase(".jpeg")
+                       || x.Key.EndsWithIgnoreCase(".png")))
+            ?? archive.Entries.FirstOrDefault(x => x is { Size: > 0, IsDirectory: false });
 
         if (preview == null)
             return;
