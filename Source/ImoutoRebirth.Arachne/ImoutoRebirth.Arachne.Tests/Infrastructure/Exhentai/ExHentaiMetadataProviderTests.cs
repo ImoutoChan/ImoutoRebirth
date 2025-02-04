@@ -162,6 +162,25 @@ public class ExHentaiMetadataProviderTests : IClassFixture<TestConfiguration>
     }
 
     [Fact]
+    public async Task SearchMetadataAsync_ValidResponseWithAuth_ReturnsParsedMetadata6()
+    {
+        // arrange
+        var provider = new ExHentaiMetadataProvider(_authConfig, _loggerMock.Object);
+        var engine = new ExHentaiSearchEngine(provider, NullLogger<ExHentaiSearchEngine>.Instance);
+
+        // act
+        var result = await engine.Search(
+            new Image(
+                "",
+                "(C86) [Hi-Per Pinch (clover)] Seisai wa Gomu-nashi Sex   Condomless Sex With My Wife (Sword Art Online) [English] {doujin-moe.us}.cbz"));
+
+        // assert
+        result.Should().BeOfType<Metadata>();
+        ((Metadata)result).IsFound.Should().BeTrue();
+        ((Metadata)result).Tags.Should().NotBeEmpty();
+    }
+
+    [Fact]
     public async Task SearchMetadataAsync_ValidResponse_ReturnsParsedMetadata2()
     {
         // arrange

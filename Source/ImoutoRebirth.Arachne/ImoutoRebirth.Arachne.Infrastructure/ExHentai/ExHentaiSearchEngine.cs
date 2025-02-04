@@ -27,13 +27,13 @@ public partial class ExHentaiSearchEngine : ISearchEngine
     {
         try
         {
-            var searchString = Path.GetFileNameWithoutExtension(image.FileName);
+            var searchString = CleanUpFileNameForSearch(image);
 
             var metadata = await _metadataProvider.SearchMetadataAsync(searchString);
 
             if (metadata.None())
                 return new SearchError(image, SearchEngineType, "Metadata not found");
-            
+
             var chosenMetadata = ChooseMetadata(image.FileName, metadata);
 
             return new Metadata(
@@ -51,6 +51,12 @@ public partial class ExHentaiSearchEngine : ISearchEngine
             _logger.LogError(e, "Error occurred while searching in ExHentai");
             return new SearchError(image, SearchEngineType, e.ToString());
         }
+    }
+
+    private static string CleanUpFileNameForSearch(Image image)
+    {
+        var name = Path.GetFileNameWithoutExtension(image.FileName);
+        return NameCleanRegex().Replace(name, "");
     }
 
     private static IEnumerable<Tag> MapTags(FoundMetadata metadata, string imageMd5, string fileName)
@@ -133,7 +139,7 @@ public partial class ExHentaiSearchEngine : ISearchEngine
             var matchingMetadata = metadata
                 .Where(x => x.Languages.ContainsAnyOfIgnoreCase(nameLanguages))
                 .ToList();
-            
+
             if (matchingMetadata.Any())
                 return matchingMetadata.MaxBy(x => x.Rating) ?? metadata.First();
         }
@@ -144,7 +150,7 @@ public partial class ExHentaiSearchEngine : ISearchEngine
             return englishMetadata;
 
         var japaneseMetadata = metadata.FirstOrDefault(x => x.Languages.ContainsIgnoreCase("japanese"));
-        
+
         if (japaneseMetadata != null)
             return japaneseMetadata;
 
@@ -153,5 +159,8 @@ public partial class ExHentaiSearchEngine : ISearchEngine
 
     [GeneratedRegex(@"\[([^\]]+)\]")]
     private static partial Regex NameLanguageRegex();
+
+    [GeneratedRegex(@"\{[^{}]+\}", RegexOptions.Compiled | RegexOptions.NonBacktracking)]
+    private static partial Regex NameCleanRegex();
 }
 
