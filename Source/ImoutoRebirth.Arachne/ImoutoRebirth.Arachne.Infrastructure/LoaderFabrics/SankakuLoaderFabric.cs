@@ -38,5 +38,6 @@ internal class SankakuLoaderFabric : IBooruLoaderFabric, IAvailabilityProvider
         _sankakuAuthManager);
 
     public IAvailabilityChecker CreateAvailabilityChecker()
-        => new SimpleAvailabilityChecker(_flurlClientCache, new Uri("https://chan.sankakucomplex.com"));
+        => new AlwaysUnavailableChecker();
+        //=> new SimpleAvailabilityChecker(_flurlClientCache, new Uri("https://chan.sankakucomplex.com"));
 }
