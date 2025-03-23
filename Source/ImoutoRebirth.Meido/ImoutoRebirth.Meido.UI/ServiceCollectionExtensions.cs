@@ -39,6 +39,7 @@ public static class ServiceCollectionExtensions
             .AddCommand<Rule34SearchMetadataCommand>()
             .AddCommand<SankakuSearchMetadataCommand>()
             .AddCommand<ExHentaiSearchMetadataCommand>()
+            .AddCommand<SchaleSearchMetadataCommand>()
             .AddCommand<LoadTagHistoryCommand>()
             .AddCommand<LoadNoteHistoryCommand>();
 }

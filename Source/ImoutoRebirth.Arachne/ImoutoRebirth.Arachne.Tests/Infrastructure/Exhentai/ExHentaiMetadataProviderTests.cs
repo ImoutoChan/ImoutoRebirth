@@ -1,4 +1,6 @@
 ﻿using FluentAssertions;
+using Flurl.Http;
+using Flurl.Http.Configuration;
 using ImoutoRebirth.Arachne.Core.Models;
 using ImoutoRebirth.Arachne.Infrastructure.ExHentai;
 using Microsoft.Extensions.Logging;
@@ -13,14 +15,13 @@ public class ExHentaiMetadataProviderTests : IClassFixture<TestConfiguration>
     private readonly Mock<ILogger<ExHentaiMetadataProvider>> _loggerMock;
     private readonly ExHentaiAuthConfig _authConfig;
     private readonly ExHentaiAuthConfig _emptyAuthConfig;
-    private readonly ExHentaiAuthConfig _halfEmptyAuthConfig;
+    private readonly IFlurlClientCache _flurlClientCache = new FlurlClientCache();
 
     public ExHentaiMetadataProviderTests(TestConfiguration configuration)
     {
         _loggerMock = new Mock<ILogger<ExHentaiMetadataProvider>>();
         _authConfig = configuration.GetExHentaiAuthConfig();
         _emptyAuthConfig = new ExHentaiAuthConfig(null, null, null, null);
-        _halfEmptyAuthConfig = new ExHentaiAuthConfig(null, null, null, _authConfig.UserAgent);
     }
 
     /// <summary>
@@ -30,8 +31,8 @@ public class ExHentaiMetadataProviderTests : IClassFixture<TestConfiguration>
     public async Task AvailabilityChecker_ShouldReturnAvailable()
     {
         // arrange
-        var providerAuth = new ExHentaiMetadataProvider(_authConfig, _loggerMock.Object);
-        var providerWithoutAuth = new ExHentaiMetadataProvider(_emptyAuthConfig, _loggerMock.Object);
+        var providerAuth = new ExHentaiMetadataProvider(_flurlClientCache, _authConfig, _loggerMock.Object);
+        var providerWithoutAuth = new ExHentaiMetadataProvider(_flurlClientCache, _emptyAuthConfig, _loggerMock.Object);
 
         // act
         var withAuthAvailable = await providerAuth.IsAvailable(CancellationToken.None);
@@ -46,7 +47,7 @@ public class ExHentaiMetadataProviderTests : IClassFixture<TestConfiguration>
     public async Task SearchMetadataAsync_ValidResponse_ReturnsParsedMetadata1()
     {
         // arrange
-        var provider = new ExHentaiMetadataProvider(_authConfig, _loggerMock.Object);
+        var provider = new ExHentaiMetadataProvider(_flurlClientCache, _authConfig, _loggerMock.Object);
 
         // act
         var result = await provider.SearchMetadataAsync("[Mint no Chicchai Oana (Mint Muzzlini)] Toxic JK Netorare Jigo Houkoku... [English] [Solid Rose]");
@@ -98,7 +99,7 @@ public class ExHentaiMetadataProviderTests : IClassFixture<TestConfiguration>
     public async Task SearchMetadataAsync_ValidResponseWithoutAuth_ReturnsParsedMetadata1()
     {
         // arrange
-        var provider = new ExHentaiMetadataProvider(_emptyAuthConfig, _loggerMock.Object);
+        var provider = new ExHentaiMetadataProvider(_flurlClientCache, _emptyAuthConfig, _loggerMock.Object);
 
         // act
         var result = await provider.SearchMetadataAsync("[Mint no Chicchai Oana (Mint Muzzlini)] Toxic JK Netorare Jigo Houkoku... [English] [Solid Rose]");
@@ -149,7 +150,7 @@ public class ExHentaiMetadataProviderTests : IClassFixture<TestConfiguration>
     public async Task SearchMetadataAsync_ValidResponseWithAuth_ReturnsParsedMetadata5()
     {
         // arrange
-        var provider = new ExHentaiMetadataProvider(_authConfig, _loggerMock.Object);
+        var provider = new ExHentaiMetadataProvider(_flurlClientCache, _authConfig, _loggerMock.Object);
         var engine = new ExHentaiSearchEngine(provider, NullLogger<ExHentaiSearchEngine>.Instance);
 
         // act
@@ -165,7 +166,7 @@ public class ExHentaiMetadataProviderTests : IClassFixture<TestConfiguration>
     public async Task SearchMetadataAsync_ValidResponseWithAuth_ReturnsParsedMetadata6()
     {
         // arrange
-        var provider = new ExHentaiMetadataProvider(_authConfig, _loggerMock.Object);
+        var provider = new ExHentaiMetadataProvider(_flurlClientCache, _authConfig, _loggerMock.Object);
         var engine = new ExHentaiSearchEngine(provider, NullLogger<ExHentaiSearchEngine>.Instance);
 
         // act
@@ -181,10 +182,48 @@ public class ExHentaiMetadataProviderTests : IClassFixture<TestConfiguration>
     }
 
     [Fact]
+    public async Task Search_WithUnmodifiedName_ShouldFindMetadata()
+    {
+        // arrange
+        var provider = new ExHentaiMetadataProvider(_flurlClientCache, _authConfig, _loggerMock.Object);
+        var engine = new ExHentaiSearchEngine(provider, NullLogger<ExHentaiSearchEngine>.Instance);
+
+        // act
+        var result = await engine.Search(
+            new Image(
+                "",
+                "(C78) [BLUE BLOOD'S (BLUE BLOOD)] BLUE BLOOD'S Vol. 26 (Fate hollow ataraxia) [English] [EHCOVE].cbz"));
+
+        // assert
+        result.Should().BeOfType<Metadata>();
+        ((Metadata)result).IsFound.Should().BeTrue();
+        ((Metadata)result).Tags.Should().NotBeEmpty();
+    }
+
+    [Fact]
+    public async Task Search_WithCleanedName_ShouldFindMetadata()
+    {
+        // arrange
+        var provider = new ExHentaiMetadataProvider(_flurlClientCache, _authConfig, _loggerMock.Object);
+        var engine = new ExHentaiSearchEngine(provider, NullLogger<ExHentaiSearchEngine>.Instance);
+
+        // act
+        var result = await engine.Search(
+            new Image(
+                "",
+                "(C101) [Yamadaya (TokutokuP)] Shameless Reincarnation - Cumming As Much As I Can After I Had My Soul Interchanged (Mushoku Tensei ~Isekai Ittara Honki Dasu~) [English] {Doujins.com}.cbz"));
+
+        // assert
+        result.Should().BeOfType<Metadata>();
+        ((Metadata)result).IsFound.Should().BeTrue();
+        ((Metadata)result).Tags.Should().NotBeEmpty();
+    }
+
+    [Fact]
     public async Task SearchMetadataAsync_ValidResponse_ReturnsParsedMetadata2()
     {
         // arrange
-        var provider = new ExHentaiMetadataProvider(_authConfig, _loggerMock.Object);
+        var provider = new ExHentaiMetadataProvider(_flurlClientCache, _authConfig, _loggerMock.Object);
 
         // act
         var result = await provider.SearchMetadataAsync("(C78) [Kairanban (Bibi)] Benten Kairaku 16 Moshimo Kare Ga Boketa Nara (Bleach) [English]");
@@ -238,7 +277,7 @@ public class ExHentaiMetadataProviderTests : IClassFixture<TestConfiguration>
     public async Task SearchMetadataAsync_ValidResponse_ReturnsParsedMetadata3()
     {
         // arrange
-        var provider = new ExHentaiMetadataProvider(_authConfig, _loggerMock.Object);
+        var provider = new ExHentaiMetadataProvider(_flurlClientCache, _authConfig, _loggerMock.Object);
 
         // act
         var result = await provider.SearchMetadataAsync("[mamaloni] Hajimete Katta Otona no Omocha de Egui CliOna Oboechatta Onnanoko");
@@ -314,7 +353,7 @@ public class ExHentaiMetadataProviderTests : IClassFixture<TestConfiguration>
         // arrange
         AssertionConfiguration.Current.Formatting.MaxLines = Int32.MaxValue;
 
-        var provider = new ExHentaiMetadataProvider(_authConfig, _loggerMock.Object);
+        var provider = new ExHentaiMetadataProvider(_flurlClientCache, _authConfig, _loggerMock.Object);
         var engine = new ExHentaiSearchEngine(provider, NullLogger<ExHentaiSearchEngine>.Instance);
 
         // act
@@ -379,10 +418,54 @@ public class ExHentaiMetadataProviderTests : IClassFixture<TestConfiguration>
     }
 
     [Fact]
+    public async Task SearchMetadataAsync_ValidResponse_ReturnsParsedMetadata5()
+    {
+        // arrange
+        AssertionConfiguration.Current.Formatting.MaxLines = Int32.MaxValue;
+
+        var provider = new ExHentaiMetadataProvider(_flurlClientCache, _authConfig, _loggerMock.Object);
+        var engine = new ExHentaiSearchEngine(provider, NullLogger<ExHentaiSearchEngine>.Instance);
+
+        // act
+        var result = await engine.Search(
+            new Image(
+                "",
+                "[Yuumyago] Let's Be Messy! (COMIC HOTMiLK 2014-09) [English] [Beya+drozetta]"));
+
+        // assert
+        result.Should().BeOfType<Metadata>();
+        var metadata = (Metadata)result;
+        metadata.IsFound.Should().BeTrue();
+        metadata.Tags.Select(x => x.Name + x.Value).Should().AllSatisfy(x => x.Should().NotContain("&#"));
+    }
+
+    [Fact]
+    public async Task SearchMetadataAsync_ValidResponse_ReturnsParsedMetadata6()
+    {
+        // arrange
+        AssertionConfiguration.Current.Formatting.MaxLines = Int32.MaxValue;
+
+        var provider = new ExHentaiMetadataProvider(_flurlClientCache, _authConfig, _loggerMock.Object);
+        var engine = new ExHentaiSearchEngine(provider, NullLogger<ExHentaiSearchEngine>.Instance);
+
+        // act
+        var result = await engine.Search(
+            new Image(
+                "",
+                "[Leticia Latex] Malpractice (Fixed).cbz"));
+
+        // assert
+        result.Should().BeOfType<Metadata>();
+        var metadata = (Metadata)result;
+        metadata.IsFound.Should().BeTrue();
+        metadata.Tags.Select(x => x.Name + x.Value).Should().AllSatisfy(x => x.Should().NotContain("&#"));
+    }
+
+    [Fact]
     public async Task SearchMetadataAsync_EmptyGalleryName_ReturnsEmptyAndLogsWarning()
     {
         // Arrange
-        var provider = new ExHentaiMetadataProvider(_authConfig, _loggerMock.Object);
+        var provider = new ExHentaiMetadataProvider(_flurlClientCache, _authConfig, _loggerMock.Object);
 
         // Act
         var result = await provider.SearchMetadataAsync("");
@@ -430,7 +513,7 @@ public class ExHentaiMetadataProviderTests : IClassFixture<TestConfiguration>
     public async Task GetGalleryIds_ValidHtml_ReturnsParsedIds()
     {
         // Arrange
-        var provider = new ExHentaiMetadataProvider(_authConfig, _loggerMock.Object);
+        var provider = new ExHentaiMetadataProvider(_flurlClientCache, _authConfig, _loggerMock.Object);
 
         // Act
         var result = await provider.GetGalleryIds("[mamaloni] Hajimete Katta Otona no Omocha de Egui CliOna Oboechatta Onnanoko");

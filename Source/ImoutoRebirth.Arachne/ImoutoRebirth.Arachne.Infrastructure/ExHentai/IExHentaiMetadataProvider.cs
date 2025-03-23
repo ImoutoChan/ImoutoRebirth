@@ -4,6 +4,7 @@ using System.Text.Json.Serialization;
 using System.Text.RegularExpressions;
 using Flurl;
 using Flurl.Http;
+using Flurl.Http.Configuration;
 using ImoutoRebirth.Arachne.Core.Models;
 using ImoutoRebirth.Arachne.Infrastructure.Abstract;
 using ImoutoRebirth.Common;
@@ -29,7 +30,7 @@ public record FoundMetadata(
     string Category,
     string UploaderName,
     int FilesCount,
-    int FileSize,
+    long FileSize,
     bool IsExpunged,
     int TorrentCount,
     string JapaneseTitle,
@@ -40,17 +41,22 @@ public record FoundMetadata(
 
 public sealed class ExHentaiMetadataProvider : IExHentaiMetadataProvider, IAvailabilityProvider, IAvailabilityChecker
 {
+    private const long ExHentaiRateLimitPauseBetweenRequests = 1500;
+
+    private readonly IFlurlClientCache _flurlClientCache;
     private readonly ExHentaiAuthConfig _authConfig;
     private readonly ILogger<ExHentaiMetadataProvider> _logger;
     private readonly bool _exHentaiMode;
 
     public ExHentaiMetadataProvider(
+        IFlurlClientCache flurlClientCache,
         ExHentaiAuthConfig authConfig,
         ILogger<ExHentaiMetadataProvider> logger)
     {
         if (authConfig.IsFilled())
             _exHentaiMode = true;
 
+        _flurlClientCache = flurlClientCache;
         _authConfig = authConfig;
         _logger = logger;
     }
@@ -64,7 +70,7 @@ public sealed class ExHentaiMetadataProvider : IExHentaiMetadataProvider, IAvail
         var isHostAvailable = false;
         try
         {
-            var response = await GetBaseUrl()
+            var response = await Request()
                 .WithCookies(GetAuthCookies())
                 .WithHeader("User-Agent", _authConfig.UserAgent)
                 .WithTimeout(TimeSpan.FromSeconds(15))
@@ -83,107 +89,71 @@ public sealed class ExHentaiMetadataProvider : IExHentaiMetadataProvider, IAvail
     public async Task<IReadOnlyCollection<FoundMetadata>> SearchMetadataAsync(string galleryName)
     {
         if (string.IsNullOrWhiteSpace(galleryName))
-        {
-            _logger.LogWarning("Attempt to search with empty gallery name");
             return [];
-        }
 
-        using var scope = _logger.BeginScope(
-            new Dictionary<string, object>
-            {
-                ["GalleryName"] = galleryName,
-                ["ApiEndpoint"] = "https://api.e-hentai.org/api.php"
-            });
+        var ids = await GetGalleryIds(galleryName);
 
-        try
-        {
-            _logger.LogDebug("Starting metadata search for {GalleryName}", galleryName);
-
-            var ids = await GetGalleryIds(galleryName);
-
-            if (ids.None())
-            {
-                _logger.LogDebug("No galleries found for query '{Query}'", galleryName);
-                return [];
-            }
-
-            var response = await "https://api.e-hentai.org/api.php"
-                .WithCookies(GetAuthCookies())
-                .WithHeader("User-Agent", _authConfig.UserAgent)
-                .PostJsonAsync(
-                    new
-                    {
-                        method = "gdata",
-                        gidlist = ids,
-                        @namespace = 1
-                    })
-                .ReceiveJson<ExHentaiApiResponse>();
-
-            _logger.LogInformation(
-                "Successfully received response with {Count} results",
-                response.GalleryMetadata?.Count ?? 0);
-
-            return ProcessApiResponse(response);
-        }
-        catch (FlurlHttpException ex)
-        {
-            var statusCode = ex.StatusCode?.ToString() ?? "unknown";
-            _logger.LogError(
-                ex,
-                "API request failed with status {StatusCode}. Url: {Url}",
-                statusCode,
-                ex.Call.Request.Url);
+        if (ids.None())
             return [];
-        }
-        catch (Exception ex)
-        {
-            _logger.LogError(ex, "Unexpected error during metadata search");
-            return [];
-        }
+
+        var response = await "https://api.e-hentai.org/api.php"
+            .WithCookies(GetAuthCookies())
+            .WithHeader("User-Agent", _authConfig.UserAgent)
+            .PostJsonAsync(
+                new
+                {
+                    method = "gdata",
+                    gidlist = ids,
+                    @namespace = 1
+                })
+            .ReceiveJson<ExHentaiApiResponse>();
+
+        return ProcessApiResponse(response);
     }
 
     public async Task<string[][]> GetGalleryIds(string query)
     {
-        try
-        {
-            var searchUrl = GetBaseUrl()
-                .SetQueryParams(
-                    new
-                    {
-                        f_search = query,
-                        f_apply = "Search",
-                        advsearch = 1,
-                        f_sname = "on",
-                        f_stags = "on"
-                    });
-
-            var html = await searchUrl
-                .WithCookies(GetAuthCookies())
-                .WithHeader("User-Agent", _authConfig.UserAgent)
-                .GetStringAsync();
-
-            var ids = new List<string[]>();
-            var pattern = new Regex(@"/g/(?<gid>\d+)/(?<token>\w+)/");
-
-            foreach (Match match in pattern.Matches(html))
-            {
-                if (match.Success && int.TryParse(match.Groups["gid"].Value, out var gid))
+        var searchUrl = Request()
+            .SetQueryParams(
+                new
                 {
-                    ids.Add([gid.ToString(), match.Groups["token"].Value]);
-                }
-            }
+                    f_search = query,
+                    f_apply = "Search",
+                    advsearch = 1,
+                    f_sname = "on",
+                    f_stags = "on"
+                });
 
-            _logger.LogDebug("Found {Count} galleries for query '{Query}'", ids.Count, query);
-            return ids.ToArray();
-        }
-        catch (Exception ex)
+        var html = await searchUrl
+            .WithCookies(GetAuthCookies())
+            .WithHeader("User-Agent", _authConfig.UserAgent)
+            .GetStringAsync();
+
+        var ids = new List<string[]>();
+        var pattern = new Regex(@"/g/(?<gid>\d+)/(?<token>\w+)/");
+
+        foreach (Match match in pattern.Matches(html))
         {
-            _logger.LogError(ex, "Failed to search gallery IDs for query '{Query}'", query);
-            return [];
+            if (match.Success && int.TryParse(match.Groups["gid"].Value, out var gid))
+            {
+                ids.Add([gid.ToString(), match.Groups["token"].Value]);
+            }
         }
+
+        return ids.ToArray();
     }
 
-    private string GetBaseUrl() => _exHentaiMode ? "https://exhentai.org/" : "https://e-hentai.org/";
+    private static TimeSpan RateLimit => TimeSpan.FromMilliseconds(ExHentaiRateLimitPauseBetweenRequests);
+
+    private IFlurlRequest Request()
+    {
+        var baseUrl = _exHentaiMode ? "https://exhentai.org/" : "https://e-hentai.org/";
+
+        return _flurlClientCache
+            .GetOrAdd("e-hentai")
+            .BeforeCall(async _ => await Throttler.Get("e-hentai").UseAsync(RateLimit))
+            .Request(baseUrl);
+    }
 
     private IReadOnlyCollection<FoundMetadata> ProcessApiResponse(ExHentaiApiResponse? response)
     {
@@ -342,7 +312,7 @@ internal class GalleryMetadata
     public required string FileCount { get; init; }
 
     [JsonPropertyName("filesize")]
-    public required int FileSize { get; init; }
+    public required long FileSize { get; init; }
 
     [JsonPropertyName("expunged")]
     public required bool IsExpunged { get; init; }
@@ -371,4 +341,3 @@ internal class GalleryTorrent
     [JsonPropertyName("fsize")]
     public required string FileSize { get; init; }
 }
-

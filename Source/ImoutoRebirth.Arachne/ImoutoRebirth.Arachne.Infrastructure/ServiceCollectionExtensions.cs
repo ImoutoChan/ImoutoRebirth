@@ -5,6 +5,7 @@ using ImoutoRebirth.Arachne.Infrastructure.Abstract;
 using ImoutoRebirth.Arachne.Infrastructure.ExHentai;
 using ImoutoRebirth.Arachne.Infrastructure.LoaderFabrics;
 using ImoutoRebirth.Arachne.Infrastructure.Models.Settings;
+using ImoutoRebirth.Arachne.Infrastructure.Schale;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using Polly;
@@ -33,6 +34,12 @@ public static class ServiceCollectionExtensions
                 exHentaiSettings.Igneous,
                 exHentaiSettings.UserAgent));
 
+        services.AddTransient<ISchaleMetadataProvider, SchaleMetadataProvider>();
+        services.AddTransient<SchaleMetadataProvider>();
+
+        services.AddTransient<ISearchEngine, SchaleSearchEngine>();
+        services.AddTransient<SchaleSearchEngine>();
+
         // singleton: contains cache of loaders (ensure delays and such)
         services.AddSingleton<ISearchEngineProvider, SearchEngineProvider>();
 
@@ -57,6 +64,7 @@ public static class ServiceCollectionExtensions
         services.AddTransient<IAvailabilityProvider, GelbooruLoaderFabric>();
         services.AddTransient<IAvailabilityProvider, Rule34LoaderFabric>();
         services.AddTransient<IAvailabilityProvider, ExHentaiMetadataProvider>();
+        services.AddTransient<IAvailabilityProvider, SchaleMetadataProvider>();
 
 
         services.AddTransient<DanbooruSettings>(x => danbooruSettings);

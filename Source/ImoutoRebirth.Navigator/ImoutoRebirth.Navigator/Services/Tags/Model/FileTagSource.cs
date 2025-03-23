@@ -8,5 +8,6 @@ internal enum FileTagSource
     Manual = 3,
     Gelbooru = 4,
     Rule34 = 5,
-    ExHentai = 6
+    ExHentai = 6,
+    Schale = 7,
 }

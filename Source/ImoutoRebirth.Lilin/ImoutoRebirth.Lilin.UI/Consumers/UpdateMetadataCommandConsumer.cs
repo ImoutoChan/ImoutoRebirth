@@ -43,6 +43,7 @@ public class UpdateMetadataCommandConsumer : IConsumer<UpdateMetadataCommand>
             MetadataSource.Gelbooru => Domain.FileInfoAggregate.MetadataSource.Gelbooru,
             MetadataSource.Rule34 => Domain.FileInfoAggregate.MetadataSource.Rule34,
             MetadataSource.ExHentai => Domain.FileInfoAggregate.MetadataSource.ExHentai,
+            MetadataSource.Schale => Domain.FileInfoAggregate.MetadataSource.Schale,
             _ => throw new ArgumentOutOfRangeException(nameof(metadata), metadata, null)
         };
     }

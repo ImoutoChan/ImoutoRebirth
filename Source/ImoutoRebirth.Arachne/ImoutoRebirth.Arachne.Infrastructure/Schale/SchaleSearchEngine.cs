@@ -1,41 +1,39 @@
-using System.Globalization;
 using ImoutoRebirth.Arachne.Core.InfrastructureContracts;
 using ImoutoRebirth.Arachne.Core.Models;
 using ImoutoRebirth.Common;
 using Microsoft.Extensions.Logging;
 using System.Text.RegularExpressions;
 using System.Web;
-using ImoutoRebirth.Arachne.Infrastructure.Abstract;
 
-namespace ImoutoRebirth.Arachne.Infrastructure.ExHentai;
+namespace ImoutoRebirth.Arachne.Infrastructure.Schale;
 
-public partial class ExHentaiSearchEngine : ISearchEngine
+public partial class SchaleSearchEngine : ISearchEngine
 {
-    private readonly IExHentaiMetadataProvider _metadataProvider;
-    private readonly ILogger<ExHentaiSearchEngine> _logger;
+    private readonly ISchaleMetadataProvider _metadataProvider;
+    private readonly ILogger<SchaleSearchEngine> _logger;
 
-    public ExHentaiSearchEngine(
-        IExHentaiMetadataProvider metadataProvider,
-        ILogger<ExHentaiSearchEngine> logger)
+    public SchaleSearchEngine(
+        ISchaleMetadataProvider metadataProvider,
+        ILogger<SchaleSearchEngine> logger)
     {
         _metadataProvider = metadataProvider;
         _logger = logger;
     }
 
-    public SearchEngineType SearchEngineType => SearchEngineType.ExHentai;
+    public SearchEngineType SearchEngineType => SearchEngineType.Schale;
 
     public async Task<SearchResult> Search(Image image)
     {
         try
         {
             var name = Path.GetFileNameWithoutExtension(image.FileName);
-            var metadata = await _metadataProvider.SearchMetadataAsync(name);
+            var metadata = await _metadataProvider.SearchAsync(name);
 
             if (metadata.Any())
                 return ToMetadata(image, metadata);
 
             name = NameCleanRegex().Replace(name, "");
-            metadata = await _metadataProvider.SearchMetadataAsync(name);
+            metadata = await _metadataProvider.SearchAsync(name);
 
             if (metadata.Any())
                 return ToMetadata(image, metadata);
@@ -45,12 +43,12 @@ public partial class ExHentaiSearchEngine : ISearchEngine
         }
         catch (Exception e)
         {
-            _logger.LogError(e, "Error occurred while searching in ExHentai");
+            _logger.LogError(e, "Error occurred while searching in Schale");
             return new SearchError(image, SearchEngineType, e.ToString());
         }
     }
 
-    private SearchResult ToMetadata(Image image, IReadOnlyCollection<FoundMetadata> metadata)
+    private SearchResult ToMetadata(Image image, IReadOnlyCollection<SchaleMetadata> metadata)
     {
         var chosenMetadata = ChooseMetadata(image.FileName, metadata);
 
@@ -65,57 +63,49 @@ public partial class ExHentaiSearchEngine : ISearchEngine
             chosenMetadata.FileIdFromSource);
     }
 
-    private static IEnumerable<Tag> MapTags(FoundMetadata metadata, string imageMd5, string fileName)
+    private static IEnumerable<Tag> MapTags(SchaleMetadata metadata, string imageMd5, string fileName)
     {
         yield return ToTag("LocalMeta", "BooruPostId", metadata.FileIdFromSource);
         yield return ToTag("LocalMeta", "Md5", imageMd5);
-        yield return ToTag("LocalMeta", "Score", metadata.Rating.ToString(CultureInfo.InvariantCulture));
         yield return ToTag("Copyright", metadata.Title.ToLower());
 
         if (!string.IsNullOrWhiteSpace(metadata.Publisher))
             yield return ToTag("General", metadata.Publisher.ToLower());
 
-        if (!string.IsNullOrWhiteSpace(metadata.Category))
-            yield return ToTag("General", metadata.Category.ToLower());
-
-        if (!string.IsNullOrWhiteSpace(metadata.UploaderName))
-            yield return ToTag("LocalMeta", "PostedByUsername", metadata.UploaderName);
-
-        yield return ToTag("LocalMeta", "FilesCount", metadata.FilesCount.ToString());
-        yield return ToTag("LocalMeta", "FileSize", metadata.FileSize.ToString());
         yield return ToTag("LocalMeta", "PostedDateTime", metadata.PostedAt.ToString(Constants.DateTimeFormat));
 
         foreach (var tag in metadata.Tags)
         {
-            if (tag.StartsWith("language:"))
-                yield return ToTag("Meta", tag["language:".Length..]);
+            if (tag.Type == SchaleType.Language)
+                yield return ToTag("Meta", tag.Name);
 
-            else if (tag.StartsWith("parody:"))
-                yield return ToTag("Copyright", tag["parody:".Length..]);
+            else if (tag.Type == SchaleType.Parody)
+                yield return ToTag("Copyright", tag.Name);
 
-            else if (tag.StartsWith("group:"))
-                yield return ToTag("Artist", tag["group:".Length..]);
+            else if (tag.Type == SchaleType.Circle)
+                yield return ToTag("Artist", tag.Name);
 
-            else if (tag.StartsWith("artist:"))
-                yield return ToTag("Artist", tag["artist:".Length..]);
+            else if (tag.Type == SchaleType.Artist)
+                yield return ToTag("Artist", tag.Name);
 
-            else if (tag.StartsWith("other:"))
-                yield return ToTag("Meta", tag["other:".Length..]);
+            else if (tag.Type == SchaleType.Other)
+                yield return ToTag("Meta", tag.Name);
 
-            else if (tag.StartsWith("mixed:"))
-                yield return ToTag("General", tag["mixed:".Length..]);
+            else if (tag.Type == SchaleType.Mixed)
+                yield return ToTag("General", tag.Name);
 
-            else if (tag.StartsWith("character:"))
-                yield return ToTag("Character", FlipCharacterName(tag["character:".Length..]));
+            else if (tag.Type == SchaleType.Character)
+                yield return ToTag("Character", FlipCharacterName(tag.Name));
 
             else
             {
-                yield return ToTag("General", tag);
-                if (tag.Contains(':'))
-                {
-                    var withoutTagGroup = tag.Split(':').Last();
-                    yield return ToTag("General", withoutTagGroup);
-                }
+                yield return ToTag("General", tag.Name);
+
+                if (tag.Type == SchaleType.Male)
+                    yield return ToTag("General", $"male:{tag.Name}");
+
+                if (tag.Type == SchaleType.Female)
+                    yield return ToTag("General", $"female:{tag.Name}");
             }
         }
     }
@@ -135,7 +125,7 @@ public partial class ExHentaiSearchEngine : ISearchEngine
     public Task<LoadedNotesHistory> LoadChangesForNotesSince(DateTimeOffset lastProcessedNoteUpdateAt)
         => Task.FromResult(new LoadedNotesHistory([], lastProcessedNoteUpdateAt));
 
-    private static FoundMetadata ChooseMetadata(string name, IReadOnlyCollection<FoundMetadata> metadata)
+    private static SchaleMetadata ChooseMetadata(string name, IReadOnlyCollection<SchaleMetadata> metadata)
     {
         var potentialLanguageMatches = NameLanguageRegex().Matches(name);
 
@@ -146,24 +136,24 @@ public partial class ExHentaiSearchEngine : ISearchEngine
         if (nameLanguages.SafeAny())
         {
             var matchingMetadata = metadata
-                .Where(x => x.Languages.ContainsAnyOfIgnoreCase(nameLanguages))
+                .Where(x => x.Languages.Any(y => nameLanguages.Any(z => y.Name.Contains(z))))
                 .ToList();
 
             if (matchingMetadata.Any())
-                return matchingMetadata.MaxBy(x => x.Rating) ?? matchingMetadata.First();
+                return matchingMetadata.First();
         }
 
-        var englishMetadata = metadata.FirstOrDefault(x => x.Languages.ContainsIgnoreCase("english"));
+        var englishMetadata = metadata.FirstOrDefault(x => x.Languages.Select(z => z.Name).ContainsIgnoreCase("english"));
 
         if (englishMetadata != null)
             return englishMetadata;
 
-        var japaneseMetadata = metadata.FirstOrDefault(x => x.Languages.ContainsIgnoreCase("japanese"));
+        var japaneseMetadata = metadata.FirstOrDefault(x => x.Languages.Select(z => z.Name).ContainsIgnoreCase("japanese"));
 
         if (japaneseMetadata != null)
             return japaneseMetadata;
 
-        return metadata.MaxBy(x => x.Rating) ?? metadata.First();
+        return metadata.First();
     }
 
     [GeneratedRegex(@"\[([^\]]+)\]")]

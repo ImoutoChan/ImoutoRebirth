@@ -46,6 +46,7 @@ internal class AutoMapperProfile : Profile
                     FileTagSource.Gelbooru => MetadataSource.Gelbooru,
                     FileTagSource.Rule34 => MetadataSource.Rule34,
                     FileTagSource.ExHentai => MetadataSource.ExHentai,
+                    FileTagSource.Schale => MetadataSource.Schale,
                     _ => throw new NotImplementedException(x.ToString())
                 });
 
@@ -87,6 +88,7 @@ internal class AutoMapperProfile : Profile
                     MetadataSource.Gelbooru => FileTagSource.Gelbooru,
                     MetadataSource.Rule34 => FileTagSource.Rule34,
                     MetadataSource.ExHentai => FileTagSource.ExHentai,
+                    MetadataSource.Schale => FileTagSource.Schale,
                     _ => throw new NotImplementedException(x.ToString())
                 });
     }

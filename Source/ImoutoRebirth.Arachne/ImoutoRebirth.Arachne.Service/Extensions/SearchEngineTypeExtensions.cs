@@ -21,6 +21,8 @@ internal static class SearchEngineTypeExtensions
                 return MetadataSource.Rule34;
             case SearchEngineType.ExHentai:
                 return MetadataSource.ExHentai;
+            case SearchEngineType.Schale:
+                return MetadataSource.Schale;
             default:
                 throw new ArgumentOutOfRangeException(nameof(searchEngineType), searchEngineType, null);
         }
@@ -40,6 +42,10 @@ internal static class SearchEngineTypeExtensions
                 return SearchEngineType.Gelbooru;
             case MessageContracts.SearchEngineType.Rule34:
                 return SearchEngineType.Rule34;
+            case MessageContracts.SearchEngineType.ExHentai:
+                return SearchEngineType.ExHentai;
+            case MessageContracts.SearchEngineType.Schale:
+                return SearchEngineType.Schale;
             default:
                 throw new ArgumentOutOfRangeException(nameof(searchEngineType), searchEngineType, null);
         }
