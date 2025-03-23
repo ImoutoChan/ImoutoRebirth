@@ -219,7 +219,7 @@ public class ExHentaiMetadataProviderTests : IClassFixture<TestConfiguration>
                         "parody:bleach", "character:genryusai shigekuni yamamoto", "character:rangiku matsumoto", "group:kairanban", "artist:bibi", "artist:emine kendama", "male:dilf", "male:old man", "male:scar", "female:big breasts", "female:breast feeding", "female:fingering", "female:milf", "female:nakadashi"
                     ],
                     ["japanese"],
-                    4.54m,
+                    4.55m,
                     "https://ehgt.org/5c/71/5c714491694f2ab3608a26d718128a61b31ab690-3338736-1225-1750-jpg_250.jpg",
                     829074,
                     "198e5a4e4f",
@@ -273,7 +273,7 @@ public class ExHentaiMetadataProviderTests : IClassFixture<TestConfiguration>
                         "language:chinese", "language:translated", "parody:original", "artist:mamaloni", "female:big clit", "female:clit stimulation", "female:masturbation", "female:multiple orgasms", "female:sex toys", "female:sole female", "female:solo action", "female:squirting", "other:full color", "other:mosaic censorship", "other:no penetration"
                     ],
                     ["chinese", "translated"],
-                    4.70m,
+                    4.71m,
                     "https://ehgt.org/w/01/464/24020-h7kd5w1f.webp",
                     2873324,
                     "e949c2765d",
