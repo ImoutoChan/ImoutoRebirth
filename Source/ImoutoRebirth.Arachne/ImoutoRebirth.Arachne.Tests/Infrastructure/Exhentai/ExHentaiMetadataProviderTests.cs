@@ -199,7 +199,7 @@ public class ExHentaiMetadataProviderTests : IClassFixture<TestConfiguration>
                         "language:chinese", "language:translated", "parody:bleach", "character:rangiku matsumoto", "group:kairanban", "artist:bibi", "artist:emine kendama", "male:old man", "female:big breasts"
                     ],
                     ["chinese", "translated"],
-                    4.48m,
+                    4.49m,
                     "https://ehgt.org/e4/16/e41614d8449685d860f5f9e534fd8adeccdc92d4-1512400-1225-1750-jpg_250.jpg",
                     861082,
                     "db0866f23e",
