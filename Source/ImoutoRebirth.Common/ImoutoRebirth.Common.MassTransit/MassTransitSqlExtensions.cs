@@ -6,8 +6,6 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Npgsql;
-using ResQueue;
-using ResQueue.Enums;
 
 namespace ImoutoRebirth.Common.MassTransit;
 
@@ -71,9 +69,7 @@ public static class MassTransitSqlExtensions
                         cfg.ConfigureEndpoints(context);
                 });
             });
-        
-        services.AddResQueue(o => o.SqlEngine = ResQueueSqlEngine.Postgres);
-        services.AddResQueueMigrationsHostedService();
+
         return services;
     }
     

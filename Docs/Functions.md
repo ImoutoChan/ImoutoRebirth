@@ -23,4 +23,10 @@
 ## Hot Keys
   * **CTRL + 🖱️ Wheel** - zoom in and out file previews
   * **T** - open mass add tags menu
-  * **CTRL + C** - copy selected files to clipboard
+  * **CTRL + C** - copy selected files to the clipboard
+  * **M** - open merge tags menu
+  * **CTRL + Q** - open/close quick tagging menu
+  * **🖱️ Middle Button** - open/close fullscreen preview
+  * **W/A/S/D** - works just like arrow keys on preview list
+  * **🖱️ Right Button** - open context menu
+  * **🖱️ Double Left Button** - open file in external program

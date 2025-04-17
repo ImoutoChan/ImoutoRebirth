@@ -22,6 +22,7 @@
                           xmlns:attachedProperties="clr-namespace:ImoutoRebirth.Common.WPF.AttachedProperties;assembly=ImoutoRebirth.Common.WPF"
                           xmlns:quickTagging="clr-namespace:ImoutoRebirth.Navigator.Slices.QuickTagging"
                           xmlns:navigator="clr-namespace:ImoutoRebirth.Navigator"
+                          xmlns:tz="http://schemas.abtsoftware.co.uk/transitionz"
                           d:DataContext="{d:DesignInstance viewModel:MainWindowVM, IsDesignTimeCreatable=False}"
                           mc:Ignorable="d"
                           WindowStartupLocation="CenterScreen"
@@ -866,12 +867,14 @@
                 Margin="0,0,0,25"
                 Width="1000"
                 Height="500"
-                Visibility="{Binding 
+                IsVisibleChanged="QuickTagging_OnIsVisibleChanged"
+                tz:Transitionz.Opacity="{tz:OpacityParams From='0', To='1', Duration=100, TransitionOn=Visibility}"
+                tz:Transitionz.Translate="{tz:TranslateParams From='0,-20', To='0,0', Duration=100, TransitionOn=Visibility}"
+                tz:Transitionz.Visibility="{Binding 
                     Path=DataContext.ShowQuickTagging, 
                     RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type metroControl:MetroWindow}},
                     Converter={StaticResource ConditionVisibilityConverter},
-                    ConverterParameter=true|false}"
-                IsVisibleChanged="QuickTagging_OnIsVisibleChanged" />
+                    ConverterParameter=true|false}"/>
         </Grid>
     </Grid>
 </metroControl:MetroWindow>

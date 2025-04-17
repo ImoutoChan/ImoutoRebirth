@@ -14,6 +14,8 @@
 * When you click calculate hash, it will be compared with the stored hash for the file; 
 if they are different, the hash will be highlighted in red
 * Support for dodji (archives or comic formats) and their previews
+* Add hot keys cheat sheet in the bottom of tags view
+* Add some basic animation for hot keys sheet sheet and quick tagging
 
 ### Viewer
 * Support opening zipped galleries: zip 7z rar cbz cbr etc It will be extracted to a temporary folder and opened 

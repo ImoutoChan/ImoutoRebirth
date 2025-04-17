@@ -3,6 +3,7 @@ using System.Diagnostics;
 using System.Net;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using ImoutoRebirth.Common;
 using ImoutoRebirth.Navigator.Services;
 using ImoutoRebirth.Navigator.Services.Tags;
 using ImoutoRebirth.Navigator.Services.Tags.Model;
@@ -39,13 +40,19 @@ internal partial class TagSearchVM : ObservableObject
     private IReadOnlyCollection<DelayItem>? _ugoiraFrameDelays;
 
     [ObservableProperty]
-    private bool _isRateSetted;
+    private bool _isRateSet;
 
     [ObservableProperty]
     private string? _enteredValue;
 
     [ObservableProperty]
     private Tag? _selectedHintBoxTag;
+
+    [ObservableProperty]
+    private bool _showHotKeys = true;
+
+    [ObservableProperty]
+    private bool _forcedShowHotKeys = false;
 
     public TagSearchVM()
     {
@@ -156,7 +163,7 @@ internal partial class TagSearchVM : ObservableObject
     {
         if (fileId == null)
         {
-            IsRateSetted = false;
+            IsRateSet = false;
 
             return;
         }
@@ -205,7 +212,9 @@ internal partial class TagSearchVM : ObservableObject
         GetFavorite(tags);
         GetRate(tags);
         GetUgoiraFrameData(tags);
-        IsRateSetted = true;
+        IsRateSet = true;
+
+        SetShowHotKeys();
     }
 
     private async void SearchTagsAsync(string searchString)
@@ -453,6 +462,18 @@ internal partial class TagSearchVM : ObservableObject
         }
 
         OnSelectedTagsUpdated();
+    }
+
+    [RelayCommand]
+    private void ToggleShowHotKeys()
+    {
+        ForcedShowHotKeys = !ForcedShowHotKeys;
+        SetShowHotKeys();
+    }
+
+    private void SetShowHotKeys()
+    {
+        ShowHotKeys = ForcedShowHotKeys || CurrentTagsSources.None(x => x.Tags.Any());
     }
 
     private void GetRate(IReadOnlyCollection<FileTag> tags)

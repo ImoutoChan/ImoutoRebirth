@@ -67,6 +67,7 @@
         <PackageVersion Include="OpenTelemetry.Instrumentation.Runtime" Version="1.11.1"/>
         <PackageVersion Include="Quartz" Version="3.14.0"/>
         <PackageVersion Include="ResQueue.MassTransit" Version="1.4.1"/>
+        <PackageVersion Include="SciChart.Wpf.UI.Transitionz" Version="4.0.271"/>
         <PackageVersion Include="Serilog" Version="4.2.0"/>
         <PackageVersion Include="Serilog.Enrichers.Thread" Version="4.0.0"/>
         <PackageVersion Include="Serilog.Exceptions" Version="8.4.0"/>

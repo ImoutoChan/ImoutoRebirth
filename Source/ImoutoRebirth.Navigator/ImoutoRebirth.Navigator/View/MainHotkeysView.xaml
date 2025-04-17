@@ -1,0 +1,67 @@
+﻿<UserControl x:Class="ImoutoRebirth.Navigator.View.MainHotkeysView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:local="clr-namespace:ImoutoRebirth.Navigator.View"
+             mc:Ignorable="d"
+             d:DesignHeight="300" d:DesignWidth="298"
+             d:DataContext="{d:DesignInstance local:MainHotkeysViewModel, IsDesignTimeCreatable=True}">
+<UserControl.Resources>
+        <DataTemplate x:Key="HotkeyItemTemplate" DataType="{x:Type local:HotkeyItem}">
+            <Grid Margin="0,0,0,8">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" SharedSizeGroup="HotkeyColumn"/>
+                    <ColumnDefinition Width="*" SharedSizeGroup="HotkeyColumn"/>
+                </Grid.ColumnDefinitions>
+
+                <Border Grid.Column="0"
+                        Background="{DynamicResource MahApps.Brushes.Gray.MouseOver}"
+                        CornerRadius="4"
+                        Padding="5,3"
+                        HorizontalAlignment="Right"
+                        Margin="0,0,8,0">
+                    <TextBlock Text="{Binding Key}"
+                               Foreground="{DynamicResource MahApps.Brushes.Control.Background}"
+                               FontFamily="Courier New"
+                               FontSize="12" />
+                </Border>
+
+                <TextBlock Text="{Binding Description}"
+                           Grid.Column="1"
+                           FontSize="12"
+                           Foreground="{DynamicResource MahApps.Brushes.Gray.MouseOver}"
+                           Margin="0" />
+            </Grid>
+        </DataTemplate>
+    </UserControl.Resources>
+
+    <Grid>
+        <Border HorizontalAlignment="Left"
+                VerticalAlignment="Center"
+                Background="{DynamicResource MahApps.Brushes.SystemControlForegroundChromeMedium}"
+                BorderThickness="1.5"  
+                BorderBrush="{DynamicResource MahApps.Brushes.Accent}"
+                Opacity="0.91"
+                CornerRadius="8"
+                Padding="8,8,8,0">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+
+                <ItemsControl Grid.Row="1"
+                              ItemTemplate="{StaticResource HotkeyItemTemplate}"
+                              ItemsSource="{Binding Hotkeys}"
+                              Grid.IsSharedSizeScope="True">
+                    <ItemsControl.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <StackPanel />
+                        </ItemsPanelTemplate>
+                    </ItemsControl.ItemsPanel>
+                </ItemsControl>
+            </Grid>
+        </Border>
+    </Grid>
+</UserControl>

@@ -10,7 +10,6 @@ using ImoutoRebirth.Lilin.Infrastructure;
 using ImoutoRebirth.Lilin.UI;
 using ImoutoRebirth.Lilin.UI.Consumers;
 using ImoutoRebirth.Lilin.UI.WebApi;
-using ResQueue;
 
 const string servicePrefix = "LILIN_";
 
