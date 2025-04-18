@@ -140,7 +140,7 @@
                 <!-- Hot keys cheat sheet -->
                 <Border
                     Grid.Row="7"
-                    Margin="24 5 5 26"
+                    Margin="34 5 5 26"
                     Padding="0"
                     HorizontalAlignment="Left"
                     VerticalAlignment="Bottom"

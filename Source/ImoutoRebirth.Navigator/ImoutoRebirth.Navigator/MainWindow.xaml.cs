@@ -216,7 +216,7 @@ internal partial class MainWindow
 
     private void QuickTagging_OnIsVisibleChanged(object sender, DependencyPropertyChangedEventArgs e)
     {
-        if (Visibility == Visibility.Visible)
+        if (Visibility == Visibility.Visible && MediaListBox.SelectedIndex >=0)
         {
             var item = (ListBoxItem)MediaListBox.ItemContainerGenerator.ContainerFromIndex(MediaListBox.SelectedIndex);
             item?.Focus();

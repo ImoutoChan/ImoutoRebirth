@@ -18,7 +18,7 @@
                 <Border Grid.Column="0"
                         Background="{DynamicResource MahApps.Brushes.Gray.MouseOver}"
                         CornerRadius="4"
-                        Padding="5,3"
+                        Padding="5,3,5,2"
                         HorizontalAlignment="Right"
                         Margin="0,0,8,0">
                     <TextBlock Text="{Binding Key}"
@@ -39,10 +39,9 @@
     <Grid>
         <Border HorizontalAlignment="Left"
                 VerticalAlignment="Center"
-                Background="{DynamicResource MahApps.Brushes.SystemControlForegroundChromeMedium}"
-                BorderThickness="1.5"  
+                Background="{DynamicResource MahApps.Brushes.ThemeBackground}"
                 BorderBrush="{DynamicResource MahApps.Brushes.Accent}"
-                Opacity="0.91"
+                Opacity="1"
                 CornerRadius="8"
                 Padding="8,8,8,0">
             <Grid>
