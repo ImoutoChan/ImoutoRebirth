@@ -264,8 +264,10 @@ public sealed partial class ExHentaiMetadataProvider : IExHentaiMetadataProvider
         var baseUrl = _exHentaiMode ? "https://exhentai.org/" : "https://e-hentai.org/";
 
         return _flurlClientCache
-            .GetOrAdd("e-hentai")
-            .BeforeCall(async _ => await Throttler.Get("e-hentai").UseAsync(RateLimit))
+            .GetOrAdd(
+                "e-hentai",
+                baseUrl,
+                y => y.BeforeCall(async _ => await Throttler.Get("e-hentai").UseAsync(RateLimit)))
             .Request(baseUrl);
     }
 

@@ -104,8 +104,10 @@ public sealed partial class SchaleMetadataProvider : ISchaleMetadataProvider, IA
         const string baseUrl = "https://api.schale.network";
 
         return _flurlClientCache
-            .GetOrAdd("schale", baseUrl)
-            .BeforeCall(async _ => await Throttler.Get("schale").UseAsync(RateLimit))
+            .GetOrAdd(
+                "schale",
+                baseUrl,
+                y => y.BeforeCall(async _ => await Throttler.Get("schale").UseAsync(RateLimit)))
             .WithHeader("Origin", "https://niyaniya.moe")
             .WithHeader("Accept", "*/*")
             .WithHeader("Accept-Encoding", "gzip, deflate, br")
