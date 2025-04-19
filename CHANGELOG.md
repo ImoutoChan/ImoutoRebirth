@@ -28,6 +28,7 @@ to create 2 different source folder entry with and without this flag.
 ### Arachne
 * ExHentai support as tags provider for files (.zip, .rar, .7z, .tar, .ace, .cbz, .cbr, .cb7, .cbt, .cba)
 * Fill the login data in the config from cookies
+* Improve ExHentai search and selection metadata capabilities
 
 # 4.26.1
 
