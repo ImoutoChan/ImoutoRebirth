@@ -3,7 +3,6 @@ using System.Diagnostics.CodeAnalysis;
 using System.Net;
 using System.Text.Json.Serialization;
 using System.Text.RegularExpressions;
-using Flurl;
 using Flurl.Http;
 using Flurl.Http.Configuration;
 using ImoutoRebirth.Arachne.Core.Models;
@@ -42,7 +41,7 @@ public record FoundMetadata(
 
 public sealed partial class ExHentaiMetadataProvider : IExHentaiMetadataProvider, IAvailabilityProvider, IAvailabilityChecker
 {
-    private const long ExHentaiRateLimitPauseBetweenRequests = 1500;
+    private const long ExHentaiRateLimitPauseBetweenRequests = 2500;
 
     private readonly IFlurlClientCache _flurlClientCache;
     private readonly ExHentaiAuthConfig _authConfig;
@@ -254,7 +253,14 @@ public sealed partial class ExHentaiMetadataProvider : IExHentaiMetadataProvider
             }
         }
 
-        return ids.ToArray();
+        if (ids.Any())
+            return ids.ToArray();
+
+        if (html.Contains("No hits found") || html.Contains("No unfiltered results in this page range"))
+            return [];
+
+        _logger.LogError("Unable to parse gallery ids from search result in html {Html}", html);
+        throw new ExHentaiMetadataProviderException("Unable to parse gallery ids from search result in html");
     }
 
     private static TimeSpan RateLimit => TimeSpan.FromMilliseconds(ExHentaiRateLimitPauseBetweenRequests);
@@ -474,3 +480,5 @@ internal class GalleryTorrent
     [JsonPropertyName("fsize")]
     public required string FileSize { get; init; }
 }
+
+public class ExHentaiMetadataProviderException(string message) : Exception(message);
