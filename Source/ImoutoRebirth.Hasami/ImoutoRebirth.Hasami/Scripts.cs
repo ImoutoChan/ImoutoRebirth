@@ -1,15 +1,10 @@
 ﻿using System.Security.Cryptography;
-using System.Text.RegularExpressions;
-using Flurl.Http.Configuration;
 using Imouto.BooruParser;
 using Imouto.BooruParser.Implementations.Danbooru;
 using Imouto.BooruParser.Implementations.Sankaku;
-using ImoutoRebirth.Arachne.Infrastructure;
-using ImoutoRebirth.Arachne.Infrastructure.ExHentai;
 using ImoutoRebirth.Room.WebApi.Client;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging.Abstractions;
 
 namespace ImoutoRebirth.Hasami;
 

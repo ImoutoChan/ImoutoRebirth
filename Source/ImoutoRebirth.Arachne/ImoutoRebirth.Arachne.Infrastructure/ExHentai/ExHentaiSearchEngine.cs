@@ -5,7 +5,6 @@ using ImoutoRebirth.Common;
 using Microsoft.Extensions.Logging;
 using System.Text.RegularExpressions;
 using System.Web;
-using ImoutoRebirth.Arachne.Infrastructure.Abstract;
 
 namespace ImoutoRebirth.Arachne.Infrastructure.ExHentai;
 
@@ -29,19 +28,11 @@ public partial class ExHentaiSearchEngine : ISearchEngine
         try
         {
             var name = Path.GetFileNameWithoutExtension(image.FileName);
-            var metadata = await _metadataProvider.SearchMetadataAsync(name);
+            var metadata = await _metadataProvider.DeepSearchMetadataAsync(name);
 
-            if (metadata.Any())
-                return ToMetadata(image, metadata);
-
-            name = NameCleanRegex().Replace(name, "");
-            metadata = await _metadataProvider.SearchMetadataAsync(name);
-
-            if (metadata.Any())
-                return ToMetadata(image, metadata);
-
-            return Metadata.NotFound(image, SearchEngineType);
-
+            return metadata.Any()
+                ? ToMetadata(image, metadata)
+                : Metadata.NotFound(image, SearchEngineType);
         }
         catch (Exception e)
         {
@@ -50,7 +41,7 @@ public partial class ExHentaiSearchEngine : ISearchEngine
         }
     }
 
-    private SearchResult ToMetadata(Image image, IReadOnlyCollection<FoundMetadata> metadata)
+    private Metadata ToMetadata(Image image, IReadOnlyCollection<FoundMetadata> metadata)
     {
         var chosenMetadata = ChooseMetadata(image.FileName, metadata);
 
@@ -137,6 +128,9 @@ public partial class ExHentaiSearchEngine : ISearchEngine
 
     private static FoundMetadata ChooseMetadata(string name, IReadOnlyCollection<FoundMetadata> metadata)
     {
+        if (metadata.Count == 1)
+            return metadata.First();
+
         var potentialLanguageMatches = NameLanguageRegex().Matches(name);
 
         var nameLanguages = potentialLanguageMatches
@@ -168,8 +162,5 @@ public partial class ExHentaiSearchEngine : ISearchEngine
 
     [GeneratedRegex(@"\[([^\]]+)\]")]
     private static partial Regex NameLanguageRegex();
-
-    [GeneratedRegex(@"(?:(\([^)]*?\)|\[[^]]*?\]|\{[^}]*?\})(?=\s*(?:(?:\([^)]*?\)|\[[^]]*?\]|\{[^}]*?\})\s*)*$))", RegexOptions.Compiled | RegexOptions.IgnoreCase)]
-    private static partial Regex NameCleanRegex();
 }
 

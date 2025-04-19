@@ -12,7 +12,7 @@ internal static partial class Scripts
 {
     public static async Task SplitBasedOnFoundInExHentai()
     {
-        var sourcePath = new DirectoryInfo(@"C:\1234\!miss");
+        var sourcePath = new DirectoryInfo(@"C:\Playground\DodjiMetaSearching\Processed");
         var targetFoundPath = new DirectoryInfo(Path.Combine(sourcePath.FullName, "!found"));
         var targetMissPath = new DirectoryInfo(Path.Combine(sourcePath.FullName, "!miss"));
 
@@ -26,22 +26,25 @@ internal static partial class Scripts
         {
             try
             {
+                var isFound = false;
                 var found = await FindOnExHentai(file.Name);
 
                 if (found.None())
                 {
                     var schaleFound = await FindOnSchale(file.Name);
 
+                    isFound = schaleFound.Any();
                     Console.WriteLine(
                         $"{++counter:000}/{files.Length:000} | {schaleFound.Any().ToString()[0]} ({schaleFound.Count:00}) | {file.Name} | ({schaleFound.FirstOrDefault()?.Title})");
                 }
                 else
                 {
+                    isFound = true;
                     Console.WriteLine(
                         $"{++counter:000}/{files.Length:000} | {found.Any().ToString()[0]} ({found.Count:00}) | {file.Name} | ({found.FirstOrDefault()?.Title})");
                 }
 
-                var newPath = found.Any()
+                var newPath = isFound
                     ? Path.Combine(targetFoundPath.FullName, file.Name)
                     : Path.Combine(targetMissPath.FullName, file.Name);
 
@@ -71,14 +74,7 @@ internal static partial class Scripts
 
         var name = Path.GetFileNameWithoutExtension(fileName);
 
-        var found = await provider.SearchMetadataAsync(name);
-
-        if (found.Any())
-            return found;
-
-        name = NameCleanRegex().Replace(name, "");
-
-        return await provider.SearchMetadataAsync(name);
+        return await provider.DeepSearchMetadataAsync(name);
     }
 
     private static async Task<IReadOnlyCollection<SchaleMetadata>> FindOnSchale(string fileName)

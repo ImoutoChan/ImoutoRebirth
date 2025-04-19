@@ -1,5 +1,4 @@
 ﻿using FluentAssertions;
-using Flurl.Http;
 using Flurl.Http.Configuration;
 using ImoutoRebirth.Arachne.Core.Models;
 using ImoutoRebirth.Arachne.Infrastructure.ExHentai;
@@ -50,7 +49,7 @@ public class ExHentaiMetadataProviderTests : IClassFixture<TestConfiguration>
         var provider = new ExHentaiMetadataProvider(_flurlClientCache, _authConfig, _loggerMock.Object);
 
         // act
-        var result = await provider.SearchMetadataAsync("[Mint no Chicchai Oana (Mint Muzzlini)] Toxic JK Netorare Jigo Houkoku... [English] [Solid Rose]");
+        var result = await provider.DeepSearchMetadataAsync("[Mint no Chicchai Oana (Mint Muzzlini)] Toxic JK Netorare Jigo Houkoku... [English] [Solid Rose]");
 
         // assert
         result.Should().ContainSingle()
@@ -102,7 +101,7 @@ public class ExHentaiMetadataProviderTests : IClassFixture<TestConfiguration>
         var provider = new ExHentaiMetadataProvider(_flurlClientCache, _emptyAuthConfig, _loggerMock.Object);
 
         // act
-        var result = await provider.SearchMetadataAsync("[Mint no Chicchai Oana (Mint Muzzlini)] Toxic JK Netorare Jigo Houkoku... [English] [Solid Rose]");
+        var result = await provider.DeepSearchMetadataAsync("[Mint no Chicchai Oana (Mint Muzzlini)] Toxic JK Netorare Jigo Houkoku... [English] [Solid Rose]");
 
         // assert
         result.Should().ContainSingle()
@@ -226,7 +225,7 @@ public class ExHentaiMetadataProviderTests : IClassFixture<TestConfiguration>
         var provider = new ExHentaiMetadataProvider(_flurlClientCache, _authConfig, _loggerMock.Object);
 
         // act
-        var result = await provider.SearchMetadataAsync("(C78) [Kairanban (Bibi)] Benten Kairaku 16 Moshimo Kare Ga Boketa Nara (Bleach) [English]");
+        var result = await provider.DeepSearchMetadataAsync("(C78) [Kairanban (Bibi)] Benten Kairaku 16 Moshimo Kare Ga Boketa Nara (Bleach) [English]");
 
         // assert
         result.Should().BeEquivalentTo([
@@ -280,50 +279,10 @@ public class ExHentaiMetadataProviderTests : IClassFixture<TestConfiguration>
         var provider = new ExHentaiMetadataProvider(_flurlClientCache, _authConfig, _loggerMock.Object);
 
         // act
-        var result = await provider.SearchMetadataAsync("[mamaloni] Hajimete Katta Otona no Omocha de Egui CliOna Oboechatta Onnanoko");
+        var result = await provider.DeepSearchMetadataAsync("[mamaloni] Hajimete Katta Otona no Omocha de Egui CliOna Oboechatta Onnanoko");
 
         // assert
         result.Should().BeEquivalentTo([
-                new FoundMetadata(
-                    "Hajimete Katta Otona no Omocha de Egui CliOna Oboechatta Onnanoko | 처음 구입한 로터로 클리자위 기억해 버린 소녀",
-                    ["mamaloni"],
-                    "",
-                    [
-                        "language:korean", "language:translated", "parody:original", "artist:mamaloni", "female:big clit", "female:clit stimulation", "female:masturbation", "female:multiple orgasms", "female:sex toys", "female:sole female", "female:solo action", "female:squirting", "other:full color", "other:mosaic censorship"
-                    ],
-                    ["korean", "translated"],
-                    4.53m,
-                    "https://ehgt.org/w/01/582/61545-epzeywo7.webp",
-                    3083613,
-                    "25faded29b",
-                    "Doujinshi",
-                    "땅콩머리",
-                    14,
-                    18725700,
-                    false,
-                    1,
-                    "[mamaloni] はじめて買った大人のおもちゃでえぐいクリオナおぼえちゃった女の子 [韓国翻訳]",
-                    new DateTimeOffset(2024, 10, 8, 1, 55, 34, TimeSpan.Zero)),
-                new FoundMetadata(
-                    "Hajimete Katta Otona no Omocha de Egui CliOna Oboechatta Onnanoko | 用第一次買的成人玩具學會了超刺激陰蒂自慰的女孩子",
-                    ["mamaloni"],
-                    "",
-                    [
-                        "language:chinese", "language:translated", "parody:original", "artist:mamaloni", "female:big clit", "female:clit stimulation", "female:masturbation", "female:multiple orgasms", "female:sex toys", "female:sole female", "female:solo action", "female:squirting", "other:full color", "other:mosaic censorship", "other:no penetration"
-                    ],
-                    ["chinese", "translated"],
-                    4.71m,
-                    "https://ehgt.org/w/01/464/24020-h7kd5w1f.webp",
-                    2873324,
-                    "e949c2765d",
-                    "Doujinshi",
-                    "SZno1396",
-                    15,
-                    29019193,
-                    false,
-                    2,
-                    "[Mamaloni] はじめて買った大人のおもちゃでえぐいクリオナおぼえちゃった女の子 [中国翻訳]",
-                    new DateTimeOffset(2024, 3, 30, 11, 00, 02, TimeSpan.Zero)),
                 new FoundMetadata(
                     "Hajimete Katta Otona no Omocha de Egui CliOna Oboechatta Onnanoko",
                     ["mamaloni"],
@@ -462,13 +421,35 @@ public class ExHentaiMetadataProviderTests : IClassFixture<TestConfiguration>
     }
 
     [Fact]
+    public async Task SearchMetadataAsync_ValidResponse_ReturnsParsedMetadata7()
+    {
+        // arrange
+        AssertionConfiguration.Current.Formatting.MaxLines = Int32.MaxValue;
+
+        var provider = new ExHentaiMetadataProvider(_flurlClientCache, _authConfig, _loggerMock.Object);
+        var engine = new ExHentaiSearchEngine(provider, NullLogger<ExHentaiSearchEngine>.Instance);
+
+        // act
+        var result = await engine.Search(
+            new Image(
+                "",
+                "[Hibon (Itami)] Futanari-san to Nonke-san _ Straight Girl Meets Futa [English] [2d-market.com] [Decensored] [Digital].cbz"));
+
+        // assert
+        result.Should().BeOfType<Metadata>();
+        var metadata = (Metadata)result;
+        metadata.IsFound.Should().BeTrue();
+        metadata.Tags.Select(x => x.Name + x.Value).Should().AllSatisfy(x => x.Should().NotContain("&#"));
+    }
+
+    [Fact]
     public async Task SearchMetadataAsync_EmptyGalleryName_ReturnsEmptyAndLogsWarning()
     {
         // Arrange
         var provider = new ExHentaiMetadataProvider(_flurlClientCache, _authConfig, _loggerMock.Object);
 
         // Act
-        var result = await provider.SearchMetadataAsync("");
+        var result = await provider.DeepSearchMetadataAsync("");
 
         // Assert
         result.Should().BeEmpty();

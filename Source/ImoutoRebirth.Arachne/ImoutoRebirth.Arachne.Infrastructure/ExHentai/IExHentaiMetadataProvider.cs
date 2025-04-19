@@ -1,5 +1,6 @@
 ﻿using System.Collections.ObjectModel;
 using System.Diagnostics.CodeAnalysis;
+using System.Net;
 using System.Text.Json.Serialization;
 using System.Text.RegularExpressions;
 using Flurl;
@@ -14,7 +15,7 @@ namespace ImoutoRebirth.Arachne.Infrastructure.ExHentai;
 
 public interface IExHentaiMetadataProvider
 {
-    Task<IReadOnlyCollection<FoundMetadata>> SearchMetadataAsync(string galleryName);
+    Task<IReadOnlyCollection<FoundMetadata>> DeepSearchMetadataAsync(string galleryName);
 }
 
 public record FoundMetadata(
@@ -39,7 +40,7 @@ public record FoundMetadata(
     public string FileIdFromSource => $"{GalleryId}|{GalleryToken}";
 }
 
-public sealed class ExHentaiMetadataProvider : IExHentaiMetadataProvider, IAvailabilityProvider, IAvailabilityChecker
+public sealed partial class ExHentaiMetadataProvider : IExHentaiMetadataProvider, IAvailabilityProvider, IAvailabilityChecker
 {
     private const long ExHentaiRateLimitPauseBetweenRequests = 1500;
 
@@ -86,7 +87,121 @@ public sealed class ExHentaiMetadataProvider : IExHentaiMetadataProvider, IAvail
         return isHostAvailable;
     }
 
-    public async Task<IReadOnlyCollection<FoundMetadata>> SearchMetadataAsync(string galleryName)
+    public async Task<IReadOnlyCollection<FoundMetadata>> DeepSearchMetadataAsync(string galleryName)
+    {
+        var (language, artist, group, decensored, nameWithoutBracketsAtEnd, nameWithoutBrackets, colorized, nameWithoutBracketsAndHyphen)
+            = ParseGalleryNameMeta(galleryName);
+
+        var simpleFullNameSearch = await SearchMetadataAsync(galleryName);
+        var filteredSimpleFullNameSearch = FilterResults(simpleFullNameSearch);
+        if (filteredSimpleFullNameSearch.Any())
+            return filteredSimpleFullNameSearch;
+
+        var withoutBracketsAtTheEnd = await SearchMetadataAsync(nameWithoutBracketsAtEnd);
+        var filteredWithoutBracketsAtTheEnd = FilterResults(withoutBracketsAtTheEnd);
+        if (filteredWithoutBracketsAtTheEnd.Any())
+            return filteredWithoutBracketsAtTheEnd;
+
+        var withoutBrackets = await SearchMetadataAsync(nameWithoutBrackets);
+        var filteredWithoutBrackets = FilterResults(withoutBrackets);
+        if (filteredWithoutBrackets.Any())
+            return filteredWithoutBrackets;
+
+        var withoutBracketsAndHyphen = await SearchMetadataAsync(nameWithoutBracketsAndHyphen);
+        var filteredWithoutBracketsAndHyphen = FilterResults(withoutBracketsAndHyphen);
+        if (filteredWithoutBracketsAndHyphen.Any())
+            return filteredWithoutBracketsAndHyphen;
+
+        return [];
+
+        IReadOnlyCollection<FoundMetadata> FilterResults(IReadOnlyCollection<FoundMetadata> results)
+        {
+            if (results.Count < 2)
+                return results;
+
+            var filtered = results;
+
+            filtered = TryFilter(filtered, x => string.IsNullOrWhiteSpace(language) || x.Languages.Contains(language));
+            filtered = TryFilter(filtered, x => string.IsNullOrWhiteSpace(artist) || x.Tags.Any(y => artist.ContainsOrContainedIn(y)));
+            filtered = TryFilter(filtered, x => string.IsNullOrWhiteSpace(group) || x.Tags.Any(y => group.ContainsOrContainedIn(y)));
+            filtered = TryFilter(filtered, x => decensored == true && x.Tags.Any(y => y.Contains("uncensored"))
+                                                || decensored != true && x.Tags.None(y => y.Contains("uncensored")));
+            filtered = TryFilter(filtered, x => x.Title.ContainsIgnoreCase(nameWithoutBrackets));
+            filtered = TryFilter(filtered, x => x.Title.EqualsIgnoreCase(nameWithoutBrackets));
+
+            filtered = TryFilter(filtered, x =>
+            {
+                var nameWithoutMultipleSpaces = Regex.Replace(nameWithoutBrackets, @"\s+", " ",
+                    RegexOptions.Compiled | RegexOptions.NonBacktracking).ToLower();
+
+                var cleanedTitle1 = new string(x.Title.Where(y => !Path.GetInvalidFileNameChars().Contains(y)).ToArray())
+                    .ToLower();
+
+                var cleanedTitle2 = Regex.Replace(cleanedTitle1, @"\s+", " ",
+                    RegexOptions.Compiled | RegexOptions.NonBacktracking);
+
+                return cleanedTitle2.Contains(nameWithoutMultipleSpaces) ||
+                       nameWithoutMultipleSpaces.Contains(cleanedTitle2);
+            });
+
+            filtered = TryFilter(filtered, x => colorized && x.Tags.Any(y => y.Contains("full color"))
+                                                || !colorized && x.Tags.None(y => y.Contains("full color")));
+            filtered = TryFilter(filtered, x => !string.IsNullOrWhiteSpace(language) || x.Languages.Contains("english"));
+            filtered = TryFilter(filtered, x => !string.IsNullOrWhiteSpace(language) || x.Languages.Contains("russian"));
+            filtered = TryFilter(filtered, x => !string.IsNullOrWhiteSpace(language) || !x.Languages.Contains("translated"));
+
+            return filtered;
+        }
+
+        IReadOnlyCollection<FoundMetadata> TryFilter(
+            IReadOnlyCollection<FoundMetadata> input, Func<FoundMetadata, bool> predicate)
+        {
+            if (input.Count < 2)
+                return input;
+
+            var filtered = input.Where(predicate).ToList();
+            return filtered.None() ? input : filtered;
+        }
+    }
+
+    private static NameMeta ParseGalleryNameMeta(string galleryName)
+    {
+        string? language = null;
+
+        if (galleryName.Contains("English"))
+            language = "english";
+
+        if (galleryName.Contains("Russian"))
+            language = "russian";
+
+        var artist = ArtistExtractionRegex().Match(galleryName).Groups["artist"].Value.ToLower().Trim();
+        var group = ArtistExtractionRegex().Match(galleryName).Groups["group"].Value.ToLower().Trim();
+
+        var decensored = galleryName.Contains("decensored", StringComparison.OrdinalIgnoreCase)
+                         || galleryName.Contains("uncensored", StringComparison.OrdinalIgnoreCase);
+
+        var galleryNameWithoutBracketsAtTheEnd = BracketedContentAtTheEndRegex().Replace(galleryName, "").Trim();
+
+        var galleryNameWithoutBrackets = AllBracketedContentRegex().Replace(galleryName, "").Trim();
+        var galleryNameWithoutBracketsAndHyphen = galleryNameWithoutBrackets.Replace("-", "").Replace("~", "").Trim();
+
+        var colorized = galleryNameWithoutBrackets.Contains("colorized", StringComparison.OrdinalIgnoreCase);
+
+        return new(language, artist, group, decensored, galleryNameWithoutBracketsAtTheEnd, galleryNameWithoutBrackets,
+            colorized, galleryNameWithoutBracketsAndHyphen);
+    }
+
+    private record NameMeta(
+        string? Language,
+        string? Artist,
+        string? Group,
+        bool? Decensored,
+        string NameWithoutBracketsAtEnd,
+        string NameWithoutBrackets,
+        bool Colorized,
+        string NameWithoutBracketsAndHyphen);
+
+    private async Task<IReadOnlyCollection<FoundMetadata>> SearchMetadataAsync(string galleryName)
     {
         if (string.IsNullOrWhiteSpace(galleryName))
             return [];
@@ -130,9 +245,8 @@ public sealed class ExHentaiMetadataProvider : IExHentaiMetadataProvider, IAvail
             .GetStringAsync();
 
         var ids = new List<string[]>();
-        var pattern = new Regex(@"/g/(?<gid>\d+)/(?<token>\w+)/");
 
-        foreach (Match match in pattern.Matches(html))
+        foreach (Match match in EHentaiIdRegex().Matches(html))
         {
             if (match.Success && int.TryParse(match.Groups["gid"].Value, out var gid))
             {
@@ -175,9 +289,9 @@ public sealed class ExHentaiMetadataProvider : IExHentaiMetadataProvider, IAvail
 
                 result.Add(
                     new FoundMetadata(
-                        title,
-                        [author],
-                        publisher,
+                        WebUtility.HtmlDecode(title),
+                        [WebUtility.HtmlDecode(author)],
+                        WebUtility.HtmlDecode(publisher),
                         gmetadata.Tags,
                         DetectLanguages(gmetadata.Tags),
                         rating,
@@ -226,12 +340,7 @@ public sealed class ExHentaiMetadataProvider : IExHentaiMetadataProvider, IAvail
 
     public static (string Title, string Author, string Publisher) ParseTitle(string title)
     {
-        var pattern = new Regex(
-            @"^\s*(?:\((?<publisher>[^)]*)\))?" +
-            @"\s*(?:\[(?<author>[^\]]*)\])?" +
-            @"\s*(?<title>[^\[\(]+)");
-
-        var match = pattern.Match(title);
+        var match = MetadataRegex().Match(title);
         return (
             Title: match.Groups["title"].Value.Trim(),
             Author: match.Groups["author"].Success ? match.Groups["author"].Value : "",
@@ -250,6 +359,28 @@ public sealed class ExHentaiMetadataProvider : IExHentaiMetadataProvider, IAvail
 
         return languages.Count > 0 ? languages : new[] { "japanese" };
     }
+
+    [GeneratedRegex(
+        @"^[^\[]*\[(?<group>[^\]\(\)]+)\s*(\((?<artist>[^\]\(\)]+)\))*\]",
+        RegexOptions.IgnoreCase | RegexOptions.Compiled | RegexOptions.NonBacktracking)]
+    private static partial Regex ArtistExtractionRegex();
+
+    [GeneratedRegex(
+        @"(?:(\([^)]*?\)|\[[^]]*?\]|\{[^}]*?\})(?=\s*(?:(?:\([^)]*?\)|\[[^]]*?\]|\{[^}]*?\})\s*)*$))",
+        RegexOptions.IgnoreCase | RegexOptions.Compiled)]
+    private static partial Regex BracketedContentAtTheEndRegex();
+
+    [GeneratedRegex(
+        @"(\[[^\]]*\]|\{[^\}]*\}|\([^\)]*\))",
+        RegexOptions.IgnoreCase | RegexOptions.Compiled | RegexOptions.NonBacktracking)]
+    private static partial Regex AllBracketedContentRegex();
+
+    [GeneratedRegex(
+        @"^\s*(?:\((?<publisher>[^)]*)\))?\s*(?:\[(?<author>[^\]]*)\])?\s*(?<title>[^\[\(]+)",
+        RegexOptions.Compiled | RegexOptions.NonBacktracking)]
+    private static partial Regex MetadataRegex();
+    [GeneratedRegex(@"/g/(?<gid>\d+)/(?<token>\w+)/")]
+    private static partial Regex EHentaiIdRegex();
 }
 
 public record ExHentaiAuthConfig(
