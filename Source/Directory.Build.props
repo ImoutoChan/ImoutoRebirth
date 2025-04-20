@@ -1,6 +1,12 @@
 <Project>
+
     <PropertyGroup>
         <!-- Ignore unavailable nuget sources -->
         <NoWarn>$(NoWarn);NU1801</NoWarn>
     </PropertyGroup>
+
+    <ItemGroup>
+        <PackageReference Include="stbychkov.AutoLoggerMessage" />
+    </ItemGroup>
+
 </Project>

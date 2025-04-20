@@ -12,3 +12,4 @@ node_modules/
 /Source/ImoutoRebirth.Hasami/ImoutoRebirth.Hasami/appsettings.json
 **/appsettings.local.json
 **/appsettings.Production.json
+/global.json
