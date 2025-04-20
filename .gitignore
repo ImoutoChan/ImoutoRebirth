@@ -11,3 +11,4 @@ node_modules/
 /CHANGELOG.RESULT.md
 /Source/ImoutoRebirth.Hasami/ImoutoRebirth.Hasami/appsettings.json
 **/appsettings.local.json
+**/appsettings.Production.json

@@ -1,11 +1,20 @@
 {
   "profiles": {
-    "ImoutoRebirth.Arachne.Host": {
+    "Arachne Dev": {
       "commandName": "Project",
       "environmentVariables": {
         "ARACHNE_ENVIRONMENT": "Development",
         "ASPNETCORE_ENVIRONMENT": "Development",
         "DOTNET_ENVIRONMENT": "Development",
+        "ARACHNE_Serilog__Properties__Application": "ImoutoRebirth.Arachne"
+      }
+    },
+    "Arachne Prod": {
+      "commandName": "Project",
+      "environmentVariables": {
+        "ARACHNE_ENVIRONMENT": "Production",
+        "ASPNETCORE_ENVIRONMENT": "Production",
+        "DOTNET_ENVIRONMENT": "Production",
         "ARACHNE_Serilog__Properties__Application": "ImoutoRebirth.Arachne"
       }
     }
