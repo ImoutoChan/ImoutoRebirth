@@ -41,7 +41,7 @@ public record FoundMetadata(
 
 public sealed partial class ExHentaiMetadataProvider : IExHentaiMetadataProvider, IAvailabilityProvider, IAvailabilityChecker
 {
-    private const long ExHentaiRateLimitPauseBetweenRequests = 2500;
+    private const long ExHentaiRateLimitPauseBetweenRequests = 4500; // 2500 ban
 
     private readonly IFlurlClientCache _flurlClientCache;
     private readonly ExHentaiAuthConfig _authConfig;

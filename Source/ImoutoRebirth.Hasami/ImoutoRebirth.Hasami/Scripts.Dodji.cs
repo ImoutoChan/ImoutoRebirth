@@ -12,7 +12,7 @@ internal static partial class Scripts
 {
     public static async Task SplitBasedOnFoundInExHentai()
     {
-        var sourcePath = new DirectoryInfo(@"C:\Playground\DodjiMetaSearching\Processed");
+        var sourcePath = new DirectoryInfo(@"C:\Playground\DodjiMetaSearching\Processed\SourcePlay\Archived");
         var targetFoundPath = new DirectoryInfo(Path.Combine(sourcePath.FullName, "!found"));
         var targetMissPath = new DirectoryInfo(Path.Combine(sourcePath.FullName, "!miss"));
 
@@ -26,29 +26,35 @@ internal static partial class Scripts
         {
             try
             {
-                var isFound = false;
                 var found = await FindOnExHentai(file.Name);
 
                 if (found.None())
                 {
                     var schaleFound = await FindOnSchale(file.Name);
 
-                    isFound = schaleFound.Any();
+                    var isFound = schaleFound.Any();
                     Console.WriteLine(
                         $"{++counter:000}/{files.Length:000} | {schaleFound.Any().ToString()[0]} ({schaleFound.Count:00}) | {file.Name} | ({schaleFound.FirstOrDefault()?.Title})");
+
+                    var newPath = isFound
+                        ? Path.Combine(targetFoundPath.FullName, $"schale-{schaleFound.Count:00}", file.Name)
+                        : Path.Combine(targetMissPath.FullName, file.Name);
+
+                    new FileInfo(newPath).Directory?.Create();
+                    file.MoveTo(newPath);
                 }
                 else
                 {
-                    isFound = true;
                     Console.WriteLine(
                         $"{++counter:000}/{files.Length:000} | {found.Any().ToString()[0]} ({found.Count:00}) | {file.Name} | ({found.FirstOrDefault()?.Title})");
+
+
+                    var newPath = Path.Combine(targetFoundPath.FullName, $"exhentai-{found.Count:00}", file.Name);
+
+                    new FileInfo(newPath).Directory?.Create();
+                    file.MoveTo(newPath);
+
                 }
-
-                var newPath = isFound
-                    ? Path.Combine(targetFoundPath.FullName, file.Name)
-                    : Path.Combine(targetMissPath.FullName, file.Name);
-
-                file.MoveTo(newPath);
             }
             catch (Exception e)
             {

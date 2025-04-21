@@ -16,14 +16,15 @@ public class Throttler
         await _locker.WaitAsync();
         try
         {
-            var now = DateTimeOffset.UtcNow;
-
-            var timePassedSinceLastCall = now - _lastAccess;
+            var timePassedSinceLastCall = DateTimeOffset.UtcNow - _lastAccess;
 
             if (timePassedSinceLastCall < delay)
-                await Task.Delay(delay - timePassedSinceLastCall);
+            {
+                var wait = delay - timePassedSinceLastCall;;
+                await Task.Delay(wait);
+            }
 
-            _lastAccess = now;
+            _lastAccess = DateTimeOffset.UtcNow;
         }
         finally
         {
