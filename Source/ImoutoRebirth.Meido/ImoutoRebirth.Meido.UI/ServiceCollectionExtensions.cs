@@ -1,4 +1,4 @@
-﻿using ImoutoRebirth.Arachne.MessageContracts.Commands;
+﻿using ImoutoRebirth.Arachne.MessageContracts;
 using ImoutoRebirth.Common.MassTransit;
 using ImoutoRebirth.Common.Quartz.Extensions;
 using ImoutoRebirth.Meido.UI.Jobs;
@@ -33,11 +33,13 @@ public static class ServiceCollectionExtensions
     public static MassTransitConfigurator AddMeidoMassTransitSetup(
         this MassTransitConfigurator builder)
         => builder
-            .AddCommand<IYandereSearchMetadataCommand>()
-            .AddCommand<IDanbooruSearchMetadataCommand>()
-            .AddCommand<IGelbooruSearchMetadataCommand>()
-            .AddCommand<IRule34SearchMetadataCommand>()
-            .AddCommand<ISankakuSearchMetadataCommand>()
-            .AddCommand<ILoadTagHistoryCommand>()
-            .AddCommand<ILoadNoteHistoryCommand>();
+            .AddCommand<YandereSearchMetadataCommand>()
+            .AddCommand<DanbooruSearchMetadataCommand>()
+            .AddCommand<GelbooruSearchMetadataCommand>()
+            .AddCommand<Rule34SearchMetadataCommand>()
+            .AddCommand<SankakuSearchMetadataCommand>()
+            .AddCommand<ExHentaiSearchMetadataCommand>()
+            .AddCommand<SchaleSearchMetadataCommand>()
+            .AddCommand<LoadTagHistoryCommand>()
+            .AddCommand<LoadNoteHistoryCommand>();
 }

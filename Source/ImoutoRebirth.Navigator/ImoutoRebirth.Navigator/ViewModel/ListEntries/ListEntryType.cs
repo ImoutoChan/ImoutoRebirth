@@ -7,5 +7,6 @@ internal enum ListEntryType
     Image,
     Ugoira,
     Png,
-    WebP
+    WebP,
+    Dodji
 }

@@ -1,4 +1,4 @@
-using ImoutoRebirth.Arachne.MessageContracts.Commands;
+using ImoutoRebirth.Arachne.MessageContracts;
 using ImoutoRebirth.Meido.Domain;
 using MassTransit;
 
@@ -12,6 +12,6 @@ internal class GelbooruMetadataRequester : IMetadataRequester
 
     public MetadataSource Source => MetadataSource.Gelbooru;
 
-    public Task SendRequestCommand(Guid fileId, string md5) 
-        => _bus.Send<IGelbooruSearchMetadataCommand>(new {FileId = fileId, Md5 = md5});
+    public Task SendRequestCommand(Guid fileId, string md5, string fileName)
+        => _bus.Send(new GelbooruSearchMetadataCommand(md5, fileId, fileName));
 }

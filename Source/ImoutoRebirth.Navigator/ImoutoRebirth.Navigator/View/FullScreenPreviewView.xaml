@@ -34,37 +34,43 @@
             
             <Image
                 SizeChanged="ViewPort_OnSizeChanged"
-                Source="{Binding Path=ImagePath}"
+                Source="{Binding Path=ImagePath, TargetNullValue={x:Null}}"
                 Visibility="{Binding Path=Type, Converter={StaticResource ConditionVisibilityConverter}, ConverterParameter=Image}"
+                IsVisibleChanged="OnIsVisibleChanged" />
+
+            <Image
+                SizeChanged="ViewPort_OnSizeChanged"
+                Source="{Binding Path=DodjiImage, TargetNullValue={x:Null}}"
+                Visibility="{Binding Path=Type, Converter={StaticResource ConditionVisibilityConverter}, ConverterParameter=Dodji}"
                 IsVisibleChanged="OnIsVisibleChanged" />
 
             <apngPlayer:ApngPlayer
                 HorizontalAlignment="Center"
                 SizeChanged="ViewPort_OnSizeChanged"
-                Source="{Binding Path=PngPath}"
+                Source="{Binding Path=PngPath, TargetNullValue={x:Null}}"
                 Visibility="{Binding Path=Type, Converter={StaticResource ConditionVisibilityConverter}, ConverterParameter=Png}"
                 IsVisibleChanged="OnIsVisibleChanged" />
 
             <Image
-                gif:ImageBehavior.AnimatedSource="{Binding GifPath}"
+                gif:ImageBehavior.AnimatedSource="{Binding GifPath, TargetNullValue={x:Null}}"
                 Visibility="{Binding Path=Type, Converter={StaticResource ConditionVisibilityConverter}, ConverterParameter=Gif}"
                 IsVisibleChanged="OnIsVisibleChanged" />
 
             <Image
-                attachedProperties:WebPTools.ImagePath="{Binding WebPPath}"
+                attachedProperties:WebPTools.ImagePath="{Binding WebPPath, TargetNullValue={x:Null}}"
                 Visibility="{Binding Path=Type, Converter={StaticResource ConditionVisibilityConverter}, ConverterParameter=WebP}" 
                 IsVisibleChanged="OnIsVisibleChanged" />
 
             <userControls:PlayerControl
                 IsVolumeVisible="True"
                 InfinityLifespanMode="True"
-                Source="{Binding Path=VideoPath}"
+                Source="{Binding Path=VideoPath, TargetNullValue={x:Null}}"
                 Volume="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type Window}}, Path=DataContext.Volume}"
                 Visibility="{Binding Path=Type, Converter={StaticResource ConditionVisibilityConverter}, ConverterParameter=Video}"
                 IsVisibleChanged="OnIsVisibleChanged" />
 
             <userControls:UgoiraPlayer
-                Source="{Binding Path=UgoiraPath}"
+                Source="{Binding Path=UgoiraPath, TargetNullValue={x:Null}}"
                 FrameDelays="{Binding Path=UgoiraFrameDelays}"
                 Visibility="{Binding Path=Type, Converter={StaticResource ConditionVisibilityConverter}, ConverterParameter=Ugoira}"
                 IsVisibleChanged="OnIsVisibleChanged" />

@@ -37,6 +37,10 @@ public class ConfigurationBuilder : IConfigurationBuilder
     private readonly string _yandereLogin;
     private readonly string _jaegerHost;
     private readonly string _jaegerPort;
+    private readonly string _exHentaiIpbMemberId;
+    private readonly string _exHentaiIpbPassHash;
+    private readonly string _exHentaiIgneous;
+    private readonly string _exHentaiUserAgent;
 
     public ConfigurationBuilder(FileInfo globalConfigurationFile)
     {
@@ -83,6 +87,11 @@ public class ConfigurationBuilder : IConfigurationBuilder
         _installLocation = _configuration["InstallLocation"];
         _jaegerHost = _configuration["JaegerHost"];
         _jaegerPort = _configuration["JaegerPort"];
+
+        _exHentaiIpbMemberId = _configuration["ExHentaiIpbMemberId"];
+        _exHentaiIpbPassHash = _configuration["ExHentaiIpbPassHash"];
+        _exHentaiIgneous = _configuration["ExHentaiIgneous"];
+        _exHentaiUserAgent = _configuration["ExHentaiUserAgent"];
     }
 
     private void Migrate(FileInfo globalConfigurationFile, Dictionary<string, string> configuration)
@@ -97,6 +106,19 @@ public class ConfigurationBuilder : IConfigurationBuilder
             configuration.Remove("RabbitMqUrl");
             configuration.Remove("RabbitMqUsername");
             configuration.Remove("RabbitMqPassword");
+
+            File.WriteAllText(
+              globalConfigurationFile.FullName,
+              JsonSerializer.Serialize(configuration, new JsonSerializerOptions { WriteIndented = true }));
+        }
+
+        if (!configuration.ContainsKey("ExHentaiIpbMemberId"))
+        {
+            // version 2 to version 3, add exhentai options
+            configuration.Add("ExHentaiIpbMemberId", "");
+            configuration.Add("ExHentaiIpbPassHash", "");
+            configuration.Add("ExHentaiIgneous", "");
+            configuration.Add("ExHentaiUserAgent", "");
 
             File.WriteAllText(
               globalConfigurationFile.FullName,
@@ -164,7 +186,11 @@ public class ConfigurationBuilder : IConfigurationBuilder
             "MeidoFaultToleranceIsEnabled",
             "RoomImoutoPicsUploadUrl",
             "JaegerHost",
-            "JaegerPort"
+            "JaegerPort",
+            "ExHentaiIpbMemberId",
+            "ExHentaiIpbPassHash",
+            "ExHentaiIgneous",
+            "ExHentaiUserAgent"
         };
 
         var missedKeys = keys.Where(x => !_configuration.ContainsKey(x)).ToList();
@@ -191,6 +217,12 @@ public class ConfigurationBuilder : IConfigurationBuilder
                 "Login": "{{_sankakuLogin}}",
                 "Password": "{{_sankakuPassword}}",
                 "Delay": "6000"
+              },
+              "ExHentaiSettings": {
+                "IpbMemberId": "{{_exHentaiIpbMemberId}}",
+                "IpbPassHash": "{{_exHentaiIpbPassHash}}",
+                "Igneous": "{{_exHentaiIgneous}}",
+                "UserAgent": "{{_exHentaiUserAgent}}"
               },
               "OpenSearchUri": "{{_openSearchUri}}",
               "Jaeger": {

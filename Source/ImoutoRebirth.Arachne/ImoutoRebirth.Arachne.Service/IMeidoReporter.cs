@@ -6,7 +6,5 @@ namespace ImoutoRebirth.Arachne.Service;
 
 public interface IMeidoReporter
 {
-    Task ReportSearchResultsToHeadMaid(
-        ConsumeContext<ISearchMetadataCommand> context,
-        SearchResult searchResults);
+    Task ReportSearchResultsToHeadMaid(ConsumeContext<SearchMetadataCommand> context, SearchResult searchResults);
 }

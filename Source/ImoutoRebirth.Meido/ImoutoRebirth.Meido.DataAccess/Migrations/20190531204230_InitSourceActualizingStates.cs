@@ -12,6 +12,8 @@ public partial class InitSourceActualizingStates : Migration
         InsertInitial(migrationBuilder, MetadataSource.Sankaku);
         InsertInitial(migrationBuilder, MetadataSource.Gelbooru);
         InsertInitial(migrationBuilder, MetadataSource.Rule34);
+        InsertInitial(migrationBuilder, MetadataSource.ExHentai);
+        InsertInitial(migrationBuilder, MetadataSource.Schale);
     }
 
     protected override void Down(MigrationBuilder migrationBuilder)

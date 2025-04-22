@@ -10,21 +10,20 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\..\ImoutoRebirth.Room\ImoutoRebirth.Room.WebApi.Client\ImoutoRebirth.Room.WebApi.Client.csproj" />
+        <ProjectReference Include="..\..\ImoutoRebirth.Arachne\ImoutoRebirth.Arachne.Infrastructure\ImoutoRebirth.Arachne.Infrastructure.csproj"/>
+        <ProjectReference Include="..\..\ImoutoRebirth.Room\ImoutoRebirth.Room.WebApi.Client\ImoutoRebirth.Room.WebApi.Client.csproj"/>
     </ItemGroup>
 
     <ItemGroup>
-        <PackageReference Include="Imouto.BooruParser" />
-        <PackageReference Include="Microsoft.Extensions.Caching.Memory" />
-        <PackageReference Include="Microsoft.Extensions.Configuration.Json" />
+        <PackageReference Include="Imouto.BooruParser"/>
+        <PackageReference Include="Microsoft.Extensions.Caching.Memory"/>
+        <PackageReference Include="Microsoft.Extensions.Configuration.Json"/>
     </ItemGroup>
 
     <ItemGroup>
-        <Content Update="appsettings.json">
-            <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+        <None Update="appsettings.json">
             <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-            <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
-        </Content>
+        </None>
     </ItemGroup>
 
 </Project>

@@ -6,13 +6,13 @@ using MediatR;
 
 namespace ImoutoRebirth.Lilin.UI.Consumers;
 
-public class UpdateMetadataCommandConsumer : IConsumer<IUpdateMetadataCommand>
+public class UpdateMetadataCommandConsumer : IConsumer<UpdateMetadataCommand>
 {
     private readonly IMediator _mediator;
 
     public UpdateMetadataCommandConsumer(IMediator mediator) => _mediator = mediator;
 
-    public async Task Consume(ConsumeContext<IUpdateMetadataCommand> context)
+    public async Task Consume(ConsumeContext<UpdateMetadataCommand> context)
     {
         var message = context.Message;
 
@@ -42,6 +42,8 @@ public class UpdateMetadataCommandConsumer : IConsumer<IUpdateMetadataCommand>
             MetadataSource.Manual => Domain.FileInfoAggregate.MetadataSource.Manual,
             MetadataSource.Gelbooru => Domain.FileInfoAggregate.MetadataSource.Gelbooru,
             MetadataSource.Rule34 => Domain.FileInfoAggregate.MetadataSource.Rule34,
+            MetadataSource.ExHentai => Domain.FileInfoAggregate.MetadataSource.ExHentai,
+            MetadataSource.Schale => Domain.FileInfoAggregate.MetadataSource.Schale,
             _ => throw new ArgumentOutOfRangeException(nameof(metadata), metadata, null)
         };
     }

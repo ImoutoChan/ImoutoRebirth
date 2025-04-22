@@ -34,10 +34,13 @@ var arachneSettings = builder.Configuration.GetRequired<ArachneSettings>();
 builder.Services
     .AddArachneCore()
     .AddArachneServices()
-    .AddArachneInfrastructure(arachneSettings.DanbooruSettings, arachneSettings.SankakuSettings)
+    .AddArachneInfrastructure(
+        arachneSettings.DanbooruSettings,
+        arachneSettings.SankakuSettings,
+        arachneSettings.ExHentaiSettings)
     .AddSqlMassTransit(
-        builder.Configuration, 
-        "arachne", 
+        builder.Configuration,
+        "arachne",
         с => с.AddArachneMassTransitSetup(),
         false,
         typeof(EverywhereSearchMetadataCommandConsumer).Assembly)

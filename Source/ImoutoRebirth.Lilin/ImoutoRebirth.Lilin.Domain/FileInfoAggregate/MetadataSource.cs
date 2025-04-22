@@ -17,4 +17,6 @@ public enum MetadataSource
     Manual = 3,
     Gelbooru = 4,
     Rule34 = 5,
+    ExHentai = 6,
+    Schale = 7,
 }

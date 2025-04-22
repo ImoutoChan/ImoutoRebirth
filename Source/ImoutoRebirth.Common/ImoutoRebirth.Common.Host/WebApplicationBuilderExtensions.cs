@@ -77,7 +77,7 @@ public static class WebApplicationBuilderExtensions
         if (hostBuilder.Environment.IsDevelopment())
         {
             hostBuilder.Configuration.AddUserSecrets<T>();
-            hostBuilder.Configuration.AddJsonFile("appsettings.local.json", true);
+            hostBuilder.Configuration.AddJsonFile("appsettings.local.json", false);
         }
 
         return hostBuilder;

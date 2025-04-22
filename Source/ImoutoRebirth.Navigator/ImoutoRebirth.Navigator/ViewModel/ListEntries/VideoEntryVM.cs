@@ -9,7 +9,7 @@ namespace ImoutoRebirth.Navigator.ViewModel.ListEntries;
 internal partial class VideoEntryVM: BaseEntryVM, INavigatorListEntry
 {
     private bool _isPreviewLoaded;
-    private readonly object _loaderLocker = new();
+    private readonly Lock _loaderLocker = new();
 
     [ObservableProperty]
     public partial Size ViewPortSize { get; set; }

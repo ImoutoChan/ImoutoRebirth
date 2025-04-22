@@ -6,5 +6,5 @@ internal interface IMetadataRequester
 {
     MetadataSource Source { get; }
 
-    Task SendRequestCommand(Guid fileId, string md5);
+    Task SendRequestCommand(Guid fileId, string md5, string fileName);
 }

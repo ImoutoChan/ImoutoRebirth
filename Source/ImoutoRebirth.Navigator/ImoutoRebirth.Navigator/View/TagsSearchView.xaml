@@ -6,6 +6,9 @@
              xmlns:metroControl="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
              xmlns:userControls="clr-namespace:ImoutoRebirth.Navigator.UserControls"
              xmlns:viewModel="clr-namespace:ImoutoRebirth.Navigator.ViewModel"
+             xmlns:local="clr-namespace:ImoutoRebirth.Navigator.View"
+             xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
+             xmlns:tz="http://schemas.abtsoftware.co.uk/transitionz"
              mc:Ignorable="d"
              d:DataContext="{d:DesignInstance viewModel:TagSearchVM, IsDesignTimeCreatable=False}"
              d:DesignHeight="300"
@@ -24,6 +27,7 @@
                     <RowDefinition Height="Auto" />
                     <RowDefinition Height="Auto" />
                     <RowDefinition Height="*" />
+                    <RowDefinition Height="Auto" />
                     <RowDefinition Height="Auto" />
                     <RowDefinition Height="Auto" />
                     <RowDefinition Height="Auto" />
@@ -133,18 +137,55 @@
                                   ItemTemplate="{StaticResource CurrentTagsSourceDataTemplate}" />
                 </ScrollViewer>
 
-                <Border Grid.Row="8"
+                <!-- Hot keys cheat sheet -->
+                <Border
+                    Grid.Row="7"
+                    Margin="34 5 5 26"
+                    Padding="0"
+                    HorizontalAlignment="Left"
+                    VerticalAlignment="Bottom"
+                    tz:Transitionz.Opacity="{tz:OpacityParams From='0.5', To='1', Duration=200, TransitionOn=Visibility}"
+                    tz:Transitionz.Translate="{tz:TranslateParams From='-10,10', To='0,0', Duration=200, TransitionOn=Visibility}"
+                    tz:Transitionz.Visibility="{Binding
+                        RelativeSource={RelativeSource
+                            FindAncestor,
+                            AncestorType={x:Type local:TagsSearchView}},
+                        Path=DataContext.ShowHotKeys,
+                        Converter={StaticResource ConditionVisibilityConverter},
+                        ConverterParameter=true}">
+
+                    <local:MainHotkeysView />
+                </Border>
+
+                <Button
+                    Grid.Row="7"
+                    Margin="5"
+                    HorizontalAlignment="Left"
+                    VerticalAlignment="Bottom"
+                    Width="24"
+                    Height="24"
+                    Style="{StaticResource MahApps.Styles.Button.Circle}"
+                    Background="{DynamicResource MahApps.Brushes.ThemeBackground}"
+                    Command="{Binding ToggleShowHotKeysCommand}"
+                    Visibility="{Binding Path=CurrentTagsSources.Count, Converter={StaticResource ConditionVisibilityConverter}, ConverterParameter='>0'}">
+                    <iconPacks:PackIconModern Width="14"
+                                              Height="14"
+                                              Kind="InputKeyboard"
+                                              Foreground="{DynamicResource MahApps.Brushes.ThemeForeground}"/>
+                </Button>
+
+                <Border Grid.Row="9"
                         BorderThickness="1"
                         BorderBrush="{DynamicResource MahApps.Brushes.Accent}" />
 
                 <!-- Rating/fav Control -->
 
-                <DockPanel Grid.Row="9"
+                <DockPanel Grid.Row="10"
                            LastChildFill="False">
                     <userControls:FavoriteControl
                         IsChecked="{Binding IsFavorite, Mode=TwoWay}"
                         Visibility="{Binding
-                            IsRateSetted,
+                            IsRateSet,
                             Converter={StaticResource ConditionVisibilityConverter},
                             ConverterParameter=true}" />
 
@@ -152,7 +193,7 @@
                         DockPanel.Dock="Right"
                         Value="{Binding Rate, Mode=TwoWay}"
                         Visibility="{Binding
-                            IsRateSetted,
+                            IsRateSet,
                             Converter={StaticResource ConditionVisibilityConverter},
                             ConverterParameter=true}" />
                 </DockPanel>

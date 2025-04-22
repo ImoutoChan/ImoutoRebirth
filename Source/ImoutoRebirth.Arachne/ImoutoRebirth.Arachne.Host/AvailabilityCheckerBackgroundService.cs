@@ -12,7 +12,7 @@ namespace ImoutoRebirth.Arachne.Host;
 
 internal class AvailabilityCheckerBackgroundService : BackgroundService
 {
-    private readonly IEnumerable<IBooruLoaderFabric> _booruLoaderFabrics;
+    private readonly IEnumerable<IAvailabilityProvider> _availabilityProviders;
     private readonly IBusControl _busControl;
     private readonly IServiceProvider _serviceProvider;
     private readonly ILogger<AvailabilityCheckerBackgroundService> _logger;
@@ -23,12 +23,12 @@ internal class AvailabilityCheckerBackgroundService : BackgroundService
     private HostReceiveEndpointHandle? _notesHistoryEndpointHandler;
 
     public AvailabilityCheckerBackgroundService(
-        IEnumerable<IBooruLoaderFabric> booruLoaderFabrics, 
+        IEnumerable<IAvailabilityProvider> availabilityProviders,
         IBusControl busControl,
         ILogger<AvailabilityCheckerBackgroundService> logger,
         IServiceProvider serviceProvider)
     {
-        _booruLoaderFabrics = booruLoaderFabrics;
+        _availabilityProviders = availabilityProviders;
         _busControl = busControl;
         _logger = logger;
         _serviceProvider = serviceProvider;
@@ -56,10 +56,10 @@ internal class AvailabilityCheckerBackgroundService : BackgroundService
     private async Task CheckAvailability(CancellationToken ct)
     {
         var enginesIsAvailable = new Dictionary<SearchEngineType, bool>();
-        foreach (var booruLoaderFabric in _booruLoaderFabrics)
+        foreach (var availabilityProvider in _availabilityProviders)
         {
-            var booruType = booruLoaderFabric.ForType;
-            var availabilityChecker = booruLoaderFabric.CreateAvailabilityChecker();
+            var booruType = availabilityProvider.ForType;
+            var availabilityChecker = availabilityProvider.CreateAvailabilityChecker();
             var isAvailable = await availabilityChecker.IsAvailable(ct);
 
             if (isAvailable)
@@ -110,6 +110,8 @@ internal class AvailabilityCheckerBackgroundService : BackgroundService
                 SearchEngineType.Sankaku => _busControl.ConnectNewConsumer<SankakuSearchMetadataCommandConsumer>(_serviceProvider),
                 SearchEngineType.Gelbooru => _busControl.ConnectNewConsumer<GelbooruSearchMetadataCommandConsumer>(_serviceProvider),
                 SearchEngineType.Rule34 => _busControl.ConnectNewConsumer<Rule34SearchMetadataCommandConsumer>(_serviceProvider),
+                SearchEngineType.ExHentai => _busControl.ConnectNewConsumer<ExHentaiSearchMetadataCommandConsumer>(_serviceProvider),
+                SearchEngineType.Schale => _busControl.ConnectNewConsumer<SchaleSearchMetadataCommandConsumer>(_serviceProvider),
                 _ => throw new ArgumentOutOfRangeException()
             };
             _endpointHandles[booruType] = handle;

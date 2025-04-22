@@ -7,4 +7,6 @@ public class ArachneSettings
     public required DanbooruSettings DanbooruSettings { get; set; }
 
     public required SankakuSettings SankakuSettings { get; set; }
+
+    public required ExHentaiSettings ExHentaiSettings { get; set; }
 }

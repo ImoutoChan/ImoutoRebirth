@@ -8,10 +8,13 @@ using NodaTime;
 
 namespace ImoutoRebirth.Meido.Application.ParsingStatusSlice.Commands;
 
-public record CreateParsingsForNewFileCommand(Guid FileId, string Md5) : ICommand;
+public record CreateParsingsForNewFileCommand(Guid FileId, string Md5, string FileName) : ICommand;
 
 internal class CreateParsingsForNewFileCommandHandler : ICommandHandler<CreateParsingsForNewFileCommand>
 {
+    private readonly string[] _archiveExtensions =
+        [".zip", ".rar", ".7z", ".tar", ".ace", ".cbz", ".cbr", ".cb7", ".cbt", ".cba"];
+
     private readonly IParsingStatusRepository _parsingStatusRepository;
     private readonly IEventStorage _eventStorage;
     private readonly IClock _clock;
@@ -31,11 +34,14 @@ internal class CreateParsingsForNewFileCommandHandler : ICommandHandler<CreatePa
 
     public async Task Handle(CreateParsingsForNewFileCommand request, CancellationToken ct)
     {
-        var (fileId, md5) = request;
+        var (fileId, md5, fileName) = request;
         var now = _clock.GetCurrentInstant();
         
         // we're ignoring gelbooru and rule34 since it's unnecessary when danbooru entry is present
         var allMetadataSources = new[] { MetadataSource.Danbooru, MetadataSource.Yandere, MetadataSource.Sankaku };
+
+        if (IsArchive(fileName))
+            allMetadataSources = allMetadataSources.Append(MetadataSource.ExHentai).ToArray();
 
         foreach (var metadataSource in allMetadataSources)
         {
@@ -49,10 +55,13 @@ internal class CreateParsingsForNewFileCommandHandler : ICommandHandler<CreatePa
                 continue;
             }
 
-            var parsingStatus = ParsingStatus.Create(fileId, md5, metadataSource, now);
+            var parsingStatus = ParsingStatus.Create(fileId, md5, fileName, metadataSource, now);
                 
             await _parsingStatusRepository.Add(parsingStatus.Result);
             _eventStorage.AddRange(parsingStatus.EventsCollection);
         }
     }
+
+    public bool IsArchive(string fileName)
+        => _archiveExtensions.Any(x => fileName.EndsWith(x, StringComparison.OrdinalIgnoreCase));
 }

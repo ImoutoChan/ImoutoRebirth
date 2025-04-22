@@ -45,6 +45,9 @@ internal class SaveCompletedSearchCommandHandler : ICommandHandler<SaveCompleted
         
         if (source == MetadataSource.Gelbooru && searchStatus == SearchStatus.NotFound)
             await CreateRule34ParsingStatus(fileId);
+
+        if (source == MetadataSource.ExHentai && searchStatus == SearchStatus.NotFound)
+            await CreateSchaleParsingStatus(fileId);
     }
 
     private async Task SaveSearchResult(
@@ -79,7 +82,13 @@ internal class SaveCompletedSearchCommandHandler : ICommandHandler<SaveCompleted
             return;
         }
 
-        var result = ParsingStatus.Create(fileId, danbooruStatus.Md5, MetadataSource.Gelbooru, now);
+        var result = ParsingStatus.Create(
+            fileId,
+            danbooruStatus.Md5,
+            danbooruStatus.FileName,
+            MetadataSource.Gelbooru,
+            now);
+
         await _parsingStatusRepository.Add(result.Result);
         _eventStorage.AddRange(result.EventsCollection);
     }
@@ -100,7 +109,40 @@ internal class SaveCompletedSearchCommandHandler : ICommandHandler<SaveCompleted
             return;
         }
 
-        var result = ParsingStatus.Create(fileId, danbooruStatus.Md5, MetadataSource.Rule34, now);
+        var result = ParsingStatus.Create(
+            fileId,
+            danbooruStatus.Md5,
+            danbooruStatus.FileName,
+            MetadataSource.Rule34,
+            now);
+
+        await _parsingStatusRepository.Add(result.Result);
+        _eventStorage.AddRange(result.EventsCollection);
+    }
+
+    private async Task CreateSchaleParsingStatus(Guid fileId)
+    {
+        var now = _clock.GetCurrentInstant();
+
+        var status = await _parsingStatusRepository.Get(fileId, MetadataSource.ExHentai);
+        var check = await _parsingStatusRepository.Get(fileId, MetadataSource.Schale);
+
+        if (check != null || status == null)
+        {
+            _logger.LogWarning(
+                "Can't create a parsing status with duplicate key {FileId}, {Source}",
+                fileId,
+                MetadataSource.Schale);
+            return;
+        }
+
+        var result = ParsingStatus.Create(
+            fileId,
+            status.Md5,
+            status.FileName,
+            MetadataSource.Schale,
+            now);
+
         await _parsingStatusRepository.Add(result.Result);
         _eventStorage.AddRange(result.EventsCollection);
     }

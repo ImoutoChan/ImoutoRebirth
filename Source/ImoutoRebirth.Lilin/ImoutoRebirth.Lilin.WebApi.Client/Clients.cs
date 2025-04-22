@@ -1920,6 +1920,11 @@ namespace ImoutoRebirth.Lilin.WebApi.Client
         [System.Runtime.Serialization.EnumMember(Value = @"Rule34")]
         Rule34 = 5,
 
+        [System.Runtime.Serialization.EnumMember(Value = @"ExHentai")]
+        ExHentai = 6,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"Schale")]
+        Schale = 7,
     }
 
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.2.0.0 (NJsonSchema v11.1.0.0 (Newtonsoft.Json v13.0.0.0))")]

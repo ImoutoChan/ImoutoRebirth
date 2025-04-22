@@ -1,5 +1,4 @@
 ﻿using ImoutoRebirth.Arachne.MessageContracts;
-using ImoutoRebirth.Arachne.MessageContracts.Commands;
 using ImoutoRebirth.Common.Application;
 using ImoutoRebirth.Common.Cqrs.Events;
 using ImoutoRebirth.Meido.Domain.SourceActualizingStateAggregate;
@@ -29,16 +28,14 @@ internal class ActualizationRequestedDomainEventHandler
             "Sending request to update tags and notes history from {MetadataSource}",
             searchEngineType);
 
-        await _distributedCommandBus.SendAsync<ILoadTagHistoryCommand>(new
-        {
-            SearchEngineType = (SearchEngineType)(int)searchEngineType,
-            LastProcessedTagHistoryId = domainEvent.Entity.LastProcessedTagHistoryId
-        }, ct);
+        await _distributedCommandBus.SendAsync(new LoadTagHistoryCommand(
+            (SearchEngineType)(int)searchEngineType,
+            domainEvent.Entity.LastProcessedTagHistoryId),
+            ct);
 
-        await _distributedCommandBus.SendAsync<ILoadNoteHistoryCommand>(new
-        {
-            SearchEngineType = (SearchEngineType)(int)searchEngineType,
-            LastProcessedNoteUpdateAt = domainEvent.Entity.LastProcessedNoteUpdateAt.ToDateTimeOffset()
-        }, ct);
+        await _distributedCommandBus.SendAsync(new LoadNoteHistoryCommand(
+            (SearchEngineType)(int)searchEngineType,
+            domainEvent.Entity.LastProcessedNoteUpdateAt.ToDateTimeOffset()),
+            ct);
     }
 }

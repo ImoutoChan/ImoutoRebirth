@@ -1,14 +1,15 @@
 ﻿using ImoutoRebirth.Arachne.Core;
 using ImoutoRebirth.Arachne.Core.Models;
-using ImoutoRebirth.Arachne.MessageContracts.Commands;
+using ImoutoRebirth.Arachne.MessageContracts;
 using ImoutoRebirth.Arachne.Service.Extensions;
 using ImoutoRebirth.Meido.MessageContracts;
 using MassTransit;
 using Microsoft.Extensions.Logging;
+using SearchEngineType = ImoutoRebirth.Arachne.Core.Models.SearchEngineType;
 
 namespace ImoutoRebirth.Arachne.Service.SearchEngineHistory;
 
-public class LoadTagHistoryCommandConsumer : IConsumer<ILoadTagHistoryCommand>
+public class LoadTagHistoryCommandConsumer : IConsumer<LoadTagHistoryCommand>
 {
     private readonly ILogger<LoadTagHistoryCommandConsumer> _logger;
     private readonly IArachneSearchService _arachneSearchService;
@@ -27,7 +28,7 @@ public class LoadTagHistoryCommandConsumer : IConsumer<ILoadTagHistoryCommand>
         _bus = bus;
     }
 
-    public async Task Consume(ConsumeContext<ILoadTagHistoryCommand> context)
+    public async Task Consume(ConsumeContext<LoadTagHistoryCommand> context)
     {
         var expired = (DateTime.UtcNow - context.SentTime) > TimeSpan.FromMinutes(1);
         if (expired)
@@ -70,13 +71,6 @@ public class LoadTagHistoryCommandConsumer : IConsumer<ILoadTagHistoryCommand>
             lastProcessedTagHistoryId,
             searchEngineType);
 
-        var command = new
-        {
-            SourceId = (int)searchEngineType,
-            PostIds = changedPostIds,
-            LastHistoryId = lastHistoryId
-        };
-
-        await _bus.Send<ITagsUpdatedCommand>(command);
+        await _bus.Send(new TagsUpdatedCommand((int)searchEngineType, changedPostIds.ToArray(), lastHistoryId));
     }
 }

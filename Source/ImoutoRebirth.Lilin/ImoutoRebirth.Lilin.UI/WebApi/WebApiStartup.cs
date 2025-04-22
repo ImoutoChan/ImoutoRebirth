@@ -4,6 +4,7 @@ using ImoutoRebirth.Common.WebApi;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.ResponseCompression;
 using Microsoft.Extensions.DependencyInjection;
+using Scalar.AspNetCore;
 
 namespace ImoutoRebirth.Lilin.UI.WebApi;
 
@@ -18,6 +19,7 @@ public static class WebEndpointsExtensions
             x.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter()));
         
         services.AddMinimalSwagger("ImoutoRebirth.Lilin WebApi Client");
+        services.AddOpenApi();
         
         services.AddResponseCompression(options =>
         {
@@ -41,6 +43,9 @@ public static class WebEndpointsExtensions
         {
             c.SwaggerEndpoint("/swagger/v1.0/swagger.json", "ImoutoRebirth.Lilin API V1.0");
         });
+        app.MapOpenApi();
+        app.MapScalarApiReference();
+        app.MapRootTo("swagger");
 
         app.MapFilesEndpoints();
         app.MapTagsEndpoints();

@@ -8,7 +8,7 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace ImoutoRebirth.Hasami;
 
-internal static class Scripts
+internal static partial class Scripts
 {
     public static async Task SplitBasedOnSaved()
     {

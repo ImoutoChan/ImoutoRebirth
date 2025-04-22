@@ -1,6 +1,6 @@
 ﻿namespace ImoutoRebirth.Arachne.Infrastructure.Abstract;
 
-public interface IBooruAvailabilityChecker
+public interface IAvailabilityChecker
 {
     Task<bool> IsAvailable(CancellationToken ct);
 }

@@ -222,7 +222,19 @@ internal partial class MainWindowVM : ObservableObject
                 break;
             }
             default:
-                Log.Error("Can't open unsupported entry type {Type}", navigatorListEntry?.GetType().FullName);
+            {
+                Log.Warning("Unknown format {Type}", navigatorListEntry?.GetType().FullName);
+
+                if (navigatorListEntry?.Path == null)
+                    return;
+
+                var process = new Process
+                {
+                    StartInfo = new ProcessStartInfo(navigatorListEntry.Path) { UseShellExecute = true }
+                };
+
+                process.Start();
+            }
                 break;
         }
     }

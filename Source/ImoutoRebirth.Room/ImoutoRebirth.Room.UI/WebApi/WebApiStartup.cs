@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.ResponseCompression;
 using Microsoft.Extensions.DependencyInjection;
 using NodaTime;
 using NodaTime.Serialization.SystemTextJson;
+using Scalar.AspNetCore;
 
 namespace ImoutoRebirth.Room.UI.WebApi;
 
@@ -22,6 +23,7 @@ public static class WebEndpointsExtensions
         services.AddMinimalSwagger(
             "ImoutoRebirth.Room WebApi Client",
             x => x.ConfigureForNodaTime(ConfigureDefaults(new JsonSerializerOptions())));
+        services.AddOpenApi();
         
         services.AddResponseCompression(options =>
         {
@@ -45,6 +47,9 @@ public static class WebEndpointsExtensions
         {
             c.SwaggerEndpoint("/swagger/v1.0/swagger.json", "ImoutoRebirth.Room API V1.0");
         });
+        app.MapOpenApi();
+        app.MapScalarApiReference();
+        app.MapRootTo("swagger");
 
         app.MapCollectionsEndpoints();
         app.MapCollectionFilesEndpoints();

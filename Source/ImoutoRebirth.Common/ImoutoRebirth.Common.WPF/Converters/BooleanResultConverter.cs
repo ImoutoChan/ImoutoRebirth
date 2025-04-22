@@ -46,6 +46,20 @@ public class BooleanResultConverter : IValueConverter
                     param = param.Remove(0, 1);
                     return valueStr != param;
                 }
+                else if (param.StartsWith('>'))
+                {
+                    param = param.Remove(0, 1);
+                    return double.TryParse(valueStr, out var valueDouble)
+                           && double.TryParse(param, out var paramDouble)
+                           && valueDouble > paramDouble;
+                }
+                else if (param.StartsWith('<'))
+                {
+                    param = param.Remove(0, 1);
+                    return double.TryParse(valueStr, out var valueDouble)
+                           && double.TryParse(param, out var paramDouble)
+                           && valueDouble < paramDouble;
+                }
                 else
                 {
                     return valueStr == param;

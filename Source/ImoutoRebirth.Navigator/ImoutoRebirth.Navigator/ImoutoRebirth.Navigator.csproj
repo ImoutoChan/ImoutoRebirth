@@ -50,6 +50,7 @@
         <PackageReference Include="Microsoft.Extensions.Caching.Memory" />
         <PackageReference Include="Microsoft.Extensions.DependencyInjection" />
         <PackageReference Include="Microsoft.Xaml.Behaviors.Wpf" />
+        <PackageReference Include="SciChart.Wpf.UI.Transitionz" />
         <PackageReference Include="Serilog" />
         <PackageReference Include="Serilog.Enrichers.Thread" />
         <PackageReference Include="Serilog.Sinks.Console" />
@@ -58,6 +59,7 @@
         <PackageReference Include="Vlc.DotNet.Wpf" />
         <PackageReference Include="WpfAnimatedGif" />
         <PackageReference Include="Newtonsoft.Json" />
+        <PackageReference Include="SharpCompress" />
     </ItemGroup>
 
     <ItemGroup>
