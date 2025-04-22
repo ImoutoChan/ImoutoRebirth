@@ -142,6 +142,19 @@ public sealed partial class ExHentaiMetadataProvider : IExHentaiMetadataProvider
                 return cleanedTitle2.Contains(nameWithoutMultipleSpaces) ||
                        nameWithoutMultipleSpaces.Contains(cleanedTitle2);
             });
+            filtered = TryFilter(filtered, x =>
+            {
+                var nameWithoutMultipleSpaces = Regex.Replace(nameWithoutBrackets, @"\s+", " ",
+                    RegexOptions.Compiled | RegexOptions.NonBacktracking).ToLower();
+
+                var cleanedTitle1 = new string(x.Title.Where(y => !Path.GetInvalidFileNameChars().Contains(y)).ToArray())
+                    .ToLower();
+
+                var cleanedTitle2 = Regex.Replace(cleanedTitle1, @"\s+", " ",
+                    RegexOptions.Compiled | RegexOptions.NonBacktracking);
+
+                return cleanedTitle2.EqualsIgnoreCase(nameWithoutMultipleSpaces);
+            });
 
             filtered = TryFilter(filtered, x => colorized && x.Tags.Any(y => y.Contains("full color"))
                                                 || !colorized && x.Tags.None(y => y.Contains("full color")));
