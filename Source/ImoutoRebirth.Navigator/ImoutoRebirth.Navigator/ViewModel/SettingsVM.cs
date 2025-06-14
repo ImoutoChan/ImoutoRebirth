@@ -7,6 +7,7 @@ using ControlzEx.Theming;
 using ImoutoRebirth.Common;
 using ImoutoRebirth.Navigator.Services;
 using ImoutoRebirth.Navigator.Services.Collections;
+using ImoutoRebirth.Navigator.UserControls;
 using MahApps.Metro.Theming;
 
 namespace ImoutoRebirth.Navigator.ViewModel;
@@ -182,6 +183,12 @@ internal partial class SettingsVM : ObservableObject
         }
         
         IsImoutoPicsUploaderEnabled = await _imoutoPicsUploaderStateService.IsEnabledAsync();
+    }
+
+    [RelayCommand]
+    private void ResetLastPlayedPositions()
+    {
+        PlayerControl.ResetLastMediaPositions();
     }
 }
 
