@@ -99,5 +99,6 @@
         <PackageVersion Include="stbychkov.AutoLoggerMessage" Version="1.0.10"/>
         <PackageVersion Include="Microsoft.AspNetCore.OpenApi" Version="9.0.4"/>
         <PackageVersion Include="Scalar.AspNetCore" Version="2.1.13"/>
+        <PackageVersion Include="System.Text.Json" Version="9.0.4"/>
     </ItemGroup>
 </Project>
