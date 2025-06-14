@@ -4,6 +4,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
+using System.Windows.Threading;
 using ImoutoRebirth.Navigator.Slices.QuickTagging;
 using ImoutoRebirth.Navigator.ViewModel;
 using ImoutoRebirth.Navigator.ViewModel.ListEntries;
@@ -20,8 +21,7 @@ internal partial class MainWindow
     private double _lastExtentHeight = 0;
     private ScrollViewer? _scrollViewerElement;
     private readonly Stack<IReadOnlyCollection<WeakReference<INavigatorListEntry>>> _lastSelectedItems = new();
-    private IReadOnlyCollection<WeakReference<INavigatorListEntry>> _currentSelectedItems 
-        = Array.Empty<WeakReference<INavigatorListEntry>>();
+    private IReadOnlyCollection<WeakReference<INavigatorListEntry>> _currentSelectedItems = [];
 
     public MainWindow()
     {
@@ -167,7 +167,12 @@ internal partial class MainWindow
     private void ToggleFlyout(Flyout flyout)
     {
         foreach (Flyout item in Flyouts.Items)
+        {
+            if (item == flyout)
+                continue;
+
             item.IsOpen = false;
+        }
 
         flyout.IsOpen = !flyout.IsOpen;
     }
@@ -201,6 +206,30 @@ internal partial class MainWindow
         if (e.Key == Key.Q && Keyboard.Modifiers.HasFlag(ModifierKeys.Control))
         {
             DataContextVM.ToggleQuickTaggingCommand.Execute(null);
+        }
+
+        if (e.Key == Key.Escape)
+        {
+            foreach (Flyout item in Flyouts.Items)
+                item.IsOpen = false;
+
+            if (Visibility == Visibility.Visible && MediaListBox.SelectedIndex >= 0)
+            {
+                int currentSelectedIndex = MediaListBox.SelectedIndex;
+                var selectedItem = MediaListBox.Items[currentSelectedIndex];
+
+                MediaListBox.ScrollIntoView(selectedItem);
+
+                Dispatcher.BeginInvoke(new Action(() =>
+                {
+                    var item = (UIElement)MediaListBox.ItemContainerGenerator.ContainerFromItem(selectedItem)
+                               ?? MediaListBox;
+                    item.Focus();
+
+                    MediaListBox.SelectedIndex = currentSelectedIndex;
+                }), DispatcherPriority.Render);
+            }
+
         }
     }
 

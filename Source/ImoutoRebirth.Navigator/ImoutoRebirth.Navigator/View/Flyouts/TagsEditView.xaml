@@ -9,7 +9,8 @@
              mc:Ignorable="d"
              d:DataContext="{d:DesignInstance viewModel:TagsEditVM, IsDesignTimeCreatable=False}"
              d:DesignHeight="300"
-             d:DesignWidth="1400">
+             d:DesignWidth="1400"
+             IsVisibleChanged="TagsEditView_OnIsVisibleChanged">
     <Grid Margin="15,15,15,15">
         <Grid.ColumnDefinitions>
             <!-- 0 --><ColumnDefinition Width="200" />
@@ -170,7 +171,8 @@
             <flyouts:CreateTagView DataContext="{Binding CreateTagVM}" />
         </Border>
 
-        <TextBox Grid.Column="6"
+        <TextBox x:Name="SearchTagTextBox"
+                 Grid.Column="6"
                  Grid.Row="0"
                  Text="{Binding SearchText, UpdateSourceTrigger=PropertyChanged}"
                  controls:TextBoxHelper.Watermark="Search tag..."

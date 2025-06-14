@@ -18,6 +18,10 @@ if they are different, the hash will be highlighted in red
 * Add some basic animation for hot keys sheet sheet and quick tagging
 * Add new tag pack set button for quick tagging
 * Add reset last played positions button in settings
+* Close all flyouts on escape
+* Repeated T will close the tags edit flyout
+* Escape to exit from flyouts
+* Autofocus search tag field in tags edit
 
 ### Viewer
 * Support opening zipped galleries: zip 7z rar cbz cbr etc It will be extracted to a temporary folder and opened 
