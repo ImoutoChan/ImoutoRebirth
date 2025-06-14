@@ -79,7 +79,7 @@ public class ExHentaiMetadataProviderTests : IClassFixture<TestConfiguration>
                         "other:mosaic censorship"
                     ],
                     ["english", "translated"],
-                    4.53m,
+                    4.54m,
                     "https://ehgt.org/w/01/493/96471-sdkeqwcd.webp",
                     2921730,
                     "d97ebe632e",
@@ -131,7 +131,7 @@ public class ExHentaiMetadataProviderTests : IClassFixture<TestConfiguration>
                         "other:mosaic censorship"
                     ],
                     ["english", "translated"],
-                    4.53m,
+                    4.54m,
                     "https://ehgt.org/w/01/493/96471-sdkeqwcd.webp",
                     2921730,
                     "d97ebe632e",
@@ -330,7 +330,7 @@ public class ExHentaiMetadataProviderTests : IClassFixture<TestConfiguration>
         var expectedTags = new [] {
             new Tag("LocalMeta", "BooruPostId", "1007805|1d5c9d5deb"),
             new Tag("LocalMeta", "Md5", ""),
-            new Tag("LocalMeta", "Score", "4.18"),
+            new Tag("LocalMeta", "Score", "4.12"),
             new Tag("Copyright", "lr-03"),
             new Tag("General", "c83"),
 
