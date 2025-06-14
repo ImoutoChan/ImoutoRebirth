@@ -249,6 +249,9 @@ internal partial class QuickTaggingVM : ObservableObject
     private void DeleteSelectedPacksSet() => AvailableTagPacksSets.DeleteSelected();
 
     [RelayCommand]
+    private void AddPacksSet() => AvailableTagPacksSets.AddSet();
+
+    [RelayCommand]
     private void RenameSelectedTagsPacksSet(string newTitle) => AvailableTagPacksSets.Selected.Rename(newTitle);
 
     private async void ReactOnPropertyChanged(object? _, System.ComponentModel.PropertyChangedEventArgs e)

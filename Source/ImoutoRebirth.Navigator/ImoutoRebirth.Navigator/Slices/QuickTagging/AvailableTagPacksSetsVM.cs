@@ -41,6 +41,11 @@ internal partial class AvailableTagPacksSetsVM : ObservableObject
         Selected = Sets.First();
     }
 
+    public void AddSet()
+    {
+        Sets.Add(new TagsPacksSetVM());
+    }
+
     private void Load()
     {
         var settings = Settings.Default.SavedTagPacks;

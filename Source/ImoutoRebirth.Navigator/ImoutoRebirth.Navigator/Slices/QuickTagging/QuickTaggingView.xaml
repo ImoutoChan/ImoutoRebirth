@@ -213,6 +213,20 @@
                                 Height="26"
                                 Margin="0,0,0,-8"
                                 Style="{DynamicResource MahApps.Styles.Button.Circle}"
+                                Command="{Binding AddPacksSetCommand}"
+                                ToolTip="Add current set">
+                            <iconPacks:PackIconModern
+                                Margin="1,0,0,0"
+                                Width="12"
+                                Height="12"
+                                Kind="Add">
+                            </iconPacks:PackIconModern>
+                        </Button>
+                        <Button HorizontalAlignment="Right"
+                                Width="26"
+                                Height="26"
+                                Margin="0,0,0,-8"
+                                Style="{DynamicResource MahApps.Styles.Button.Circle}"
                                 ToolTip="Rename current set"
                                 Click="RenameCurrentSet">
                             <iconPacks:PackIconModern
