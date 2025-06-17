@@ -1,4 +1,5 @@
-﻿using FluentAssertions;
+﻿using System.Runtime.CompilerServices;
+using FluentAssertions;
 using Flurl.Http.Configuration;
 using ImoutoRebirth.Arachne.Core.Models;
 using ImoutoRebirth.Arachne.Infrastructure.ExHentai;
@@ -7,6 +8,15 @@ using Microsoft.Extensions.Logging.Abstractions;
 using Moq;
 
 namespace ImoutoRebirth.Arachne.Tests.Infrastructure.ExHentai;
+
+public static class VerifierStaticSettings
+{
+    [ModuleInitializer]
+    public static void Initialize()
+    {
+        VerifierSettings.DontScrubDateTimes();
+    }
+}
 
 public class ExHentaiMetadataProviderTests : IClassFixture<TestConfiguration>
 {
