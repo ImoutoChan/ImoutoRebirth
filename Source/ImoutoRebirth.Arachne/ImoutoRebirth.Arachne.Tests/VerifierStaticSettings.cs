@@ -9,5 +9,7 @@ public static class VerifierStaticSettings
     {
         VerifierSettings.DontScrubDateTimes();
         VerifierSettings.DontScrubGuids();
+
+        UseProjectRelativeDirectory("Verified");
     }
 }
