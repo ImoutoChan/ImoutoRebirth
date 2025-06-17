@@ -1,0 +1,149 @@
+﻿[
+  {
+    Type: LocalMeta,
+    Name: BooruPostId,
+    Value: 1007805|1d5c9d5deb
+  },
+  {
+    Type: LocalMeta,
+    Name: Md5,
+    Value: 
+  },
+  {
+    Type: LocalMeta,
+    Name: Score,
+    Value: 4.12
+  },
+  {
+    Type: Copyright,
+    Name: lr-03
+  },
+  {
+    Type: General,
+    Name: c83
+  },
+  {
+    Type: General,
+    Name: doujinshi
+  },
+  {
+    Type: LocalMeta,
+    Name: PostedByUsername,
+    Value: drift49187
+  },
+  {
+    Type: LocalMeta,
+    Name: FilesCount,
+    Value: 15
+  },
+  {
+    Type: LocalMeta,
+    Name: FileSize,
+    Value: 58479334
+  },
+  {
+    Type: LocalMeta,
+    Name: PostedDateTime,
+    Value: 19.12.2016 08:55:58
+  },
+  {
+    Type: Meta,
+    Name: russian
+  },
+  {
+    Type: Meta,
+    Name: translated
+  },
+  {
+    Type: Copyright,
+    Name: sword art online
+  },
+  {
+    Type: Character,
+    Name: kirigaya kazuto
+  },
+  {
+    Type: Character,
+    Name: lyfa
+  },
+  {
+    Type: Character,
+    Name: kirigaya suguha
+  },
+  {
+    Type: Artist,
+    Name: locker room
+  },
+  {
+    Type: Artist,
+    Name: 100yen locker
+  },
+  {
+    Type: General,
+    Name: male:elf
+  },
+  {
+    Type: General,
+    Name: elf
+  },
+  {
+    Type: General,
+    Name: male:sole male
+  },
+  {
+    Type: General,
+    Name: sole male
+  },
+  {
+    Type: General,
+    Name: male:virginity
+  },
+  {
+    Type: General,
+    Name: virginity
+  },
+  {
+    Type: General,
+    Name: female:big breasts
+  },
+  {
+    Type: General,
+    Name: big breasts
+  },
+  {
+    Type: General,
+    Name: female:cousin
+  },
+  {
+    Type: General,
+    Name: cousin
+  },
+  {
+    Type: General,
+    Name: female:elf
+  },
+  {
+    Type: General,
+    Name: female:masturbation
+  },
+  {
+    Type: General,
+    Name: masturbation
+  },
+  {
+    Type: General,
+    Name: female:tracksuit
+  },
+  {
+    Type: General,
+    Name: tracksuit
+  },
+  {
+    Type: General,
+    Name: incest
+  },
+  {
+    Type: Meta,
+    Name: full color
+  }
+]
