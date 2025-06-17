@@ -92,10 +92,17 @@ public partial class QuickTaggingView : UserControl
             e.Handled = true;
         }
 
-        // select next pack set
+        // select the next pack set
         if (e.Key is Key.Space && Keyboard.Modifiers.HasFlag(ModifierKeys.Control))
         {
             DataContextVM.AvailableTagPacksSets.SelectNextCommand.Execute(null);
+            e.Handled = true;
+        }
+
+        // select the previous pack set
+        if (e.Key is Key.Space && Keyboard.Modifiers.HasFlag(ModifierKeys.Control) && Keyboard.Modifiers.HasFlag(ModifierKeys.Shift))
+        {
+            DataContextVM.AvailableTagPacksSets.SelectPreviousCommand.Execute(null);
             e.Handled = true;
         }
 

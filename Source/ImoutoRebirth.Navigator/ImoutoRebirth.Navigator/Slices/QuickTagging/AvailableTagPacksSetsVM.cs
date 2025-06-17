@@ -57,8 +57,20 @@ internal partial class AvailableTagPacksSetsVM : ObservableObject
 
         Sets.Clear();
 
-        foreach (var set in savedSets) 
-            Sets.Add(set);
+        foreach (var set in savedSets.OrderBy(x => x.Title))
+        {
+            var next = new TagsPacksSetVM
+            {
+                Title = set.Title
+            };
+
+            foreach (var pack in set.Packs.Where(x => x.Tags.Any()))
+            {
+                next.AddNext(pack.Tags);
+            }
+
+            Sets.Add(next);
+        }
     }
 
     [RelayCommand]
@@ -66,5 +78,12 @@ internal partial class AvailableTagPacksSetsVM : ObservableObject
     {
         var index = Sets.IndexOf(Selected);
         Selected = index == Sets.Count - 1 ? Sets.First() : Sets[index + 1];
+    }
+
+    [RelayCommand]
+    private void SelectPrevious()
+    {
+        var index = Sets.IndexOf(Selected);
+        Selected = index == 0 ? Sets.Last() : Sets[index - 1];
     }
 }
