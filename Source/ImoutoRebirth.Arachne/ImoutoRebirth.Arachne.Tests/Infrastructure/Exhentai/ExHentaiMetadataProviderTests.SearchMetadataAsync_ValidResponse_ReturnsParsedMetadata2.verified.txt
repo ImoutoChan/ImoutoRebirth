@@ -1,0 +1,74 @@
+﻿[
+  {
+    Title: Benten Kairaku 16 Moshimo Kare Ga Boketa Nara,
+    Authors: [
+      Kairanban (Bibi)
+    ],
+    Publisher: C78,
+    Tags: [
+      language:chinese,
+      language:translated,
+      parody:bleach,
+      character:rangiku matsumoto,
+      group:kairanban,
+      artist:bibi,
+      artist:emine kendama,
+      male:old man,
+      female:big breasts
+    ],
+    Languages: [
+      chinese,
+      translated
+    ],
+    Rating: 4.49,
+    ThumbnailUrl: https://ehgt.org/e4/16/e41614d8449685d860f5f9e534fd8adeccdc92d4-1512400-1225-1750-jpg_250.jpg,
+    GalleryId: 861082,
+    GalleryToken: db0866f23e,
+    Category: Doujinshi,
+    UploaderName: 少女与猫,
+    FilesCount: 32,
+    FileSize: 23775809,
+    IsExpunged: false,
+    JapaneseTitle: (C78) [快乱版 (ビビ)] 弁天快楽 16 もしも彼がボケたなら (ブリーチ) [中国翻訳],
+    PostedAt: 2015-10-07 00:17:19 +0,
+    FileIdFromSource: 861082|db0866f23e
+  },
+  {
+    Title: Benten Kairaku 16 Moshimo Kare Ga Boketa Nara,
+    Authors: [
+      Kairanban (Bibi)
+    ],
+    Publisher: C78,
+    Tags: [
+      parody:bleach,
+      character:genryusai shigekuni yamamoto,
+      character:rangiku matsumoto,
+      group:kairanban,
+      artist:bibi,
+      artist:emine kendama,
+      male:dilf,
+      male:old man,
+      male:scar,
+      female:big breasts,
+      female:breast feeding,
+      female:fingering,
+      female:milf,
+      female:nakadashi
+    ],
+    Languages: [
+      japanese
+    ],
+    Rating: 4.55,
+    ThumbnailUrl: https://ehgt.org/5c/71/5c714491694f2ab3608a26d718128a61b31ab690-3338736-1225-1750-jpg_250.jpg,
+    GalleryId: 829074,
+    GalleryToken: 198e5a4e4f,
+    Category: Doujinshi,
+    UploaderName: walla*,
+    FilesCount: 32,
+    FileSize: 41802581,
+    IsExpunged: false,
+    JapaneseTitle: (C78) [快乱版 (ビビ)] 弁天快楽 16 もしも彼がボケたなら (ブリーチ),
+    PostedAt: 2015-07-01 12:49:47 +0,
+    FileIdFromSource: 829074|198e5a4e4f
+  }
+]

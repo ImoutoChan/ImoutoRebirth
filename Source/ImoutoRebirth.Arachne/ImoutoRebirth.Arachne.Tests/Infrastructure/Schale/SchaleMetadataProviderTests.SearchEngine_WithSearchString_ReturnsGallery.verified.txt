@@ -1,0 +1,109 @@
+﻿[
+  {
+    Type: LocalMeta,
+    Name: BooruPostId,
+    Value: 24929|221a6bd176fe
+  },
+  {
+    Type: LocalMeta,
+    Name: Md5,
+    Value: 
+  },
+  {
+    Type: Copyright,
+    Name: my wife started experimenting -desperate housewife-
+  },
+  {
+    Type: LocalMeta,
+    Name: PostedDateTime,
+    Value: 02.02.2025 01:11:28
+  },
+  {
+    Type: General,
+    Name: ahegao
+  },
+  {
+    Type: General,
+    Name: big penis
+  },
+  {
+    Type: General,
+    Name: blowjob
+  },
+  {
+    Type: General,
+    Name: bukkake
+  },
+  {
+    Type: General,
+    Name: fingering
+  },
+  {
+    Type: General,
+    Name: lingerie
+  },
+  {
+    Type: General,
+    Name: masturbation
+  },
+  {
+    Type: General,
+    Name: nakadashi
+  },
+  {
+    Type: Artist,
+    Name: ootori mahiro
+  },
+  {
+    Type: General,
+    Name: busty
+  },
+  {
+    Type: General,
+    Name: female:busty
+  },
+  {
+    Type: General,
+    Name: harem
+  },
+  {
+    Type: General,
+    Name: female:harem
+  },
+  {
+    Type: General,
+    Name: impregnation
+  },
+  {
+    Type: General,
+    Name: female:impregnation
+  },
+  {
+    Type: General,
+    Name: milf
+  },
+  {
+    Type: General,
+    Name: female:milf
+  },
+  {
+    Type: General,
+    Name: paizuri
+  },
+  {
+    Type: General,
+    Name: female:paizuri
+  },
+  {
+    Type: General,
+    Name: group
+  },
+  {
+    Type: Meta,
+    Name: english
+  },
+  {
+    Type: Meta,
+    Name: translated
+  }
+]

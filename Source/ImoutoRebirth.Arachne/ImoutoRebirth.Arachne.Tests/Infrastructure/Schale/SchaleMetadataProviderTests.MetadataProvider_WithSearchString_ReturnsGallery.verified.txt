@@ -1,0 +1,86 @@
+﻿{
+  Title: My Wife Started Experimenting -Desperate Housewife-,
+  Authors: [
+    {
+      Type: Artist,
+      Name: ootori mahiro
+    }
+  ],
+  Publisher: ,
+  Tags: [
+    {
+      Name: ahegao
+    },
+    {
+      Name: big penis
+    },
+    {
+      Name: blowjob
+    },
+    {
+      Name: bukkake
+    },
+    {
+      Name: fingering
+    },
+    {
+      Name: lingerie
+    },
+    {
+      Name: masturbation
+    },
+    {
+      Name: nakadashi
+    },
+    {
+      Type: Artist,
+      Name: ootori mahiro
+    },
+    {
+      Type: Female,
+      Name: busty
+    },
+    {
+      Type: Female,
+      Name: harem
+    },
+    {
+      Type: Female,
+      Name: impregnation
+    },
+    {
+      Type: Female,
+      Name: milf
+    },
+    {
+      Type: Female,
+      Name: paizuri
+    },
+    {
+      Type: Mixed,
+      Name: group
+    },
+    {
+      Type: Language,
+      Name: english
+    },
+    {
+      Type: Language,
+      Name: translated
+    }
+  ],
+  Languages: [
+    {
+      Type: Language,
+      Name: english
+    },
+    {
+      Type: Language,
+      Name: translated
+    }
+  ],
+  GalleryId: 24929,
+  GalleryToken: 221a6bd176fe,
+  PostedAt: 2025-02-02 01:11:28.25 +0,
+  FileIdFromSource: 24929|221a6bd176fe
+}

@@ -13,3 +13,4 @@ node_modules/
 **/appsettings.local.json
 **/appsettings.Production.json
 /global.json
+*.received.*
