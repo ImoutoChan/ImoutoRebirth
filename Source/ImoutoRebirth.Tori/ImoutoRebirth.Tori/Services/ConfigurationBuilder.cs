@@ -1,4 +1,5 @@
 ﻿using System.Text.Json;
+using ImoutoRebirth.Tori.Configuration;
 
 namespace ImoutoRebirth.Tori.Services;
 
@@ -6,129 +7,22 @@ public interface IConfigurationBuilder
 {
     void WriteProductionConfigurations(string newVersion);
 
-    string GetInstallLocation();
+    DirectoryInfo GetInstallLocation();
 }
 
 public class ConfigurationBuilder : IConfigurationBuilder
 {
-    private readonly Dictionary<string, string> _configuration;
-    private readonly string _danbooruApiKey;
-    private readonly string _danbooruLogin;
-    private readonly FileInfo _globalConfigurationFile;
-    private readonly string _harpyFavoritesSaveJobRepeatEveryMinutes;
-    private readonly string _harpySavePath;
-    private readonly string _installLocation;
-    private readonly string _kekkaiAuthToken;
-    private readonly string _kekkaiPort;
-    private readonly string _massTransitConnectionString;
-    private readonly string _lilinConnectionString;
-    private readonly string _lilinPort;
-    private readonly string _meidoConnectionString;
-    private readonly string _meidoFaultToleranceIsEnabled;
-    private readonly string _meidoFaultToleranceRepeatEveryMinutes;
-    private readonly string _meidoMetadataActualizerRepeatEveryMinutes;
-    private readonly string _openSearchUri;
-    private readonly string _roomConnectionString;
-    private readonly string _roomImoutoPicsUploadUrl;
-    private readonly string _roomPort;
-    private readonly string _sankakuLogin;
-    private readonly string _sankakuPassword;
-    private readonly string _yandereApiKey;
-    private readonly string _yandereLogin;
-    private readonly string _jaegerHost;
-    private readonly string _jaegerPort;
-    private readonly string _exHentaiIpbMemberId;
-    private readonly string _exHentaiIpbPassHash;
-    private readonly string _exHentaiIgneous;
-    private readonly string _exHentaiUserAgent;
+    private readonly AppConfiguration _configuration;
+
+    public ConfigurationBuilder(AppConfiguration configuration)
+        => _configuration = configuration;
 
     public ConfigurationBuilder(FileInfo globalConfigurationFile)
-    {
-        _globalConfigurationFile = globalConfigurationFile;
-
-        if (!_globalConfigurationFile.Exists)
-            throw new Exception("Unable to find global configuration file!");
-
-        var configurationFileText = File.ReadAllText(_globalConfigurationFile.FullName);
-
-        _configuration = JsonSerializer.Deserialize<Dictionary<string, string>>(configurationFileText)!;
-
-        Migrate(_globalConfigurationFile, _configuration);
-        
-        ValidateConfigurationValues();
-
-        _danbooruLogin = _configuration["DanbooruLogin"];
-        _danbooruApiKey = _configuration["DanbooruApiKey"];
-        _sankakuLogin = _configuration["SankakuLogin"];
-        _sankakuPassword = _configuration["SankakuPassword"];
-        _yandereLogin = _configuration["YandereLogin"];
-        _yandereApiKey = _configuration["YandereApiKey"];
-
-        _openSearchUri = _configuration["OpenSearchUri"];
-
-        _roomPort = _configuration["RoomPort"];
-        _kekkaiPort = _configuration["KekkaiPort"];
-        _lilinPort = _configuration["LilinPort"];
-        _lilinConnectionString = _configuration["LilinConnectionString"];
-        _meidoConnectionString = _configuration["MeidoConnectionString"];
-        _roomConnectionString = _configuration["RoomConnectionString"];
-        _massTransitConnectionString = _configuration["MassTransitConnectionString"];
-
-        _harpySavePath = _configuration["HarpySavePath"].Replace(@"\", @"\\");
-        _harpyFavoritesSaveJobRepeatEveryMinutes = _configuration["HarpyFavoritesSaveJobRepeatEveryMinutes"];
-
-        _kekkaiAuthToken = _configuration["KekkaiAuthToken"];
-
-        _meidoMetadataActualizerRepeatEveryMinutes = _configuration["MeidoMetadataActualizerRepeatEveryMinutes"];
-        _meidoFaultToleranceRepeatEveryMinutes = _configuration["MeidoFaultToleranceRepeatEveryMinutes"];
-        _meidoFaultToleranceIsEnabled = _configuration["MeidoFaultToleranceIsEnabled"];
-
-        _roomImoutoPicsUploadUrl = _configuration["RoomImoutoPicsUploadUrl"];
-        _installLocation = _configuration["InstallLocation"];
-        _jaegerHost = _configuration["JaegerHost"];
-        _jaegerPort = _configuration["JaegerPort"];
-
-        _exHentaiIpbMemberId = _configuration["ExHentaiIpbMemberId"];
-        _exHentaiIpbPassHash = _configuration["ExHentaiIpbPassHash"];
-        _exHentaiIgneous = _configuration["ExHentaiIgneous"];
-        _exHentaiUserAgent = _configuration["ExHentaiUserAgent"];
-    }
-
-    private void Migrate(FileInfo globalConfigurationFile, Dictionary<string, string> configuration)
-    {
-        if (!configuration.ContainsKey("MassTransitConnectionString"))
-        {
-            // version 1 to version 2
-            configuration.Add(
-                "MassTransitConnectionString", 
-                "Server=localhost;Port=5432;Database=masstransit;User Id=postgres;Password=postgres;");
-
-            configuration.Remove("RabbitMqUrl");
-            configuration.Remove("RabbitMqUsername");
-            configuration.Remove("RabbitMqPassword");
-
-            File.WriteAllText(
-              globalConfigurationFile.FullName,
-              JsonSerializer.Serialize(configuration, new JsonSerializerOptions { WriteIndented = true }));
-        }
-
-        if (!configuration.ContainsKey("ExHentaiIpbMemberId"))
-        {
-            // version 2 to version 3, add exhentai options
-            configuration.Add("ExHentaiIpbMemberId", "");
-            configuration.Add("ExHentaiIpbPassHash", "");
-            configuration.Add("ExHentaiIgneous", "");
-            configuration.Add("ExHentaiUserAgent", "");
-
-            File.WriteAllText(
-              globalConfigurationFile.FullName,
-              JsonSerializer.Serialize(configuration, new JsonSerializerOptions { WriteIndented = true }));
-        }
-    }
+        => _configuration = globalConfigurationFile.ReadAppConfiguration();
 
     public void WriteProductionConfigurations(string newVersion)
     {
-        var serviceDirectories = _globalConfigurationFile.Directory!.GetDirectories();
+        var serviceDirectories = GetInstallLocation().GetDirectories();
         foreach (var serviceDirectory in serviceDirectories)
         {
             var configuration = serviceDirectory.Name switch
@@ -158,46 +52,9 @@ public class ConfigurationBuilder : IConfigurationBuilder
         }
     }
 
-    public string GetInstallLocation() => _installLocation;
+    public DirectoryInfo GetInstallLocation() => new(_configuration.InstallLocation);
 
-    private void ValidateConfigurationValues()
-    {
-        var keys = new[]
-        {
-            "DanbooruLogin",
-            "DanbooruApiKey",
-            "SankakuLogin",
-            "SankakuPassword",
-            "YandereLogin",
-            "YandereApiKey",
-            "OpenSearchUri",
-            "RoomPort",
-            "KekkaiPort",
-            "LilinPort",
-            "HarpySavePath",
-            "HarpyFavoritesSaveJobRepeatEveryMinutes",
-            "KekkaiAuthToken",
-            "LilinConnectionString",
-            "MeidoConnectionString",
-            "RoomConnectionString",
-            "MassTransitConnectionString",
-            "MeidoMetadataActualizerRepeatEveryMinutes",
-            "MeidoFaultToleranceRepeatEveryMinutes",
-            "MeidoFaultToleranceIsEnabled",
-            "RoomImoutoPicsUploadUrl",
-            "JaegerHost",
-            "JaegerPort",
-            "ExHentaiIpbMemberId",
-            "ExHentaiIpbPassHash",
-            "ExHentaiIgneous",
-            "ExHentaiUserAgent"
-        };
-
-        var missedKeys = keys.Where(x => !_configuration.ContainsKey(x)).ToList();
-
-        if (missedKeys.Any())
-            throw new Exception("Missed configuration keys: " + string.Join(", ", missedKeys));
-    }
+    public AppConfiguration GetCurrentConfiguration() => _configuration;
 
     private string GetArachneConfiguration(string currentVersion)
     {
@@ -205,29 +62,29 @@ public class ConfigurationBuilder : IConfigurationBuilder
             $$"""
             {
               "ConnectionStrings": {
-                "Masstransit": "{{_massTransitConnectionString}}"
+                "Masstransit": "{{_configuration.Connection.MassTransitConnectionString}}"
               },
               "DanbooruSettings": {
-                "Login": "{{_danbooruLogin}}",
-                "ApiKey": "{{_danbooruApiKey}}",
+                "Login": "{{_configuration.Api.DanbooruLogin}}",
+                "ApiKey": "{{_configuration.Api.DanbooruApiKey}}",
                 "Delay": "1",
                 "BotUserAgent": "Arachne/{{currentVersion}}"
               },
               "SankakuSettings": {
-                "Login": "{{_sankakuLogin}}",
-                "Password": "{{_sankakuPassword}}",
+                "Login": "{{_configuration.Api.SankakuLogin}}",
+                "Password": "{{_configuration.Api.SankakuPassword}}",
                 "Delay": "6000"
               },
               "ExHentaiSettings": {
-                "IpbMemberId": "{{_exHentaiIpbMemberId}}",
-                "IpbPassHash": "{{_exHentaiIpbPassHash}}",
-                "Igneous": "{{_exHentaiIgneous}}",
-                "UserAgent": "{{_exHentaiUserAgent}}"
+                "IpbMemberId": "{{_configuration.ExHentai.IpbMemberId}}",
+                "IpbPassHash": "{{_configuration.ExHentai.IpbPassHash}}",
+                "Igneous": "{{_configuration.ExHentai.Igneous}}",
+                "UserAgent": "{{_configuration.ExHentai.UserAgent}}"
               },
-              "OpenSearchUri": "{{_openSearchUri}}",
+              "OpenSearchUri": "{{_configuration.OpenSearchUri}}",
               "Jaeger": {
-                "Host": "{{_jaegerHost}}",
-                "Port": {{_jaegerPort}}
+                "Host": "{{_configuration.Jaeger.Host}}",
+                "Port": {{_configuration.Jaeger.Port}}
               }
             }
             """;
@@ -239,25 +96,25 @@ public class ConfigurationBuilder : IConfigurationBuilder
             $$"""
             {
               "Danbooru": {
-                "ApiKey": "{{_danbooruApiKey}}",
-                "Login": "{{_danbooruLogin}}",
+                "ApiKey": "{{_configuration.Api.DanbooruApiKey}}",
+                "Login": "{{_configuration.Api.DanbooruLogin}}",
                 "BotUserAgent": "Harpy/{{currentVersion}}"
               },
               "Yandere": {
-                "ApiKey": "{{_yandereApiKey}}",
-                "Login": "{{_yandereLogin}}"
+                "ApiKey": "{{_configuration.Api.YandereApiKey}}",
+                "Login": "{{_configuration.Api.YandereLogin}}"
               },
               "Saver": {
-                "SaveToPath": "{{_harpySavePath}}",
-                "RoomUrl": "http://localhost:{{_roomPort}}/"
+                "SaveToPath": "{{_configuration.Harpy}}",
+                "RoomUrl": "http://localhost:{{_configuration.Ports.RoomPort}}/"
               },
               "FavoritesSaveJobSettings": {
-                "RepeatEveryMinutes": {{_harpyFavoritesSaveJobRepeatEveryMinutes}}
+                "RepeatEveryMinutes": {{_configuration.Harpy.FavoritesSaveJobRepeatEveryMinutes}}
               },
-              "OpenSearchUri": "{{_openSearchUri}}",
+              "OpenSearchUri": "{{_configuration.OpenSearchUri}}",
               "Jaeger": {
-                "Host": "{{_jaegerHost}}",
-                "Port": {{_jaegerPort}}
+                "Host": "{{_configuration.Jaeger.Host}}",
+                "Port": {{_configuration.Jaeger.Port}}
               }
             }
             """;
@@ -268,18 +125,18 @@ public class ConfigurationBuilder : IConfigurationBuilder
         return
             $$"""
             {
-              "AuthToken": "{{_kekkaiAuthToken}}",
-              "OpenSearchUri": "{{_openSearchUri}}",
+              "AuthToken": "{{_configuration.Kekkai.AuthToken}}",
+              "OpenSearchUri": "{{_configuration.OpenSearchUri}}",
               "Kestrel": {
                 "EndPoints": {
                   "Http": {
-                    "Url": "http://*:{{_kekkaiPort}}"
+                    "Url": "http://*:{{_configuration.Ports.KekkaiPort}}"
                   }
                 }
               },
               "Jaeger": {
-                "Host": "{{_jaegerHost}}",
-                "Port": {{_jaegerPort}}
+                "Host": "{{_configuration.Jaeger.Host}}",
+                "Port": {{_configuration.Jaeger.Port}}
               }
             }
             """;
@@ -291,20 +148,20 @@ public class ConfigurationBuilder : IConfigurationBuilder
             $$"""
             {
               "ConnectionStrings": {
-                "LilinDatabase": "{{_lilinConnectionString}}",
-                "Masstransit": "{{_massTransitConnectionString}}"
+                "LilinDatabase": "{{_configuration.Connection.LilinConnectionString}}",
+                "Masstransit": "{{_configuration.Connection.MassTransitConnectionString}}"
               },
-              "OpenSearchUri": "{{_openSearchUri}}",
+              "OpenSearchUri": "{{_configuration.OpenSearchUri}}",
               "Kestrel": {
                 "EndPoints": {
                   "Http": {
-                    "Url": "http://*:{{_lilinPort}}"
+                    "Url": "http://*:{{_configuration.Ports.LilinPort}}"
                   }
                 }
               },
               "Jaeger": {
-                "Host": "{{_jaegerHost}}",
-                "Port": {{_jaegerPort}}
+                "Host": "{{_configuration.Jaeger.Host}}",
+                "Port": {{_configuration.Jaeger.Port}}
               }
             }
             """;
@@ -316,23 +173,23 @@ public class ConfigurationBuilder : IConfigurationBuilder
             $$"""
             {
               "ConnectionStrings": {
-                "MeidoDatabase": "{{_meidoConnectionString}}",
-                "Masstransit": "{{_massTransitConnectionString}}"
+                "MeidoDatabase": "{{_configuration.Connection.MeidoConnectionString}}",
+                "Masstransit": "{{_configuration.Connection.MassTransitConnectionString}}"
               },
-              "OpenSearchUri": "{{_openSearchUri}}",
+              "OpenSearchUri": "{{_configuration.OpenSearchUri}}",
               "MetadataActualizerSettings": {
-                "RepeatEveryMinutes": {{_meidoMetadataActualizerRepeatEveryMinutes}},
+                "RepeatEveryMinutes": {{_configuration.Meido.MetadataActualizerRepeatEveryMinutes}},
                 "ActiveSources": [
                   "Yandere", "Danbooru"
                 ] 
               },
               "FaultToleranceSettings": {
-                "RepeatEveryMinutes": {{_meidoFaultToleranceRepeatEveryMinutes}},
-                "IsEnabled": {{_meidoFaultToleranceIsEnabled}}
+                "RepeatEveryMinutes": {{_configuration.Meido.FaultToleranceRepeatEveryMinutes}},
+                "IsEnabled": {{_configuration.Meido.FaultToleranceIsEnabled}}
               },
               "Jaeger": {
-                "Host": "{{_jaegerHost}}",
-                "Port": {{_jaegerPort}}
+                "Host": "{{_configuration.Jaeger.Host}}",
+                "Port": {{_configuration.Jaeger.Port}}
               }
             }
             """;
@@ -346,19 +203,19 @@ public class ConfigurationBuilder : IConfigurationBuilder
               "Kestrel": {
                 "EndPoints": {
                   "Http": {
-                    "Url": "http://*:{{_roomPort}}"
+                    "Url": "http://*:{{_configuration.Ports.RoomPort}}"
                   }
                 }
               },
               "ConnectionStrings": {
-                "RoomDatabase": "{{_roomConnectionString}}",
-                "Masstransit": "{{_massTransitConnectionString}}"
+                "RoomDatabase": "{{_configuration.Connection.RoomConnectionString}}",
+                "Masstransit": "{{_configuration.Connection.MassTransitConnectionString}}"
               },
-              "OpenSearchUri": "{{_openSearchUri}}",
-              "ImoutoPicsUploadUrl": "{{_roomImoutoPicsUploadUrl}}",
+              "OpenSearchUri": "{{_configuration.OpenSearchUri}}",
+              "ImoutoPicsUploadUrl": "{{_configuration.Room.ImoutoPicsUploadUrl}}",
               "Jaeger": {
-                "Host": "{{_jaegerHost}}",
-                "Port": {{_jaegerPort}}
+                "Host": "{{_configuration.Jaeger.Host}}",
+                "Port": {{_configuration.Jaeger.Port}}
               }
             }
             """;

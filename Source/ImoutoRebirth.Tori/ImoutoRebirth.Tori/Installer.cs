@@ -1,4 +1,5 @@
-﻿using ImoutoRebirth.Tori.Services;
+﻿using ImoutoRebirth.Tori.Configuration;
+using ImoutoRebirth.Tori.Services;
 using Microsoft.Extensions.Logging;
 using DirectoryInfo = System.IO.DirectoryInfo;
 

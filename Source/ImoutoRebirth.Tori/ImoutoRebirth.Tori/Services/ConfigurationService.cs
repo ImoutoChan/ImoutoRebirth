@@ -63,7 +63,7 @@ public class ConfigurationService : IConfigurationService
         _logger.LogInformation("Writing built appsettings.Production.json files to services");
         config.WriteProductionConfigurations(newVersion);
 
-        return new DirectoryInfo(config.GetInstallLocation());
+        return config.GetInstallLocation();
     }
 
     public void SaveActualConfigurationInNewServices(DirectoryInfo installLocation, DirectoryInfo updaterLocation)

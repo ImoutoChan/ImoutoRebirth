@@ -1,4 +1,5 @@
 ﻿using ImoutoRebirth.Tori;
+using ImoutoRebirth.Tori.Configuration;
 using ImoutoRebirth.Tori.Services;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
