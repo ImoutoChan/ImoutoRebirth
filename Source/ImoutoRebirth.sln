@@ -187,6 +187,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ResQueue", "ResQueue", "{33
 		..\Tools\Dependencies\ResQueue\docker-compose.yml = ..\Tools\Dependencies\ResQueue\docker-compose.yml
 	EndProjectSection
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ImoutoRebirth.Tori.Tests", "ImoutoRebirth.Tori\ImoutoRebirth.Tori.Tests\ImoutoRebirth.Tori.Tests.csproj", "{12411564-70B0-4195-9629-01145CFDEAE3}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -431,6 +433,10 @@ Global
 		{AAEFC13A-4A80-4079-BC67-AA15FD7BB9C2}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{AAEFC13A-4A80-4079-BC67-AA15FD7BB9C2}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{AAEFC13A-4A80-4079-BC67-AA15FD7BB9C2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{12411564-70B0-4195-9629-01145CFDEAE3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{12411564-70B0-4195-9629-01145CFDEAE3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{12411564-70B0-4195-9629-01145CFDEAE3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{12411564-70B0-4195-9629-01145CFDEAE3}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -500,6 +506,7 @@ Global
 		{1BB082C3-0D59-4ECF-A008-BA6C0098E771} = {2438D898-F22E-4AD1-950B-4686D50817B3}
 		{B16254AF-E3CE-482E-AAE8-7F2552B49B32} = {2438D898-F22E-4AD1-950B-4686D50817B3}
 		{33AC8603-2432-4141-8072-51A426466565} = {2438D898-F22E-4AD1-950B-4686D50817B3}
+		{12411564-70B0-4195-9629-01145CFDEAE3} = {97909957-9388-4101-9FC9-7A439D3919F9}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {3E48016D-BB6B-49F0-9888-80A5EAF0FAA4}

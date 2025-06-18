@@ -1,6 +1,6 @@
 ﻿using System.Net.Http.Json;
 using System.Reflection;
-using FluentAssertions;
+using AwesomeAssertions;
 using ImoutoRebirth.Room.Application.Cqrs.FoldersSlice;
 using ImoutoRebirth.Room.IntegrationTests.Fixtures;
 using Microsoft.EntityFrameworkCore;

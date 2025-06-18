@@ -1,4 +1,4 @@
-﻿using FluentAssertions.Collections;
+﻿using AwesomeAssertions.Collections;
 
 namespace ImoutoRebirth.Common.Tests;
 

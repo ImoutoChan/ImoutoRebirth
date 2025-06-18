@@ -1,5 +1,5 @@
 ﻿using System.Net.Http.Json;
-using FluentAssertions;
+using AwesomeAssertions;
 using ImoutoRebirth.Common.MassTransit;
 using ImoutoRebirth.Lilin.MessageContracts;
 using ImoutoRebirth.Meido.MessageContracts;
