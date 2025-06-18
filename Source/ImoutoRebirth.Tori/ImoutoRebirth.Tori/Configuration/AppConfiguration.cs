@@ -2,83 +2,62 @@
 
 namespace ImoutoRebirth.Tori.Configuration;
 
-public class AppConfiguration
+public record AppConfiguration(
+    AppConfiguration.ApiSettings Api,
+    AppConfiguration.ConnectionSettings Connection,
+    AppConfiguration.PortsSettings Ports,
+    AppConfiguration.HarpySettings Harpy,
+    AppConfiguration.MeidoSettings Meido,
+    AppConfiguration.RoomSettings Room,
+    AppConfiguration.KekkaiSettings Kekkai,
+    AppConfiguration.JaegerSettings Jaeger,
+    AppConfiguration.ExHentaiSettings ExHentai,
+    string OpenSearchUri,
+    string InstallLocation)
 {
-    public required ApiSettings Api { get; init; }
-    public required ConnectionSettings Connection { get; init; }
-    public required PortsSettings Ports { get; init; }
-    public required HarpySettings Harpy { get; init; }
-    public required MeidoSettings Meido { get; init; }
-    public required RoomSettings Room { get; init; }
-    public required KekkaiSettings Kekkai { get; init; }
-    public required JaegerSettings Jaeger { get; init; }
-    public required ExHentaiSettings ExHentai { get; init; }
-    public required string OpenSearchUri { get; init; }
-    public required string InstallLocation { get; init; }
+    public record ApiSettings(
+        string DanbooruLogin,
+        string DanbooruApiKey,
+        string SankakuLogin,
+        string SankakuPassword,
+        string YandereLogin,
+        string YandereApiKey);
 
-    public class ApiSettings
-    {
-        public required string DanbooruLogin { get; init; }
-        public required string DanbooruApiKey { get; init; }
+    public record ConnectionSettings(
+        string LilinConnectionString,
+        string MeidoConnectionString,
+        string RoomConnectionString,
+        string MassTransitConnectionString);
 
-        public required string SankakuLogin { get; init; }
-        public required string SankakuPassword { get; init; }
+    public record PortsSettings(
+        string RoomPort,
+        string KekkaiPort,
+        string LilinPort);
 
-        public required string YandereLogin { get; init; }
-        public required string YandereApiKey { get; init; }
-    }
+    public record HarpySettings(
+        string SavePath,
+        string FavoritesSaveJobRepeatEveryMinutes);
 
-    public class ConnectionSettings
-    {
-        public required string LilinConnectionString { get; init; }
-        public required string MeidoConnectionString { get; init; }
-        public required string RoomConnectionString { get; init; }
-        public required string MassTransitConnectionString { get; init; }
-    }
+    public record MeidoSettings(
+        string MetadataActualizerRepeatEveryMinutes,
+        string FaultToleranceRepeatEveryMinutes,
+        string FaultToleranceIsEnabled);
 
-    public class PortsSettings
-    {
-        public required string RoomPort { get; init; }
-        public required string KekkaiPort { get; init; }
-        public required string LilinPort { get; init; }
-    }
+    public record RoomSettings(
+        string ImoutoPicsUploadUrl);
 
-    public class HarpySettings
-    {
-        public required string SavePath { get; init; }
-        public required string FavoritesSaveJobRepeatEveryMinutes { get; init; }
-    }
+    public record KekkaiSettings(
+        string AuthToken);
 
-    public class MeidoSettings
-    {
-        public required string MetadataActualizerRepeatEveryMinutes { get; init; }
-        public required string FaultToleranceRepeatEveryMinutes { get; init; }
-        public required string FaultToleranceIsEnabled { get; init; }
-    }
+    public record JaegerSettings(
+        string Host,
+        string Port);
 
-    public class RoomSettings
-    {
-        public required string ImoutoPicsUploadUrl { get; init; }
-    }
-
-    public class KekkaiSettings
-    {
-        public required string AuthToken { get; init; }
-    }
-
-    public class JaegerSettings
-    {
-        public required string Host { get; init; }
-        public required string Port { get; init; }
-    }
-
-    public class ExHentaiSettings
-    {
-        public required string IpbMemberId { get; init; }
-        public required string IpbPassHash { get; init; }
-        public required string Igneous { get; init; }
-        public required string UserAgent { get; init; }
-    }
+    public record ExHentaiSettings(
+        string IpbMemberId,
+        string IpbPassHash,
+        string Igneous,
+        string UserAgent);
 
     public static AppConfiguration ReadFromFile(FileInfo globalConfigurationFile)
     {
@@ -104,64 +83,44 @@ public class AppConfiguration
     {
         ValidateConfigurationValues(configurationDictionary);
 
-        return new()
-        {
-            Api = new()
-            {
-                DanbooruLogin = configurationDictionary["DanbooruLogin"],
-                DanbooruApiKey = configurationDictionary["DanbooruApiKey"],
-                SankakuLogin = configurationDictionary["SankakuLogin"],
-                SankakuPassword = configurationDictionary["SankakuPassword"],
-                YandereLogin = configurationDictionary["YandereLogin"],
-                YandereApiKey = configurationDictionary["YandereApiKey"]
-            },
-            Connection = new()
-            {
-                LilinConnectionString = configurationDictionary["LilinConnectionString"],
-                MeidoConnectionString = configurationDictionary["MeidoConnectionString"],
-                RoomConnectionString = configurationDictionary["RoomConnectionString"],
-                MassTransitConnectionString = configurationDictionary["MassTransitConnectionString"]
-            },
-            Ports = new()
-            {
-                RoomPort = configurationDictionary["RoomPort"],
-                KekkaiPort = configurationDictionary["KekkaiPort"],
-                LilinPort = configurationDictionary["LilinPort"]
-            },
-            Harpy = new()
-            {
-                SavePath = configurationDictionary["HarpySavePath"].Replace(@"\", @"\\"),
-                FavoritesSaveJobRepeatEveryMinutes = configurationDictionary["HarpyFavoritesSaveJobRepeatEveryMinutes"]
-            },
-            Meido = new()
-            {
-                MetadataActualizerRepeatEveryMinutes = configurationDictionary["MeidoMetadataActualizerRepeatEveryMinutes"],
-                FaultToleranceRepeatEveryMinutes = configurationDictionary["MeidoFaultToleranceRepeatEveryMinutes"],
-                FaultToleranceIsEnabled = configurationDictionary["MeidoFaultToleranceIsEnabled"]
-            },
-            Room = new()
-            {
-                ImoutoPicsUploadUrl = configurationDictionary["RoomImoutoPicsUploadUrl"]
-            },
-            Kekkai = new()
-            {
-                AuthToken = configurationDictionary["KekkaiAuthToken"]
-            },
-            Jaeger = new()
-            {
-                Host = configurationDictionary["JaegerHost"],
-                Port = configurationDictionary["JaegerPort"]
-            },
-            ExHentai = new()
-            {
-                IpbMemberId = configurationDictionary["ExHentaiIpbMemberId"],
-                IpbPassHash = configurationDictionary["ExHentaiIpbPassHash"],
-                Igneous = configurationDictionary["ExHentaiIgneous"],
-                UserAgent = configurationDictionary["ExHentaiUserAgent"]
-            },
-            OpenSearchUri = configurationDictionary["OpenSearchUri"],
-            InstallLocation = configurationDictionary["InstallLocation"]
-        };
+        return new(
+            Api: new(
+                DanbooruLogin: configurationDictionary["DanbooruLogin"],
+                DanbooruApiKey: configurationDictionary["DanbooruApiKey"],
+                SankakuLogin: configurationDictionary["SankakuLogin"],
+                SankakuPassword: configurationDictionary["SankakuPassword"],
+                YandereLogin: configurationDictionary["YandereLogin"],
+                YandereApiKey: configurationDictionary["YandereApiKey"]),
+            Connection: new(
+                LilinConnectionString: configurationDictionary["LilinConnectionString"],
+                MeidoConnectionString: configurationDictionary["MeidoConnectionString"],
+                RoomConnectionString: configurationDictionary["RoomConnectionString"],
+                MassTransitConnectionString: configurationDictionary["MassTransitConnectionString"]),
+            Ports: new(
+                RoomPort: configurationDictionary["RoomPort"],
+                KekkaiPort: configurationDictionary["KekkaiPort"],
+                LilinPort: configurationDictionary["LilinPort"]),
+            Harpy: new(
+                SavePath: configurationDictionary["HarpySavePath"].Replace(@"\", @"\\"),
+                FavoritesSaveJobRepeatEveryMinutes: configurationDictionary["HarpyFavoritesSaveJobRepeatEveryMinutes"]),
+            Meido: new(
+                MetadataActualizerRepeatEveryMinutes: configurationDictionary["MeidoMetadataActualizerRepeatEveryMinutes"],
+                FaultToleranceRepeatEveryMinutes: configurationDictionary["MeidoFaultToleranceRepeatEveryMinutes"],
+                FaultToleranceIsEnabled: configurationDictionary["MeidoFaultToleranceIsEnabled"]),
+            Room: new(
+                ImoutoPicsUploadUrl: configurationDictionary["RoomImoutoPicsUploadUrl"]),
+            Kekkai: new(
+                AuthToken: configurationDictionary["KekkaiAuthToken"]),
+            Jaeger: new(
+                Host: configurationDictionary["JaegerHost"],
+                Port: configurationDictionary["JaegerPort"]),
+            ExHentai: new(
+                IpbMemberId: configurationDictionary["ExHentaiIpbMemberId"],
+                IpbPassHash: configurationDictionary["ExHentaiIpbPassHash"],
+                Igneous: configurationDictionary["ExHentaiIgneous"],
+                UserAgent: configurationDictionary["ExHentaiUserAgent"]),
+            OpenSearchUri: configurationDictionary["OpenSearchUri"],
+            InstallLocation: configurationDictionary["InstallLocation"]);
     }
 
     public Dictionary<string, string> WriteToDictionary()

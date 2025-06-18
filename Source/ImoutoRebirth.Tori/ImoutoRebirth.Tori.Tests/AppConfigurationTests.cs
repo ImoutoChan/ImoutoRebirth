@@ -340,63 +340,43 @@ public class AppConfigurationTests
 
     private static AppConfiguration CreateValidAppConfiguration(string? harpyPath = null)
     {
-        return new AppConfiguration
-        {
-            Api = new AppConfiguration.ApiSettings
-            {
-                DanbooruLogin = "danbooruUser",
-                DanbooruApiKey = "danbooruKey123",
-                SankakuLogin = "sankakuUser",
-                SankakuPassword = "sankakuPass123",
-                YandereLogin = "yandereUser",
-                YandereApiKey = "yandereKey123"
-            },
-            Connection = new AppConfiguration.ConnectionSettings
-            {
-                LilinConnectionString = "Server=localhost;Database=lilin;",
-                MeidoConnectionString = "Server=localhost;Database=meido;",
-                RoomConnectionString = "Server=localhost;Database=room;",
-                MassTransitConnectionString = "Server=localhost;Database=masstransit;"
-            },
-            Ports = new AppConfiguration.PortsSettings
-            {
-                RoomPort = "5000",
-                KekkaiPort = "5001",
-                LilinPort = "5002"
-            },
-            Harpy = new AppConfiguration.HarpySettings
-            {
-                SavePath = harpyPath ?? @"C:\\Data\\Harpy",
-                FavoritesSaveJobRepeatEveryMinutes = "60"
-            },
-            Meido = new AppConfiguration.MeidoSettings
-            {
-                MetadataActualizerRepeatEveryMinutes = "30",
-                FaultToleranceRepeatEveryMinutes = "15",
-                FaultToleranceIsEnabled = "true"
-            },
-            Room = new AppConfiguration.RoomSettings
-            {
-                ImoutoPicsUploadUrl = "https://example.com/upload"
-            },
-            Kekkai = new AppConfiguration.KekkaiSettings
-            {
-                AuthToken = "token123"
-            },
-            Jaeger = new AppConfiguration.JaegerSettings
-            {
-                Host = "localhost",
-                Port = "6831"
-            },
-            ExHentai = new AppConfiguration.ExHentaiSettings
-            {
-                IpbMemberId = "memberId",
-                IpbPassHash = "passHash",
-                Igneous = "igneous",
-                UserAgent = "Mozilla/5.0"
-            },
-            OpenSearchUri = "http://localhost:9200",
-            InstallLocation = @"C:\Apps\ImoutoRebirth"
-        };
+        return new AppConfiguration(
+            Api: new AppConfiguration.ApiSettings(
+                DanbooruLogin: "danbooruUser",
+                DanbooruApiKey: "danbooruKey123",
+                SankakuLogin: "sankakuUser",
+                SankakuPassword: "sankakuPass123",
+                YandereLogin: "yandereUser",
+                YandereApiKey: "yandereKey123"),
+            Connection: new AppConfiguration.ConnectionSettings(
+                LilinConnectionString: "Server=localhost;Database=lilin;",
+                MeidoConnectionString: "Server=localhost;Database=meido;",
+                RoomConnectionString: "Server=localhost;Database=room;",
+                MassTransitConnectionString: "Server=localhost;Database=masstransit;"),
+            Ports: new AppConfiguration.PortsSettings(
+                RoomPort: "5000",
+                KekkaiPort: "5001",
+                LilinPort: "5002"),
+            Harpy: new AppConfiguration.HarpySettings(
+                SavePath: harpyPath ?? @"C:\\Data\\Harpy",
+                FavoritesSaveJobRepeatEveryMinutes: "60"),
+            Meido: new AppConfiguration.MeidoSettings(
+                MetadataActualizerRepeatEveryMinutes: "30",
+                FaultToleranceRepeatEveryMinutes: "15",
+                FaultToleranceIsEnabled: "true"),
+            Room: new AppConfiguration.RoomSettings(
+                ImoutoPicsUploadUrl: "https://example.com/upload"),
+            Kekkai: new AppConfiguration.KekkaiSettings(
+                AuthToken: "token123"),
+            Jaeger: new AppConfiguration.JaegerSettings(
+                Host: "localhost",
+                Port: "6831"),
+            ExHentai: new AppConfiguration.ExHentaiSettings(
+                IpbMemberId: "memberId",
+                IpbPassHash: "passHash",
+                Igneous: "igneous",
+                UserAgent: "Mozilla/5.0"),
+            OpenSearchUri: "http://localhost:9200",
+            InstallLocation: @"C:\Apps\ImoutoRebirth");
     }
 }
