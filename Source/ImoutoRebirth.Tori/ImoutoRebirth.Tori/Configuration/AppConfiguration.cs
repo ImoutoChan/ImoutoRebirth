@@ -150,79 +150,79 @@ public static class AppConfigurationExtensions
 
 public class AppConfiguration
 {
-    public ApiSettings Api { get; set; } = new();
-    public ConnectionSettings Connection { get; set; } = new();
-    public PortsSettings Ports { get; set; } = new();
-    public HarpySettings Harpy { get; set; } = new();
-    public MeidoSettings Meido { get; set; } = new();
-    public RoomSettings Room { get; set; } = new();
-    public KekkaiSettings Kekkai { get; set; } = new();
-    public JaegerSettings Jaeger { get; set; } = new();
-    public ExHentaiSettings ExHentai { get; set; } = new();
-    public string OpenSearchUri { get; set; } = string.Empty;
-    public string InstallLocation { get; set; } = string.Empty;
+    public required ApiSettings Api { get; init; }
+    public required ConnectionSettings Connection { get; init; }
+    public required PortsSettings Ports { get; init; }
+    public required HarpySettings Harpy { get; init; }
+    public required MeidoSettings Meido { get; init; }
+    public required RoomSettings Room { get; init; }
+    public required KekkaiSettings Kekkai { get; init; }
+    public required JaegerSettings Jaeger { get; init; }
+    public required ExHentaiSettings ExHentai { get; init; }
+    public required string OpenSearchUri { get; init; }
+    public required string InstallLocation { get; init; }
 
     public class ApiSettings
     {
-        public string DanbooruLogin { get; set; } = string.Empty;
-        public string DanbooruApiKey { get; set; } = string.Empty;
+        public required string DanbooruLogin { get; init; }
+        public required string DanbooruApiKey { get; init; }
 
-        public string SankakuLogin { get; set; } = string.Empty;
-        public string SankakuPassword { get; set; } = string.Empty;
+        public required string SankakuLogin { get; init; }
+        public required string SankakuPassword { get; init; }
 
-        public string YandereLogin { get; set; } = string.Empty;
-        public string YandereApiKey { get; set; } = string.Empty;
+        public required string YandereLogin { get; init; }
+        public required string YandereApiKey { get; init; }
     }
 
     public class ConnectionSettings
     {
-        public string LilinConnectionString { get; set; } = string.Empty;
-        public string MeidoConnectionString { get; set; } = string.Empty;
-        public string RoomConnectionString { get; set; } = string.Empty;
-        public string MassTransitConnectionString { get; set; } = string.Empty;
+        public required string LilinConnectionString { get; init; }
+        public required string MeidoConnectionString { get; init; }
+        public required string RoomConnectionString { get; init; }
+        public required string MassTransitConnectionString { get; init; }
     }
 
     public class PortsSettings
     {
-        public string RoomPort { get; set; } = string.Empty;
-        public string KekkaiPort { get; set; } = string.Empty;
-        public string LilinPort { get; set; } = string.Empty;
+        public required string RoomPort { get; init; }
+        public required string KekkaiPort { get; init; }
+        public required string LilinPort { get; init; }
     }
 
     public class HarpySettings
     {
-        public string SavePath { get; set; } = string.Empty;
-        public string FavoritesSaveJobRepeatEveryMinutes { get; set; } = string.Empty;
+        public required string SavePath { get; init; }
+        public required string FavoritesSaveJobRepeatEveryMinutes { get; init; }
     }
 
     public class MeidoSettings
     {
-        public string MetadataActualizerRepeatEveryMinutes { get; set; } = string.Empty;
-        public string FaultToleranceRepeatEveryMinutes { get; set; } = string.Empty;
-        public string FaultToleranceIsEnabled { get; set; } = string.Empty;
+        public required string MetadataActualizerRepeatEveryMinutes { get; init; }
+        public required string FaultToleranceRepeatEveryMinutes { get; init; }
+        public required string FaultToleranceIsEnabled { get; init; }
     }
 
     public class RoomSettings
     {
-        public string ImoutoPicsUploadUrl { get; set; } = string.Empty;
+        public required string ImoutoPicsUploadUrl { get; init; }
     }
 
     public class KekkaiSettings
     {
-        public string AuthToken { get; set; } = string.Empty;
+        public required string AuthToken { get; init; }
     }
 
     public class JaegerSettings
     {
-        public string Host { get; set; } = string.Empty;
-        public string Port { get; set; } = string.Empty;
+        public required string Host { get; init; }
+        public required string Port { get; init; }
     }
 
     public class ExHentaiSettings
     {
-        public string IpbMemberId { get; set; } = string.Empty;
-        public string IpbPassHash { get; set; } = string.Empty;
-        public string Igneous { get; set; } = string.Empty;
-        public string UserAgent { get; set; } = string.Empty;
+        public required string IpbMemberId { get; init; }
+        public required string IpbPassHash { get; init; }
+        public required string Igneous { get; init; }
+        public required string UserAgent { get; init; }
     }
 }

@@ -1,7 +1,6 @@
 ﻿using System.Text.Json;
-using ImoutoRebirth.Tori.Configuration;
 
-namespace ImoutoRebirth.Tori.Services;
+namespace ImoutoRebirth.Tori.Configuration;
 
 public interface IConfigurationBuilder
 {
