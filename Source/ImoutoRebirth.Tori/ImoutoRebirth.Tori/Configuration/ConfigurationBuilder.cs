@@ -4,7 +4,7 @@ namespace ImoutoRebirth.Tori.Configuration;
 
 public interface IConfigurationBuilder
 {
-    void WriteProductionConfigurations(string newVersion);
+    void WriteProductionConfigurations(string newVersion, DirectoryInfo updaterLocation);
 
     DirectoryInfo GetInstallLocation();
 }
@@ -17,11 +17,11 @@ public class ConfigurationBuilder : IConfigurationBuilder
         => _configuration = configuration;
 
     public ConfigurationBuilder(FileInfo globalConfigurationFile)
-        => _configuration = globalConfigurationFile.ReadAppConfiguration();
+        => _configuration = AppConfiguration.ReadFromFile(globalConfigurationFile);
 
-    public void WriteProductionConfigurations(string newVersion)
+    public void WriteProductionConfigurations(string newVersion, DirectoryInfo updaterLocation)
     {
-        var serviceDirectories = GetInstallLocation().GetDirectories();
+        var serviceDirectories = updaterLocation.GetDirectories();
         foreach (var serviceDirectory in serviceDirectories)
         {
             var configuration = serviceDirectory.Name switch

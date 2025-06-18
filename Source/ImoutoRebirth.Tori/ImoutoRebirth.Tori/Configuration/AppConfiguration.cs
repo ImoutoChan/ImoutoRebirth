@@ -2,18 +2,98 @@
 
 namespace ImoutoRebirth.Tori.Configuration;
 
-public static class AppConfigurationExtensions
+public class AppConfiguration
 {
-    public static AppConfiguration ReadAppConfiguration(this FileInfo globalConfigurationFile)
+    public required ApiSettings Api { get; init; }
+    public required ConnectionSettings Connection { get; init; }
+    public required PortsSettings Ports { get; init; }
+    public required HarpySettings Harpy { get; init; }
+    public required MeidoSettings Meido { get; init; }
+    public required RoomSettings Room { get; init; }
+    public required KekkaiSettings Kekkai { get; init; }
+    public required JaegerSettings Jaeger { get; init; }
+    public required ExHentaiSettings ExHentai { get; init; }
+    public required string OpenSearchUri { get; init; }
+    public required string InstallLocation { get; init; }
+
+    public class ApiSettings
+    {
+        public required string DanbooruLogin { get; init; }
+        public required string DanbooruApiKey { get; init; }
+
+        public required string SankakuLogin { get; init; }
+        public required string SankakuPassword { get; init; }
+
+        public required string YandereLogin { get; init; }
+        public required string YandereApiKey { get; init; }
+    }
+
+    public class ConnectionSettings
+    {
+        public required string LilinConnectionString { get; init; }
+        public required string MeidoConnectionString { get; init; }
+        public required string RoomConnectionString { get; init; }
+        public required string MassTransitConnectionString { get; init; }
+    }
+
+    public class PortsSettings
+    {
+        public required string RoomPort { get; init; }
+        public required string KekkaiPort { get; init; }
+        public required string LilinPort { get; init; }
+    }
+
+    public class HarpySettings
+    {
+        public required string SavePath { get; init; }
+        public required string FavoritesSaveJobRepeatEveryMinutes { get; init; }
+    }
+
+    public class MeidoSettings
+    {
+        public required string MetadataActualizerRepeatEveryMinutes { get; init; }
+        public required string FaultToleranceRepeatEveryMinutes { get; init; }
+        public required string FaultToleranceIsEnabled { get; init; }
+    }
+
+    public class RoomSettings
+    {
+        public required string ImoutoPicsUploadUrl { get; init; }
+    }
+
+    public class KekkaiSettings
+    {
+        public required string AuthToken { get; init; }
+    }
+
+    public class JaegerSettings
+    {
+        public required string Host { get; init; }
+        public required string Port { get; init; }
+    }
+
+    public class ExHentaiSettings
+    {
+        public required string IpbMemberId { get; init; }
+        public required string IpbPassHash { get; init; }
+        public required string Igneous { get; init; }
+        public required string UserAgent { get; init; }
+    }
+
+    public static AppConfiguration ReadFromFile(FileInfo globalConfigurationFile)
     {
         if (!globalConfigurationFile.Exists)
             throw new Exception("Unable to find global configuration file!");
 
-        var configurationFileText = File.ReadAllText(globalConfigurationFile.FullName);
-
-        var configurationDictionary = JsonSerializer.Deserialize<Dictionary<string, string>>(configurationFileText)!;
+        var configurationJson = File.ReadAllText(globalConfigurationFile.FullName);
+        var configurationDictionary = JsonSerializer.Deserialize<Dictionary<string, string>>(configurationJson)!;
 
         Migrate(globalConfigurationFile, configurationDictionary);
+        return ReadFromDictionary(configurationDictionary);
+    }
+
+    public static AppConfiguration ReadFromDictionary(Dictionary<string,string> configurationDictionary)
+    {
         ValidateConfigurationValues(configurationDictionary);
 
         return new()
@@ -145,84 +225,5 @@ public static class AppConfigurationExtensions
                 globalConfigurationFile.FullName,
                 JsonSerializer.Serialize(configuration, new JsonSerializerOptions { WriteIndented = true }));
         }
-    }
-}
-
-public class AppConfiguration
-{
-    public required ApiSettings Api { get; init; }
-    public required ConnectionSettings Connection { get; init; }
-    public required PortsSettings Ports { get; init; }
-    public required HarpySettings Harpy { get; init; }
-    public required MeidoSettings Meido { get; init; }
-    public required RoomSettings Room { get; init; }
-    public required KekkaiSettings Kekkai { get; init; }
-    public required JaegerSettings Jaeger { get; init; }
-    public required ExHentaiSettings ExHentai { get; init; }
-    public required string OpenSearchUri { get; init; }
-    public required string InstallLocation { get; init; }
-
-    public class ApiSettings
-    {
-        public required string DanbooruLogin { get; init; }
-        public required string DanbooruApiKey { get; init; }
-
-        public required string SankakuLogin { get; init; }
-        public required string SankakuPassword { get; init; }
-
-        public required string YandereLogin { get; init; }
-        public required string YandereApiKey { get; init; }
-    }
-
-    public class ConnectionSettings
-    {
-        public required string LilinConnectionString { get; init; }
-        public required string MeidoConnectionString { get; init; }
-        public required string RoomConnectionString { get; init; }
-        public required string MassTransitConnectionString { get; init; }
-    }
-
-    public class PortsSettings
-    {
-        public required string RoomPort { get; init; }
-        public required string KekkaiPort { get; init; }
-        public required string LilinPort { get; init; }
-    }
-
-    public class HarpySettings
-    {
-        public required string SavePath { get; init; }
-        public required string FavoritesSaveJobRepeatEveryMinutes { get; init; }
-    }
-
-    public class MeidoSettings
-    {
-        public required string MetadataActualizerRepeatEveryMinutes { get; init; }
-        public required string FaultToleranceRepeatEveryMinutes { get; init; }
-        public required string FaultToleranceIsEnabled { get; init; }
-    }
-
-    public class RoomSettings
-    {
-        public required string ImoutoPicsUploadUrl { get; init; }
-    }
-
-    public class KekkaiSettings
-    {
-        public required string AuthToken { get; init; }
-    }
-
-    public class JaegerSettings
-    {
-        public required string Host { get; init; }
-        public required string Port { get; init; }
-    }
-
-    public class ExHentaiSettings
-    {
-        public required string IpbMemberId { get; init; }
-        public required string IpbPassHash { get; init; }
-        public required string Igneous { get; init; }
-        public required string UserAgent { get; init; }
     }
 }

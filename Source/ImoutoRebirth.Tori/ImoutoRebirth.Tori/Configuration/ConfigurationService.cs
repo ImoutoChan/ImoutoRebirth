@@ -44,7 +44,7 @@ public class ConfigurationService : IConfigurationService
         var config = new ConfigurationBuilder(finalFile);
 
         _logger.LogInformation("Writing built appsettings.Production.json files to services");
-        config.WriteProductionConfigurations(newVersion);
+        config.WriteProductionConfigurations(newVersion, finalFile.Directory!);
     }
 
     public DirectoryInfo ActualizeConfigurationForInstall(string newVersion, DirectoryInfo updaterLocation)
@@ -61,7 +61,7 @@ public class ConfigurationService : IConfigurationService
         var config = new ConfigurationBuilder(finalFile);
 
         _logger.LogInformation("Writing built appsettings.Production.json files to services");
-        config.WriteProductionConfigurations(newVersion);
+        config.WriteProductionConfigurations(newVersion, finalFile.Directory!);
 
         return config.GetInstallLocation();
     }
