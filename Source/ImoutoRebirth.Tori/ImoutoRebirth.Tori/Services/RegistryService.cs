@@ -6,6 +6,7 @@ namespace ImoutoRebirth.Tori.Services;
 public interface IRegistryService
 {
     bool IsInstalled([NotNullWhen(returnValue: true)] out DirectoryInfo? installLocation);
+
     void SetInstalled(DirectoryInfo installLocation);
 }
 

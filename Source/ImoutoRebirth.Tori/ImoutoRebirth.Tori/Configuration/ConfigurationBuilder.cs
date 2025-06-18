@@ -104,7 +104,7 @@ public class ConfigurationBuilder : IConfigurationBuilder
                 "Login": "{{_configuration.Api.YandereLogin}}"
               },
               "Saver": {
-                "SaveToPath": "{{_configuration.Harpy}}",
+                "SaveToPath": "{{_configuration.Harpy.SavePath}}",
                 "RoomUrl": "http://localhost:{{_configuration.Ports.RoomPort}}/"
               },
               "FavoritesSaveJobSettings": {

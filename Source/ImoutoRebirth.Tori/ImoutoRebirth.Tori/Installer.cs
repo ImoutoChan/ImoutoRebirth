@@ -69,11 +69,8 @@ public class Installer : IInstaller
     private void EasyUpdateProgram(string newVersion, DirectoryInfo installLocation, DirectoryInfo updaterLocation)
     {
         _configurationService.ActualizeConfigurationForUpdate(newVersion, installLocation, updaterLocation);
-
         _windowsServiceUpdater.UpdateService(installLocation, updaterLocation);
-        
         _versionService.SetLocalVersionAsNew(installLocation);
-
         _configurationService.SaveActualConfigurationInNewServices(installLocation, updaterLocation);
         
         _logger.LogInformation("ImoutoRebirth updated");

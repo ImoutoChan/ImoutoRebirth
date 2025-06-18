@@ -92,6 +92,14 @@ public class AppConfiguration
         return ReadFromDictionary(configurationDictionary);
     }
 
+    public void WriteToFile(FileInfo file)
+    {
+        var configurationDictionary = WriteToDictionary();
+        ValidateConfigurationValues(configurationDictionary);
+
+        File.WriteAllText(file.FullName, JsonSerializer.Serialize(configurationDictionary));
+    }
+
     public static AppConfiguration ReadFromDictionary(Dictionary<string,string> configurationDictionary)
     {
         ValidateConfigurationValues(configurationDictionary);
@@ -155,6 +163,48 @@ public class AppConfiguration
             InstallLocation = configurationDictionary["InstallLocation"]
         };
     }
+
+    public Dictionary<string, string> WriteToDictionary()
+        => new()
+        {
+            ["DanbooruLogin"] = Api.DanbooruLogin,
+            ["DanbooruApiKey"] = Api.DanbooruApiKey,
+            ["SankakuLogin"] = Api.SankakuLogin,
+            ["SankakuPassword"] = Api.SankakuPassword,
+            ["YandereLogin"] = Api.YandereLogin,
+            ["YandereApiKey"] = Api.YandereApiKey,
+
+            ["LilinConnectionString"] = Connection.LilinConnectionString,
+            ["MeidoConnectionString"] = Connection.MeidoConnectionString,
+            ["RoomConnectionString"] = Connection.RoomConnectionString,
+            ["MassTransitConnectionString"] = Connection.MassTransitConnectionString,
+
+            ["RoomPort"] = Ports.RoomPort,
+            ["KekkaiPort"] = Ports.KekkaiPort,
+            ["LilinPort"] = Ports.LilinPort,
+
+            ["HarpySavePath"] = Harpy.SavePath.Replace(@"\\", @"\"),
+            ["HarpyFavoritesSaveJobRepeatEveryMinutes"] = Harpy.FavoritesSaveJobRepeatEveryMinutes,
+
+            ["MeidoMetadataActualizerRepeatEveryMinutes"] = Meido.MetadataActualizerRepeatEveryMinutes,
+            ["MeidoFaultToleranceRepeatEveryMinutes"] = Meido.FaultToleranceRepeatEveryMinutes,
+            ["MeidoFaultToleranceIsEnabled"] = Meido.FaultToleranceIsEnabled,
+
+            ["RoomImoutoPicsUploadUrl"] = Room.ImoutoPicsUploadUrl,
+
+            ["KekkaiAuthToken"] = Kekkai.AuthToken,
+
+            ["JaegerHost"] = Jaeger.Host,
+            ["JaegerPort"] = Jaeger.Port,
+
+            ["ExHentaiIpbMemberId"] = ExHentai.IpbMemberId,
+            ["ExHentaiIpbPassHash"] = ExHentai.IpbPassHash,
+            ["ExHentaiIgneous"] = ExHentai.Igneous,
+            ["ExHentaiUserAgent"] = ExHentai.UserAgent,
+
+            ["OpenSearchUri"] = OpenSearchUri,
+            ["InstallLocation"] = InstallLocation
+        };
 
     private static void ValidateConfigurationValues(Dictionary<string, string> configuration)
     {
