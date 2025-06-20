@@ -48,12 +48,13 @@ internal partial class TagsPacksSetVM : ObservableObject
         }
         else
         {
+            var usedKeys = Packs.Select(x => x.Key).ToHashSet();
+
             var nextIndex = Array.IndexOf(AvailableKeys, lastKey.Value) + 1;
 
-            if (nextIndex < AvailableKeys.Length) 
+            if (nextIndex < AvailableKeys.Length && !usedKeys.Contains(AvailableKeys[nextIndex]))
                 return AvailableKeys[nextIndex];
 
-            var usedKeys = Packs.Select(x => x.Key).Append('_').Append('-').ToList();
 
             var unused = AvailableKeys.FirstOrDefault(x => !usedKeys.Contains(x));
 

@@ -16,6 +16,14 @@ if they are different, the hash will be highlighted in red
 * Support for dodji (archives or comic formats) and their previews
 * Add hot keys cheat sheet in the bottom of tags view
 * Add some basic animation for hot keys sheet sheet and quick tagging
+* Add new tag pack set button for quick tagging
+* Add reset last played positions button in settings
+* Close all flyouts on escape
+* Repeated T will close the tags edit flyout
+* Escape to exit from flyouts
+* Autofocus search tag field in tags edit
+* Fix the bug in quick add tags when different sets have the same key
+* Add ctrl shift space hotkey for quick tagging to select the previous tag pack set
 
 ### Viewer
 * Support opening zipped galleries: zip 7z rar cbz cbr etc It will be extracted to a temporary folder and opened 

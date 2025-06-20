@@ -14,3 +14,4 @@ node_modules/
 /Source/ImoutoRebirth.Navigator/ImoutoRebirth.Navigator/ImoutoRebirth.Navigator.csproj.user
 **/appsettings.Production.json
 /global.json
+*.received.*

@@ -16,7 +16,9 @@ namespace ImoutoRebirth.Navigator.UserControls;
 public partial class PlayerControl
 {
     private static readonly ConcurrentDictionary<string, long> LastMediaPositionValues = new();
-    
+
+    public static void ResetLastMediaPositions() => LastMediaPositionValues.Clear();
+
     private bool _isPlayed;
     private VlcControl _control;
     private bool _isDisposed = false;
