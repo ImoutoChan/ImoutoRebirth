@@ -1,0 +1,71 @@
+<mah:MetroWindow x:Class="ImoutoRebirth.Tori.UI.InstallerWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:ImoutoRebirth.Tori.UI"
+        xmlns:mah="http://metro.mahapps.com/winfx/xaml/controls"
+        xmlns:models="clr-namespace:ImoutoRebirth.Tori.UI.Models"
+        xmlns:viewModels="clr-namespace:ImoutoRebirth.Tori.UI.ViewModels"
+        mc:Ignorable="d"
+        Title="{Binding WindowTitle}"
+        Height="614" Width="1028"
+        WindowStartupLocation="CenterScreen">
+    
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+        
+        <!-- Navigation Bar -->
+        <!--<StackPanel Grid.Row="0" Orientation="Horizontal" Background="#F0F0F0" Margin="0,0,0,10">
+            <ItemsControl ItemsSource="{Binding NavigationService.AvailableSteps}" Margin="10">
+                <ItemsControl.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <StackPanel Orientation="Horizontal"/>
+                    </ItemsPanelTemplate>
+                </ItemsControl.ItemsPanel>
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate DataType="{x:Type models:InstallerStep}">
+                        <StackPanel Orientation="Horizontal">
+                            <Button Content="{Binding}"
+                                    Command="{Binding DataContext.GoToStepCommand, RelativeSource={RelativeSource AncestorType=mah:MetroWindow}}"
+                                    CommandParameter="{Binding}"
+                                    Margin="0,0,5,0"
+                                    Style="{StaticResource MahApps.Styles.Button.Flat}"
+                                    
+                                    />
+                            <TextBlock Text=">" Margin="0,0,5,0" VerticalAlignment="Center"/>
+                        </StackPanel>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+        </StackPanel>-->
+        
+        <!-- Content Area -->
+        <ContentControl x:Name="StepContent" Grid.Row="1" />
+        
+        <!-- Navigation Buttons -->
+        <!--<Grid Grid.Row="2" Margin="20">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
+            
+            <Button Grid.Column="1" Content="Back" Command="{Binding BackCommand}" 
+                    Width="100" Margin="0,0,10,0" Style="{StaticResource MahApps.Styles.Button}"/>
+            
+            <Button Grid.Column="2" Content="Далее" 
+                    Command="{Binding NextCommand}" Width="100" Style="{StaticResource MahApps.Styles.Button.Dialogs.Accent}"/>
+        </Grid>-->
+    </Grid>
+    
+    <mah:MetroWindow.Resources>
+        <local:StepToFontWeightConverter x:Key="StepToFontWeightConverter"/>
+        <local:StepToNextButtonTextConverter x:Key="StepToNextButtonTextConverter"/>
+        <local:LastStepConverter x:Key="LastStepConverter"/>
+    </mah:MetroWindow.Resources>
+</mah:MetroWindow>
