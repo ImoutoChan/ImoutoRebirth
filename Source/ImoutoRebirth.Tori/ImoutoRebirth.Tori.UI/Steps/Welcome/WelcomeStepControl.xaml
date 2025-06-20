@@ -1,0 +1,119 @@
+<UserControl x:Class="ImoutoRebirth.Tori.UI.Steps.Welcome.WelcomeStepControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:ImoutoRebirth.Tori.UI.Steps"
+             xmlns:steps="clr-namespace:ImoutoRebirth.Tori.UI.ViewModels.Steps"
+             xmlns:welcome="clr-namespace:ImoutoRebirth.Tori.UI.Steps.Welcome"
+             mc:Ignorable="d" 
+             d:DesignHeight="450" d:DesignWidth="800"
+             d:DataContext="{d:DesignInstance Type=welcome:WelcomeStepViewModel}">
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="..\..\CommonControls.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </UserControl.Resources>
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+
+        <Grid Grid.Row="0" Margin="50, 40, 50, 0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="Auto" />
+            </Grid.ColumnDefinitions>
+
+            <TextBlock 
+                Text="{Binding Title}" 
+                Style="{DynamicResource Styles.Typography.Title}" />
+
+            <Image Grid.Column="1" />
+        </Grid>
+        
+        <Grid Grid.Row="1" Margin="144, 73, 144, 0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+
+            <StackPanel Grid.Column="0" VerticalAlignment="Top" Margin="20">
+                <TextBlock 
+                    Text="New update is available"
+                    Style="{DynamicResource Styles.Typography.Default}" />
+
+                <Border 
+                    BorderThickness="1,0,0,0" 
+                    BorderBrush="{DynamicResource MahApps.Brushes.Flyout.Foreground}"
+                    Margin="0,18,0,0"
+                    Padding="11,6,0,6">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="38"/>
+                            <ColumnDefinition Width="Auto" />
+                        </Grid.ColumnDefinitions>
+
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="*" />
+                            <RowDefinition Height="9" />
+                            <RowDefinition Height="Auto" />
+                        </Grid.RowDefinitions>
+
+                        <TextBlock
+                            Grid.Row="0"
+                            Grid.Column="0"
+                            Text="current version" 
+                            HorizontalAlignment="Right"
+                            Style="{DynamicResource Styles.Typography.LessVisible}" />
+
+                        <TextBlock 
+                            Grid.Row="2"
+                            Grid.Column="0"
+                            Text="new version" 
+                            HorizontalAlignment="Right"
+                            Style="{DynamicResource Styles.Typography.LessVisible}" />
+
+                        <TextBlock 
+                            Grid.Row="0"
+                            Grid.Column="2"
+                            Text="{Binding CurrentVersion}" 
+                            HorizontalAlignment="Right"
+                            Style="{DynamicResource Styles.Typography.LessVisible}" />
+
+                        <TextBlock 
+                            Grid.Row="2"
+                            Grid.Column="2"
+                            Text="{Binding NewVersion}" 
+                            HorizontalAlignment="Right"
+                            Style="{DynamicResource Styles.Typography.LessVisible}" />
+                    </Grid>
+                </Border>
+            </StackPanel>
+
+            <TextBlock Grid.Column="1" TextWrapping="Wrap" FontSize="16" VerticalAlignment="Top" Margin="20">
+                <TextBlock 
+                    Text="Click the update button for the instant update. Or click customize in case you want to change some settings."
+                    Style="{DynamicResource Styles.Typography.LessVisible}"
+                    TextWrapping="Wrap" />
+                <LineBreak />
+                <LineBreak />
+                <LineBreak />
+                <TextBlock Text="Note: ImoutoRebirth background services will be stopped and all instances of ImoutoNavigator and ImoutoViewer will be closed too. Please save your work before continue"
+                           Style="{DynamicResource Styles.Typography.Note}"
+                           TextWrapping="Wrap" />
+            </TextBlock>
+        </Grid>
+
+        <StackPanel Grid.Row="2" HorizontalAlignment="Right" Orientation="Horizontal" Margin="50, 0, 50, 40">
+            <Button Style="{DynamicResource Styles.Button.Regular}" Command="{Binding CustomizeCommand}">customize</Button>
+            <Button Style="{DynamicResource Styles.Button.Accent}" Command="{Binding UpdateCommand}">update</Button>
+        </StackPanel>
+    </Grid>
+</UserControl>

@@ -1,8 +1,11 @@
-﻿using ImoutoRebirth.Tori.Services;
+﻿using CommunityToolkit.Mvvm.Messaging;
+using ImoutoRebirth.Tori.Services;
 using ImoutoRebirth.Tori.UI.Services;
+using ImoutoRebirth.Tori.UI.Steps.Prerequisites;
 using ImoutoRebirth.Tori.UI.ViewModels.Steps;
 using Microsoft.Extensions.DependencyInjection;
 using System.Windows;
+using WelcomeStepViewModel = ImoutoRebirth.Tori.UI.Steps.Welcome.WelcomeStepViewModel;
 
 namespace ImoutoRebirth.Tori.UI;
 
@@ -29,16 +32,22 @@ public partial class App : Application
         // Register services
         services.AddSingleton<IStepsNavigationService, StepsNavigationService>();
         services.AddSingleton<IStepFactory, StepFactory>();
-        
+
         // Register windows
         services.AddTransient<InstallerWindow>();
-        
+
         // Tori
         services.AddTransient<IRegistryService, RegistryService>();
         services.AddTransient<IVersionService, VersionService>();
+        services.AddTransient<IDependencyManager, DependencyManager>();
 
         services.AddTransient<WelcomeStepViewModel>();
         services.AddTransient<ConfigurationStepViewModel>();
+        services.AddTransient<PrerequisitesStepViewModel>();
+
+        services.AddSingleton<IMessenger , WeakReferenceMessenger>();
+
+        services.AddLogging();
     }
     
     protected override void OnExit(ExitEventArgs e)

@@ -1,6 +1,6 @@
 using System.Windows.Controls;
 
-namespace ImoutoRebirth.Tori.UI.Steps;
+namespace ImoutoRebirth.Tori.UI.Steps.Welcome;
 
 public partial class WelcomeStepControl : UserControl
 {

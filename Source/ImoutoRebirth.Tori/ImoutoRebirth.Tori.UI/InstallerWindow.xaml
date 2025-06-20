@@ -10,7 +10,10 @@
         mc:Ignorable="d"
         Title="{Binding WindowTitle}"
         Height="614" Width="1028"
-        WindowStartupLocation="CenterScreen">
+        WindowStartupLocation="CenterScreen"
+        ShowTitleBar="False"
+        ResizeMode="CanMinimize"
+        >
     
     <Grid>
         <Grid.RowDefinitions>

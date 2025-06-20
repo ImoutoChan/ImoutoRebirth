@@ -1,11 +1,16 @@
-using System.Security.Policy;
 using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
+using CommunityToolkit.Mvvm.Messaging;
 using ImoutoRebirth.Tori.Services;
+using ImoutoRebirth.Tori.UI.Models;
+using ImoutoRebirth.Tori.UI.Services;
 
-namespace ImoutoRebirth.Tori.UI.ViewModels.Steps;
+namespace ImoutoRebirth.Tori.UI.Steps.Welcome;
 
 public partial class WelcomeStepViewModel : ObservableObject, IStep
 {
+    private readonly IMessenger _messenger;
+
     [ObservableProperty]
     private string _title = "ImoutoRebirth";
     
@@ -18,8 +23,9 @@ public partial class WelcomeStepViewModel : ObservableObject, IStep
     [ObservableProperty]
     private bool _isUpdating;
 
-    public WelcomeStepViewModel(IRegistryService registryService, IVersionService versionService)
+    public WelcomeStepViewModel(IRegistryService registryService, IVersionService versionService, IMessenger messenger)
     {
+        _messenger = messenger;
         if (registryService.IsInstalled(out var installLocation))
         {
             CurrentVersion = versionService.GetLocalVersion(installLocation);
@@ -32,5 +38,17 @@ public partial class WelcomeStepViewModel : ObservableObject, IStep
         }
 
         NewVersion = versionService.GetNewVersion();
+    }
+
+    [RelayCommand]
+    public void Customize()
+    {
+        _messenger.Send(new NavigateTo(InstallerStep.Prerequisites));
+    }
+
+    [RelayCommand]
+    public void Update()
+    {
+        _messenger.Send(new NavigateTo(InstallerStep.Installation));
     }
 }

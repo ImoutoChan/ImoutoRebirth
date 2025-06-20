@@ -1,5 +1,6 @@
 using System.Collections.ObjectModel;
 using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Messaging;
 using ImoutoRebirth.Tori.UI.Models;
 
 namespace ImoutoRebirth.Tori.UI.Services;
@@ -23,6 +24,8 @@ public interface IStepsNavigationService
     event EventHandler<InstallerStep>? StepChanged;
 }
 
+public record NavigateTo(InstallerStep Step);
+
 public partial class StepsNavigationService : ObservableObject, IStepsNavigationService
 {
     private readonly List<InstallerStep> _availableSteps;
@@ -31,19 +34,21 @@ public partial class StepsNavigationService : ObservableObject, IStepsNavigation
     [NotifyPropertyChangedFor(nameof(CanGoNext), nameof(CanGoBack))]
     private InstallerStep _currentStep;
     
-    public StepsNavigationService()
+    public StepsNavigationService(IMessenger messenger)
     {
-        _availableSteps = new List<InstallerStep>
-        {
+        _availableSteps =
+        [
             InstallerStep.Welcome,
             InstallerStep.Prerequisites,
             InstallerStep.Accounts,
             InstallerStep.Locations,
             InstallerStep.Database,
             InstallerStep.Installation
-        };
+        ];
         
         _currentStep = InstallerStep.Welcome;
+
+        messenger.Register<NavigateTo, StepsNavigationService>(this, (r, m) => r.GoToStep(m.Step));
     }
     
     public ReadOnlyCollection<InstallerStep> AvailableSteps => _availableSteps.AsReadOnly();

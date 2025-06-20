@@ -23,6 +23,5 @@ public partial class ConfigurationStepViewModel : ViewModelBase
     [RelayCommand]
     private void BrowseInstallLocation()
     {
-        
     }
 }

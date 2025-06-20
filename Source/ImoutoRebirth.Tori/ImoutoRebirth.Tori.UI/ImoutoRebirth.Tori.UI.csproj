@@ -23,6 +23,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
+		<ProjectReference Include="..\..\ImoutoRebirth.Common\ImoutoRebirth.Common.WPF\ImoutoRebirth.Common.WPF.csproj" />
 		<ProjectReference Include="..\ImoutoRebirth.Tori\ImoutoRebirth.Tori.csproj" />
 	</ItemGroup>
 

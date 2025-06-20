@@ -1,4 +1,4 @@
-namespace ImoutoRebirth.Tori.UI.ViewModels.Steps;
+namespace ImoutoRebirth.Tori.UI.Steps;
 
 public interface IStep
 {
