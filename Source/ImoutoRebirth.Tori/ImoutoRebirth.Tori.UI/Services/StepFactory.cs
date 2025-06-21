@@ -1,6 +1,7 @@
 using System.Windows.Controls;
 using ImoutoRebirth.Tori.UI.Steps.Accounts;
 using ImoutoRebirth.Tori.UI.Steps.Database;
+using ImoutoRebirth.Tori.UI.Steps.Installation;
 using ImoutoRebirth.Tori.UI.Steps.Locations;
 using ImoutoRebirth.Tori.UI.Steps.Prerequisites;
 using ImoutoRebirth.Tori.UI.Steps.Welcome;
@@ -43,7 +44,7 @@ public class StepViewFactory : IStepViewFactory
             InstallerStep.Accounts => _serviceProvider.GetRequiredService<AccountsStepControl>(),
             InstallerStep.Locations => _serviceProvider.GetRequiredService<LocationsStepControl>(),
             InstallerStep.Database => _serviceProvider.GetRequiredService<DatabaseStepControl>(),
-            InstallerStep.Installation => _serviceProvider.GetRequiredService<AccountsStepControl>(),
+            InstallerStep.Installation => _serviceProvider.GetRequiredService<InstallationStepControl>(),
             _ => throw new ArgumentOutOfRangeException(nameof(step), step, null)
         };
     }

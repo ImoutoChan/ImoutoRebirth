@@ -3,12 +3,13 @@ using ImoutoRebirth.Tori.Services;
 using ImoutoRebirth.Tori.UI.Services;
 using ImoutoRebirth.Tori.UI.Steps.Accounts;
 using ImoutoRebirth.Tori.UI.Steps.Database;
+using ImoutoRebirth.Tori.UI.Steps.Installation;
 using ImoutoRebirth.Tori.UI.Steps.Locations;
 using ImoutoRebirth.Tori.UI.Steps.Prerequisites;
 using ImoutoRebirth.Tori.UI.Steps.Welcome;
+using ImoutoRebirth.Tori.UI.Windows;
 using Microsoft.Extensions.DependencyInjection;
 using System.Windows;
-using ImoutoRebirth.Tori.UI.Windows;
 using InstallerViewModel = ImoutoRebirth.Tori.UI.Windows.InstallerViewModel;
 
 namespace ImoutoRebirth.Tori.UI;
@@ -48,6 +49,7 @@ public partial class App : Application
         services.AddSingleton<LocationsStepViewModel>();
         services.AddSingleton<DatabaseStepViewModel>();
         services.AddSingleton<InstallerViewModel>();
+        services.AddSingleton<InstallationStepViewModel>();
 
         services.AddSingleton<WelcomeStepControl>();
         services.AddSingleton<PrerequisitesStepControl>();
@@ -55,6 +57,7 @@ public partial class App : Application
         services.AddSingleton<LocationsStepControl>();
         services.AddSingleton<DatabaseStepControl>();
         services.AddSingleton<AccountsStepControl>();
+        services.AddSingleton<InstallationStepControl>();
 
         services.AddSingleton<IMessenger , WeakReferenceMessenger>();
 
