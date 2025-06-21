@@ -7,15 +7,6 @@
              mc:Ignorable="d"
              x:Name="InstallProgressUserControl">
 
-    <UserControl.Resources>
-        <Storyboard x:Key="RevealAnimation">
-            <DoubleAnimation Storyboard.TargetProperty="Clip.Rect.Width"
-                             To="{Binding ActualWidth, RelativeSource={RelativeSource Self}}"
-                             Duration="0:0:0.3"
-                             FillBehavior="HoldEnd" />
-        </Storyboard>
-    </UserControl.Resources>
-
    <Grid>
         <StackPanel Orientation="Horizontal">
             <Image Source="{StaticResource RingDrawingImage.Gray}" />
@@ -30,15 +21,15 @@
         </StackPanel>
 
         <StackPanel Orientation="Horizontal">
-            <local:RevealImage Source="{StaticResource RingDrawingImage}" ShowStep="1" State="{Binding ElementName=InstallProgressUserControl, Path=State}" />
-            <local:RevealImage Margin="18,0" Source="{StaticResource BarDrawingImage}" ShowStep="2" State="{Binding ElementName=InstallProgressUserControl, Path=State}" />
-            <local:RevealImage Source="{StaticResource RingDrawingImage}" ShowStep="2" State="{Binding ElementName=InstallProgressUserControl, Path=State}" Delay="0:0:0.45" />
-            <local:RevealImage Margin="18,0" Source="{StaticResource BarDrawingImage}" ShowStep="3" State="{Binding ElementName=InstallProgressUserControl, Path=State}" />
-            <local:RevealImage Source="{StaticResource RingDrawingImage}" ShowStep="3" State="{Binding ElementName=InstallProgressUserControl, Path=State}" Delay="0:0:0.45" />
-            <local:RevealImage Margin="18,0" Source="{StaticResource BarDrawingImage}" ShowStep="4" State="{Binding ElementName=InstallProgressUserControl, Path=State}" />
-            <local:RevealImage Source="{StaticResource RingDrawingImage}" ShowStep="4" State="{Binding ElementName=InstallProgressUserControl, Path=State}" Delay="0:0:0.45" />
-            <local:RevealImage Margin="18,0" Source="{StaticResource BarDrawingImage}" ShowStep="5" State="{Binding ElementName=InstallProgressUserControl, Path=State}" />
-            <local:RevealImage Source="{StaticResource RingDrawingImage}" ShowStep="5" State="{Binding ElementName=InstallProgressUserControl, Path=State}" Delay="0:0:0.45" />
+            <local:RevealImage Source="{StaticResource RingDrawingImage}" ShowStep="1" State="{Binding ElementName=InstallProgressUserControl, Path=State}" ReverseDelay="0:0:0.25" />
+            <local:RevealImage Margin="18,0" Source="{StaticResource BarDrawingImage}" ShowStep="2" State="{Binding ElementName=InstallProgressUserControl, Path=State}" ReverseDelay="0:0:0.25" />
+            <local:RevealImage Source="{StaticResource RingDrawingImage}" ShowStep="2" State="{Binding ElementName=InstallProgressUserControl, Path=State}" Delay="0:0:0.25" />
+            <local:RevealImage Margin="18,0" Source="{StaticResource BarDrawingImage}" ShowStep="3" State="{Binding ElementName=InstallProgressUserControl, Path=State}" ReverseDelay="0:0:0.25" />
+            <local:RevealImage Source="{StaticResource RingDrawingImage}" ShowStep="3" State="{Binding ElementName=InstallProgressUserControl, Path=State}" Delay="0:0:0.25" />
+            <local:RevealImage Margin="18,0" Source="{StaticResource BarDrawingImage}" ShowStep="4" State="{Binding ElementName=InstallProgressUserControl, Path=State}" ReverseDelay="0:0:0.25" />
+            <local:RevealImage Source="{StaticResource RingDrawingImage}" ShowStep="4" State="{Binding ElementName=InstallProgressUserControl, Path=State}" Delay="0:0:0.25" />
+            <local:RevealImage Margin="18,0" Source="{StaticResource BarDrawingImage}" ShowStep="5" State="{Binding ElementName=InstallProgressUserControl, Path=State}" ReverseDelay="0:0:0.25" />
+            <local:RevealImage Source="{StaticResource RingDrawingImage}" ShowStep="5" State="{Binding ElementName=InstallProgressUserControl, Path=State}" Delay="0:0:0.25" />
         </StackPanel>
     </Grid>
 </UserControl>

@@ -1,18 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
+﻿using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Animation;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 
 namespace ImoutoRebirth.Tori.UI.UserControls;
 
@@ -21,10 +10,7 @@ namespace ImoutoRebirth.Tori.UI.UserControls;
 /// </summary>
 public partial class RevealImage : UserControl
 {
-    public RevealImage()
-    {
-        InitializeComponent();
-    }
+    public RevealImage() => InitializeComponent();
 
     private int _previousState = -1;
 
@@ -66,6 +52,16 @@ public partial class RevealImage : UserControl
         set => SetValue(DelayProperty, value);
     }
 
+    public static readonly DependencyProperty ReverseDelayProperty =
+        DependencyProperty.Register(nameof(ReverseDelay), typeof(TimeSpan), typeof(RevealImage),
+            new PropertyMetadata(TimeSpan.Zero));
+
+    public TimeSpan ReverseDelay
+    {
+        get => (TimeSpan)GetValue(ReverseDelayProperty);
+        set => SetValue(ReverseDelayProperty, value);
+    }
+
     private static void OnStateChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
     {
         if (d is RevealImage control)
@@ -76,41 +72,43 @@ public partial class RevealImage : UserControl
 
     private void OnStateChangedInternal(int newState, int oldState)
     {
-        if (newState >= ShowStep && oldState < ShowStep)
-        {
-            AnimateReveal();
-        }
-        else if (newState < ShowStep)
-        {
-            // Сброс, если шаг "откатывается"
-            ClipRect.Rect = new Rect(0, 0, 0, AnimatedImage.ActualHeight);
-        }
-
-        _previousState = newState;
-    }
-
-    private void AnimateReveal()
-    {
         if (!IsLoaded)
         {
-            Loaded += (_, _) => AnimateReveal();
+            Loaded += (_, _) => OnStateChangedInternal(newState, oldState);
             return;
         }
 
-        double width = AnimatedImage.ActualWidth;
-        double height = AnimatedImage.ActualHeight;
+        var width = AnimatedImage.ActualWidth;
+        var height = AnimatedImage.ActualHeight;
 
-        ClipRect.Rect = new Rect(0, 0, 0, height);
-
-        var animation = new RectAnimation
+        // reveal animation
+        if (newState >= ShowStep && oldState < ShowStep)
         {
-            From = new Rect(0, 0, 0, height),
-            To = new Rect(0, 0, width, height),
-            Duration = TimeSpan.FromMilliseconds(400),
-            BeginTime = Delay,
-            EasingFunction = new SineEase { EasingMode = EasingMode.EaseOut }
-        };
+            var animation = new RectAnimation
+            {
+                From = new Rect(0, 0, 0, height),
+                To = new Rect(0, 0, width, height),
+                Duration = TimeSpan.FromMilliseconds(200),
+                BeginTime = Delay,
+                EasingFunction = new SineEase { EasingMode = EasingMode.EaseOut }
+            };
+            ClipRect.BeginAnimation(RectangleGeometry.RectProperty, animation);
+        }
 
-        ClipRect.BeginAnimation(RectangleGeometry.RectProperty, animation);
+        // hide animation
+        else if (newState < ShowStep && oldState >= ShowStep)
+        {
+            var animation = new RectAnimation
+            {
+                From = new Rect(0, 0, width, height),
+                To = new Rect(0, 0, 0, height),
+                Duration = TimeSpan.FromMilliseconds(200),
+                BeginTime = ReverseDelay,
+                EasingFunction = new SineEase { EasingMode = EasingMode.EaseIn }
+            };
+            ClipRect.BeginAnimation(RectangleGeometry.RectProperty, animation);
+        }
+
+        _previousState = newState;
     }
 }

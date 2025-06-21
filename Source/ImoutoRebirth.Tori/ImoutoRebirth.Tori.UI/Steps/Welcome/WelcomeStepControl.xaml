@@ -14,19 +14,6 @@
             <RowDefinition Height="*" />
             <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
-
-        <Grid Grid.Row="0" Margin="50, 40, 50, 0">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="*" />
-                <ColumnDefinition Width="Auto" />
-            </Grid.ColumnDefinitions>
-
-            <TextBlock 
-                Text="{Binding Title}" 
-                Style="{DynamicResource Styles.Typography.Title}" />
-
-            <userControls:InstallWizardZeroStepsProgress Grid.Column="1" />
-        </Grid>
         
         <Grid Grid.Row="1" Margin="144, 73, 144, 0">
             <Grid.ColumnDefinitions>
