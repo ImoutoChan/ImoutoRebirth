@@ -1,11 +1,16 @@
 ﻿using CommunityToolkit.Mvvm.Messaging;
 using ImoutoRebirth.Tori.Services;
 using ImoutoRebirth.Tori.UI.Services;
+using ImoutoRebirth.Tori.UI.Steps.Accounts;
+using ImoutoRebirth.Tori.UI.Steps.Database;
+using ImoutoRebirth.Tori.UI.Steps.Locations;
 using ImoutoRebirth.Tori.UI.Steps.Prerequisites;
-using ImoutoRebirth.Tori.UI.ViewModels.Steps;
+using ImoutoRebirth.Tori.UI.Steps.Welcome;
+using ImoutoRebirth.Tori.UI.ViewModels;
 using Microsoft.Extensions.DependencyInjection;
 using System.Windows;
-using WelcomeStepViewModel = ImoutoRebirth.Tori.UI.Steps.Welcome.WelcomeStepViewModel;
+using ImoutoRebirth.Tori.UI.Windows;
+using InstallerViewModel = ImoutoRebirth.Tori.UI.Windows.InstallerViewModel;
 
 namespace ImoutoRebirth.Tori.UI;
 
@@ -17,12 +22,10 @@ public partial class App : Application
     {
         base.OnStartup(e);
         
-        // Set up dependency injection
         var services = new ServiceCollection();
         ConfigureServices(services);
         _serviceProvider = services.BuildServiceProvider();
         
-        // Create and show the main window
         var mainWindow = _serviceProvider.GetRequiredService<InstallerWindow>();
         mainWindow.Show();
     }
@@ -30,8 +33,7 @@ public partial class App : Application
     private void ConfigureServices(IServiceCollection services)
     {
         // Register services
-        services.AddSingleton<IStepsNavigationService, StepsNavigationService>();
-        services.AddSingleton<IStepFactory, StepFactory>();
+        services.AddSingleton<IStepViewFactory, StepViewFactory>();
 
         // Register windows
         services.AddTransient<InstallerWindow>();
@@ -41,9 +43,19 @@ public partial class App : Application
         services.AddTransient<IVersionService, VersionService>();
         services.AddTransient<IDependencyManager, DependencyManager>();
 
-        services.AddTransient<WelcomeStepViewModel>();
-        services.AddTransient<ConfigurationStepViewModel>();
-        services.AddTransient<PrerequisitesStepViewModel>();
+        services.AddSingleton<WelcomeStepViewModel>();
+        services.AddSingleton<PrerequisitesStepViewModel>();
+        services.AddSingleton<AccountsStepViewModel>();
+        services.AddSingleton<LocationsStepViewModel>();
+        services.AddSingleton<DatabaseStepViewModel>();
+        services.AddSingleton<InstallerViewModel>();
+
+        services.AddSingleton<WelcomeStepControl>();
+        services.AddSingleton<PrerequisitesStepControl>();
+        services.AddSingleton<AccountsStepControl>();
+        services.AddSingleton<LocationsStepControl>();
+        services.AddSingleton<DatabaseStepControl>();
+        services.AddSingleton<AccountsStepControl>();
 
         services.AddSingleton<IMessenger , WeakReferenceMessenger>();
 

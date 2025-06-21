@@ -81,4 +81,49 @@
     </DrawingGroup>
 
     <DrawingImage x:Key="BarDrawingImage.Gray" Drawing="{StaticResource BarDrawingGroup.Gray}" />
+
+    <DrawingImage x:Key="DrawingImageCheck">
+        <DrawingImage.Drawing>
+            <DrawingGroup ClipGeometry="M0,0 V16.68 H23.5 V0 H0 Z">
+                <DrawingGroup Opacity="1">
+                    <DrawingGroup Opacity="1">
+                        <GeometryDrawing Geometry="F1 M23.5,16.68z M0,0z M2,6.22L2,6.22 9.64,13.86 21.5,2">
+                            <GeometryDrawing.Pen>
+                                <Pen Brush="#FF009444" Thickness="4" StartLineCap="Round" EndLineCap="Round" LineJoin="Miter" />
+                            </GeometryDrawing.Pen>
+                        </GeometryDrawing>
+                    </DrawingGroup>
+                </DrawingGroup>
+            </DrawingGroup>
+        </DrawingImage.Drawing>
+    </DrawingImage>
+
+    <DrawingImage x:Key="DrawingImageX">
+        <DrawingImage.Drawing>
+            <DrawingGroup ClipGeometry="M0,0 V17.8 H17.8 V0 H0 Z">
+                <DrawingGroup Opacity="1">
+                    <DrawingGroup Opacity="1">
+                        <DrawingGroup Opacity="1">
+                            <GeometryDrawing>
+                                <GeometryDrawing.Pen>
+                                    <Pen Brush="#FFED1C24" Thickness="4" StartLineCap="Round" EndLineCap="Round" LineJoin="Miter" />
+                                </GeometryDrawing.Pen>
+                                <GeometryDrawing.Geometry>
+                                    <LineGeometry StartPoint="15.8,2" EndPoint="2,15.8" />
+                                </GeometryDrawing.Geometry>
+                            </GeometryDrawing>
+                            <GeometryDrawing>
+                                <GeometryDrawing.Pen>
+                                    <Pen Brush="#FFED1C24" Thickness="4" StartLineCap="Round" EndLineCap="Round" LineJoin="Miter" />
+                                </GeometryDrawing.Pen>
+                                <GeometryDrawing.Geometry>
+                                    <LineGeometry StartPoint="2,2" EndPoint="15.8,15.8" />
+                                </GeometryDrawing.Geometry>
+                            </GeometryDrawing>
+                        </DrawingGroup>
+                    </DrawingGroup>
+                </DrawingGroup>
+            </DrawingGroup>
+        </DrawingImage.Drawing>
+    </DrawingImage>
 </ResourceDictionary>

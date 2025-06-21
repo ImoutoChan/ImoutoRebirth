@@ -3,8 +3,6 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             xmlns:local="clr-namespace:ImoutoRebirth.Tori.UI.Steps"
-             xmlns:steps="clr-namespace:ImoutoRebirth.Tori.UI.ViewModels.Steps"
              xmlns:welcome="clr-namespace:ImoutoRebirth.Tori.UI.Steps.Welcome"
              xmlns:userControls="clr-namespace:ImoutoRebirth.Tori.UI.UserControls"
              mc:Ignorable="d" 

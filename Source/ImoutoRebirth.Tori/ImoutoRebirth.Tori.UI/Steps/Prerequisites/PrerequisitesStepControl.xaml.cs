@@ -4,8 +4,10 @@ namespace ImoutoRebirth.Tori.UI.Steps.Prerequisites;
 
 public partial class PrerequisitesStepControl : UserControl
 {
-    public PrerequisitesStepControl()
+    public PrerequisitesStepControl(PrerequisitesStepViewModel viewModel)
     {
         InitializeComponent();
+
+        DataContext = viewModel;
     }
 }

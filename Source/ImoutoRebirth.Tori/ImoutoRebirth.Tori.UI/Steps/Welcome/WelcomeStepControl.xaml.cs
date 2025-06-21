@@ -4,8 +4,10 @@ namespace ImoutoRebirth.Tori.UI.Steps.Welcome;
 
 public partial class WelcomeStepControl : UserControl
 {
-    public WelcomeStepControl()
+    public WelcomeStepControl(WelcomeStepViewModel viewModel)
     {
         InitializeComponent();
+
+        DataContext = viewModel;
     }
 }

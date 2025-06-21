@@ -4,6 +4,8 @@ using CommunityToolkit.Mvvm.Messaging;
 using ImoutoRebirth.Tori.Services;
 using ImoutoRebirth.Tori.UI.Models;
 using ImoutoRebirth.Tori.UI.Services;
+using ImoutoRebirth.Tori.UI.ViewModels;
+using ImoutoRebirth.Tori.UI.Windows;
 using Microsoft.Extensions.Options;
 
 namespace ImoutoRebirth.Tori.UI.Steps.Prerequisites;
@@ -47,10 +49,10 @@ public partial class PrerequisitesStepViewModel : ObservableObject, IStep
     private bool _shouldInstallRuntimes;
 
     [ObservableProperty]
-    private bool _isPostgresOk;
+    private bool? _isPostgresOk;
 
     [ObservableProperty]
-    private bool _areRuntimesOk;
+    private bool? _areRuntimesOk;
 
     [ObservableProperty] 
     private string _shouldInstallPostgresText = "install";

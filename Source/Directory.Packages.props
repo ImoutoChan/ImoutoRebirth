@@ -57,6 +57,7 @@
         <PackageVersion Include="Newtonsoft.Json" Version="13.0.3"/>
         <PackageVersion Include="NinjaNye.SearchExtensions" Version="4.0.1"/>
         <PackageVersion Include="NodaTime" Version="3.2.2"/>
+        <PackageVersion Include="Npgsql" Version="9.0.3"/>
         <PackageVersion Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="9.0.4"/>
         <PackageVersion Include="Npgsql.EntityFrameworkCore.PostgreSQL.NodaTime" Version="9.0.4"/>
         <PackageVersion Include="Npgsql.OpenTelemetry" Version="9.0.3"/>

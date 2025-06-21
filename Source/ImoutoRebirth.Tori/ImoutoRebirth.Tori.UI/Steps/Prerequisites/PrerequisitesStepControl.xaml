@@ -8,7 +8,7 @@
              xmlns:steps="clr-namespace:ImoutoRebirth.Tori.UI.Steps"
              xmlns:userControls="clr-namespace:ImoutoRebirth.Tori.UI.UserControls"
              mc:Ignorable="d" 
-             d:DesignHeight="450" d:DesignWidth="800"
+             d:DesignHeight="614" d:DesignWidth="1028"
              d:DataContext="{d:DesignInstance Type=prerequisites:PrerequisitesStepViewModel}">
 
     <Grid>
