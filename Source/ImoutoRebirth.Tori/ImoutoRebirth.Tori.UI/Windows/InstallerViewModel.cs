@@ -12,7 +12,7 @@ public partial class InstallerViewModel : ObservableObject
     private readonly IStepViewFactory _viewFactory;
 
     [ObservableProperty]
-    private InstallerStep _currentStep;
+    private InstallerStep? _currentStep;
 
     [ObservableProperty]
     private UserControl? _currentStepControl;
@@ -24,8 +24,8 @@ public partial class InstallerViewModel : ObservableObject
 
         GoToStep(InstallerStep.Welcome);
     }
-    
-    public void GoToStep(InstallerStep step)
+
+    private void GoToStep(InstallerStep step)
     {
         if (CurrentStep == step)
             return;

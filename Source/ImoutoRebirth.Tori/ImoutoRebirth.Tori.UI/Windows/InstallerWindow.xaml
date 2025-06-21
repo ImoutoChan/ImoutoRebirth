@@ -4,7 +4,7 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:mah="http://metro.mahapps.com/winfx/xaml/controls"
-        xmlns:viewModels="clr-namespace:ImoutoRebirth.Tori.UI.ViewModels"
+        xmlns:local="clr-namespace:ImoutoRebirth.Tori.UI.Windows"
         mc:Ignorable="d"
         Title="{Binding CurrentStepControl.DataContext.Title}"
         Height="614" Width="1028"
@@ -12,7 +12,7 @@
         ShowTitleBar="False"
         ResizeMode="CanMinimize"
         x:Name="MainInstallerWindow"
-        d:DataContext="{d:DesignInstance Type=viewModels:InstallerViewModel}">
+        d:DataContext="{d:DesignInstance Type=local:InstallerViewModel}">
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>

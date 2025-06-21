@@ -6,7 +6,6 @@ using ImoutoRebirth.Tori.UI.Steps.Database;
 using ImoutoRebirth.Tori.UI.Steps.Locations;
 using ImoutoRebirth.Tori.UI.Steps.Prerequisites;
 using ImoutoRebirth.Tori.UI.Steps.Welcome;
-using ImoutoRebirth.Tori.UI.ViewModels;
 using Microsoft.Extensions.DependencyInjection;
 using System.Windows;
 using ImoutoRebirth.Tori.UI.Windows;

@@ -3,9 +3,7 @@ using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
 using ImoutoRebirth.Common.WPF.ValidationAttributes;
 using ImoutoRebirth.Tori.Services;
-using ImoutoRebirth.Tori.UI.Models;
 using ImoutoRebirth.Tori.UI.Services;
-using ImoutoRebirth.Tori.UI.ViewModels;
 using ImoutoRebirth.Tori.UI.Windows;
 using Microsoft.WindowsAPICodePack.Dialogs;
 
