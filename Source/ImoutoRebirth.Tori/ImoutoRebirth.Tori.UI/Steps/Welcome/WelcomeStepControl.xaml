@@ -6,17 +6,10 @@
              xmlns:local="clr-namespace:ImoutoRebirth.Tori.UI.Steps"
              xmlns:steps="clr-namespace:ImoutoRebirth.Tori.UI.ViewModels.Steps"
              xmlns:welcome="clr-namespace:ImoutoRebirth.Tori.UI.Steps.Welcome"
+             xmlns:userControls="clr-namespace:ImoutoRebirth.Tori.UI.UserControls"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800"
              d:DataContext="{d:DesignInstance Type=welcome:WelcomeStepViewModel}">
-    <UserControl.Resources>
-        <ResourceDictionary>
-            <ResourceDictionary.MergedDictionaries>
-                <ResourceDictionary Source="..\..\CommonControls.xaml" />
-            </ResourceDictionary.MergedDictionaries>
-        </ResourceDictionary>
-    </UserControl.Resources>
-
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
@@ -34,7 +27,7 @@
                 Text="{Binding Title}" 
                 Style="{DynamicResource Styles.Typography.Title}" />
 
-            <Image Grid.Column="1" />
+            <userControls:InstallWizardZeroStepsProgress Grid.Column="1" />
         </Grid>
         
         <Grid Grid.Row="1" Margin="144, 73, 144, 0">
@@ -112,8 +105,12 @@
         </Grid>
 
         <StackPanel Grid.Row="2" HorizontalAlignment="Right" Orientation="Horizontal" Margin="50, 0, 50, 40">
-            <Button Style="{DynamicResource Styles.Button.Regular}" Command="{Binding CustomizeCommand}">customize</Button>
-            <Button Style="{DynamicResource Styles.Button.Accent}" Command="{Binding UpdateCommand}">update</Button>
+            <Button 
+                Style="{DynamicResource Styles.Button.Regular}" 
+                Command="{Binding CustomizeCommand}">customize</Button>
+            <Button 
+                Style="{DynamicResource Styles.Button.Accent}" 
+                Command="{Binding UpdateCommand}">update</Button>
         </StackPanel>
     </Grid>
 </UserControl>

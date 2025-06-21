@@ -105,14 +105,14 @@ public partial class PrerequisitesStepViewModel : ObservableObject, IStep
         ShouldInstallRuntimes = !loaded.IsDotnetAspNetRuntimeInstalled || !loaded.IsDotnetDesktopRuntimeInstalled;
         IsPostgresOk = !ShouldInstallPostgres;
         AreRuntimesOk = !ShouldInstallRuntimes;
-        ShouldInstallPostgresText = ShouldInstallPostgres ? "install" : "install anyway";
-        ShouldInstallRuntimesText = ShouldInstallRuntimes ? "install" : "install anyway";
+        ShouldInstallPostgresText = ShouldInstallPostgres ? "install postgres" : "install anyway";
+        ShouldInstallRuntimesText = ShouldInstallRuntimes ? "install runtimes" : "install anyway";
 
         IsLoading = false;
     }
 
     [RelayCommand]
-    public void GoNext()
+    private void GoNext()
     {
         _messenger.Send(new NavigateTo(InstallerStep.Accounts));
     }
