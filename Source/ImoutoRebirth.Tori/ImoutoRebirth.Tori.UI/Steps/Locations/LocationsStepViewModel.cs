@@ -41,6 +41,9 @@ public partial class LocationsStepViewModel : ObservableValidator, IStep
 
     public string Title =>  "Locations";
 
+    [ObservableProperty]
+    private int _state = 3;
+
     [RelayCommand(CanExecute = nameof(CanGoNext))]
     private void GoNext()
         => _messenger.Send(new NavigateTo(InstallerStep.Database));

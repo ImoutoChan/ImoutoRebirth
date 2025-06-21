@@ -13,6 +13,9 @@ public partial class WelcomeStepViewModel : ObservableObject, IStep
 
     [ObservableProperty]
     private string _title = "ImoutoRebirth";
+
+    [ObservableProperty]
+    private int _state = 0;
     
     [ObservableProperty]
     private string _currentVersion;

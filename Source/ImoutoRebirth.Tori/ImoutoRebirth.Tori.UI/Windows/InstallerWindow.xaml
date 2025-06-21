@@ -5,6 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:mah="http://metro.mahapps.com/winfx/xaml/controls"
         xmlns:local="clr-namespace:ImoutoRebirth.Tori.UI.Windows"
+        xmlns:userControls="clr-namespace:ImoutoRebirth.Tori.UI.UserControls"
         mc:Ignorable="d"
         Title="{Binding CurrentStepControl.DataContext.Title}"
         Height="614" Width="1028"
@@ -20,30 +21,18 @@
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
         
-        <!-- Navigation Bar -->
-        <!--<StackPanel Grid.Row="0" Orientation="Horizontal" Background="#F0F0F0" Margin="0,0,0,10">
-            <ItemsControl ItemsSource="{Binding NavigationService.AvailableSteps}" Margin="10">
-                <ItemsControl.ItemsPanel>
-                    <ItemsPanelTemplate>
-                        <StackPanel Orientation="Horizontal"/>
-                    </ItemsPanelTemplate>
-                </ItemsControl.ItemsPanel>
-                <ItemsControl.ItemTemplate>
-                    <DataTemplate DataType="{x:Type models:InstallerStep}">
-                        <StackPanel Orientation="Horizontal">
-                            <Button Content="{Binding}"
-                                    Command="{Binding DataContext.GoToStepCommand, RelativeSource={RelativeSource AncestorType=mah:MetroWindow}}"
-                                    CommandParameter="{Binding}"
-                                    Margin="0,0,5,0"
-                                    Style="{StaticResource MahApps.Styles.Button.Flat}"
-                                    
-                                    />
-                            <TextBlock Text=">" Margin="0,0,5,0" VerticalAlignment="Center"/>
-                        </StackPanel>
-                    </DataTemplate>
-                </ItemsControl.ItemTemplate>
-            </ItemsControl>
-        </StackPanel>-->
+        <Grid Grid.Row="0" Margin="50, 40, 50, 0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="Auto" />
+            </Grid.ColumnDefinitions>
+
+            <TextBlock 
+                Text="{Binding CurrentStepControl.DataContext.Title}" 
+                Style="{DynamicResource Styles.Typography.Title}" />
+
+            <userControls:InstallWizardStepsProgress Grid.Column="1" State="{Binding CurrentStepControl.DataContext.State}" />
+        </Grid>
         
         <!-- Content Area -->
         <ContentControl 

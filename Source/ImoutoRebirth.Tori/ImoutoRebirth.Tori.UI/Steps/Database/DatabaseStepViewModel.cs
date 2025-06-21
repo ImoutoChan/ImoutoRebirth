@@ -50,6 +50,9 @@ public partial class DatabaseStepViewModel : ObservableValidator, IStep
 
     public string Title =>  "Database";
 
+    [ObservableProperty]
+    private int _state = 4;
+
     [RelayCommand(CanExecute = nameof(CanGoNext))]
     private void GoNext()
         => _messenger.Send(new NavigateTo(InstallerStep.Installation));

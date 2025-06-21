@@ -45,6 +45,9 @@ public partial class AccountsStepViewModel : ObservableObject, IStep
 
     public string Title =>  "Accounts";
 
+    [ObservableProperty]
+    private int _state = 2;
+
     [RelayCommand]
     private void GoNext()
         => _messenger.Send(new NavigateTo(InstallerStep.Locations));

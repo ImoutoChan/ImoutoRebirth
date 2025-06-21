@@ -17,6 +17,9 @@ public partial class InstallationStepViewModel : ObservableValidator, IStep
 
     public string Title =>  "Installation";
 
+    [ObservableProperty]
+    private int _state = 5;
+
     [RelayCommand]
     private void Install()
     {

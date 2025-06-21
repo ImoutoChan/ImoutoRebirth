@@ -12,6 +12,8 @@ namespace ImoutoRebirth.Tori.UI.Services;
 public interface IStep
 {
     string Title { get; }
+
+    int State { get; }
 }
 
 public enum InstallerStep

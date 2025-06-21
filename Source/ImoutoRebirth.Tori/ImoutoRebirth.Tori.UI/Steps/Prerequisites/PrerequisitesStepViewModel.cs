@@ -14,6 +14,9 @@ public partial class PrerequisitesStepViewModel : ObservableObject, IStep
 
     [ObservableProperty]
     private string _title = "Prerequisites";
+
+    [ObservableProperty]
+    private int _state = 1;
     
     [ObservableProperty]
     private string _isDotnetAspNetRuntimeInstalled = "loading...";
