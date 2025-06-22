@@ -29,7 +29,7 @@ public partial class LocationsStepViewModel : ObservableValidator, IStep
     [Directory("Please enter valid folder name", onlyAbsolutePath: true)]
     private string? _favSaveLocation;
 
-    public LocationsStepViewModel(IRegistryService registryService, IMessenger messenger)
+    public LocationsStepViewModel(IRegistryService registryService, IMessenger messenger, ConfigurationToInstallStorage configurationToInstallStorage)
     {
         _messenger = messenger;
         if (registryService.IsInstalled(out var installLocation))
@@ -37,12 +37,18 @@ public partial class LocationsStepViewModel : ObservableValidator, IStep
             _installLocation = installLocation.FullName;
             _installLocationEditable = false;
         }
+
+        var currentConfiguration = configurationToInstallStorage.CurrentConfiguration;
+
+        if (currentConfiguration != null)
+        {
+            FavSaveLocation = currentConfiguration.Harpy.SavePath.Replace(@"\\", @"\");
+        }
     }
 
     public string Title =>  "Locations";
 
-    [ObservableProperty]
-    private int _state = 3;
+    public int State => 3;
 
     [RelayCommand(CanExecute = nameof(CanGoNext))]
     private void GoNext()

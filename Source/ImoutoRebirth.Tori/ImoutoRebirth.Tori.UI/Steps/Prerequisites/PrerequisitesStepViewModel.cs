@@ -11,12 +11,6 @@ namespace ImoutoRebirth.Tori.UI.Steps.Prerequisites;
 public partial class PrerequisitesStepViewModel : ObservableObject, IStep
 {
     private readonly IMessenger _messenger;
-
-    [ObservableProperty]
-    private string _title = "Prerequisites";
-
-    [ObservableProperty]
-    private int _state = 1;
     
     [ObservableProperty]
     private string _isDotnetAspNetRuntimeInstalled = "loading...";
@@ -36,12 +30,6 @@ public partial class PrerequisitesStepViewModel : ObservableObject, IStep
     [ObservableProperty]
     [NotifyPropertyChangedFor(nameof(ServiceName), nameof(ServiceVersion), nameof(Port))]
     private bool _isLoading;
-
-    public string ServiceName => PostgresWindowsServices.FirstOrDefault()?.ServiceName ?? (IsLoading ? "loading..." : "not found");
-
-    public string ServiceVersion => PostgresWindowsServices.FirstOrDefault()?.Version?.ToString() ?? (IsLoading ? "loading..." : "not found");
-
-    public string Port => IsLoading ? "loading..." : IsPostgresPortInUse ? "5432" : "not used";
 
     [ObservableProperty]
     private bool _shouldInstallPostgres;
@@ -66,6 +54,15 @@ public partial class PrerequisitesStepViewModel : ObservableObject, IStep
         _messenger = messenger;
         _ = LoadPrerequisitesStates(dependencyManager, options);
     }
+    public string Title => "Prerequisites";
+
+    public int State => 1;
+
+    public string ServiceName => PostgresWindowsServices.FirstOrDefault()?.ServiceName ?? (IsLoading ? "loading..." : "not found");
+
+    public string ServiceVersion => PostgresWindowsServices.FirstOrDefault()?.Version?.ToString() ?? (IsLoading ? "loading..." : "not found");
+
+    public string Port => IsLoading ? "loading..." : IsPostgresPortInUse ? "5432" : "not used";
 
     private async Task LoadPrerequisitesStates(IDependencyManager dependencyManager, IOptions<PrerequisitesSettings> options)
     {

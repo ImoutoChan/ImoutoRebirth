@@ -43,6 +43,8 @@ public partial class App : Application
         services.AddTransient<IVersionService, VersionService>();
         services.AddTransient<IDependencyManager, DependencyManager>();
 
+        services.AddSingleton<ConfigurationToInstallStorage>();
+
         services.AddSingleton<WelcomeStepViewModel>();
         services.AddSingleton<PrerequisitesStepViewModel>();
         services.AddSingleton<AccountsStepViewModel>();

@@ -45,13 +45,25 @@ public partial class DatabaseStepViewModel : ObservableValidator, IStep
     [ObservableProperty]
     private string? _connectionStatusMessage;
 
-    public DatabaseStepViewModel(IMessenger messenger)
-        => _messenger = messenger;
+    public DatabaseStepViewModel(IMessenger messenger, ConfigurationToInstallStorage configurationToInstallStorage)
+    {
+        _messenger = messenger;
+        var currentConfiguration = configurationToInstallStorage.CurrentConfiguration;
+
+        if (currentConfiguration != null)
+        {
+            var builder = new NpgsqlConnectionStringBuilder(currentConfiguration.Connection.RoomConnectionString);
+
+            Host = builder.Host;
+            Port = builder.Port;
+            User = builder.Username;
+            Pass = builder.Password;
+		}
+	}
 
     public string Title =>  "Database";
 
-    [ObservableProperty]
-    private int _state = 4;
+    public int State => 4;
 
     [RelayCommand(CanExecute = nameof(CanGoNext))]
     private void GoNext()
@@ -85,12 +97,13 @@ public partial class DatabaseStepViewModel : ObservableValidator, IStep
 
             await Task.Run(async () =>
             {
-                await Task.Delay(500);
+                await Task.Delay(1500);
                 await using var connection = new NpgsqlConnection(connectionStringBuilder.ToString());
                 await connection.OpenAsync();
 
-                if (Random.Shared.Next(1, 3) == 2)
-                    throw new Exception("oops");
+                // debug states
+                // if (Random.Shared.Next(1, 3) == 2)
+                //     throw new Exception("oops");
             });
 
             IsConnectionSuccessful = true;

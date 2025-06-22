@@ -10,12 +10,6 @@ namespace ImoutoRebirth.Tori.UI.Steps.Welcome;
 public partial class WelcomeStepViewModel : ObservableObject, IStep
 {
     private readonly IMessenger _messenger;
-
-    [ObservableProperty]
-    private string _title = "ImoutoRebirth";
-
-    [ObservableProperty]
-    private int _state = 0;
     
     [ObservableProperty]
     private string _currentVersion;
@@ -42,6 +36,10 @@ public partial class WelcomeStepViewModel : ObservableObject, IStep
 
         NewVersion = versionService.GetNewVersion();
     }
+
+    public string Title => "ImoutoRebirth";
+
+    public int State => 0;
 
     [RelayCommand]
     public void Customize()

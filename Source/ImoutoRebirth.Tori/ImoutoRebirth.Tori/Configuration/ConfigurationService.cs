@@ -17,7 +17,7 @@ public interface IConfigurationService
 
 public class ConfigurationService : IConfigurationService
 {
-    private const string ConfigurationFilename = "configuration.json";
+    public const string ConfigurationFilename = "configuration.json";
     private const string ConfigurationFinalFilename = "configuration.final.json";
 
     private readonly ILogger<ConfigurationService> _logger;

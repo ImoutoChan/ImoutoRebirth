@@ -6,7 +6,6 @@
              xmlns:local="clr-namespace:ImoutoRebirth.Tori.UI.Steps.Database"
              xmlns:mah="http://metro.mahapps.com/winfx/xaml/controls"
              xmlns:userControls="clr-namespace:ImoutoRebirth.Tori.UI.UserControls"
-             xmlns:ui="clr-namespace:ImoutoRebirth.Tori.UI"
              mc:Ignorable="d" 
              d:DesignHeight="614" d:DesignWidth="1028"
              d:DataContext="{d:DesignInstance Type=local:DatabaseStepViewModel}">
@@ -38,87 +37,93 @@
                 <RowDefinition Height="*" />
             </Grid.RowDefinitions>
 
+            <Grid 
+                Grid.Column="0"
+                Grid.Row="0"
+                Margin="-30,0">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+
+                <mah:ProgressRing
+                    Grid.Column="0"
+                    Width="20"
+                    Height="20"
+                    Margin="0,0,10,0"
+                    Visibility="{Binding IsConnectionChecking, Converter={StaticResource ConditionVisibilityConverter}, ConverterParameter='true|false', FallbackValue=Collapsed}" />
+
+                <Image
+                    Grid.Column="0"
+                    Width="20"
+                    Height="20"
+                    Source="{StaticResource DrawingImageCheck}"
+                    Margin="0,0,10,0"
+                    Visibility="{Binding IsConnectionSuccessful, Converter={StaticResource ConditionVisibilityConverter}, ConverterParameter='true|false', FallbackValue=Collapsed}" >
+                </Image>
+
+                <Image
+                    Grid.Column="0"
+                    Width="20"
+                    Height="20"
+                    Source="{StaticResource DrawingImageX}"
+                    Margin="0,0,10,0"
+                    Visibility="{Binding IsConnectionFailed, Converter={StaticResource ConditionVisibilityConverter}, ConverterParameter='true|false', FallbackValue=Collapsed}" />
+
                 <TextBlock
-                    Grid.Column="0"
-                    Grid.Row="0"
-                    Margin="-7,0"
+                    Grid.Column="1"
                     Text="PostgreSQL Connection"
-                    Style="{DynamicResource Styles.Typography.Default}" />
+                    Style="{DynamicResource Styles.Typography.DefaultBold}" />
+            </Grid>
 
-                <userControls:InputControl
-                    Width="211"
-                    Grid.Column="0"
-                    Grid.Row="2"
-                    Header="host"
-                    IsRequired="True"
-                    Text="{Binding Host}" />
+            <userControls:InputControl
+                Width="211"
+                Grid.Column="0"
+                Grid.Row="2"
+                Header="host"
+                IsRequired="True"
+                Text="{Binding Host}" />
 
-                <userControls:InputControl
-                    Width="89"
-                    Grid.Column="2"
-                    Grid.Row="2"
-                    Header="port"
-                    IsRequired="True"
-                    Text="{Binding Port}" />
+            <userControls:InputControl
+                Width="89"
+                Grid.Column="2"
+                Grid.Row="2"
+                Header="port"
+                IsRequired="True"
+                Text="{Binding Port}" />
 
-                <userControls:InputControl
-                    Grid.Column="0"
-                    Grid.Row="4"
-                    Header="user"
-                    IsRequired="True"
-                    Text="{Binding User}" />
+            <userControls:InputControl
+                Grid.Column="0"
+                Grid.Row="4"
+                Header="user"
+                IsRequired="True"
+                Text="{Binding User}" />
 
-                <userControls:InputControl
-                    Grid.Column="0"
-                    Grid.Row="6"
-                    Header="pass"
-                    IsRequired="True"
-                    Text="{Binding Pass}" />
+            <userControls:InputControl
+                Grid.Column="0"
+                Grid.Row="6"
+                Header="pass"
+                IsRequired="True"
+                Text="{Binding Pass}" />
+            
+            <StackPanel 
+                Grid.Column="0" 
+                Grid.Row="8" 
+                Grid.ColumnSpan="3" 
+                Orientation="Horizontal">
                 
-                <StackPanel 
-                    Grid.Column="0" 
-                    Grid.Row="8" 
-                    Grid.ColumnSpan="3" 
-                    Orientation="Horizontal">
-                    
-                    <TextBlock 
-                        Text="{Binding ConnectionStatusMessage}" 
-                        Style="{DynamicResource Styles.Typography.Note}" />
-                </StackPanel>
+                <TextBlock 
+                    Text="{Binding ConnectionStatusMessage}" 
+                    Style="{DynamicResource Styles.Typography.Note}" />
+            </StackPanel>
         </Grid>
 
         <StackPanel Grid.Row="2" HorizontalAlignment="Left" Orientation="Horizontal" Margin="109, 0, 0, 40">
             <Button 
                 Style="{DynamicResource Styles.Button.Regular}" 
                 Command="{Binding CheckConnectionCommand}" 
-                IsEnabled="{Binding IsConnectionChecking, Converter={StaticResource ConditionVisibilityConverter}, ConverterParameter=false}">
-                <Button.Content>
-                    <StackPanel Orientation="Horizontal">
-                        <TextBlock>check</TextBlock>
-
-                        <mah:ProgressRing
-                            Width="20"
-                            Height="20"
-                            Margin="20,0,10,0"
-                            Visibility="{Binding IsConnectionChecking, Converter={StaticResource BooleanToVisibilityConverter}, FallbackValue=Collapsed}" />
-
-                        <Image
-                            Width="20"
-                            Height="20"
-                            Source="{StaticResource DrawingImageCheck}"
-                            Margin="20,0,10,0"
-                            Visibility="{Binding IsConnectionSuccessful, Converter={StaticResource BooleanToVisibilityConverter}, FallbackValue=Collapsed}" >
-                        </Image>
-
-                        <Image
-                            Width="20"
-                            Height="20"
-                            Source="{StaticResource DrawingImageX}"
-                            Margin="20,0,10,0"
-                            Visibility="{Binding IsConnectionFailed, Converter={StaticResource BooleanToVisibilityConverter}, FallbackValue=Collapsed}" />
-                    </StackPanel>
-                </Button.Content>
-            </Button>
+                IsEnabled="{Binding IsConnectionChecking, Converter={StaticResource ConditionVisibilityConverter}, ConverterParameter=false}"
+                Content="check" />
         </StackPanel>
 
         <StackPanel Grid.Row="2" HorizontalAlignment="Right" Orientation="Horizontal" Margin="50, 0, 50, 40">

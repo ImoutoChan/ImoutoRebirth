@@ -10,15 +10,20 @@ public partial class InstallationStepViewModel : ObservableValidator, IStep
 {
     private readonly IMessenger _messenger;
 
-    public InstallationStepViewModel(IMessenger messenger)
+    public InstallationStepViewModel(IMessenger messenger, ConfigurationToInstallStorage configurationToInstallStorage)
     {
         _messenger = messenger;
+
+        var currentConfiguration = configurationToInstallStorage.CurrentConfiguration;
+
+        if (currentConfiguration != null)
+        {
+        }
     }
 
-    public string Title =>  "Installation";
+    public string Title => "Installation";
 
-    [ObservableProperty]
-    private int _state = 5;
+    public int State => 5;
 
     [RelayCommand]
     private void Install()
