@@ -45,7 +45,7 @@
                 <TextBox Text="{Binding InstallLocation}"
                          FontSize="24"
                          Height="40"
-                         Padding="4,2"
+                         Padding="4,6,4,0"
                          IsEnabled="{Binding InstallLocationEditable}" />
             </StackPanel>
 
@@ -70,7 +70,7 @@
                 <TextBox Text="{Binding FavSaveLocation}"
                          FontSize="24"
                          Height="40"
-                         Padding="4,2" />
+                         Padding="4,6,4,0" />
             </StackPanel>
 
             <Button

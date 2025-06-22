@@ -36,6 +36,9 @@ public partial class InstallationStepViewModel : ObservableValidator, IStep
     [ObservableProperty]
     private bool _isInstallationFinished;
 
+    [ObservableProperty]
+    private int _progressValue = 0;
+
     public InstallationStepViewModel(
         IMessenger messenger,
         IConfigurationStorage configurationStorage,
@@ -74,6 +77,21 @@ public partial class InstallationStepViewModel : ObservableValidator, IStep
         IsInstalling = true;
         IsInstallationStarted = true;
 
+        try
+        {
+            await InstallInternal();
+        }
+        catch (Exception e)
+        {
+            AppendLog(e.Message);
+        }
+
+        IsInstalling = false;
+        IsInstallationFinished = true;
+    }
+
+    private async Task InstallInternal()
+    {
         _logger.LogInformation("Starting installation process");
         LogConfiguration();
 
@@ -88,6 +106,7 @@ public partial class InstallationStepViewModel : ObservableValidator, IStep
         {
             AppendLog("Runtime dependencies skipped...");
         }
+        ProgressValue = 10;
 
         if (_configurationStorage.ShouldInstallPostgreSql)
         {
@@ -98,15 +117,16 @@ public partial class InstallationStepViewModel : ObservableValidator, IStep
         {
             AppendLog("Postgres dependencies skipped...");
         }
+        ProgressValue = 20;
 
-        // _installer.WizardInstallOrUpdate(
-        //     _appSettings.Value.UpdaterLocation,
-        //     _appSettings.Value.ForcedUpdate,
-        //     _configurationStorage.CurrentConfiguration);
+        _installer.WizardInstallOrUpdate(
+            _appSettings.Value.UpdaterLocation,
+            _appSettings.Value.ForcedUpdate,
+            _configurationStorage.CurrentConfiguration);
 
         _logger.LogInformation("Installation process finished");
-        IsInstalling = false;
-        IsInstallationFinished = true;
+
+        ProgressValue = 100;
     }
 
     [RelayCommand]

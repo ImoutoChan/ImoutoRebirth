@@ -23,6 +23,7 @@
         <PackageReference Include="Microsoft-WindowsAPICodePack-Core"/>
         <PackageReference Include="Microsoft-WindowsAPICodePack-Shell"/>
         <PackageReference Include="Npgsql"/>
+        <PackageReference Include="Microsoft.Extensions.Configuration.EnvironmentVariables"/>
     </ItemGroup>
 
     <ItemGroup>
@@ -35,6 +36,13 @@
         <None Update="configuration.json">
             <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
         </None>
+    </ItemGroup>
+    
+    <ItemGroup>
+        <None Remove="Assets\Fonts\Supreme\Supreme-Variable.ttf"/>
+        <Resource Include="Assets\Fonts\Supreme\Supreme-Variable.ttf"/>
+        <None Remove="Assets\Fonts\Supreme\Supreme-VariableItalic.ttf"/>
+        <Resource Include="Assets\Fonts\Supreme\Supreme-VariableItalic.ttf"/>
     </ItemGroup>
 
 </Project>

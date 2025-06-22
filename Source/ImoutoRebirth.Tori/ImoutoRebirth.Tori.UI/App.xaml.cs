@@ -12,8 +12,10 @@ using ImoutoRebirth.Tori.UI.Windows;
 using Microsoft.Extensions.DependencyInjection;
 using System.Windows;
 using ImoutoRebirth.Tori.Configuration;
+using Microsoft.Extensions.Configuration;
 using InstallerViewModel = ImoutoRebirth.Tori.UI.Windows.InstallerViewModel;
 using Microsoft.Extensions.Logging;
+using ConfigurationBuilder = Microsoft.Extensions.Configuration.ConfigurationBuilder;
 
 namespace ImoutoRebirth.Tori.UI;
 
@@ -39,6 +41,13 @@ public partial class App : Application
             x.UpdaterLocation = DetectUpdaterLocation(e.Args);
         });
 
+        var configurationBuilder = new ConfigurationBuilder()
+            .AddEnvironmentVariables();
+
+        var configuration = configurationBuilder.Build();
+
+        services.Configure<DependencyManagerOptions>(configuration.GetSection("DependencyManager"));
+
         ConfigureServices(services, e.Args);
         _serviceProvider = services.BuildServiceProvider();
         
@@ -48,6 +57,7 @@ public partial class App : Application
 
     private void ConfigureServices(IServiceCollection services, string[] eArgs)
     {
+
         var logForwarder = new ForwardingLoggerProvider();
         services.AddSingleton(logForwarder);
 

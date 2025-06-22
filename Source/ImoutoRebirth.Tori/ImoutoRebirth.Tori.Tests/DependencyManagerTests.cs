@@ -47,11 +47,9 @@ public class DependencyManagerTests
             Options.Create(
                 new DependencyManagerOptions
                 {
-                    ProcessConsoleOutput = s => _output.WriteLine(s)
-                }))
-        {
-            IsDryRun = true
-        };
+                    ProcessConsoleOutput = s => _output.WriteLine(s),
+                    IsDryRun = true
+                }));
 
         await manager.InstallPostgres();
         await manager.InstallDotnetAspNetRuntime("9.0.6");

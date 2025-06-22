@@ -19,7 +19,6 @@
         </TextBlock>
 
         <TextBox Text="{Binding ElementName=UserControl, Path=Text}"
-                 Height="25"
-                 Style="{StaticResource MahApps.Styles.TextBox}"/>
+                 Height="25"/>
     </StackPanel>
 </UserControl>

@@ -23,7 +23,7 @@
                 <RowDefinition Height="*" />
             </Grid.RowDefinitions>
 
-            <mah:MetroProgressBar Value="34" />
+            <ProgressBar Value="{Binding ProgressValue}" Height="40"  />
 
             <TextBox
                 x:Name="LogTextBox"
@@ -31,6 +31,7 @@
                 Margin="0,41,0,0"
                 Grid.Row="1"
                 Text="{Binding LogString}"
+                FontSize="16"
                 TextChanged="TextBoxBase_OnTextChanged"/>
         </Grid>
 
@@ -40,12 +41,20 @@
                 Command="{Binding GoBackCommand}"
                 Visibility="{Binding IsInstallationStarted, Converter={StaticResource ConditionVisibilityConverter}, ConverterParameter=false}"
                 Content="back" />
+
             <Button
                 Style="{DynamicResource Styles.Button.Accent}"
                 Command="{Binding InstallCommand}"
                 Content="install"
-                Visibility="{Binding IsInstallationFinished, Converter={StaticResource ConditionVisibilityConverter}, ConverterParameter=false}"
-                IsEnabled="{Binding IsInstalling, Converter={StaticResource ConditionVisibilityConverter}, ConverterParameter=false}" />
+                Visibility="{Binding IsInstallationStarted, Converter={StaticResource ConditionVisibilityConverter}, ConverterParameter=false}" />
+
+            <ProgressBar 
+                IsIndeterminate="True"
+                Height="40"
+                Width="168"
+                Visibility="{Binding IsInstalling, Converter={StaticResource ConditionVisibilityConverter}, ConverterParameter=true}"
+                />
+
             <Button
                 Style="{DynamicResource Styles.Button.Accent}"
                 Command="{Binding CloseAppCommand}"

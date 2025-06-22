@@ -36,6 +36,8 @@ public record InstalledPostgresInfo(string? ServiceName, Version? Version);
 public class DependencyManagerOptions
 {
     public Action<string>? ProcessConsoleOutput { get; init; }
+
+    public bool IsDryRun { get; init; }
 }
 
 [SuppressMessage("Interoperability", "CA1416:Validate platform compatibility")]
@@ -45,15 +47,12 @@ public partial class DependencyManager : IDependencyManager
     private const int DefaultPostgresPort = 5432;
     private const string DefaultPostgresPassword = "postgres";
 
+    private readonly bool _isDryRun;
+
     private readonly ILogger<DependencyManager> _logger;
     private readonly IOptions<DependencyManagerOptions> _options;
     private readonly Lazy<Task<string>> _dotnetRuntimesOutput;
     private readonly Lazy<Task<bool>> _ensureChocoInstalled;
-
-    /// <summary>
-    /// When set to true, commands that would make changes will run in simulation mode without actually making changes.
-    /// </summary>
-    public bool IsDryRun { get; init; } = true;
 
     public DependencyManager(ILogger<DependencyManager> logger, IOptions<DependencyManagerOptions> options)
     {
@@ -61,6 +60,8 @@ public partial class DependencyManager : IDependencyManager
         _options = options;
         _dotnetRuntimesOutput = new(() => ExecuteDotnetCommand("--list-runtimes"));
         _ensureChocoInstalled = new(() => EnsureChocoInstalled());
+
+        _isDryRun = options.Value.IsDryRun;
     }
 
     public IReadOnlyCollection<InstalledPostgresInfo> GetPostgresWindowsServices()
@@ -199,7 +200,7 @@ public partial class DependencyManager : IDependencyManager
             if (!await _ensureChocoInstalled.Value)
                 return "";
 
-            if (IsDryRun)
+            if (_isDryRun)
             {
                 arguments = $"{arguments} --noop";
                 _logger.LogInformation("Running in dry run mode, command will not make actual changes");
@@ -295,7 +296,7 @@ public partial class DependencyManager : IDependencyManager
 
             if (process.ExitCode != 0)
             {
-                if (IsDryRun)
+                if (_isDryRun)
                 {
                     _logger.LogInformation(
                         "Chocolatey not found, installation of Chocolatey in dry run mode is impossible");

@@ -9,7 +9,7 @@
                 <!-- MahApps.Metro resource dictionaries -->
                 <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Controls.xaml" />
                 <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Fonts.xaml" />
-                <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Themes/dark.amber.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Themes/dark.teal.xaml" />
                 <ResourceDictionary Source="Assets/ProgressRings/ProgressRings.xaml" />
                 <ResourceDictionary Source="CommonControls.xaml" />
             </ResourceDictionary.MergedDictionaries>
@@ -17,6 +17,15 @@
             <converters:ConditionVisibilityConverter x:Key="ConditionVisibilityConverter" />
             <converters:BooleanResultConverter x:Key="BooleanResultConverter" />
             <converters:BooleanToAnythingConverter x:Key="BooleanToAnythingConverter" />
+
+            <FontFamily x:Key="MahApps.Fonts.Family.SymbolTheme">pack://application:,,,/Fonts/Supreme/#Supreme</FontFamily>
+            <FontFamily x:Key="MahApps.Fonts.Family.Button">pack://application:,,,/Fonts/Supreme/#Supreme</FontFamily>
+            <FontFamily x:Key="MahApps.Fonts.Family.Header">pack://application:,,,/Fonts/Supreme/#Supreme</FontFamily>
+            <FontFamily x:Key="MahApps.Fonts.Family.Window.Title">pack://application:,,,/Fonts/Supreme/#Supreme</FontFamily>
+            <FontFamily x:Key="MahApps.Fonts.Family.Control">pack://application:,,,/Fonts/Supreme/#Supreme</FontFamily>
+            <FontFamily x:Key="MahApps.Fonts.Family.ToggleSwitch">pack://application:,,,/Fonts/Supreme/#Supreme</FontFamily>
+            <FontFamily x:Key="MahApps.Fonts.Family.ToggleSwitch.Header">pack://application:,,,/Fonts/Supreme/#Supreme</FontFamily>
+            <FontFamily x:Key="MahApps.Fonts.Family.ContentControlTheme">pack://application:,,,/Fonts/Supreme/#Supreme</FontFamily>
         </ResourceDictionary>
     </Application.Resources>
 </Application>
