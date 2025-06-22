@@ -1,7 +1,6 @@
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
-using ImoutoRebirth.Tori.Services;
 using ImoutoRebirth.Tori.UI.Services;
 using ImoutoRebirth.Tori.UI.Windows;
 
@@ -9,32 +8,24 @@ namespace ImoutoRebirth.Tori.UI.Steps.Welcome;
 
 public partial class WelcomeStepViewModel : ObservableObject, IStep
 {
+    private readonly IConfigurationStorage _configurationStorage;
     private readonly IMessenger _messenger;
     
     [ObservableProperty]
-    private string _currentVersion;
+    private string _currentVersion = "loading...";
 
     [ObservableProperty]
-    private string _newVersion;
+    private string _newVersion = "loading...";
 
     [ObservableProperty]
     private bool _isUpdating;
 
-    public WelcomeStepViewModel(IRegistryService registryService, IVersionService versionService, IMessenger messenger)
+    public WelcomeStepViewModel(IConfigurationStorage configurationStorage, IMessenger messenger)
     {
+        _configurationStorage = configurationStorage;
         _messenger = messenger;
-        if (registryService.IsInstalled(out var installLocation))
-        {
-            CurrentVersion = versionService.GetLocalVersion(installLocation);
-            IsUpdating = true;
-        }
-        else
-        {
-            CurrentVersion = "not found";
-            IsUpdating = false;
-        }
 
-        NewVersion = versionService.GetNewVersion();
+        _ = FillProperties();
     }
 
     public string Title => "ImoutoRebirth";
@@ -42,14 +33,17 @@ public partial class WelcomeStepViewModel : ObservableObject, IStep
     public int State => 0;
 
     [RelayCommand]
-    public void Customize()
-    {
-        _messenger.Send(new NavigateTo(InstallerStep.Prerequisites));
-    }
+    private void Customize() => _messenger.Send(new NavigateTo(InstallerStep.Prerequisites));
 
     [RelayCommand]
-    public void Update()
+    private void Update() => _messenger.Send(new NavigateTo(InstallerStep.Installation));
+
+    private async Task FillProperties()
     {
-        _messenger.Send(new NavigateTo(InstallerStep.Installation));
+        await _configurationStorage.ConfigurationLoaded;
+
+        CurrentVersion = _configurationStorage.CurrentVersion;
+        IsUpdating = _configurationStorage.IsUpdating;
+        NewVersion = _configurationStorage.NewVersion;
     }
 }

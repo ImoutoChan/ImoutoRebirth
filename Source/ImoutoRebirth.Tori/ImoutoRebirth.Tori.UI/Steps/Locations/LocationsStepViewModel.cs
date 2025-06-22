@@ -30,19 +30,12 @@ public partial class LocationsStepViewModel : ObservableValidator, IStep
     [Directory("Please enter valid folder name", onlyAbsolutePath: true)]
     private string? _favSaveLocation;
 
-    public LocationsStepViewModel(IRegistryService registryService, IMessenger messenger, IConfigurationStorage configurationStorage)
+    public LocationsStepViewModel(IMessenger messenger, IConfigurationStorage configurationStorage)
     {
         _messenger = messenger;
         _configurationStorage = configurationStorage;
-        if (registryService.IsInstalled(out var installLocation))
-        {
-            _installLocation = installLocation.FullName;
-            _installLocationEditable = false;
-        }
 
-        var currentConfiguration = configurationStorage.CurrentConfiguration;
-        
-        FavSaveLocation = currentConfiguration.Harpy.SavePath.Replace(@"\\", @"\");
+        _ = FillProperties();
     }
 
     public string Title =>  "Locations";
@@ -127,5 +120,14 @@ public partial class LocationsStepViewModel : ObservableValidator, IStep
                 SavePath = FavSaveLocation!.Replace(@"\", @"\\")
             }
         });
+    }
+
+    private async Task FillProperties()
+    {
+        await _configurationStorage.ConfigurationLoaded;
+
+        FavSaveLocation = _configurationStorage.CurrentConfiguration.Harpy.SavePath.Replace(@"\\", @"\");
+        InstallLocation = _configurationStorage.InstallLocation;
+        InstallLocationEditable = _configurationStorage.InstallLocationEditable;
     }
 }

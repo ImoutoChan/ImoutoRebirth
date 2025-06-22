@@ -16,8 +16,8 @@ using static Z7Tasks;
 [CustomBuildCmdPathGitHubActions(
     "release",
     GitHubActionsImage.WindowsLatest,
-    OnPushTags = new []{ "*"},
-    InvokedTargets = new[] { nameof(Test), nameof(Pack7ZSfx) },
+    OnPushTags = ["*"],
+    InvokedTargets = [nameof(Test), nameof(Pack7ZSfx)],
     AutoGenerate = false)]
 class Build : NukeBuild
 {
@@ -30,7 +30,7 @@ class Build : NukeBuild
         Solution.ImoutoRebirth_Meido.ImoutoRebirth_Meido_Host,
         Solution.ImoutoRebirth_Navigator.ImoutoRebirth_Navigator,
         Solution.ImoutoRebirth_Room.ImoutoRebirth_Room_Host,
-        Solution.ImoutoRebirth_Tori.ImoutoRebirth_Tori,
+        Solution.ImoutoRebirth_Tori.ImoutoRebirth_Tori_UI,
         Solution.Imouto_Viewer.ImoutoViewer
     };
 
@@ -57,7 +57,7 @@ class Build : NukeBuild
     [Parameter("Configuration to build - Default is 'Release'")]
     readonly Configuration Configuration = Configuration.Release;
 
-    [Parameter("Insert version into the artefacts - Default is 'True'")]
+    [Parameter("Inserts version into the artefacts - Default is 'True'")]
     readonly BuildToVersionedFolder VersionedFolder = BuildToVersionedFolder.True;
 
     AbsolutePath SourceDirectory => RootDirectory;
@@ -156,7 +156,7 @@ class Build : NukeBuild
             
             AbsolutePath[] GetDirectoriesToDelete(string projectName, AbsolutePath projectOutput)
                 => DirectoriesToDeleteForProject
-                    .GetValueOrDefault(projectName, Array.Empty<RelativePath>())
+                    .GetValueOrDefault(projectName, [])
                     .Select(x => projectOutput / x)
                     .ToArray();
         });

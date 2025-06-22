@@ -5,15 +5,15 @@ namespace ImoutoRebirth.Tori.Configuration;
 
 public interface IConfigurationService
 {
-    AppConfiguration PrepareFinalConfigurationFileForUpdate(
+    Task<AppConfiguration> PrepareFinalConfigurationFileForUpdate(
         DirectoryInfo installLocation,
         DirectoryInfo updaterLocation);
 
     void SaveActualConfigurationInNewServices(DirectoryInfo installLocation, DirectoryInfo updaterLocation);
 
-    AppConfiguration PrepareFinalConfigurationFileForInstall(DirectoryInfo updaterLocation);
+    Task<AppConfiguration> PrepareFinalConfigurationFileForInstall(DirectoryInfo updaterLocation);
 
-    DirectoryInfo ActualizeFinalConfigurationFile(
+    Task<DirectoryInfo> ActualizeFinalConfigurationFile(
         string newVersion,
         DirectoryInfo updaterLocation,
         AppConfiguration configuration);
@@ -28,7 +28,7 @@ public class ConfigurationService : IConfigurationService
 
     public ConfigurationService(ILogger<ConfigurationService> logger) => _logger = logger;
 
-    public AppConfiguration PrepareFinalConfigurationFileForUpdate(
+    public async Task<AppConfiguration> PrepareFinalConfigurationFileForUpdate(
         DirectoryInfo installLocation,
         DirectoryInfo updaterLocation)
     {
@@ -44,11 +44,11 @@ public class ConfigurationService : IConfigurationService
         _logger.LogInformation("Using as final configuration file \"{ConfigurationFileSource}\"", fileToUse.FullName);
         var finalFile = fileToUse.CopyTo(finalFilePath, true);
 
-        return AppConfiguration.ReadFromFile(finalFile);
+        return await AppConfiguration.ReadFromFile(finalFile);
     }
 
 
-    public AppConfiguration PrepareFinalConfigurationFileForInstall(DirectoryInfo updaterLocation)
+    public async Task<AppConfiguration> PrepareFinalConfigurationFileForInstall(DirectoryInfo updaterLocation)
     {
         _logger.LogInformation("Looking for configuration files");
         var fileInUpdaterLocation = updaterLocation.GetFiles().First(x => x.Name == ConfigurationFilename);
@@ -58,10 +58,10 @@ public class ConfigurationService : IConfigurationService
 
         _logger.LogInformation("Using as final configuration file \"{ConfigurationFileSource}\"", fileToUse.FullName);
         var finalFile = fileToUse.CopyTo(finalFilePath, true);
-        return AppConfiguration.ReadFromFile(finalFile);
+        return await AppConfiguration.ReadFromFile(finalFile);
     }
 
-    public DirectoryInfo ActualizeFinalConfigurationFile(
+    public async Task<DirectoryInfo> ActualizeFinalConfigurationFile(
         string newVersion,
         DirectoryInfo updaterLocation,
         AppConfiguration configuration)
@@ -69,7 +69,7 @@ public class ConfigurationService : IConfigurationService
         var config = new ConfigurationBuilder(configuration);
 
         _logger.LogInformation("Writing built appsettings.Production.json files to services");
-        config.WriteProductionConfigurations(newVersion, updaterLocation);
+        await config.WriteProductionConfigurations(newVersion, updaterLocation);
 
         return config.GetInstallLocation();
     }

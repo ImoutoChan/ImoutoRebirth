@@ -23,6 +23,8 @@ public class AppSettings
 {
     public bool ForcedUpdate { get; set; }
 
+    public bool AutoUpdate { get; set; }
+
     public required DirectoryInfo UpdaterLocation { get; set; }
 }
 
@@ -38,6 +40,7 @@ public partial class App : Application
         services.Configure<AppSettings>(x =>
         {
             x.ForcedUpdate = e.Args.Contains("force");
+            x.AutoUpdate = e.Args.Contains("auto");
             x.UpdaterLocation = DetectUpdaterLocation(e.Args);
         });
 
@@ -57,7 +60,6 @@ public partial class App : Application
 
     private void ConfigureServices(IServiceCollection services, string[] eArgs)
     {
-
         var logForwarder = new ForwardingLoggerProvider();
         services.AddSingleton(logForwarder);
 

@@ -31,4 +31,4 @@ if (!updaterLocation.Exists)
 
 var force = args.Contains("force");
 
-installer.EasyInstallOrUpdate(updaterLocation, force);
+await installer.EasyInstallOrUpdate(updaterLocation, force);

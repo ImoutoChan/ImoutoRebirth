@@ -6,7 +6,7 @@ namespace ImoutoRebirth.Tori.Services;
 
 public interface IWindowsServiceUpdater
 {
-    void UpdateService(DirectoryInfo installLocation, DirectoryInfo updaterLocation);
+    Task UpdateService(DirectoryInfo installLocation, DirectoryInfo updaterLocation);
 }
 
 public class WindowsServiceUpdater : IWindowsServiceUpdater
@@ -46,12 +46,12 @@ public class WindowsServiceUpdater : IWindowsServiceUpdater
         _shortcutService = shortcutService;
     }
 
-    public void UpdateService(DirectoryInfo installLocation, DirectoryInfo updaterLocation)
+    public async Task UpdateService(DirectoryInfo installLocation, DirectoryInfo updaterLocation)
     {
-        _windowsServicesManager.LogServices();
-        _windowsServicesManager.StopServices();
+        await _windowsServicesManager.LogServices();
+        await _windowsServicesManager.StopServices();
         StopApplications();
-        _windowsServicesManager.DeleteServices();
+        await _windowsServicesManager.DeleteServices();
 
         var serviceDirectories = updaterLocation.GetDirectories();
         var windowsServicesToCreate = new List<(string Name, string ExePath)>();
@@ -114,8 +114,8 @@ public class WindowsServiceUpdater : IWindowsServiceUpdater
             }
         }
         
-        _windowsServicesManager.CreateServices(windowsServicesToCreate);
-        _windowsServicesManager.StartServices();
+        await _windowsServicesManager.CreateServices(windowsServicesToCreate);
+        await _windowsServicesManager.StartServices();
     }
 
     private static void StopApplications()

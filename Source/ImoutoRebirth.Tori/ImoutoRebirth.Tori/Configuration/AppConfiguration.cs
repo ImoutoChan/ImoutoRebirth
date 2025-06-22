@@ -59,24 +59,24 @@ public record AppConfiguration(
         string Igneous,
         string UserAgent);
 
-    public static AppConfiguration ReadFromFile(FileInfo globalConfigurationFile)
+    public static async Task<AppConfiguration> ReadFromFile(FileInfo globalConfigurationFile)
     {
         if (!globalConfigurationFile.Exists)
             throw new Exception("Unable to find global configuration file!");
 
-        var configurationJson = File.ReadAllText(globalConfigurationFile.FullName);
+        var configurationJson = await File.ReadAllTextAsync(globalConfigurationFile.FullName);
         var configurationDictionary = JsonSerializer.Deserialize<Dictionary<string, string>>(configurationJson)!;
 
-        Migrate(globalConfigurationFile, configurationDictionary);
+        await Migrate(globalConfigurationFile, configurationDictionary);
         return ReadFromDictionary(configurationDictionary);
     }
 
-    public void WriteToFile(FileInfo file)
+    public async Task WriteToFile(FileInfo file)
     {
         var configurationDictionary = WriteToDictionary();
         ValidateConfigurationValues(configurationDictionary);
 
-        File.WriteAllText(file.FullName, JsonSerializer.Serialize(configurationDictionary));
+        await File.WriteAllTextAsync(file.FullName, JsonSerializer.Serialize(configurationDictionary));
     }
 
     public static AppConfiguration ReadFromDictionary(Dictionary<string,string> configurationDictionary)
@@ -204,7 +204,7 @@ public record AppConfiguration(
             throw new Exception("Missed configuration keys: " + string.Join(", ", missedKeys));
     }
 
-    private static void Migrate(FileInfo globalConfigurationFile, Dictionary<string, string> configuration)
+    private static async Task Migrate(FileInfo globalConfigurationFile, Dictionary<string, string> configuration)
     {
         if (!configuration.ContainsKey("MassTransitConnectionString"))
         {
@@ -217,7 +217,7 @@ public record AppConfiguration(
             configuration.Remove("RabbitMqUsername");
             configuration.Remove("RabbitMqPassword");
 
-            File.WriteAllText(
+            await File.WriteAllTextAsync(
                 globalConfigurationFile.FullName,
                 JsonSerializer.Serialize(configuration, new JsonSerializerOptions { WriteIndented = true }));
         }
@@ -230,7 +230,7 @@ public record AppConfiguration(
             configuration.Add("ExHentaiIgneous", "");
             configuration.Add("ExHentaiUserAgent", "");
 
-            File.WriteAllText(
+            await File.WriteAllTextAsync(
                 globalConfigurationFile.FullName,
                 JsonSerializer.Serialize(configuration, new JsonSerializerOptions { WriteIndented = true }));
         }

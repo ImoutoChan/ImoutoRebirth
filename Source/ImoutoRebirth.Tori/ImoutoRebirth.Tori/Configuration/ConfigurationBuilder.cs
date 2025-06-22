@@ -4,7 +4,7 @@ namespace ImoutoRebirth.Tori.Configuration;
 
 public interface IConfigurationBuilder
 {
-    void WriteProductionConfigurations(string newVersion, DirectoryInfo updaterLocation);
+    Task WriteProductionConfigurations(string newVersion, DirectoryInfo updaterLocation);
 
     DirectoryInfo GetInstallLocation();
 }
@@ -16,10 +16,10 @@ public class ConfigurationBuilder : IConfigurationBuilder
     public ConfigurationBuilder(AppConfiguration configuration)
         => _configuration = configuration;
 
-    public ConfigurationBuilder(FileInfo globalConfigurationFile)
-        => _configuration = AppConfiguration.ReadFromFile(globalConfigurationFile);
+    public async Task<ConfigurationBuilder> CreateFromFile(FileInfo globalConfigurationFile)
+        => new(await AppConfiguration.ReadFromFile(globalConfigurationFile));
 
-    public void WriteProductionConfigurations(string newVersion, DirectoryInfo updaterLocation)
+    public async Task WriteProductionConfigurations(string newVersion, DirectoryInfo updaterLocation)
     {
         var serviceDirectories = updaterLocation.GetDirectories();
         foreach (var serviceDirectory in serviceDirectories)
@@ -47,7 +47,9 @@ public class ConfigurationBuilder : IConfigurationBuilder
                 throw new Exception($"Unable to parse built configuration for {serviceDirectory.Name}", e);
             }
 
-            File.WriteAllText(Path.Combine(serviceDirectory.FullName, "appsettings.Production.json"), configuration);
+            await File.WriteAllTextAsync(
+                Path.Combine(serviceDirectory.FullName, "appsettings.Production.json"),
+                configuration);
         }
     }
 

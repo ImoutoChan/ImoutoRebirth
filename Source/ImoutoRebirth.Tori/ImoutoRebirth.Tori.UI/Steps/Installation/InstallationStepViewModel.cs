@@ -65,6 +65,16 @@ public partial class InstallationStepViewModel : ObservableValidator, IStep
             if (IsInstalling)
                 AppendLog(s);
         };
+
+
+        if (appSettings.Value.AutoUpdate)
+        {
+            _ = Install();
+        }
+        else
+        {
+            _ = LogConfiguration();
+        }
     }
 
     public string Title => "Installation";
@@ -74,6 +84,8 @@ public partial class InstallationStepViewModel : ObservableValidator, IStep
     [RelayCommand]
     private async Task Install()
     {
+        await LogConfiguration();
+
         IsInstalling = true;
         IsInstallationStarted = true;
 
@@ -93,7 +105,6 @@ public partial class InstallationStepViewModel : ObservableValidator, IStep
     private async Task InstallInternal()
     {
         _logger.LogInformation("Starting installation process");
-        LogConfiguration();
 
         AppendLog();
         if (_configurationStorage.ShouldInstallRuntimes)
@@ -119,7 +130,7 @@ public partial class InstallationStepViewModel : ObservableValidator, IStep
         }
         ProgressValue = 20;
 
-        _installer.WizardInstallOrUpdate(
+        await _installer.WizardInstallOrUpdate(
             _appSettings.Value.UpdaterLocation,
             _appSettings.Value.ForcedUpdate,
             _configurationStorage.CurrentConfiguration);
@@ -132,8 +143,10 @@ public partial class InstallationStepViewModel : ObservableValidator, IStep
     [RelayCommand]
     public void CloseApp() => Application.Current.Shutdown();
 
-    private void LogConfiguration()
+    private async Task LogConfiguration()
     {
+        await _configurationStorage.ConfigurationLoaded;
+
         var configuration = JsonSerializer.Serialize(
             _configurationStorage.CurrentConfiguration.WriteToDictionary(),
             new JsonSerializerOptions { WriteIndented = true });
@@ -150,6 +163,7 @@ public partial class InstallationStepViewModel : ObservableValidator, IStep
         AppendLog();
         AppendLog($"Configuration:");
         AppendLog(configuration);
+        AppendLog();
     }
 
     private void AppendLog(string str)

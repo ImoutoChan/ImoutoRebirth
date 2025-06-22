@@ -12,39 +12,88 @@ public interface IConfigurationStorage
 
     bool ShouldInstallRuntimes { get; set; }
 
+    string NewVersion { get; }
+
+    bool IsUpdating { get; }
+
+    string CurrentVersion { get; }
+
+    bool InstallLocationEditable { get; }
+
+    string InstallLocation { get; }
+
+    Task ConfigurationLoaded { get; }
+
     void UpdateConfiguration(Func<AppConfiguration, AppConfiguration> updater);
 }
 
 public class ConfigurationStorage : IConfigurationStorage
 {
+    private readonly IRegistryService _registryService;
+    private readonly IOptions<AppSettings> _options;
+    private readonly IConfigurationService _configurationService;
+    private readonly IVersionService _versionService;
+
     public ConfigurationStorage(
         IRegistryService registryService,
         IOptions<AppSettings> options,
-        IConfigurationService configurationService)
+        IConfigurationService configurationService,
+        IVersionService versionService)
     {
-        if (registryService.IsInstalled(out var installLocation))
-        {
-            var configuration = configurationService.PrepareFinalConfigurationFileForUpdate(
-                installLocation,
-                options.Value.UpdaterLocation);
+        _registryService = registryService;
+        _options = options;
+        _configurationService = configurationService;
+        _versionService = versionService;
 
-            CurrentConfiguration = configuration;
-        }
-        else
-        {
-            var configuration = configurationService.PrepareFinalConfigurationFileForInstall(
-                options.Value.UpdaterLocation);
-
-            CurrentConfiguration = configuration;
-        }
+        ConfigurationLoaded = Load();
     }
 
-    public AppConfiguration CurrentConfiguration { get; private set; }
+    public AppConfiguration CurrentConfiguration { get; private set; } = default!;
 
     public bool ShouldInstallPostgreSql { get; set; }
 
     public bool ShouldInstallRuntimes { get; set; }
 
+    public string NewVersion { get; private set; } = "loading...";
+
+    public bool IsUpdating { get; private set; }
+
+    public string CurrentVersion { get; private set; } = "loading...";
+
+    public bool InstallLocationEditable { get; private set; }
+
+    public string InstallLocation { get; private set; } = "loading...";
+
+    public Task ConfigurationLoaded { get; private set; }
+
     public void UpdateConfiguration(Func<AppConfiguration, AppConfiguration> updater)
         => CurrentConfiguration = updater(CurrentConfiguration);
+
+    private async Task Load()
+    {
+        if (_registryService.IsInstalled(out var installLocation))
+        {
+            var configuration = await _configurationService
+                .PrepareFinalConfigurationFileForUpdate(installLocation, _options.Value.UpdaterLocation);
+
+            CurrentConfiguration = configuration;
+            CurrentVersion = await _versionService.GetLocalVersion(installLocation);
+            IsUpdating = true;
+            InstallLocation = installLocation.FullName;
+            InstallLocationEditable = false;
+        }
+        else
+        {
+            var configuration = await _configurationService
+                .PrepareFinalConfigurationFileForInstall(_options.Value.UpdaterLocation);
+
+            CurrentConfiguration = configuration;
+            CurrentVersion = "not found";
+            IsUpdating = false;
+            InstallLocation = configuration.InstallLocation;
+            InstallLocationEditable = true;
+        }
+
+        NewVersion = _versionService.GetNewVersion();
+    }
 }

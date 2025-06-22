@@ -98,18 +98,18 @@ public class AppConfigurationTests
     }
 
     [Fact]
-    public void ReadFromFile_WithValidFile_ReturnsValidConfiguration()
+    public async Task ReadFromFile_WithValidFile_ReturnsValidConfiguration()
     {
         // arrange
         var tempFile = Path.GetTempFileName();
         try
         {
             var configDictionary = CreateValidConfigurationDictionary();
-            File.WriteAllText(tempFile, JsonSerializer.Serialize(configDictionary));
+            await File.WriteAllTextAsync(tempFile, JsonSerializer.Serialize(configDictionary));
             var fileInfo = new FileInfo(tempFile);
 
             // act
-            var appConfig = AppConfiguration.ReadFromFile(fileInfo);
+            var appConfig = await AppConfiguration.ReadFromFile(fileInfo);
 
             // assert
             appConfig.Should().NotBeNull();
@@ -126,19 +126,19 @@ public class AppConfigurationTests
     }
 
     [Fact]
-    public void ReadFromFile_WithNonExistentFile_ThrowsException()
+    public async Task ReadFromFile_WithNonExistentFile_ThrowsException()
     {
         // arrange
         var nonExistentFile = new FileInfo(Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString()));
 
         // act and assert
-        Action act = () => AppConfiguration.ReadFromFile(nonExistentFile);
-        act.Should().Throw<Exception>()
+        Func<Task> act = async () => await AppConfiguration.ReadFromFile(nonExistentFile);
+        await act.Should().ThrowAsync<Exception>()
             .WithMessage("Unable to find global configuration file!");
     }
 
     [Fact]
-    public void WriteToFile_WritesValidConfiguration()
+    public async Task WriteToFile_WritesValidConfiguration()
     {
         // arrange
         var tempFile = Path.GetTempFileName();
@@ -148,10 +148,10 @@ public class AppConfigurationTests
             var fileInfo = new FileInfo(tempFile);
 
             // act
-            appConfig.WriteToFile(fileInfo);
+            await appConfig.WriteToFile(fileInfo);
 
             // assert
-            var fileContent = File.ReadAllText(tempFile);
+            var fileContent = await File.ReadAllTextAsync(tempFile);
             var deserializedDictionary = JsonSerializer.Deserialize<Dictionary<string, string>>(fileContent);
 
             deserializedDictionary.Should().NotBeNull();
@@ -168,7 +168,7 @@ public class AppConfigurationTests
     }
 
     [Fact]
-    public void RoundTrip_ReadWriteRead_MaintainsValues()
+    public async Task RoundTrip_ReadWriteRead_MaintainsValues()
     {
         // arrange
         var tempFile = Path.GetTempFileName();
@@ -178,8 +178,8 @@ public class AppConfigurationTests
             var fileInfo = new FileInfo(tempFile);
 
             // act
-            originalConfig.WriteToFile(fileInfo);
-            var readConfig = AppConfiguration.ReadFromFile(fileInfo);
+            await originalConfig.WriteToFile(fileInfo);
+            var readConfig = await AppConfiguration.ReadFromFile(fileInfo);
 
             // assert
             readConfig.Should().BeEquivalentTo(originalConfig);
@@ -207,7 +207,7 @@ public class AppConfigurationTests
     }
 
     [Fact]
-    public void ReadFromFile_MigratesV1ToV2Format()
+    public async Task ReadFromFile_MigratesV1ToV2Format()
     {
         // arrange
         var tempFile = Path.GetTempFileName();
@@ -221,11 +221,11 @@ public class AppConfigurationTests
             configDictionary.Add("RabbitMqUsername", "guest");
             configDictionary.Add("RabbitMqPassword", "guest");
 
-            File.WriteAllText(tempFile, JsonSerializer.Serialize(configDictionary));
+            await File.WriteAllTextAsync(tempFile, JsonSerializer.Serialize(configDictionary));
             var fileInfo = new FileInfo(tempFile);
 
             // act
-            var appConfig = AppConfiguration.ReadFromFile(fileInfo);
+            var appConfig = await AppConfiguration.ReadFromFile(fileInfo);
 
             // assert
             appConfig.Should().NotBeNull();
@@ -233,7 +233,7 @@ public class AppConfigurationTests
                 "Server=localhost;Port=5432;Database=masstransit;User Id=postgres;Password=postgres;");
 
             // check that the V1 keys were removed from the file
-            var updatedFileContent = File.ReadAllText(tempFile);
+            var updatedFileContent = await File.ReadAllTextAsync(tempFile);
             var updatedDictionary = JsonSerializer.Deserialize<Dictionary<string, string>>(updatedFileContent);
 
             updatedDictionary.Should().NotBeNull();
@@ -251,7 +251,7 @@ public class AppConfigurationTests
     }
 
     [Fact]
-    public void ReadFromFile_MigratesV2ToV3Format()
+    public async Task ReadFromFile_MigratesV2ToV3Format()
     {
         // arrange
         var tempFile = Path.GetTempFileName();
@@ -263,11 +263,11 @@ public class AppConfigurationTests
             configDictionary.Remove("ExHentaiIgneous");
             configDictionary.Remove("ExHentaiUserAgent");
 
-            File.WriteAllText(tempFile, JsonSerializer.Serialize(configDictionary));
+            await File.WriteAllTextAsync(tempFile, JsonSerializer.Serialize(configDictionary));
             var fileInfo = new FileInfo(tempFile);
 
             // act
-            var appConfig = AppConfiguration.ReadFromFile(fileInfo);
+            var appConfig = await AppConfiguration.ReadFromFile(fileInfo);
 
             // assert
             appConfig.Should().NotBeNull();
@@ -277,7 +277,7 @@ public class AppConfigurationTests
             appConfig.ExHentai.UserAgent.Should().Be("");
 
             // check that the V3 keys were added to the file
-            var updatedFileContent = File.ReadAllText(tempFile);
+            var updatedFileContent = await File.ReadAllTextAsync(tempFile);
             var updatedDictionary = JsonSerializer.Deserialize<Dictionary<string, string>>(updatedFileContent);
 
             updatedDictionary.Should().NotBeNull();

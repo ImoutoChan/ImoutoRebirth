@@ -10,15 +10,15 @@ public record WindowsService(string Name, string Status);
 
 public interface IWindowsServicesManager
 {
-    void LogServices();
+    Task LogServices();
 
-    void StopServices();
+    Task StopServices();
 
-    void DeleteServices();
+    Task DeleteServices();
 
-    void CreateServices(IReadOnlyCollection<(string Name, string ExePath)> newServices);
+    Task CreateServices(IReadOnlyCollection<(string Name, string ExePath)> newServices);
 
-    void StartServices();
+    Task StartServices();
 }
 
 [SuppressMessage("Interoperability", "CA1416:Validate platform compatibility")]
@@ -28,15 +28,15 @@ public class FakeWindowsServicesManager : IWindowsServicesManager
 
     public FakeWindowsServicesManager(ILogger<WindowsServiceUpdater> logger) => _logger = logger;
     
-    public void LogServices()
+    public async Task LogServices()
     {
-        var installedServicesString = GetServices().JoinStrings(x => $"({x.Name} {x.Status})", ", ");
+        var installedServicesString = (await GetServices()).JoinStrings(x => $"({x.Name} {x.Status})", ", ");
         _logger.LogInformation("Installed services: {InstalledServices}", installedServicesString);
     }
 
-    public void StopServices()
+    public async Task StopServices()
     {
-        var services = GetWindowsServices().ToList();
+        var services = await GetWindowsServices();
         
         foreach (var service in services)
         {
@@ -49,9 +49,9 @@ public class FakeWindowsServicesManager : IWindowsServicesManager
         }
     }
 
-    public void DeleteServices()
+    public async Task DeleteServices()
     {
-        var services = GetWindowsServices().ToList();
+        var services = await GetWindowsServices();
 
         foreach (var service in services)
         {
@@ -61,7 +61,7 @@ public class FakeWindowsServicesManager : IWindowsServicesManager
         }
     }
 
-    public void CreateServices(IReadOnlyCollection<(string Name, string ExePath)> newServices)
+    public Task CreateServices(IReadOnlyCollection<(string Name, string ExePath)> newServices)
     {
         foreach (var service in newServices)
         {
@@ -69,11 +69,13 @@ public class FakeWindowsServicesManager : IWindowsServicesManager
             _logger.LogInformation("RUN sc create {ServiceName} binPath= \"{ServiceExe}\"", service.Name, service.ExePath);
             _logger.LogInformation("Created {ServiceName}", service.Name);
         }
+
+        return Task.CompletedTask;
     }
 
-    public void StartServices()
+    public async Task StartServices()
     {
-        var services = GetWindowsServices().ToList();
+        var services = await GetWindowsServices();
         
         foreach (var service in services)
         {
@@ -81,12 +83,15 @@ public class FakeWindowsServicesManager : IWindowsServicesManager
         }
     }
 
-    private static IEnumerable<ServiceController> GetWindowsServices()
-        => ServiceController.GetServices()
-            .Where(x => x.ServiceName.StartsWith("ImoutoRebirth"));
-    
-    private static IEnumerable<WindowsService> GetServices() 
-        => GetWindowsServices().Select(x => new WindowsService(x.ServiceName, x.Status.ToString()));
+    private static async Task<IReadOnlyCollection<ServiceController>> GetWindowsServices()
+        => await Task.Run(() => ServiceController.GetServices()
+            .Where(x => x.ServiceName.StartsWith("ImoutoRebirth"))
+            .ToList());
+
+    private static async Task<IReadOnlyCollection<WindowsService>> GetServices()
+        => (await GetWindowsServices())
+            .Select(x => new WindowsService(x.ServiceName, x.Status.ToString()))
+            .ToList();
 }
 
 [SuppressMessage("Interoperability", "CA1416:Validate platform compatibility")]
@@ -96,45 +101,47 @@ public class WindowsServicesManager : IWindowsServicesManager
 
     public WindowsServicesManager(ILogger<WindowsServiceUpdater> logger) => _logger = logger;
 
-    public void LogServices()
+    public async Task LogServices()
     {
-        var installedServicesString = GetServices().JoinStrings(x => $"({x.Name} {x.Status})", ", ");
+        var installedServicesString
+            = (await GetServices()).JoinStrings(x => $"({x.Name} {x.Status})", ", ");
+
         _logger.LogInformation("Installed services: {InstalledServices}", installedServicesString);
     }
 
-    public void StopServices()
+    public async Task StopServices()
     {
-        var services = GetWindowsServices().ToList();
+        var services = await GetWindowsServices();
 
         var runningServices = services.Where(x => x.Status != ServiceControllerStatus.Stopped).ToList();
         
         foreach (var service in runningServices)
         {
             _logger.LogInformation("Stopping {ServiceName}", service.ServiceName);
-            service.Stop();
+            await Task.Run(() => service.Stop());
         }
 
         foreach (var service in runningServices)
         {
-            service.WaitForStatus(ServiceControllerStatus.Stopped);
+            await Task.Run(() => service.WaitForStatus(ServiceControllerStatus.Stopped));
             _logger.LogInformation("Stopped {ServiceName}", service.ServiceName);
         }
     }
 
-    public void StartServices()
+    public async Task StartServices()
     {
-        var services = GetWindowsServices().ToList();
+        var services = await GetWindowsServices();
         
         foreach (var service in services)
         {
             _logger.LogInformation("Starting {ServiceName}", service.ServiceName);
-            service.Start();
+            await Task.Run(() => service.Start());
         }
     }
 
-    public void DeleteServices()
+    public async Task DeleteServices()
     {
-        var services = GetWindowsServices().ToList();
+        var services = await GetWindowsServices();
 
         foreach (var service in services)
         {
@@ -145,20 +152,27 @@ public class WindowsServicesManager : IWindowsServicesManager
             }
 
             _logger.LogInformation("Deleting {ServiceName}", service.ServiceName);
-            using var process = new Process();
-            process.StartInfo.FileName = "sc";
-            process.StartInfo.Arguments = $"delete {service.ServiceName}";
-            process.Start();
-            process.WaitForExit();
+
+            var startInfo = new ProcessStartInfo
+            {
+                FileName = "sc",
+                Arguments = $"delete {service.ServiceName}",
+                RedirectStandardOutput = true,
+                RedirectStandardError = true,
+                UseShellExecute = false,
+                CreateNoWindow = true
+            };
+
+            using var process = Process.Start(startInfo);
+            await process!.WaitForExitAsync();
             _logger.LogInformation("Deleted {ServiceName}", service.ServiceName);
         }
     }
 
-    public void CreateServices(IReadOnlyCollection<(string Name, string ExePath)> newServices)
+    public async Task CreateServices(IReadOnlyCollection<(string Name, string ExePath)> newServices)
     {
         //sc.exe create <new_service_name> binPath= "<path_to_the_service_executable>"
-        
-        var existingServices = GetWindowsServices().ToList();
+        var existingServices = await GetWindowsServices();
 
         var nameConflictService = existingServices.FirstOrDefault(x => newServices.Any(y => y.Name == x.ServiceName));
         if (nameConflictService != null)
@@ -170,19 +184,29 @@ public class WindowsServicesManager : IWindowsServicesManager
         foreach (var service in newServices)
         {
             _logger.LogInformation("Creating {ServiceName} with exe {ServiceExe}", service.Name, service.ExePath);
-            using var process = new Process();
-            process.StartInfo.FileName = "sc";
-            process.StartInfo.Arguments = $"create {service.Name} start= delayed-auto binPath= \"{service.ExePath}\"";
-            process.Start();
-            process.WaitForExit();
+            var startInfo = new ProcessStartInfo
+            {
+                FileName = "sc",
+                Arguments = $"create {service.Name} start= delayed-auto binPath= \"{service.ExePath}\"",
+                RedirectStandardOutput = true,
+                RedirectStandardError = true,
+                UseShellExecute = false,
+                CreateNoWindow = true
+            };
+
+            using var process = Process.Start(startInfo);
+            await process!.WaitForExitAsync();
             _logger.LogInformation("Created {ServiceName}", service.Name);
         }
     }
 
-    private static IEnumerable<ServiceController> GetWindowsServices()
-        => ServiceController.GetServices()
-            .Where(x => x.ServiceName.StartsWith("ImoutoRebirth"));
+    private static async Task<IReadOnlyCollection<ServiceController>> GetWindowsServices()
+        => await Task.Run(() => ServiceController.GetServices()
+            .Where(x => x.ServiceName.StartsWith("ImoutoRebirth"))
+            .ToList());
     
-    private static IEnumerable<WindowsService> GetServices() 
-        => GetWindowsServices().Select(x => new WindowsService(x.ServiceName, x.Status.ToString()));
+    private static async Task<IReadOnlyCollection<WindowsService>> GetServices()
+        => (await GetWindowsServices())
+            .Select(x => new WindowsService(x.ServiceName, x.Status.ToString()))
+            .ToList();
 }
