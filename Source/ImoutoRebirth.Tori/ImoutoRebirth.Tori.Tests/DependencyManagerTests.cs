@@ -13,7 +13,7 @@ public class DependencyManagerTests
     public DependencyManagerTests(ITestOutputHelper output) => _output = output;
 
     [Fact]
-    public void DependencyManager_WhenCalledOnLocal_ShouldReturnVersions()
+    public async Task DependencyManager_WhenCalledOnLocal_ShouldReturnVersions()
     {
         var manager = new DependencyManager(
             TestOutputLogger.GetLogger<DependencyManager>(_output),
@@ -25,11 +25,11 @@ public class DependencyManagerTests
 
         var postgresServices = manager.GetPostgresWindowsServices();
         var isPostgresPortInUse = manager.IsPostgresPortInUse();
-        var isPostgresInstalled = manager.IsPostgresInstalled();
+        var isPostgresInstalled = await manager.IsPostgresInstalled();
 
-        var isDotnetAspNetRuntimeInstalled = manager.IsDotnetAspNetRuntimeInstalled("9.0.6");
-        var isDotnetDesktopRuntimeInstalled = manager.IsDotnetDesktopRuntimeInstalled("9.0.6");
-        var dotnetRuntimes = manager.GetDotnetRuntimes();
+        var isDotnetAspNetRuntimeInstalled = await manager.IsDotnetAspNetRuntimeInstalled("9.0.6");
+        var isDotnetDesktopRuntimeInstalled = await manager.IsDotnetDesktopRuntimeInstalled("9.0.6");
+        var dotnetRuntimes = await manager.GetDotnetRuntimes();
 
         postgresServices.Should().NotBeEmpty();
         isPostgresPortInUse.Should().BeTrue();
@@ -39,8 +39,8 @@ public class DependencyManagerTests
         dotnetRuntimes.Should().NotBeEmpty();
     }
 
-    [Fact(Skip = "Requires admin privileges and is long running")]
-    public void DependencyManager_WhenCalledOnLocal_ShouldInstallPostgres()
+    [Fact]
+    public async Task DependencyManager_WhenCalledOnLocal_ShouldInstallPostgres()
     {
         var manager = new DependencyManager(
             TestOutputLogger.GetLogger<DependencyManager>(_output),
@@ -53,8 +53,8 @@ public class DependencyManagerTests
             IsDryRun = true
         };
 
-        manager.InstallPostgres();
-        manager.InstallDotnetAspNetRuntime("9.0.6");
-        manager.InstallDotnetDesktopRuntime("9.0.6");
+        await manager.InstallPostgres();
+        await manager.InstallDotnetAspNetRuntime("9.0.6");
+        await manager.InstallDotnetDesktopRuntime("9.0.6");
     }
 }

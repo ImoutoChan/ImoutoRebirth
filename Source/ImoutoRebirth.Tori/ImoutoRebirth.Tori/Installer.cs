@@ -8,6 +8,8 @@ namespace ImoutoRebirth.Tori;
 public interface IInstaller
 {
     void EasyInstallOrUpdate(DirectoryInfo updaterLocation, bool forceUpdate = false);
+
+    void WizardInstallOrUpdate(DirectoryInfo updaterLocation, bool forceUpdate, AppConfiguration newConfiguration);
 }
 
 public class Installer : IInstaller
@@ -49,6 +51,25 @@ public class Installer : IInstaller
         }
     }
 
+    public void WizardInstallOrUpdate(
+        DirectoryInfo updaterLocation,
+        bool forceUpdate,
+        AppConfiguration newConfiguration)
+    {
+        _logger.LogInformation("Installing ImoutoRebirth app family");
+
+        if (_registryService.IsInstalled(out var installLocation))
+        {
+            _logger.LogInformation("Local version was found, updating");
+            WizardUpdate(installLocation, updaterLocation, forceUpdate, newConfiguration);
+        }
+        else
+        {
+            _logger.LogInformation("No local version was found, installing from scratch");
+            WizardInstall(updaterLocation, newConfiguration);
+        }
+    }
+
     private void EasyUpdate(DirectoryInfo installLocation, DirectoryInfo updaterLocation, bool forceUpdate)
     {
         var newVersion = _versionService.GetNewVersion();
@@ -66,6 +87,27 @@ public class Installer : IInstaller
         }
     }
 
+    private void WizardUpdate(
+        DirectoryInfo installLocation,
+        DirectoryInfo updaterLocation,
+        bool forceUpdate,
+        AppConfiguration newConfiguration)
+    {
+        var newVersion = _versionService.GetNewVersion();
+        var localVersion = _versionService.GetLocalVersion(installLocation);
+        _logger.LogInformation("New version {NewVersion}", newVersion);
+
+        if (localVersion == newVersion && !forceUpdate)
+        {
+            _logger.LogInformation("Everything is up to date");
+        }
+        else
+        {
+            _logger.LogInformation("Detected installed version {LocalVersion}, updating", localVersion);
+            WizardUpdateProgram(newVersion, installLocation, updaterLocation, newConfiguration);
+        }
+    }
+
     private void EasyUpdateProgram(string newVersion, DirectoryInfo installLocation, DirectoryInfo updaterLocation)
     {
         var configuration = _configurationService.PrepareFinalConfigurationFileForUpdate(installLocation, updaterLocation);
@@ -78,12 +120,44 @@ public class Installer : IInstaller
         _logger.LogInformation("ImoutoRebirth updated");
     }
 
+    private void WizardUpdateProgram(
+        string newVersion,
+        DirectoryInfo installLocation,
+        DirectoryInfo updaterLocation,
+        AppConfiguration newConfiguration)
+    {
+        _configurationService.ActualizeFinalConfigurationFile(newVersion, updaterLocation, newConfiguration);
+
+        _windowsServiceUpdater.UpdateService(installLocation, updaterLocation);
+        _versionService.SetLocalVersionAsNew(installLocation);
+        _configurationService.SaveActualConfigurationInNewServices(installLocation, updaterLocation);
+
+        _logger.LogInformation("ImoutoRebirth updated");
+    }
+
     private void EasyInstall(DirectoryInfo updaterLocation)
     {
         var newVersion = _versionService.GetNewVersion();
         
         var configuration = _configurationService.PrepareFinalConfigurationFileForInstall(updaterLocation);
         var installLocation = _configurationService.ActualizeFinalConfigurationFile(newVersion, updaterLocation, configuration);
+
+        _windowsServiceUpdater.UpdateService(installLocation, updaterLocation);
+        _versionService.SetLocalVersionAsNew(installLocation);
+        _configurationService.SaveActualConfigurationInNewServices(installLocation, updaterLocation);
+        _registryService.SetInstalled(installLocation);
+
+        _logger.LogInformation("ImoutoRebirth was installed");
+    }
+
+    private void WizardInstall(DirectoryInfo updaterLocation, AppConfiguration newConfiguration)
+    {
+        var newVersion = _versionService.GetNewVersion();
+
+        var installLocation = _configurationService.ActualizeFinalConfigurationFile(
+            newVersion,
+            updaterLocation,
+            newConfiguration);
 
         _windowsServiceUpdater.UpdateService(installLocation, updaterLocation);
         _versionService.SetLocalVersionAsNew(installLocation);

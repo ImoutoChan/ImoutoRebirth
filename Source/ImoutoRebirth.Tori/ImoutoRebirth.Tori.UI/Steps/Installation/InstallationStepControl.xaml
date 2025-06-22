@@ -26,14 +26,31 @@
             <mah:MetroProgressBar Value="34" />
 
             <TextBox
+                x:Name="LogTextBox"
+                IsReadOnly="True"
                 Margin="0,41,0,0"
                 Grid.Row="1"
-                Text="{Binding LogString}" />
+                Text="{Binding LogString}"
+                TextChanged="TextBoxBase_OnTextChanged"/>
         </Grid>
 
         <StackPanel Grid.Row="2" HorizontalAlignment="Right" Orientation="Horizontal" Margin="50, 40, 50, 40">
-            <Button Style="{DynamicResource Styles.Button.Regular}" Command="{Binding GoBackCommand}">back</Button>
-            <Button Style="{DynamicResource Styles.Button.Accent}" Command="{Binding InstallCommand}">install</Button>
+            <Button
+                Style="{DynamicResource Styles.Button.Regular}"
+                Command="{Binding GoBackCommand}"
+                Visibility="{Binding IsInstallationStarted, Converter={StaticResource ConditionVisibilityConverter}, ConverterParameter=false}"
+                Content="back" />
+            <Button
+                Style="{DynamicResource Styles.Button.Accent}"
+                Command="{Binding InstallCommand}"
+                Content="install"
+                Visibility="{Binding IsInstallationFinished, Converter={StaticResource ConditionVisibilityConverter}, ConverterParameter=false}"
+                IsEnabled="{Binding IsInstalling, Converter={StaticResource ConditionVisibilityConverter}, ConverterParameter=false}" />
+            <Button
+                Style="{DynamicResource Styles.Button.Accent}"
+                Command="{Binding CloseAppCommand}"
+                Content="ok"
+                Visibility="{Binding IsInstallationFinished, Converter={StaticResource ConditionVisibilityConverter}, ConverterParameter=true}" />
         </StackPanel>
     </Grid>
 </UserControl>

@@ -2,6 +2,7 @@ using System.Windows.Controls;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Messaging;
 using ImoutoRebirth.Tori.UI.Services;
+using ImoutoRebirth.Tori.UI.Steps.Installation;
 
 namespace ImoutoRebirth.Tori.UI.Windows;
 
@@ -28,6 +29,12 @@ public partial class InstallerViewModel : ObservableObject
     private void GoToStep(InstallerStep step)
     {
         if (CurrentStep == step)
+            return;
+
+        var isInstallationStarted = CurrentStep == InstallerStep.Installation
+                                    && ((InstallationStepViewModel)CurrentStepControl!.DataContext)
+                                    .IsInstallationStarted;
+        if (isInstallationStarted)
             return;
             
         CurrentStep = step;

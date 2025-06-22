@@ -13,6 +13,7 @@ using Microsoft.Extensions.DependencyInjection;
 using System.Windows;
 using ImoutoRebirth.Tori.Configuration;
 using InstallerViewModel = ImoutoRebirth.Tori.UI.Windows.InstallerViewModel;
+using Microsoft.Extensions.Logging;
 
 namespace ImoutoRebirth.Tori.UI;
 
@@ -47,8 +48,11 @@ public partial class App : Application
 
     private void ConfigureServices(IServiceCollection services, string[] eArgs)
     {
+        var logForwarder = new ForwardingLoggerProvider();
+        services.AddSingleton(logForwarder);
+
         services.AddSingleton<IMessenger , WeakReferenceMessenger>();
-        services.AddLogging();
+        services.AddLogging(x => x.AddProvider(logForwarder));
 
         services.AddSingleton<IStepViewFactory, StepViewFactory>();
         services.AddTransient<IRegistryService, RegistryService>();
@@ -56,6 +60,9 @@ public partial class App : Application
         services.AddTransient<IDependencyManager, DependencyManager>();
         services.AddTransient<IConfigurationService, ConfigurationService>();
         services.AddTransient<IInstaller, Installer>();
+        services.AddTransient<IWindowsServicesManager, WindowsServicesManager>();
+        services.AddTransient<IWindowsServiceUpdater, WindowsServiceUpdater>();
+        services.AddTransient<IShortcutService, ShortcutService>();
 
         services.AddSingleton<IConfigurationStorage, ConfigurationStorage>();
 
