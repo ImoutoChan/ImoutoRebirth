@@ -31,7 +31,10 @@
                 Text="{Binding CurrentStepControl.DataContext.Title}" 
                 Style="{DynamicResource Styles.Typography.Title}" />
 
-            <userControls:InstallWizardStepsProgress Grid.Column="1" State="{Binding CurrentStepControl.DataContext.State}" />
+            <userControls:InstallWizardStepsProgress 
+                Grid.Column="1" 
+                State="{Binding CurrentStepControl.DataContext.State}" 
+                OnStateClicked="InstallWizardStepsProgress_OnOnStateClicked" />
         </Grid>
         
         <!-- Content Area -->

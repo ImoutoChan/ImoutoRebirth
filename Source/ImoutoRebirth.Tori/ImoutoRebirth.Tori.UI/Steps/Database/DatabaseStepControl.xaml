@@ -94,17 +94,19 @@
                 IsEnabled="{Binding IsConnectionChecking, Converter={StaticResource ConditionVisibilityConverter}, ConverterParameter=false}">
                 <Button.Content>
                     <StackPanel Orientation="Horizontal">
+                        <TextBlock>check</TextBlock>
+
                         <mah:ProgressRing
                             Width="20"
                             Height="20"
-                            Margin="-35,0,10,0"
+                            Margin="20,0,10,0"
                             Visibility="{Binding IsConnectionChecking, Converter={StaticResource BooleanToVisibilityConverter}, FallbackValue=Collapsed}" />
 
                         <Image
                             Width="20"
                             Height="20"
                             Source="{StaticResource DrawingImageCheck}"
-                            Margin="-35,0,10,0"
+                            Margin="20,0,10,0"
                             Visibility="{Binding IsConnectionSuccessful, Converter={StaticResource BooleanToVisibilityConverter}, FallbackValue=Collapsed}" >
                         </Image>
 
@@ -112,10 +114,8 @@
                             Width="20"
                             Height="20"
                             Source="{StaticResource DrawingImageX}"
-                            Margin="-35,0,10,0"
+                            Margin="20,0,10,0"
                             Visibility="{Binding IsConnectionFailed, Converter={StaticResource BooleanToVisibilityConverter}, FallbackValue=Collapsed}" />
-
-                        <TextBlock>check</TextBlock>
                     </StackPanel>
                 </Button.Content>
             </Button>
