@@ -68,7 +68,9 @@ public class Installer : IInstaller
 
     private void EasyUpdateProgram(string newVersion, DirectoryInfo installLocation, DirectoryInfo updaterLocation)
     {
-        _configurationService.ActualizeConfigurationForUpdate(newVersion, installLocation, updaterLocation);
+        var configuration = _configurationService.PrepareFinalConfigurationFileForUpdate(installLocation, updaterLocation);
+        _configurationService.ActualizeFinalConfigurationFile(newVersion, updaterLocation, configuration);
+
         _windowsServiceUpdater.UpdateService(installLocation, updaterLocation);
         _versionService.SetLocalVersionAsNew(installLocation);
         _configurationService.SaveActualConfigurationInNewServices(installLocation, updaterLocation);
@@ -80,7 +82,9 @@ public class Installer : IInstaller
     {
         var newVersion = _versionService.GetNewVersion();
         
-        var installLocation = _configurationService.ActualizeConfigurationForInstall(newVersion, updaterLocation);
+        var configuration = _configurationService.PrepareFinalConfigurationFileForInstall(updaterLocation);
+        var installLocation = _configurationService.ActualizeFinalConfigurationFile(newVersion, updaterLocation, configuration);
+
         _windowsServiceUpdater.UpdateService(installLocation, updaterLocation);
         _versionService.SetLocalVersionAsNew(installLocation);
         _configurationService.SaveActualConfigurationInNewServices(installLocation, updaterLocation);

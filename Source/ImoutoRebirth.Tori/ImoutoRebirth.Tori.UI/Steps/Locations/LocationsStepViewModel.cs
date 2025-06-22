@@ -12,6 +12,7 @@ namespace ImoutoRebirth.Tori.UI.Steps.Locations;
 public partial class LocationsStepViewModel : ObservableValidator, IStep
 {
     private readonly IMessenger _messenger;
+    private readonly IConfigurationStorage _configurationStorage;
 
     [ObservableProperty]
     [NotifyCanExecuteChangedFor(nameof(GoNextCommand))]
@@ -29,21 +30,19 @@ public partial class LocationsStepViewModel : ObservableValidator, IStep
     [Directory("Please enter valid folder name", onlyAbsolutePath: true)]
     private string? _favSaveLocation;
 
-    public LocationsStepViewModel(IRegistryService registryService, IMessenger messenger, ConfigurationToInstallStorage configurationToInstallStorage)
+    public LocationsStepViewModel(IRegistryService registryService, IMessenger messenger, IConfigurationStorage configurationStorage)
     {
         _messenger = messenger;
+        _configurationStorage = configurationStorage;
         if (registryService.IsInstalled(out var installLocation))
         {
             _installLocation = installLocation.FullName;
             _installLocationEditable = false;
         }
 
-        var currentConfiguration = configurationToInstallStorage.CurrentConfiguration;
-
-        if (currentConfiguration != null)
-        {
-            FavSaveLocation = currentConfiguration.Harpy.SavePath.Replace(@"\\", @"\");
-        }
+        var currentConfiguration = configurationStorage.CurrentConfiguration;
+        
+        FavSaveLocation = currentConfiguration.Harpy.SavePath.Replace(@"\\", @"\");
     }
 
     public string Title =>  "Locations";
@@ -52,7 +51,10 @@ public partial class LocationsStepViewModel : ObservableValidator, IStep
 
     [RelayCommand(CanExecute = nameof(CanGoNext))]
     private void GoNext()
-        => _messenger.Send(new NavigateTo(InstallerStep.Database));
+    {
+        PrepareLocations();
+        _messenger.Send(new NavigateTo(InstallerStep.Database));
+    }
 
     private bool CanGoNext() => !HasErrors;
 
@@ -106,5 +108,24 @@ public partial class LocationsStepViewModel : ObservableValidator, IStep
         {
             InstallLocation = dialog.FileName;
         }
+    }
+
+    private void PrepareLocations()
+    {
+        if (InstallLocationEditable)
+        {
+            _configurationStorage.UpdateConfiguration(x => x with
+            {
+                InstallLocation = InstallLocation!
+            });
+		}
+
+        _configurationStorage.UpdateConfiguration(x => x with
+        {
+            Harpy = x.Harpy with
+            {
+                SavePath = FavSaveLocation!.Replace(@"\", @"\\")
+            }
+        });
     }
 }

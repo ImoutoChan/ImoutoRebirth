@@ -17,17 +17,24 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="MahApps.Metro" />
-        <PackageReference Include="Microsoft.Extensions.DependencyInjection" />
-        <PackageReference Include="CommunityToolkit.Mvvm" />
-        <PackageReference Include="Microsoft-WindowsAPICodePack-Core" />
-        <PackageReference Include="Microsoft-WindowsAPICodePack-Shell" />
-        <PackageReference Include="Npgsql" />
+        <PackageReference Include="MahApps.Metro"/>
+        <PackageReference Include="Microsoft.Extensions.DependencyInjection"/>
+        <PackageReference Include="CommunityToolkit.Mvvm"/>
+        <PackageReference Include="Microsoft-WindowsAPICodePack-Core"/>
+        <PackageReference Include="Microsoft-WindowsAPICodePack-Shell"/>
+        <PackageReference Include="Npgsql"/>
     </ItemGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\..\ImoutoRebirth.Common\ImoutoRebirth.Common.WPF\ImoutoRebirth.Common.WPF.csproj" />
-        <ProjectReference Include="..\ImoutoRebirth.Tori\ImoutoRebirth.Tori.csproj" />
+        <ProjectReference Include="..\..\ImoutoRebirth.Common\ImoutoRebirth.Common.WPF\ImoutoRebirth.Common.WPF.csproj"/>
+        <ProjectReference Include="..\ImoutoRebirth.Tori\ImoutoRebirth.Tori.csproj"/>
+    </ItemGroup>
+
+    <!-- the default configuration.json is needed for the debug only -->
+    <ItemGroup Condition="'$(Configuration)' == 'Debug'">
+        <None Update="configuration.json">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </None>
     </ItemGroup>
 
 </Project>

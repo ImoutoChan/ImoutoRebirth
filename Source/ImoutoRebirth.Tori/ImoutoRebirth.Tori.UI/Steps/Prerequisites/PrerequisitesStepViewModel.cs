@@ -11,7 +11,8 @@ namespace ImoutoRebirth.Tori.UI.Steps.Prerequisites;
 public partial class PrerequisitesStepViewModel : ObservableObject, IStep
 {
     private readonly IMessenger _messenger;
-    
+    private readonly IConfigurationStorage _configurationStorage;
+
     [ObservableProperty]
     private string _isDotnetAspNetRuntimeInstalled = "loading...";
 
@@ -49,11 +50,17 @@ public partial class PrerequisitesStepViewModel : ObservableObject, IStep
     [ObservableProperty] 
     private string _shouldInstallRuntimesText = "install";
 
-    public PrerequisitesStepViewModel(IDependencyManager dependencyManager, IOptions<PrerequisitesSettings> options, IMessenger messenger)
+    public PrerequisitesStepViewModel(
+        IDependencyManager dependencyManager,
+        IOptions<PrerequisitesSettings> options,
+        IMessenger messenger,
+        IConfigurationStorage configurationStorage)
     {
         _messenger = messenger;
+        _configurationStorage = configurationStorage;
         _ = LoadPrerequisitesStates(dependencyManager, options);
     }
+
     public string Title => "Prerequisites";
 
     public int State => 1;
@@ -114,6 +121,9 @@ public partial class PrerequisitesStepViewModel : ObservableObject, IStep
     [RelayCommand]
     private void GoNext()
     {
+        _configurationStorage.ShouldInstallPostgreSql = ShouldInstallPostgres;
+        _configurationStorage.ShouldInstallRuntimes = ShouldInstallRuntimes;
+
         _messenger.Send(new NavigateTo(InstallerStep.Accounts));
     }
 }

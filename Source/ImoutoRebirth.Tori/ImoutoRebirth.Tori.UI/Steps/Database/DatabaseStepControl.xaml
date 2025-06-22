@@ -16,7 +16,8 @@
             <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
         
-        <Grid Grid.Row="1" Margin="144, 73, 144, 0">
+        <Grid Grid.Row="1" Margin="144, 73, 144, 0"
+              IsEnabled="{Binding IsPostgresSettingsEnabled}">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="Auto" />
                 <ColumnDefinition Width="30" />
@@ -115,10 +116,20 @@
                 <TextBlock 
                     Text="{Binding ConnectionStatusMessage}" 
                     Style="{DynamicResource Styles.Typography.Note}" />
+                
+                <TextBlock
+                    Visibility="{Binding IsPostgresSettingsEnabled, Converter={StaticResource ConditionVisibilityConverter}, ConverterParameter=false}"
+                    Text="A new database instance will be installed with the default settings" 
+                    Style="{DynamicResource Styles.Typography.Note}" />
             </StackPanel>
         </Grid>
 
-        <StackPanel Grid.Row="2" HorizontalAlignment="Left" Orientation="Horizontal" Margin="109, 0, 0, 40">
+        <StackPanel
+            Grid.Row="2"
+            HorizontalAlignment="Left"
+            Orientation="Horizontal"
+            Margin="109, 0, 0, 40"
+            Visibility="{Binding IsPostgresSettingsEnabled, Converter={StaticResource BooleanToVisibilityConverter}}">
             <Button 
                 Style="{DynamicResource Styles.Button.Regular}" 
                 Command="{Binding CheckConnectionCommand}" 
