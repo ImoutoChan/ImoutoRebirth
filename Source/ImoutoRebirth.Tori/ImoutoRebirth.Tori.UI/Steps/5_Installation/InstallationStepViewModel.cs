@@ -124,6 +124,7 @@ public partial class InstallationStepViewModel : ObservableValidator, IStep
 
         IsInstalling = false;
         IsInstallationFinished = true;
+        _dispatcherTimer.Stop();
     }
 
     private async Task InstallInternal()
