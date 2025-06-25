@@ -1,5 +1,8 @@
-﻿using System.Text.Json;
+﻿using System.Diagnostics;
+using System.IO;
+using System.Text.Json;
 using System.Windows;
+using System.Windows.Threading;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
@@ -22,6 +25,9 @@ public partial class InstallationStepViewModel : ObservableValidator, IStep
     private readonly IDependencyManager _dependencyManager;
     private readonly IOptions<PrerequisitesSettings> _prerequisitesSettings;
     private readonly IOptions<AppSettings> _appSettings;
+    private readonly DispatcherTimer _dispatcherTimer = new();
+
+    private DateTimeOffset? _installationStarted = null;
 
     [ObservableProperty]
     private string? _logString;
@@ -37,6 +43,9 @@ public partial class InstallationStepViewModel : ObservableValidator, IStep
 
     [ObservableProperty]
     private int _progressValue = 0;
+
+    [ObservableProperty]
+    private bool _displayPleaseWait = false;
 
     public InstallationStepViewModel(
         IMessenger messenger,
@@ -65,6 +74,19 @@ public partial class InstallationStepViewModel : ObservableValidator, IStep
                 AppendLog(s);
         };
 
+        _dispatcherTimer.Interval = TimeSpan.FromSeconds(5);
+        _dispatcherTimer.Tick += (_, _) =>
+        {
+            if (_installationStarted == null)
+                return;
+
+            if (DateTimeOffset.UtcNow - _installationStarted < TimeSpan.FromSeconds(60))
+                return;
+
+            _dispatcherTimer.Stop();
+            DisplayPleaseWait = true;
+        };
+
 
         if (appSettings.Value.AutoUpdate)
         {
@@ -83,6 +105,9 @@ public partial class InstallationStepViewModel : ObservableValidator, IStep
     [RelayCommand]
     private async Task Install()
     {
+        _installationStarted = DateTimeOffset.UtcNow;
+        _dispatcherTimer.Start();
+
         await LogConfiguration();
 
         IsInstalling = true;
@@ -121,7 +146,11 @@ public partial class InstallationStepViewModel : ObservableValidator, IStep
         if (_configurationStorage.ShouldInstallPostgreSql)
         {
             AppendLog("Installing postgres dependencies...");
-            await _dependencyManager.InstallPostgres();
+            var postgresConfiguration = _configurationStorage.ExtractCurrentPostgresConfiguration();
+
+            await _dependencyManager.InstallPostgres(
+                port: postgresConfiguration.Port,
+                pass: postgresConfiguration.Pass);
         }
         else
         {
@@ -171,6 +200,15 @@ public partial class InstallationStepViewModel : ObservableValidator, IStep
             LogString = "";
 
         LogString += str +  Environment.NewLine;
+
+        try
+        {
+            File.AppendAllText("installation.log", str + Environment.NewLine);
+        }
+        catch
+        {
+            // ignored
+        }
     }
 
     private void AppendLog()
@@ -180,6 +218,15 @@ public partial class InstallationStepViewModel : ObservableValidator, IStep
 
         LogString += Environment.NewLine;
         LogString += Environment.NewLine;
+
+        try
+        {
+            File.AppendAllText("installation.log", Environment.NewLine + Environment.NewLine);
+        }
+        catch
+        {
+            // ignored
+        }
     }
 
     [RelayCommand]

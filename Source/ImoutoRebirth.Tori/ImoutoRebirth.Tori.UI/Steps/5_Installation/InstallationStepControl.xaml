@@ -18,6 +18,7 @@
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto" />
                 <RowDefinition Height="*" />
+                <RowDefinition Height="Auto" />
             </Grid.RowDefinitions>
 
             <TextBlock Style="{DynamicResource Styles.Typography.Default}" Text="Installation log" />
@@ -29,7 +30,15 @@
                 Grid.Row="1"
                 Text="{Binding LogString}"
                 FontSize="16"
-                TextChanged="TextBoxBase_OnTextChanged"/>
+                TextChanged="TextBoxBase_OnTextChanged" />
+
+            <TextBlock
+                Grid.Row="2"
+                Margin="0,10,0,0"
+                Style="{DynamicResource Styles.Typography.LessVisible}"
+                Text="Installing dependencies, especially PostgreSQL, can take some time, though it usually takes less than 10 minutes. Please make yourself a warm cup of tea and wait..."
+                TextWrapping="WrapWithOverflow"
+                Visibility="{Binding DisplayPleaseWait, Converter={StaticResource BooleanToVisibilityConverter}}" />
         </Grid>
 
         <StackPanel Grid.Row="2" HorizontalAlignment="Right" Orientation="Horizontal" Margin="50, 40, 50, 40">
@@ -49,8 +58,7 @@
                 IsIndeterminate="True"
                 Height="40"
                 Width="168"
-                Visibility="{Binding IsInstalling, Converter={StaticResource ConditionVisibilityConverter}, ConverterParameter=true}"
-                />
+                Visibility="{Binding IsInstalling, Converter={StaticResource ConditionVisibilityConverter}, ConverterParameter=true}" />
 
             <Button
                 Style="{DynamicResource Styles.Button.Accent}"

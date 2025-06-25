@@ -24,7 +24,7 @@ public interface IDependencyManager
 
     Task<IReadOnlyCollection<string>> GetDotnetRuntimes();
 
-    Task InstallPostgres();
+    Task InstallPostgres(int port, string pass);
 
     Task InstallDotnetAspNetRuntime(string version);
 
@@ -128,11 +128,11 @@ public partial class DependencyManager : IDependencyManager
         return output.Split("\n");
     }
 
-    public async Task InstallPostgres()
+    public async Task InstallPostgres(int port, string pass)
     {
         _logger.LogInformation("Installing PostgreSQL {Version}...", DefaultPostgresVersion);
 
-        var arguments = $"install postgresql16 --version {DefaultPostgresVersion} -y --params \"'/Password:{DefaultPostgresPassword} /Port:{DefaultPostgresPort}'\"";
+        var arguments = $"install postgresql16 --version {DefaultPostgresVersion} -y --params \"'/Password:{pass} /Port:{port}'\"";
         await ExecuteChocoCommand(arguments);
 
         _logger.LogInformation("PostgreSQL installed");

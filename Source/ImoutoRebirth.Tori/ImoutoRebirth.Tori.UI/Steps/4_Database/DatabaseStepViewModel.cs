@@ -55,13 +55,11 @@ public partial class DatabaseStepViewModel : ObservableValidator, IStep
         _messenger = messenger;
         _configurationStorage = configurationStorage;
 
-        var currentConfiguration = configurationStorage.CurrentConfiguration;
-        var builder = new NpgsqlConnectionStringBuilder(currentConfiguration.Connection.RoomConnectionString);
-
-        Host = builder.Host!;
-        Port = builder.Port;
-        User = builder.Username!;
-        Pass = builder.Password!;
+        var postgresConfiguration = configurationStorage.ExtractCurrentPostgresConfiguration();
+        Host = postgresConfiguration.Host;
+        Port = postgresConfiguration.Port;
+        User = postgresConfiguration.User;
+        Pass = postgresConfiguration.Pass;
 
         IsPostgresSettingsEnabled = !configurationStorage.ShouldInstallPostgreSql;
     }
@@ -104,13 +102,9 @@ public partial class DatabaseStepViewModel : ObservableValidator, IStep
 
             await Task.Run(async () =>
             {
-                await Task.Delay(1500);
+                await Task.Delay(500);
                 await using var connection = new NpgsqlConnection(connectionStringBuilder.ToString());
                 await connection.OpenAsync();
-
-                // debug states
-                // if (Random.Shared.Next(1, 3) == 2)
-                //     throw new Exception("oops");
             });
 
             IsConnectionSuccessful = true;
@@ -133,6 +127,12 @@ public partial class DatabaseStepViewModel : ObservableValidator, IStep
 
     private void PrepareConnections()
     {
+        if (!IsPostgresSettingsEnabled)
+        {
+            Host = "localhost";
+            User = "postgres";
+        }
+
         var currentConfiguration = _configurationStorage.CurrentConfiguration;
         var roomBuilder = new NpgsqlConnectionStringBuilder(currentConfiguration.Connection.RoomConnectionString);
         var lilinBuilder = new NpgsqlConnectionStringBuilder(currentConfiguration.Connection.LilinConnectionString);

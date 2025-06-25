@@ -1,6 +1,8 @@
+using System.Windows.Documents;
 using ImoutoRebirth.Tori.Configuration;
 using ImoutoRebirth.Tori.Services;
 using Microsoft.Extensions.Options;
+using Npgsql;
 
 namespace ImoutoRebirth.Tori.UI.Services;
 
@@ -25,6 +27,8 @@ public interface IConfigurationStorage
     Task ConfigurationLoaded { get; }
 
     void UpdateConfiguration(Func<AppConfiguration, AppConfiguration> updater);
+
+    PostgresConfiguration ExtractCurrentPostgresConfiguration();
 }
 
 public class ConfigurationStorage : IConfigurationStorage
@@ -69,6 +73,12 @@ public class ConfigurationStorage : IConfigurationStorage
     public void UpdateConfiguration(Func<AppConfiguration, AppConfiguration> updater)
         => CurrentConfiguration = updater(CurrentConfiguration);
 
+    public PostgresConfiguration ExtractCurrentPostgresConfiguration()
+    {
+        var builder = new NpgsqlConnectionStringBuilder(CurrentConfiguration.Connection.RoomConnectionString);
+        return new(builder.Host!, builder.Port, builder.Username!, builder.Password!);
+    }
+
     private async Task Load()
     {
         if (_registryService.IsInstalled(out var installLocation))
@@ -97,3 +107,5 @@ public class ConfigurationStorage : IConfigurationStorage
         NewVersion = _versionService.GetNewVersion();
     }
 }
+
+public record PostgresConfiguration(string Host, int Port, string User, string Pass);

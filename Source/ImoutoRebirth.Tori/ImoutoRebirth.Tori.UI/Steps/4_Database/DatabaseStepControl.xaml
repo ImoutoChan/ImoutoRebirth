@@ -16,8 +16,7 @@
             <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
         
-        <Grid Grid.Row="1" Margin="144, 73, 144, 0"
-              IsEnabled="{Binding IsPostgresSettingsEnabled}">
+        <Grid Grid.Row="1" Margin="144, 73, 144, 0">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="Auto" />
                 <ColumnDefinition Width="30" />
@@ -83,7 +82,8 @@
                 Grid.Row="2"
                 Header="host"
                 IsRequired="True"
-                Text="{Binding Host}" />
+                Text="{Binding Host}"
+                IsEnabled="{Binding IsPostgresSettingsEnabled}" />
 
             <userControls:InputControl
                 Width="89"
@@ -98,7 +98,8 @@
                 Grid.Row="4"
                 Header="user"
                 IsRequired="True"
-                Text="{Binding User}" />
+                Text="{Binding User}"
+                IsEnabled="{Binding IsPostgresSettingsEnabled}" />
 
             <userControls:InputControl
                 Grid.Column="0"
@@ -119,7 +120,7 @@
                 
                 <TextBlock
                     Visibility="{Binding IsPostgresSettingsEnabled, Converter={StaticResource ConditionVisibilityConverter}, ConverterParameter=false}"
-                    Text="A new database instance will be installed with the default settings" 
+                    Text="A new database will be installed with the default host, user settings"
                     Style="{DynamicResource Styles.Typography.Note}" />
             </StackPanel>
         </Grid>
