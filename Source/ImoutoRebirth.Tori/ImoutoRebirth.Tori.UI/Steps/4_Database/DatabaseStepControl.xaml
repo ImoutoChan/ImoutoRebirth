@@ -20,7 +20,7 @@
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="Auto" />
                 <ColumnDefinition Width="30" />
-                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="89" />
                 <ColumnDefinition Width="*" />
             </Grid.ColumnDefinitions>
 
@@ -111,17 +111,19 @@
             <StackPanel 
                 Grid.Column="0" 
                 Grid.Row="8" 
-                Grid.ColumnSpan="3" 
+                Grid.ColumnSpan="3"
                 Orientation="Horizontal">
                 
                 <TextBlock 
-                    Text="{Binding ConnectionStatusMessage}" 
+                    Text="{Binding ConnectionStatusMessage}"
+                    TextWrapping="Wrap"
                     Style="{DynamicResource Styles.Typography.Note}" />
                 
                 <TextBlock
                     Visibility="{Binding IsPostgresSettingsEnabled, Converter={StaticResource ConditionVisibilityConverter}, ConverterParameter=false}"
                     Text="A new database will be installed with the default host, user settings"
-                    Style="{DynamicResource Styles.Typography.Note}" />
+                    Style="{DynamicResource Styles.Typography.Note}"
+                    TextWrapping="Wrap"  />
             </StackPanel>
         </Grid>
 

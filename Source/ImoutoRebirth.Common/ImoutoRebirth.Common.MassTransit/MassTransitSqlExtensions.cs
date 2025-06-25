@@ -45,6 +45,8 @@ public static class MassTransitSqlExtensions
         services.AddMassTransit(
             x =>
             {
+                x.DisableUsageTelemetry();
+
                 x.SetEndpointNameFormatter(new ImoutoRebirthEndpointNameFormatter(consumingServiceName));
                 
                 x.AddConfigureEndpointsCallback((_, _, cfg) =>

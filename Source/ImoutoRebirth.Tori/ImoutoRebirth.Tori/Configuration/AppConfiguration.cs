@@ -76,7 +76,9 @@ public record AppConfiguration(
         var configurationDictionary = WriteToDictionary();
         ValidateConfigurationValues(configurationDictionary);
 
-        await File.WriteAllTextAsync(file.FullName, JsonSerializer.Serialize(configurationDictionary));
+        await File.WriteAllTextAsync(
+            file.FullName,
+            JsonSerializer.Serialize(configurationDictionary, new JsonSerializerOptions { WriteIndented = true }));
     }
 
     public static AppConfiguration ReadFromDictionary(Dictionary<string,string> configurationDictionary)

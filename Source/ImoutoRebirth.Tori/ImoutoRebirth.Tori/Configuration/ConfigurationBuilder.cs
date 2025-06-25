@@ -63,7 +63,7 @@ public class ConfigurationBuilder : IConfigurationBuilder
             $$"""
             {
               "ConnectionStrings": {
-                "Masstransit": "{{_configuration.Connection.MassTransitConnectionString}}"
+                "MassTransit": "{{_configuration.Connection.MassTransitConnectionString}}"
               },
               "DanbooruSettings": {
                 "Login": "{{_configuration.Api.DanbooruLogin}}",
@@ -128,6 +128,8 @@ public class ConfigurationBuilder : IConfigurationBuilder
             {
               "AuthToken": "{{_configuration.Kekkai.AuthToken}}",
               "OpenSearchUri": "{{_configuration.OpenSearchUri}}",
+              "LilinUrl": "http://localhost:{{_configuration.Ports.LilinPort}}",
+              "RoomUrl": "http://localhost:{{_configuration.Ports.RoomPort}}",
               "Kestrel": {
                 "EndPoints": {
                   "Http": {
@@ -150,7 +152,10 @@ public class ConfigurationBuilder : IConfigurationBuilder
             {
               "ConnectionStrings": {
                 "LilinDatabase": "{{_configuration.Connection.LilinConnectionString}}",
-                "Masstransit": "{{_configuration.Connection.MassTransitConnectionString}}"
+                "MassTransit": "{{_configuration.Connection.MassTransitConnectionString}}"
+              },
+              "RecalculateTagCountersSettings": {
+                "RepeatEveryMinutes": 15
               },
               "OpenSearchUri": "{{_configuration.OpenSearchUri}}",
               "Kestrel": {
@@ -175,7 +180,7 @@ public class ConfigurationBuilder : IConfigurationBuilder
             {
               "ConnectionStrings": {
                 "MeidoDatabase": "{{_configuration.Connection.MeidoConnectionString}}",
-                "Masstransit": "{{_configuration.Connection.MassTransitConnectionString}}"
+                "MassTransit": "{{_configuration.Connection.MassTransitConnectionString}}"
               },
               "OpenSearchUri": "{{_configuration.OpenSearchUri}}",
               "MetadataActualizerSettings": {
@@ -210,7 +215,7 @@ public class ConfigurationBuilder : IConfigurationBuilder
               },
               "ConnectionStrings": {
                 "RoomDatabase": "{{_configuration.Connection.RoomConnectionString}}",
-                "Masstransit": "{{_configuration.Connection.MassTransitConnectionString}}"
+                "MassTransit": "{{_configuration.Connection.MassTransitConnectionString}}"
               },
               "OpenSearchUri": "{{_configuration.OpenSearchUri}}",
               "ImoutoPicsUploadUrl": "{{_configuration.Room.ImoutoPicsUploadUrl}}",
