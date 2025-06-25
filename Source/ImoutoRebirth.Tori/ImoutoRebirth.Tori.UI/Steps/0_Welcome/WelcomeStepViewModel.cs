@@ -4,7 +4,7 @@ using CommunityToolkit.Mvvm.Messaging;
 using ImoutoRebirth.Tori.UI.Services;
 using ImoutoRebirth.Tori.UI.Windows;
 
-namespace ImoutoRebirth.Tori.UI.Steps.Welcome;
+namespace ImoutoRebirth.Tori.UI.Steps;
 
 public partial class WelcomeStepViewModel : ObservableObject, IStep
 {

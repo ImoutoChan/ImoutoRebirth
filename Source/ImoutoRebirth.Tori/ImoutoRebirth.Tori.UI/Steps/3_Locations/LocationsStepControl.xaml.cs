@@ -1,6 +1,6 @@
 using System.Windows.Controls;
 
-namespace ImoutoRebirth.Tori.UI.Steps.Locations;
+namespace ImoutoRebirth.Tori.UI.Steps;
 
 public partial class LocationsStepControl : UserControl
 {

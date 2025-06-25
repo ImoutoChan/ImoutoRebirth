@@ -1,2 +1,2 @@
-start "" /b ImoutoRebirth.Tori\ImoutoRebirth.Tori.UI.exe .\ force auto
+start "" /b ImoutoRebirth.Tori\ImoutoRebirth.Tori.UI.exe .\ force
 exit

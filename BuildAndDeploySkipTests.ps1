@@ -12,7 +12,7 @@ If ($LASTEXITCODE -ne 0) {
 }
 
 cd ..\..\Artifacts\latest
-.\update.ps1
+.\ImoutoRebirth.Tori\ImoutoRebirth.Tori.UI.exe .\ force auto
 
 cd ..\..
 

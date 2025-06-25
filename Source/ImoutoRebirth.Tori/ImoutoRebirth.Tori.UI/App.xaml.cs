@@ -2,18 +2,12 @@
 using CommunityToolkit.Mvvm.Messaging;
 using ImoutoRebirth.Tori.Services;
 using ImoutoRebirth.Tori.UI.Services;
-using ImoutoRebirth.Tori.UI.Steps.Accounts;
-using ImoutoRebirth.Tori.UI.Steps.Database;
-using ImoutoRebirth.Tori.UI.Steps.Installation;
-using ImoutoRebirth.Tori.UI.Steps.Locations;
-using ImoutoRebirth.Tori.UI.Steps.Prerequisites;
-using ImoutoRebirth.Tori.UI.Steps.Welcome;
 using ImoutoRebirth.Tori.UI.Windows;
 using Microsoft.Extensions.DependencyInjection;
 using System.Windows;
 using ImoutoRebirth.Tori.Configuration;
+using ImoutoRebirth.Tori.UI.Steps;
 using Microsoft.Extensions.Configuration;
-using InstallerViewModel = ImoutoRebirth.Tori.UI.Windows.InstallerViewModel;
 using Microsoft.Extensions.Logging;
 using ConfigurationBuilder = Microsoft.Extensions.Configuration.ConfigurationBuilder;
 

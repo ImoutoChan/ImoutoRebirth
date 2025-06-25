@@ -8,7 +8,7 @@ using ImoutoRebirth.Tori.UI.Services;
 using ImoutoRebirth.Tori.UI.Windows;
 using Npgsql;
 
-namespace ImoutoRebirth.Tori.UI.Steps.Database;
+namespace ImoutoRebirth.Tori.UI.Steps;
 
 public partial class DatabaseStepViewModel : ObservableValidator, IStep
 {

@@ -2,8 +2,8 @@ using System.Windows.Controls;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Messaging;
 using ImoutoRebirth.Tori.UI.Services;
-using ImoutoRebirth.Tori.UI.Steps.Installation;
 using Microsoft.Extensions.Options;
+using InstallationStepViewModel = ImoutoRebirth.Tori.UI.Steps.InstallationStepViewModel;
 
 namespace ImoutoRebirth.Tori.UI.Windows;
 

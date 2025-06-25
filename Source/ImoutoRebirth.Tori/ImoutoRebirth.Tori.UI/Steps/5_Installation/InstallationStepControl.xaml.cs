@@ -1,6 +1,6 @@
 using System.Windows.Controls;
 
-namespace ImoutoRebirth.Tori.UI.Steps.Installation;
+namespace ImoutoRebirth.Tori.UI.Steps;
 
 public partial class InstallationStepControl : UserControl
 {

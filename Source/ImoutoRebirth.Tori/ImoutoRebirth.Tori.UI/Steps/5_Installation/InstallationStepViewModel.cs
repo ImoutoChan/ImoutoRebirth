@@ -5,12 +5,11 @@ using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
 using ImoutoRebirth.Tori.Services;
 using ImoutoRebirth.Tori.UI.Services;
-using ImoutoRebirth.Tori.UI.Steps.Prerequisites;
 using ImoutoRebirth.Tori.UI.Windows;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 
-namespace ImoutoRebirth.Tori.UI.Steps.Installation;
+namespace ImoutoRebirth.Tori.UI.Steps;
 
 public partial class InstallationStepViewModel : ObservableValidator, IStep
 {

@@ -1,11 +1,6 @@
-using ImoutoRebirth.Tori.UI.Steps.Accounts;
-using ImoutoRebirth.Tori.UI.Steps.Database;
-using ImoutoRebirth.Tori.UI.Steps.Installation;
-using ImoutoRebirth.Tori.UI.Steps.Locations;
-using ImoutoRebirth.Tori.UI.Steps.Prerequisites;
-using ImoutoRebirth.Tori.UI.Steps.Welcome;
 using Microsoft.Extensions.DependencyInjection;
 using System.Windows.Controls;
+using ImoutoRebirth.Tori.UI.Steps;
 
 namespace ImoutoRebirth.Tori.UI.Services;
 

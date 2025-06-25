@@ -1,6 +1,6 @@
 using System.Windows.Controls;
 
-namespace ImoutoRebirth.Tori.UI.Steps.Database;
+namespace ImoutoRebirth.Tori.UI.Steps;
 
 public partial class DatabaseStepControl : UserControl
 {

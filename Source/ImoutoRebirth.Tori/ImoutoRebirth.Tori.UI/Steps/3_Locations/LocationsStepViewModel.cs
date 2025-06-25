@@ -2,12 +2,11 @@
 using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
 using ImoutoRebirth.Common.WPF.ValidationAttributes;
-using ImoutoRebirth.Tori.Services;
 using ImoutoRebirth.Tori.UI.Services;
 using ImoutoRebirth.Tori.UI.Windows;
 using Microsoft.WindowsAPICodePack.Dialogs;
 
-namespace ImoutoRebirth.Tori.UI.Steps.Locations;
+namespace ImoutoRebirth.Tori.UI.Steps;
 
 public partial class LocationsStepViewModel : ObservableValidator, IStep
 {

@@ -6,7 +6,7 @@ using ImoutoRebirth.Tori.UI.Services;
 using ImoutoRebirth.Tori.UI.Windows;
 using Microsoft.Extensions.Options;
 
-namespace ImoutoRebirth.Tori.UI.Steps.Prerequisites;
+namespace ImoutoRebirth.Tori.UI.Steps;
 
 public partial class PrerequisitesStepViewModel : ObservableObject, IStep
 {
@@ -25,7 +25,7 @@ public partial class PrerequisitesStepViewModel : ObservableObject, IStep
     [ObservableProperty]
     private bool _isPostgresPortInUse;
 
-    [ObservableProperty] 
+    [ObservableProperty]
     private IReadOnlyCollection<InstalledPostgresInfo> _postgresWindowsServices = [];
 
     [ObservableProperty]
@@ -44,10 +44,10 @@ public partial class PrerequisitesStepViewModel : ObservableObject, IStep
     [ObservableProperty]
     private bool? _areRuntimesOk;
 
-    [ObservableProperty] 
+    [ObservableProperty]
     private string _shouldInstallPostgresText = "install";
 
-    [ObservableProperty] 
+    [ObservableProperty]
     private string _shouldInstallRuntimesText = "install";
 
     public PrerequisitesStepViewModel(
@@ -65,9 +65,9 @@ public partial class PrerequisitesStepViewModel : ObservableObject, IStep
 
     public int State => 1;
 
-    public string ServiceName => PostgresWindowsServices.FirstOrDefault()?.ServiceName ?? (IsLoading ? "loading..." : "not found");
+    public string ServiceName => Enumerable.FirstOrDefault<InstalledPostgresInfo>(PostgresWindowsServices)?.ServiceName ?? (IsLoading ? "loading..." : "not found");
 
-    public string ServiceVersion => PostgresWindowsServices.FirstOrDefault()?.Version?.ToString() ?? (IsLoading ? "loading..." : "not found");
+    public string ServiceVersion => Enumerable.FirstOrDefault<InstalledPostgresInfo>(PostgresWindowsServices)?.Version?.ToString() ?? (IsLoading ? "loading..." : "not found");
 
     public string Port => IsLoading ? "loading..." : IsPostgresPortInUse ? "5432" : "not used";
 

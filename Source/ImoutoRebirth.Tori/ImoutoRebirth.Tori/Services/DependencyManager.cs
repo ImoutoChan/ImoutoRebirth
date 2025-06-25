@@ -132,13 +132,10 @@ public partial class DependencyManager : IDependencyManager
     {
         _logger.LogInformation("Installing PostgreSQL {Version}...", DefaultPostgresVersion);
 
-        var result =
-            await ExecuteChocoCommand(
-                $"install postgresql16 "
-                + $"--version {DefaultPostgresVersion} -y "
-                + $"--params '/Password:{DefaultPostgresPassword} /Port:{DefaultPostgresPort}'");
+        var arguments = $"install postgresql16 --version {DefaultPostgresVersion} -y --params \"'/Password:{DefaultPostgresPassword} /Port:{DefaultPostgresPort}'\"";
+        await ExecuteChocoCommand(arguments);
 
-        _logger.LogInformation("PostgreSQL installation result");
+        _logger.LogInformation("PostgreSQL installed");
     }
 
     public async Task InstallDotnetAspNetRuntime(string version)

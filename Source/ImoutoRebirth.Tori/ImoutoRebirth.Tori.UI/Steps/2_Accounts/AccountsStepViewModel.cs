@@ -5,7 +5,7 @@ using ImoutoRebirth.Tori.Configuration;
 using ImoutoRebirth.Tori.UI.Services;
 using ImoutoRebirth.Tori.UI.Windows;
 
-namespace ImoutoRebirth.Tori.UI.Steps.Accounts;
+namespace ImoutoRebirth.Tori.UI.Steps;
 
 public partial class AccountsStepViewModel : ObservableObject, IStep
 {
