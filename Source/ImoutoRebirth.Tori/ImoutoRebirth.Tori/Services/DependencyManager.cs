@@ -128,7 +128,7 @@ public partial class DependencyManager : IDependencyManager
         return output.Split("\n");
     }
 
-    public async Task InstallPostgres(int port, string pass)
+    public async Task InstallPostgres(int port = DefaultPostgresPort, string pass = DefaultPostgresPassword)
     {
         _logger.LogInformation("Installing PostgreSQL {Version}...", DefaultPostgresVersion);
 

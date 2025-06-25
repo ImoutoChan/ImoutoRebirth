@@ -71,6 +71,9 @@ public class ConfigurationService : IConfigurationService
         _logger.LogInformation("Writing built appsettings.Production.json files to services");
         await config.WriteProductionConfigurations(newVersion, updaterLocation);
 
+        var finalFilePath = updaterLocation.CombineToFilePath(ConfigurationFinalFilename);
+        await configuration.WriteToFile(new FileInfo(finalFilePath));
+
         return config.GetInstallLocation();
     }
 

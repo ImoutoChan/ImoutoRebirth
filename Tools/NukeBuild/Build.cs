@@ -125,6 +125,7 @@ class Build : NukeBuild
             OutputLatestDirectory.CreateOrCleanDirectory();
 
             var publishableProjects =
+            (
                 from projectToPublish in ProjectsToPublish
                 let projectName = projectToPublish.Directory.Parent!.Name
                 let projectOutput = OutputLatestDirectory / projectName
@@ -135,7 +136,8 @@ class Build : NukeBuild
                     ProjectName = projectName,
                     ProjectOutput = projectOutput,
                     DirectoriesToDelete = directoriesToDelete
-                };
+                }
+            ).ToList();
 
             DotNetPublish(s => s
                 .SetVerbosity(DotNetVerbosity.quiet)
@@ -148,6 +150,12 @@ class Build : NukeBuild
 
             foreach (var directoryToDelete in publishableProjects.SelectMany(x => x.DirectoriesToDelete))
                 directoryToDelete.DeleteDirectory();
+
+            foreach (var appSettingsFile in publishableProjects
+                         .SelectMany(x => x.ProjectOutput.GetFiles("appsettings*")))
+            {
+                appSettingsFile.DeleteFile();
+            }
 
             foreach (var nukeFileToPublish in NukeFilesToPublish)
                 nukeFileToPublish.CopyToDirectory(OutputLatestDirectory, ExistsPolicy.FileOverwrite);
