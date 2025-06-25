@@ -16,7 +16,7 @@ public interface IDependencyManager
 
     bool IsPostgresPortInUse();
 
-    Task<bool> IsPostgresInstalled();
+    bool IsPostgresInstalled();
 
     Task<bool> IsDotnetAspNetRuntimeInstalled(string version);
 
@@ -35,7 +35,7 @@ public record InstalledPostgresInfo(string? ServiceName, Version? Version);
 
 public class DependencyManagerOptions
 {
-    public Action<string>? ProcessConsoleOutput { get; init; }
+    public Action<string>? ProcessConsoleOutput { get; set; }
 
     public bool IsDryRun { get; init; }
 }
@@ -58,8 +58,8 @@ public partial class DependencyManager : IDependencyManager
     {
         _logger = logger;
         _options = options;
-        _dotnetRuntimesOutput = new(() => ExecuteDotnetCommand("--list-runtimes"));
-        _ensureChocoInstalled = new(() => EnsureChocoInstalled());
+        _dotnetRuntimesOutput = new(() => ExecuteDotnetCommand("--list-runtimes"), LazyThreadSafetyMode.ExecutionAndPublication);
+        _ensureChocoInstalled = new(() => EnsureChocoInstalled(), LazyThreadSafetyMode.ExecutionAndPublication);
 
         _isDryRun = options.Value.IsDryRun;
     }
@@ -97,17 +97,13 @@ public partial class DependencyManager : IDependencyManager
         }
     }
 
-    public async Task<bool> IsPostgresInstalled()
+    public bool IsPostgresInstalled()
     {
         var postgresServices = GetPostgresWindowsServices();
         if (postgresServices.Any())
             return true;
 
-        if (IsPostgresPortInUse())
-            return true;
-
-        var result = await ExecuteChocoCommand("list --local-only postgresql16");
-        return result.Contains("postgresql16");
+        return IsPostgresPortInUse();
     }
 
     public async Task<bool> IsDotnetAspNetRuntimeInstalled(string version)
@@ -142,25 +138,25 @@ public partial class DependencyManager : IDependencyManager
                 + $"--version {DefaultPostgresVersion} -y "
                 + $"--params '/Password:{DefaultPostgresPassword} /Port:{DefaultPostgresPort}'");
 
-        _logger.LogInformation("PostgreSQL installation result: {Result}", result);
+        _logger.LogInformation("PostgreSQL installation result");
     }
 
     public async Task InstallDotnetAspNetRuntime(string version)
     {
         _logger.LogInformation("Installing ASP.NET Core runtime {Version}...", version);
 
-        var result = await ExecuteChocoCommand($"install dotnet-9.0-aspnetruntime --version {version} -y");
+        await ExecuteChocoCommand($"install dotnet-9.0-aspnetruntime --version {version} -y");
 
-        _logger.LogInformation("ASP.NET Core runtime installation result: {Result}", result);
+        _logger.LogInformation("ASP.NET Core runtime installation completed");
     }
 
     public async Task InstallDotnetDesktopRuntime(string version)
     {
         _logger.LogInformation("Installing .NET Desktop runtime {Version}...", version);
 
-        var result = await ExecuteChocoCommand($"install dotnet-9.0-desktopruntime --version {version} -y");
+        await ExecuteChocoCommand($"install dotnet-9.0-desktopruntime --version {version} -y");
 
-        _logger.LogInformation(".NET Desktop runtime installation result: {Result}", result);
+        _logger.LogInformation(".NET Desktop runtime installation completed");
     }
 
     private async Task<string> ExecuteDotnetCommand(string arguments)
@@ -327,6 +323,8 @@ public partial class DependencyManager : IDependencyManager
                     "Chocolatey installation completed with exit code: {ExitCode}",
                     installProcess.ExitCode);
 
+                UpdateEnvPath();
+
                 return true;
             }
             else
@@ -340,6 +338,19 @@ public partial class DependencyManager : IDependencyManager
             _logger.LogWarning(ex, "Failed to check or install Chocolatey");
             return false;
         }
+    }
+
+    private void UpdateEnvPath()
+    {
+        const string chocoBinPath = @"C:\ProgramData\chocolatey\bin";
+
+        var currentPath = Environment.GetEnvironmentVariable("PATH") ?? "";
+        if (currentPath.Split(';').ContainsIgnoreCase(chocoBinPath))
+            return;
+
+        var newPath = currentPath + ";" + chocoBinPath;
+        Environment.SetEnvironmentVariable("PATH", newPath);
+        _logger.LogInformation("Appended Chocolatey bin path to current process PATH");
     }
 
     private static Version? ExtractPostgresVersion(string? text)

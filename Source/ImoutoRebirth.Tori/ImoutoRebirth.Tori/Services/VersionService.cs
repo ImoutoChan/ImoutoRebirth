@@ -17,6 +17,9 @@ public class VersionService : IVersionService
 
     public async Task<string> GetLocalVersion(DirectoryInfo installedLocation)
     {
+        if (!installedLocation.Exists)
+            return "0.0.0";
+
         var versionFile = installedLocation.GetFiles().FirstOrDefault(x => x.Name == VersionFileName);
 
         if (versionFile?.Exists != true)

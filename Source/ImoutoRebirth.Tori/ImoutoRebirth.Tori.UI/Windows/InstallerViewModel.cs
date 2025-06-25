@@ -13,26 +13,45 @@ public partial class InstallerViewModel : ObservableObject
 {
     private readonly IStepViewFactory _viewFactory;
     private readonly IOptions<AppSettings> _appSettings;
+    private readonly IConfigurationStorage _configurationStorage;
 
     [ObservableProperty]
     private InstallerStep? _currentStep;
 
     [ObservableProperty]
     private UserControl? _currentStepControl;
-    
-    public InstallerViewModel(IMessenger messenger, IStepViewFactory viewFactory, IOptions<AppSettings> appSettings)
+
+    public InstallerViewModel(
+        IMessenger messenger,
+        IStepViewFactory viewFactory,
+        IOptions<AppSettings> appSettings,
+        IConfigurationStorage configurationStorage)
     {
         messenger.Register<NavigateTo, InstallerViewModel>(this, (r, m) => r.GoToStep(m.Step));
         _viewFactory = viewFactory;
         _appSettings = appSettings;
+        _configurationStorage = configurationStorage;
 
-        if (_appSettings.Value.AutoUpdate)
+        _ = Initialize();
+    }
+
+    private async Task Initialize()
+    {
+        await _configurationStorage.ConfigurationLoaded;
+        if (_configurationStorage.IsUpdating)
         {
-            GoToStep(InstallerStep.Installation);
+            if (_appSettings.Value.AutoUpdate)
+            {
+                GoToStep(InstallerStep.Installation);
+            }
+            else
+            {
+                GoToStep(InstallerStep.Welcome);
+            }
         }
         else
         {
-            GoToStep(InstallerStep.Welcome);
+            GoToStep(InstallerStep.Prerequisites);
         }
     }
 

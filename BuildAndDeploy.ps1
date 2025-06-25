@@ -12,7 +12,7 @@ If ($LASTEXITCODE -ne 0) {
 }
 
 cd ..\..\Artifacts\latest
-.\install-update.ps1
+.\update.ps1
 
 cd ..\..
 

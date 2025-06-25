@@ -37,8 +37,8 @@ class Build : NukeBuild
     AbsolutePath[] NukeFilesToPublish => new[]
     {
         BuildAssemblyDirectory / "configuration.json",
-        BuildAssemblyDirectory / "install-update.ps1",
-        BuildAssemblyDirectory / "install-dependencies.ps1"
+        BuildAssemblyDirectory / "install.cmd",
+        BuildAssemblyDirectory / "update.cmd"
     };
 
     Dictionary<string, RelativePath[]> DirectoriesToDeleteForProject => new()
@@ -151,7 +151,7 @@ class Build : NukeBuild
 
             foreach (var nukeFileToPublish in NukeFilesToPublish)
                 nukeFileToPublish.CopyToDirectory(OutputLatestDirectory, ExistsPolicy.FileOverwrite);
-            
+
             return;
             
             AbsolutePath[] GetDirectoriesToDelete(string projectName, AbsolutePath projectOutput)

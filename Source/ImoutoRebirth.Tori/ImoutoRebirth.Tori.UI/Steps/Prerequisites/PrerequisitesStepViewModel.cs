@@ -96,7 +96,7 @@ public partial class PrerequisitesStepViewModel : ObservableObject, IStep
             {
                 IsDotnetAspNetRuntimeInstalled = await isDotnetAspNetRuntimeInstalled,
                 IsDotnetDesktopRuntimeInstalled = await isDotnetDesktopRuntimeInstalled,
-                IsPostgresInstalled = await isPostgresInstalled,
+                IsPostgresInstalled = isPostgresInstalled,
                 IsPostgresPortInUse = isPostgresPortInUse,
                 PostgresWindowsServices = postgresWindowsServices
             };

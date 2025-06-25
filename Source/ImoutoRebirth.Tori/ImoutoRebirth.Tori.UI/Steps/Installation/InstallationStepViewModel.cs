@@ -158,7 +158,7 @@ public partial class InstallationStepViewModel : ObservableValidator, IStep
         AppendLog($"Installing PostgreSQL: {_configurationStorage.ShouldInstallPostgreSql}");
         AppendLog($"Installing Runtimes: {_configurationStorage.ShouldInstallRuntimes}");
         AppendLog();
-        AppendLog($"Current version: {_versionService.GetLocalVersion(new(_configurationStorage.CurrentConfiguration.InstallLocation))}");
+        AppendLog($"Current version: {await _versionService.GetLocalVersion(new(_configurationStorage.CurrentConfiguration.InstallLocation))}");
         AppendLog($"New version: {_versionService.GetNewVersion()}");
         AppendLog();
         AppendLog($"Configuration:");

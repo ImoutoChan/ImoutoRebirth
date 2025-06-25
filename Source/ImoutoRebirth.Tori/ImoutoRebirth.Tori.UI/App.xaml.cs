@@ -66,10 +66,14 @@ public partial class App : Application
         services.AddSingleton<IMessenger , WeakReferenceMessenger>();
         services.AddLogging(x => x.AddProvider(logForwarder));
 
+        services.Configure<DependencyManagerOptions>(x
+            => x.ProcessConsoleOutput = y => logForwarder.CreateLogger(nameof(Startup)).LogInformation(y));
+
         services.AddSingleton<IStepViewFactory, StepViewFactory>();
+        services.AddSingleton<IDependencyManager, DependencyManager>();
+
         services.AddTransient<IRegistryService, RegistryService>();
         services.AddTransient<IVersionService, VersionService>();
-        services.AddTransient<IDependencyManager, DependencyManager>();
         services.AddTransient<IConfigurationService, ConfigurationService>();
         services.AddTransient<IInstaller, Installer>();
         services.AddTransient<IWindowsServicesManager, WindowsServicesManager>();

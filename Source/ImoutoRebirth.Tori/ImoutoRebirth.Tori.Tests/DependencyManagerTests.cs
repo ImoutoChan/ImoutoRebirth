@@ -25,7 +25,7 @@ public class DependencyManagerTests
 
         var postgresServices = manager.GetPostgresWindowsServices();
         var isPostgresPortInUse = manager.IsPostgresPortInUse();
-        var isPostgresInstalled = await manager.IsPostgresInstalled();
+        var isPostgresInstalled = manager.IsPostgresInstalled();
 
         var isDotnetAspNetRuntimeInstalled = await manager.IsDotnetAspNetRuntimeInstalled("9.0.6");
         var isDotnetDesktopRuntimeInstalled = await manager.IsDotnetDesktopRuntimeInstalled("9.0.6");
