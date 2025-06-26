@@ -37,8 +37,7 @@ class Build : NukeBuild
     AbsolutePath[] NukeFilesToPublish => new[]
     {
         BuildAssemblyDirectory / "configuration.json",
-        BuildAssemblyDirectory / "install.cmd",
-        BuildAssemblyDirectory / "update.cmd"
+        BuildAssemblyDirectory / "install.cmd"
     };
 
     Dictionary<string, RelativePath[]> DirectoriesToDeleteForProject => new()
