@@ -26,8 +26,10 @@ public partial class InstallationStepViewModel : ObservableValidator, IStep
     private readonly IOptions<PrerequisitesSettings> _prerequisitesSettings;
     private readonly IOptions<AppSettings> _appSettings;
     private readonly DispatcherTimer _dispatcherTimer = new();
+    private readonly DispatcherTimer _dispatcherTimerOnSuccess = new();
 
     private DateTimeOffset? _installationStarted = null;
+    private DateTimeOffset? _installationFinished = null;
 
     [ObservableProperty]
     private string? _logString;
@@ -43,6 +45,9 @@ public partial class InstallationStepViewModel : ObservableValidator, IStep
 
     [ObservableProperty]
     private int _progressValue = 0;
+
+    [ObservableProperty]
+    private int? _remainingSecondsUntilClosed = 0;
 
     [ObservableProperty]
     private bool _displayPleaseWait = false;
@@ -87,6 +92,20 @@ public partial class InstallationStepViewModel : ObservableValidator, IStep
             DisplayPleaseWait = true;
         };
 
+        _dispatcherTimerOnSuccess.Interval = TimeSpan.FromMilliseconds(500);
+        _dispatcherTimerOnSuccess.Tick += (_, _) =>
+        {
+            RemainingSecondsUntilClosed = Math.Max(
+                0,
+                9 - (int)(DateTimeOffset.UtcNow - _installationFinished!.Value).TotalSeconds);
+
+            if (RemainingSecondsUntilClosed > 0)
+                return;
+
+            _dispatcherTimerOnSuccess.Stop();
+            Application.Current.Shutdown();
+        };
+
 
         if (appSettings.Value.AutoUpdate)
         {
@@ -113,21 +132,29 @@ public partial class InstallationStepViewModel : ObservableValidator, IStep
         IsInstalling = true;
         IsInstallationStarted = true;
 
+        var isInstalled = false;
         try
         {
-            await InstallInternal();
+            isInstalled = await InstallInternal();
         }
         catch (Exception e)
         {
+            isInstalled = false;
             AppendLog(e.Message);
         }
 
         IsInstalling = false;
         IsInstallationFinished = true;
         _dispatcherTimer.Stop();
+
+        if (isInstalled)
+        {
+            _installationFinished = DateTimeOffset.UtcNow;
+            _dispatcherTimerOnSuccess.Start();
+        }
     }
 
-    private async Task InstallInternal()
+    private async Task<bool> InstallInternal()
     {
         _logger.LogInformation("Starting installation process");
 
@@ -141,14 +168,14 @@ public partial class InstallationStepViewModel : ObservableValidator, IStep
             if (!aspNetInstalled)
             {
                 AppendLog("ERROR: ASP.NET Core runtime installation failed. Aborting installation process");
-                return;
+                return false;
             }
 
             var desktopInstalled = await _dependencyManager.InstallDotnetDesktopRuntime(_prerequisitesSettings.Value.DotnetRuntimeRequiredVersion);
             if (!desktopInstalled)
             {
                 AppendLog("ERROR: .NET Desktop runtime installation failed. Aborting installation process");
-                return;
+                return false;
             }
         }
         else
@@ -169,7 +196,7 @@ public partial class InstallationStepViewModel : ObservableValidator, IStep
             if (!postgresInstalled)
             {
                 AppendLog("ERROR: PostgreSQL installation failed. Aborting installation process");
-                return;
+                return false;
             }
         }
         else
@@ -186,6 +213,8 @@ public partial class InstallationStepViewModel : ObservableValidator, IStep
         _logger.LogInformation("Installation process finished");
 
         ProgressValue = 100;
+
+        return true;
     }
 
     [RelayCommand]

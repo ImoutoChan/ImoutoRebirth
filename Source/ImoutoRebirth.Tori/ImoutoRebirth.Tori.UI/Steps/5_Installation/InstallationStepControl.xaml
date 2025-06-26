@@ -63,8 +63,17 @@
             <Button
                 Style="{DynamicResource Styles.Button.Accent}"
                 Command="{Binding CloseAppCommand}"
-                Content="ok"
-                Visibility="{Binding IsInstallationFinished, Converter={StaticResource ConditionVisibilityConverter}, ConverterParameter=true}" />
+                Visibility="{Binding IsInstallationFinished, Converter={StaticResource ConditionVisibilityConverter}, ConverterParameter=true}">
+                <StackPanel Orientation="Horizontal">
+                    <TextBlock>
+                        <Run Text="ok" />
+                    </TextBlock>
+
+                    <TextBlock Visibility="{Binding RemainingSecondsUntilClosed, Converter={StaticResource ConditionVisibilityConverter}, ConverterParameter=!null}">
+                        <Run Text="{Binding RemainingSecondsUntilClosed, StringFormat=' ({0:0})'}"/>
+                    </TextBlock>
+                </StackPanel>
+            </Button>
         </StackPanel>
     </Grid>
 </UserControl>
