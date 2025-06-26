@@ -24,11 +24,11 @@ public interface IDependencyManager
 
     Task<IReadOnlyCollection<string>> GetDotnetRuntimes();
 
-    Task InstallPostgres(int port, string pass);
+    Task<bool> InstallPostgres(int port, string pass);
 
-    Task InstallDotnetAspNetRuntime(string version);
+    Task<bool> InstallDotnetAspNetRuntime(string version);
 
-    Task InstallDotnetDesktopRuntime(string version);
+    Task<bool> InstallDotnetDesktopRuntime(string version);
 }
 
 public record InstalledPostgresInfo(string? ServiceName, Version? Version);
@@ -51,7 +51,7 @@ public partial class DependencyManager : IDependencyManager
 
     private readonly ILogger<DependencyManager> _logger;
     private readonly IOptions<DependencyManagerOptions> _options;
-    private readonly Lazy<Task<string>> _dotnetRuntimesOutput;
+    private readonly Lazy<Task<ExecuteCommandResult>> _dotnetRuntimesOutput;
     private readonly Lazy<Task<bool>> _ensureChocoInstalled;
 
     public DependencyManager(ILogger<DependencyManager> logger, IOptions<DependencyManagerOptions> options)
@@ -108,55 +108,82 @@ public partial class DependencyManager : IDependencyManager
 
     public async Task<bool> IsDotnetAspNetRuntimeInstalled(string version)
     {
-        var output = await _dotnetRuntimesOutput.Value;
+        var outputResult = await _dotnetRuntimesOutput.Value;
 
         var pattern = $@"Microsoft\.AspNetCore\.App\s+{Regex.Escape(version)}\b";
-        return Regex.IsMatch(output, pattern);
+        return Regex.IsMatch(outputResult.Output, pattern);
     }
 
     public async Task<bool> IsDotnetDesktopRuntimeInstalled(string version)
     {
-        var output = await _dotnetRuntimesOutput.Value;
+        var outputResult = await _dotnetRuntimesOutput.Value;
 
         var pattern = $@"Microsoft\.WindowsDesktop\.App\s+{Regex.Escape(version)}\b";
-        return Regex.IsMatch(output, pattern);
+        return Regex.IsMatch(outputResult.Output, pattern);
     }
 
     public async Task<IReadOnlyCollection<string>> GetDotnetRuntimes()
     {
-        var output = await _dotnetRuntimesOutput.Value;
-        return output.Split("\n");
+        var outputResult = await _dotnetRuntimesOutput.Value;
+        return outputResult.Output.Split("\n");
     }
 
-    public async Task InstallPostgres(int port = DefaultPostgresPort, string pass = DefaultPostgresPassword)
+    public async Task<bool> InstallPostgres(int port = DefaultPostgresPort, string pass = DefaultPostgresPassword)
     {
         _logger.LogInformation("Installing PostgreSQL {Version}...", DefaultPostgresVersion);
 
         var arguments = $"install postgresql16 --version {DefaultPostgresVersion} -y --params \"'/Password:{pass} /Port:{port}'\"";
-        await ExecuteChocoCommand(arguments);
+        var result = await ExecuteChocoCommand(arguments);
 
-        _logger.LogInformation("PostgreSQL installed");
+        if (result.ExitCode == 0)
+        {
+            _logger.LogInformation("PostgreSQL installed");
+            return true;
+        }
+        else
+        {
+            _logger.LogWarning("PostgreSQL installation failed: {Error}", result.Error);
+            return false;
+        }
     }
 
-    public async Task InstallDotnetAspNetRuntime(string version)
+    public async Task<bool> InstallDotnetAspNetRuntime(string version)
     {
         _logger.LogInformation("Installing ASP.NET Core runtime {Version}...", version);
 
-        await ExecuteChocoCommand($"install dotnet-9.0-aspnetruntime --version {version} -y");
+        var result = await ExecuteChocoCommand($"install dotnet-9.0-aspnetruntime --version {version} -y");
 
-        _logger.LogInformation("ASP.NET Core runtime installation completed");
+        if (result.ExitCode == 0)
+        {
+            _logger.LogInformation("ASP.NET Core runtime installation completed");
+            return true;
+        }
+        else
+        {
+            _logger.LogWarning("ASP.NET Core runtime installation failed: {Error}", result.Error);
+            return false;
+        }
     }
 
-    public async Task InstallDotnetDesktopRuntime(string version)
+    public async Task<bool> InstallDotnetDesktopRuntime(string version)
     {
         _logger.LogInformation("Installing .NET Desktop runtime {Version}...", version);
 
-        await ExecuteChocoCommand($"install dotnet-9.0-desktopruntime --version {version} -y");
+        var result = await ExecuteChocoCommand($"install dotnet-9.0-desktopruntime --version {version} -y");
 
-        _logger.LogInformation(".NET Desktop runtime installation completed");
+        if (result.ExitCode == 0)
+        {
+            _logger.LogInformation(".NET Desktop runtime installation completed");
+            return true;
+        }
+        else
+        {
+            _logger.LogWarning(".NET Desktop runtime installation failed: {Error}", result.Error);
+            return false;
+        }
     }
 
-    private async Task<string> ExecuteDotnetCommand(string arguments)
+    private async Task<ExecuteCommandResult> ExecuteDotnetCommand(string arguments)
     {
         try
         {
@@ -175,23 +202,23 @@ public partial class DependencyManager : IDependencyManager
             using var process = Process.Start(startInfo);
 
             if (process == null)
-                return string.Empty;
+                return new ExecuteCommandResult(-1, string.Empty, "Failed to start process");
 
-            return await TraceProcessOutputAndWaitForExit(process);
+            return await TraceProcessOutputAndWaitForExitWithResult(process);
         }
         catch (Exception ex)
         {
             _logger.LogWarning(ex, "Failed to execute dotnet command: {Arguments}", arguments);
-            return "";
+            return new ExecuteCommandResult(-1, "", ex.ToString());
         }
     }
 
-    private async Task<string> ExecuteChocoCommand(string arguments)
+    private async Task<ExecuteCommandResult> ExecuteChocoCommand(string arguments)
     {
         try
         {
             if (!await _ensureChocoInstalled.Value)
-                return "";
+                return new ExecuteCommandResult(-1, "", "Chocolatey not installed");
 
             if (_isDryRun)
             {
@@ -213,27 +240,29 @@ public partial class DependencyManager : IDependencyManager
 
             using var process = Process.Start(startInfo);
             if (process == null)
-                return string.Empty;
+                return new ExecuteCommandResult(-1, string.Empty, "Failed to start process");
 
-            return await TraceProcessOutputAndWaitForExit(process);
+            return await TraceProcessOutputAndWaitForExitWithResult(process);
         }
         catch (Exception ex)
         {
             _logger.LogWarning(ex, "Failed to execute choco command: {Arguments}", arguments);
-            return "";
+            return new ExecuteCommandResult(-1, "", ex.ToString());
         }
     }
 
     private void LogProcessStartInfo(ProcessStartInfo startInfo)
         => _logger.LogInformation("!! {Command} {Arguments}", startInfo.FileName, startInfo.Arguments);
 
-    private async Task<string> TraceProcessOutputAndWaitForExit(Process process)
+    private async Task<ExecuteCommandResult> TraceProcessOutputAndWaitForExitWithResult(Process process)
     {
         var processConsoleOutput = _options.Value.ProcessConsoleOutput;
 
+        var outputBuilder = new StringBuilder();
+        var errorBuilder = new StringBuilder();
+
         if (processConsoleOutput != null)
         {
-            var outputBuilder = new StringBuilder();
             process.OutputDataReceived += (_, e) =>
             {
                 if (e.Data == null)
@@ -247,7 +276,7 @@ public partial class DependencyManager : IDependencyManager
                 if (e.Data == null)
                     return;
 
-                outputBuilder.AppendLine(e.Data);
+                errorBuilder.AppendLine(e.Data);
                 processConsoleOutput.Invoke(e.Data);
             };
 
@@ -255,13 +284,16 @@ public partial class DependencyManager : IDependencyManager
             process.BeginErrorReadLine();
 
             await process.WaitForExitAsync();
-            return outputBuilder.ToString();
+
+            return new ExecuteCommandResult(process.ExitCode, outputBuilder.ToString(), errorBuilder.ToString());
         }
         else
         {
-            var output = await process.StandardOutput.ReadToEndAsync();
+            string output = await process.StandardOutput.ReadToEndAsync();
+            string error = await process.StandardError.ReadToEndAsync();
             await process.WaitForExitAsync();
-            return output;
+
+            return new ExecuteCommandResult(process.ExitCode, output, error);
         }
     }
 
@@ -285,9 +317,9 @@ public partial class DependencyManager : IDependencyManager
             if (process == null)
                 return false;
 
-            await TraceProcessOutputAndWaitForExit(process);
+            var result = await TraceProcessOutputAndWaitForExitWithResult(process);
 
-            if (process.ExitCode != 0)
+            if (result.ExitCode != 0)
             {
                 if (_isDryRun)
                 {
@@ -314,11 +346,11 @@ public partial class DependencyManager : IDependencyManager
                 if (installProcess == null)
                     return false;
 
-                await TraceProcessOutputAndWaitForExit(installProcess);
+                var chocoInstall = await TraceProcessOutputAndWaitForExitWithResult(installProcess);
 
                 _logger.LogInformation(
                     "Chocolatey installation completed with exit code: {ExitCode}",
-                    installProcess.ExitCode);
+                    chocoInstall.ExitCode);
 
                 UpdateEnvPath();
 
@@ -381,3 +413,5 @@ public partial class DependencyManager : IDependencyManager
     [GeneratedRegex(@"postgresql-x64-(\d+)")]
     private static partial Regex Postgres16VersionRegex();
 }
+
+public record ExecuteCommandResult(int ExitCode, string Output, string Error);

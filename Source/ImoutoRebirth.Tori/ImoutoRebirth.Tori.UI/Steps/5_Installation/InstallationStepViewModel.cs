@@ -135,8 +135,21 @@ public partial class InstallationStepViewModel : ObservableValidator, IStep
         if (_configurationStorage.ShouldInstallRuntimes)
         {
             AppendLog("Installing runtime dependencies...");
-            await _dependencyManager.InstallDotnetAspNetRuntime(_prerequisitesSettings.Value.DotnetRuntimeRequiredVersion);
-            await _dependencyManager.InstallDotnetDesktopRuntime(_prerequisitesSettings.Value.DotnetRuntimeRequiredVersion);
+
+            var aspNetInstalled = await _dependencyManager.InstallDotnetAspNetRuntime(_prerequisitesSettings.Value.DotnetRuntimeRequiredVersion);
+
+            if (!aspNetInstalled)
+            {
+                AppendLog("ERROR: ASP.NET Core runtime installation failed. Aborting installation process");
+                return;
+            }
+
+            var desktopInstalled = await _dependencyManager.InstallDotnetDesktopRuntime(_prerequisitesSettings.Value.DotnetRuntimeRequiredVersion);
+            if (!desktopInstalled)
+            {
+                AppendLog("ERROR: .NET Desktop runtime installation failed. Aborting installation process");
+                return;
+            }
         }
         else
         {
@@ -149,9 +162,15 @@ public partial class InstallationStepViewModel : ObservableValidator, IStep
             AppendLog("Installing postgres dependencies...");
             var postgresConfiguration = _configurationStorage.ExtractCurrentPostgresConfiguration();
 
-            await _dependencyManager.InstallPostgres(
+            var postgresInstalled = await _dependencyManager.InstallPostgres(
                 port: postgresConfiguration.Port,
                 pass: postgresConfiguration.Pass);
+
+            if (!postgresInstalled)
+            {
+                AppendLog("ERROR: PostgreSQL installation failed. Aborting installation process");
+                return;
+            }
         }
         else
         {

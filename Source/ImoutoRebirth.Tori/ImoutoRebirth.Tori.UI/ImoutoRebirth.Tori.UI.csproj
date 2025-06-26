@@ -17,6 +17,13 @@
         <ApplicationManifest>app.manifest</ApplicationManifest>
     </PropertyGroup>
 
+    <PropertyGroup>
+        <Company>ImoutoRebirth</Company>
+        <Product>ImoutoRebirth Installer</Product>
+        <Copyright>ImoutoChan © 2013-2025</Copyright>
+        <ApplicationIcon>Assets\Icon\window-icon.ico</ApplicationIcon>
+    </PropertyGroup>
+
     <ItemGroup>
         <PackageReference Include="MahApps.Metro"/>
         <PackageReference Include="Microsoft.Extensions.DependencyInjection"/>
@@ -44,6 +51,7 @@
         <Resource Include="Assets\Fonts\Supreme\Supreme-Variable.ttf"/>
         <None Remove="Assets\Fonts\Supreme\Supreme-VariableItalic.ttf"/>
         <Resource Include="Assets\Fonts\Supreme\Supreme-VariableItalic.ttf"/>
+        <Resource Include="Assets\Icon\window-icon.ico" />
     </ItemGroup>
 
 </Project>
