@@ -35,6 +35,7 @@ public static class MassTransitSqlExtensions
             options.Password = builder.Password;
             options.AdminUsername = builder.Username;
             options.AdminPassword = builder.Password;
+            options.Port = builder.Port;
         });
         services.AddPostgresMigrationHostedService();
         
@@ -45,6 +46,8 @@ public static class MassTransitSqlExtensions
         services.AddMassTransit(
             x =>
             {
+                x.DisableUsageTelemetry();
+
                 x.SetEndpointNameFormatter(new ImoutoRebirthEndpointNameFormatter(consumingServiceName));
                 
                 x.AddConfigureEndpointsCallback((_, _, cfg) =>

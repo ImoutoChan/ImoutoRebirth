@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace ImoutoRebirth.Navigator.ViewModel.SettingsSlice.ValidationAttributes;
+namespace ImoutoRebirth.Common.WPF.ValidationAttributes;
 
 public class NotNullOrWhiteSpaceAttribute : ValidationAttribute
 {

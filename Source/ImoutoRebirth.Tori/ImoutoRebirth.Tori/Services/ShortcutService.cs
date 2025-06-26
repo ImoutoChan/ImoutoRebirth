@@ -7,7 +7,7 @@ public interface IShortcutService
     void CreateShortcutToDesktop(string exePath, string name);
 }
 
-internal class ShortcutService : IShortcutService
+public class ShortcutService : IShortcutService
 {
     public void CreateShortcutToDesktop(string exePath, string name)
     {

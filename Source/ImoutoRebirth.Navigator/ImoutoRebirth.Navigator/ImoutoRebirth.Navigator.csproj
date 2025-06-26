@@ -16,7 +16,7 @@
     <PropertyGroup>
         <Company>ImoutoRebirth</Company>
         <Product>Imouto Navigator</Product>
-        <Copyright>ImoutoChan © 2013-2024</Copyright>
+        <Copyright>ImoutoChan © 2013-2025</Copyright>
         <ApplicationIcon>Resources\Icon\window-icon.ico</ApplicationIcon>
     </PropertyGroup>
 

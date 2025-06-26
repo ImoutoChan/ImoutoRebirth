@@ -1,5 +1,5 @@
 ﻿using System.Reactive.Linq;
-using FluentAssertions;
+using AwesomeAssertions;
 using ImoutoRebirth.Room.UI.FileSystemEvents;
 using Microsoft.Extensions.Logging.Abstractions;
 using Xunit;

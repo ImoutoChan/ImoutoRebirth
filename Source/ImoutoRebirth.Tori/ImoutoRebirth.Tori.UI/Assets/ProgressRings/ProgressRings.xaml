@@ -1,0 +1,129 @@
+<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <DrawingGroup x:Key="RingDrawingGroup" ClipGeometry="M0,0 V27 H27 V0 H0 Z">
+        <DrawingGroup>
+            <DrawingGroup>
+                <DrawingGroup>
+                    <GeometryDrawing Brush="{DynamicResource MahApps.Brushes.Accent}">
+                        <GeometryDrawing.Geometry>
+                            <EllipseGeometry RadiusX="6.5" RadiusY="6.5" Center="13.5,13.5" />
+                        </GeometryDrawing.Geometry>
+                    </GeometryDrawing>
+                    <GeometryDrawing>
+                        <GeometryDrawing.Pen>
+                            <Pen Brush="{DynamicResource MahApps.Brushes.Accent}" Thickness="2" StartLineCap="Flat" EndLineCap="Flat" LineJoin="Miter" />
+                        </GeometryDrawing.Pen>
+                        <GeometryDrawing.Geometry>
+                            <EllipseGeometry RadiusX="12.5" RadiusY="12.5" Center="13.5,13.5" />
+                        </GeometryDrawing.Geometry>
+                    </GeometryDrawing>
+                </DrawingGroup>
+            </DrawingGroup>
+        </DrawingGroup>
+    </DrawingGroup>
+
+    <DrawingImage x:Key="RingDrawingImage" Drawing="{StaticResource RingDrawingGroup}" />
+
+    <DrawingGroup x:Key="BarDrawingGroup" ClipGeometry="M0,0 V6 H38 V0 H0 Z">
+        <DrawingGroup>
+            <DrawingGroup>
+                <GeometryDrawing Brush="{DynamicResource MahApps.Brushes.Accent}">
+                    <GeometryDrawing.Pen>
+                        <Pen Brush="{DynamicResource MahApps.Brushes.Accent}" Thickness="1" StartLineCap="Flat" EndLineCap="Flat" LineJoin="Miter" />
+                    </GeometryDrawing.Pen>
+                    <GeometryDrawing.Geometry>
+                        <RectangleGeometry RadiusX="2" RadiusY="2" Rect="0.5,0.5,37,5" />
+                    </GeometryDrawing.Geometry>
+                </GeometryDrawing>
+            </DrawingGroup>
+        </DrawingGroup>
+    </DrawingGroup>
+
+    <DrawingImage x:Key="BarDrawingImage" Drawing="{StaticResource BarDrawingGroup}" />
+
+    <DrawingGroup x:Key="RingDrawingGroup.Gray" ClipGeometry="M0,0 V27 H27 V0 H0 Z">
+        <DrawingGroup>
+            <DrawingGroup>
+                <DrawingGroup>
+                    <GeometryDrawing Brush="#D9D9D9">
+                        <GeometryDrawing.Geometry>
+                            <EllipseGeometry RadiusX="6.5" RadiusY="6.5" Center="13.5,13.5" />
+                        </GeometryDrawing.Geometry>
+                    </GeometryDrawing>
+                    <GeometryDrawing>
+                        <GeometryDrawing.Pen>
+                            <Pen Brush="#D9D9D9" Thickness="2" StartLineCap="Flat" EndLineCap="Flat" LineJoin="Miter" />
+                        </GeometryDrawing.Pen>
+                        <GeometryDrawing.Geometry>
+                            <EllipseGeometry RadiusX="12.5" RadiusY="12.5" Center="13.5,13.5" />
+                        </GeometryDrawing.Geometry>
+                    </GeometryDrawing>
+                </DrawingGroup>
+            </DrawingGroup>
+        </DrawingGroup>
+    </DrawingGroup>
+
+    <DrawingImage x:Key="RingDrawingImage.Gray" Drawing="{StaticResource RingDrawingGroup.Gray}" />
+
+    <DrawingGroup x:Key="BarDrawingGroup.Gray" ClipGeometry="M0,0 V6 H38 V0 H0 Z">
+        <DrawingGroup>
+            <DrawingGroup>
+                <GeometryDrawing Brush="#D9D9D9">
+                    <GeometryDrawing.Pen>
+                        <Pen Brush="#D9D9D9" Thickness="1" StartLineCap="Flat" EndLineCap="Flat" LineJoin="Miter" />
+                    </GeometryDrawing.Pen>
+                    <GeometryDrawing.Geometry>
+                        <RectangleGeometry RadiusX="2" RadiusY="2" Rect="0.5,0.5,37,5" />
+                    </GeometryDrawing.Geometry>
+                </GeometryDrawing>
+            </DrawingGroup>
+        </DrawingGroup>
+    </DrawingGroup>
+
+    <DrawingImage x:Key="BarDrawingImage.Gray" Drawing="{StaticResource BarDrawingGroup.Gray}" />
+
+    <DrawingImage x:Key="DrawingImageCheck">
+        <DrawingImage.Drawing>
+            <DrawingGroup ClipGeometry="M0,0 V16.68 H23.5 V0 H0 Z">
+                <DrawingGroup>
+                    <DrawingGroup>
+                        <GeometryDrawing Geometry="F1 M23.5,16.68z M0,0z M2,6.22L2,6.22 9.64,13.86 21.5,2">
+                            <GeometryDrawing.Pen>
+                                <Pen Brush="{DynamicResource MahApps.Brushes.Accent}" Thickness="4" StartLineCap="Round" EndLineCap="Round" LineJoin="Miter" />
+                            </GeometryDrawing.Pen>
+                        </GeometryDrawing>
+                    </DrawingGroup>
+                </DrawingGroup>
+            </DrawingGroup>
+        </DrawingImage.Drawing>
+    </DrawingImage>
+
+    <DrawingImage x:Key="DrawingImageX">
+        <DrawingImage.Drawing>
+            <DrawingGroup ClipGeometry="M0,0 V17.8 H17.8 V0 H0 Z">
+                <DrawingGroup>
+                    <DrawingGroup>
+                        <DrawingGroup>
+                            <GeometryDrawing>
+                                <GeometryDrawing.Pen>
+                                    <Pen Brush="{DynamicResource MahApps.Brushes.Control.Validation}" Thickness="4" StartLineCap="Round" EndLineCap="Round" LineJoin="Miter" />
+                                </GeometryDrawing.Pen>
+                                <GeometryDrawing.Geometry>
+                                    <LineGeometry StartPoint="15.8,2" EndPoint="2,15.8" />
+                                </GeometryDrawing.Geometry>
+                            </GeometryDrawing>
+                            <GeometryDrawing>
+                                <GeometryDrawing.Pen>
+                                    <Pen Brush="{DynamicResource MahApps.Brushes.Control.Validation}" Thickness="4" StartLineCap="Round" EndLineCap="Round" LineJoin="Miter" />
+                                </GeometryDrawing.Pen>
+                                <GeometryDrawing.Geometry>
+                                    <LineGeometry StartPoint="2,2" EndPoint="15.8,15.8" />
+                                </GeometryDrawing.Geometry>
+                            </GeometryDrawing>
+                        </DrawingGroup>
+                    </DrawingGroup>
+                </DrawingGroup>
+            </DrawingGroup>
+        </DrawingImage.Drawing>
+    </DrawingImage>
+</ResourceDictionary>

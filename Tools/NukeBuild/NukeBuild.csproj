@@ -22,11 +22,8 @@
         <None Update="configuration.json">
             <CopyToOutputDirectory>Always</CopyToOutputDirectory>
         </None>
-        <None Update="install-update.ps1">
-            <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-        </None>
-        <None Update="install-dependencies.ps1">
-            <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+        <None Update="install.cmd">
+          <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
         </None>
     </ItemGroup>
 

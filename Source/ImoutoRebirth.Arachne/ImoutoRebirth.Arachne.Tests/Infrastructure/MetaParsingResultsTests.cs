@@ -1,4 +1,4 @@
-using FluentAssertions;
+using AwesomeAssertions;
 using ImoutoRebirth.Arachne.Core.Models;
 using ImoutoRebirth.Arachne.Infrastructure.Models;
 using Xunit;

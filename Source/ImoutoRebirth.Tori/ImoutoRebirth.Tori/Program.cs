@@ -1,4 +1,5 @@
 ﻿using ImoutoRebirth.Tori;
+using ImoutoRebirth.Tori.Configuration;
 using ImoutoRebirth.Tori.Services;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
@@ -30,4 +31,4 @@ if (!updaterLocation.Exists)
 
 var force = args.Contains("force");
 
-installer.EasyInstallOrUpdate(updaterLocation, force);
+await installer.EasyInstallOrUpdate(updaterLocation, force);

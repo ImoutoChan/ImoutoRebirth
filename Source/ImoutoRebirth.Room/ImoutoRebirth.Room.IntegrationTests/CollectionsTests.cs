@@ -1,5 +1,5 @@
 ﻿using System.Net.Http.Json;
-using FluentAssertions;
+using AwesomeAssertions;
 using ImoutoRebirth.Room.IntegrationTests.Fixtures;
 using ImoutoRebirth.Room.UI.WebApi;
 using Xunit;
