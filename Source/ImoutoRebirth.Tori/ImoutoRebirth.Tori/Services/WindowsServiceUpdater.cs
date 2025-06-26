@@ -21,9 +21,9 @@ public class WindowsServiceUpdater : IWindowsServiceUpdater
         "ImoutoRebirth.Room",
     };
     
-    private static readonly IReadOnlyCollection<string> CreateShortcuts = new[]
+    private static readonly IReadOnlyCollection<(string ServiceName, string ShortcutName)> CreateShortcuts = new[]
     {
-        "ImoutoRebirth.Navigator",
+        ("ImoutoRebirth.Navigator", "ImoutoRebirth Navigator")
     };
     
     private static readonly IReadOnlyCollection<string> StopApplicationNames = new[]
@@ -105,12 +105,14 @@ public class WindowsServiceUpdater : IWindowsServiceUpdater
                 windowsServicesToCreate.Add((serviceName, exeName));
             }
 
-            if (CreateShortcuts.Contains(serviceName))
+            if (CreateShortcuts.Any(x => x.ServiceName == serviceName))
             {
                 var exeName = oldServiceDirectory.GetFiles("*", SearchOption.AllDirectories)
                     .First(x => x.Extension == ".exe" && x.Name.Contains(serviceName)).FullName;
-                
-                _shortcutService.CreateShortcutToDesktop(exeName, serviceName);
+
+                _shortcutService.CreateShortcutToDesktop(
+                    exeName,
+                    CreateShortcuts.First(x => x.ServiceName == serviceName).ShortcutName);
             }
         }
         
