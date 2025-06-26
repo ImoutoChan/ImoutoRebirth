@@ -36,7 +36,7 @@ jobs:
         uses: GitTools/actions/gitversion/execute@a41619580c25efb59dfc062e92990914141abcad # v0.10.2
 
       - name: Cache .nuke/temp, ~/.nuget/packages
-        uses: actions/cache@704facf57e6136b1bc63b828d79edcd491f0ee84 # v3.0.0
+        uses: actions/cache@5a3ec84eff668545956fd18022155c47e93e2684 # v4.2.3
         with:
           path: |
             .nuke/temp
