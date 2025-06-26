@@ -65,7 +65,7 @@ For viewing individual images. Its use is not mandatory, you can use your favori
 
 ![Imouto Navigator](https://raw.githubusercontent.com/ImoutoChan/ImoutoRebirth/master/Docs/Screens/Imouto%20Viewer.png "Imouto Viewer")
 
-# Installation
+# Installation (new install expirience is available, this section will be updated soon)
 
 **Video guide with installation and initial configuration**: https://youtu.be/rEg0WMQgmoE
 
