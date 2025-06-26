@@ -1,5 +1,9 @@
 # Unreleased
 
+
+
+# v4.28.2
+
 ### Highlights
 * This version introduces the new install/update app
 * You can call it with install.cmd, dependencies will be installed together with the app itself
