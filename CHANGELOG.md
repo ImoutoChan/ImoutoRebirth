@@ -8,6 +8,7 @@
 * Add Resqueue dashboard
 * Add new videos in README for the initial launch and configuration of collections
 * Fix various issues after migration to .NET 9
+* New installer experience with Tori UI
 
 ### Navigator
 * Add date in file info (left bottom corner)
@@ -37,6 +38,7 @@ to create 2 different source folder entry with and without this flag.
 * ExHentai support as tags provider for files (.zip, .rar, .7z, .tar, .ace, .cbz, .cbr, .cb7, .cbt, .cba)
 * Fill the login data in the config from cookies
 * Improve ExHentai search and selection metadata capabilities
+* Add gelbooru settings, since you can no longer use their api without an account
 
 # 4.26.1
 

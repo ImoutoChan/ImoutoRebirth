@@ -38,7 +38,7 @@ public partial class InstallerViewModel : ObservableObject
     private async Task Initialize()
     {
         await _configurationStorage.ConfigurationLoaded;
-        if (_configurationStorage.IsUpdating)
+        if (_configurationStorage is { IsUpdating: true, CurrentConfiguration.WasMigrated: false })
         {
             if (_appSettings.Value.AutoUpdate)
             {

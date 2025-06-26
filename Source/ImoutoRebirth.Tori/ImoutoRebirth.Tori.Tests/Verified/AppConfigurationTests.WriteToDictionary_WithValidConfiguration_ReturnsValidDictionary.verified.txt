@@ -5,6 +5,8 @@
   ExHentaiIpbMemberId: memberId,
   ExHentaiIpbPassHash: passHash,
   ExHentaiUserAgent: Mozilla/5.0,
+  GelbooruApiKey: gelbooruKey123,
+  GelbooruUserId: 123456,
   HarpyFavoritesSaveJobRepeatEveryMinutes: 60,
   HarpySavePath: C:\Data\Harpy,
   InstallLocation: C:\Apps\ImoutoRebirth,

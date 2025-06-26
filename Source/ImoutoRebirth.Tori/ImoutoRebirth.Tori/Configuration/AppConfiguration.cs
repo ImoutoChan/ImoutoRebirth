@@ -13,7 +13,8 @@ public record AppConfiguration(
     AppConfiguration.JaegerSettings Jaeger,
     AppConfiguration.ExHentaiSettings ExHentai,
     string OpenSearchUri,
-    string InstallLocation)
+    string InstallLocation,
+    bool WasMigrated)
 {
     public record ApiSettings(
         string DanbooruLogin,
@@ -21,7 +22,9 @@ public record AppConfiguration(
         string SankakuLogin,
         string SankakuPassword,
         string YandereLogin,
-        string YandereApiKey);
+        string YandereApiKey,
+        string GelbooruUserId,
+        string GelbooruApiKey);
 
     public record ConnectionSettings(
         string LilinConnectionString,
@@ -67,8 +70,8 @@ public record AppConfiguration(
         var configurationJson = await File.ReadAllTextAsync(globalConfigurationFile.FullName);
         var configurationDictionary = JsonSerializer.Deserialize<Dictionary<string, string>>(configurationJson)!;
 
-        await Migrate(globalConfigurationFile, configurationDictionary);
-        return ReadFromDictionary(configurationDictionary);
+        var wasMigrated = await Migrate(globalConfigurationFile, configurationDictionary);
+        return ReadFromDictionary(configurationDictionary, wasMigrated);
     }
 
     public async Task WriteToFile(FileInfo file)
@@ -81,7 +84,7 @@ public record AppConfiguration(
             JsonSerializer.Serialize(configurationDictionary, new JsonSerializerOptions { WriteIndented = true }));
     }
 
-    public static AppConfiguration ReadFromDictionary(Dictionary<string,string> configurationDictionary)
+    public static AppConfiguration ReadFromDictionary(Dictionary<string,string> configurationDictionary, bool wasMigrated)
     {
         ValidateConfigurationValues(configurationDictionary);
 
@@ -92,7 +95,9 @@ public record AppConfiguration(
                 SankakuLogin: configurationDictionary["SankakuLogin"],
                 SankakuPassword: configurationDictionary["SankakuPassword"],
                 YandereLogin: configurationDictionary["YandereLogin"],
-                YandereApiKey: configurationDictionary["YandereApiKey"]),
+                YandereApiKey: configurationDictionary["YandereApiKey"],
+                GelbooruUserId: configurationDictionary["GelbooruUserId"],
+                GelbooruApiKey: configurationDictionary["GelbooruApiKey"]),
             Connection: new(
                 LilinConnectionString: configurationDictionary["LilinConnectionString"],
                 MeidoConnectionString: configurationDictionary["MeidoConnectionString"],
@@ -122,7 +127,8 @@ public record AppConfiguration(
                 Igneous: configurationDictionary["ExHentaiIgneous"],
                 UserAgent: configurationDictionary["ExHentaiUserAgent"]),
             OpenSearchUri: configurationDictionary["OpenSearchUri"],
-            InstallLocation: configurationDictionary["InstallLocation"]);
+            InstallLocation: configurationDictionary["InstallLocation"],
+            WasMigrated: wasMigrated);
     }
 
     public Dictionary<string, string> WriteToDictionary()
@@ -163,6 +169,9 @@ public record AppConfiguration(
             ["ExHentaiIgneous"] = ExHentai.Igneous,
             ["ExHentaiUserAgent"] = ExHentai.UserAgent,
 
+            ["GelbooruUserId"] = Api.GelbooruUserId,
+            ["GelbooruApiKey"] = Api.GelbooruApiKey,
+
             ["OpenSearchUri"] = OpenSearchUri,
             ["InstallLocation"] = InstallLocation
         };
@@ -197,7 +206,9 @@ public record AppConfiguration(
             "ExHentaiIpbMemberId",
             "ExHentaiIpbPassHash",
             "ExHentaiIgneous",
-            "ExHentaiUserAgent"
+            "ExHentaiUserAgent",
+            "GelbooruUserId",
+            "GelbooruApiKey"
         };
 
         var missedKeys = keys.Where(x => !configuration.ContainsKey(x)).ToList();
@@ -206,8 +217,10 @@ public record AppConfiguration(
             throw new Exception("Missed configuration keys: " + string.Join(", ", missedKeys));
     }
 
-    private static async Task Migrate(FileInfo globalConfigurationFile, Dictionary<string, string> configuration)
+    private static async Task<bool> Migrate(FileInfo globalConfigurationFile, Dictionary<string, string> configuration)
     {
+        var wasMigrated = false;
+
         if (!configuration.ContainsKey("MassTransitConnectionString"))
         {
             // version 1 to version 2
@@ -222,6 +235,8 @@ public record AppConfiguration(
             await File.WriteAllTextAsync(
                 globalConfigurationFile.FullName,
                 JsonSerializer.Serialize(configuration, new JsonSerializerOptions { WriteIndented = true }));
+
+            wasMigrated = true;
         }
 
         if (!configuration.ContainsKey("ExHentaiIpbMemberId"))
@@ -235,6 +250,23 @@ public record AppConfiguration(
             await File.WriteAllTextAsync(
                 globalConfigurationFile.FullName,
                 JsonSerializer.Serialize(configuration, new JsonSerializerOptions { WriteIndented = true }));
+
+            wasMigrated = true;
         }
+
+        if (!configuration.ContainsKey("GelbooruUserId"))
+        {
+            // version 3 to version 4, add gelbooru options
+            configuration.Add("GelbooruUserId", "");
+            configuration.Add("GelbooruApiKey", "");
+
+            await File.WriteAllTextAsync(
+                globalConfigurationFile.FullName,
+                JsonSerializer.Serialize(configuration, new JsonSerializerOptions { WriteIndented = true }));
+
+            wasMigrated = true;
+        }
+
+        return wasMigrated;
     }
 }

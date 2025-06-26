@@ -106,6 +106,32 @@
                     Margin="0,10,0,0"
                     Header="api key"
                     Text="{Binding YandereApiKey}" />
+
+                <StackPanel
+                    Orientation="Horizontal"
+                    Margin="-30,37,0,0">
+                    <Image
+                        Width="20"
+                        Height="20"
+                        Source="{StaticResource DrawingImageCheck}"
+                        Margin="0,0,10,0"
+                        Visibility="{Binding IsGelbooruFilled, Converter={StaticResource ConditionVisibilityConverter}, ConverterParameter='true|false'}" >
+                    </Image>
+
+                    <TextBlock
+                        Text="Gelbooru"
+                        Style="{DynamicResource Styles.Typography.DefaultBold}" />
+                </StackPanel>
+
+                <userControls:InputControl
+                    Margin="0,10,0,0"
+                    Header="api key"
+                    Text="{Binding GelbooruApiKey}" />
+
+                <userControls:InputControl
+                    Margin="0,10,0,0"
+                    Header="user id"
+                    Text="{Binding GelbooruUserId}" />
             </StackPanel>
 
             <StackPanel Grid.Column="4">

@@ -5,7 +5,9 @@
     SankakuLogin: sankakuUser,
     SankakuPassword: sankakuPass123,
     YandereLogin: yandereUser,
-    YandereApiKey: yandereKey123
+    YandereApiKey: yandereKey123,
+    GelbooruUserId: gelbooruUserId,
+    GelbooruApiKey: gelbooruKey123
   },
   Connection: {
     LilinConnectionString: Server=localhost;Database=lilin;,
@@ -44,5 +46,6 @@
     UserAgent: Mozilla/5.0
   },
   OpenSearchUri: http://localhost:9200,
-  InstallLocation: C:\Apps\ImoutoRebirth
+  InstallLocation: C:\Apps\ImoutoRebirth,
+  WasMigrated: false
 }

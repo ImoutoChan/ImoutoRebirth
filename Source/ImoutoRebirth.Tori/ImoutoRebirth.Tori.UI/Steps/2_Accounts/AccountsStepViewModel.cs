@@ -37,6 +37,14 @@ public partial class AccountsStepViewModel : ObservableObject, IStep
     private string _yandereApiKey;
 
     [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(IsGelbooruFilled))]
+    private string _gelbooruUserId;
+
+    [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(IsGelbooruFilled))]
+    private string _gelbooruApiKey;
+
+    [ObservableProperty]
     [NotifyPropertyChangedFor(nameof(IsExhentaiFilled))]
     private string _exHentaiIpbMemberId;
 
@@ -58,6 +66,8 @@ public partial class AccountsStepViewModel : ObservableObject, IStep
 
     public bool IsYandereFilled => !string.IsNullOrWhiteSpace(YandereLogin) && !string.IsNullOrWhiteSpace(YandereApiKey);
 
+    public bool IsGelbooruFilled => !string.IsNullOrWhiteSpace(GelbooruUserId) && !string.IsNullOrWhiteSpace(GelbooruApiKey);
+
     public bool IsExhentaiFilled
         => !string.IsNullOrWhiteSpace(ExHentaiIgneous)
            && !string.IsNullOrWhiteSpace(ExHentaiIpbMemberId)
@@ -77,6 +87,8 @@ public partial class AccountsStepViewModel : ObservableObject, IStep
         SankakuPassword = currentConfiguration.Api.SankakuPassword;
         YandereLogin = currentConfiguration.Api.YandereLogin;
         YandereApiKey = currentConfiguration.Api.YandereApiKey;
+        GelbooruApiKey = currentConfiguration.Api.GelbooruApiKey;
+        GelbooruUserId = currentConfiguration.Api.GelbooruUserId;
         ExHentaiIpbMemberId = currentConfiguration.ExHentai.IpbMemberId;
         ExHentaiIpbPassHash = currentConfiguration.ExHentai.IpbPassHash;
         ExHentaiIgneous = currentConfiguration.ExHentai.Igneous;
@@ -164,6 +176,29 @@ public partial class AccountsStepViewModel : ObservableObject, IStep
                 {
                     YandereLogin = "",
                     YandereApiKey = ""
+                }
+            });
+        }
+
+        if (IsGelbooruFilled)
+        {
+            _configurationStorage.UpdateConfiguration(x => x with
+            {
+                Api = x.Api with
+                {
+                    GelbooruApiKey = GelbooruApiKey ?? "",
+                    GelbooruUserId = GelbooruUserId ?? ""
+                }
+            });
+        }
+        else
+        {
+            _configurationStorage.UpdateConfiguration(x => x with
+            {
+                Api = x.Api with
+                {
+                    GelbooruApiKey = "",
+                    GelbooruUserId = ""
                 }
             });
         }

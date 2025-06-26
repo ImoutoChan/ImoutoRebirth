@@ -31,6 +31,7 @@ public static class ServiceCollectionExtensions
         
         services.Configure<SaverConfiguration>(configuration.GetSection("Saver"));
         services.Configure<DanbooruBooruConfiguration>(configuration.GetSection("Danbooru"));
+        services.Configure<GelbooruBooruConfiguration>(configuration.GetSection("Gelbooru"));
         services.Configure<YandereBooruConfiguration>(configuration.GetSection("Yandere"));
 
         services.AddHttpClient<DanbooruFavoritesLoader>(x =>

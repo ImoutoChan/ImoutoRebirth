@@ -82,6 +82,10 @@ public class ConfigurationBuilder : IConfigurationBuilder
                 "Igneous": "{{_configuration.ExHentai.Igneous}}",
                 "UserAgent": "{{_configuration.ExHentai.UserAgent}}"
               },
+              "GelbooruSettings": {
+                "UserId": "{{_configuration.Api.GelbooruUserId}}",
+                "ApiKey": "{{_configuration.Api.GelbooruApiKey}}"
+              },
               "OpenSearchUri": "{{_configuration.OpenSearchUri}}",
               "Jaeger": {
                 "Host": "{{_configuration.Jaeger.Host}}",
@@ -104,6 +108,10 @@ public class ConfigurationBuilder : IConfigurationBuilder
               "Yandere": {
                 "ApiKey": "{{_configuration.Api.YandereApiKey}}",
                 "Login": "{{_configuration.Api.YandereLogin}}"
+              },
+              "Gelbooru": {
+                "UserId": "{{_configuration.Api.GelbooruUserId}}",
+                "ApiKey": "{{_configuration.Api.GelbooruApiKey}}"
               },
               "Saver": {
                 "SaveToPath": "{{_configuration.Harpy.SavePath}}",

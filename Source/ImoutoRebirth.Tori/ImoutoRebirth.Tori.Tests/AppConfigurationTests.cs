@@ -13,7 +13,7 @@ public class AppConfigurationTests
         var configDictionary = CreateValidConfigurationDictionary();
 
         // act
-        var appConfig = AppConfiguration.ReadFromDictionary(configDictionary);
+        var appConfig = AppConfiguration.ReadFromDictionary(configDictionary, false);
 
         // assert
         await Verify(appConfig);
@@ -27,7 +27,7 @@ public class AppConfigurationTests
         configDictionary.Remove("DanbooruLogin"); // Remove a required key
 
         // act and assert
-        Action act = () => AppConfiguration.ReadFromDictionary(configDictionary);
+        Action act = () => AppConfiguration.ReadFromDictionary(configDictionary, false);
         act.Should().Throw<Exception>()
             .WithMessage("*Missed configuration keys*")
             .WithMessage("*DanbooruLogin*");
@@ -43,7 +43,7 @@ public class AppConfigurationTests
         configDictionary.Remove("OpenSearchUri");
 
         // act and assert
-        Action act = () => AppConfiguration.ReadFromDictionary(configDictionary);
+        Action act = () => AppConfiguration.ReadFromDictionary(configDictionary, false);
         act.Should().Throw<Exception>()
             .WithMessage("*Missed configuration keys*")
             .WithMessage("*DanbooruLogin*")
@@ -59,7 +59,7 @@ public class AppConfigurationTests
         configDictionary["HarpySavePath"] = @"C:\Path\With\Backslashes";
 
         // act
-        var appConfig = AppConfiguration.ReadFromDictionary(configDictionary);
+        var appConfig = AppConfiguration.ReadFromDictionary(configDictionary, false);
 
         // assert
         appConfig.Harpy.SavePath.Should().Be(@"C:\\Path\\With\\Backslashes");
@@ -155,7 +155,7 @@ public class AppConfigurationTests
             var deserializedDictionary = JsonSerializer.Deserialize<Dictionary<string, string>>(fileContent);
 
             deserializedDictionary.Should().NotBeNull();
-            deserializedDictionary.Should().HaveCount(28);
+            deserializedDictionary.Should().HaveCount(30);
             deserializedDictionary["DanbooruLogin"].Should().Be("danbooruUser");
             deserializedDictionary["HarpySavePath"].Should().Be(@"C:\Data\Harpy");
         }
@@ -200,7 +200,7 @@ public class AppConfigurationTests
 
         // act
         var dictionary = originalConfig.WriteToDictionary();
-        var readConfig = AppConfiguration.ReadFromDictionary(dictionary);
+        var readConfig = AppConfiguration.ReadFromDictionary(dictionary, false);
 
         // assert
         readConfig.Should().BeEquivalentTo(originalConfig);
@@ -304,6 +304,8 @@ public class AppConfigurationTests
             ["SankakuPassword"] = "sankakuPass123",
             ["YandereLogin"] = "yandereUser",
             ["YandereApiKey"] = "yandereKey123",
+            ["GelbooruUserId"] = "gelbooruUserId",
+            ["GelbooruApiKey"] = "gelbooruKey123",
 
             ["LilinConnectionString"] = "Server=localhost;Database=lilin;",
             ["MeidoConnectionString"] = "Server=localhost;Database=meido;",
@@ -347,7 +349,9 @@ public class AppConfigurationTests
                 SankakuLogin: "sankakuUser",
                 SankakuPassword: "sankakuPass123",
                 YandereLogin: "yandereUser",
-                YandereApiKey: "yandereKey123"),
+                YandereApiKey: "yandereKey123",
+                GelbooruUserId: "123456",
+                GelbooruApiKey: "gelbooruKey123"),
             Connection: new AppConfiguration.ConnectionSettings(
                 LilinConnectionString: "Server=localhost;Database=lilin;",
                 MeidoConnectionString: "Server=localhost;Database=meido;",
@@ -377,6 +381,7 @@ public class AppConfigurationTests
                 Igneous: "igneous",
                 UserAgent: "Mozilla/5.0"),
             OpenSearchUri: "http://localhost:9200",
-            InstallLocation: @"C:\Apps\ImoutoRebirth");
+            InstallLocation: @"C:\Apps\ImoutoRebirth",
+            WasMigrated: false);
     }
 }
