@@ -14,7 +14,7 @@
   - [Imouto Navigator](#imouto-navigator)
   - [ImoutoRebirth Viewer](#imoutorebirth-viewer)
 - [Установка](#установка)
-- [Configuration](#configuration)
+- [Internal Configuration](#internal-configuration)
   - [configuration.json](#configurationjson)
 - [Как устроен ImoutoRebirth](#как-устроен-imoutorebirth)
   - [ImoutoRebirth.Room](#imoutorebirthroom)
@@ -81,7 +81,7 @@ ImoutoRebirth это решение для организации медиа ф�
 
 Старый видео гайд с установкой и начальной конфигурацией. Он устарел, но все еще может дать полезные инсайты: https://youtu.be/xU5lRX-a8kE
 
-# Configuration
+# Internal Configuration
 
 ## configuration.json
 
