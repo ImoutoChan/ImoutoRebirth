@@ -14,7 +14,7 @@ I recently open-sourced the program that I wrote myself and used for many years.
   - [Imouto Navigator](#imouto-navigator)
   - [ImoutoRebirth Viewer](#imoutorebirth-viewer)
 - [Installation](#installation)
-- [Configuration](#configuration)
+- [Internal Configuration](#internal-configuration)
   - [configuration.json](#configurationjson)
 - [ImoutoRebirth Architecture](#imoutorebirth-architecture)
   - [ImoutoRebirth.Room](#imoutorebirthroom)
@@ -73,7 +73,10 @@ The main idea of the app is that you have different collections with media that 
 2. Run it (this is a self-extracting 7z archive), it will unpack the application
 3. Run the install.cmd file to launch the installation process
 4. It will check if necessary dependencies are installed and if they are not, it will install them for you later
-5. Fill the configuration sections for boorus and exhentai (if you're planning to save douji here), while it's not required, the app works much better with them
+5. Fill the accounts section for boorus and exhentai (if you're planning to save douji here), while it's not required, the app works much better with them
+
+    - [How to find my accounts login info?](https://github.com/ImoutoChan/ImoutoRebirth/blob/master/Docs/How%20to%20find%20my%20accounts%20login%20info.md)
+     
 6. Leave everything else as default, click install and wait (installing postgres can take up to 10 minutes)
 7. Optionally, you can install the Chrome extension, which will highlight saved images and related images. [Link to the extension](https://chrome.google.com/webstore/detail/imouto-extension/ieilellpakdngfomipoedkgfaeddfffc)
 
