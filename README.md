@@ -69,15 +69,15 @@ For viewing individual images. Its use is not mandatory, you can use your favori
 
 The main idea of the app is that you have different collections with media that store your images/videos. After installation, you have to set up these collections in the ImoutoNavigator app. Each collection has source folders and (optionally) a destination folder. The app monitors each source folder, takes files from there, processes them, and moves them to the destination folder. After that files will be visible in the ImoutoNavigator app. Installation itself looks like this:
 
-1. Download ImoutoRebirth.exe to any folder from [latest release](https://github.com/ImoutoChan/ImoutoRebirth/releases/latest)
-2. Run it (this is a self-extracting 7z archive), it will unpack the application
-3. Run the install.cmd file to launch the installation process
+1. **Download** ImoutoRebirth.exe to any folder from the [latest release](https://github.com/ImoutoChan/ImoutoRebirth/releases/latest)
+2. **Run it** (this is a self-extracting 7z archive), it will unpack the application
+3. Run the **install.cmd** file to launch the installation process
 4. It will check if necessary dependencies are installed and if they are not, it will install them for you later
-5. Fill the accounts section for boorus and exhentai (if you're planning to save douji here), while it's not required, the app works much better with them
+5. Fill the **accounts section** for boorus and exhentai (if you're planning to save douji here), while it's not required, the app works much better with them
 
     - [How to find my accounts login info?](https://github.com/ImoutoChan/ImoutoRebirth/blob/master/Docs/How%20to%20find%20my%20accounts%20login%20info.md)
      
-6. Leave everything else as default, click install and wait (installing postgres can take up to 10 minutes)
+6. Leave everything else as default, **click install** and wait (installing postgres can take up to 10 minutes)
 7. Optionally, you can install the Chrome extension, which will highlight saved images and related images. [Link to the extension](https://chrome.google.com/webstore/detail/imouto-extension/ieilellpakdngfomipoedkgfaeddfffc)
 
 **Video guide with first launch, collection configuration, demo some features, Imouto Extensions demo**: https://youtu.be/7Gnbc3296GU
