@@ -192,6 +192,12 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ImoutoRebirth.Tori.Tests", 
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ImoutoRebirth.Tori.UI", "ImoutoRebirth.Tori\ImoutoRebirth.Tori.UI\ImoutoRebirth.Tori.UI.csproj", "{18CB0893-93C0-449E-BBBB-E4CF6C04895A}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Docs", "Docs", "{64D2DBCF-CB31-44FA-92C3-DED66E68CB0E}"
+	ProjectSection(SolutionItems) = preProject
+		..\Docs\Functions.md = ..\Docs\Functions.md
+		..\Docs\How to find my accounts login info.md = ..\Docs\How to find my accounts login info.md
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -515,6 +521,7 @@ Global
 		{33AC8603-2432-4141-8072-51A426466565} = {2438D898-F22E-4AD1-950B-4686D50817B3}
 		{12411564-70B0-4195-9629-01145CFDEAE3} = {97909957-9388-4101-9FC9-7A439D3919F9}
 		{18CB0893-93C0-449E-BBBB-E4CF6C04895A} = {97909957-9388-4101-9FC9-7A439D3919F9}
+		{64D2DBCF-CB31-44FA-92C3-DED66E68CB0E} = {2438D898-F22E-4AD1-950B-4686D50817B3}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {3E48016D-BB6B-49F0-9888-80A5EAF0FAA4}
