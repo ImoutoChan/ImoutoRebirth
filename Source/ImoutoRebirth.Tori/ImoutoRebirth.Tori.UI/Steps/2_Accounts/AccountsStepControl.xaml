@@ -5,19 +5,19 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:ImoutoRebirth.Tori.UI.Steps"
              xmlns:mah="http://metro.mahapps.com/winfx/xaml/controls"
+             xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
              xmlns:userControls="clr-namespace:ImoutoRebirth.Tori.UI.UserControls"
              mc:Ignorable="d" 
              d:DesignHeight="614" d:DesignWidth="1028"
              d:DataContext="{d:DesignInstance Type=local:AccountsStepViewModel}">
-
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
             <RowDefinition Height="*" />
             <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
-        
-        <Grid Grid.Row="1" Margin="62, 73, 62, 0">
+
+        <Grid Grid.Row="1" Margin="62, 73, 62, 73">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*" />
                 <ColumnDefinition Width="30" />
@@ -171,6 +171,27 @@
                     Margin="0,10,0,0"
                     Header="user agent"
                     Text="{Binding ExHentaiUserAgent}" />
+            </StackPanel>
+
+            <StackPanel 
+                Orientation="Horizontal"
+                Grid.Column="0"
+                Grid.ColumnSpan="5"
+                VerticalAlignment="Bottom"
+                HorizontalAlignment="Right">
+                <iconPacks:PackIconModern 
+                    Kind="InformationCircle"
+                    Padding="0,0,0,-3"
+                    Width="14"
+                    Height="14"
+                    Foreground="{DynamicResource MahApps.Brushes.Accent}" />
+
+                <TextBlock Margin="8,0,0,0">
+                    <Hyperlink Command="{Binding OpenHyperlinkCommand}"
+                               CommandParameter="https://github.com/ImoutoChan/ImoutoRebirth/blob/master/Docs/How%20to%20find%20my%20accounts%20login%20info.md">
+                        How to find my accounts login info?
+                    </Hyperlink>
+                </TextBlock>
             </StackPanel>
         </Grid>
 

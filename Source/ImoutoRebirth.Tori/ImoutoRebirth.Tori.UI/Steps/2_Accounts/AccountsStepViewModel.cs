@@ -4,6 +4,8 @@ using CommunityToolkit.Mvvm.Messaging;
 using ImoutoRebirth.Tori.Configuration;
 using ImoutoRebirth.Tori.UI.Services;
 using ImoutoRebirth.Tori.UI.Windows;
+using System.Diagnostics;
+using System.Windows.Navigation;
 
 namespace ImoutoRebirth.Tori.UI.Steps;
 
@@ -108,6 +110,12 @@ public partial class AccountsStepViewModel : ObservableObject, IStep
 
     [RelayCommand]
     private void GoBack() => _messenger.Send(new NavigateTo(InstallerStep.Prerequisites));
+
+    [RelayCommand]
+    private void OpenHyperlink(string url)
+    {
+        Process.Start(new ProcessStartInfo(url) { UseShellExecute = true });
+    }
 
     private void PrepareAccounts()
     {

@@ -26,6 +26,7 @@
 
     <ItemGroup>
         <PackageReference Include="MahApps.Metro"/>
+        <PackageReference Include="MahApps.Metro.IconPacks"/>
         <PackageReference Include="Microsoft.Extensions.DependencyInjection"/>
         <PackageReference Include="CommunityToolkit.Mvvm"/>
         <PackageReference Include="Microsoft-WindowsAPICodePack-Core"/>
