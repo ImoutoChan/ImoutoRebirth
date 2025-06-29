@@ -3,7 +3,7 @@
   "manifest_version": 3,
   "name": "Imouto Extension",
   "description": "This extension is a supplement to the ImoutoRebirth solution. It highlights your saved images with red borders on booru sites.",
-  "version": "6.0.0",
+  "version": "6.0.1",
   "author": "ImoutoChan",
   "homepage_url": "https://github.com/ImoutoChan/ImoutoRebirth",
   "icons": {

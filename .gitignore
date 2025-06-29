@@ -16,3 +16,5 @@ node_modules/
 *.received.*
 /.vs/*
 *.user
+
+/Source/Imouto.Extensions/chrome/artifacts/*
