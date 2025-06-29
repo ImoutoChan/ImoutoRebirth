@@ -18,3 +18,4 @@ node_modules/
 *.user
 
 /Source/Imouto.Extensions/chrome/artifacts/*
+/Source/Imouto.Extensions/artifacts/*

@@ -8,7 +8,7 @@
     "build": "npm run build:contentscript-background",
     "watch:contentscript-background": "set NODE_ENV=development && webpack --config webpack.config.js -w",
     "watch": "npm run watch:contentscript-background",
-    "clean": "rimraf ../artifacts && copyfiles manifest.json ../artifacts && copyfiles -u 2 ./../../assets/**/* ../artifacts/",
+    "clean": "rimraf ../../artifacts/chrome && copyfiles manifest.json ../../artifacts/chrome && copyfiles -u 2 ./../../assets/**/* ../../artifacts/chrome/",
     "prebuild": "npm run clean",
     "prewatch": "npm run clean"
   },

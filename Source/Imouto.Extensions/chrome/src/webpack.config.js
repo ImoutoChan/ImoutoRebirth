@@ -16,7 +16,7 @@ module.exports = {
     background: join(__dirname, 'background/background.ts'),
   },
   output: {
-    path: join(__dirname, '..', 'artifacts'),
+    path: join(__dirname, '..', '..', 'artifacts', 'chrome'),
     filename: '[name].js',
   },
   module: {
