@@ -78,7 +78,7 @@ The main idea of the app is that you have different collections with media that 
     - [How to find my accounts login info?](https://github.com/ImoutoChan/ImoutoRebirth/blob/master/Docs/How%20to%20find%20my%20accounts%20login%20info.md)
      
 6. Leave everything else as default, **click install** and wait (installing postgres can take up to 10 minutes)
-7. Optionally, you can install the Chrome extension, which will highlight saved images and related images. [Link to the extension](https://chrome.google.com/webstore/detail/imouto-extension/ieilellpakdngfomipoedkgfaeddfffc)
+7. Optionally, you can install the Chrome or Firefox extension, which will highlight saved images and related images. Links: [chrome](https://chrome.google.com/webstore/detail/imouto-extension/ieilellpakdngfomipoedkgfaeddfffc) [firefox](https://addons.mozilla.org/en-US/firefox/addon/imouto-extension/)
 
 **Video guide with first launch, collection configuration, demo some features, Imouto Extensions demo**: https://youtu.be/7Gnbc3296GU
 
@@ -185,4 +185,4 @@ This service won't run or be installed in your system, as it's an updater servic
 The app that you can use to browse images individually, supports local tags, notes, slideshow, fixed zoom, and more.
 
 ### Imouto.Extensions
-[The chrome extension](https://chrome.google.com/webstore/detail/imouto-extension/ieilellpakdngfomipoedkgfaeddfffc), that will highlight saved images and related images.
+[Chrome extension](https://chrome.google.com/webstore/detail/imouto-extension/ieilellpakdngfomipoedkgfaeddfffc) | [Firefox extension](https://addons.mozilla.org/en-US/firefox/addon/imouto-extension/), will highlight saved and related images.
