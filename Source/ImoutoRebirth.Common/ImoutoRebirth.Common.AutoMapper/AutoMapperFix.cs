@@ -3,6 +3,7 @@ using System.Security.Claims;
 using HarmonyLib;
 using Microsoft.Extensions.Logging;
 
+// ReSharper disable InconsistentNaming
 namespace ImoutoRebirth.Common.AutoMapper;
 
 public static class AutoMapperIssue
@@ -20,9 +21,7 @@ public static class AutoMapperIssue
         _licenseType = licenseAssembly.GetType("AutoMapper.Licensing.License");
 
         if (licenseValidatorType == null || licenseAccessorType == null || _licenseType == null)
-        {
             throw new InvalidOperationException("Fix was broken");
-        }
 
         try
         {

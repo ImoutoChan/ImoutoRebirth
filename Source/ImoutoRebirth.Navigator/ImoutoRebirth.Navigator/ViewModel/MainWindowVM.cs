@@ -8,6 +8,7 @@ using System.Windows;
 using System.Windows.Threading;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using CommunityToolkit.Mvvm.Messaging;
 using ImoutoRebirth.Common;
 using ImoutoRebirth.Navigator.Model;
 using ImoutoRebirth.Navigator.Services;
@@ -34,6 +35,7 @@ internal partial class MainWindowVM : ObservableObject
     private readonly IFileNoteService _fileNoteService;
     private readonly IFileLoadingService _fileLoadingService;
     private readonly IImoutoViewerService _imoutoViewerService;
+    private readonly IMessenger _messenger;
     private readonly DispatcherTimer _appendNewContentTimer = new() { Interval = TimeSpan.FromSeconds(5) };
 
     private int _previewSize = 256;
@@ -75,6 +77,7 @@ internal partial class MainWindowVM : ObservableObject
         _fileTagService = ServiceLocator.GetService<IFileTagService>();
         _fileNoteService = ServiceLocator.GetService<IFileNoteService>();
         _imoutoViewerService = ServiceLocator.GetService<IImoutoViewerService>();
+        _messenger = ServiceLocator.GetService<IMessenger>();
 
         NavigatorList.CollectionChanged += (_, _) => OnPropertyChanged(nameof(LoadedCount));
 
@@ -95,6 +98,8 @@ internal partial class MainWindowVM : ObservableObject
 
         _view = new MainWindow { DataContext = this };
         _view.SelectedItemsChanged += OnViewOnSelectedItemsChanged;
+
+        _messenger.Register<QuickTaggingCloseRequest>(this, (_, _) => ShowQuickTagging = false);
     }
 
     public void ShowWindow() => _view.Show();

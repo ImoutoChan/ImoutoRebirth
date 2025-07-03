@@ -1,6 +1,7 @@
 ﻿using System.Collections.ObjectModel;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using CommunityToolkit.Mvvm.Messaging;
 using ImoutoRebirth.Common;
 using ImoutoRebirth.Navigator.Services;
 using ImoutoRebirth.Navigator.Services.Tags;
@@ -16,6 +17,7 @@ internal partial class QuickTaggingVM : ObservableObject
     private readonly MainWindowVM _mainWindowVM;
     private readonly ITagService _tagsService;
     private readonly IFileTagService _fileTagService;
+    private readonly IMessenger _messenger;
 
     private CancellationTokenSource? _searchTagsCancellation;
 
@@ -38,6 +40,7 @@ internal partial class QuickTaggingVM : ObservableObject
         _mainWindowVM = mainWindowVM;
         _fileTagService = ServiceLocator.GetService<IFileTagService>();
         _tagsService = ServiceLocator.GetService<ITagService>();
+        _messenger = ServiceLocator.GetService<IMessenger>();
 
         PropertyChanged += ReactOnPropertyChanged;
         _mainWindowVM.PropertyChanged += ReactOnMainWindowVMPropertyChanged;
@@ -252,6 +255,9 @@ internal partial class QuickTaggingVM : ObservableObject
     private void AddPacksSet() => AvailableTagPacksSets.AddSet();
 
     [RelayCommand]
+    private void Close() => _messenger.Send<QuickTaggingCloseRequest>();
+
+    [RelayCommand]
     private void RenameSelectedTagsPacksSet(string newTitle) => AvailableTagPacksSets.Selected.Rename(newTitle);
 
     private async void ReactOnPropertyChanged(object? _, System.ComponentModel.PropertyChangedEventArgs e)
@@ -271,3 +277,5 @@ internal partial class QuickTaggingVM : ObservableObject
         }
     }
 }
+
+public record QuickTaggingCloseRequest;

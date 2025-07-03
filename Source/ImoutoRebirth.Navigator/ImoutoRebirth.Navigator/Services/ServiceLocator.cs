@@ -1,4 +1,5 @@
-﻿using ImoutoRebirth.Common.AutoMapper;
+﻿using CommunityToolkit.Mvvm.Messaging;
+using ImoutoRebirth.Common.AutoMapper;
 using ImoutoRebirth.Lilin.WebApi.Client;
 using ImoutoRebirth.Navigator.Services.Collections;
 using ImoutoRebirth.Navigator.Services.ImoutoViewer;
@@ -34,6 +35,8 @@ public static class ServiceLocator
 
         sc.AddRoomWebApiClients(Settings.Default.RoomHost);
         sc.AddLilinWebApiClients(Settings.Default.LilinHost);
+
+        sc.AddSingleton<IMessenger>(new WeakReferenceMessenger());
 
         AutoMapperIssue.Fix();
         sc.AddAutoMapper(x => x.AddProfile<AutoMapperProfile>());

@@ -1,5 +1,7 @@
 # Unreleased
 
+### Navigator
+* Add close button for the quick tagging window
 
 # v4.28.2
 
