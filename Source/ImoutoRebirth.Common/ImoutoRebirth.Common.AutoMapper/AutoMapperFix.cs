@@ -5,7 +5,7 @@ using Microsoft.Extensions.Logging;
 
 namespace ImoutoRebirth.Common.AutoMapper;
 
-public static class AutoMapperFix
+public static class AutoMapperIssue
 {
     private static Type? _licenseType;
 
@@ -18,16 +18,10 @@ public static class AutoMapperFix
         var licenseValidatorType = licenseAssembly.GetType("AutoMapper.Licensing.LicenseValidator");
         var licenseAccessorType = licenseAssembly.GetType("AutoMapper.Licensing.LicenseAccessor");
         _licenseType = licenseAssembly.GetType("AutoMapper.Licensing.License");
-        var productTypeEnum = licenseAssembly.GetType("AutoMapper.Licensing.ProductType");
-        var editionTypeEnum = licenseAssembly.GetType("AutoMapper.Licensing.Edition");
 
-        if (licenseValidatorType == null
-            || licenseAccessorType == null
-            || _licenseType == null
-            || productTypeEnum == null
-            || editionTypeEnum == null)
+        if (licenseValidatorType == null || licenseAccessorType == null || _licenseType == null)
         {
-            return;
+            throw new InvalidOperationException("Fix was broken");
         }
 
         try
@@ -37,7 +31,7 @@ public static class AutoMapperFix
 
             harmony.Patch(
                 targetMethodValidate,
-                new HarmonyMethod(typeof(AutoMapperFix), nameof(PatchLicenseValidatorValidate)));
+                new HarmonyMethod(typeof(AutoMapperIssue), nameof(PatchLicenseValidatorValidate)));
         }
         catch (Exception ex)
         {
@@ -53,7 +47,7 @@ public static class AutoMapperFix
             harmony.Patch(
                 targetMethodInitialize,
                 new HarmonyMethod(
-                    typeof(AutoMapperFix),
+                    typeof(AutoMapperIssue),
                     nameof(PatchLicenseAccessorInitialize)));
         }
         catch (Exception ex)

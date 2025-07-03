@@ -29,7 +29,7 @@ public static class ServiceLocator
         sc.AddLilinWebApiClients("http://localhost:11302/");
         sc.AddRoomWebApiClients("http://localhost:11301/");
 
-        AutoMapperFix.Fix();
+        AutoMapperIssue.Fix();
         sc.AddAutoMapper(x => x.AddProfile<AutoMapperProfile>());
 
         ServiceProvider = sc.BuildServiceProvider();

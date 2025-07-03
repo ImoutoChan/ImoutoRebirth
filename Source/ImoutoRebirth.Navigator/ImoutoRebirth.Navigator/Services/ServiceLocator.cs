@@ -35,7 +35,7 @@ public static class ServiceLocator
         sc.AddRoomWebApiClients(Settings.Default.RoomHost);
         sc.AddLilinWebApiClients(Settings.Default.LilinHost);
 
-        AutoMapperFix.Fix();
+        AutoMapperIssue.Fix();
         sc.AddAutoMapper(x => x.AddProfile<AutoMapperProfile>());
 
         ServiceProvider = sc.BuildServiceProvider();
