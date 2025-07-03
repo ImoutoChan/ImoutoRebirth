@@ -7,7 +7,7 @@
     </PropertyGroup>
     <ItemGroup>
         <PackageVersion Include="AspNetCoreInjection.TypedFactories" Version="1.2.0"/>
-        <PackageVersion Include="AutoMapper" Version="14.0.0"/>
+        <PackageVersion Include="AutoMapper" Version="15.0.0"/>
         <PackageVersion Include="CommunityToolkit.Mvvm" Version="8.4.0"/>
         <PackageVersion Include="coverlet.collector" Version="6.0.4"/>
         <PackageVersion Include="AwesomeAssertions" Version="9.0.0"/>
@@ -17,11 +17,12 @@
         <PackageVersion Include="Imouto.BooruParser" Version="4.2.2"/>
         <PackageVersion Include="ImoutoRebirth.ApngWpfPlayer" Version="1.4.2"/>
         <PackageVersion Include="JetBrains.DotMemoryUnit" Version="3.2.20220510"/>
+        <PackageVersion Include="Lib.Harmony" Version="2.3.6"/>
         <PackageVersion Include="Mackiovello.Maybe" Version="1.0.0"/>
         <PackageVersion Include="MahApps.Metro" Version="2.4.10"/>
         <PackageVersion Include="MahApps.Metro.IconPacks" Version="5.1.0"/>
         <PackageVersion Include="MassTransit.SqlTransport.PostgreSQL" Version="8.5.0"/>
-        <PackageVersion Include="MediatR" Version="12.5.0"/>
+        <PackageVersion Include="MediatR" Version="13.0.0"/>
         <PackageVersion Include="Microsoft-WindowsAPICodePack-Core" Version="1.1.5"/>
         <PackageVersion Include="Microsoft-WindowsAPICodePack-Shell" Version="1.1.5"/>
         <PackageVersion Include="Microsoft.CodeAnalysis.CSharp" Version="[4.12.0]"/>
@@ -101,7 +102,7 @@
         <PackageVersion Include="SharpCompress" Version="0.40.0"/>
         <PackageVersion Include="stbychkov.AutoLoggerMessage" Version="1.0.11"/>
         <PackageVersion Include="Microsoft.AspNetCore.OpenApi" Version="$(MicrosoftMinorVersion)"/>
-        <PackageVersion Include="Scalar.AspNetCore" Version="2.5.1"/>
+        <PackageVersion Include="Scalar.AspNetCore" Version="2.5.3"/>
         <PackageVersion Include="Verify.Xunit" Version="30.4.0"/>
     </ItemGroup>
 </Project>

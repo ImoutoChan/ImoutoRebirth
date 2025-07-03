@@ -20,7 +20,7 @@ public static class ServiceCollectionExtensions
     {
         var userAgent = configuration.GetSection("Danbooru").GetValue<string>("BotUserAgent");
         
-        services.AddMediatR(x => x.RegisterServicesFromAssemblyContaining<FavoritesSaveCommand>());
+        services.AddDefaultMediatR(x => x.RegisterServicesFromAssemblyContaining<FavoritesSaveCommand>());
         services.AddLoggingBehavior();
 
         services.AddQuartzJob<FavoritesSaveJob, FavoritesSaveJob.Description>();

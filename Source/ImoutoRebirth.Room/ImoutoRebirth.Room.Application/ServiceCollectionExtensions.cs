@@ -12,7 +12,7 @@ public static class ServiceCollectionExtensions
         this IServiceCollection services,
         params Assembly[] registerAssemblies)
     {
-        services.AddMediatR(x =>
+        services.AddDefaultMediatR(x =>
         {
             x.RegisterServicesFromAssemblyContaining<OverseeCommandHandler>();
             x.RegisterServicesFromAssemblies(registerAssemblies);

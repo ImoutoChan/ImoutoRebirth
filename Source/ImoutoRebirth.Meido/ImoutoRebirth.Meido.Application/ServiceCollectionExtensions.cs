@@ -9,7 +9,7 @@ public static class ServiceCollectionExtensions
 {
     public static IServiceCollection AddMeidoApplication(this IServiceCollection services)
     {
-        services.AddMediatR(x => x.RegisterServicesFromAssemblyContaining<MarkMetadataSavedCommand>());
+        services.AddDefaultMediatR(x => x.RegisterServicesFromAssemblyContaining<MarkMetadataSavedCommand>());
         services.AddLoggingBehavior();
         services.AddTransactionBehavior();
 

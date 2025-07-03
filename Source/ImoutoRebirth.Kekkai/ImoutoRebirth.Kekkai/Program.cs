@@ -36,7 +36,7 @@ services.Configure<KestrelServerOptions>(x => x.AddServerHeader = false);
 services.AddLilinWebApiClients(configuration.GetRequiredValue<string>("LilinUrl"));
 services.AddRoomWebApiClients(configuration.GetRequiredValue<string>("RoomUrl"));
         
-services.AddMediatR(x => x.RegisterServicesFromAssemblyContaining<FilesStatusesQueryHandler>());
+services.AddDefaultMediatR(x => x.RegisterServicesFromAssemblyContaining<FilesStatusesQueryHandler>());
 services.AddLoggingBehavior();
 
 services.AddTransient<SimpleAuthMiddleware>();

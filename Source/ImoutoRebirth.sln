@@ -198,6 +198,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Docs", "Docs", "{64D2DBCF-C
 		..\Docs\How to find my accounts login info.md = ..\Docs\How to find my accounts login info.md
 	EndProjectSection
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ImoutoRebirth.Common.AutoMapper", "ImoutoRebirth.Common\ImoutoRebirth.Common.AutoMapper\ImoutoRebirth.Common.AutoMapper.csproj", "{60877676-0585-40D7-97B0-61DAB0312871}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -450,6 +452,10 @@ Global
 		{18CB0893-93C0-449E-BBBB-E4CF6C04895A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{18CB0893-93C0-449E-BBBB-E4CF6C04895A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{18CB0893-93C0-449E-BBBB-E4CF6C04895A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{60877676-0585-40D7-97B0-61DAB0312871}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{60877676-0585-40D7-97B0-61DAB0312871}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{60877676-0585-40D7-97B0-61DAB0312871}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{60877676-0585-40D7-97B0-61DAB0312871}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -522,6 +528,7 @@ Global
 		{12411564-70B0-4195-9629-01145CFDEAE3} = {97909957-9388-4101-9FC9-7A439D3919F9}
 		{18CB0893-93C0-449E-BBBB-E4CF6C04895A} = {97909957-9388-4101-9FC9-7A439D3919F9}
 		{64D2DBCF-CB31-44FA-92C3-DED66E68CB0E} = {2438D898-F22E-4AD1-950B-4686D50817B3}
+		{60877676-0585-40D7-97B0-61DAB0312871} = {4383FD00-3B54-4C2B-9222-BDC045D3FD9B}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {3E48016D-BB6B-49F0-9888-80A5EAF0FAA4}
