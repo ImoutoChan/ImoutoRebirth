@@ -248,8 +248,13 @@ internal class TagsVM : VMBase
             FileTagSource.Danbooru => 0,
             FileTagSource.Yandere => 1,
             FileTagSource.Sankaku => 2,
-            _ => 3
-        })?.ToArray() ?? Array.Empty<NoteM>();
+            FileTagSource.Rule34 => 3,
+            FileTagSource.Gelbooru => 4,
+            FileTagSource.ExHentai => 5,
+            FileTagSource.Schale => 6,
+            FileTagSource.Manual => 7,
+            _ => 8
+        })?.ToArray() ?? [];
         
         NotesCollection.Clear();
 
