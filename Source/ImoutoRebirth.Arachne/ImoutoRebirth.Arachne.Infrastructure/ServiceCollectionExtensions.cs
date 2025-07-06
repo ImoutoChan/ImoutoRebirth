@@ -8,8 +8,6 @@ using ImoutoRebirth.Arachne.Infrastructure.Models.Settings;
 using ImoutoRebirth.Arachne.Infrastructure.Schale;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
-using Polly;
-using Polly.Extensions.Http;
 
 namespace ImoutoRebirth.Arachne.Infrastructure;
 

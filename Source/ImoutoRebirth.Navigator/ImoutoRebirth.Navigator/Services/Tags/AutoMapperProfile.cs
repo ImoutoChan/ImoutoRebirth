@@ -47,6 +47,7 @@ internal class AutoMapperProfile : Profile
                     FileTagSource.Rule34 => MetadataSource.Rule34,
                     FileTagSource.ExHentai => MetadataSource.ExHentai,
                     FileTagSource.Schale => MetadataSource.Schale,
+                    FileTagSource.Lamia => MetadataSource.Lamia,
                     _ => throw new NotImplementedException(x.ToString())
                 });
 
@@ -89,6 +90,7 @@ internal class AutoMapperProfile : Profile
                     MetadataSource.Rule34 => FileTagSource.Rule34,
                     MetadataSource.ExHentai => FileTagSource.ExHentai,
                     MetadataSource.Schale => FileTagSource.Schale,
+                    MetadataSource.Lamia => FileTagSource.Lamia,
                     _ => throw new NotImplementedException(x.ToString())
                 });
     }

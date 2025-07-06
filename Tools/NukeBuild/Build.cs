@@ -31,7 +31,8 @@ class Build : NukeBuild
         Solution.ImoutoRebirth_Navigator.ImoutoRebirth_Navigator,
         Solution.ImoutoRebirth_Room.ImoutoRebirth_Room_Host,
         Solution.ImoutoRebirth_Tori.ImoutoRebirth_Tori_UI,
-        Solution.Imouto_Viewer.ImoutoViewer
+        Solution.Imouto_Viewer.ImoutoViewer,
+        Solution.ImoutoRebirth_Lamia.ImoutoRebirth_Lamia_Host,
     };
 
     AbsolutePath[] NukeFilesToPublish => new[]

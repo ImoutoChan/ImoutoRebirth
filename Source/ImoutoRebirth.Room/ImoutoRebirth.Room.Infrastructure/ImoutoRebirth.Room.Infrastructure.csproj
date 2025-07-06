@@ -15,6 +15,7 @@
 
     <ItemGroup>
         <ProjectReference Include="..\..\ImoutoRebirth.Common\ImoutoRebirth.Common.MassTransit\ImoutoRebirth.Common.MassTransit.csproj" />
+        <ProjectReference Include="..\..\ImoutoRebirth.Lamia\ImoutoRebirth.Lamia.MessageContracts\ImoutoRebirth.Lamia.MessageContracts.csproj" />
         <ProjectReference Include="..\..\ImoutoRebirth.Lilin\ImoutoRebirth.Lilin.MessageContracts\ImoutoRebirth.Lilin.MessageContracts.csproj" />
         <ProjectReference Include="..\..\ImoutoRebirth.Meido\ImoutoRebirth.Meido.MessageContracts\ImoutoRebirth.Meido.MessageContracts.csproj" />
         <ProjectReference Include="..\ImoutoRebirth.Room.Application\ImoutoRebirth.Room.Application.csproj" />

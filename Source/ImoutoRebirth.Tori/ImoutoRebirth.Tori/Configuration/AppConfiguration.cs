@@ -14,6 +14,7 @@ public record AppConfiguration(
     AppConfiguration.ExHentaiSettings ExHentai,
     string OpenSearchUri,
     string InstallLocation,
+    string FFmpegPath,
     bool WasMigrated)
 {
     public record ApiSettings(
@@ -128,6 +129,7 @@ public record AppConfiguration(
                 UserAgent: configurationDictionary["ExHentaiUserAgent"]),
             OpenSearchUri: configurationDictionary["OpenSearchUri"],
             InstallLocation: configurationDictionary["InstallLocation"],
+            FFmpegPath: configurationDictionary["FFmpegPath"],
             WasMigrated: wasMigrated);
     }
 
@@ -173,7 +175,8 @@ public record AppConfiguration(
             ["GelbooruApiKey"] = Api.GelbooruApiKey,
 
             ["OpenSearchUri"] = OpenSearchUri,
-            ["InstallLocation"] = InstallLocation
+            ["InstallLocation"] = InstallLocation,
+            ["FFmpegPath"] = FFmpegPath
         };
 
     private static void ValidateConfigurationValues(Dictionary<string, string> configuration)
@@ -208,7 +211,8 @@ public record AppConfiguration(
             "ExHentaiIgneous",
             "ExHentaiUserAgent",
             "GelbooruUserId",
-            "GelbooruApiKey"
+            "GelbooruApiKey",
+            "FFmpegPath",
         };
 
         var missedKeys = keys.Where(x => !configuration.ContainsKey(x)).ToList();
@@ -259,6 +263,18 @@ public record AppConfiguration(
             // version 3 to version 4, add gelbooru options
             configuration.Add("GelbooruUserId", "");
             configuration.Add("GelbooruApiKey", "");
+
+            await File.WriteAllTextAsync(
+                globalConfigurationFile.FullName,
+                JsonSerializer.Serialize(configuration, new JsonSerializerOptions { WriteIndented = true }));
+
+            wasMigrated = true;
+        }
+
+        if (!configuration.ContainsKey("FFmpegPath"))
+        {
+            // version 4 to version 5, add ffmpeg path
+            configuration.Add("FFmpegPath", "");
 
             await File.WriteAllTextAsync(
                 globalConfigurationFile.FullName,

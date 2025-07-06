@@ -1,4 +1,3 @@
-using System.Windows.Documents;
 using ImoutoRebirth.Tori.Configuration;
 using ImoutoRebirth.Tori.Services;
 using Microsoft.Extensions.Options;

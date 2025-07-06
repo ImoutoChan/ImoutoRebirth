@@ -1,4 +1,5 @@
 ﻿using ImoutoRebirth.Common;
+using ImoutoRebirth.Lamia.MessageContracts;
 using ImoutoRebirth.Lilin.MessageContracts;
 using ImoutoRebirth.Meido.MessageContracts;
 using ImoutoRebirth.Room.Application.Services;
@@ -29,6 +30,12 @@ internal class RemoteCommandService : IRemoteCommandService
             [],
             tags.Select(x => new FileTag("Location", x, null, [])).ToArray());
 
+        await _bus.Send(command);
+    }
+
+    public async Task UpdateFileMetadataRequest(Guid fileId, string fullName)
+    {
+        var command = new ExtractFileMetadataCommand(fullName, fileId);
         await _bus.Send(command);
     }
 }

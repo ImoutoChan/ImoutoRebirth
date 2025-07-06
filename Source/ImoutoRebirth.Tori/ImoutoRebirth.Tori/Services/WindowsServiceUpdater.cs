@@ -19,6 +19,7 @@ public class WindowsServiceUpdater : IWindowsServiceUpdater
         "ImoutoRebirth.Lilin",
         "ImoutoRebirth.Meido",
         "ImoutoRebirth.Room",
+        "ImoutoRebirth.Lamia",
     };
     
     private static readonly IReadOnlyCollection<(string ServiceName, string ShortcutName)> CreateShortcuts = new[]

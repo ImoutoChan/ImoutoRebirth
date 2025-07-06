@@ -28,5 +28,6 @@
   "ExHentaiIgneous": "",
   "ExHentaiUserAgent": "",
   "GelbooruApiKey": "",
-  "GelbooruUserId": ""
+  "GelbooruUserId": "",
+  "FFmpegPath": ""
 }

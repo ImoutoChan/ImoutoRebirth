@@ -1,5 +1,4 @@
-﻿using ImoutoRebirth.Navigator.ViewModel.SettingsSlice;
-using MahApps.Metro.Controls.Dialogs;
+﻿using MahApps.Metro.Controls.Dialogs;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;

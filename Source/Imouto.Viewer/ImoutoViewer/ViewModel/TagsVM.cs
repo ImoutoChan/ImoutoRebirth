@@ -253,7 +253,8 @@ internal class TagsVM : VMBase
             FileTagSource.ExHentai => 5,
             FileTagSource.Schale => 6,
             FileTagSource.Manual => 7,
-            _ => 8
+            FileTagSource.Lamia => 8,
+            _ => 9
         })?.ToArray() ?? [];
         
         NotesCollection.Clear();

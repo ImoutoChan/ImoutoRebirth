@@ -19,7 +19,6 @@ public static class MassTransitSqlExtensions
         bool shouldAutoConfigureEndpoints = true,
         params Assembly[] addConsumersFromAssemblies)
     {
-        
         var configurator = new MassTransitConfigurator();
         configure?.Invoke(configurator);
         
@@ -78,17 +77,45 @@ public static class MassTransitSqlExtensions
     
     public static IServiceCollection AddMassTransitTestHarness(
         this IServiceCollection services,
-        Action<MassTransitConfigurator>? configure = null)
+        Action<MassTransitConfigurator>? configure = null,
+        bool shouldAutoConfigureEndpoints = false,
+        string? consumingServiceName = null,
+        bool cleanExistingMassTransitServices = false,
+        params Assembly[] addConsumersFromAssemblies)
     {
+        if (cleanExistingMassTransitServices)
+        {
+            foreach (var service in services.ToArray())
+            {
+                if (service.ServiceType.FullName?.Contains("MassTransit") == true
+                    || service.ImplementationType?.FullName?.Contains("MassTransit") == true)
+                {
+                    services.Remove(service);
+                }
+            }
+        }
+
         var configurator = new MassTransitConfigurator();
         configure?.Invoke(configurator);
 
         services.AddMassTransitTestHarness(
             x =>
             {
+                x.SetTestTimeouts(TimeSpan.FromMinutes(5));
+                x.DisableUsageTelemetry();
+
+                if (!string.IsNullOrWhiteSpace(consumingServiceName))
+                    x.SetEndpointNameFormatter(new ImoutoRebirthEndpointNameFormatter(consumingServiceName));
+
+                if (addConsumersFromAssemblies.Any())
+                    x.AddConsumers(addConsumersFromAssemblies);
+
                 x.UsingInMemory((context, cfg) =>
                 {
                     configurator.ConfigureCustomEndpoint?.Invoke(context, cfg);
+
+                    if (shouldAutoConfigureEndpoints)
+                        cfg.ConfigureEndpoints(context);
                 });
                 x.AddTelemetryListener(true);
             });

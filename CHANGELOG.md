@@ -3,6 +3,9 @@
 ### Navigator
 * Add close button for the quick tagging window
 
+### Lamia
+* New service lamia, extracts media tags from files (codec, resolution, duration) and adds them to Lilin
+
 # v4.28.2
 
 ### Highlights
