@@ -1,8 +1,12 @@
 ﻿using System.IO;
 using System.IO.Compression;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media.Imaging;
+using ImoutoRebirth.Common;
+using Serilog;
 
 namespace ImoutoRebirth.Navigator.UserControls;
 
@@ -102,14 +106,33 @@ public partial class UgoiraPlayer : UserControl
 
             foreach (var entry in archive.Entries)
             {
-                await using var previewStream = entry.Open();
-                await using var resultImage = new MemoryStream();
-                await previewStream.CopyToAsync(resultImage);
-                resultImage.Position = 0;
+                if (IsImage(entry.Name))
+                {
+                    await using var previewStream = entry.Open();
+                    await using var resultImage = new MemoryStream();
+                    await previewStream.CopyToAsync(resultImage);
+                    resultImage.Position = 0;
 
-                var frame = BitmapFrame.Create(resultImage, BitmapCreateOptions.None, BitmapCacheOption.OnLoad);
+                    var frame = BitmapFrame.Create(resultImage, BitmapCreateOptions.None, BitmapCacheOption.OnLoad);
 
-                Frames.Add(new FrameItem(frame, 33, entry.FullName));
+                    Frames.Add(new FrameItem(frame, 33, entry.FullName));
+                }
+                else if (entry.Name.EndsWithIgnoreCase(".json"))
+                {
+                    try
+                    {
+                        await using var jsonStream = entry.Open();
+                        var data = JsonSerializer.Deserialize<InternalJsonIllustData>(jsonStream)!;
+                        FrameDelays = data.Frames?.Select(x => new DelayItem(x.Delay, x.File)) ?? [];
+                    }
+                    catch (Exception e)
+                    {
+                        Log.Warning(
+                            e,
+                            "Failed to load ugoira delay data from internal json {JsonFileName}",
+                            entry.Name);
+                    }
+                }
             }
 
             StartPlaying();
@@ -176,8 +199,31 @@ public partial class UgoiraPlayer : UserControl
     {
         _isPlaying = false;
     }
+
+    private static bool IsImage(string path)
+    {
+        string[] formats = [".jpg", ".png", ".jpeg", ".bmp", ".gif", ".tiff", ".webp", ".jfif"];
+        return formats.Any(item => path.EndsWithIgnoreCase(item));
+    }
 }
 
 public record DelayItem(int Delay, string FileName);
 
 public record FrameItem(BitmapSource Image, int Delay, string FileName);
+
+public record InternalJsonIllustData(
+    [property: JsonPropertyName("illustId")] long IllustId,
+    [property: JsonPropertyName("userId")] long UserId,
+    [property: JsonPropertyName("createDate")] DateTimeOffset CreateDate,
+    [property: JsonPropertyName("uploadDate")] DateTimeOffset UploadDate,
+    [property: JsonPropertyName("width")] int Width,
+    [property: JsonPropertyName("height")] int Height,
+    [property: JsonPropertyName("mime_type")] string MimeType,
+    [property: JsonPropertyName("frames")] IReadOnlyCollection<InternalJsonFrame> Frames
+);
+
+public record InternalJsonFrame(
+    [property: JsonPropertyName("file")] string File,
+    [property: JsonPropertyName("delay")] int Delay,
+    [property: JsonPropertyName("md5")] string Md5
+);

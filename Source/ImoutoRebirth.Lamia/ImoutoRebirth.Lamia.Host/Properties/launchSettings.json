@@ -3,9 +3,8 @@
   "profiles": {
     "ImoutoRebirth.Lamia.Host": {
       "commandName": "Project",
-      "launchBrowser": false,
       "environmentVariables": {
-        "ASPNETCORE_ENVIRONMENT": "Development"
+        "LAMIA_ENVIRONMENT": "Development"
       }
     }
   }
