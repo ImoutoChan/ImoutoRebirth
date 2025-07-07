@@ -115,6 +115,7 @@ class Build : NukeBuild
                 .SetVerbosity(DotNetVerbosity.quiet)
                 .SetConfiguration(Configuration)
                 .EnableNoBuild()
+                .SetFilter("ExternalResourceRequired!=True")
                 .CombineWith(testProjects, (_, v) => _.SetProjectFile(v)));
         });
 
