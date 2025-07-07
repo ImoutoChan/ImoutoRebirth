@@ -20,7 +20,7 @@ public class LoggingStreamBehavior<TRequest, TResponse> : IStreamPipelineBehavio
         {
             var response = next();
 
-            _logger.LogInformation(
+            _logger.LogDebug(
                 "Handled {RequestName} with response {ResponseName}",
                 typeof(TRequest).Name,
                 typeof(TResponse).Name);
