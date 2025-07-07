@@ -5,6 +5,7 @@
   ExHentaiIpbMemberId: memberId,
   ExHentaiIpbPassHash: passHash,
   ExHentaiUserAgent: Mozilla/5.0,
+  FFmpegPath: C:\Program Files\FFmpeg,
   GelbooruApiKey: gelbooruKey123,
   GelbooruUserId: 123456,
   HarpyFavoritesSaveJobRepeatEveryMinutes: 60,

@@ -3,6 +3,7 @@ using System.Text.Json;
 using AwesomeAssertions;
 using ImoutoRebirth.Common.MassTransit;
 using ImoutoRebirth.Common.Tests;
+using ImoutoRebirth.Lamia.MessageContracts;
 using ImoutoRebirth.Lilin.MessageContracts;
 using ImoutoRebirth.Room.Application.Cqrs;
 using ImoutoRebirth.Room.Application.Cqrs.CollectionFileSlice;
@@ -57,7 +58,7 @@ public class CollectionsApiTests : IDisposable
             sourceShouldCheckHashFromName:        false,
             sourceShouldCreateTagsFromSubfolders: false,
             sourceShouldAddTagFromFilename:       false,
-            sourceSupportedExtensions:            new[] { "jpg" },
+            sourceSupportedExtensions:            ["jpg"],
             destShouldCreateSubfoldersByHash:     false,
             destShouldRenameByHash:               false);
         
@@ -73,7 +74,7 @@ public class CollectionsApiTests : IDisposable
             "/collection-files",
             new CollectionFilesQuery(
                 collectionId,
-                Array.Empty<Guid>(),
+                [],
                 null,
                 null,
                 5,
@@ -100,7 +101,7 @@ public class CollectionsApiTests : IDisposable
             sourceShouldCheckHashFromName:        false,
             sourceShouldCreateTagsFromSubfolders: false,
             sourceShouldAddTagFromFilename:       false,
-            sourceSupportedExtensions:            new[] { "jpg" },
+            sourceSupportedExtensions:            ["jpg"],
             destShouldCreateSubfoldersByHash:     false,
             destShouldRenameByHash:               false);
         
@@ -115,12 +116,11 @@ public class CollectionsApiTests : IDisposable
         var response = await _httpClient.PostAsJsonAsync(
             "/collection-files/filter-hashes",
             new FilterCollectionFileHashesQuery(
-                new[]
-                {
-                    "5f30f9953332c230d11e3f26db5ae9a0", 
-                    "09e56a8fd9d1e8beb62c50e6945632bf",
-                    "12356a8fd9d1e8beb62c50e6945632bf"
-                }));
+            [
+                "5f30f9953332c230d11e3f26db5ae9a0",
+                "09e56a8fd9d1e8beb62c50e6945632bf",
+                "12356a8fd9d1e8beb62c50e6945632bf"
+            ]));
 
         var files = await response.Content.ReadFromJsonAsync<IReadOnlyCollection<string>>();
         
@@ -138,19 +138,18 @@ public class CollectionsApiTests : IDisposable
             sourceShouldCheckHashFromName:        false,
             sourceShouldCreateTagsFromSubfolders: false,
             sourceShouldAddTagFromFilename:       false,
-            sourceSupportedExtensions:            new[] { "jpg" },
+            sourceSupportedExtensions:            ["jpg"],
             destShouldCreateSubfoldersByHash:     false,
             destShouldRenameByHash:               false);
         
         var response1 = await _httpClient.PostAsJsonAsync(
             "/collection-files/filter-hashes",
             new FilterCollectionFileHashesQuery(
-                new[]
-                {
-                    "5f30f9953332c230d11e3f26db5ae9a0", 
-                    "09e56a8fd9d1e8beb62c50e6945632bf",
-                    "12356a8fd9d1e8beb62c50e6945632bf"
-                }));
+            [
+                "5f30f9953332c230d11e3f26db5ae9a0",
+                "09e56a8fd9d1e8beb62c50e6945632bf",
+                "12356a8fd9d1e8beb62c50e6945632bf"
+            ]));
         
         var testFile1 = new FileInfo(Path.Combine(_webApp.TestsLocation, "Resources", "file1-5f30f9953332c230d11e3f26db5ae9a0.jpg"));
         var testFile2 = new FileInfo(Path.Combine(_webApp.TestsLocation, "Resources", "file2-09e56a8fd9d1e8beb62c50e6945632bf.jpg"));
@@ -163,12 +162,11 @@ public class CollectionsApiTests : IDisposable
         var response2 = await _httpClient.PostAsJsonAsync(
             "/collection-files/filter-hashes",
             new FilterCollectionFileHashesQuery(
-                new[]
-                {
-                    "5f30f9953332c230d11e3f26db5ae9a0", 
-                    "09e56a8fd9d1e8beb62c50e6945632bf",
-                    "12356a8fd9d1e8beb62c50e6945632bf"
-                }));
+            [
+                "5f30f9953332c230d11e3f26db5ae9a0",
+                "09e56a8fd9d1e8beb62c50e6945632bf",
+                "12356a8fd9d1e8beb62c50e6945632bf"
+            ]));
 
         var files = await response2.Content.ReadFromJsonAsync<IReadOnlyCollection<string>>();
         
@@ -186,7 +184,7 @@ public class CollectionsApiTests : IDisposable
             sourceShouldCheckHashFromName:        false,
             sourceShouldCreateTagsFromSubfolders: false,
             sourceShouldAddTagFromFilename:       false,
-            sourceSupportedExtensions:            new[] { "jpg" },
+            sourceSupportedExtensions:            ["jpg"],
             destShouldCreateSubfoldersByHash:     false,
             destShouldRenameByHash:               false);
         
@@ -202,7 +200,7 @@ public class CollectionsApiTests : IDisposable
             "/collection-files/search-ids",
             new CollectionFilesQuery(
                 collectionId,
-                Array.Empty<Guid>(),
+                [],
                 null,
                 null,
                 5,
@@ -223,7 +221,7 @@ public class CollectionsApiTests : IDisposable
             sourceShouldCheckHashFromName:        false,
             sourceShouldCreateTagsFromSubfolders: false,
             sourceShouldAddTagFromFilename:       false,
-            sourceSupportedExtensions:            new[] { "jpg" },
+            sourceSupportedExtensions:            ["jpg"],
             destShouldCreateSubfoldersByHash:     false,
             destShouldRenameByHash:               false);
 
@@ -260,7 +258,7 @@ public class CollectionsApiTests : IDisposable
             sourceShouldCheckHashFromName:        false,
             sourceShouldCreateTagsFromSubfolders: false,
             sourceShouldAddTagFromFilename:       false,
-            sourceSupportedExtensions:            new[] { "jpg" },
+            sourceSupportedExtensions:            ["jpg"],
             destShouldCreateSubfoldersByHash:     false,
             destShouldRenameByHash:               false);
         
@@ -276,7 +274,7 @@ public class CollectionsApiTests : IDisposable
             "/collection-files/count",
             new CollectionFilesQuery(
                 collectionId,
-                Array.Empty<Guid>(),
+                [],
                 null,
                 null,
                 5,
@@ -297,41 +295,42 @@ public class CollectionsApiTests : IDisposable
             sourceShouldCheckHashFromName:        false,
             sourceShouldCreateTagsFromSubfolders: false,
             sourceShouldAddTagFromFilename:       false,
-            sourceSupportedExtensions:            new[] { "jpg" },
+            sourceSupportedExtensions:            ["jpg"],
             destShouldCreateSubfoldersByHash:     false,
             destShouldRenameByHash:               false);
-        
-        var testFile1 = new FileInfo(Path.Combine(_webApp.TestsLocation, "Resources", "file1-5f30f9953332c230d11e3f26db5ae9a0.jpg"));
+
         var testFile2 = new FileInfo(Path.Combine(_webApp.TestsLocation, "Resources", "file2-09e56a8fd9d1e8beb62c50e6945632bf.jpg"));
+        var testFile1 = new FileInfo(Path.Combine(_webApp.TestsLocation, "Resources", "file1-5f30f9953332c230d11e3f26db5ae9a0.jpg"));
         
         testFile1.CopyTo(Path.Combine(sourceFolderPath, testFile1.Name));
         testFile2.CopyTo(Path.Combine(sourceFolderPath, testFile2.Name));
-        await _mediator.Send(new OverseeCommand());
-
-        var fileIds = _context.CollectionFiles
-            .Where(x => x.CollectionId == collectionId)
-            .Select(x => x.Id)
-            .ToList();
         
+        await _mediator.Send(new OverseeCommand());
+        await Task.Delay(250);
+        
+        var files = await _context.CollectionFiles
+            .Where(x => x.CollectionId == collectionId)
+            .ToListAsync();
+        
+        var file1 = files.FirstOrDefault(f => f.Md5 == "5f30f9953332c230d11e3f26db5ae9a0");
+        var file2 = files.FirstOrDefault(f => f.Md5 == "09e56a8fd9d1e8beb62c50e6945632bf");
+        file1.Should().NotBeNull();
+        file2.Should().NotBeNull();
+
         // act
-        var response = await _httpClient.DeleteAsync($"/collection-files/{fileIds.First()}");
+        var response = await _httpClient.DeleteAsync($"/collection-files/{file1.Id}");
         response.EnsureSuccessStatusCode();
         
         // assert
-        var countResponse = await _httpClient.PostAsJsonAsync(
-            "/collection-files/count",
-            new CollectionFilesQuery(
-                collectionId,
-                Array.Empty<Guid>(),
-                null,
-                null,
-                5,
-                0));
-        var count = await countResponse.Content.ReadFromJsonAsync<int>();
-        count.Should().Be(1);
+        var remainingFiles = await _context.CollectionFiles
+            .Where(x => x.CollectionId == collectionId)
+            .CountAsync();
+        remainingFiles.Should().Be(1);
 
-        File.Exists(Path.Combine(destFolderPath, testFile2.Name)).Should().BeFalse();
-        File.Exists(Path.Combine(destFolderPath, "!Deleted", testFile2.Name)).Should().BeTrue();
+        File.Exists(Path.Combine(destFolderPath, testFile1.Name)).Should().BeFalse();
+        File.Exists(Path.Combine(destFolderPath, "!Deleted", testFile1.Name)).Should().BeTrue();
+        File.Exists(Path.Combine(destFolderPath, testFile2.Name)).Should().BeTrue();
+        File.Exists(Path.Combine(destFolderPath, "!Deleted", testFile2.Name)).Should().BeFalse();
     }
 
     [Fact]
@@ -345,7 +344,7 @@ public class CollectionsApiTests : IDisposable
         
         Directory.CreateDirectory(sourceFolderPath);
         
-        var addSourceFolderCommand = new AddSourceFolderCommand(collectionId, sourceFolderPath, false, false, true, true, new []{ "jpg" });
+        var addSourceFolderCommand = new AddSourceFolderCommand(collectionId, sourceFolderPath, false, false, true, true, ["jpg"]);
         
         await _httpClient.PostAsJsonAsync("/collections/source-folders", addSourceFolderCommand);
         
@@ -377,6 +376,91 @@ public class CollectionsApiTests : IDisposable
             ).Should().BeTrue();
     }
 
+    [Fact]
+    public async Task UpdateFileMetadata()
+    {
+        // arrange
+        var (collectionId, sourceFolderPath, destFolderPath) = await CreateDefaultCollection(
+            sourceShouldCheckFormat:              false,
+            sourceShouldCheckHashFromName:        false,
+            sourceShouldCreateTagsFromSubfolders: false,
+            sourceShouldAddTagFromFilename:       false,
+            sourceSupportedExtensions:            ["jpg"],
+            destShouldCreateSubfoldersByHash:     false,
+            destShouldRenameByHash:               false);
+
+        var testFile1 = new FileInfo(Path.Combine(_webApp.TestsLocation, "Resources", "file1-5f30f9953332c230d11e3f26db5ae9a0.jpg"));
+        var testFile2 = new FileInfo(Path.Combine(_webApp.TestsLocation, "Resources", "file2-09e56a8fd9d1e8beb62c50e6945632bf.jpg"));
+
+        testFile1.CopyTo(Path.Combine(sourceFolderPath, testFile1.Name));
+        testFile2.CopyTo(Path.Combine(sourceFolderPath, testFile2.Name));
+        await _mediator.Send(new OverseeCommand());
+
+        var files = await _context.CollectionFiles.Where(x => x.CollectionId == collectionId).ToListAsync();
+
+        // act
+        await _mediator.Send(new UpdateFileMetadataCommand());
+
+        // assert
+        var sentMessages = _harness.Sent.SelectMessages<ExtractFileMetadataCommand>().ToList();
+
+        var ourFileMessages = sentMessages
+            .Where(x => files.Any(f => f.Id == x.FileId && f.Path == x.FileFullName))
+            .ToList();
+
+        // events are sent twice, first on the initial addition to the collection,
+        // and then again when UpdateFileMetadataCommand is fired
+        ourFileMessages.Should().HaveCount(files.Count * 2);
+    }
+
+    [Fact]
+    public async Task UpdateFileMetadata_MultipleCollections()
+    {
+        // arrange
+        var (collectionId1, sourceFolderPath1, destFolderPath1) = await CreateDefaultCollection(
+            sourceShouldCheckFormat:              false,
+            sourceShouldCheckHashFromName:        false,
+            sourceShouldCreateTagsFromSubfolders: false,
+            sourceShouldAddTagFromFilename:       false,
+            sourceSupportedExtensions:            ["jpg"],
+            destShouldCreateSubfoldersByHash:     false,
+            destShouldRenameByHash:               false);
+
+        var (collectionId2, sourceFolderPath2, destFolderPath2) = await CreateDefaultCollection(
+            sourceShouldCheckFormat:              false,
+            sourceShouldCheckHashFromName:        false,
+            sourceShouldCreateTagsFromSubfolders: false,
+            sourceShouldAddTagFromFilename:       false,
+            sourceSupportedExtensions:            ["jpg"],
+            destShouldCreateSubfoldersByHash:     false,
+            destShouldRenameByHash:               false);
+
+        var testFile1 = new FileInfo(Path.Combine(_webApp.TestsLocation, "Resources", "file1-5f30f9953332c230d11e3f26db5ae9a0.jpg"));
+        var testFile2 = new FileInfo(Path.Combine(_webApp.TestsLocation, "Resources", "file2-09e56a8fd9d1e8beb62c50e6945632bf.jpg"));
+
+        testFile1.CopyTo(Path.Combine(sourceFolderPath1, testFile1.Name));
+        testFile2.CopyTo(Path.Combine(sourceFolderPath2, testFile2.Name));
+        await _mediator.Send(new OverseeCommand());
+
+        var collection1Files = await _context.CollectionFiles.Where(x => x.CollectionId == collectionId1).ToListAsync();
+        var collection2Files = await _context.CollectionFiles.Where(x => x.CollectionId == collectionId2).ToListAsync();
+        var files = collection1Files.Union(collection2Files).ToList();
+
+        // act
+        await _mediator.Send(new UpdateFileMetadataCommand());
+
+        // assert
+        var sentMessages = _harness.Sent.SelectMessages<ExtractFileMetadataCommand>().ToList();
+
+        var ourFileMessages = sentMessages
+            .Where(x => files.Any(f => f.Id == x.FileId && f.Path == x.FileFullName))
+            .ToList();
+
+        // events are sent twice, first on the initial addition to the collection,
+        // and then again when UpdateFileMetadataCommand is fired
+        ourFileMessages.Should().HaveCount(files.Count * 2);
+    }
+
     private async Task<CreatedCollection> CreateDefaultCollection(
         bool sourceShouldCheckFormat = false,
         bool sourceShouldCheckHashFromName = false,
@@ -386,7 +470,7 @@ public class CollectionsApiTests : IDisposable
         bool destShouldCreateSubfoldersByHash = false,
         bool destShouldRenameByHash = false)
     {
-        sourceSupportedExtensions ??= Array.Empty<string>();
+        sourceSupportedExtensions ??= [];
         
         var collectionId = await CreateCollection();
         var collectionPath = Guid.NewGuid().ToString();
@@ -396,9 +480,24 @@ public class CollectionsApiTests : IDisposable
         
         Directory.CreateDirectory(sourceFolderPath);
         Directory.CreateDirectory(destFolderPath);
-        
-        var addSourceFolderCommand = new AddSourceFolderCommand(collectionId, sourceFolderPath, sourceShouldCheckFormat, sourceShouldCheckHashFromName, sourceShouldCreateTagsFromSubfolders, sourceShouldAddTagFromFilename, sourceSupportedExtensions);
-        var addDestinationFolderCommand = new SetDestinationFolderCommand(collectionId, destFolderPath, destShouldCreateSubfoldersByHash, destShouldRenameByHash, "!format-error", "!hash-error", "!no-hash-error");
+
+        var addSourceFolderCommand = new AddSourceFolderCommand(
+            collectionId,
+            sourceFolderPath,
+            sourceShouldCheckFormat,
+            sourceShouldCheckHashFromName,
+            sourceShouldCreateTagsFromSubfolders,
+            sourceShouldAddTagFromFilename,
+            sourceSupportedExtensions);
+
+        var addDestinationFolderCommand = new SetDestinationFolderCommand(
+            collectionId,
+            destFolderPath,
+            destShouldCreateSubfoldersByHash,
+            destShouldRenameByHash,
+            "!format-error",
+            "!hash-error",
+            "!no-hash-error");
         
         await _httpClient.PostAsJsonAsync("/collections/source-folders", addSourceFolderCommand);
         await _httpClient.PostAsJsonAsync("/collections/destination-folder", addDestinationFolderCommand);

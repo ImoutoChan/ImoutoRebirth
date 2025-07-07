@@ -155,7 +155,7 @@ public class AppConfigurationTests
             var deserializedDictionary = JsonSerializer.Deserialize<Dictionary<string, string>>(fileContent);
 
             deserializedDictionary.Should().NotBeNull();
-            deserializedDictionary.Should().HaveCount(30);
+            deserializedDictionary.Should().HaveCount(31);
             deserializedDictionary["DanbooruLogin"].Should().Be("danbooruUser");
             deserializedDictionary["HarpySavePath"].Should().Be(@"C:\Data\Harpy");
         }
@@ -294,6 +294,41 @@ public class AppConfigurationTests
         }
     }
 
+    [Fact]
+    public async Task ReadFromFile_MigratesV3ToV4Format()
+    {
+        // arrange
+        var tempFile = Path.GetTempFileName();
+        try
+        {
+            var configDictionary = CreateValidConfigurationDictionary();
+            configDictionary.Remove("FFmpegPath");
+
+            await File.WriteAllTextAsync(tempFile, JsonSerializer.Serialize(configDictionary));
+            var fileInfo = new FileInfo(tempFile);
+
+            // act
+            var appConfig = await AppConfiguration.ReadFromFile(fileInfo);
+
+            // assert
+            appConfig.Should().NotBeNull();
+            appConfig.FFmpegPath.Should().Be("");
+
+            // check that the V4 keys were added to the file
+            var updatedFileContent = await File.ReadAllTextAsync(tempFile);
+            var updatedDictionary = JsonSerializer.Deserialize<Dictionary<string, string>>(updatedFileContent);
+
+            updatedDictionary.Should().NotBeNull();
+            updatedDictionary.Should().ContainKey("FFmpegPath");
+        }
+        finally
+        {
+            // cleanup
+            if (File.Exists(tempFile))
+                File.Delete(tempFile);
+        }
+    }
+
     private static Dictionary<string, string> CreateValidConfigurationDictionary()
     {
         return new Dictionary<string, string>
@@ -336,7 +371,8 @@ public class AppConfigurationTests
             ["ExHentaiUserAgent"] = "Mozilla/5.0",
 
             ["OpenSearchUri"] = "http://localhost:9200",
-            ["InstallLocation"] = @"C:\Apps\ImoutoRebirth"
+            ["InstallLocation"] = @"C:\Apps\ImoutoRebirth",
+            ["FFmpegPath"] = @"C:\Program Files\FFmpeg",
         };
     }
 
@@ -382,6 +418,7 @@ public class AppConfigurationTests
                 UserAgent: "Mozilla/5.0"),
             OpenSearchUri: "http://localhost:9200",
             InstallLocation: @"C:\Apps\ImoutoRebirth",
+            FFmpegPath: @"C:\Program Files\FFmpeg",
             WasMigrated: false);
     }
 }

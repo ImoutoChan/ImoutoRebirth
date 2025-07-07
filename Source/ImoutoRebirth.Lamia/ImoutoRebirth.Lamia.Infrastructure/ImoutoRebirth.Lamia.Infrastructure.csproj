@@ -1,0 +1,30 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net9.0</TargetFramework>
+        <Nullable>enable</Nullable>
+        <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+        <ImplicitUsings>true</ImplicitUsings>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <PackageReference Include="SixLabors.ImageSharp"/>
+        <PackageReference Include="Microsoft.Extensions.Configuration.Binder"/>
+        <PackageReference Include="Microsoft.Extensions.Http"/>
+        <PackageReference Include="Xabe.FFmpeg"/>
+        <PackageReference Include="Xabe.FFmpeg.Downloader"/>
+        <PackageReference Include="SharpCompress"/>
+    </ItemGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="..\..\ImoutoRebirth.Common\ImoutoRebirth.Common.MassTransit\ImoutoRebirth.Common.MassTransit.csproj"/>
+        <ProjectReference Include="..\..\ImoutoRebirth.Lilin\ImoutoRebirth.Lilin.MessageContracts\ImoutoRebirth.Lilin.MessageContracts.csproj"/>
+        <ProjectReference Include="..\ImoutoRebirth.Lamia.Application\ImoutoRebirth.Lamia.Application.csproj"/>
+        <ProjectReference Include="..\..\ImoutoRebirth.Common\ImoutoRebirth.Common.Infrastructure\ImoutoRebirth.Common.Infrastructure.csproj"/>
+    </ItemGroup>
+
+    <ItemGroup>
+        <InternalsVisibleTo Include="ImoutoRebirth.Lamia.IntegrationTests"/>
+    </ItemGroup>
+
+</Project>

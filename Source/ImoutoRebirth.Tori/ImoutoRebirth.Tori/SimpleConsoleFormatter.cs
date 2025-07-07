@@ -19,7 +19,6 @@ public class CustomConsoleLogger : ILogger
     {
         if (!IsEnabled(logLevel)) return;
 
-        // This is a very simple logging, adjust it to your needs
         Console.WriteLine(formatter(state, exception));
     }
 }

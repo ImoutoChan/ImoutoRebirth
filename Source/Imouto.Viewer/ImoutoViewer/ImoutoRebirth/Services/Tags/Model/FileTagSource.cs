@@ -10,4 +10,5 @@ internal enum FileTagSource
     Rule34 = 5,
     ExHentai = 6,
     Schale = 7,
+    Lamia = 8,
 }

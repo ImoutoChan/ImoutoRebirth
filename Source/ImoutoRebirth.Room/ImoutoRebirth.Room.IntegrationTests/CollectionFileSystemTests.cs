@@ -1,6 +1,7 @@
 ﻿using System.Net.Http.Json;
 using AwesomeAssertions;
 using ImoutoRebirth.Common.MassTransit;
+using ImoutoRebirth.Lamia.MessageContracts;
 using ImoutoRebirth.Lilin.MessageContracts;
 using ImoutoRebirth.Meido.MessageContracts;
 using ImoutoRebirth.Room.Application.Cqrs;
@@ -112,6 +113,12 @@ public class CollectionFileSystemTests : IDisposable
             .Should().BeTrue();
 
         _harness.Sent
+            .AnyMessage<ExtractFileMetadataCommand>(x
+                => x.FileId == savedFile.Id
+                   && x.FileFullName == savedFile.Path)
+            .Should().BeTrue();
+
+        _harness.Sent
             .AnyMessage<UpdateMetadataCommand>(x
                 => x.FileId == savedFile.Id
                    && x.MetadataSource == MetadataSource.Manual
@@ -155,6 +162,12 @@ public class CollectionFileSystemTests : IDisposable
                 x => x.FileId == savedFile.Id
                      && x.Md5 == "5f30f9953332c230d11e3f26db5ae9a0"
                      && x.FileName == file.Name)
+            .Should().BeTrue();
+
+        _harness.Sent
+            .AnyMessage<ExtractFileMetadataCommand>(x
+                => x.FileId == savedFile.Id
+                   && x.FileFullName == savedFile.Path)
             .Should().BeTrue();
 
         _harness.Sent
@@ -497,6 +510,12 @@ public class CollectionFileSystemTests : IDisposable
             .Should().BeTrue();
 
         _harness.Sent
+            .AnyMessage<ExtractFileMetadataCommand>(x
+                => x.FileId == savedFile.Id
+                   && x.FileFullName == savedFile.Path)
+            .Should().BeTrue();
+
+        _harness.Sent
             .AnyMessage<UpdateMetadataCommand>(x
                 => x.FileId == savedFile.Id
                    && x.MetadataSource == MetadataSource.Manual
@@ -533,6 +552,12 @@ public class CollectionFileSystemTests : IDisposable
                 x => x.FileId == savedFile.Id
                      && x.Md5 == "5f30f9953332c230d11e3f26db5ae9a0"
                      && x.FileName == file.Name)
+            .Should().BeTrue();
+
+        _harness.Sent
+            .AnyMessage<ExtractFileMetadataCommand>(x
+                => x.FileId == savedFile.Id
+                   && x.FileFullName == savedFile.Path)
             .Should().BeTrue();
 
         _harness.Sent

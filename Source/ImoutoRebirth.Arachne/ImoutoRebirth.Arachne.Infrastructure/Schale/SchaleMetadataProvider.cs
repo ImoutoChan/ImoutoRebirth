@@ -5,7 +5,6 @@ using Flurl.Http.Configuration;
 using ImoutoRebirth.Arachne.Core.Models;
 using ImoutoRebirth.Arachne.Infrastructure.Abstract;
 using ImoutoRebirth.Common;
-using Microsoft.Extensions.Logging;
 
 namespace ImoutoRebirth.Arachne.Infrastructure.Schale;
 

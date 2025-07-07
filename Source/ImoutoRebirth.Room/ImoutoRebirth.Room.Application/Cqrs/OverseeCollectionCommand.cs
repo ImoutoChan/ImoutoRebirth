@@ -74,7 +74,8 @@ internal class OverseeCollectionCommandHandler : ICommandHandler<OverseeCollecti
 
         await _remoteCommandService.SaveTags(newId, moved.SourceTags);
         await _remoteCommandService.UpdateMetadataRequest(newId, moved.SystemFile.Md5, moved.SystemFile.File.Name);
-        
+        await _remoteCommandService.UpdateFileMetadataRequest(newId, moved.MovedFileInfo.FullName);
+
         var isUploadEnabled = await _mediator.Send(new IsImoutoPicsUploaderEnabledQuery());
         
         if (isUploadEnabled)

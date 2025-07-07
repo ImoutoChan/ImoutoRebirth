@@ -1,7 +1,6 @@
 using AwesomeAssertions;
 using ImoutoRebirth.Arachne.Core.Models;
 using ImoutoRebirth.Arachne.Infrastructure.Models;
-using Xunit;
 
 namespace ImoutoRebirth.Arachne.Tests.Infrastructure;
 

@@ -1,5 +1,6 @@
 ﻿using ImoutoRebirth.Common.Domain;
 using ImoutoRebirth.Common.MassTransit;
+using ImoutoRebirth.Lamia.MessageContracts;
 using ImoutoRebirth.Lilin.MessageContracts;
 using ImoutoRebirth.Meido.MessageContracts;
 using ImoutoRebirth.Room.Application.Services;
@@ -24,5 +25,6 @@ public static class ServiceCollectionExtensions
         this MassTransitConfigurator builder)
         => builder
             .AddCommand<NewFileCommand>()
+            .AddCommand<ExtractFileMetadataCommand>()
             .AddCommand<UpdateMetadataCommand>();
 }

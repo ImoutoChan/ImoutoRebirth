@@ -1,0 +1,17 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net9.0</TargetFramework>
+        <Nullable>enable</Nullable>
+        <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+        <ImplicitUsings>true</ImplicitUsings>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="..\..\ImoutoRebirth.Common\ImoutoRebirth.Common.Application\ImoutoRebirth.Common.Application.csproj" />
+        <ProjectReference Include="..\..\ImoutoRebirth.Common\ImoutoRebirth.Common.Cqrs\ImoutoRebirth.Common.Cqrs.csproj" />
+        <ProjectReference Include="..\..\ImoutoRebirth.Lilin\ImoutoRebirth.Lilin.MessageContracts\ImoutoRebirth.Lilin.MessageContracts.csproj" />
+        <ProjectReference Include="..\ImoutoRebirth.Lamia.Domain\ImoutoRebirth.Lamia.Domain.csproj" />
+    </ItemGroup>
+
+</Project>

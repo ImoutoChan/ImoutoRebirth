@@ -31,7 +31,8 @@ class Build : NukeBuild
         Solution.ImoutoRebirth_Navigator.ImoutoRebirth_Navigator,
         Solution.ImoutoRebirth_Room.ImoutoRebirth_Room_Host,
         Solution.ImoutoRebirth_Tori.ImoutoRebirth_Tori_UI,
-        Solution.Imouto_Viewer.ImoutoViewer
+        Solution.Imouto_Viewer.ImoutoViewer,
+        Solution.ImoutoRebirth_Lamia.ImoutoRebirth_Lamia_Host,
     };
 
     AbsolutePath[] NukeFilesToPublish => new[]
@@ -108,12 +109,15 @@ class Build : NukeBuild
         .Before(Publish)
         .Executes(() =>
         {
-            var testProjects = SourceDirectory.GlobFiles("**/*.Tests.csproj").ToList();
+            var testProjects = SourceDirectory.GlobFiles("**/*.Tests.csproj")
+                .Where(x => x.Name != "ImoutoRebirth.Common.Tests.csproj")
+                .ToList();
 
             DotNetTest(t => t
                 .SetVerbosity(DotNetVerbosity.quiet)
                 .SetConfiguration(Configuration)
                 .EnableNoBuild()
+                .SetFilter("ExternalResourceRequired!=True")
                 .CombineWith(testProjects, (_, v) => _.SetProjectFile(v)));
         });
 

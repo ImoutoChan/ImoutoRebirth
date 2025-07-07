@@ -58,7 +58,7 @@ internal static class EndpointsMappings
                 => mediator.Send(new CollectionFilesCountQuery(query), ct))
             .WithName("CountCollectionFiles");
         
-        files.MapPost("updateSourceTags", (IMediator mediator, CancellationToken ct) 
+        files.MapPost("update-source-tags", (IMediator mediator, CancellationToken ct)
                 => mediator.Send(new UpdateLocationTagsCommand(), ct))
             .WithName("UpdateSourceTags");
 
@@ -69,6 +69,10 @@ internal static class EndpointsMappings
         files.MapGet("/{id:guid}", (Guid id, IMediator mediator, CancellationToken ct)
                 => mediator.Send(new CollectionFileMetadataQuery(id), ct))
             .WithName("GetCollectionFileMetadata");
+
+        files.MapPost("/update-file-metadata", (IMediator mediator, CancellationToken ct)
+                => mediator.Send(new UpdateFileMetadataCommand(), ct))
+            .WithName("UpdateFileMetadata");
     }
 
     public static void MapDestinationFoldersEndpoints(this WebApplication app)

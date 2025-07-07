@@ -32,6 +32,7 @@ public class ConfigurationBuilder : IConfigurationBuilder
                 "ImoutoRebirth.Lilin" => GetLilinConfiguration(),
                 "ImoutoRebirth.Meido" => GetMeidoConfiguration(),
                 "ImoutoRebirth.Room" => GetRoomConfiguration(),
+                "ImoutoRebirth.Lamia" => GetLamiaConfiguration(),
                 _ => null
             };
 
@@ -204,6 +205,26 @@ public class ConfigurationBuilder : IConfigurationBuilder
               "Jaeger": {
                 "Host": "{{_configuration.Jaeger.Host}}",
                 "Port": {{_configuration.Jaeger.Port}}
+              }
+            }
+            """;
+    }
+
+    private string GetLamiaConfiguration()
+    {
+        return
+            $$"""
+            {
+              "ConnectionStrings": {
+                "MassTransit": "{{_configuration.Connection.MassTransitConnectionString}}"
+              },
+              "OpenSearchUri": "{{_configuration.OpenSearchUri}}",
+              "Jaeger": {
+                "Host": "{{_configuration.Jaeger.Host}}",
+                "Port": {{_configuration.Jaeger.Port}}
+              },
+              "FFmpeg": {
+                "Path": "{{_configuration.FFmpegPath}}"
               }
             }
             """;

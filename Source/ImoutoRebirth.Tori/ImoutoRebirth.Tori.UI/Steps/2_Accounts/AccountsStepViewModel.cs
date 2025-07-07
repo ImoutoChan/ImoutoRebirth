@@ -5,7 +5,6 @@ using ImoutoRebirth.Tori.Configuration;
 using ImoutoRebirth.Tori.UI.Services;
 using ImoutoRebirth.Tori.UI.Windows;
 using System.Diagnostics;
-using System.Windows.Navigation;
 
 namespace ImoutoRebirth.Tori.UI.Steps;
 

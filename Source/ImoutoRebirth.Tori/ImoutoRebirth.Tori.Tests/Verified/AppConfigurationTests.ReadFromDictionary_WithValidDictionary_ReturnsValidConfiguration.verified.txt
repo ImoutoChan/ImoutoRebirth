@@ -47,5 +47,6 @@
   },
   OpenSearchUri: http://localhost:9200,
   InstallLocation: C:\Apps\ImoutoRebirth,
+  FFmpegPath: C:\Program Files\FFmpeg,
   WasMigrated: false
 }

@@ -1,5 +1,4 @@
-﻿using ControlzEx.Standard;
-using System.Runtime.InteropServices;
+﻿using System.Runtime.InteropServices;
 using System.Windows.Input;
 
 namespace ImoutoRebirth.Navigator.Slices.QuickTagging;

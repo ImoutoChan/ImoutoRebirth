@@ -5,7 +5,6 @@ using Imouto.BooruParser.Implementations.Sankaku;
 using ImoutoRebirth.Arachne.Infrastructure.LoaderFabrics;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Options;
-using Xunit;
 using SankakuSettings = ImoutoRebirth.Arachne.Infrastructure.Models.Settings.SankakuSettings;
 
 namespace ImoutoRebirth.Arachne.Tests.Infrastructure;
@@ -13,6 +12,8 @@ namespace ImoutoRebirth.Arachne.Tests.Infrastructure;
 public class YandereLoaderTests
 {
     [Fact(Skip = "Only local run")]
+    [Trait("ExternalResourceRequired", "True")]
+    [Trait("ExternalResource", "Yandere")]
     public async Task ShouldHaveAllTags()
     {
         // arrange
@@ -42,6 +43,8 @@ public class YandereLoaderTests
     }
 
     [Fact]
+    [Trait("ExternalResourceRequired", "True")]
+    [Trait("ExternalResource", "Yandere")]
     public async Task ShouldHaveMd5OnChildren()
     {
         // arrange
@@ -56,6 +59,8 @@ public class YandereLoaderTests
     }
     
     [Fact]
+    [Trait("ExternalResourceRequired", "True")]
+    [Trait("ExternalResource", "Yandere")]
     public async Task ShouldHaveMd5OnParentPost()
     {
         // arrange
@@ -70,6 +75,8 @@ public class YandereLoaderTests
     }
     
     [Fact]
+    [Trait("ExternalResourceRequired", "True")]
+    [Trait("ExternalResource", "Yandere")]
     public async Task ShouldWorkWithPostWithoutSiblings()
     {
         // arrange

@@ -1,5 +1,4 @@
-﻿using Flurl;
-using Flurl.Http;
+﻿using Flurl.Http;
 using Flurl.Http.Configuration;
 using Imouto.BooruParser.Extensions;
 using ImoutoRebirth.Arachne.Infrastructure.Abstract;
