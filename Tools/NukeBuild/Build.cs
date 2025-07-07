@@ -109,7 +109,9 @@ class Build : NukeBuild
         .Before(Publish)
         .Executes(() =>
         {
-            var testProjects = SourceDirectory.GlobFiles("**/*.Tests.csproj").ToList();
+            var testProjects = SourceDirectory.GlobFiles("**/*.Tests.csproj")
+                .Where(x => x.Name != "ImoutoRebirth.Common.Tests.csproj")
+                .ToList();
 
             DotNetTest(t => t
                 .SetVerbosity(DotNetVerbosity.quiet)

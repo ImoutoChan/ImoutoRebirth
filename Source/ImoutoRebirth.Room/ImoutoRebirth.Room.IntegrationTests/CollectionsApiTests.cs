@@ -298,38 +298,39 @@ public class CollectionsApiTests : IDisposable
             sourceSupportedExtensions:            ["jpg"],
             destShouldCreateSubfoldersByHash:     false,
             destShouldRenameByHash:               false);
-        
-        var testFile1 = new FileInfo(Path.Combine(_webApp.TestsLocation, "Resources", "file1-5f30f9953332c230d11e3f26db5ae9a0.jpg"));
+
         var testFile2 = new FileInfo(Path.Combine(_webApp.TestsLocation, "Resources", "file2-09e56a8fd9d1e8beb62c50e6945632bf.jpg"));
+        var testFile1 = new FileInfo(Path.Combine(_webApp.TestsLocation, "Resources", "file1-5f30f9953332c230d11e3f26db5ae9a0.jpg"));
         
         testFile1.CopyTo(Path.Combine(sourceFolderPath, testFile1.Name));
         testFile2.CopyTo(Path.Combine(sourceFolderPath, testFile2.Name));
-        await _mediator.Send(new OverseeCommand());
-
-        var fileIds = _context.CollectionFiles
-            .Where(x => x.CollectionId == collectionId)
-            .Select(x => x.Id)
-            .ToList();
         
+        await _mediator.Send(new OverseeCommand());
+        await Task.Delay(250);
+        
+        var files = await _context.CollectionFiles
+            .Where(x => x.CollectionId == collectionId)
+            .ToListAsync();
+        
+        var file1 = files.FirstOrDefault(f => f.Md5 == "5f30f9953332c230d11e3f26db5ae9a0");
+        var file2 = files.FirstOrDefault(f => f.Md5 == "09e56a8fd9d1e8beb62c50e6945632bf");
+        file1.Should().NotBeNull();
+        file2.Should().NotBeNull();
+
         // act
-        var response = await _httpClient.DeleteAsync($"/collection-files/{fileIds.First()}");
+        var response = await _httpClient.DeleteAsync($"/collection-files/{file1.Id}");
         response.EnsureSuccessStatusCode();
         
         // assert
-        var countResponse = await _httpClient.PostAsJsonAsync(
-            "/collection-files/count",
-            new CollectionFilesQuery(
-                collectionId,
-                [],
-                null,
-                null,
-                5,
-                0));
-        var count = await countResponse.Content.ReadFromJsonAsync<int>();
-        count.Should().Be(1);
+        var remainingFiles = await _context.CollectionFiles
+            .Where(x => x.CollectionId == collectionId)
+            .CountAsync();
+        remainingFiles.Should().Be(1);
 
-        File.Exists(Path.Combine(destFolderPath, testFile2.Name)).Should().BeFalse();
-        File.Exists(Path.Combine(destFolderPath, "!Deleted", testFile2.Name)).Should().BeTrue();
+        File.Exists(Path.Combine(destFolderPath, testFile1.Name)).Should().BeFalse();
+        File.Exists(Path.Combine(destFolderPath, "!Deleted", testFile1.Name)).Should().BeTrue();
+        File.Exists(Path.Combine(destFolderPath, testFile2.Name)).Should().BeTrue();
+        File.Exists(Path.Combine(destFolderPath, "!Deleted", testFile2.Name)).Should().BeFalse();
     }
 
     [Fact]
