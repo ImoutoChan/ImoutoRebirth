@@ -3,6 +3,7 @@ using System;
 using ImoutoRebirth.Lilin.DataAccess;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using NodaTime;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
@@ -12,9 +13,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace ImoutoRebirth.Lilin.DataAccess.Migrations
 {
     [DbContext(typeof(LilinDbContext))]
-    partial class LilinDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250707063052_UpdateAllTagColorsForReadability")]
+    partial class UpdateAllTagColorsForReadability
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
