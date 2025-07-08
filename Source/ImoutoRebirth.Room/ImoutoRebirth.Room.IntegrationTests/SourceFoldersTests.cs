@@ -35,8 +35,8 @@ public class SourceFoldersTests
             true,
             true,
             [".jpg", ".png", ".gif", ".webp", ".bmp", ".jpeg", ".tiff", ".tif", ".jfif"],
-            false,
-            null);
+            true,
+            "http://example.com/webhook");
         
         var result =await httpClient.PostAsJsonAsync("/collections/source-folders", command);
         var resultString = await result.Content.ReadAsStringAsync();
@@ -54,6 +54,8 @@ public class SourceFoldersTests
         sourceFolder.ShouldCheckHashFromName.Should().Be(command.ShouldCheckHashFromName);
         sourceFolder.ShouldCreateTagsFromSubfolders.Should().Be(command.ShouldCreateTagsFromSubfolders);
         sourceFolder.SupportedExtensionCollection.Should().BeEquivalentTo(command.SupportedExtensions);
+        sourceFolder.WebhookUploadUrl.Should().Be(command.WebhookUploadUrl);
+        sourceFolder.IsWebhookUploadEnabled.Should().Be(command.IsWebhookUploadEnabled);
     }
 
     [Fact]
@@ -108,6 +110,8 @@ public class SourceFoldersTests
         sourceFolder.ShouldCheckHashFromName.Should().Be(updateCommand.ShouldCheckHashFromName);
         sourceFolder.ShouldCreateTagsFromSubfolders.Should().Be(updateCommand.ShouldCreateTagsFromSubfolders);
         sourceFolder.SupportedExtensionCollection.Should().BeEquivalentTo(updateCommand.SupportedExtensions);
+        sourceFolder.WebhookUploadUrl.Should().Be(updateCommand.WebhookUploadUrl);
+        sourceFolder.IsWebhookUploadEnabled.Should().Be(updateCommand.IsWebhookUploadEnabled);
     }
 
     [Fact]

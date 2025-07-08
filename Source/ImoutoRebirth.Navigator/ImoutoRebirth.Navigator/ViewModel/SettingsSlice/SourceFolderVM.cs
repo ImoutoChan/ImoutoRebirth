@@ -1,11 +1,10 @@
 ﻿using System.Collections.ObjectModel;
 using System.ComponentModel.DataAnnotations;
 using CommunityToolkit.Mvvm.ComponentModel;
-using ImoutoRebirth.Common.WPF.ValidationAttributes;
 
 namespace ImoutoRebirth.Navigator.ViewModel.SettingsSlice;
 
-internal partial class SourceFolderVM : FolderVM
+public partial class SourceFolderVM : FolderVM
 {
     [ObservableProperty]
     private bool _checkFormat;

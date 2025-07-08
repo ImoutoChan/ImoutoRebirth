@@ -4,7 +4,7 @@ using ImoutoRebirth.Common.WPF.ValidationAttributes;
 
 namespace ImoutoRebirth.Navigator.ViewModel.SettingsSlice;
 
-internal abstract partial class FolderVM : ObservableValidator
+public abstract partial class FolderVM : ObservableValidator
 {
     [ObservableProperty]
     [NotifyCanExecuteChangedFor(nameof(SaveCommand))]
