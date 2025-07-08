@@ -108,7 +108,6 @@ internal partial class MainWindowVM : ObservableObject
     {
         var topTagsUpdateTask = TagsEdit.UpdateUsersTopTags();
         await CollectionManager.ReloadCollectionsAsync();
-        await Settings.InitializeAsync();
         TagSearchVM.AddCollections(CollectionManager.Collections);
         await topTagsUpdateTask;
     }

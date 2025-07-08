@@ -6,6 +6,9 @@
 ### Lamia
 * New service lamia, extracts media tags from files (codec, resolution, duration) and adds them to Lilin
 
+### Room
+* Add webhook upload settings to source folder configuration (enable/disable toggle and URL field)
+
 # v4.28.2
 
 ### Highlights

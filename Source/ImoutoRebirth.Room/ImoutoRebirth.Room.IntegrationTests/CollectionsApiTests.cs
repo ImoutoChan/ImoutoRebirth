@@ -344,7 +344,7 @@ public class CollectionsApiTests : IDisposable
         
         Directory.CreateDirectory(sourceFolderPath);
         
-        var addSourceFolderCommand = new AddSourceFolderCommand(collectionId, sourceFolderPath, false, false, true, true, ["jpg"]);
+        var addSourceFolderCommand = new AddSourceFolderCommand(collectionId, sourceFolderPath, false, false, true, true, ["jpg"], false, null);
         
         await _httpClient.PostAsJsonAsync("/collections/source-folders", addSourceFolderCommand);
         
@@ -488,7 +488,9 @@ public class CollectionsApiTests : IDisposable
             sourceShouldCheckHashFromName,
             sourceShouldCreateTagsFromSubfolders,
             sourceShouldAddTagFromFilename,
-            sourceSupportedExtensions);
+            sourceSupportedExtensions,
+            false,
+            null);
 
         var addDestinationFolderCommand = new SetDestinationFolderCommand(
             collectionId,

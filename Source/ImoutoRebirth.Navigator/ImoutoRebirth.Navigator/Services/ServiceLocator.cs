@@ -25,7 +25,7 @@ public static class ServiceLocator
         sc.AddTransient<ICollectionService, CollectionService>();
         sc.AddTransient<IDestinationFolderService, DestinationFolderService>();
         sc.AddTransient<ISourceFolderService, SourceFolderService>();
-        sc.AddTransient<IImoutoPicsUploaderStateService, ImoutoPicsUploaderStateService>();
+        
 
         sc.AddTransient<IFileService, FileService>();
         sc.AddTransient<IFileTagService, FileTagService>();

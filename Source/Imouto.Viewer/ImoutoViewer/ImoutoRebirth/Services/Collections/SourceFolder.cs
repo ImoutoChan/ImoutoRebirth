@@ -8,4 +8,6 @@ public record SourceFolder(
     bool ShouldCheckHashFromName,
     bool ShouldCreateTagsFromSubfolders,
     bool ShouldAddTagFromFilename,
-    IReadOnlyCollection<string> SupportedExtensions);
+    IReadOnlyCollection<string> SupportedExtensions,
+    bool IsWebhookUploadEnabled,
+    string? WebhookUploadUrl);

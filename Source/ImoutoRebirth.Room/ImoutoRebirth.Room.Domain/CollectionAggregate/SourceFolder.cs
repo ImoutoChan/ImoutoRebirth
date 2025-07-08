@@ -11,7 +11,9 @@ public class SourceFolder
         bool shouldCheckHashFromName,
         bool shouldCreateTagsFromSubfolders,
         bool shouldAddTagFromFilename,
-        IReadOnlyCollection<string> supportedExtensions)
+        IReadOnlyCollection<string> supportedExtensions,
+        bool isWebhookUploadEnabled,
+        string? webhookUploadUrl)
     {
         Id = id;
         Path = path;
@@ -20,6 +22,11 @@ public class SourceFolder
         ShouldCreateTagsFromSubfolders = shouldCreateTagsFromSubfolders;
         ShouldAddTagFromFilename = shouldAddTagFromFilename;
         SupportedExtensions = supportedExtensions;
+        IsWebhookUploadEnabled = isWebhookUploadEnabled;
+        WebhookUploadUrl = webhookUploadUrl;
+
+        if (isWebhookUploadEnabled)
+            ArgumentValidator.NotNullOrWhiteSpace(() => webhookUploadUrl);
     }
 
     public Guid Id { get; }
@@ -36,12 +43,16 @@ public class SourceFolder
 
     public IReadOnlyCollection<string> SupportedExtensions { get; }
 
+    public bool IsWebhookUploadEnabled { get; }
+
+    public string? WebhookUploadUrl { get; }
+
     public IEnumerable<FileInfo> GetAllFileInfo()
     {
         var directoryInfo = new DirectoryInfo(Path);
 
         if (!directoryInfo.Exists)
-            return Enumerable.Empty<FileInfo>();
+            return [];
 
         return 
             SupportedExtensions.SafeNone()

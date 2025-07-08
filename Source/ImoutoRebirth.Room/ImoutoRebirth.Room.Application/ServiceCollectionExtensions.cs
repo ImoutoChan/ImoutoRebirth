@@ -19,8 +19,6 @@ public static class ServiceCollectionExtensions
         });
         services.AddLoggingBehavior();
         services.AddTransactionBehavior();
-        
-        services.AddSingleton<IImoutoPicsUploaderRepository, ImoutoPicsUploaderRepository>();
 
         return services;
     }

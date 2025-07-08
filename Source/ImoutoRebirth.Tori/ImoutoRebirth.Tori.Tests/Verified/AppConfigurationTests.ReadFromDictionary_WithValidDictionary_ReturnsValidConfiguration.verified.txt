@@ -29,9 +29,6 @@
     FaultToleranceRepeatEveryMinutes: 15,
     FaultToleranceIsEnabled: true
   },
-  Room: {
-    ImoutoPicsUploadUrl: https://example.com/upload
-  },
   Kekkai: {
     AuthToken: token123
   },

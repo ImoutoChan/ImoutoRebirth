@@ -15,7 +15,7 @@ public static class ServiceCollectionExtensions
     {
         services.AddTransient<IImageService, ImageService>();
         services.AddTransient<IRemoteCommandService, RemoteCommandService>();
-        services.AddHttpClient<IImoutoPicsUploader, ImoutoPicsUploader>();
+        services.AddHttpClient<IWebhookUploader, WebhookUploader>();
         services.AddScoped<IEventStorage, EventStorage>();
 
         return services;

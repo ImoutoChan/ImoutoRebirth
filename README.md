@@ -111,7 +111,6 @@ Template and default values
   "MeidoMetadataActualizerRepeatEveryMinutes": "5",
   "MeidoFaultToleranceRepeatEveryMinutes": "10080",
   "MeidoFaultToleranceIsEnabled": "true",
-  "RoomImoutoPicsUploadUrl": "",
   "InstallLocation": "C:\\Program Files\\Imouto",
   "OpenSearchUri": "http://localhost:9200/",
   "ExHentaiIpbMemberId": "",
@@ -144,7 +143,6 @@ Template and default values
 | MeidoMetadataActualizerRepeatEveryMinutes | *        | Meido service will request actualization from Danbooru and Yandere in a specified interval |
 | MeidoFaultToleranceRepeatEveryMinutes     | *        | Meido service will request tags for failed files in a specified interval |
 | MeidoFaultToleranceIsEnabled              | *        | Meido service will repeat tag request for a failed file |
-| RoomImoutoPicsUploadUrl                   |          | Optional, callback that will be called for every saved file |
 | InstallLocation                           | *        | Installation location for ImoutoRebirth |
 | OpenSearchUri                             |          | Optional, logging to open search |
 | ExHentaiIpbMemberId                       |          | Optional, ExHentai cookie ipbMemberId value |

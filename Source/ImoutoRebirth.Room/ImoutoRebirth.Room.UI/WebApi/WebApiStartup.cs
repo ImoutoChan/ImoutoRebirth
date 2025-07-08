@@ -55,7 +55,6 @@ public static class WebEndpointsExtensions
         app.MapCollectionFilesEndpoints();
         app.MapDestinationFoldersEndpoints();
         app.MapSourceFoldersEndpoints();
-        app.MapImoutoPicsUploaderEnabled();
         
         return app;
     }

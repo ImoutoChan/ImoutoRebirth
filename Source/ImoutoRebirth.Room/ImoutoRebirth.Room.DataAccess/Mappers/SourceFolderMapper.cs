@@ -5,26 +5,28 @@ namespace ImoutoRebirth.Room.DataAccess.Mappers;
 
 internal static class SourceFolderMapper
 {
-    public static SourceFolderEntity ToEntity(this SourceFolder sourceFolder, Guid collectionId)
-        => new()
-        {
-            Id = sourceFolder.Id,
-            Path = sourceFolder.Path,
-            CollectionId = collectionId,
-            ShouldCheckFormat = sourceFolder.ShouldCheckFormat,
-            ShouldCheckHashFromName = sourceFolder.ShouldCheckHashFromName,
-            ShouldCreateTagsFromSubfolders = sourceFolder.ShouldCreateTagsFromSubfolders,
-            ShouldAddTagFromFilename = sourceFolder.ShouldAddTagFromFilename,
-            SupportedExtensionCollection = sourceFolder.SupportedExtensions
-        };
+    public static SourceFolderEntity ToEntity(this SourceFolder sourceFolder, Guid collectionId) => new()
+    {
+        Id = sourceFolder.Id,
+        CollectionId = collectionId,
+        Path = sourceFolder.Path,
+        ShouldCheckFormat = sourceFolder.ShouldCheckFormat,
+        ShouldCheckHashFromName = sourceFolder.ShouldCheckHashFromName,
+        ShouldCreateTagsFromSubfolders = sourceFolder.ShouldCreateTagsFromSubfolders,
+        ShouldAddTagFromFilename = sourceFolder.ShouldAddTagFromFilename,
+        SupportedExtensionCollection = sourceFolder.SupportedExtensions,
+        IsWebhookUploadEnabled = sourceFolder.IsWebhookUploadEnabled,
+        WebhookUploadUrl = sourceFolder.WebhookUploadUrl
+    };
 
-    public static SourceFolder ToModel(this SourceFolderEntity sourceFolder)
-        => new(
-            sourceFolder.Id,
+    public static SourceFolder ToModel(this SourceFolderEntity sourceFolder) =>
+        new(sourceFolder.Id,
             sourceFolder.Path,
             sourceFolder.ShouldCheckFormat,
             sourceFolder.ShouldCheckHashFromName,
             sourceFolder.ShouldCreateTagsFromSubfolders,
             sourceFolder.ShouldAddTagFromFilename,
-            sourceFolder.SupportedExtensionCollection ?? Array.Empty<string>());
+            sourceFolder.SupportedExtensionCollection ?? [],
+            sourceFolder.IsWebhookUploadEnabled,
+            sourceFolder.WebhookUploadUrl);
 }

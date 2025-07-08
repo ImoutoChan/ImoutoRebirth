@@ -109,7 +109,6 @@ ImoutoRebirth это решение для организации медиа ф�
   "MeidoMetadataActualizerRepeatEveryMinutes": "5",
   "MeidoFaultToleranceRepeatEveryMinutes": "10080",
   "MeidoFaultToleranceIsEnabled": "true",
-  "RoomImoutoPicsUploadUrl": "",
   "InstallLocation": "C:\\Program Files\\Imouto",
   "OpenSearchUri": "http://localhost:9200/"
 }
@@ -136,7 +135,6 @@ ImoutoRebirth это решение для организации медиа ф�
 | MeidoMetadataActualizerRepeatEveryMinutes | *        | Meido будет запрашивать актуализацию от Danbooru и Yandere через указанный интервал |
 | MeidoFaultToleranceRepeatEveryMinutes     | *        | Meido будет запрашивать теги для проблемных файлов через указанный интервал |
 | MeidoFaultToleranceIsEnabled              | *        | Meido будет повторять запрос тегов для проблемных файлов |
-| RoomImoutoPicsUploadUrl                   |          | Опционально, колбек, который будет вызываться для каждого сохраненного файла |
 | InstallLocation                           | *        | Папка установки ImoutoRebirth |
 | OpenSearchUri                             |          | Опционально, логирование в open search |
 | ExHentaiIpbMemberId                       |          | Опционально, значение куки ExHentai ipbMemberId |

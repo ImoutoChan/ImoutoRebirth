@@ -155,7 +155,7 @@ public class AppConfigurationTests
             var deserializedDictionary = JsonSerializer.Deserialize<Dictionary<string, string>>(fileContent);
 
             deserializedDictionary.Should().NotBeNull();
-            deserializedDictionary.Should().HaveCount(31);
+            deserializedDictionary.Should().HaveCount(30);
             deserializedDictionary["DanbooruLogin"].Should().Be("danbooruUser");
             deserializedDictionary["HarpySavePath"].Should().Be(@"C:\Data\Harpy");
         }
@@ -358,7 +358,7 @@ public class AppConfigurationTests
             ["MeidoFaultToleranceRepeatEveryMinutes"] = "15",
             ["MeidoFaultToleranceIsEnabled"] = "true",
 
-            ["RoomImoutoPicsUploadUrl"] = "https://example.com/upload",
+
 
             ["KekkaiAuthToken"] = "token123",
 
@@ -404,8 +404,7 @@ public class AppConfigurationTests
                 MetadataActualizerRepeatEveryMinutes: "30",
                 FaultToleranceRepeatEveryMinutes: "15",
                 FaultToleranceIsEnabled: "true"),
-            Room: new AppConfiguration.RoomSettings(
-                ImoutoPicsUploadUrl: "https://example.com/upload"),
+
             Kekkai: new AppConfiguration.KekkaiSettings(
                 AuthToken: "token123"),
             Jaeger: new AppConfiguration.JaegerSettings(

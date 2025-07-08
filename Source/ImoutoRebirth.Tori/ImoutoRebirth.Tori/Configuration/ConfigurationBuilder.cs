@@ -247,7 +247,6 @@ public class ConfigurationBuilder : IConfigurationBuilder
                 "MassTransit": "{{_configuration.Connection.MassTransitConnectionString}}"
               },
               "OpenSearchUri": "{{_configuration.OpenSearchUri}}",
-              "ImoutoPicsUploadUrl": "{{_configuration.Room.ImoutoPicsUploadUrl}}",
               "Jaeger": {
                 "Host": "{{_configuration.Jaeger.Host}}",
                 "Port": {{_configuration.Jaeger.Port}}

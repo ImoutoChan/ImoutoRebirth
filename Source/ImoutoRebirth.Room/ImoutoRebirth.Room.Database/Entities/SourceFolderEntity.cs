@@ -24,6 +24,11 @@ public class SourceFolderEntity : EntityBase
 
     public bool ShouldAddTagFromFilename { get; set; }
 
+    public bool IsWebhookUploadEnabled { get; set; } = false;
+
+    [MaxLength(2048)]
+    public string? WebhookUploadUrl { get; set; }
+
     [NotMapped]
     public IReadOnlyCollection<string>? SupportedExtensionCollection
     {

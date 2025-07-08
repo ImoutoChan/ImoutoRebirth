@@ -43,7 +43,7 @@ public static class ArgumentValidator
         }
     }
 
-    public static void NotNullOrWhiteSpace(params Expression<Func<string>>[] callerArgs)
+    public static void NotNullOrWhiteSpace(params Expression<Func<string?>>[] callerArgs)
     {
         foreach (var expression in callerArgs)
         {

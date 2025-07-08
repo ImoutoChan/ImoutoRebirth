@@ -35,7 +35,7 @@ public class TestWebApplicationFactory<TProgram>
     public string TestsLocation 
         => new FileInfo(Assembly.GetExecutingAssembly().Location).Directory!.FullName;
 
-    public Mock<IImoutoPicsUploader> ImoutoPicsUploaderMock { get; } = new();
+    public Mock<IWebhookUploader> WebhookUploaderMock { get; } = new();
     
     protected override IHost CreateHost(IHostBuilder builder)
     {
@@ -52,8 +52,8 @@ public class TestWebApplicationFactory<TProgram>
                     d => d.ServiceType == typeof(IHostedService)
                          && d.ImplementationType?.Name == "QuartzHostedService"))
                 
-                // replace IImoutoPicsUploader with mock
-                .Union(services.Where(x => x.ServiceType == typeof(IImoutoPicsUploader)))
+            // replace IWebhookUploader with mock
+            .Union(services.Where(x => x.ServiceType == typeof(IWebhookUploader)))
                 .ToList();
 
             foreach (var descriptor in descriptors)
@@ -61,7 +61,7 @@ public class TestWebApplicationFactory<TProgram>
 
             services.AddDbContext<RoomDbContext>(x => x.UseNpgsql(ConnectionString, y => y.UseNodaTime()));
             services.AddMassTransitTestHarness(с => с.AddRoomMassTransitSetup());
-            services.AddTransient<IImoutoPicsUploader>(x => ImoutoPicsUploaderMock.Object);
+            services.AddTransient<IWebhookUploader>(x => WebhookUploaderMock.Object);
         });
 
         var host = base.CreateHost(builder);

@@ -137,7 +137,7 @@ public class CollectionFileSystemTests : IDisposable
         var innerSourceFolderPath = Path.Combine(sourceFolderPath, "inner");
         Directory.CreateDirectory(innerSourceFolderPath);
         
-        var addSourceFolderCommand = new AddSourceFolderCommand(collectionId, sourceFolderPath, true, true, true, true, new[] { "jpg" });
+        var addSourceFolderCommand = new AddSourceFolderCommand(collectionId, sourceFolderPath, true, true, true, true, new[] { "jpg" }, false, null);
         await _httpClient.PostAsJsonAsync("/collections/source-folders", addSourceFolderCommand);
         
         // act
@@ -486,7 +486,7 @@ public class CollectionFileSystemTests : IDisposable
         var innerSourceFolderPath = Path.Combine(sourceFolderPath, "inner");
         Directory.CreateDirectory(innerSourceFolderPath);
         
-        var addSourceFolderCommand = new AddSourceFolderCommand(collectionId, sourceFolderPath, true, true, true, true, new[] { "jpg" });
+        var addSourceFolderCommand = new AddSourceFolderCommand(collectionId, sourceFolderPath, true, true, true, true, new[] { "jpg" }, false, null);
         await _httpClient.PostAsJsonAsync("/collections/source-folders", addSourceFolderCommand);
         
         // act
@@ -534,7 +534,7 @@ public class CollectionFileSystemTests : IDisposable
         var innerSourceFolderPath = Path.Combine(sourceFolderPath, "inner");
         Directory.CreateDirectory(innerSourceFolderPath);
         
-        var addSourceFolderCommand = new AddSourceFolderCommand(collectionId, sourceFolderPath, true, true, false, true, new[] { "jpg" });
+        var addSourceFolderCommand = new AddSourceFolderCommand(collectionId, sourceFolderPath, true, true, false, true, new[] { "jpg" }, false, null);
         await _httpClient.PostAsJsonAsync("/collections/source-folders", addSourceFolderCommand);
         
         // act
@@ -851,33 +851,37 @@ public class CollectionFileSystemTests : IDisposable
     }
 
     [Fact]
-    public async Task ImoutoPicsUploadCalledWhenImoutoPicsUploaderEnabled()
+    public async Task WebhookUploadCalledWhenWebhookUploaderEnabled()
     {
         // arrange
-        var (_, sourceFolderPath, destFolderPath) = await CreateDefaultCollection(
-            sourceShouldCheckFormat:              false,
-            sourceShouldCheckHashFromName:        false ,
-            sourceShouldCreateTagsFromSubfolders: false,
-            sourceShouldAddTagFromFilename:       false,
-            sourceSupportedExtensions:            new []{ "jpg" },
-            destShouldCreateSubfoldersByHash:     false,
-            destShouldRenameByHash:               false);
-        
+        var collectionId = await CreateCollection();
+        var collectionPath = Guid.NewGuid().ToString();
+
+        var sourceFolderPath = Path.Combine(_webApp.TestsTempLocation, "collection", collectionPath, "source");
+        var destFolderPath = Path.Combine(_webApp.TestsTempLocation, "collection", collectionPath, "dest");
+
+        Directory.CreateDirectory(sourceFolderPath);
+        Directory.CreateDirectory(destFolderPath);
+
+        var addSourceFolderCommand = new AddSourceFolderCommand(collectionId, sourceFolderPath, false, false, false, false, ["jpg"], true, "http://example.com/webhook");
+        var addDestinationFolderCommand = new SetDestinationFolderCommand(collectionId, destFolderPath, false, false, "!format-error", "!hash-error", "!no-hash-error");
+
+        await _httpClient.PostAsJsonAsync("/collections/source-folders", addSourceFolderCommand);
+        await _httpClient.PostAsJsonAsync("/collections/destination-folder", addDestinationFolderCommand);
+
         var testFile = new FileInfo(Path.Combine(_webApp.TestsLocation, "Resources", "file1-5f30f9953332c230d11e3f26db5ae9a0.jpg"));
-        
-        await _webApp.Client.PostAsync("/imouto-pics-uploader-enabled", null);
-        
+
         // act
         testFile.CopyTo(Path.Combine(sourceFolderPath, testFile.Name));
         await _mediator.Send(new OverseeCommand());
-        
+
         // assert
         var file = Path.Combine(destFolderPath, "file1-5f30f9953332c230d11e3f26db5ae9a0.jpg");
-        _webApp.ImoutoPicsUploaderMock.Verify(x => x.UploadFile(file), Times.Once);
+        _webApp.WebhookUploaderMock.Verify(x => x.UploadFile(file, It.IsAny<string>()), Times.Once);
     }
 
     [Fact()]
-    public async Task ImoutoPicsUploadShouldNotBeCalledWhenImoutoPicsUploaderDisabled()
+    public async Task WebhookUploadShouldNotBeCalledWhenWebhookUploaderDisabled()
     {
         // arrange
         var (_, sourceFolderPath, destFolderPath) = await CreateDefaultCollection(
@@ -891,15 +895,13 @@ public class CollectionFileSystemTests : IDisposable
         
         var testFile = new FileInfo(Path.Combine(_webApp.TestsLocation, "Resources", "file1-5f30f9953332c230d11e3f26db5ae9a0.jpg"));
         
-        await _webApp.Client.DeleteAsync("/imouto-pics-uploader-enabled");
-        
         // act
         testFile.CopyTo(Path.Combine(sourceFolderPath, testFile.Name));
         await _mediator.Send(new OverseeCommand());
         
         // assert
         var file = Path.Combine(destFolderPath, "file1-5f30f9953332c230d11e3f26db5ae9a0.jpg");
-        _webApp.ImoutoPicsUploaderMock.Verify(x => x.UploadFile(file), Times.Never);
+        _webApp.WebhookUploaderMock.Verify(x => x.UploadFile(file, It.IsAny<string>()), Times.Never);
     }
 
     private async Task<CreatedCollection> CreateDefaultCollection(
@@ -922,7 +924,7 @@ public class CollectionFileSystemTests : IDisposable
         Directory.CreateDirectory(sourceFolderPath);
         Directory.CreateDirectory(destFolderPath);
         
-        var addSourceFolderCommand = new AddSourceFolderCommand(collectionId, sourceFolderPath, sourceShouldCheckFormat, sourceShouldCheckHashFromName, sourceShouldCreateTagsFromSubfolders, sourceShouldAddTagFromFilename, sourceSupportedExtensions);
+        var addSourceFolderCommand = new AddSourceFolderCommand(collectionId, sourceFolderPath, sourceShouldCheckFormat, sourceShouldCheckHashFromName, sourceShouldCreateTagsFromSubfolders, sourceShouldAddTagFromFilename, sourceSupportedExtensions, false, null);
         var addDestinationFolderCommand = new SetDestinationFolderCommand(collectionId, destFolderPath, destShouldCreateSubfoldersByHash, destShouldRenameByHash, "!format-error", "!hash-error", "!no-hash-error");
         
         await _httpClient.PostAsJsonAsync("/collections/source-folders", addSourceFolderCommand);

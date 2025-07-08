@@ -8,7 +8,6 @@ public record AppConfiguration(
     AppConfiguration.PortsSettings Ports,
     AppConfiguration.HarpySettings Harpy,
     AppConfiguration.MeidoSettings Meido,
-    AppConfiguration.RoomSettings Room,
     AppConfiguration.KekkaiSettings Kekkai,
     AppConfiguration.JaegerSettings Jaeger,
     AppConfiguration.ExHentaiSettings ExHentai,
@@ -47,8 +46,7 @@ public record AppConfiguration(
         string FaultToleranceRepeatEveryMinutes,
         string FaultToleranceIsEnabled);
 
-    public record RoomSettings(
-        string ImoutoPicsUploadUrl);
+
 
     public record KekkaiSettings(
         string AuthToken);
@@ -115,8 +113,7 @@ public record AppConfiguration(
                 MetadataActualizerRepeatEveryMinutes: configurationDictionary["MeidoMetadataActualizerRepeatEveryMinutes"],
                 FaultToleranceRepeatEveryMinutes: configurationDictionary["MeidoFaultToleranceRepeatEveryMinutes"],
                 FaultToleranceIsEnabled: configurationDictionary["MeidoFaultToleranceIsEnabled"]),
-            Room: new(
-                ImoutoPicsUploadUrl: configurationDictionary["RoomImoutoPicsUploadUrl"]),
+
             Kekkai: new(
                 AuthToken: configurationDictionary["KekkaiAuthToken"]),
             Jaeger: new(
@@ -159,7 +156,7 @@ public record AppConfiguration(
             ["MeidoFaultToleranceRepeatEveryMinutes"] = Meido.FaultToleranceRepeatEveryMinutes,
             ["MeidoFaultToleranceIsEnabled"] = Meido.FaultToleranceIsEnabled,
 
-            ["RoomImoutoPicsUploadUrl"] = Room.ImoutoPicsUploadUrl,
+
 
             ["KekkaiAuthToken"] = Kekkai.AuthToken,
 
@@ -203,7 +200,7 @@ public record AppConfiguration(
             "MeidoMetadataActualizerRepeatEveryMinutes",
             "MeidoFaultToleranceRepeatEveryMinutes",
             "MeidoFaultToleranceIsEnabled",
-            "RoomImoutoPicsUploadUrl",
+
             "JaegerHost",
             "JaegerPort",
             "ExHentaiIpbMemberId",
@@ -275,6 +272,18 @@ public record AppConfiguration(
         {
             // version 4 to version 5, add ffmpeg path
             configuration.Add("FFmpegPath", "");
+
+            await File.WriteAllTextAsync(
+                globalConfigurationFile.FullName,
+                JsonSerializer.Serialize(configuration, new JsonSerializerOptions { WriteIndented = true }));
+
+            wasMigrated = true;
+        }
+
+        if (configuration.ContainsKey("RoomImoutoPicsUploadUrl"))
+        {
+            // version 5 to version 6, remove global upload url settings
+            configuration.Remove("RoomImoutoPicsUploadUrl");
 
             await File.WriteAllTextAsync(
                 globalConfigurationFile.FullName,

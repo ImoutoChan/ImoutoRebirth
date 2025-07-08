@@ -14,7 +14,9 @@ public record SourceFolderInfo(
     bool ShouldCheckHashFromName,
     bool ShouldCreateTagsFromSubfolders,
     bool ShouldAddTagFromFilename,
-    IReadOnlyCollection<string> SupportedExtensions);
+    IReadOnlyCollection<string> SupportedExtensions,
+    bool IsWebhookUploadEnabled,
+    string? WebhookUploadUrl);
 
 internal class SourceFoldersQueryHandler : IQueryHandler<SourceFoldersQuery, IReadOnlyCollection<SourceFolderInfo>>
 {
@@ -37,7 +39,9 @@ internal class SourceFoldersQueryHandler : IQueryHandler<SourceFoldersQuery, IRe
                     x.ShouldCheckHashFromName,
                     x.ShouldCreateTagsFromSubfolders,
                     x.ShouldAddTagFromFilename,
-                    x.SupportedExtensions))
+                    x.SupportedExtensions,
+                    x.IsWebhookUploadEnabled,
+                    x.WebhookUploadUrl))
             .ToList();
     }
 }

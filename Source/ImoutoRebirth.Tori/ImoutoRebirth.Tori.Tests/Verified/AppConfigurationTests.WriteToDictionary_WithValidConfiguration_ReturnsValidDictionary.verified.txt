@@ -24,7 +24,6 @@
   MeidoMetadataActualizerRepeatEveryMinutes: 30,
   OpenSearchUri: http://localhost:9200,
   RoomConnectionString: Server=localhost;Database=room;,
-  RoomImoutoPicsUploadUrl: https://example.com/upload,
   RoomPort: 5000,
   SankakuLogin: sankakuUser,
   SankakuPassword: sankakuPass123,
