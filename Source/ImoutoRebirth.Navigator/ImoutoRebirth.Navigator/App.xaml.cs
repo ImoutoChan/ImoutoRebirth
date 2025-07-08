@@ -1,6 +1,7 @@
 ﻿using System.IO;
 using System.Windows;
 using System.Windows.Threading;
+using ImoutoRebirth.Navigator.Services;
 using ImoutoRebirth.Navigator.ViewModel;
 using Serilog;
 
@@ -26,6 +27,9 @@ public partial class App : Application
         var splashScreen = new SplashScreen(@"\Resources\Icon\splashscreen.png");
         splashScreen.Show(autoClose: false, topMost: false);
         
+        var settingsUpgradeService = ServiceLocator.GetService<ISettingsUpgradeService>();
+        settingsUpgradeService.UpgradeSettingsIfRequired();
+
         MainWindowVM = new MainWindowVM();
         await MainWindowVM.InitializeContextAsync();
         MainWindowVM.ShowWindow();

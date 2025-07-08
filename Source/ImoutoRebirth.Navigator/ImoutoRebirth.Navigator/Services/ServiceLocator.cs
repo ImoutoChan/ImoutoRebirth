@@ -33,6 +33,8 @@ public static class ServiceLocator
         sc.AddTransient<ITagService, TagService>();
         sc.AddTransient<IFileLoadingService, FileLoadingService>();
 
+        sc.AddTransient<ISettingsUpgradeService, SettingsUpgradeService>();
+
         sc.AddRoomWebApiClients(Settings.Default.RoomHost);
         sc.AddLilinWebApiClients(Settings.Default.LilinHost);
 

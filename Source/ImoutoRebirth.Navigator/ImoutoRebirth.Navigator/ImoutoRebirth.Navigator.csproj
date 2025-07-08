@@ -13,6 +13,10 @@
         <ServerGarbageCollection>false</ServerGarbageCollection>
     </PropertyGroup>
 
+    <ItemGroup>
+        <InternalsVisibleTo Include="ImoutoRebirth.Navigator.Tests" />
+    </ItemGroup>
+
     <PropertyGroup>
         <Company>ImoutoRebirth</Company>
         <Product>Imouto Navigator</Product>
