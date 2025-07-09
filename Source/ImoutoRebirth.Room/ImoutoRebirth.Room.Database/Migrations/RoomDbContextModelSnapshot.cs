@@ -4,7 +4,10 @@ using ImoutoRebirth.Room.Database;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
+using NodaTime;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
+
+#nullable disable
 
 namespace ImoutoRebirth.Room.Database.Migrations
 {
@@ -15,19 +18,20 @@ namespace ImoutoRebirth.Room.Database.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn)
-                .HasAnnotation("ProductVersion", "3.1.4")
+                .HasAnnotation("ProductVersion", "9.0.6")
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
+
+            NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
             modelBuilder.Entity("ImoutoRebirth.Room.Database.Entities.CollectionEntity", b =>
                 {
                     b.Property<Guid>("Id")
                         .HasColumnType("uuid");
 
-                    b.Property<DateTimeOffset>("AddedOn")
+                    b.Property<Instant>("AddedOn")
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<DateTimeOffset>("ModifiedOn")
+                    b.Property<Instant>("ModifiedOn")
                         .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("Name")
@@ -44,7 +48,7 @@ namespace ImoutoRebirth.Room.Database.Migrations
                     b.Property<Guid>("Id")
                         .HasColumnType("uuid");
 
-                    b.Property<DateTimeOffset>("AddedOn")
+                    b.Property<Instant>("AddedOn")
                         .HasColumnType("timestamp with time zone");
 
                     b.Property<Guid>("CollectionId")
@@ -55,10 +59,10 @@ namespace ImoutoRebirth.Room.Database.Migrations
 
                     b.Property<string>("Md5")
                         .IsRequired()
-                        .HasColumnType("character varying(32)")
-                        .HasMaxLength(32);
+                        .HasMaxLength(32)
+                        .HasColumnType("character varying(32)");
 
-                    b.Property<DateTimeOffset>("ModifiedOn")
+                    b.Property<Instant>("ModifiedOn")
                         .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("OriginalPath")
@@ -91,7 +95,7 @@ namespace ImoutoRebirth.Room.Database.Migrations
                     b.Property<Guid>("Id")
                         .HasColumnType("uuid");
 
-                    b.Property<DateTimeOffset>("AddedOn")
+                    b.Property<Instant>("AddedOn")
                         .HasColumnType("timestamp with time zone");
 
                     b.Property<Guid>("CollectionId")
@@ -109,7 +113,7 @@ namespace ImoutoRebirth.Room.Database.Migrations
                         .HasColumnType("text")
                         .HasDefaultValue("!HashError");
 
-                    b.Property<DateTimeOffset>("ModifiedOn")
+                    b.Property<Instant>("ModifiedOn")
                         .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("Path")
@@ -141,13 +145,16 @@ namespace ImoutoRebirth.Room.Database.Migrations
                     b.Property<Guid>("Id")
                         .HasColumnType("uuid");
 
-                    b.Property<DateTimeOffset>("AddedOn")
+                    b.Property<Instant>("AddedOn")
                         .HasColumnType("timestamp with time zone");
 
                     b.Property<Guid>("CollectionId")
                         .HasColumnType("uuid");
 
-                    b.Property<DateTimeOffset>("ModifiedOn")
+                    b.Property<bool>("IsWebhookUploadEnabled")
+                        .HasColumnType("boolean");
+
+                    b.Property<Instant>("ModifiedOn")
                         .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("Path")
@@ -166,9 +173,13 @@ namespace ImoutoRebirth.Room.Database.Migrations
                     b.Property<bool>("ShouldCreateTagsFromSubfolders")
                         .HasColumnType("boolean");
 
+                    b.Property<string>("WebhookUploadUrl")
+                        .HasMaxLength(2048)
+                        .HasColumnType("character varying(2048)");
+
                     b.Property<string>("_supportedExtensions")
-                        .HasColumnName("SupportedExtensions")
-                        .HasColumnType("text");
+                        .HasColumnType("text")
+                        .HasColumnName("SupportedExtensions");
 
                     b.HasKey("Id");
 
@@ -184,6 +195,8 @@ namespace ImoutoRebirth.Room.Database.Migrations
                         .HasForeignKey("CollectionId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("Collection");
                 });
 
             modelBuilder.Entity("ImoutoRebirth.Room.Database.Entities.DestinationFolderEntity", b =>
@@ -193,6 +206,8 @@ namespace ImoutoRebirth.Room.Database.Migrations
                         .HasForeignKey("ImoutoRebirth.Room.Database.Entities.DestinationFolderEntity", "CollectionId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("Collection");
                 });
 
             modelBuilder.Entity("ImoutoRebirth.Room.Database.Entities.SourceFolderEntity", b =>
@@ -202,6 +217,17 @@ namespace ImoutoRebirth.Room.Database.Migrations
                         .HasForeignKey("CollectionId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("Collection");
+                });
+
+            modelBuilder.Entity("ImoutoRebirth.Room.Database.Entities.CollectionEntity", b =>
+                {
+                    b.Navigation("DestinationFolder");
+
+                    b.Navigation("Files");
+
+                    b.Navigation("SourceFolders");
                 });
 #pragma warning restore 612, 618
         }

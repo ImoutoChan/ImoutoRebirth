@@ -16,8 +16,8 @@ using static Z7Tasks;
 [CustomBuildCmdPathGitHubActions(
     "release",
     GitHubActionsImage.WindowsLatest,
-    OnPushTags = new []{ "*"},
-    InvokedTargets = new[] { nameof(Test), nameof(Pack7ZSfx) },
+    OnPushTags = ["*"],
+    InvokedTargets = [nameof(Test), nameof(Pack7ZSfx)],
     AutoGenerate = false)]
 class Build : NukeBuild
 {
@@ -30,15 +30,15 @@ class Build : NukeBuild
         Solution.ImoutoRebirth_Meido.ImoutoRebirth_Meido_Host,
         Solution.ImoutoRebirth_Navigator.ImoutoRebirth_Navigator,
         Solution.ImoutoRebirth_Room.ImoutoRebirth_Room_Host,
-        Solution.ImoutoRebirth_Tori.ImoutoRebirth_Tori,
-        Solution.Imouto_Viewer.ImoutoViewer
+        Solution.ImoutoRebirth_Tori.ImoutoRebirth_Tori_UI,
+        Solution.Imouto_Viewer.ImoutoViewer,
+        Solution.ImoutoRebirth_Lamia.ImoutoRebirth_Lamia_Host,
     };
 
     AbsolutePath[] NukeFilesToPublish => new[]
     {
         BuildAssemblyDirectory / "configuration.json",
-        BuildAssemblyDirectory / "install-update.ps1",
-        BuildAssemblyDirectory / "install-dependencies.ps1"
+        BuildAssemblyDirectory / "install.cmd"
     };
 
     Dictionary<string, RelativePath[]> DirectoriesToDeleteForProject => new()
@@ -57,7 +57,7 @@ class Build : NukeBuild
     [Parameter("Configuration to build - Default is 'Release'")]
     readonly Configuration Configuration = Configuration.Release;
 
-    [Parameter("Insert version into the artefacts - Default is 'True'")]
+    [Parameter("Inserts version into the artefacts - Default is 'True'")]
     readonly BuildToVersionedFolder VersionedFolder = BuildToVersionedFolder.True;
 
     AbsolutePath SourceDirectory => RootDirectory;
@@ -109,12 +109,15 @@ class Build : NukeBuild
         .Before(Publish)
         .Executes(() =>
         {
-            var testProjects = SourceDirectory.GlobFiles("**/*.Tests.csproj").ToList();
+            var testProjects = SourceDirectory.GlobFiles("**/*.Tests.csproj")
+                .Where(x => x.Name != "ImoutoRebirth.Common.Tests.csproj")
+                .ToList();
 
             DotNetTest(t => t
                 .SetVerbosity(DotNetVerbosity.quiet)
                 .SetConfiguration(Configuration)
                 .EnableNoBuild()
+                .SetFilter("ExternalResourceRequired!=True")
                 .CombineWith(testProjects, (_, v) => _.SetProjectFile(v)));
         });
 
@@ -125,6 +128,7 @@ class Build : NukeBuild
             OutputLatestDirectory.CreateOrCleanDirectory();
 
             var publishableProjects =
+            (
                 from projectToPublish in ProjectsToPublish
                 let projectName = projectToPublish.Directory.Parent!.Name
                 let projectOutput = OutputLatestDirectory / projectName
@@ -135,7 +139,8 @@ class Build : NukeBuild
                     ProjectName = projectName,
                     ProjectOutput = projectOutput,
                     DirectoriesToDelete = directoriesToDelete
-                };
+                }
+            ).ToList();
 
             DotNetPublish(s => s
                 .SetVerbosity(DotNetVerbosity.quiet)
@@ -149,14 +154,20 @@ class Build : NukeBuild
             foreach (var directoryToDelete in publishableProjects.SelectMany(x => x.DirectoriesToDelete))
                 directoryToDelete.DeleteDirectory();
 
+            foreach (var appSettingsFile in publishableProjects
+                         .SelectMany(x => x.ProjectOutput.GetFiles("appsettings*")))
+            {
+                appSettingsFile.DeleteFile();
+            }
+
             foreach (var nukeFileToPublish in NukeFilesToPublish)
                 nukeFileToPublish.CopyToDirectory(OutputLatestDirectory, ExistsPolicy.FileOverwrite);
-            
+
             return;
             
             AbsolutePath[] GetDirectoriesToDelete(string projectName, AbsolutePath projectOutput)
                 => DirectoriesToDeleteForProject
-                    .GetValueOrDefault(projectName, Array.Empty<RelativePath>())
+                    .GetValueOrDefault(projectName, [])
                     .Select(x => projectOutput / x)
                     .ToArray();
         });

@@ -18,7 +18,7 @@
   "MeidoMetadataActualizerRepeatEveryMinutes": "5",
   "MeidoFaultToleranceRepeatEveryMinutes": "10080",
   "MeidoFaultToleranceIsEnabled": "true",
-  "RoomImoutoPicsUploadUrl": "",
+
   "InstallLocation": "C:\\Program Files\\Imouto",
   "OpenSearchUri": "http://localhost:9200/",
   "JaegerHost": "localhost",
@@ -26,5 +26,8 @@
   "ExHentaiIpbMemberId": "",
   "ExHentaiIpbPassHash": "",
   "ExHentaiIgneous": "",
-  "ExHentaiUserAgent": ""
+  "ExHentaiUserAgent": "",
+  "GelbooruApiKey": "",
+  "GelbooruUserId": "",
+  "FFmpegPath": ""
 }

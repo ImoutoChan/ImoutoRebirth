@@ -1,4 +1,5 @@
 ﻿using CommunityToolkit.Mvvm.Messaging;
+using ImoutoRebirth.Common.AutoMapper;
 using ImoutoRebirth.Lilin.WebApi.Client;
 using ImoutoRebirth.Navigator.Services.Collections;
 using ImoutoRebirth.Navigator.Services.ImoutoViewer;
@@ -24,7 +25,7 @@ public static class ServiceLocator
         sc.AddTransient<ICollectionService, CollectionService>();
         sc.AddTransient<IDestinationFolderService, DestinationFolderService>();
         sc.AddTransient<ISourceFolderService, SourceFolderService>();
-        sc.AddTransient<IImoutoPicsUploaderStateService, ImoutoPicsUploaderStateService>();
+        
 
         sc.AddTransient<IFileService, FileService>();
         sc.AddTransient<IFileTagService, FileTagService>();
@@ -33,10 +34,15 @@ public static class ServiceLocator
         sc.AddTransient<IFileLoadingService, FileLoadingService>();
         sc.AddTransient<IMessenger, WeakReferenceMessenger>();
 
+        sc.AddTransient<ISettingsUpgradeService, SettingsUpgradeService>();
+
         sc.AddRoomWebApiClients(Settings.Default.RoomHost);
         sc.AddLilinWebApiClients(Settings.Default.LilinHost);
 
-        sc.AddAutoMapper(typeof(ServiceLocator));
+        sc.AddSingleton<IMessenger>(new WeakReferenceMessenger());
+
+        AutoMapperIssue.Fix();
+        sc.AddAutoMapper(x => x.AddProfile<AutoMapperProfile>());
 
         ServiceProvider = sc.BuildServiceProvider();
     }

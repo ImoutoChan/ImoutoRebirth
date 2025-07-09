@@ -1,6 +1,30 @@
 # Unreleased
 
-### This version update requires for you to run ./install-dependencies.ps1 again
+### Navigator
+* Add close button for the quick tagging window
+* Settings are now preserved between versions of Navigator apps
+* Reformat added on date for files
+
+### Lamia
+* New service lamia, extracts media tags from files (codec, resolution, duration) and adds them to Lilin
+
+### Room
+* Add webhook upload settings to source folder configuration (enable/disable toggle and URL field)
+
+# v4.28.2
+
+### Highlights
+* This version introduces the new install/update app
+* You can call it with install.cmd, dependencies will be installed together with the app itself
+* All important configurations are also available for edit from this ui now, you no longer need to edit json file
+* Navigator: 
+  * hot keys cheat sheet, 
+  * cbr cbz archives (dodji) support
+  * quick tagging improvements
+* Viewer
+  *  Support opening zipped galleries: zip 7z rar cbz cbr, convinient to view your dodji archives without extracting
+* Auto tagging
+  * Exhentai and schale are added for dodji tagging sources, please provide your credentials for them
 
 ### Infrastructure
 * Migrate to .NET 9
@@ -8,6 +32,7 @@
 * Add Resqueue dashboard
 * Add new videos in README for the initial launch and configuration of collections
 * Fix various issues after migration to .NET 9
+* New installer experience with Tori UI
 
 ### Navigator
 * Add date in file info (left bottom corner)
@@ -31,12 +56,13 @@ as a folder. You can set up ImoutoViewer as a default app to open cbz for exampl
 
 ### Room
 * File formats are only checked if the file has a supported image extension. So it means you are no longer required
-to create 2 different source folder entry with and without this flag.
+to create 2 different source folder entries with and without this flag.
 
 ### Arachne
 * ExHentai support as tags provider for files (.zip, .rar, .7z, .tar, .ace, .cbz, .cbr, .cb7, .cbt, .cba)
 * Fill the login data in the config from cookies
 * Improve ExHentai search and selection metadata capabilities
+* Add gelbooru settings, since you can no longer use their api without an account
 
 # 4.26.1
 

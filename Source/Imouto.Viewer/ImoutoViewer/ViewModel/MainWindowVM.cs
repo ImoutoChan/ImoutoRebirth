@@ -1,12 +1,10 @@
 ﻿using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
-using System.IO;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media.Imaging;
 using System.Windows.Threading;
 using AutoMapper;
-using ImoutoRebirth.Common;
 using ImoutoRebirth.Common.WPF;
 using ImoutoViewer.Behavior;
 using ImoutoRebirth.Common.WPF.Commands;

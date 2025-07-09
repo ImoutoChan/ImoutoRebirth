@@ -75,7 +75,9 @@ internal partial class CollectionVM : ObservableObject
                     folder.ShouldCheckHashFromName,
                     folder.SupportedExtensions,
                     folder.ShouldCreateTagsFromSubfolders,
-                    folder.ShouldAddTagFromFilename);
+                    folder.ShouldAddTagFromFilename,
+                    folder.IsWebhookUploadEnabled,
+                    folder.WebhookUploadUrl);
                 sourceFolderVm.ResetRequest += FolderVM_ResetRequest;
                 sourceFolderVm.SaveRequest += FolderVM_SaveSourceRequest;
 
@@ -151,7 +153,9 @@ internal partial class CollectionVM : ObservableObject
             folderVm.CheckNameHash,
             folderVm.TagsFromSubfolder,
             folderVm.AddTagFromFileName,
-            folderVm.SupportedExtensionsRaw);
+            folderVm.SupportedExtensionsRaw,
+            folderVm.IsWebhookUploadEnabled,
+            folderVm.WebhookUploadUrl);
 
         try
         {
@@ -215,7 +219,7 @@ internal partial class CollectionVM : ObservableObject
     [RelayCommand]
     private void AddSource(object? param)
     {
-        var newSource = new SourceFolderVM(null, string.Empty, false, false, null, false, false);
+        var newSource = new SourceFolderVM(null, string.Empty, false, false, null, false, false, false, null);
         newSource.ResetRequest += FolderVM_ResetRequest;
         newSource.SaveRequest += FolderVM_SaveSourceRequest;
         Sources.Add(newSource);

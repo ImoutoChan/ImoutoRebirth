@@ -50,7 +50,6 @@
     </ItemGroup>
 
     <ItemGroup>
-        <PackageReference Include="AutoMapper" />
         <PackageReference Include="MahApps.Metro" />
         <PackageReference Include="MahApps.Metro.IconPacks" />
         <PackageReference Include="Microsoft.Extensions.DependencyInjection" />
@@ -81,6 +80,7 @@
     </ItemGroup>
 
     <ItemGroup>
+        <ProjectReference Include="..\..\ImoutoRebirth.Common\ImoutoRebirth.Common.AutoMapper\ImoutoRebirth.Common.AutoMapper.csproj" />
         <ProjectReference Include="..\..\ImoutoRebirth.Common\ImoutoRebirth.Common.WebP\ImoutoRebirth.Common.WebP.csproj" />
         <ProjectReference Include="..\..\ImoutoRebirth.Common\ImoutoRebirth.Common.WindowsAssociationManager\ImoutoRebirth.Common.WindowsAssociationManager.csproj" />
         <ProjectReference Include="..\..\ImoutoRebirth.Common\ImoutoRebirth.Common.WPF\ImoutoRebirth.Common.WPF.csproj" />

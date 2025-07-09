@@ -128,15 +128,6 @@
                     </ComboBox>
                 </StackPanel>
 
-                <controls:ToggleSwitch Margin="0,25,0,0"
-                                       Header="Is ImoutoPics integration active"
-                                       IsOn="{Binding IsImoutoPicsUploaderEnabled}"
-                                       IsEnabled="False" />
-                
-                <Button Content="Toggle ImoutoPics"
-                        Command="{Binding ToggleImoutoPicsCommand}"
-                        Margin="0,25,0,0" />
-
                 <TextBlock Margin="0,25,0,0"
                            Text="Path Overrides" />
                 

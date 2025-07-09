@@ -14,14 +14,9 @@ namespace ImoutoRebirth.Navigator.ViewModel;
 
 internal partial class SettingsVM : ObservableObject
 {
-    private readonly IImoutoPicsUploaderStateService _imoutoPicsUploaderStateService;
-
     private AccentColorMenuData _selectedAccentColor;
     private int _selectedTheme;
     private string _pathOverrides;
-
-    [ObservableProperty]
-    public partial bool IsImoutoPicsUploaderEnabled { get; set; }
 
     public SettingsVM()
     {
@@ -38,8 +33,6 @@ internal partial class SettingsVM : ObservableObject
 
         ShowPreviewOnSelect = Settings.Default.ActivatePreviewOnSelect;
         PathOverrides = Settings.Default.PathOverrides;
-
-        _imoutoPicsUploaderStateService = ServiceLocator.GetService<IImoutoPicsUploaderStateService>();
     }
 
     public bool ShowPreviewOnSelect
@@ -165,25 +158,7 @@ internal partial class SettingsVM : ObservableObject
         handler?.Invoke(this, EventArgs.Empty);
     }
 
-    public async Task InitializeAsync()
-    {
-        IsImoutoPicsUploaderEnabled = await _imoutoPicsUploaderStateService.IsEnabledAsync();
-    }
-    
-    [RelayCommand]
-    private async Task ToggleImoutoPics()
-    {
-        if (IsImoutoPicsUploaderEnabled)
-        {
-            await _imoutoPicsUploaderStateService.DisableAsync();
-        }
-        else
-        {
-            await _imoutoPicsUploaderStateService.EnableAsync();
-        }
-        
-        IsImoutoPicsUploaderEnabled = await _imoutoPicsUploaderStateService.IsEnabledAsync();
-    }
+
 
     [RelayCommand]
     private void ResetLastPlayedPositions()

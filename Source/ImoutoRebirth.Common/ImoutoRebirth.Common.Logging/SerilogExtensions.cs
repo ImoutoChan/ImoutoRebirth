@@ -10,6 +10,8 @@ namespace ImoutoRebirth.Common.Logging;
 
 public static class SerilogExtensions
 {
+    private const string DefaultOpenSearchUri = "http://localhost:9200";
+
     private const string FileTemplate
         = "{Timestamp:yyyy-MM-dd HH:mm:ss.fff zzz} [{Level}] <s:{SourceContext}> {Message}{NewLine}{Exception}";
     private const string ConsoleTemplate
@@ -49,7 +51,7 @@ public static class SerilogExtensions
         IConfiguration appConfiguration,
         IHostEnvironment hostEnvironment)
     {
-        var url = appConfiguration.GetValue<string>("OpenSearchUri");
+        var url = appConfiguration.GetValue<string>("OpenSearchUri") ?? DefaultOpenSearchUri;
 
         if (string.IsNullOrWhiteSpace(url))
             return configuration;

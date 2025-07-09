@@ -12,7 +12,9 @@ public record UpdateSourceFolderCommand(
     bool ShouldCheckHashFromName,
     bool ShouldCreateTagsFromSubfolders,
     bool ShouldAddTagFromFilename,
-    IReadOnlyCollection<string> SupportedExtensions) : ICommand;
+    IReadOnlyCollection<string> SupportedExtensions,
+    bool IsWebhookUploadEnabled,
+    string? WebhookUploadUrl) : ICommand;
     
 internal class UpdateSourceFolderCommandHandler : ICommandHandler<UpdateSourceFolderCommand>
 {
@@ -28,7 +30,8 @@ internal class UpdateSourceFolderCommandHandler : ICommandHandler<UpdateSourceFo
     public async Task Handle(UpdateSourceFolderCommand request, CancellationToken cancellationToken)
     {
         var (collectionId, sourceFolderId, path, shouldCheckFormat, shouldCheckHashFromName, 
-            shouldCreateTagsFromSubfolders, shouldAddTagFromFilename, supportedExtensions) = request;
+            shouldCreateTagsFromSubfolders, shouldAddTagFromFilename, supportedExtensions, 
+            isWebhookUploadEnabled, webhookUploadUrl) = request;
         var collection = await _collectionRepository.GetById(collectionId).GetAggregateOrThrow();
 
         var result = collection.UpdateSourceFolder(
@@ -38,7 +41,9 @@ internal class UpdateSourceFolderCommandHandler : ICommandHandler<UpdateSourceFo
             shouldCheckHashFromName,
             shouldCreateTagsFromSubfolders,
             shouldAddTagFromFilename,
-            supportedExtensions);
+            supportedExtensions,
+            isWebhookUploadEnabled,
+            webhookUploadUrl);
 
         _eventStorage.AddRange(result.EventsCollection);
         await _collectionRepository.Update(collection);

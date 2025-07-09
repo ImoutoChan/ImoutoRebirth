@@ -6,7 +6,7 @@ namespace ImoutoRebirth.Tori.Services;
 
 public interface IWindowsServiceUpdater
 {
-    void UpdateService(DirectoryInfo installLocation, DirectoryInfo updaterLocation);
+    Task UpdateService(DirectoryInfo installLocation, DirectoryInfo updaterLocation);
 }
 
 public class WindowsServiceUpdater : IWindowsServiceUpdater
@@ -19,11 +19,12 @@ public class WindowsServiceUpdater : IWindowsServiceUpdater
         "ImoutoRebirth.Lilin",
         "ImoutoRebirth.Meido",
         "ImoutoRebirth.Room",
+        "ImoutoRebirth.Lamia",
     };
     
-    private static readonly IReadOnlyCollection<string> CreateShortcuts = new[]
+    private static readonly IReadOnlyCollection<(string ServiceName, string ShortcutName)> CreateShortcuts = new[]
     {
-        "ImoutoRebirth.Navigator",
+        ("ImoutoRebirth.Navigator", "ImoutoRebirth Navigator")
     };
     
     private static readonly IReadOnlyCollection<string> StopApplicationNames = new[]
@@ -46,12 +47,12 @@ public class WindowsServiceUpdater : IWindowsServiceUpdater
         _shortcutService = shortcutService;
     }
 
-    public void UpdateService(DirectoryInfo installLocation, DirectoryInfo updaterLocation)
+    public async Task UpdateService(DirectoryInfo installLocation, DirectoryInfo updaterLocation)
     {
-        _windowsServicesManager.LogServices();
-        _windowsServicesManager.StopServices();
+        await _windowsServicesManager.LogServices();
+        await _windowsServicesManager.StopServices();
         StopApplications();
-        _windowsServicesManager.DeleteServices();
+        await _windowsServicesManager.DeleteServices();
 
         var serviceDirectories = updaterLocation.GetDirectories();
         var windowsServicesToCreate = new List<(string Name, string ExePath)>();
@@ -105,17 +106,19 @@ public class WindowsServiceUpdater : IWindowsServiceUpdater
                 windowsServicesToCreate.Add((serviceName, exeName));
             }
 
-            if (CreateShortcuts.Contains(serviceName))
+            if (CreateShortcuts.Any(x => x.ServiceName == serviceName))
             {
                 var exeName = oldServiceDirectory.GetFiles("*", SearchOption.AllDirectories)
                     .First(x => x.Extension == ".exe" && x.Name.Contains(serviceName)).FullName;
-                
-                _shortcutService.CreateShortcutToDesktop(exeName, serviceName);
+
+                _shortcutService.CreateShortcutToDesktop(
+                    exeName,
+                    CreateShortcuts.First(x => x.ServiceName == serviceName).ShortcutName);
             }
         }
         
-        _windowsServicesManager.CreateServices(windowsServicesToCreate);
-        _windowsServicesManager.StartServices();
+        await _windowsServicesManager.CreateServices(windowsServicesToCreate);
+        await _windowsServicesManager.StartServices();
     }
 
     private static void StopApplications()

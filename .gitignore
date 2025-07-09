@@ -15,3 +15,8 @@ node_modules/
 **/appsettings.Production.json
 /global.json
 *.received.*
+/.vs/*
+*.user
+
+/Source/Imouto.Extensions/chrome/artifacts/*
+/Source/Imouto.Extensions/artifacts/*

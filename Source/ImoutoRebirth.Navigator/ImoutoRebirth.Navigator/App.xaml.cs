@@ -1,5 +1,7 @@
-﻿using System.Windows;
+﻿using System.IO;
+using System.Windows;
 using System.Windows.Threading;
+using ImoutoRebirth.Navigator.Services;
 using ImoutoRebirth.Navigator.ViewModel;
 using Serilog;
 
@@ -25,6 +27,9 @@ public partial class App : Application
         var splashScreen = new SplashScreen(@"\Resources\Icon\splashscreen.png");
         splashScreen.Show(autoClose: false, topMost: false);
         
+        var settingsUpgradeService = ServiceLocator.GetService<ISettingsUpgradeService>();
+        settingsUpgradeService.UpgradeSettingsIfRequired();
+
         MainWindowVM = new MainWindowVM();
         await MainWindowVM.InitializeContextAsync();
         MainWindowVM.ShowWindow();
@@ -38,10 +43,16 @@ public partial class App : Application
 
     protected override void OnStartup(StartupEventArgs startupEventArgs)
     {
+        var logDirectory = Path.Combine(
+            Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
+            "ImoutoRebirth.Navigator", "logs");
+
+        Directory.CreateDirectory(logDirectory);
+
         Log.Logger = new LoggerConfiguration()
             .MinimumLevel.Debug()
             .WriteTo.Console()
-            .WriteTo.File("logs/log.txt", rollingInterval: RollingInterval.Day, retainedFileCountLimit: 10)
+            .WriteTo.File(Path.Combine(logDirectory, "log.txt"), rollingInterval: RollingInterval.Day, retainedFileCountLimit: 10)
             .Enrich.WithThreadId()
             .Enrich.WithThreadName()
             .CreateLogger();

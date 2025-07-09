@@ -8,8 +8,6 @@ using ImoutoRebirth.Arachne.Infrastructure.Models.Settings;
 using ImoutoRebirth.Arachne.Infrastructure.Schale;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
-using Polly;
-using Polly.Extensions.Http;
 
 namespace ImoutoRebirth.Arachne.Infrastructure;
 
@@ -17,7 +15,8 @@ public static class ServiceCollectionExtensions
 {
     public static IServiceCollection AddArachneInfrastructure(
         this IServiceCollection services, 
-        DanbooruSettings danbooruSettings, 
+        DanbooruSettings danbooruSettings,
+        GelbooruSettings gelbooruSettings,
         SankakuSettings sankakuSettings,
         ExHentaiSettings exHentaiSettings)
     {
@@ -68,6 +67,7 @@ public static class ServiceCollectionExtensions
 
 
         services.AddTransient<DanbooruSettings>(x => danbooruSettings);
+        services.AddTransient<GelbooruSettings>(x => gelbooruSettings);
         services.AddTransient<SankakuSettings>(x => sankakuSettings);
         services.AddTransient<IOptions<Imouto.BooruParser.Implementations.Sankaku.SankakuSettings>>(_ =>
             Options.Create(new Imouto.BooruParser.Implementations.Sankaku.SankakuSettings

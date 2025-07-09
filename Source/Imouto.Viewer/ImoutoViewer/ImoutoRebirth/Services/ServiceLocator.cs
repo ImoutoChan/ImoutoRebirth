@@ -1,4 +1,5 @@
-﻿using ImoutoRebirth.Lilin.WebApi.Client;
+﻿using ImoutoRebirth.Common.AutoMapper;
+using ImoutoRebirth.Lilin.WebApi.Client;
 using ImoutoRebirth.Room.WebApi.Client;
 using ImoutoViewer.ImoutoRebirth.Services.Collections;
 using ImoutoViewer.ImoutoRebirth.Services.Tags;
@@ -28,7 +29,8 @@ public static class ServiceLocator
         sc.AddLilinWebApiClients("http://localhost:11302/");
         sc.AddRoomWebApiClients("http://localhost:11301/");
 
-        sc.AddAutoMapper(typeof(ServiceLocator));
+        AutoMapperIssue.Fix();
+        sc.AddAutoMapper(x => x.AddProfile<AutoMapperProfile>());
 
         ServiceProvider = sc.BuildServiceProvider();
     }

@@ -21,7 +21,9 @@ internal class SourceFolderService : ISourceFolderService
                 ShouldCheckHashFromName: x.ShouldCheckHashFromName,
                 ShouldCreateTagsFromSubfolders: x.ShouldCreateTagsFromSubfolders,
                 ShouldAddTagFromFilename: x.ShouldAddTagFromFilename,
-                SupportedExtensions: x.SupportedExtensions ?? Array.Empty<string>()
+                SupportedExtensions: x.SupportedExtensions ?? Array.Empty<string>(),
+                IsWebhookUploadEnabled: x.IsWebhookUploadEnabled,
+                WebhookUploadUrl: x.WebhookUploadUrl
             ))
             .ToArray();
     }
@@ -30,12 +32,14 @@ internal class SourceFolderService : ISourceFolderService
     {
         var id = await _collectionsClient.AddSourceFolderAsync(new(
             sourceFolder.CollectionId,
+            sourceFolder.IsWebhookUploadEnabled,
             sourceFolder.Path,
             sourceFolder.ShouldAddTagFromFilename,
             sourceFolder.ShouldCheckFormat,
             sourceFolder.ShouldCheckHashFromName,
             sourceFolder.ShouldCreateTagsFromSubfolders,
-            sourceFolder.SupportedExtensions));
+            sourceFolder.SupportedExtensions,
+            sourceFolder.WebhookUploadUrl));
 
         return sourceFolder with { Id = id };
     }
@@ -47,13 +51,15 @@ internal class SourceFolderService : ISourceFolderService
 
         await _collectionsClient.UpdateSourceFolderAsync(new(
             sourceFolder.CollectionId,
+            sourceFolder.IsWebhookUploadEnabled,
             sourceFolder.Path,
             sourceFolder.ShouldAddTagFromFilename,
             sourceFolder.ShouldCheckFormat,
             sourceFolder.ShouldCheckHashFromName,
             sourceFolder.ShouldCreateTagsFromSubfolders,
             sourceFolder.Id.Value,
-            sourceFolder.SupportedExtensions));
+            sourceFolder.SupportedExtensions,
+            sourceFolder.WebhookUploadUrl));
     }
 
     public async Task DeleteSourceFolderAsync(Guid collectionId, Guid sourceFolderId) 

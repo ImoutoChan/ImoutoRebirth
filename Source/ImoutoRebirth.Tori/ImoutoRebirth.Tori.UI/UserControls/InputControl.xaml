@@ -1,0 +1,24 @@
+﻿<UserControl x:Class="ImoutoRebirth.Tori.UI.UserControls.InputControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             mc:Ignorable="d"
+             x:Name="UserControl"
+             d:DesignWidth="200"
+             d:DesignHeight="70">
+    <StackPanel>
+        <TextBlock
+            Style="{DynamicResource Styles.Typography.Note}"
+            LineHeight="12">
+            <Run Text="{Binding ElementName=UserControl, Path=Header}" />
+            <TextBlock
+                Foreground="{StaticResource MahApps.Brushes.Control.Validation}"
+                Visibility="{Binding ElementName=UserControl, Path=IsRequired, Converter={StaticResource BooleanToVisibilityConverter}}"
+                Text="*" />
+        </TextBlock>
+
+        <TextBox Text="{Binding ElementName=UserControl, Path=Text}"
+                 Height="25"/>
+    </StackPanel>
+</UserControl>

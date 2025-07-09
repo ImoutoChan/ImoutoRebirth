@@ -21,20 +21,26 @@ internal class DanbooruFavoritesLoader
 
     public DanbooruFavoritesLoader(
         HttpClient httpClient,
-        IOptions<DanbooruBooruConfiguration> booruConfiguration,
+        IOptions<DanbooruBooruConfiguration> danbooruConfiguration,
+        IOptions<GelbooruBooruConfiguration> gelbooruConfiguration,
         ILogger<DanbooruFavoritesLoader> logger)
     {
         _httpClient = httpClient;
         _logger = logger;
-        _booruConfiguration = booruConfiguration.Value;
+        _booruConfiguration = danbooruConfiguration.Value;
 
         _enabled = !(string.IsNullOrWhiteSpace(_booruConfiguration.Login) ||
                      string.IsNullOrWhiteSpace(_booruConfiguration.BotUserAgent));
 
-        _gelbooruLoader = new(new FlurlClientCache(), Options.Create(new GelbooruSettings()
-        {
-            PauseBetweenRequestsInMs = 0,
-        }));
+        _gelbooruLoader = new(
+            new FlurlClientCache(),
+            Options.Create(
+                new GelbooruSettings
+                {
+                    UserId = int.TryParse(gelbooruConfiguration.Value.UserId, out var userId) ? userId : 0,
+                    ApiKey = gelbooruConfiguration.Value.ApiKey,
+                    PauseBetweenRequestsInMs = 0,
+                }));
     }
 
     public async IAsyncEnumerable<Post> GetFavoritesUrls()

@@ -1,4 +1,4 @@
-﻿using FluentAssertions;
+﻿using AwesomeAssertions;
 using Flurl.Http.Configuration;
 using ImoutoRebirth.Arachne.Core.Models;
 using ImoutoRebirth.Arachne.Infrastructure.Schale;
@@ -14,6 +14,8 @@ public class SchaleMetadataProviderTests
     /// Works only with vpn from dev pc.
     /// </summary>
     [Fact]
+    [Trait("ExternalResourceRequired", "True")]
+    [Trait("ExternalResource", "Schale")]
     public async Task AvailabilityChecker_ShouldReturnAvailable()
     {
         // arrange
@@ -27,6 +29,8 @@ public class SchaleMetadataProviderTests
     }
 
     [Fact]
+    [Trait("ExternalResourceRequired", "True")]
+    [Trait("ExternalResource", "Schale")]
     public async Task MetadataProvider_WithSearchString_ReturnsGallery()
     {
         // arrange
@@ -41,6 +45,8 @@ public class SchaleMetadataProviderTests
     }
 
     [Fact]
+    [Trait("ExternalResourceRequired", "True")]
+    [Trait("ExternalResource", "Schale")]
     public async Task SearchEngine_WithSearchString_ReturnsGallery()
     {
         // arrange
@@ -65,6 +71,8 @@ public class SchaleMetadataProviderTests
     }
 
     [Fact]
+    [Trait("ExternalResourceRequired", "True")]
+    [Trait("ExternalResource", "Schale")]
     public async Task SearchMetadataAsync_ValidResponse_ReturnsParsedMetadata5()
     {
         // arrange
@@ -86,6 +94,8 @@ public class SchaleMetadataProviderTests
     }
 
     [Fact]
+    [Trait("ExternalResourceRequired", "True")]
+    [Trait("ExternalResource", "Schale")]
     public async Task SearchMetadataAsync_ValidResponse_ReturnsParsedMetadata6()
     {
         // arrange

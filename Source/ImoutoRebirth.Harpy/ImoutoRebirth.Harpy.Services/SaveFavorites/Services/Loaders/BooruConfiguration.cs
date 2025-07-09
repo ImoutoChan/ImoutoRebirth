@@ -16,3 +16,10 @@ internal class YandereBooruConfiguration : BooruConfiguration
 internal class DanbooruBooruConfiguration : BooruConfiguration
 {
 }
+
+internal class GelbooruBooruConfiguration
+{
+    public required string ApiKey { get; set; }
+
+    public required string UserId { get; set; }
+}

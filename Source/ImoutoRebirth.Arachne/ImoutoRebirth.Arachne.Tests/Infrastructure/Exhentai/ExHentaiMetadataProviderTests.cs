@@ -1,5 +1,5 @@
 ﻿using System.Runtime.CompilerServices;
-using FluentAssertions;
+using AwesomeAssertions;
 using Flurl.Http.Configuration;
 using ImoutoRebirth.Arachne.Core.Models;
 using ImoutoRebirth.Arachne.Infrastructure.ExHentai;
@@ -36,6 +36,8 @@ public class ExHentaiMetadataProviderTests : IClassFixture<TestConfiguration>
     /// Works only with vpn from dev pc.
     /// </summary>
     [Fact(Skip = "Manual debug")]
+    [Trait("ExternalResourceRequired", "True")]
+    [Trait("ExternalResource", "ExHentai")]
     public async Task AvailabilityChecker_ShouldReturnAvailable()
     {
         // arrange
@@ -52,6 +54,8 @@ public class ExHentaiMetadataProviderTests : IClassFixture<TestConfiguration>
     }
 
     [Fact]
+    [Trait("ExternalResourceRequired", "True")]
+    [Trait("ExternalResource", "ExHentai")]
     public async Task SearchMetadataAsync_ValidResponse_ReturnsParsedMetadata1()
     {
         // arrange
@@ -65,6 +69,8 @@ public class ExHentaiMetadataProviderTests : IClassFixture<TestConfiguration>
     }
 
     [Fact]
+    [Trait("ExternalResourceRequired", "True")]
+    [Trait("ExternalResource", "ExHentai")]
     public async Task SearchMetadataAsync_ValidResponseWithoutAuth_ReturnsParsedMetadata1()
     {
         // arrange
@@ -79,6 +85,8 @@ public class ExHentaiMetadataProviderTests : IClassFixture<TestConfiguration>
     }
 
     [Fact]
+    [Trait("ExternalResourceRequired", "True")]
+    [Trait("ExternalResource", "ExHentai")]
     public async Task SearchMetadataAsync_ValidResponseWithAuth_ReturnsParsedMetadata5()
     {
         // arrange
@@ -95,6 +103,8 @@ public class ExHentaiMetadataProviderTests : IClassFixture<TestConfiguration>
     }
 
     [Fact]
+    [Trait("ExternalResourceRequired", "True")]
+    [Trait("ExternalResource", "ExHentai")]
     public async Task SearchMetadataAsync_ValidResponseWithAuth_ReturnsParsedMetadata6()
     {
         // arrange
@@ -114,6 +124,8 @@ public class ExHentaiMetadataProviderTests : IClassFixture<TestConfiguration>
     }
 
     [Fact]
+    [Trait("ExternalResourceRequired", "True")]
+    [Trait("ExternalResource", "ExHentai")]
     public async Task Search_WithUnmodifiedName_ShouldFindMetadata()
     {
         // arrange
@@ -133,6 +145,8 @@ public class ExHentaiMetadataProviderTests : IClassFixture<TestConfiguration>
     }
 
     [Fact]
+    [Trait("ExternalResourceRequired", "True")]
+    [Trait("ExternalResource", "ExHentai")]
     public async Task Search_WithCleanedName_ShouldFindMetadata()
     {
         // arrange
@@ -152,6 +166,8 @@ public class ExHentaiMetadataProviderTests : IClassFixture<TestConfiguration>
     }
 
     [Fact]
+    [Trait("ExternalResourceRequired", "True")]
+    [Trait("ExternalResource", "ExHentai")]
     public async Task SearchMetadataAsync_ValidResponse_ReturnsParsedMetadata2()
     {
         // arrange
@@ -166,6 +182,8 @@ public class ExHentaiMetadataProviderTests : IClassFixture<TestConfiguration>
     }
 
     [Fact]
+    [Trait("ExternalResourceRequired", "True")]
+    [Trait("ExternalResource", "ExHentai")]
     public async Task SearchMetadataAsync_ValidResponse_ReturnsParsedMetadata3()
     {
         // arrange
@@ -179,6 +197,8 @@ public class ExHentaiMetadataProviderTests : IClassFixture<TestConfiguration>
     }
 
     [Fact]
+    [Trait("ExternalResourceRequired", "True")]
+    [Trait("ExternalResource", "ExHentai")]
     public async Task SearchMetadataAsync_ValidResponse_ReturnsParsedMetadata4()
     {
         // arrange
@@ -203,6 +223,8 @@ public class ExHentaiMetadataProviderTests : IClassFixture<TestConfiguration>
     }
 
     [Fact]
+    [Trait("ExternalResourceRequired", "True")]
+    [Trait("ExternalResource", "ExHentai")]
     public async Task SearchMetadataAsync_ValidResponse_ReturnsParsedMetadata5()
     {
         // arrange
@@ -225,6 +247,8 @@ public class ExHentaiMetadataProviderTests : IClassFixture<TestConfiguration>
     }
 
     [Fact]
+    [Trait("ExternalResourceRequired", "True")]
+    [Trait("ExternalResource", "ExHentai")]
     public async Task SearchMetadataAsync_ValidResponse_ReturnsParsedMetadata6()
     {
         // arrange
@@ -247,6 +271,8 @@ public class ExHentaiMetadataProviderTests : IClassFixture<TestConfiguration>
     }
 
     [Fact]
+    [Trait("ExternalResourceRequired", "True")]
+    [Trait("ExternalResource", "ExHentai")]
     public async Task SearchMetadataAsync_ValidResponse_ReturnsParsedMetadata7()
     {
         // arrange
@@ -269,6 +295,8 @@ public class ExHentaiMetadataProviderTests : IClassFixture<TestConfiguration>
     }
 
     [Fact]
+    [Trait("ExternalResourceRequired", "True")]
+    [Trait("ExternalResource", "ExHentai")]
     public async Task SearchMetadataAsync_EmptyGalleryName_ReturnsEmptyAndLogsWarning()
     {
         // Arrange
@@ -317,6 +345,8 @@ public class ExHentaiMetadataProviderTests : IClassFixture<TestConfiguration>
     }
 
     [Fact]
+    [Trait("ExternalResourceRequired", "True")]
+    [Trait("ExternalResource", "ExHentai")]
     public async Task GetGalleryIds_ValidHtml_ReturnsParsedIds()
     {
         // Arrange

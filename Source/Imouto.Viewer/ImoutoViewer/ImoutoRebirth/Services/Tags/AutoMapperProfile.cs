@@ -49,6 +49,11 @@ internal class AutoMapperProfile : Profile
                     FileTagSource.Danbooru => MetadataSource.Danbooru,
                     FileTagSource.Sankaku => MetadataSource.Sankaku,
                     FileTagSource.Manual => MetadataSource.Manual,
+                    FileTagSource.Gelbooru => MetadataSource.Gelbooru,
+                    FileTagSource.Rule34 => MetadataSource.Rule34,
+                    FileTagSource.ExHentai => MetadataSource.ExHentai,
+                    FileTagSource.Schale => MetadataSource.Schale,
+                    FileTagSource.Lamia => MetadataSource.Lamia,
                     _ => throw new NotImplementedException(x.ToString())
                 });
 
@@ -60,6 +65,11 @@ internal class AutoMapperProfile : Profile
                     MetadataSource.Danbooru => FileTagSource.Danbooru,
                     MetadataSource.Sankaku => FileTagSource.Sankaku,
                     MetadataSource.Manual => FileTagSource.Manual,
+                    MetadataSource.Gelbooru => FileTagSource.Gelbooru,
+                    MetadataSource.Rule34 => FileTagSource.Rule34,
+                    MetadataSource.ExHentai => FileTagSource.ExHentai,
+                    MetadataSource.Schale => FileTagSource.Schale,
+                    MetadataSource.Lamia => FileTagSource.Lamia,
                     _ => throw new NotImplementedException(x.ToString())
                 });
 
@@ -93,6 +103,11 @@ internal class AutoMapperProfile : Profile
                     MetadataSource.Yandere => FileTagSource.Yandere,
                     MetadataSource.Sankaku => FileTagSource.Sankaku,
                     MetadataSource.Manual => FileTagSource.Manual,
+                    MetadataSource.Gelbooru => FileTagSource.Gelbooru,
+                    MetadataSource.Rule34 => FileTagSource.Rule34,
+                    MetadataSource.ExHentai => FileTagSource.ExHentai,
+                    MetadataSource.Schale => FileTagSource.Schale,
+                    MetadataSource.Lamia => FileTagSource.Lamia,
                     _ => throw new NotImplementedException(x.ToString())
                 });
     }

@@ -1,7 +1,7 @@
 ﻿using System.Runtime.CompilerServices;
 using ImoutoRebirth.Common.Cqrs.Abstract;
 using ImoutoRebirth.Common.Domain;
-using ImoutoRebirth.Room.Application.Cqrs.ImoutoPicsUploadStateSlice;
+
 using ImoutoRebirth.Room.Application.Services;
 using ImoutoRebirth.Room.Domain;
 using ImoutoRebirth.Room.Domain.CollectionAggregate;
@@ -21,7 +21,7 @@ internal class OverseeCollectionCommandHandler : ICommandHandler<OverseeCollecti
     private readonly ILogger<OverseeCollectionCommandHandler> _logger;
     private readonly IImageService _imageService;
     private readonly IRemoteCommandService _remoteCommandService;
-    private readonly IImoutoPicsUploader _imoutoPicsUploader;
+    private readonly IWebhookUploader _webhookUploader;
     private readonly IMediator _mediator;
 
     public OverseeCollectionCommandHandler(
@@ -30,7 +30,7 @@ internal class OverseeCollectionCommandHandler : ICommandHandler<OverseeCollecti
         ILogger<OverseeCollectionCommandHandler> logger,
         IImageService imageService,
         IRemoteCommandService remoteCommandService,
-        IImoutoPicsUploader imoutoPicsUploader,
+        IWebhookUploader webhookUploader,
         IMediator mediator)
     {
         _collectionRepository = collectionRepository;
@@ -38,7 +38,7 @@ internal class OverseeCollectionCommandHandler : ICommandHandler<OverseeCollecti
         _logger = logger;
         _imageService = imageService;
         _remoteCommandService = remoteCommandService;
-        _imoutoPicsUploader = imoutoPicsUploader;
+        _webhookUploader = webhookUploader;
         _mediator = mediator;
     }
 
@@ -60,7 +60,7 @@ internal class OverseeCollectionCommandHandler : ICommandHandler<OverseeCollecti
                 if (!moved.RequireSave) 
                     continue;
 
-                await SaveAndReport(collectionId, moved);
+                await SaveAndReport(collectionId, moved, sourceFolder);
                 anyFileAdded = true;
             }
         }
@@ -68,17 +68,18 @@ internal class OverseeCollectionCommandHandler : ICommandHandler<OverseeCollecti
         return new(anyFileAdded);
     }
     
-    private async Task SaveAndReport(Guid collectionId, SystemFileMoved moved)
+    private async Task SaveAndReport(Guid collectionId, SystemFileMoved moved, SourceFolder sourceFolder)
     {
         var newId = await _mediator.Send(new SaveNewFileCommand(collectionId, moved));
 
         await _remoteCommandService.SaveTags(newId, moved.SourceTags);
         await _remoteCommandService.UpdateMetadataRequest(newId, moved.SystemFile.Md5, moved.SystemFile.File.Name);
-        
-        var isUploadEnabled = await _mediator.Send(new IsImoutoPicsUploaderEnabledQuery());
-        
-        if (isUploadEnabled)
-            await _imoutoPicsUploader.UploadFile(moved.MovedFileInfo.FullName);
+        await _remoteCommandService.UpdateFileMetadataRequest(newId, moved.MovedFileInfo.FullName);
+
+        if (sourceFolder.IsWebhookUploadEnabled && !string.IsNullOrWhiteSpace(sourceFolder.WebhookUploadUrl))
+        {
+            await _webhookUploader.UploadFile(moved.MovedFileInfo.FullName, sourceFolder.WebhookUploadUrl);
+        }
     }
 
     private SystemFileMoved MoveFile(Collection collection, SystemFilePreparedToMove preparedToMove)

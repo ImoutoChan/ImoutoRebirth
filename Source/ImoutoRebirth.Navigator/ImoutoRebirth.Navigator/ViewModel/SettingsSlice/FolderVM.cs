@@ -1,10 +1,10 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-using ImoutoRebirth.Navigator.ViewModel.SettingsSlice.ValidationAttributes;
+using ImoutoRebirth.Common.WPF.ValidationAttributes;
 
 namespace ImoutoRebirth.Navigator.ViewModel.SettingsSlice;
 
-internal abstract partial class FolderVM : ObservableValidator
+public abstract partial class FolderVM : ObservableValidator
 {
     [ObservableProperty]
     [NotifyCanExecuteChangedFor(nameof(SaveCommand))]

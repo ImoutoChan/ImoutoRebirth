@@ -11,7 +11,7 @@ public static class ServiceCollectionExtensions
         this IServiceCollection services,
         params Assembly[] registerAssemblies)
     {
-        services.AddMediatR(x =>
+        services.AddDefaultMediatR(x =>
         {
             x.RegisterServicesFromAssemblyContaining<CreateTagCommandHandler>();
             x.RegisterServicesFromAssemblies(registerAssemblies);

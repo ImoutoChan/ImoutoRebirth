@@ -1,0 +1,79 @@
+<UserControl x:Class="ImoutoRebirth.Tori.UI.Steps.InstallationStepControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:ImoutoRebirth.Tori.UI.Steps"
+             mc:Ignorable="d"
+             d:DesignHeight="614" d:DesignWidth="1028"
+             d:DataContext="{d:DesignInstance Type=local:InstallationStepViewModel}">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+
+        <Grid Grid.Row="1" Margin="144, 73, 144, 0">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="*" />
+                <RowDefinition Height="Auto" />
+            </Grid.RowDefinitions>
+
+            <TextBlock Style="{DynamicResource Styles.Typography.Default}" Text="Installation log" />
+
+            <TextBox
+                x:Name="LogTextBox"
+                IsReadOnly="True"
+                Margin="0,21,0,0"
+                Grid.Row="1"
+                Text="{Binding LogString}"
+                FontSize="16"
+                TextChanged="TextBoxBase_OnTextChanged" />
+
+            <TextBlock
+                Grid.Row="2"
+                Margin="0,10,0,0"
+                Style="{DynamicResource Styles.Typography.LessVisible}"
+                Text="Installing dependencies, especially PostgreSQL, can take some time, though it usually takes less than 10 minutes. Please make yourself a warm cup of tea and wait..."
+                TextWrapping="WrapWithOverflow"
+                Visibility="{Binding DisplayPleaseWait, Converter={StaticResource BooleanToVisibilityConverter}}" />
+        </Grid>
+
+        <StackPanel Grid.Row="2" HorizontalAlignment="Right" Orientation="Horizontal" Margin="50, 40, 50, 40">
+            <Button
+                Style="{DynamicResource Styles.Button.Regular}"
+                Command="{Binding GoBackCommand}"
+                Visibility="{Binding IsInstallationStarted, Converter={StaticResource ConditionVisibilityConverter}, ConverterParameter=false}"
+                Content="back" />
+
+            <Button
+                Style="{DynamicResource Styles.Button.Accent}"
+                Command="{Binding InstallCommand}"
+                Content="install"
+                Visibility="{Binding IsInstallationStarted, Converter={StaticResource ConditionVisibilityConverter}, ConverterParameter=false}" />
+
+            <ProgressBar 
+                IsIndeterminate="True"
+                Height="40"
+                Width="168"
+                Visibility="{Binding IsInstalling, Converter={StaticResource ConditionVisibilityConverter}, ConverterParameter=true}" />
+
+            <Button
+                Style="{DynamicResource Styles.Button.Accent}"
+                Command="{Binding CloseAppCommand}"
+                Visibility="{Binding IsInstallationFinished, Converter={StaticResource ConditionVisibilityConverter}, ConverterParameter=true}">
+                <StackPanel Orientation="Horizontal">
+                    <TextBlock>
+                        <Run Text="ok" />
+                    </TextBlock>
+
+                    <TextBlock Visibility="{Binding RemainingSecondsUntilClosed, Converter={StaticResource ConditionVisibilityConverter}, ConverterParameter=!null}">
+                        <Run Text="{Binding RemainingSecondsUntilClosed, StringFormat=' ({0:0})'}"/>
+                    </TextBlock>
+                </StackPanel>
+            </Button>
+        </StackPanel>
+    </Grid>
+</UserControl>

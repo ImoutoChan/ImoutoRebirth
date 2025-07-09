@@ -1,6 +1,6 @@
 ﻿using System.Net.Http.Json;
 using System.Reflection;
-using FluentAssertions;
+using AwesomeAssertions;
 using ImoutoRebirth.Room.Application.Cqrs.FoldersSlice;
 using ImoutoRebirth.Room.IntegrationTests.Fixtures;
 using Microsoft.EntityFrameworkCore;
@@ -34,7 +34,9 @@ public class SourceFoldersTests
             true,
             true,
             true,
-            new[] {".jpg", ".png", ".gif", ".webp", ".bmp", ".jpeg", ".tiff", ".tif", ".jfif"});
+            [".jpg", ".png", ".gif", ".webp", ".bmp", ".jpeg", ".tiff", ".tif", ".jfif"],
+            true,
+            "http://example.com/webhook");
         
         var result =await httpClient.PostAsJsonAsync("/collections/source-folders", command);
         var resultString = await result.Content.ReadAsStringAsync();
@@ -52,6 +54,8 @@ public class SourceFoldersTests
         sourceFolder.ShouldCheckHashFromName.Should().Be(command.ShouldCheckHashFromName);
         sourceFolder.ShouldCreateTagsFromSubfolders.Should().Be(command.ShouldCreateTagsFromSubfolders);
         sourceFolder.SupportedExtensionCollection.Should().BeEquivalentTo(command.SupportedExtensions);
+        sourceFolder.WebhookUploadUrl.Should().Be(command.WebhookUploadUrl);
+        sourceFolder.IsWebhookUploadEnabled.Should().Be(command.IsWebhookUploadEnabled);
     }
 
     [Fact]
@@ -71,7 +75,9 @@ public class SourceFoldersTests
             true,
             true,
             true,
-            new[] {".jpg", ".png", ".gif", ".webp", ".bmp", ".jpeg", ".tiff", ".tif", ".jfif"});
+            [".jpg", ".png", ".gif", ".webp", ".bmp", ".jpeg", ".tiff", ".tif", ".jfif"],
+            false,
+            null);
         
         var result =await httpClient.PostAsJsonAsync("/collections/source-folders", command);
         var resultString = await result.Content.ReadAsStringAsync();
@@ -86,7 +92,9 @@ public class SourceFoldersTests
             false,
             false,
             false,
-            new[] {".jfif"});
+            [".jfif"],
+            true,
+            "http://example.com/webhook");
         
         await httpClient.PutAsJsonAsync("/collections/source-folders", updateCommand);
         
@@ -102,6 +110,8 @@ public class SourceFoldersTests
         sourceFolder.ShouldCheckHashFromName.Should().Be(updateCommand.ShouldCheckHashFromName);
         sourceFolder.ShouldCreateTagsFromSubfolders.Should().Be(updateCommand.ShouldCreateTagsFromSubfolders);
         sourceFolder.SupportedExtensionCollection.Should().BeEquivalentTo(updateCommand.SupportedExtensions);
+        sourceFolder.WebhookUploadUrl.Should().Be(updateCommand.WebhookUploadUrl);
+        sourceFolder.IsWebhookUploadEnabled.Should().Be(updateCommand.IsWebhookUploadEnabled);
     }
 
     [Fact]
@@ -121,7 +131,9 @@ public class SourceFoldersTests
             true,
             true,
             true,
-            new[] {".jpg", ".png", ".gif", ".webp", ".bmp", ".jpeg", ".tiff", ".tif", ".jfif"});
+            [".jpg", ".png", ".gif", ".webp", ".bmp", ".jpeg", ".tiff", ".tif", ".jfif"],
+            false,
+            null);
         
         var result =await httpClient.PostAsJsonAsync("/collections/source-folders", command);
         var resultString = await result.Content.ReadAsStringAsync();
@@ -146,7 +158,8 @@ public class SourceFoldersTests
         
         var location = Assembly.GetExecutingAssembly().Location;
 
-        var command1 = new AddSourceFolderCommand(collectionId, Path.Combine(location, "collection", "source 1"), true, true, true, true, new[] {".jpg", ".png", ".gif", ".webp", ".bmp", ".jpeg", ".tiff", ".tif", ".jfif"});
+        var command1 = new AddSourceFolderCommand(collectionId, Path.Combine(location, "collection", "source 1"), true, true, true, true,
+            [".jpg", ".png", ".gif", ".webp", ".bmp", ".jpeg", ".tiff", ".tif", ".jfif"], false, null);
         var command2 = command1 with { Path = Path.Combine(location, "collection", "source 2") };
         var command3 = command1 with { Path = Path.Combine(location, "collection", "source 3") };
         var command4 = command1 with { Path = Path.Combine(location, "collection", "source 4") };

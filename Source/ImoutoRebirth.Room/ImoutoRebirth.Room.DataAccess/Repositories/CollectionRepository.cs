@@ -115,6 +115,8 @@ internal class CollectionRepository : ICollectionRepository
                 sourceFolderEntity.ShouldCreateTagsFromSubfolders = collectionSourceFolder.ShouldCreateTagsFromSubfolders;
                 sourceFolderEntity.ShouldAddTagFromFilename = collectionSourceFolder.ShouldAddTagFromFilename;
                 sourceFolderEntity.SupportedExtensionCollection = collectionSourceFolder.SupportedExtensions;
+                sourceFolderEntity.WebhookUploadUrl = collectionSourceFolder.WebhookUploadUrl;
+                sourceFolderEntity.IsWebhookUploadEnabled = collectionSourceFolder.IsWebhookUploadEnabled;
             }
         }
         

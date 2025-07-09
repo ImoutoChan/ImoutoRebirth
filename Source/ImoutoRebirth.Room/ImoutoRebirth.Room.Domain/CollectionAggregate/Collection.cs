@@ -67,7 +67,9 @@ public class Collection
         bool shouldCheckHashFromName,
         bool shouldCreateTagsFromSubfolders,
         bool shouldAddTagFromFilename,
-        IReadOnlyCollection<string> supportedExtensions)
+        IReadOnlyCollection<string> supportedExtensions,
+        bool isWebhookUploadEnabled,
+        string? webhookUploadUrl)
     {
         var id = Guid.NewGuid();
         var sourceFolder = new SourceFolder(
@@ -77,7 +79,9 @@ public class Collection
             shouldCheckHashFromName,
             shouldCreateTagsFromSubfolders,
             shouldAddTagFromFilename,
-            supportedExtensions);
+            supportedExtensions,
+            isWebhookUploadEnabled,
+            webhookUploadUrl);
         
         SourceFolders = SourceFolders.Append(sourceFolder).ToList();
 
@@ -101,7 +105,9 @@ public class Collection
         bool shouldCheckHashFromName,
         bool shouldCreateTagsFromSubfolders,
         bool shouldAddTagFromFilename,
-        IReadOnlyCollection<string> supportedExtensions)
+        IReadOnlyCollection<string> supportedExtensions,
+        bool isWebhookUploadEnabled,
+        string? webhookUploadUrl)
     {
         var sourceFolder = SourceFolders.FirstOrDefault(x => x.Id == sourceFolderId);
         if (sourceFolder == null)
@@ -114,7 +120,9 @@ public class Collection
             shouldCheckHashFromName,
             shouldCreateTagsFromSubfolders,
             shouldAddTagFromFilename,
-            supportedExtensions);
+            supportedExtensions,
+            isWebhookUploadEnabled,
+            webhookUploadUrl);
         
         SourceFolders = SourceFolders.Where(x => x.Id != sourceFolderId).Append(sourceFolder).ToList();
 

@@ -61,7 +61,9 @@ public partial class ExHentaiSearchEngine : ISearchEngine
         yield return ToTag("LocalMeta", "BooruPostId", metadata.FileIdFromSource);
         yield return ToTag("LocalMeta", "Md5", imageMd5);
         yield return ToTag("LocalMeta", "Score", metadata.Rating.ToString(CultureInfo.InvariantCulture));
-        yield return ToTag("Copyright", metadata.Title.ToLower());
+
+        if (!string.IsNullOrWhiteSpace(metadata.Title))
+            yield return ToTag("Copyright", metadata.Title.ToLower());
 
         if (!string.IsNullOrWhiteSpace(metadata.Publisher))
             yield return ToTag("General", metadata.Publisher.ToLower());

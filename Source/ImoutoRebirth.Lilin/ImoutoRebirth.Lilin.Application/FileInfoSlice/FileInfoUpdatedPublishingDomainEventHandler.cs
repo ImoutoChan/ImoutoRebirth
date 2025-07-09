@@ -14,7 +14,7 @@ internal class FileInfoUpdatedPublishingDomainEventHandler : DomainEventNotifica
 
     protected override async Task Handle(FileInfoUpdatedDomainEvent domainEvent, CancellationToken ct)
     {
-        if (domainEvent.MetadataSource == MetadataSource.Manual)
+        if (domainEvent.MetadataSource is MetadataSource.Manual or MetadataSource.Lamia)
             return;
 
         var command = new SavedCommand(

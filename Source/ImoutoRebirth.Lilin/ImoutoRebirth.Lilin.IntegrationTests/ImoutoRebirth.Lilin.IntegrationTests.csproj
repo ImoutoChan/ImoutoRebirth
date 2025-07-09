@@ -37,7 +37,7 @@
 
     <ItemGroup>
         <Using Include="Xunit" />
-        <Using Include="FluentAssertions" />
+        <Using Include="AwesomeAssertions" />
         <Using Include="ImoutoRebirth.Lilin.IntegrationTests.Fixtures" />
         <Using Include="System.Net.Http.Json" />
     </ItemGroup>

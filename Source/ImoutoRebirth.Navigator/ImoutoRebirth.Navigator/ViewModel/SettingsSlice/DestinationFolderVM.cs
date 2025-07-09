@@ -1,6 +1,6 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-using ImoutoRebirth.Navigator.ViewModel.SettingsSlice.ValidationAttributes;
+using ImoutoRebirth.Common.WPF.ValidationAttributes;
 
 namespace ImoutoRebirth.Navigator.ViewModel.SettingsSlice;
 

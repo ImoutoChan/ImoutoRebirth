@@ -3,7 +3,6 @@ using ImoutoRebirth.Room.Application.Cqrs;
 using ImoutoRebirth.Room.Application.Cqrs.CollectionFileSlice;
 using ImoutoRebirth.Room.Application.Cqrs.CollectionSlice;
 using ImoutoRebirth.Room.Application.Cqrs.FoldersSlice;
-using ImoutoRebirth.Room.Application.Cqrs.ImoutoPicsUploadStateSlice;
 using MediatR;
 using Microsoft.AspNetCore.Builder;
 
@@ -58,7 +57,7 @@ internal static class EndpointsMappings
                 => mediator.Send(new CollectionFilesCountQuery(query), ct))
             .WithName("CountCollectionFiles");
         
-        files.MapPost("updateSourceTags", (IMediator mediator, CancellationToken ct) 
+        files.MapPost("update-source-tags", (IMediator mediator, CancellationToken ct)
                 => mediator.Send(new UpdateLocationTagsCommand(), ct))
             .WithName("UpdateSourceTags");
 
@@ -69,6 +68,10 @@ internal static class EndpointsMappings
         files.MapGet("/{id:guid}", (Guid id, IMediator mediator, CancellationToken ct)
                 => mediator.Send(new CollectionFileMetadataQuery(id), ct))
             .WithName("GetCollectionFileMetadata");
+
+        files.MapPost("/update-file-metadata", (IMediator mediator, CancellationToken ct)
+                => mediator.Send(new UpdateFileMetadataCommand(), ct))
+            .WithName("UpdateFileMetadata");
     }
 
     public static void MapDestinationFoldersEndpoints(this WebApplication app)
@@ -109,20 +112,5 @@ internal static class EndpointsMappings
             .WithName("DeleteSourceFolder");
     }
 
-    public static void MapImoutoPicsUploaderEnabled(this WebApplication app)
-    {
-        var sourceFolders = app.MapGroup("/imouto-pics-uploader-enabled");
 
-        sourceFolders.MapGet("", (IMediator mediator, CancellationToken ct) 
-                => mediator.Send(new IsImoutoPicsUploaderEnabledQuery(), ct))
-            .WithName("IsImoutoPicsUploaderEnabled");
-        
-        sourceFolders.MapPost("", (IMediator mediator, CancellationToken ct)
-                => mediator.Send(new EnableImoutoPicsUploaderCommand(), ct))
-            .WithName("EnableImoutoPicsUploader");
-
-        sourceFolders.MapDelete("", (IMediator mediator, CancellationToken ct)
-                => mediator.Send(new DisableImoutoPicsUploaderCommand(), ct))
-            .WithName("DisableImoutoPicsUploader");
-    }
 }

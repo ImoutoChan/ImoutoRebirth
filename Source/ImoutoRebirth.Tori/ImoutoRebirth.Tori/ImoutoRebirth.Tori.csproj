@@ -3,13 +3,14 @@
     <PropertyGroup>
         <OutputType>Exe</OutputType>
         <RuntimeIdentifier>win-x64</RuntimeIdentifier>
-        <SelfContained>false</SelfContained>
+        <SelfContained>true</SelfContained>
         <ApplicationManifest>app.manifest</ApplicationManifest>
 
         <TargetFramework>net9.0</TargetFramework>
         <Nullable>enable</Nullable>
         <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
         <ImplicitUsings>true</ImplicitUsings>
+
         <ServerGarbageCollection>false</ServerGarbageCollection>
     </PropertyGroup>
 

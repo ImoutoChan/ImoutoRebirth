@@ -1,0 +1,49 @@
+﻿{
+  Api: {
+    DanbooruLogin: danbooruUser,
+    DanbooruApiKey: danbooruKey123,
+    SankakuLogin: sankakuUser,
+    SankakuPassword: sankakuPass123,
+    YandereLogin: yandereUser,
+    YandereApiKey: yandereKey123,
+    GelbooruUserId: gelbooruUserId,
+    GelbooruApiKey: gelbooruKey123
+  },
+  Connection: {
+    LilinConnectionString: Server=localhost;Database=lilin;,
+    MeidoConnectionString: Server=localhost;Database=meido;,
+    RoomConnectionString: Server=localhost;Database=room;,
+    MassTransitConnectionString: Server=localhost;Database=masstransit;
+  },
+  Ports: {
+    RoomPort: 5000,
+    KekkaiPort: 5001,
+    LilinPort: 5002
+  },
+  Harpy: {
+    SavePath: C:\\Data\\Harpy,
+    FavoritesSaveJobRepeatEveryMinutes: 60
+  },
+  Meido: {
+    MetadataActualizerRepeatEveryMinutes: 30,
+    FaultToleranceRepeatEveryMinutes: 15,
+    FaultToleranceIsEnabled: true
+  },
+  Kekkai: {
+    AuthToken: token123
+  },
+  Jaeger: {
+    Host: localhost,
+    Port: 6831
+  },
+  ExHentai: {
+    IpbMemberId: memberId,
+    IpbPassHash: passHash,
+    Igneous: igneous,
+    UserAgent: Mozilla/5.0
+  },
+  OpenSearchUri: http://localhost:9200,
+  InstallLocation: C:\Apps\ImoutoRebirth,
+  FFmpegPath: C:\Program Files\FFmpeg,
+  WasMigrated: false
+}

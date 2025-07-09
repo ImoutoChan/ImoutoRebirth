@@ -98,18 +98,19 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tools", "Tools", "{2438D898-F22E-4AD1-950B-4686D50817B3}"
 	ProjectSection(SolutionItems) = preProject
 		..\BuildAndDeploy.ps1 = ..\BuildAndDeploy.ps1
+		..\BuildAndDeploySkipTests.ps1 = ..\BuildAndDeploySkipTests.ps1
 		..\CHANGELOG.md = ..\CHANGELOG.md
 		..\CHANGELOG.TEMPLATE.md = ..\CHANGELOG.TEMPLATE.md
 		Directory.Build.props = Directory.Build.props
+		Directory.Packages.props = Directory.Packages.props
 		..\Docs\Functions.md = ..\Docs\Functions.md
 		global.json = global.json
+		ImoutoRebirth.sln.DotSettings = ImoutoRebirth.sln.DotSettings
 		NuGet.config = NuGet.config
 		..\README.md = ..\README.md
 		..\README.RU.md = ..\README.RU.md
 		..\.github\workflows\release.yml = ..\.github\workflows\release.yml
-		ImoutoRebirth.sln.DotSettings = ImoutoRebirth.sln.DotSettings
-		Directory.Packages.props = Directory.Packages.props
-		..\BuildAndDeploySkipTests.ps1 = ..\BuildAndDeploySkipTests.ps1
+		..\BuildSkipTests.ps1 = ..\BuildSkipTests.ps1
 	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NukeBuild", "..\Tools\NukeBuild\NukeBuild.csproj", "{DBC3E098-5984-4FD6-9F83-18FBE9A23683}"
@@ -186,6 +187,34 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ResQueue", "ResQueue", "{33
 	ProjectSection(SolutionItems) = preProject
 		..\Tools\Dependencies\ResQueue\docker-compose.yml = ..\Tools\Dependencies\ResQueue\docker-compose.yml
 	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ImoutoRebirth.Tori.Tests", "ImoutoRebirth.Tori\ImoutoRebirth.Tori.Tests\ImoutoRebirth.Tori.Tests.csproj", "{12411564-70B0-4195-9629-01145CFDEAE3}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ImoutoRebirth.Tori.UI", "ImoutoRebirth.Tori\ImoutoRebirth.Tori.UI\ImoutoRebirth.Tori.UI.csproj", "{18CB0893-93C0-449E-BBBB-E4CF6C04895A}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Docs", "Docs", "{64D2DBCF-CB31-44FA-92C3-DED66E68CB0E}"
+	ProjectSection(SolutionItems) = preProject
+		..\Docs\Functions.md = ..\Docs\Functions.md
+		..\Docs\How to find my accounts login info.md = ..\Docs\How to find my accounts login info.md
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ImoutoRebirth.Common.AutoMapper", "ImoutoRebirth.Common\ImoutoRebirth.Common.AutoMapper\ImoutoRebirth.Common.AutoMapper.csproj", "{60877676-0585-40D7-97B0-61DAB0312871}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ImoutoRebirth.Lamia", "ImoutoRebirth.Lamia", "{E1C41F22-234A-4D60-A80C-C29797F87144}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ImoutoRebirth.Lamia.Application", "ImoutoRebirth.Lamia\ImoutoRebirth.Lamia.Application\ImoutoRebirth.Lamia.Application.csproj", "{CB6D432E-64A9-4A9B-9646-9A57E960125C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ImoutoRebirth.Lamia.Domain", "ImoutoRebirth.Lamia\ImoutoRebirth.Lamia.Domain\ImoutoRebirth.Lamia.Domain.csproj", "{BEB7ACC3-7DE0-4D38-93B4-93EFE40C3370}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ImoutoRebirth.Lamia.Host", "ImoutoRebirth.Lamia\ImoutoRebirth.Lamia.Host\ImoutoRebirth.Lamia.Host.csproj", "{F048B332-352A-4595-98A2-677C5E822457}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ImoutoRebirth.Lamia.Infrastructure", "ImoutoRebirth.Lamia\ImoutoRebirth.Lamia.Infrastructure\ImoutoRebirth.Lamia.Infrastructure.csproj", "{32929C9E-AE6F-4C63-8A51-C0904C8F620F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ImoutoRebirth.Lamia.IntegrationTests", "ImoutoRebirth.Lamia\ImoutoRebirth.Lamia.IntegrationTests\ImoutoRebirth.Lamia.IntegrationTests.csproj", "{9F277C96-DF41-4122-9072-DAEA6571FA6A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ImoutoRebirth.Lamia.UI", "ImoutoRebirth.Lamia\ImoutoRebirth.Lamia.UI\ImoutoRebirth.Lamia.UI.csproj", "{3C432923-3A69-45BD-88C9-2957304220DD}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ImoutoRebirth.Lamia.MessageContracts", "ImoutoRebirth.Lamia\ImoutoRebirth.Lamia.MessageContracts\ImoutoRebirth.Lamia.MessageContracts.csproj", "{ADADFF99-86BC-461B-99BE-C699FCEB912A}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -431,6 +460,46 @@ Global
 		{AAEFC13A-4A80-4079-BC67-AA15FD7BB9C2}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{AAEFC13A-4A80-4079-BC67-AA15FD7BB9C2}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{AAEFC13A-4A80-4079-BC67-AA15FD7BB9C2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{12411564-70B0-4195-9629-01145CFDEAE3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{12411564-70B0-4195-9629-01145CFDEAE3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{12411564-70B0-4195-9629-01145CFDEAE3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{12411564-70B0-4195-9629-01145CFDEAE3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{18CB0893-93C0-449E-BBBB-E4CF6C04895A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{18CB0893-93C0-449E-BBBB-E4CF6C04895A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{18CB0893-93C0-449E-BBBB-E4CF6C04895A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{18CB0893-93C0-449E-BBBB-E4CF6C04895A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{60877676-0585-40D7-97B0-61DAB0312871}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{60877676-0585-40D7-97B0-61DAB0312871}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{60877676-0585-40D7-97B0-61DAB0312871}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{60877676-0585-40D7-97B0-61DAB0312871}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CB6D432E-64A9-4A9B-9646-9A57E960125C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CB6D432E-64A9-4A9B-9646-9A57E960125C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CB6D432E-64A9-4A9B-9646-9A57E960125C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CB6D432E-64A9-4A9B-9646-9A57E960125C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BEB7ACC3-7DE0-4D38-93B4-93EFE40C3370}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BEB7ACC3-7DE0-4D38-93B4-93EFE40C3370}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BEB7ACC3-7DE0-4D38-93B4-93EFE40C3370}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BEB7ACC3-7DE0-4D38-93B4-93EFE40C3370}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F048B332-352A-4595-98A2-677C5E822457}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F048B332-352A-4595-98A2-677C5E822457}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F048B332-352A-4595-98A2-677C5E822457}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F048B332-352A-4595-98A2-677C5E822457}.Release|Any CPU.Build.0 = Release|Any CPU
+		{32929C9E-AE6F-4C63-8A51-C0904C8F620F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{32929C9E-AE6F-4C63-8A51-C0904C8F620F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{32929C9E-AE6F-4C63-8A51-C0904C8F620F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{32929C9E-AE6F-4C63-8A51-C0904C8F620F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9F277C96-DF41-4122-9072-DAEA6571FA6A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9F277C96-DF41-4122-9072-DAEA6571FA6A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9F277C96-DF41-4122-9072-DAEA6571FA6A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9F277C96-DF41-4122-9072-DAEA6571FA6A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3C432923-3A69-45BD-88C9-2957304220DD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3C432923-3A69-45BD-88C9-2957304220DD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3C432923-3A69-45BD-88C9-2957304220DD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3C432923-3A69-45BD-88C9-2957304220DD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{ADADFF99-86BC-461B-99BE-C699FCEB912A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{ADADFF99-86BC-461B-99BE-C699FCEB912A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{ADADFF99-86BC-461B-99BE-C699FCEB912A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{ADADFF99-86BC-461B-99BE-C699FCEB912A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -500,6 +569,17 @@ Global
 		{1BB082C3-0D59-4ECF-A008-BA6C0098E771} = {2438D898-F22E-4AD1-950B-4686D50817B3}
 		{B16254AF-E3CE-482E-AAE8-7F2552B49B32} = {2438D898-F22E-4AD1-950B-4686D50817B3}
 		{33AC8603-2432-4141-8072-51A426466565} = {2438D898-F22E-4AD1-950B-4686D50817B3}
+		{12411564-70B0-4195-9629-01145CFDEAE3} = {97909957-9388-4101-9FC9-7A439D3919F9}
+		{18CB0893-93C0-449E-BBBB-E4CF6C04895A} = {97909957-9388-4101-9FC9-7A439D3919F9}
+		{64D2DBCF-CB31-44FA-92C3-DED66E68CB0E} = {2438D898-F22E-4AD1-950B-4686D50817B3}
+		{60877676-0585-40D7-97B0-61DAB0312871} = {4383FD00-3B54-4C2B-9222-BDC045D3FD9B}
+		{CB6D432E-64A9-4A9B-9646-9A57E960125C} = {E1C41F22-234A-4D60-A80C-C29797F87144}
+		{BEB7ACC3-7DE0-4D38-93B4-93EFE40C3370} = {E1C41F22-234A-4D60-A80C-C29797F87144}
+		{F048B332-352A-4595-98A2-677C5E822457} = {E1C41F22-234A-4D60-A80C-C29797F87144}
+		{32929C9E-AE6F-4C63-8A51-C0904C8F620F} = {E1C41F22-234A-4D60-A80C-C29797F87144}
+		{9F277C96-DF41-4122-9072-DAEA6571FA6A} = {E1C41F22-234A-4D60-A80C-C29797F87144}
+		{3C432923-3A69-45BD-88C9-2957304220DD} = {E1C41F22-234A-4D60-A80C-C29797F87144}
+		{ADADFF99-86BC-461B-99BE-C699FCEB912A} = {E1C41F22-234A-4D60-A80C-C29797F87144}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {3E48016D-BB6B-49F0-9888-80A5EAF0FAA4}

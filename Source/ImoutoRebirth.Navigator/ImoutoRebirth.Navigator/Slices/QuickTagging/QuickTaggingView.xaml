@@ -255,6 +255,21 @@
                     <Button DockPanel.Dock="Right" HorizontalAlignment="Right"
                             Width="26"
                             Height="26"
+                            Margin="5,0,0,0"
+                            Style="{DynamicResource MahApps.Styles.Button.Circle}"
+                            ToolTip="Close"
+                            Command="{Binding CloseCommand}">
+                        <Grid Margin="1,0,0,0">
+                            <iconPacks:PackIconModern
+                                Width="12"
+                                Height="12"
+                                Kind="Close" />
+                        </Grid>
+                    </Button>
+
+                    <Button DockPanel.Dock="Right" HorizontalAlignment="Right"
+                            Width="26"
+                            Height="26"
                             Margin="0,0,0,0"
                             Style="{DynamicResource MahApps.Styles.Button.Circle}"
                             ToolTip="Move panel up and down"

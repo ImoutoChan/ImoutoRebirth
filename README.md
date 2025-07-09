@@ -2,9 +2,9 @@
 
 ## Important
 
-I recently open-sourced the program that I wrote myself and used for many years. Installation instructions are checked on a clean Windows 10 and should be ok, but if you have any problems feel free to create a discussion or an issue. I'm also planning to upload a video with a demo of the installation process in near future, it should help a little.
+I recently open-sourced the program that I wrote myself and used for many years. Installation instructions have been tested on a clean Windows 10 and should be ok, but if you have any problems feel free to create a discussion or an issue. I'm also planning to upload a video with a demo of the installation process in the near future, it should help a little.
 
-- [Lastest release](https://github.com/ImoutoChan/ImoutoRebirth/releases/latest)
+- [Latest release](https://github.com/ImoutoChan/ImoutoRebirth/releases/latest)
 - [Quick start](#installation)
 
 ## Content
@@ -14,7 +14,7 @@ I recently open-sourced the program that I wrote myself and used for many years.
   - [Imouto Navigator](#imouto-navigator)
   - [ImoutoRebirth Viewer](#imoutorebirth-viewer)
 - [Installation](#installation)
-- [Configuration](#configuration)
+- [Internal Configuration](#internal-configuration)
   - [configuration.json](#configurationjson)
 - [ImoutoRebirth Architecture](#imoutorebirth-architecture)
   - [ImoutoRebirth.Room](#imoutorebirthroom)
@@ -67,39 +67,24 @@ For viewing individual images. Its use is not mandatory, you can use your favori
 
 # Installation
 
-**Video guide with installation and initial configuration**: https://youtu.be/rEg0WMQgmoE
+The main idea of the app is that you have different collections with media that store your images/videos. After installation, you have to set up these collections in the ImoutoNavigator app. Each collection has source folders and (optionally) a destination folder. The app monitors each source folder, takes files from there, processes them, and moves them to the destination folder. After that files will be visible in the ImoutoNavigator app. Installation itself looks like this:
 
-**[NEW]** **Video guide with first launch, collection configuration, demo some features, Imouto Extensions demo**: https://youtu.be/7Gnbc3296GU
+1. **Download** ImoutoRebirth.exe to any folder from the [latest release](https://github.com/ImoutoChan/ImoutoRebirth/releases/latest)
+2. **Run it** (this is a self-extracting 7z archive), it will unpack the application
+3. Run the **install.cmd** file to launch the installation process
+4. It will check if necessary dependencies are installed and if they are not, it will install them for you later
+5. Fill the **accounts section** for boorus and exhentai (if you're planning to save douji here), while it's not required, the app works much better with them
 
-The main idea of the app is that you have different collections with media that store your images/videos. After installation, you have to set up this collection in ImoutoNavigator app. Each collection has source folders and (optionally) a destination folder. The app monitors each source folder, takes files from there, processes them, and moves them to the destination folder. After that files are observable in ImoutoNavigator app. Installation itself looks like this:
+    - [How to find my accounts login info?](https://github.com/ImoutoChan/ImoutoRebirth/blob/master/Docs/How%20to%20find%20my%20accounts%20login%20info.md)
+     
+6. Leave everything else as default, **click install** and wait (installing postgres can take up to 10 minutes)
+7. Optionally, you can install the Chrome or Firefox extension, which will highlight saved images and related images. Links: [chrome](https://chrome.google.com/webstore/detail/imouto-extension/ieilellpakdngfomipoedkgfaeddfffc) [firefox](https://addons.mozilla.org/en-US/firefox/addon/imouto-extension/)
 
-1. Download ImoutoRebirth.exe to any folder from [latest release](https://github.com/ImoutoChan/ImoutoRebirth/releases/latest)
-2. Run it (this is a self-extracting 7z archive), it will unpack the application into the version folder, copy the path to this folder
-3. Edit configuration.json, filling it with your data, I recommend filling in at least Danbooru and Yandere login info. But in the worst case you can leave everything at defaults.
-4. Run Powershell as an administrator
-5. Execute these commands:
+**Video guide with first launch, collection configuration, demo some features, Imouto Extensions demo**: https://youtu.be/7Gnbc3296GU
 
-```powershell
-Set-ExecutionPolicy Bypass -Scope Process -Force;
-```
+Old video guide with installation and initial configuration, while obsolete still can give you some insights: https://youtu.be/rEg0WMQgmoE
 
-```powershell
-cd <path to the latest folder>
-``` 
-
-This one will install postgres, .net runtime (can take some time, especially for Postgres)
-```powershell
-./install-dependencies.ps1
-```
-
-This one will install or update the application itself
-```powershell
-./install-update.ps1
-```
-
-6. Optionally, you can install the Chrome extension, which will highlight saved images and their relatives. [Link to the extension](https://chrome.google.com/webstore/detail/imouto-extension/ieilellpakdngfomipoedkgfaeddfffc)
-
-# Configuration
+# Internal configuration
 
 ## configuration.json
 
@@ -126,42 +111,52 @@ Template and default values
   "MeidoMetadataActualizerRepeatEveryMinutes": "5",
   "MeidoFaultToleranceRepeatEveryMinutes": "10080",
   "MeidoFaultToleranceIsEnabled": "true",
-  "RoomImoutoPicsUploadUrl": "",
   "InstallLocation": "C:\\Program Files\\Imouto",
-  "OpenSearchUri": "http://localhost:9200/"
+  "OpenSearchUri": "http://localhost:9200/",
+  "ExHentaiIpbMemberId": "",
+  "ExHentaiIpbPassHash": "",
+  "ExHentaiIgneous": "",
+  "ExHentaiUserAgent": "",
+  "GelbooruApiKey": "",
+  "GelbooruUserId": ""
 }
 ```
 
-| Parameter                                 | Required | Comment                                                                                                                                                                                    |
-|-------------------------------------------|----------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| DanbooruLogin                             |          | Optional but recommended, only if you want ImoutoRebirth to search tags for your files in danbooru                                                                                         |
-| DanbooruApiKey                            |          | Optional but recommended, you can find it at the end of your danbooru profile page, API Key row                                                                                            |
-| SankakuLogin                              |          | Optional, your sankaku login                                                                                                                                                               |
-| SankakuPassword                           |          | Optional, your sankaku password                                                                                                                                                            |
-| YandereLogin                              |          | Optional but recommended, only if you want ImoutoRebirth to search tags for your files in yandere                                                                                          |
-| YandereApiKey                             |          | Optional but recommended, you can find it in Profile / Settings                                                                                                                            |
-| RoomPort                                  | *        | Room service will be exposed through this port                                                                                                                                             |
-| LilinPort                                 | *        | Lilin service will be exposed through this port                                                                                                                                            |
-| KekkaiPort                                | *        | Kekkai service will be exposed through this port                                                                                                                                           |
-| HarpySavePath                             |          | Optional, Service will automatically save your likes from configured boorus to this path. If you point it to your collection from Room, you will get liked images from booru automatically |
-| HarpyFavoritesSaveJobRepeatEveryMinutes   | *        | Interval in minutes, in which the service will check for new liked images                                                                                                                  |
-| KekkaiAuthToken                           | *        | Place here random string (you can generate new guid or something)                                                                                                                          |
-| LilinConnectionString                     | *        | Connection string for Lilin service to the postgres database                                                                                                                               |
-| MeidoConnectionString                     | *        | Connection string for Meido service to the postgres database                                                                                                                               |
-| RoomConnectionString                      | *        | Connection string for Room service to the postgres database                                                                                                                                |
-| MassTransitConnectionString               | *        | Connection string for MassTransit SQL transport (replacement for rabbit mq)                                                                                                                |
-| MeidoMetadataActualizerRepeatEveryMinutes | *        | Meido service will request actualization from Danbooru and Yandere in specified interval                                                                                                   |
-| MeidoFaultToleranceRepeatEveryMinutes     | *        | Meido service will request tags for failed files in specified interval                                                                                                                     |
-| MeidoFaultToleranceIsEnabled              | *        | Meido service will repeat tag request for failed file                                                                                                                                      |
-| RoomImoutoPicsUploadUrl                   |          | Optional, callback that will be called for every saved file                                                                                                                                |
-| InstallLocation                           | *        | Installation location for ImoutoRebirth                                                                                                                                                    |
-| OpenSearchUri                             |          | Optional, logging to open search                                                                                                                                                           |
+| Parameter                                 | Required | Comment |
+|-------------------------------------------|----------|---------|
+| DanbooruLogin                             |          | Optional but recommended, only if you want ImoutoRebirth to search tags for your files in danbooru |
+| DanbooruApiKey                            |          | Optional but recommended, you can find it at the end of your danbooru profile page, API Key row |
+| SankakuLogin                              |          | Optional, your sankaku login |
+| SankakuPassword                           |          | Optional, your sankaku password |
+| YandereLogin                              |          | Optional but recommended, only if you want ImoutoRebirth to search tags for your files in yandere |
+| YandereApiKey                             |          | Optional but recommended, you can find it in Profile / Settings |
+| RoomPort                                  | *        | Room service will be exposed through this port |
+| LilinPort                                 | *        | Lilin service will be exposed through this port |
+| KekkaiPort                                | *        | Kekkai service will be exposed through this port |
+| HarpySavePath                             |          | Optional, the service will automatically save your likes from configured boorus to this path. If you point it to one of your collection source folders, you will get liked images from booru automatically |
+| HarpyFavoritesSaveJobRepeatEveryMinutes   | *        | Interval in minutes, in which the service will check for new liked images |
+| KekkaiAuthToken                           | *        | Place here random string (you can generate new guid or something) |
+| LilinConnectionString                     | *        | Connection string for Lilin service to the postgres database |
+| MeidoConnectionString                     | *        | Connection string for Meido service to the postgres database |
+| RoomConnectionString                      | *        | Connection string for Room service to the postgres database |
+| MassTransitConnectionString               | *        | Connection string for MassTransit SQL transport (replacement for rabbit mq) |
+| MeidoMetadataActualizerRepeatEveryMinutes | *        | Meido service will request actualization from Danbooru and Yandere in a specified interval |
+| MeidoFaultToleranceRepeatEveryMinutes     | *        | Meido service will request tags for failed files in a specified interval |
+| MeidoFaultToleranceIsEnabled              | *        | Meido service will repeat tag request for a failed file |
+| InstallLocation                           | *        | Installation location for ImoutoRebirth |
+| OpenSearchUri                             |          | Optional, logging to open search |
+| ExHentaiIpbMemberId                       |          | Optional, ExHentai cookie ipbMemberId value |
+| ExHentaiIpbPassHash                       |          | Optional, ExHentai cookie ipbPassHash value |
+| ExHentaiIgneous                           |          | Optional, ExHentai cookie igneous value |
+| ExHentaiUserAgent                         |          | Optional, user agent to use for ExHentai requests |
+| GelbooruApiKey                            |          | Optional, your Gelbooru API key |
+| GelbooruUserId                            |          | Optional, your Gelbooru user id |
 
 ## ImoutoRebirth Architecture
 
-Beyond the two applications mentioned earlier, ImoutoRebirth internally consists of a bunch of services, each with its own function. These will be installed automatically, and no particular knowledge about them is required. However, for the inquisitive, this section describes the inner workings and purposes of different services, as well as their dependencies. If you follow the installation instructions above, these services will be automatically installed as Windows Services. Also, for the system to operate, Postgres will be needed. You can install it independently or use the scripts provided with each release.
+Beyond the two applications mentioned earlier, ImoutoRebirth internally consists of multiple services, each with its own function. These will be installed automatically, and no particular knowledge about them is required. However, for the inquisitive, this section describes the inner workings and purposes of different services, as well as their dependencies. If you follow the installation instructions above, these services will be automatically installed as Windows Services. The system also requires PostgreSQL to operate. You can install it independently or use the scripts provided with each release.
 
-You can overview the basic architecture and the interaction of services in greater detail in [this diagram](https://drive.google.com/file/d/1MD8NAIeuV8u_wt9HWjdUUrcOaiZOMNBF/view?usp=drive_link), open it with diagrams.net or draw.io.
+You can view the basic architecture and the interaction of services in greater detail in [this diagram](https://drive.google.com/file/d/1MD8NAIeuV8u_wt9HWjdUUrcOaiZOMNBF/view?usp=drive_link), open it with diagrams.net or draw.io.
 
 ### ImoutoRebirth.Room
 This service is responsible for interacting with the file system. It is the one that stores your collections, moves files, checks for duplicates, calculates and compares md5 hashes. Configuring collections from Imouto Navigator calls methods specifically in it.
@@ -188,4 +183,4 @@ This service won't run or be installed in your system, as it's an updater servic
 The app that you can use to browse images individually, supports local tags, notes, slideshow, fixed zoom, and more.
 
 ### Imouto.Extensions
-[The chrome extension](https://chrome.google.com/webstore/detail/imouto-extension/ieilellpakdngfomipoedkgfaeddfffc), that will highlight saved images and their relatives.
+[Chrome extension](https://chrome.google.com/webstore/detail/imouto-extension/ieilellpakdngfomipoedkgfaeddfffc) | [Firefox extension](https://addons.mozilla.org/en-US/firefox/addon/imouto-extension/), will highlight saved and related images.

@@ -22,6 +22,9 @@ public static class StringExtensions
     public static bool EndsWithIgnoreCase(this string? str1, string str2)
         => str1?.EndsWith(str2, StringComparison.OrdinalIgnoreCase) ?? false;
 
+    public static bool StartsWithIgnoreCase(this string? str1, string str2)
+        => str1?.StartsWith(str2, StringComparison.OrdinalIgnoreCase) ?? false;
+
     public static int? GetIntOrDefault(this string? str)
     {
         if (int.TryParse(str, out var result))
