@@ -2,6 +2,8 @@
 
 ### Navigator
 * Add close button for the quick tagging window
+* Settings are now preserved between versions of Navigator apps
+* Reformat added on date for files
 
 ### Lamia
 * New service lamia, extracts media tags from files (codec, resolution, duration) and adds them to Lilin
