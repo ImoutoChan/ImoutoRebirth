@@ -14,31 +14,30 @@ internal class WebhookUploader : IWebhookUploader
         _logger = logger;
     }
 
-    public async Task UploadFile(string path, string uploadUrl)
+    public async Task UploadFile(string filePath, string uploadUrl)
     {
-        _logger.LogInformation("Uploading file {Path} to {UploadUrl}", path, uploadUrl);
+        _logger.LogInformation("Uploading file {Path} to {UploadUrl}", filePath, uploadUrl);
 
         try
         {
-            using var fileContent = new MultipartFormDataContent();
-            await using var fileStream = File.OpenRead(path);
-            var streamContent = new StreamContent(fileStream);
-            fileContent.Add(streamContent, "file", Path.GetFileName(path));
+            var isImage
+                = filePath.EndsWith(".jpg")
+                  || filePath.EndsWith(".png")
+                  || filePath.EndsWith(".jpeg")
+                  || filePath.EndsWith(".gif");
 
-            var response = await _httpClient.PostAsync(uploadUrl, fileContent);
+            if (!isImage)
+                return;
 
-            if (response.IsSuccessStatusCode)
-            {
-                _logger.LogInformation("File {Path} uploaded successfully", path);
-            }
-            else
-            {
-                _logger.LogWarning("Failed to upload file {Path}. Status: {StatusCode}", path, response.StatusCode);
-            }
+            await using var fileStream = File.OpenRead(filePath);
+            var content = new MultipartFormDataContent();
+            content.Add(new StreamContent(fileStream), "files", Path.GetFileName(filePath));
+
+            using var response = await _httpClient.PostAsync(uploadUrl, content);
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "Error uploading file {Path} to {UploadUrl}", path, uploadUrl);
+            _logger.LogError(ex, "Error uploading file {Path} to {UploadUrl}", filePath, uploadUrl);
         }
     }
-} 
+}
