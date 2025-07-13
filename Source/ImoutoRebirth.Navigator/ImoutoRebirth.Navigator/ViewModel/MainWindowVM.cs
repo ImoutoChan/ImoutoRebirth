@@ -14,6 +14,7 @@ using ImoutoRebirth.Navigator.Model;
 using ImoutoRebirth.Navigator.Services;
 using ImoutoRebirth.Navigator.Services.ImoutoViewer;
 using ImoutoRebirth.Navigator.Services.Tags;
+using ImoutoRebirth.Navigator.Slices.CreateCollectionWizard;
 using ImoutoRebirth.Navigator.Slices.QuickTagging;
 using ImoutoRebirth.Navigator.UserControls;
 using ImoutoRebirth.Navigator.ViewModel.ListEntries;
@@ -99,6 +100,7 @@ internal partial class MainWindowVM : ObservableObject
         _view.SelectedItemsChanged += OnViewOnSelectedItemsChanged;
 
         _messenger.Register<QuickTaggingCloseRequest>(this, (_, _) => ShowQuickTagging = false);
+        _messenger.Register<OpenCreateCollectionWizardRequest>(this, (_, _) => OpenCreateCollectionWizard());
     }
 
     public void ShowWindow() => _view.Show();
@@ -273,6 +275,15 @@ internal partial class MainWindowVM : ObservableObject
 
         FullScreenPreviewVM = vm;
         Title = Path.GetFileName(navigatorListEntry.Path);
+    }
+
+    private void OpenCreateCollectionWizard()
+    {
+        var window = new CreateCollectionWizardWindow();
+        var vm = new WizardRootVM(window);
+
+        window.DataContext = vm;
+        window.Show();
     }
 
     private void OnCurrentEntryNameChanged(object? _, string value) => Title = value;

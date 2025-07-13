@@ -7,17 +7,9 @@ namespace ImoutoRebirth.Navigator.ViewModel.SettingsSlice;
 internal partial class DestinationFolderVM : FolderVM
 {
     [ObservableProperty]
-    [NotifyCanExecuteChangedFor(nameof(SaveCommand))]
-    [NotifyDataErrorInfo]
-    [NotNullOrWhiteSpace]
-    [Directory("Please enter valid folder name")]
     public partial bool NeedDevideImagesByHash { get; set; }
 
     [ObservableProperty]
-    [NotifyCanExecuteChangedFor(nameof(SaveCommand))]
-    [NotifyDataErrorInfo]
-    [NotNullOrWhiteSpace("Please enter folder name")]
-    [Directory("Please enter valid folder name")]
     public partial bool NeedRename { get; set; }
 
     [ObservableProperty]

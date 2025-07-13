@@ -10,17 +10,16 @@ using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
 using System.Windows.Shapes;
 
 namespace ImoutoRebirth.Navigator.Slices.CreateCollectionWizard
 {
     /// <summary>
-    /// Interaction logic for AdvancedView.xaml
+    /// Interaction logic for CreateCollectionWizardWindow.xaml
     /// </summary>
-    public partial class AdvancedView : UserControl
+    public partial class CreateCollectionWizardWindow
     {
-        public AdvancedView()
+        public CreateCollectionWizardWindow()
         {
             InitializeComponent();
         }

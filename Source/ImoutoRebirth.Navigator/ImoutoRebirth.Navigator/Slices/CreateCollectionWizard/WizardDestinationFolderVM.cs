@@ -1,8 +1,8 @@
 ﻿using System.IO;
 using CommunityToolkit.Mvvm.ComponentModel;
+using ImoutoRebirth.Common.WPF.ValidationAttributes;
 using ImoutoRebirth.Navigator.Services.Collections;
 using ImoutoRebirth.Navigator.Utils;
-using ImoutoRebirth.Navigator.ViewModel.SettingsSlice.ValidationAttributes;
 
 namespace ImoutoRebirth.Navigator.Slices.CreateCollectionWizard;
 
@@ -15,15 +15,9 @@ internal partial class WizardDestinationFolderVM : ObservableValidator
     public partial string Path { get; set; } = "";
 
     [ObservableProperty]
-    [NotifyDataErrorInfo]
-    [NotNullOrWhiteSpace]
-    [Directory("Please enter valid folder name")]
     public partial bool ShouldCreateSubfoldersByHash { get; set; } = false;
 
     [ObservableProperty]
-    [NotifyDataErrorInfo]
-    [NotNullOrWhiteSpace("Please enter folder name")]
-    [Directory("Please enter valid folder name")]
     public partial bool ShouldRenameByHash { get; set; } = true;
 
     [ObservableProperty]

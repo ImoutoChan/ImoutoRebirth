@@ -1,0 +1,224 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <DrawingImage x:Key="Icons.Svg.SingleFolder">
+      <DrawingImage.Drawing>
+        <DrawingGroup ClipGeometry="M0,0 V72.7 H102.64 V0 H0 Z">
+          <DrawingGroup Opacity="1">
+            <DrawingGroup Opacity="1">
+              <DrawingGroup Opacity="1">
+                <GeometryDrawing Brush="#FF4D4D4D" Geometry="F1 M102.64,72.7z M0,0z M1.89,10.06L1.89,10.06 1.89,71.2 88.48,71.2 88.48,10.06 57.55,10.06 49.44,1.5 1.89,1.5 1.89,10.06z">
+                  <GeometryDrawing.Pen>
+                    <Pen Brush="{DynamicResource MahApps.Brushes.Accent}" Thickness="3" StartLineCap="Flat" EndLineCap="Flat" LineJoin="Miter" />
+                  </GeometryDrawing.Pen>
+                </GeometryDrawing>
+                <GeometryDrawing Brush="#FF4D4D4D" Geometry="F1 M102.64,72.7z M0,0z M100.75,19.05L100.75,19.05 14.16,19.05 1.89,71.2 88.48,71.2 100.75,19.05z">
+                  <GeometryDrawing.Pen>
+                    <Pen Brush="{DynamicResource MahApps.Brushes.Accent}" Thickness="3" StartLineCap="Flat" EndLineCap="Flat" LineJoin="Miter" />
+                  </GeometryDrawing.Pen>
+                </GeometryDrawing>
+              </DrawingGroup>
+              <DrawingGroup Opacity="1">
+                <DrawingGroup Transform="0.999489976721293,-0.0319340951597066,0.0319340951597066,0.999489976721293,-2.02,2.49">
+                  <GeometryDrawing Brush="{DynamicResource MahApps.Brushes.Accent}">
+                    <GeometryDrawing.Pen>
+                      <Pen Brush="#FF4D4D4D" Thickness="1" StartLineCap="Flat" EndLineCap="Flat" LineJoin="Miter" />
+                    </GeometryDrawing.Pen>
+                    <GeometryDrawing.Geometry>
+                      <EllipseGeometry RadiusX="6.41" RadiusY="1.96" Center="77.18,64.56" />
+                    </GeometryDrawing.Geometry>
+                  </GeometryDrawing>
+                </DrawingGroup>
+                <DrawingGroup Transform="0.999489976721293,-0.0319340951597066,0.0319340951597066,0.999489976721293,-1.92,2.52">
+                  <GeometryDrawing Brush="{DynamicResource MahApps.Brushes.Accent}">
+                    <GeometryDrawing.Pen>
+                      <Pen Brush="#FF4D4D4D" Thickness="1" StartLineCap="Flat" EndLineCap="Flat" LineJoin="Miter" />
+                    </GeometryDrawing.Pen>
+                    <GeometryDrawing.Geometry>
+                      <EllipseGeometry RadiusX="6.41" RadiusY="1.96" Center="78.15,61.36" />
+                    </GeometryDrawing.Geometry>
+                  </GeometryDrawing>
+                </DrawingGroup>
+                <GeometryDrawing Brush="{DynamicResource MahApps.Brushes.Accent}">
+                  <GeometryDrawing.Pen>
+                    <Pen Brush="#FF4D4D4D" Thickness="1" StartLineCap="Flat" EndLineCap="Flat" LineJoin="Miter" />
+                  </GeometryDrawing.Pen>
+                  <GeometryDrawing.Geometry>
+                    <LineGeometry StartPoint="74.75,51.59" EndPoint="70.8,64.56" />
+                  </GeometryDrawing.Geometry>
+                </GeometryDrawing>
+                <DrawingGroup Transform="0.999489976721293,-0.0319340951597066,0.0319340951597066,0.999489976721293,-1.81,2.55">
+                  <GeometryDrawing Brush="{DynamicResource MahApps.Brushes.Accent}">
+                    <GeometryDrawing.Pen>
+                      <Pen Brush="#FF4D4D4D" Thickness="1" StartLineCap="Flat" EndLineCap="Flat" LineJoin="Miter" />
+                    </GeometryDrawing.Pen>
+                    <GeometryDrawing.Geometry>
+                      <EllipseGeometry RadiusX="6.41" RadiusY="1.96" Center="79.12,58.17" />
+                    </GeometryDrawing.Geometry>
+                  </GeometryDrawing>
+                </DrawingGroup>
+                <DrawingGroup Transform="0.999489976721293,-0.0319340951597066,0.0319340951597066,0.999489976721293,-1.71,2.58">
+                  <GeometryDrawing Brush="{DynamicResource MahApps.Brushes.Accent}">
+                    <GeometryDrawing.Pen>
+                      <Pen Brush="#FF4D4D4D" Thickness="1" StartLineCap="Flat" EndLineCap="Flat" LineJoin="Miter" />
+                    </GeometryDrawing.Pen>
+                    <GeometryDrawing.Geometry>
+                      <EllipseGeometry RadiusX="6.41" RadiusY="1.96" Center="80.15,54.78" />
+                    </GeometryDrawing.Geometry>
+                  </GeometryDrawing>
+                </DrawingGroup>
+                <DrawingGroup Transform="0.999489976721293,-0.0319340951597066,0.0319340951597066,0.999489976721293,-1.6,2.61">
+                  <GeometryDrawing Brush="{DynamicResource MahApps.Brushes.Accent}">
+                    <GeometryDrawing.Pen>
+                      <Pen Brush="#FF4D4D4D" Thickness="1" StartLineCap="Flat" EndLineCap="Flat" LineJoin="Miter" />
+                    </GeometryDrawing.Pen>
+                    <GeometryDrawing.Geometry>
+                      <EllipseGeometry RadiusX="6.41" RadiusY="1.96" Center="81.13,51.59" />
+                    </GeometryDrawing.Geometry>
+                  </GeometryDrawing>
+                </DrawingGroup>
+                <GeometryDrawing Brush="{DynamicResource MahApps.Brushes.Accent}">
+                  <GeometryDrawing.Pen>
+                    <Pen Brush="#FF4D4D4D" Thickness="1" StartLineCap="Flat" EndLineCap="Flat" LineJoin="Miter" />
+                  </GeometryDrawing.Pen>
+                  <GeometryDrawing.Geometry>
+                    <LineGeometry StartPoint="87.5,51.59" EndPoint="83.56,64.56" />
+                  </GeometryDrawing.Geometry>
+                </GeometryDrawing>
+              </DrawingGroup>
+            </DrawingGroup>
+          </DrawingGroup>
+        </DrawingGroup>
+      </DrawingImage.Drawing>
+    </DrawingImage>
+
+    <DrawingImage x:Key="Icons.Svg.MultipleFolders">
+      <DrawingImage.Drawing>
+        <DrawingGroup ClipGeometry="M0,0 V198.67 H226.29 V0 H0 Z">
+          <DrawingGroup Opacity="1">
+            <DrawingGroup Opacity="1">
+              <DrawingGroup Opacity="1">
+                <GeometryDrawing Brush="#FF4D4D4D" Geometry="F1 M226.29,198.67z M0,0z M1.89,10.06L1.89,10.06 1.89,71.2 88.48,71.2 88.48,10.06 57.55,10.06 49.44,1.5 1.89,1.5 1.89,10.06z">
+                  <GeometryDrawing.Pen>
+                    <Pen Brush="{DynamicResource MahApps.Brushes.Accent}" Thickness="3" StartLineCap="Flat" EndLineCap="Flat" LineJoin="Miter" />
+                  </GeometryDrawing.Pen>
+                </GeometryDrawing>
+                <GeometryDrawing Brush="#FF4D4D4D" Geometry="F1 M226.29,198.67z M0,0z M100.75,19.05L100.75,19.05 14.16,19.05 1.89,71.2 88.48,71.2 100.75,19.05z">
+                  <GeometryDrawing.Pen>
+                    <Pen Brush="{DynamicResource MahApps.Brushes.Accent}" Thickness="3" StartLineCap="Flat" EndLineCap="Flat" LineJoin="Miter" />
+                  </GeometryDrawing.Pen>
+                </GeometryDrawing>
+              </DrawingGroup>
+              <DrawingGroup Opacity="1">
+                <GeometryDrawing Brush="#FF4D4D4D" Geometry="F1 M226.29,198.67z M0,0z M125.54,32.81L125.54,32.81 125.54,93.94 212.12,93.94 212.12,32.81 181.2,32.81 173.08,24.25 125.54,24.25 125.54,32.81z">
+                  <GeometryDrawing.Pen>
+                    <Pen Brush="{DynamicResource MahApps.Brushes.Accent}" Thickness="3" StartLineCap="Flat" EndLineCap="Flat" LineJoin="Miter" />
+                  </GeometryDrawing.Pen>
+                </GeometryDrawing>
+                <GeometryDrawing Brush="#FF4D4D4D" Geometry="F1 M226.29,198.67z M0,0z M224.39,41.79L224.39,41.79 137.81,41.79 125.54,93.94 212.12,93.94 224.39,41.79z">
+                  <GeometryDrawing.Pen>
+                    <Pen Brush="{DynamicResource MahApps.Brushes.Accent}" Thickness="3" StartLineCap="Flat" EndLineCap="Flat" LineJoin="Miter" />
+                  </GeometryDrawing.Pen>
+                </GeometryDrawing>
+              </DrawingGroup>
+              <DrawingGroup Opacity="1">
+                <GeometryDrawing Geometry="F1 M226.29,198.67z M0,0z M45.19,74L45.19,74 45.19,99.72 75.09,99.72 75.09,115.1">
+                  <GeometryDrawing.Pen>
+                    <Pen Brush="{DynamicResource MahApps.Brushes.Accent}" Thickness="3" StartLineCap="Flat" EndLineCap="Flat" LineJoin="Miter" />
+                  </GeometryDrawing.Pen>
+                </GeometryDrawing>
+                <GeometryDrawing Brush="{DynamicResource MahApps.Brushes.Accent}" Geometry="F1 M226.29,198.67z M0,0z M67.91,113L67.91,113 75.09,125.44 82.27,113 67.91,113z" />
+              </DrawingGroup>
+              <DrawingGroup Opacity="1">
+                <GeometryDrawing Geometry="F1 M226.29,198.67z M0,0z M143.75,96.66L143.75,96.66 143.75,115.42 118.25,115.42 118.25,123.85">
+                  <GeometryDrawing.Pen>
+                    <Pen Brush="{DynamicResource MahApps.Brushes.Accent}" Thickness="3" StartLineCap="Flat" EndLineCap="Flat" LineJoin="Miter" />
+                  </GeometryDrawing.Pen>
+                </GeometryDrawing>
+                <GeometryDrawing Brush="{DynamicResource MahApps.Brushes.Accent}" Geometry="F1 M226.29,198.67z M0,0z M111.07,121.75L111.07,121.75 118.25,134.18 125.43,121.75 111.07,121.75z" />
+              </DrawingGroup>
+              <DrawingGroup Opacity="1">
+                <GeometryDrawing Brush="#FF4D4D4D" Geometry="F1 M226.29,198.67z M0,0z M45.05,136.04L45.05,136.04 45.05,197.17 131.64,197.17 131.64,136.04 100.71,136.04 92.6,127.48 45.05,127.48 45.05,136.04z">
+                  <GeometryDrawing.Pen>
+                    <Pen Brush="{DynamicResource MahApps.Brushes.Accent}" Thickness="3" StartLineCap="Flat" EndLineCap="Flat" LineJoin="Miter" />
+                  </GeometryDrawing.Pen>
+                </GeometryDrawing>
+                <GeometryDrawing Brush="#FF4D4D4D" Geometry="F1 M226.29,198.67z M0,0z M143.91,145.03L143.91,145.03 57.32,145.03 45.05,197.17 131.64,197.17 143.91,145.03z">
+                  <GeometryDrawing.Pen>
+                    <Pen Brush="{DynamicResource MahApps.Brushes.Accent}" Thickness="3" StartLineCap="Flat" EndLineCap="Flat" LineJoin="Miter" />
+                  </GeometryDrawing.Pen>
+                </GeometryDrawing>
+              </DrawingGroup>
+              <DrawingGroup Opacity="1">
+                <DrawingGroup Transform="0.999489976721293,-0.0319340951597066,0.0319340951597066,0.999489976721293,-6.01,3.93">
+                  <GeometryDrawing Brush="{DynamicResource MahApps.Brushes.Accent}">
+                    <GeometryDrawing.Pen>
+                      <Pen Brush="#FF4D4D4D" Thickness="1" StartLineCap="Flat" EndLineCap="Flat" LineJoin="Miter" />
+                    </GeometryDrawing.Pen>
+                    <GeometryDrawing.Geometry>
+                      <EllipseGeometry RadiusX="6.41" RadiusY="1.96" Center="120.34,190.53" />
+                    </GeometryDrawing.Geometry>
+                  </GeometryDrawing>
+                </DrawingGroup>
+                <DrawingGroup Transform="0.999489976721293,-0.0319340951597066,0.0319340951597066,0.999489976721293,-5.91,3.96">
+                  <GeometryDrawing Brush="{DynamicResource MahApps.Brushes.Accent}">
+                    <GeometryDrawing.Pen>
+                      <Pen Brush="#FF4D4D4D" Thickness="1" StartLineCap="Flat" EndLineCap="Flat" LineJoin="Miter" />
+                    </GeometryDrawing.Pen>
+                    <GeometryDrawing.Geometry>
+                      <EllipseGeometry RadiusX="6.41" RadiusY="1.96" Center="121.31,187.34" />
+                    </GeometryDrawing.Geometry>
+                  </GeometryDrawing>
+                </DrawingGroup>
+                <GeometryDrawing Brush="{DynamicResource MahApps.Brushes.Accent}">
+                  <GeometryDrawing.Pen>
+                    <Pen Brush="#FF4D4D4D" Thickness="1" StartLineCap="Flat" EndLineCap="Flat" LineJoin="Miter" />
+                  </GeometryDrawing.Pen>
+                  <GeometryDrawing.Geometry>
+                    <LineGeometry StartPoint="117.91,177.57" EndPoint="113.96,190.53" />
+                  </GeometryDrawing.Geometry>
+                </GeometryDrawing>
+                <DrawingGroup Transform="0.999489976721293,-0.0319340951597066,0.0319340951597066,0.999489976721293,-5.81,3.99">
+                  <GeometryDrawing Brush="{DynamicResource MahApps.Brushes.Accent}">
+                    <GeometryDrawing.Pen>
+                      <Pen Brush="#FF4D4D4D" Thickness="1" StartLineCap="Flat" EndLineCap="Flat" LineJoin="Miter" />
+                    </GeometryDrawing.Pen>
+                    <GeometryDrawing.Geometry>
+                      <EllipseGeometry RadiusX="6.41" RadiusY="1.96" Center="122.28,184.14" />
+                    </GeometryDrawing.Geometry>
+                  </GeometryDrawing>
+                </DrawingGroup>
+                <DrawingGroup Transform="0.999489976721293,-0.0319340951597066,0.0319340951597066,0.999489976721293,-5.7,4.02">
+                  <GeometryDrawing Brush="{DynamicResource MahApps.Brushes.Accent}">
+                    <GeometryDrawing.Pen>
+                      <Pen Brush="#FF4D4D4D" Thickness="1" StartLineCap="Flat" EndLineCap="Flat" LineJoin="Miter" />
+                    </GeometryDrawing.Pen>
+                    <GeometryDrawing.Geometry>
+                      <EllipseGeometry RadiusX="6.41" RadiusY="1.96" Center="123.31,180.76" />
+                    </GeometryDrawing.Geometry>
+                  </GeometryDrawing>
+                </DrawingGroup>
+                <DrawingGroup Transform="0.999489976721293,-0.0319340951597066,0.0319340951597066,0.999489976721293,-5.6,4.05">
+                  <GeometryDrawing Brush="{DynamicResource MahApps.Brushes.Accent}">
+                    <GeometryDrawing.Pen>
+                      <Pen Brush="#FF4D4D4D" Thickness="1" StartLineCap="Flat" EndLineCap="Flat" LineJoin="Miter" />
+                    </GeometryDrawing.Pen>
+                    <GeometryDrawing.Geometry>
+                      <EllipseGeometry RadiusX="6.41" RadiusY="1.96" Center="124.29,177.57" />
+                    </GeometryDrawing.Geometry>
+                  </GeometryDrawing>
+                </DrawingGroup>
+                <GeometryDrawing Brush="{DynamicResource MahApps.Brushes.Accent}">
+                  <GeometryDrawing.Pen>
+                    <Pen Brush="#FF4D4D4D" Thickness="1" StartLineCap="Flat" EndLineCap="Flat" LineJoin="Miter" />
+                  </GeometryDrawing.Pen>
+                  <GeometryDrawing.Geometry>
+                    <LineGeometry StartPoint="130.66,177.57" EndPoint="126.71,190.53" />
+                  </GeometryDrawing.Geometry>
+                </GeometryDrawing>
+              </DrawingGroup>
+            </DrawingGroup>
+          </DrawingGroup>
+        </DrawingGroup>
+      </DrawingImage.Drawing>
+    </DrawingImage>
+</ResourceDictionary>

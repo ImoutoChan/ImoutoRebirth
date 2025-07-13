@@ -1,48 +1,39 @@
-﻿using System.Collections.ObjectModel;
-using System.IO;
+﻿using System.IO;
+using System.Windows;
 using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
 using ImoutoRebirth.Navigator.Services;
 using ImoutoRebirth.Navigator.Services.Collections;
 using ImoutoRebirth.Navigator.Utils;
-using Serilog;
 
 namespace ImoutoRebirth.Navigator.Slices.CreateCollectionWizard;
 
-internal record CreateCollectionRequested;
-
-internal partial class WizardRootVM : ObservableObject, IRecipient<CreateCollectionRequested>
+internal partial class WizardRootVM : ObservableObject
 {
-    private readonly IMessenger _messenger;
+    private readonly Window _wizardWindow;
 
     private readonly ICollectionService _collectionService;
     private readonly IDestinationFolderService _destinationFolderService;
     private readonly ISourceFolderService _sourceFolderService;
 
-    public WizardRootVM()
+    public WizardRootVM(Window wizardWindow)
     {
         _collectionService = ServiceLocator.GetService<ICollectionService>();
         _destinationFolderService = ServiceLocator.GetService<IDestinationFolderService>();
         _sourceFolderService = ServiceLocator.GetService<ISourceFolderService>();
 
-        _messenger = ServiceLocator.GetService<IMessenger>();
-        _messenger.Register(this);
+        _wizardWindow = wizardWindow;
+
+        State = new(_wizardWindow);
+        State.CreateCollectionRequested += async (_,_) => await CreateAsync();
     }
 
     [ObservableProperty]
-    public partial WizardStateVM State { get; set; } = new();
+    public partial WizardStateVM State { get; set; }
 
-    public async void Receive(CreateCollectionRequested message)
-    {
-        try
-        {
-            await CreateAsync();
-        }
-        catch (Exception e)
-        {
-            Log.Error(e, "Failed to create collection");
-        }
-    }
+    [RelayCommand]
+    private void Close() => _wizardWindow.Close();
 
     private async Task CreateAsync()
     {
@@ -63,14 +54,18 @@ internal partial class WizardRootVM : ObservableObject, IRecipient<CreateCollect
             var singleSourceFolder = State.SourceFolders.First();
             await _sourceFolderService.AddSourceFolderAsync(singleSourceFolder.PrepareToSave(createdCollection.Id));
         }
+
+        _wizardWindow.Close();
     }
 }
 
+public record OpenCreateCollectionWizardRequest;
+
 internal class DesignTimeWizardRootVM : WizardRootVM
 {
-    public DesignTimeWizardRootVM()
+    public DesignTimeWizardRootVM(Window wizardWindow) : base(wizardWindow)
     {
-        State = new WizardStateVM
+        State = new WizardStateVM(wizardWindow)
         {
             CollectionName = "Art",
             CollectionPath = "C:\\Path\\To\\Folder",

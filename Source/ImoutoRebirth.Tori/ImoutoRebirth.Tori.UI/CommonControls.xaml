@@ -44,8 +44,8 @@
         TargetType="TextBlock" 
         BasedOn="{StaticResource {x:Type TextBlock}}" 
         x:Key="Styles.Typography.Base">
-        <Setter Property="FontFamily" Value="pack://application:,,,/Fonts/Supreme/#Supreme" />
-        <Setter Property="Foreground" Value="#F6F6F6" />
+        <Setter Property="FontFamily" Value="pack://application:,,,/Assets/Fonts/Supreme/#Supreme" />
+        <Setter Property="Foreground" Value="{DynamicResource MahApps.Brushes.Flyout.Foreground}" />
     </Style>
 
     <Style 

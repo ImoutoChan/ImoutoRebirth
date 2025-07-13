@@ -1,9 +1,11 @@
-﻿using System.Collections.ObjectModel;
-using System.IO;
-using CommunityToolkit.Mvvm.ComponentModel;
+﻿using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
+using ImoutoRebirth.Common.WPF.ValidationAttributes;
 using ImoutoRebirth.Navigator.Services.Collections;
 using ImoutoRebirth.Navigator.Utils;
-using ImoutoRebirth.Navigator.ViewModel.SettingsSlice.ValidationAttributes;
+using Microsoft.WindowsAPICodePack.Dialogs;
+using System.Collections.ObjectModel;
+using System.IO;
 
 namespace ImoutoRebirth.Navigator.Slices.CreateCollectionWizard;
 
@@ -30,6 +32,12 @@ internal partial class WizardSourceFolderVM : ObservableValidator
     [ObservableProperty]
     public partial ObservableCollection<string> SupportedExtensions { get; set; } = new();
 
+    [ObservableProperty]
+    public partial bool IsWebhookUploadEnabled { get; set; } = false;
+
+    [ObservableProperty]
+    public partial string? WebhookUploadUrl { get; set; }
+
     public SourceFolder PrepareToSave(Guid collectionId)
     {
         new DirectoryInfo(Path).EnsureExists();
@@ -41,6 +49,32 @@ internal partial class WizardSourceFolderVM : ObservableValidator
             ShouldCheckHashFromName: ShouldCheckHashFromName,
             ShouldCreateTagsFromSubfolders: ShouldCreateTagsFromSubfolders,
             ShouldAddTagFromFilename: ShouldAddTagFromFilename,
-            SupportedExtensions: SupportedExtensions);
+            SupportedExtensions: SupportedExtensions,
+            IsWebhookUploadEnabled: IsWebhookUploadEnabled,
+            WebhookUploadUrl: WebhookUploadUrl);
+    }
+
+    [RelayCommand]
+    private void BrowsePathLocation()
+    {
+        var dialog = new CommonOpenFileDialog
+        {
+            IsFolderPicker = true,
+            Title = "Select a folder",
+            AllowNonFileSystemItems = false,
+            Multiselect = false,
+            EnsurePathExists = true,
+            NavigateToShortcut = true
+        };
+
+        if (!string.IsNullOrWhiteSpace(Path))
+        {
+            dialog.InitialDirectory = Path;
+        }
+
+        if (dialog.ShowDialog() == CommonFileDialogResult.Ok)
+        {
+            Path = dialog.FileName;
+        }
     }
 }

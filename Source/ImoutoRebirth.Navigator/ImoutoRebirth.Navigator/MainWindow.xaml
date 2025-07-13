@@ -23,6 +23,7 @@
                           xmlns:quickTagging="clr-namespace:ImoutoRebirth.Navigator.Slices.QuickTagging"
                           xmlns:navigator="clr-namespace:ImoutoRebirth.Navigator"
                           xmlns:tz="http://schemas.abtsoftware.co.uk/transitionz"
+                          xmlns:createCollectionWizard="clr-namespace:ImoutoRebirth.Navigator.Slices.CreateCollectionWizard"
                           d:DataContext="{d:DesignInstance viewModel:MainWindowVM, IsDesignTimeCreatable=False}"
                           mc:Ignorable="d"
                           WindowStartupLocation="CenterScreen"
@@ -153,7 +154,7 @@
             DataContext="{Binding Path=FullScreenPreviewVM}"
             Visibility="{Binding Converter={StaticResource ConditionVisibilityConverter}, ConverterParameter=!null, Mode=OneWay}">
         </view:FullScreenPreviewView>
-        
+
         <Grid
             Visibility="{Binding Path=FullScreenPreviewVM, Converter={StaticResource ConditionVisibilityConverter}, ConverterParameter=null, Mode=OneWay}">
             <Grid.ColumnDefinitions>
