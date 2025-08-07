@@ -1,8 +1,10 @@
-﻿using System.IO;
-using CommunityToolkit.Mvvm.ComponentModel;
+﻿using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
 using ImoutoRebirth.Common.WPF.ValidationAttributes;
 using ImoutoRebirth.Navigator.Services.Collections;
 using ImoutoRebirth.Navigator.Utils;
+using Microsoft.WindowsAPICodePack.Dialogs;
+using System.IO;
 
 namespace ImoutoRebirth.Navigator.Slices.CreateCollectionWizard;
 
@@ -50,5 +52,29 @@ internal partial class WizardDestinationFolderVM : ObservableValidator
             FormatErrorSubfolder: FormatErrorSubfolder,
             HashErrorSubfolder: HashErrorSubfolder,
             WithoutHashErrorSubfolder: WithoutHashErrorSubfolder);
+    }
+
+    [RelayCommand]
+    private void BrowsePathLocation()
+    {
+        var dialog = new CommonOpenFileDialog
+        {
+            IsFolderPicker = true,
+            Title = "Select a folder",
+            AllowNonFileSystemItems = false,
+            Multiselect = false,
+            EnsurePathExists = true,
+            NavigateToShortcut = true
+        };
+
+        if (!string.IsNullOrWhiteSpace(Path))
+        {
+            dialog.InitialDirectory = Path;
+        }
+
+        if (dialog.ShowDialog() == CommonFileDialogResult.Ok)
+        {
+            Path = dialog.FileName;
+        }
     }
 }

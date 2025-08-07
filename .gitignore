@@ -20,3 +20,5 @@ node_modules/
 
 /Source/Imouto.Extensions/chrome/artifacts/*
 /Source/Imouto.Extensions/artifacts/*
+
+/.claude/settings.local.json

@@ -40,7 +40,7 @@ internal partial class WizardStateVM : ObservableValidator
         nameof(FastCreateCommand),
         nameof(OpenAdvancedCommand),
         nameof(AdvancedCreateCommand))]
-    public partial string CollectionName { get; set; } = "";
+    public partial string CollectionName { get; set; } = "New Collection";
 
     [ObservableProperty]
     [NotifyDataErrorInfo]
@@ -51,7 +51,7 @@ internal partial class WizardStateVM : ObservableValidator
         nameof(FastCreateCommand),
         nameof(OpenAdvancedCommand),
         nameof(AdvancedCreateCommand))]
-    public partial string CollectionPath { get; set; } = "";
+    public partial string CollectionPath { get; set; } = Environment.GetFolderPath(Environment.SpecialFolder.MyPictures);
 
     public string PathAndName => Path.Combine(CollectionPath, CollectionName);
 
@@ -125,6 +125,7 @@ internal partial class WizardStateVM : ObservableValidator
     private void SelectDedicatedFolderSetup()
     {
         SetFoldersToDefaultWithDestinationSetup();
+        SelectedThirdStage = WizardStage.ThirdWithDestinationFolder;
         WizardStage = WizardStage.ThirdWithDestinationFolder;
     }
 
@@ -132,6 +133,7 @@ internal partial class WizardStateVM : ObservableValidator
     private void SelectSingleFolderSetup()
     {
         SetFoldersToDefaultWithoutDestinationSetup();
+        SelectedThirdStage = WizardStage.ThirdWithoutDestinationFolder;
         WizardStage = WizardStage.ThirdWithoutDestinationFolder;
     }
 
@@ -191,7 +193,7 @@ internal partial class WizardStateVM : ObservableValidator
                 ShouldCheckFormat = true,
                 ShouldCreateTagsFromSubfolders = false,
                 ShouldAddTagFromFilename = false,
-                SupportedExtensions = ["jpg", "png", "jpeg", "gif", "webm", "swf", "mp4", "zip", "webp"],
+                SupportedExtensions = new(["jpg", "png", "jpeg", "gif", "webm", "swf", "mp4", "zip", "webp"]),
                 IsWebhookUploadEnabled = false,
                 WebhookUploadUrl = null
             });
@@ -203,7 +205,7 @@ internal partial class WizardStateVM : ObservableValidator
                 ShouldCheckFormat = true,
                 ShouldCreateTagsFromSubfolders = false,
                 ShouldAddTagFromFilename = false,
-                SupportedExtensions = ["jpg", "png", "jpeg", "gif", "webm", "swf", "mp4", "zip", "webp"],
+                SupportedExtensions = new(["jpg", "png", "jpeg", "gif", "webm", "swf", "mp4", "zip", "webp"]),
                 IsWebhookUploadEnabled = false,
                 WebhookUploadUrl = null
             });
@@ -230,7 +232,7 @@ internal partial class WizardStateVM : ObservableValidator
                 ShouldCheckFormat = false,
                 ShouldCreateTagsFromSubfolders = true,
                 ShouldAddTagFromFilename = true,
-                SupportedExtensions = [],
+                SupportedExtensions = new(),
                 IsWebhookUploadEnabled = false,
                 WebhookUploadUrl = null
             });
@@ -247,6 +249,7 @@ internal partial class WizardStateVM : ObservableValidator
                 WizardStage.FirstNameAndPath => new FastCreateView(),
                 WizardStage.SecondAdvancedCollectionType => new AdvancedView(),
                 WizardStage.ThirdWithoutDestinationFolder => new SingleFolderAdvancedView(),
+                WizardStage.ThirdWithDestinationFolder => new DedicatedFolderAdvancedView(),
                 _ => new FastCreateView()
             };
         }

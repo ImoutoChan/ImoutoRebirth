@@ -4,6 +4,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:local="clr-namespace:ImoutoRebirth.Navigator.Slices.CreateCollectionWizard"
+             xmlns:controls="clr-namespace:ImoutoRebirth.Navigator.Slices.CreateCollectionWizard.Controls"
              xmlns:mah="http://metro.mahapps.com/winfx/xaml/controls"
              mc:Ignorable="d"
              d:DesignHeight="524" 
@@ -35,8 +36,8 @@
             <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
 
-        <StackPanel Grid.Row="0" Margin="94 70 94 70" DataContext="{Binding State.SourceFolders[0]}">
-            <StackPanel Margin="0 0 0 30">
+        <StackPanel Grid.Row="0" Margin="94 50 94 50" DataContext="{Binding State.SourceFolders[0]}">
+            <StackPanel Margin="0 0 0 20">
                 <TextBlock Text="source folder" />
 
                 <Grid>
@@ -74,6 +75,9 @@
                               Foreground="{DynamicResource MahApps.Brushes.Gray2}">
                 add file name as tag
             </mah:ToggleSwitch>
+
+            <controls:ExtensionTagsControl Extensions="{Binding SupportedExtensions}" 
+                                           Margin="0 15 0 0" />
         </StackPanel>
 
         <StackPanel Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Left">

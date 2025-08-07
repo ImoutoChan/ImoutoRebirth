@@ -15,7 +15,7 @@ internal partial class WizardSourceFolderVM : ObservableValidator
     [NotifyDataErrorInfo]
     [NotNullOrWhiteSpace("Please enter a path to the folder")]
     [Directory("Please enter valid path to the folder")]
-    public partial string Path { get; set; } = "";
+    public partial string Path { get; set; } = Environment.GetFolderPath(Environment.SpecialFolder.MyPictures);
 
     [ObservableProperty]
     public partial bool ShouldCheckHashFromName { get; set; } = false;
