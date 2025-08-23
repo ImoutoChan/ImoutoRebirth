@@ -36,3 +36,10 @@
   * https://gelbooru.com/index.php?page=account&s=options
   * API Access Credentials at the bottom of the screen
   * Copy values for user id and api key from the textbox
+
+## Rule34
+* user id, api key
+  * https://rule34.xxx/index.php?page=account&s=options
+  * API Access Credentials at the bottom of the screen
+  * Check "Generate New Key", then click Save
+  * Copy values for user id and api key from the textbox

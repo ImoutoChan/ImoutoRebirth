@@ -37,6 +37,7 @@ builder.Services
     .AddArachneInfrastructure(
         arachneSettings.DanbooruSettings,
         arachneSettings.GelbooruSettings,
+        arachneSettings.Rule34Settings,
         arachneSettings.SankakuSettings,
         arachneSettings.ExHentaiSettings)
     .AddSqlMassTransit(
