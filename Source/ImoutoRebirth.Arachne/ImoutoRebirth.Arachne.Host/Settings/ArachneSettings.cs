@@ -8,6 +8,8 @@ public class ArachneSettings
 
     public required GelbooruSettings GelbooruSettings { get; set; }
 
+    public required Rule34Settings Rule34Settings { get; set; }
+
     public required SankakuSettings SankakuSettings { get; set; }
 
     public required ExHentaiSettings ExHentaiSettings { get; set; }

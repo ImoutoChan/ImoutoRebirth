@@ -24,7 +24,9 @@ public record AppConfiguration(
         string YandereLogin,
         string YandereApiKey,
         string GelbooruUserId,
-        string GelbooruApiKey);
+        string GelbooruApiKey,
+        string Rule34UserId,
+        string Rule34ApiKey);
 
     public record ConnectionSettings(
         string LilinConnectionString,
@@ -96,7 +98,9 @@ public record AppConfiguration(
                 YandereLogin: configurationDictionary["YandereLogin"],
                 YandereApiKey: configurationDictionary["YandereApiKey"],
                 GelbooruUserId: configurationDictionary["GelbooruUserId"],
-                GelbooruApiKey: configurationDictionary["GelbooruApiKey"]),
+                GelbooruApiKey: configurationDictionary["GelbooruApiKey"],
+                Rule34UserId: configurationDictionary["Rule34UserId"],
+                Rule34ApiKey: configurationDictionary["Rule34ApiKey"]),
             Connection: new(
                 LilinConnectionString: configurationDictionary["LilinConnectionString"],
                 MeidoConnectionString: configurationDictionary["MeidoConnectionString"],
@@ -173,7 +177,10 @@ public record AppConfiguration(
 
             ["OpenSearchUri"] = OpenSearchUri,
             ["InstallLocation"] = InstallLocation,
-            ["FFmpegPath"] = FFmpegPath
+            ["FFmpegPath"] = FFmpegPath,
+
+            ["Rule34UserId"] = Api.Rule34UserId,
+            ["Rule34ApiKey"] = Api.Rule34ApiKey,
         };
 
     private static void ValidateConfigurationValues(Dictionary<string, string> configuration)
@@ -210,6 +217,8 @@ public record AppConfiguration(
             "GelbooruUserId",
             "GelbooruApiKey",
             "FFmpegPath",
+            "Rule34UserId",
+            "Rule34ApiKey"
         };
 
         var missedKeys = keys.Where(x => !configuration.ContainsKey(x)).ToList();
@@ -284,6 +293,19 @@ public record AppConfiguration(
         {
             // version 5 to version 6, remove global upload url settings
             configuration.Remove("RoomImoutoPicsUploadUrl");
+
+            await File.WriteAllTextAsync(
+                globalConfigurationFile.FullName,
+                JsonSerializer.Serialize(configuration, new JsonSerializerOptions { WriteIndented = true }));
+
+            wasMigrated = true;
+        }
+
+        if (!configuration.ContainsKey("Rule34UserId"))
+        {
+            // version 6 to version 7, add rule34 options
+            configuration.Add("Rule34UserId", "");
+            configuration.Add("Rule34ApiKey", "");
 
             await File.WriteAllTextAsync(
                 globalConfigurationFile.FullName,

@@ -25,6 +25,8 @@
   OpenSearchUri: http://localhost:9200,
   RoomConnectionString: Server=localhost;Database=room;,
   RoomPort: 5000,
+  Rule34ApiKey: rule34Key123,
+  Rule34UserId: 123456,
   SankakuLogin: sankakuUser,
   SankakuPassword: sankakuPass123,
   YandereApiKey: yandereKey123,

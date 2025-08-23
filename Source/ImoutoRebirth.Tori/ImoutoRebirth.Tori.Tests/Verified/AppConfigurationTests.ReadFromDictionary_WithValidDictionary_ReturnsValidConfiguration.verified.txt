@@ -7,7 +7,9 @@
     YandereLogin: yandereUser,
     YandereApiKey: yandereKey123,
     GelbooruUserId: gelbooruUserId,
-    GelbooruApiKey: gelbooruKey123
+    GelbooruApiKey: gelbooruKey123,
+    Rule34UserId: rule34UserId,
+    Rule34ApiKey: rule34Key123
   },
   Connection: {
     LilinConnectionString: Server=localhost;Database=lilin;,

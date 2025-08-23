@@ -87,6 +87,10 @@ public class ConfigurationBuilder : IConfigurationBuilder
                 "UserId": "{{_configuration.Api.GelbooruUserId}}",
                 "ApiKey": "{{_configuration.Api.GelbooruApiKey}}"
               },
+              "Rule34Settings": {
+                "UserId": "{{_configuration.Api.Rule34UserId}}",
+                "ApiKey": "{{_configuration.Api.Rule34ApiKey}}"
+              },
               "OpenSearchUri": "{{_configuration.OpenSearchUri}}",
               "Jaeger": {
                 "Host": "{{_configuration.Jaeger.Host}}",

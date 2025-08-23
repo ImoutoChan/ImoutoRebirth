@@ -17,6 +17,7 @@ public static class ServiceCollectionExtensions
         this IServiceCollection services, 
         DanbooruSettings danbooruSettings,
         GelbooruSettings gelbooruSettings,
+        Rule34Settings rule34Settings,
         SankakuSettings sankakuSettings,
         ExHentaiSettings exHentaiSettings)
     {
@@ -68,6 +69,7 @@ public static class ServiceCollectionExtensions
 
         services.AddTransient<DanbooruSettings>(x => danbooruSettings);
         services.AddTransient<GelbooruSettings>(x => gelbooruSettings);
+        services.AddTransient<Rule34Settings>(x => rule34Settings);
         services.AddTransient<SankakuSettings>(x => sankakuSettings);
         services.AddTransient<IOptions<Imouto.BooruParser.Implementations.Sankaku.SankakuSettings>>(_ =>
             Options.Create(new Imouto.BooruParser.Implementations.Sankaku.SankakuSettings

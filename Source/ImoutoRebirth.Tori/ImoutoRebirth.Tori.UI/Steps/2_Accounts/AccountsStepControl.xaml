@@ -18,181 +18,211 @@
         </Grid.RowDefinitions>
 
         <Grid Grid.Row="1" Margin="62, 73, 62, 73">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="*" />
-                <ColumnDefinition Width="30" />
-                <ColumnDefinition Width="*" />
-                <ColumnDefinition Width="30" />
-                <ColumnDefinition Width="*" />
-            </Grid.ColumnDefinitions>
+            <ScrollViewer HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="30" />
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="30" />
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
 
-            <StackPanel Grid.Column="0">
-                <StackPanel
-                    Orientation="Horizontal"
-                    Margin="-30,0">
-                    <Image
-                        Width="20"
-                        Height="20"
-                        Source="{StaticResource DrawingImageCheck}"
-                        Margin="0,0,10,0"
-                        Visibility="{Binding IsDanbooruFilled, Converter={StaticResource ConditionVisibilityConverter}, ConverterParameter='true|false'}" >
-                    </Image>
+                    <StackPanel Grid.Column="0">
+                        <StackPanel
+                            Orientation="Horizontal"
+                            Margin="-30,0">
+                            <Image
+                                Width="20"
+                                Height="20"
+                                Source="{StaticResource DrawingImageCheck}"
+                                Margin="0,0,10,0"
+                                Visibility="{Binding IsDanbooruFilled, Converter={StaticResource ConditionVisibilityConverter}, ConverterParameter='true|false'}" >
+                            </Image>
 
-                    <TextBlock
-                        Text="Danbooru"
-                        Style="{DynamicResource Styles.Typography.DefaultBold}" />
-                </StackPanel>
+                            <TextBlock
+                                Text="Danbooru"
+                                Style="{DynamicResource Styles.Typography.DefaultBold}" />
+                        </StackPanel>
 
-                <userControls:InputControl
-                    Margin="0,10,0,0"
-                    Header="login"
-                    Text="{Binding DanbooruLogin}" />
+                        <userControls:InputControl
+                            Margin="0,10,0,0"
+                            Header="login"
+                            Text="{Binding DanbooruLogin}" />
 
-                <userControls:InputControl
-                    Margin="0,10,0,0"
-                    Header="api key"
-                    Text="{Binding DanbooruApiKey}" />
+                        <userControls:InputControl
+                            Margin="0,10,0,0"
+                            Header="api key"
+                            Text="{Binding DanbooruApiKey}" />
 
-                <StackPanel
-                    Orientation="Horizontal"
-                    Margin="-30,37,0,0">
-                    <Image
-                        Width="20"
-                        Height="20"
-                        Source="{StaticResource DrawingImageCheck}"
-                        Margin="0,0,10,0"
-                        Visibility="{Binding IsSankakuFilled, Converter={StaticResource ConditionVisibilityConverter}, ConverterParameter='true|false'}" >
-                    </Image>
+                        <StackPanel
+                            Orientation="Horizontal"
+                            Margin="-30,37,0,0">
+                            <Image
+                                Width="20"
+                                Height="20"
+                                Source="{StaticResource DrawingImageCheck}"
+                                Margin="0,0,10,0"
+                                Visibility="{Binding IsSankakuFilled, Converter={StaticResource ConditionVisibilityConverter}, ConverterParameter='true|false'}" >
+                            </Image>
 
-                    <TextBlock
-                        Text="SankakuComplex"
-                        Style="{DynamicResource Styles.Typography.DefaultBold}" />
-                </StackPanel>
+                            <TextBlock
+                                Text="SankakuComplex"
+                                Style="{DynamicResource Styles.Typography.DefaultBold}" />
+                        </StackPanel>
 
-                <userControls:InputControl
-                    Margin="0,10,0,0"
-                    Header="login"
-                    Text="{Binding SankakuLogin}" />
+                        <userControls:InputControl
+                            Margin="0,10,0,0"
+                            Header="login"
+                            Text="{Binding SankakuLogin}" />
 
-                <userControls:InputControl
-                    Margin="0,10,0,0"
-                    Header="password"
-                    Text="{Binding SankakuPassword}" />
-            </StackPanel>
+                        <userControls:InputControl
+                            Margin="0,10,0,0"
+                            Header="password"
+                            Text="{Binding SankakuPassword}" />
+                    </StackPanel>
 
-            <StackPanel Grid.Column="2">
-                <StackPanel
-                    Orientation="Horizontal"
-                    Margin="-30,0,0,0">
-                    <Image
-                        Width="20"
-                        Height="20"
-                        Source="{StaticResource DrawingImageCheck}"
-                        Margin="0,0,10,0"
-                        Visibility="{Binding IsYandereFilled, Converter={StaticResource ConditionVisibilityConverter}, ConverterParameter='true|false'}" >
-                    </Image>
+                    <StackPanel Grid.Column="2">
+                        <StackPanel
+                            Orientation="Horizontal"
+                            Margin="-30,0,0,0">
+                            <Image
+                                Width="20"
+                                Height="20"
+                                Source="{StaticResource DrawingImageCheck}"
+                                Margin="0,0,10,0"
+                                Visibility="{Binding IsYandereFilled, Converter={StaticResource ConditionVisibilityConverter}, ConverterParameter='true|false'}" >
+                            </Image>
 
-                    <TextBlock
-                        Text="Yandere"
-                        Style="{DynamicResource Styles.Typography.DefaultBold}" />
-                </StackPanel>
+                            <TextBlock
+                                Text="Yandere"
+                                Style="{DynamicResource Styles.Typography.DefaultBold}" />
+                        </StackPanel>
 
-                <userControls:InputControl
-                    Margin="0,10,0,0"
-                    Header="login"
-                    Text="{Binding YandereLogin}" />
+                        <userControls:InputControl
+                            Margin="0,10,0,0"
+                            Header="login"
+                            Text="{Binding YandereLogin}" />
 
-                <userControls:InputControl
-                    Margin="0,10,0,0"
-                    Header="api key"
-                    Text="{Binding YandereApiKey}" />
+                        <userControls:InputControl
+                            Margin="0,10,0,0"
+                            Header="api key"
+                            Text="{Binding YandereApiKey}" />
 
-                <StackPanel
-                    Orientation="Horizontal"
-                    Margin="-30,37,0,0">
-                    <Image
-                        Width="20"
-                        Height="20"
-                        Source="{StaticResource DrawingImageCheck}"
-                        Margin="0,0,10,0"
-                        Visibility="{Binding IsGelbooruFilled, Converter={StaticResource ConditionVisibilityConverter}, ConverterParameter='true|false'}" >
-                    </Image>
+                        <StackPanel
+                            Orientation="Horizontal"
+                            Margin="-30,37,0,0">
+                            <Image
+                                Width="20"
+                                Height="20"
+                                Source="{StaticResource DrawingImageCheck}"
+                                Margin="0,0,10,0"
+                                Visibility="{Binding IsGelbooruFilled, Converter={StaticResource ConditionVisibilityConverter}, ConverterParameter='true|false'}" >
+                            </Image>
 
-                    <TextBlock
-                        Text="Gelbooru"
-                        Style="{DynamicResource Styles.Typography.DefaultBold}" />
-                </StackPanel>
+                            <TextBlock
+                                Text="Gelbooru"
+                                Style="{DynamicResource Styles.Typography.DefaultBold}" />
+                        </StackPanel>
 
-                <userControls:InputControl
-                    Margin="0,10,0,0"
-                    Header="api key"
-                    Text="{Binding GelbooruApiKey}" />
+                        <userControls:InputControl
+                            Margin="0,10,0,0"
+                            Header="api key"
+                            Text="{Binding GelbooruApiKey}" />
 
-                <userControls:InputControl
-                    Margin="0,10,0,0"
-                    Header="user id"
-                    Text="{Binding GelbooruUserId}" />
-            </StackPanel>
+                        <userControls:InputControl
+                            Margin="0,10,0,0"
+                            Header="user id"
+                            Text="{Binding GelbooruUserId}" />
+                    </StackPanel>
 
-            <StackPanel Grid.Column="4">
-                <StackPanel
-                    Orientation="Horizontal"
-                    Margin="-30,0,0,0">
-                    <Image
-                        Width="20"
-                        Height="20"
-                        Source="{StaticResource DrawingImageCheck}"
-                        Margin="0,0,10,0"
-                        Visibility="{Binding IsExhentaiFilled, Converter={StaticResource ConditionVisibilityConverter}, ConverterParameter='true|false'}" >
-                    </Image>
+                    <StackPanel Grid.Column="4">
+                        <StackPanel
+                            Orientation="Horizontal"
+                            Margin="-30,0,0,0">
+                            <Image
+                                Width="20"
+                                Height="20"
+                                Source="{StaticResource DrawingImageCheck}"
+                                Margin="0,0,10,0"
+                                Visibility="{Binding IsExhentaiFilled, Converter={StaticResource ConditionVisibilityConverter}, ConverterParameter='true|false'}" >
+                            </Image>
 
-                    <TextBlock
-                        Text="ExHentai"
-                        Style="{DynamicResource Styles.Typography.DefaultBold}" />
-                </StackPanel>
+                            <TextBlock
+                                Text="ExHentai"
+                                Style="{DynamicResource Styles.Typography.DefaultBold}" />
+                        </StackPanel>
 
 
-                <userControls:InputControl
-                    Margin="0,10,0,0"
-                    Header="ipb member id"
-                    Text="{Binding ExHentaiIpbMemberId}" />
+                        <userControls:InputControl
+                            Margin="0,10,0,0"
+                            Header="ipb member id"
+                            Text="{Binding ExHentaiIpbMemberId}" />
 
-                <userControls:InputControl
-                    Margin="0,10,0,0"
-                    Header="ipb pass hash"
-                    Text="{Binding ExHentaiIpbPassHash}" />
+                        <userControls:InputControl
+                            Margin="0,10,0,0"
+                            Header="ipb pass hash"
+                            Text="{Binding ExHentaiIpbPassHash}" />
 
-                <userControls:InputControl
-                    Margin="0,10,0,0"
-                    Header="igneous"
-                    Text="{Binding ExHentaiIgneous}" />
+                        <userControls:InputControl
+                            Margin="0,10,0,0"
+                            Header="igneous"
+                            Text="{Binding ExHentaiIgneous}" />
 
-                <userControls:InputControl
-                    Margin="0,10,0,0"
-                    Header="user agent"
-                    Text="{Binding ExHentaiUserAgent}" />
-            </StackPanel>
+                        <userControls:InputControl
+                            Margin="0,10,0,0"
+                            Header="user agent"
+                            Text="{Binding ExHentaiUserAgent}" />
 
-            <StackPanel 
-                Orientation="Horizontal"
-                Grid.Column="0"
-                Grid.ColumnSpan="5"
-                VerticalAlignment="Bottom"
-                HorizontalAlignment="Right">
-                <iconPacks:PackIconModern 
-                    Kind="InformationCircle"
-                    Padding="0,0,0,-3"
-                    Width="14"
-                    Height="14"
-                    Foreground="{DynamicResource MahApps.Brushes.Accent}" />
+                        <StackPanel
+                            Orientation="Horizontal"
+                            Margin="-30,37,0,0">
+                            <Image
+                                Width="20"
+                                Height="20"
+                                Source="{StaticResource DrawingImageCheck}"
+                                Margin="0,0,10,0"
+                                Visibility="{Binding IsRule34Filled, Converter={StaticResource ConditionVisibilityConverter}, ConverterParameter='true|false'}" >
+                            </Image>
 
-                <TextBlock Margin="8,0,0,0">
-                    <Hyperlink Command="{Binding OpenHyperlinkCommand}"
-                               CommandParameter="https://github.com/ImoutoChan/ImoutoRebirth/blob/master/Docs/How%20to%20find%20my%20accounts%20login%20info.md">
-                        How to find my accounts login info?
-                    </Hyperlink>
-                </TextBlock>
-            </StackPanel>
+                            <TextBlock
+                                Text="Rule34"
+                                Style="{DynamicResource Styles.Typography.DefaultBold}" />
+                        </StackPanel>
+
+                        <userControls:InputControl
+                            Margin="0,10,0,0"
+                            Header="api key"
+                            Text="{Binding Rule34ApiKey}" />
+
+                        <userControls:InputControl
+                            Margin="0,10,0,0"
+                            Header="user id"
+                            Text="{Binding Rule34UserId}" />
+                    </StackPanel>
+
+                    <StackPanel
+                        Orientation="Horizontal"
+                        Grid.Column="0"
+                        Grid.ColumnSpan="5"
+                        VerticalAlignment="Bottom"
+                        HorizontalAlignment="Left">
+                        <iconPacks:PackIconModern
+                            Kind="InformationCircle"
+                            Padding="0,0,0,-3"
+                            Width="14"
+                            Height="14"
+                            Foreground="{DynamicResource MahApps.Brushes.Accent}" />
+
+                        <TextBlock Margin="8,0,0,0">
+                            <Hyperlink Command="{Binding OpenHyperlinkCommand}"
+                                       CommandParameter="https://github.com/ImoutoChan/ImoutoRebirth/blob/master/Docs/How%20to%20find%20my%20accounts%20login%20info.md">
+                                How to find my accounts login info?
+                            </Hyperlink>
+                        </TextBlock>
+                    </StackPanel>
+                </Grid>
+            </ScrollViewer>
         </Grid>
 
         <StackPanel Grid.Row="2" HorizontalAlignment="Right" Orientation="Horizontal" Margin="50, 0, 50, 40">

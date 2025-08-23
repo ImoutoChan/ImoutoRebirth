@@ -46,6 +46,14 @@ public partial class AccountsStepViewModel : ObservableObject, IStep
     private string _gelbooruApiKey;
 
     [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(IsRule34Filled))]
+    private string _rule34UserId;
+
+    [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(IsRule34Filled))]
+    private string _rule34ApiKey;
+
+    [ObservableProperty]
     [NotifyPropertyChangedFor(nameof(IsExhentaiFilled))]
     private string _exHentaiIpbMemberId;
 
@@ -69,6 +77,8 @@ public partial class AccountsStepViewModel : ObservableObject, IStep
 
     public bool IsGelbooruFilled => !string.IsNullOrWhiteSpace(GelbooruUserId) && !string.IsNullOrWhiteSpace(GelbooruApiKey);
 
+    public bool IsRule34Filled => !string.IsNullOrWhiteSpace(Rule34UserId) && !string.IsNullOrWhiteSpace(Rule34ApiKey);
+
     public bool IsExhentaiFilled
         => !string.IsNullOrWhiteSpace(ExHentaiIgneous)
            && !string.IsNullOrWhiteSpace(ExHentaiIpbMemberId)
@@ -90,6 +100,8 @@ public partial class AccountsStepViewModel : ObservableObject, IStep
         YandereApiKey = currentConfiguration.Api.YandereApiKey;
         GelbooruApiKey = currentConfiguration.Api.GelbooruApiKey;
         GelbooruUserId = currentConfiguration.Api.GelbooruUserId;
+        Rule34UserId = currentConfiguration.Api.Rule34UserId;
+        Rule34ApiKey = currentConfiguration.Api.Rule34ApiKey;
         ExHentaiIpbMemberId = currentConfiguration.ExHentai.IpbMemberId;
         ExHentaiIpbPassHash = currentConfiguration.ExHentai.IpbPassHash;
         ExHentaiIgneous = currentConfiguration.ExHentai.Igneous;
@@ -230,6 +242,29 @@ public partial class AccountsStepViewModel : ObservableObject, IStep
                     IpbPassHash: "",
                     Igneous: "",
                     UserAgent: "")
+            });
+        }
+
+        if (IsRule34Filled)
+        {
+            _configurationStorage.UpdateConfiguration(x => x with
+            {
+                Api = x.Api with
+                {
+                    Rule34ApiKey = Rule34ApiKey ?? "",
+                    Rule34UserId = Rule34UserId ?? ""
+                }
+            });
+        }
+        else
+        {
+            _configurationStorage.UpdateConfiguration(x => x with
+            {
+                Api = x.Api with
+                {
+                    Rule34ApiKey = "",
+                    Rule34UserId = ""
+                }
             });
         }
     }

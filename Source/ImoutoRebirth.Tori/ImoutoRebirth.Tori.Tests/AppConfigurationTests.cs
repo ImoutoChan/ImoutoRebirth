@@ -155,7 +155,7 @@ public class AppConfigurationTests
             var deserializedDictionary = JsonSerializer.Deserialize<Dictionary<string, string>>(fileContent);
 
             deserializedDictionary.Should().NotBeNull();
-            deserializedDictionary.Should().HaveCount(30);
+            deserializedDictionary.Should().HaveCount(32);
             deserializedDictionary["DanbooruLogin"].Should().Be("danbooruUser");
             deserializedDictionary["HarpySavePath"].Should().Be(@"C:\Data\Harpy");
         }
@@ -329,6 +329,44 @@ public class AppConfigurationTests
         }
     }
 
+    [Fact]
+    public async Task ReadFromFile_MigratesV6ToV7Format()
+    {
+        // arrange
+        var tempFile = Path.GetTempFileName();
+        try
+        {
+            var configDictionary = CreateValidConfigurationDictionary();
+            configDictionary.Remove("Rule34UserId");
+            configDictionary.Remove("Rule34ApiKey");
+
+            await File.WriteAllTextAsync(tempFile, JsonSerializer.Serialize(configDictionary));
+            var fileInfo = new FileInfo(tempFile);
+
+            // act
+            var appConfig = await AppConfiguration.ReadFromFile(fileInfo);
+
+            // assert
+            appConfig.Should().NotBeNull();
+            appConfig.Api.Rule34ApiKey.Should().Be("");
+            appConfig.Api.Rule34UserId.Should().Be("");
+
+            // check that the V7 keys were added to the file
+            var updatedFileContent = await File.ReadAllTextAsync(tempFile);
+            var updatedDictionary = JsonSerializer.Deserialize<Dictionary<string, string>>(updatedFileContent);
+
+            updatedDictionary.Should().NotBeNull();
+            updatedDictionary.Should().ContainKey("Rule34UserId");
+            updatedDictionary.Should().ContainKey("Rule34ApiKey");
+        }
+        finally
+        {
+            // cleanup
+            if (File.Exists(tempFile))
+                File.Delete(tempFile);
+        }
+    }
+
     private static Dictionary<string, string> CreateValidConfigurationDictionary()
     {
         return new Dictionary<string, string>
@@ -341,6 +379,8 @@ public class AppConfigurationTests
             ["YandereApiKey"] = "yandereKey123",
             ["GelbooruUserId"] = "gelbooruUserId",
             ["GelbooruApiKey"] = "gelbooruKey123",
+            ["Rule34UserId"] = "rule34UserId",
+            ["Rule34ApiKey"] = "rule34Key123",
 
             ["LilinConnectionString"] = "Server=localhost;Database=lilin;",
             ["MeidoConnectionString"] = "Server=localhost;Database=meido;",
@@ -387,7 +427,9 @@ public class AppConfigurationTests
                 YandereLogin: "yandereUser",
                 YandereApiKey: "yandereKey123",
                 GelbooruUserId: "123456",
-                GelbooruApiKey: "gelbooruKey123"),
+                GelbooruApiKey: "gelbooruKey123",
+                Rule34UserId: "123456",
+                Rule34ApiKey: "rule34Key123"),
             Connection: new AppConfiguration.ConnectionSettings(
                 LilinConnectionString: "Server=localhost;Database=lilin;",
                 MeidoConnectionString: "Server=localhost;Database=meido;",
