@@ -18,7 +18,7 @@
         </Grid.RowDefinitions>
 
         <Grid Grid.Row="1" Margin="62, 73, 62, 73">
-            <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
+            <ScrollViewer HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
                 <Grid>
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="*" />
