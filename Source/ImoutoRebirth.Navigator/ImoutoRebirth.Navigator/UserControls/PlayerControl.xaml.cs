@@ -4,6 +4,8 @@ using System.IO;
 using System.Reflection;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Input;
+using ImoutoRebirth.Common.WPF;
 using Serilog;
 using Vlc.DotNet.Wpf;
 using Application = System.Windows.Application;
@@ -205,8 +207,9 @@ public partial class PlayerControl
                 }
                 else
                 {
-                    player?.Pause();
-                    control.IsPlayed = false;
+                    if (player?.IsPlaying() == true)
+                        control.IsPlayed = false;
+
                 }
             }
             else
@@ -285,6 +288,20 @@ public partial class PlayerControl
 
     private void PlayButton_OnClick(object sender, RoutedEventArgs e)
     {
+        IsPlayed = !IsPlayed;
+    }
+
+    private void Root_OnMouseLeftButtonUp(object sender, MouseButtonEventArgs e)
+    {
+        if (e.OriginalSource is DependencyObject d)
+        {
+            var parentButton = d.GetParentOfType<Button>();
+            var parentSlider = d.GetParentOfType<Slider>();
+
+            if (parentButton != null || parentSlider != null)
+                return;
+        }
+
         IsPlayed = !IsPlayed;
     }
 

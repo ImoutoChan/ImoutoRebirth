@@ -69,4 +69,17 @@ public static class UIHelper
 
         return null;
     }
+
+    public static T? GetParentOfType<T>(this DependencyObject? child) where T : DependencyObject
+    {
+        while (child != null)
+        {
+            if (child is T t)
+                return t;
+
+            child = VisualTreeHelper.GetParent(child);
+        }
+
+        return null;
+    }
 }
