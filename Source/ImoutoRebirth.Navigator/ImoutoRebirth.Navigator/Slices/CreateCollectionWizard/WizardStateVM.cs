@@ -15,12 +15,10 @@ namespace ImoutoRebirth.Navigator.Slices.CreateCollectionWizard;
 internal partial class WizardStateVM : ObservableValidator
 {
     private readonly Window _wizardWindow;
-    private readonly IMessenger _messenger;
 
     public WizardStateVM(Window wizardWindow)
     {
         _wizardWindow = wizardWindow;
-        _messenger = ServiceLocator.GetService<IMessenger>();
 
         SourceFolders.CollectionChanged += (_, _) => ValidateAllProperties();
         SourceFolders.CollectionChanged += (_, _) => AdvancedCreateCommand.NotifyCanExecuteChanged();
@@ -69,6 +67,12 @@ internal partial class WizardStateVM : ObservableValidator
 
     [ObservableProperty]
     public partial UserControl CurrentStageControl { get; set; } = new FastCreateView();
+
+    [ObservableProperty]
+    public partial WizardSourceFolderVM? SelectedSourceFolderToSetupInDedicatedFolderAdvancedView { get; set; }
+
+    [ObservableProperty]
+    public partial WizardDestinationFolderVM? SelectedDestinationFolderToSetupInDedicatedFolderAdvancedView { get; set; }
 
     public string Title => string.IsNullOrWhiteSpace(CollectionName) ? "New collection" : CollectionName;
 
@@ -119,6 +123,9 @@ internal partial class WizardStateVM : ObservableValidator
             = WizardStage == WizardStage.SecondAdvancedCollectionType 
                 ? WizardStage.FirstNameAndPath 
                 : WizardStage.SecondAdvancedCollectionType;
+
+        SelectedSourceFolderToSetupInDedicatedFolderAdvancedView = null;
+        SelectedDestinationFolderToSetupInDedicatedFolderAdvancedView = null;
     }
 
     [RelayCommand]
@@ -180,6 +187,22 @@ internal partial class WizardStateVM : ObservableValidator
         }
 
         _wizardWindow.Focus();
+    }
+
+    [RelayCommand]
+    private void Select(ObservableValidator folder)
+    {
+        if (folder is WizardSourceFolderVM source)
+        {
+            SelectedDestinationFolderToSetupInDedicatedFolderAdvancedView = null;
+            SelectedSourceFolderToSetupInDedicatedFolderAdvancedView = source;
+        }
+
+        if (folder is WizardDestinationFolderVM destination)
+        {
+            SelectedSourceFolderToSetupInDedicatedFolderAdvancedView = null;
+            SelectedDestinationFolderToSetupInDedicatedFolderAdvancedView = destination;
+        }
     }
 
     private void SetFoldersToDefaultWithDestinationSetup()
@@ -253,6 +276,26 @@ internal partial class WizardStateVM : ObservableValidator
                 _ => new FastCreateView()
             };
         }
+    }
+
+    [RelayCommand]
+    private void AddSourceFolder()
+    {
+        var folder = new WizardSourceFolderVM();
+        SourceFolders.Add(folder);
+        SelectedSourceFolderToSetupInDedicatedFolderAdvancedView = folder;
+    }
+
+    [RelayCommand]
+    private void RemoveSourceFolder(WizardSourceFolderVM folder)
+    {
+        if (!SourceFolders.Contains(folder)) 
+            return;
+
+        SourceFolders.Remove(folder);
+
+        if (SelectedSourceFolderToSetupInDedicatedFolderAdvancedView == folder)
+            SelectedSourceFolderToSetupInDedicatedFolderAdvancedView = null;
     }
 }
 

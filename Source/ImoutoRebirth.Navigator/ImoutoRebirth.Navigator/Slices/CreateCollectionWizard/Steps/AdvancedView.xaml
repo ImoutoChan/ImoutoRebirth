@@ -137,19 +137,9 @@
         </Grid>
 
         <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Left">
-            <Button Content="cancel"
-                    Command="{Binding CloseCommand}"
-                    Style="{DynamicResource Styles.Button.Regular}" />
-        </StackPanel>
-
-        <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Right">
             <Button Content="back"
                     Command="{Binding State.BackCommand}"
                     Style="{DynamicResource Styles.Button.Regular}" />
-
-            <Button Content="next"
-                    Style="{DynamicResource Styles.Button.Accent}"
-                    Visibility="Hidden"/>
         </StackPanel>
     </Grid>
 </UserControl>

@@ -6,7 +6,7 @@
         <Setter Property="Margin" Value="35 0 0 0" />
         <Setter Property="FontSize" Value="24" />
         <Setter Property="Padding" Value="0" />
-        <Setter Property="FontFamily" Value="Roboto" />
+        <Setter Property="FontFamily" Value="pack://application:,,,/Resources/Fonts/Supreme/#Supreme" />
         <Setter Property="FontWeight" Value="Regular" />
         <Setter Property="Background" Value="#2F2F2F" />
         <Setter Property="Foreground" Value="#F6F6F6" />
@@ -16,6 +16,13 @@
 
     <Style TargetType="Button" BasedOn="{StaticResource Styles.Button.Regular}" x:Key="Styles.Button.Accent">
         <Setter Property="Background" Value="{DynamicResource MahApps.Brushes.AccentBase}" />
+    </Style>
+
+    <Style TargetType="Button" BasedOn="{StaticResource Styles.Button.Regular}" x:Key="Styles.Button.Icon">
+        <Setter Property="Width" Value="NaN" />
+        <Setter Property="Height" Value="NaN" />
+        <Setter Property="Margin" Value="35 0 0 0" />
+        <Setter Property="FontSize" Value="24" />
     </Style>
 
     <Style 

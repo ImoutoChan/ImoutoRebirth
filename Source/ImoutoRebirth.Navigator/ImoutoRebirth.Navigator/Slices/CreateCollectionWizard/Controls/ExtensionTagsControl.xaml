@@ -80,7 +80,7 @@
     </UserControl.Resources>
     
     <StackPanel>
-        <TextBlock Text="supported file extensions" 
+        <TextBlock Text="filter by file extensions" 
                    FontSize="19" 
                    Foreground="{DynamicResource MahApps.Brushes.Gray2}" 
                    Margin="0 0 0 8"/>
@@ -114,7 +114,8 @@
                 <TextBox x:Name="ExpandingTextBox"
                          MinWidth="30"
                          FontSize="12"
-                         Padding="0 -24 0 0"
+                         Padding="0 -10 0 0"
+                         Height="10"
                          Background="Transparent"
                          BorderThickness="0"
                          VerticalContentAlignment="Center"

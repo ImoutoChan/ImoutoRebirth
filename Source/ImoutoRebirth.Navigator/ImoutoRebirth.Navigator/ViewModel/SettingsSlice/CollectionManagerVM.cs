@@ -13,6 +13,7 @@ internal partial class CollectionManagerVm : ObservableObject
     private readonly ICollectionService _collectionService;
 
     [ObservableProperty]
+    [NotifyCanExecuteChangedFor(nameof(RemoveCommand))]
     public partial CollectionVM? SelectedCollection { get; set; }
 
     public CollectionManagerVm() => _collectionService = ServiceLocator.GetService<ICollectionService>();
