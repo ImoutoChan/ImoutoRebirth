@@ -47,4 +47,36 @@ public partial class CollectionsView
             await dialog.RequestCloseAsync();
         }
     }
+
+    private async void DeleteButton_Click(object sender, RoutedEventArgs e)
+    {
+        if (DataContext is not CollectionManagerVm vm || vm.SelectedCollection == null)
+            return;
+
+        var parentWindow = Window.GetWindow(this) as MainWindow;
+        if (parentWindow == null)
+            return;
+
+        var settings = new MetroDialogSettings
+        {
+            AffirmativeButtonText = "Yes",
+            NegativeButtonText = "No",
+            ColorScheme = MetroDialogColorScheme.Accented,
+            AnimateShow = false,
+            AnimateHide = false
+        };
+
+        var result = await parentWindow.ShowMessageAsync(
+            "Delete collection",
+            $"Are you sure you want to delete collection '{vm.SelectedCollection.Name}'?",
+            MessageDialogStyle.AffirmativeAndNegative,
+            settings);
+
+        if (result != MessageDialogResult.Affirmative)
+            return;
+
+        // Execute the original RemoveCommand
+        if (vm.RemoveCommand.CanExecute(null))
+            await vm.RemoveCommand.ExecuteAsync(null);
+    }
 }

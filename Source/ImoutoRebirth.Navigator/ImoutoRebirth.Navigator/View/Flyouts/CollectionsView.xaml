@@ -42,8 +42,9 @@
                             IsEnabled="{Binding ElementName=Collections, Path=SelectedItem, Converter={StaticResource BooleanResultConverter}, ConverterParameter=!null}" />
 
                     <Button Content="Delete"
-                            Command="{Binding RemoveCommand}"
-                            Margin="10,0,0,0" />
+                            Click="DeleteButton_Click"
+                            Margin="10,0,0,0"
+                            IsEnabled="{Binding ElementName=Collections, Path=SelectedItem, Converter={StaticResource BooleanResultConverter}, ConverterParameter=!null}" />
 
                     <Button Content="Create"
                             Click="CreateButton_Click"

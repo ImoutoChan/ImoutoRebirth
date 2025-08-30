@@ -5,6 +5,7 @@
 * Settings are now preserved between versions of Navigator apps
 * Reformat added on date for files
 * **New "create collection" with multi-step wizard interface**
+* Ask for confirmation before deleting a collection in Collections view
 
 ### Lamia
 * New service lamia, extracts media tags from files (codec, resolution, duration) and adds them to Lilin
