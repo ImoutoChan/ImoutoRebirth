@@ -153,9 +153,12 @@ internal partial class TagSearchVM : ObservableObject
 
     public void AddCollections(ObservableCollection<CollectionVM> collections)
     {
+        Collections.Clear();
+        Collections.Add(new("All", null));
+        SelectedCollection = Collections.First();
         foreach (var collectionVm in collections)
         {
-            Collections.Add(new KeyValuePair<string, Guid?>(collectionVm.Name, collectionVm.Id));
+            Collections.Add(new(collectionVm.Name, collectionVm.Id));
         }
     }
 

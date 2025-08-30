@@ -1,12 +1,4 @@
-﻿using System.Collections;
-using System.Collections.ObjectModel;
-using System.Collections.Specialized;
-using System.Diagnostics;
-using System.IO;
-using System.Text;
-using System.Windows;
-using System.Windows.Threading;
-using CommunityToolkit.Mvvm.ComponentModel;
+﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
 using ImoutoRebirth.Common;
@@ -17,11 +9,20 @@ using ImoutoRebirth.Navigator.Services.Tags;
 using ImoutoRebirth.Navigator.Slices.CreateCollectionWizard;
 using ImoutoRebirth.Navigator.Slices.QuickTagging;
 using ImoutoRebirth.Navigator.UserControls;
+using ImoutoRebirth.Navigator.Utils;
 using ImoutoRebirth.Navigator.ViewModel.ListEntries;
 using ImoutoRebirth.Navigator.ViewModel.SettingsSlice;
 using MahApps.Metro.Controls.Dialogs;
 using Newtonsoft.Json;
 using Serilog;
+using System.Collections;
+using System.Collections.ObjectModel;
+using System.Collections.Specialized;
+using System.Diagnostics;
+using System.IO;
+using System.Text;
+using System.Windows;
+using System.Windows.Threading;
 using File = System.IO.File;
 
 namespace ImoutoRebirth.Navigator.ViewModel;
@@ -101,6 +102,7 @@ internal partial class MainWindowVM : ObservableObject
 
         _messenger.Register<QuickTaggingCloseRequest>(this, (_, _) => ShowQuickTagging = false);
         _messenger.Register<OpenCreateCollectionWizardRequest>(this, (_, _) => OpenCreateCollectionWizard());
+        _messenger.Register<RefreshCollectionsRequest>(this, (_, _) => InitializeAsync().LogAndSuppressExceptions());
     }
 
     public void ShowWindow() => _view.Show();

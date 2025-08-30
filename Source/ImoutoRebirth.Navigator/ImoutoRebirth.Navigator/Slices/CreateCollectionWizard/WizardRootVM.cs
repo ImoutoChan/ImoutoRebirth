@@ -17,12 +17,14 @@ internal partial class WizardRootVM : ObservableObject
     private readonly ICollectionService _collectionService;
     private readonly IDestinationFolderService _destinationFolderService;
     private readonly ISourceFolderService _sourceFolderService;
+    private readonly IMessenger _messenger;
 
     public WizardRootVM(Window wizardWindow)
     {
         _collectionService = ServiceLocator.GetService<ICollectionService>();
         _destinationFolderService = ServiceLocator.GetService<IDestinationFolderService>();
         _sourceFolderService = ServiceLocator.GetService<ISourceFolderService>();
+        _messenger = ServiceLocator.GetService<IMessenger>();
 
         _wizardWindow = wizardWindow;
 
@@ -56,6 +58,8 @@ internal partial class WizardRootVM : ObservableObject
             var singleSourceFolder = State.SourceFolders.First();
             await _sourceFolderService.AddSourceFolderAsync(singleSourceFolder.PrepareToSave(createdCollection.Id));
         }
+
+        _messenger.Send(new RefreshCollectionsRequest());
 
         _wizardWindow.Close();
         Process.Start("explorer", $"\"{collectionFolder.FullName}\"");
@@ -120,6 +124,8 @@ internal partial class WizardRootVM : ObservableObject
 }
 
 public record OpenCreateCollectionWizardRequest;
+
+public record RefreshCollectionsRequest;
 
 internal class DesignTimeWizardRootVM : WizardRootVM
 {
