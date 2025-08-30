@@ -17,32 +17,9 @@ public partial class CollectionsView
         InitializeComponent();
     }
 
-    private async void CreateButton_Click(object sender, RoutedEventArgs e)
+    private void CreateButton_Click(object sender, RoutedEventArgs e)
     {
         ServiceLocator.GetService<IMessenger>().Send<OpenCreateCollectionWizardRequest>();
-        await Task.Yield();
-
-        // var parentWindow = Window.GetWindow(this) as MainWindow;
-        //
-        // var result = await parentWindow.ShowInputAsync("Create collection", "Name");
-        //
-        // if (result == null) //user pressed cancel
-        //     return;
-        //
-        // var error = await ((CollectionManagerVm) DataContext).CreateCollection(result);
-        // if (error != null)
-        // {
-        //     await parentWindow.ShowMessageAsync("Can not create collection", error);
-        // }
-        // else
-        // {
-        //     var dialog = (BaseMetroDialog)parentWindow!.Resources["SuccessCreateCollectionDialog"]!;
-        //     dialog = dialog.ShowDialogExternally();
-        //
-        //     await Task.Delay(500);
-        //
-        //     await dialog.RequestCloseAsync();
-        // }
     }
 
     private async void RenameButton_Click(object sender, RoutedEventArgs e)
