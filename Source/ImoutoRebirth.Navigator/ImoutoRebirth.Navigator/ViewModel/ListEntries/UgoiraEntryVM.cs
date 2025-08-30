@@ -10,11 +10,11 @@ namespace ImoutoRebirth.Navigator.ViewModel.ListEntries;
 internal partial class UgoiraEntryVM : BaseEntryVM, INavigatorListEntry, IPixelSizable
 {
     [ObservableProperty]
-    private Size _viewPortSize;
+    public partial Size ViewPortSize { get; set; }
 
     [ObservableProperty]
-    private bool _isLoading;
-    
+    public partial bool IsLoading { get; set; }
+
     [ObservableProperty]
     private BitmapSource? _image;
 

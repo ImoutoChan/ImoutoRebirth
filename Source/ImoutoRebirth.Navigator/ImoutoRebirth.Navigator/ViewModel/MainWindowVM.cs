@@ -14,6 +14,7 @@ using ImoutoRebirth.Navigator.Model;
 using ImoutoRebirth.Navigator.Services;
 using ImoutoRebirth.Navigator.Services.ImoutoViewer;
 using ImoutoRebirth.Navigator.Services.Tags;
+using ImoutoRebirth.Navigator.Slices.CreateCollectionWizard;
 using ImoutoRebirth.Navigator.Slices.QuickTagging;
 using ImoutoRebirth.Navigator.UserControls;
 using ImoutoRebirth.Navigator.ViewModel.ListEntries;
@@ -41,34 +42,34 @@ internal partial class MainWindowVM : ObservableObject
     private int _previewSize = 256;
 
     [ObservableProperty]
-    private bool _showTags = true;
+    public partial bool ShowTags { get; set; } = true;
 
     [ObservableProperty]
-    private bool _showQuickTagging = false;
-    
+    public partial bool ShowQuickTagging { get; set; } = false;
+
     [ObservableProperty]
     private int _volume = 100;
 
     [ObservableProperty]
-    private string _title;
+    public partial string Title { get; set; }
 
     [ObservableProperty]
-    private FullScreenPreviewVM? _fullScreenPreviewVM;
+    public partial FullScreenPreviewVM? FullScreenPreviewVM { get; set; }
 
     [ObservableProperty]
-    private QuickTaggingVM? _quickTagging;
+    public partial QuickTaggingVM? QuickTagging { get; set; }
 
     [ObservableProperty]
-    private int _totalCount;
+    public partial int TotalCount { get; set; }
 
     [ObservableProperty]
-    private bool _isLoading;
+    public partial bool IsLoading { get; set; }
 
     [ObservableProperty]
-    private string? _status;
+    public partial string? Status { get; set; }
 
     [ObservableProperty]
-    private string? _statusToolTip;
+    public partial string? StatusToolTip { get; set; }
 
     public MainWindowVM()
     {
@@ -82,8 +83,7 @@ internal partial class MainWindowVM : ObservableObject
         NavigatorList.CollectionChanged += (_, _) => OnPropertyChanged(nameof(LoadedCount));
 
         _appendNewContentTimer.Tick += (_, _) => { /*LoadNew();*/ };
-        
-        _title = DefaultTitle;
+        Title = DefaultTitle;
 
         TagSearchVM = new TagSearchVM();
         TagsEdit = new TagsEditVM(this);
@@ -100,6 +100,7 @@ internal partial class MainWindowVM : ObservableObject
         _view.SelectedItemsChanged += OnViewOnSelectedItemsChanged;
 
         _messenger.Register<QuickTaggingCloseRequest>(this, (_, _) => ShowQuickTagging = false);
+        _messenger.Register<OpenCreateCollectionWizardRequest>(this, (_, _) => OpenCreateCollectionWizard());
     }
 
     public void ShowWindow() => _view.Show();
@@ -274,6 +275,15 @@ internal partial class MainWindowVM : ObservableObject
 
         FullScreenPreviewVM = vm;
         Title = Path.GetFileName(navigatorListEntry.Path);
+    }
+
+    private void OpenCreateCollectionWizard()
+    {
+        var window = new CreateCollectionWizardWindow();
+        var vm = new WizardRootVM(window);
+
+        window.DataContext = vm;
+        window.Show();
     }
 
     private void OnCurrentEntryNameChanged(object? _, string value) => Title = value;

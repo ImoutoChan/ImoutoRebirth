@@ -7,10 +7,10 @@ namespace ImoutoRebirth.Navigator.Slices.QuickTagging;
 internal partial class TagsPacksSetVM : ObservableObject
 {
     public ObservableCollection<TagsPackVM> Packs { get; set; } = new();
-    
+
     [ObservableProperty]
     [NotifyPropertyChangedFor(nameof(Name))]
-    private string? _title;
+    public partial string? Title { get; set; }
 
     public string Name 
         => Title 

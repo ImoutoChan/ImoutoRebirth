@@ -12,7 +12,7 @@ internal static partial class Scripts
 {
     public static async Task SplitBasedOnFoundInExHentai()
     {
-        var sourcePath = new DirectoryInfo(@"C:\Playground\DodjiMetaSearching\Processed\SourcePlay\Archived");
+        var sourcePath = new DirectoryInfo(@"C:\Playground\DodjiMetaSearching\Processed\SourcePlay\Archived\1");
         var targetFoundPath = new DirectoryInfo(Path.Combine(sourcePath.FullName, "!found"));
         var targetMissPath = new DirectoryInfo(Path.Combine(sourcePath.FullName, "!miss"));
 

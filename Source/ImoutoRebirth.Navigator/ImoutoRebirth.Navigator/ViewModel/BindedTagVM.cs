@@ -25,9 +25,9 @@ internal partial class BindedTagVM : ObservableObject
         "Meta",
         "General"
     };
-    
+
     [ObservableProperty]
-    private SearchType _searchType;
+    public partial SearchType SearchType { get; set; }
 
     private readonly Guid? _fileId;
     private readonly Action? _updateAction;

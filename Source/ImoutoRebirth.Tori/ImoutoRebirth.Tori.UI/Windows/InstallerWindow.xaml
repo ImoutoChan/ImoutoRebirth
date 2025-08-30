@@ -42,26 +42,5 @@
             x:Name="StepContent" 
             Grid.Row="1" 
             Content="{Binding CurrentStepControl}" />
-        
-        <!-- Navigation Buttons -->
-        <!--<Grid Grid.Row="2" Margin="20">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="*"/>
-                <ColumnDefinition Width="Auto"/>
-                <ColumnDefinition Width="Auto"/>
-            </Grid.ColumnDefinitions>
-            
-            <Button Grid.Column="1" Content="Back" Command="{Binding BackCommand}" 
-                    Width="100" Margin="0,0,10,0" Style="{StaticResource MahApps.Styles.Button}"/>
-            
-            <Button Grid.Column="2" Content="Далее" 
-                    Command="{Binding NextCommand}" Width="100" Style="{StaticResource MahApps.Styles.Button.Dialogs.Accent}"/>
-        </Grid>-->
     </Grid>
-    
-    <!--<mah:MetroWindow.Resources>
-        <local:StepToFontWeightConverter x:Key="StepToFontWeightConverter"/>
-        <local:StepToNextButtonTextConverter x:Key="StepToNextButtonTextConverter"/>
-        <local:LastStepConverter x:Key="LastStepConverter"/>
-    </mah:MetroWindow.Resources>-->
 </mah:MetroWindow>

@@ -22,12 +22,10 @@ internal partial class FullScreenPreviewVM : ObservableObject
     [NotifyPropertyChangedFor(nameof(UgoiraPath))]
     [NotifyPropertyChangedFor(nameof(ImagePath))]
     [NotifyPropertyChangedFor(nameof(WebPPath))]
-    [NotifyPropertyChangedFor(nameof(DodjiImage))]
-    private string? _path;
+    public partial string? Path { get; set; }
 
     [ObservableProperty]
-    [NotifyPropertyChangedFor(nameof(DodjiImage))]
-    private INavigatorListEntry? _currentEntry;
+    public partial INavigatorListEntry? CurrentEntry { get; set; }
 
     [ObservableProperty]
     [NotifyPropertyChangedFor(nameof(PngPath))]
@@ -36,18 +34,17 @@ internal partial class FullScreenPreviewVM : ObservableObject
     [NotifyPropertyChangedFor(nameof(UgoiraPath))]
     [NotifyPropertyChangedFor(nameof(ImagePath))]
     [NotifyPropertyChangedFor(nameof(WebPPath))]
-    [NotifyPropertyChangedFor(nameof(DodjiImage))]
-    private ListEntryType? _type;
+    public partial ListEntryType? Type { get; set; }
 
     [ObservableProperty]
-    private IReadOnlyCollection<DelayItem>? _ugoiraFrameDelays;
-    
+    public partial IReadOnlyCollection<DelayItem>? UgoiraFrameDelays { get; set; }
+
     [ObservableProperty]
     private IReadOnlyCollection<FileNote> _fileNotes = [];
 
     [ObservableProperty]
     [NotifyPropertyChangedFor(nameof(Zoom))]
-    private Size _viewPortSize;
+    public partial Size ViewPortSize { get; set; }
 
     public FullScreenPreviewVM(
         Func<INavigatorListEntry, Task<List<DelayItem>?>> ugoiraDelaysGetter, 

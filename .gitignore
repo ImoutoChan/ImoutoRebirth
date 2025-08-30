@@ -11,6 +11,7 @@ node_modules/
 /CHANGELOG.RESULT.md
 /Source/ImoutoRebirth.Hasami/ImoutoRebirth.Hasami/appsettings.json
 **/appsettings.local.json
+/Source/ImoutoRebirth.Navigator/ImoutoRebirth.Navigator/ImoutoRebirth.Navigator.csproj.user
 **/appsettings.Production.json
 /global.json
 *.received.*

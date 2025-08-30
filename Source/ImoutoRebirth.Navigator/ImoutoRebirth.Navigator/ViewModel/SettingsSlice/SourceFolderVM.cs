@@ -7,17 +7,16 @@ namespace ImoutoRebirth.Navigator.ViewModel.SettingsSlice;
 public partial class SourceFolderVM : FolderVM
 {
     [ObservableProperty]
-    private bool _checkFormat;
+    public partial bool CheckFormat { get; set; }
 
     [ObservableProperty]
-    private bool _checkNameHash;
+    public partial bool CheckNameHash { get; set; }
 
     [ObservableProperty]
-    private bool _tagsFromSubfolder;
+    public partial bool TagsFromSubfolder { get; set; }
 
     [ObservableProperty]
-    private bool _addTagFromFileName;
-
+    public partial bool AddTagFromFileName { get; set; }
     [ObservableProperty]
     private bool _isWebhookUploadEnabled;
 

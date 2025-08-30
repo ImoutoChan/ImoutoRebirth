@@ -10,12 +10,12 @@ internal abstract partial class BaseEntryVM : ObservableObject
     private readonly Guid? _dbId;
     private readonly FilesClient _filesClient;
     private bool _isLoaded;
-    
-    [ObservableProperty]
-    private bool _isFavorite;
 
     [ObservableProperty]
-    private int _rating;
+    public partial bool IsFavorite { get; set; }
+
+    [ObservableProperty]
+    public partial int Rating { get; set; }
 
     protected BaseEntryVM(Guid? dbId, FilesClient filesClient)
     {

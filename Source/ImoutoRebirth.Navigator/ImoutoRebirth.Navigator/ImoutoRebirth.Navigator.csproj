@@ -11,6 +11,7 @@
         <ImplicitUsings>true</ImplicitUsings>
         <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
         <ServerGarbageCollection>false</ServerGarbageCollection>
+        <LangVersion>preview</LangVersion>
     </PropertyGroup>
 
     <ItemGroup>
@@ -37,6 +38,8 @@
         <None Update="Resources\Icon\appicon.png">
             <CopyToOutputDirectory>Always</CopyToOutputDirectory>
         </None>
+        <Resource Include="Resources\Fonts\Supreme\Supreme-Variable.ttf" />
+        <Resource Include="Resources\Fonts\Supreme\Supreme-VariableItalic.ttf" />
         <Resource Include="Resources\Icon\splashscreen.png">
             <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
         </Resource>
@@ -180,8 +183,12 @@
             <SubType>Designer</SubType>
         </Page>
         <Page Update="Slices\QuickTagging\QuickTaggingView.xaml">
-            <Generator>MSBuild:Compile</Generator>
-            <XamlRuntime>Wpf</XamlRuntime>
+            <SubType>Designer</SubType>
+        </Page>
+        <Page Update="Slices\CreateCollectionWizard\Steps\FastCreateView.xaml">
+            <SubType>Designer</SubType>
+        </Page>
+        <Page Update="Slices\CreateCollectionWizard\Steps\AdvancedView.xaml">
             <SubType>Designer</SubType>
         </Page>
     </ItemGroup>

@@ -1,0 +1,86 @@
+﻿<UserControl x:Class="ImoutoRebirth.Navigator.Slices.CreateCollectionWizard.Steps.FastCreateView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:local="clr-namespace:ImoutoRebirth.Navigator.Slices.CreateCollectionWizard"
+             mc:Ignorable="d"
+             d:DesignHeight="524" 
+             d:DesignWidth="928"
+             d:DataContext="{d:DesignInstance Type={x:Type local:DesignTimeWizardRootVM}, d:IsDesignTimeCreatable=True}"
+             FontFamily="Roboto">
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="../WizardControls.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+
+            <Style TargetType="TextBox" BasedOn="{StaticResource {x:Type TextBox}}">
+                <Setter Property="Height" Value="40" />
+                <Setter Property="FontSize" Value="26" />
+                <Setter Property="Padding" Value="11 0" />
+            </Style>
+
+            <Style TargetType="TextBlock" BasedOn="{StaticResource {x:Type TextBlock}}">
+                <Setter Property="FontSize" Value="19" />
+                <Setter Property="Foreground" Value="{DynamicResource MahApps.Brushes.Gray2}" />
+            </Style>
+        </ResourceDictionary>
+    </UserControl.Resources>
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+
+        <StackPanel Grid.Row="0" Margin="94 70 94 70">
+            <StackPanel Margin="0 0 204 30">
+                <TextBlock Text="name" />
+
+                <TextBox Text="{Binding State.CollectionName}" />
+            </StackPanel>
+
+            <StackPanel Margin="0 0 0 30">
+                <TextBlock Text="path" />
+
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="Auto" />
+                    </Grid.ColumnDefinitions>
+
+                    <TextBox Grid.Column="0" Text="{Binding State.CollectionPath}" />
+
+                    <Button
+                        Grid.Column="1"
+                        Content="browse"
+                        Style="{DynamicResource Styles.Button.Regular}"
+                        Command="{Binding State.BrowsePathLocationCommand}" />
+                </Grid>
+            </StackPanel>
+
+            <StackPanel Margin="0 0 204 30">
+                <TextBlock Text="collection path" />
+
+                <TextBox Text="{Binding State.PathAndName, Mode=OneWay}" IsEnabled="False" />
+            </StackPanel>
+        </StackPanel>
+
+        <StackPanel Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Left">
+            <Button Content="cancel"
+                    Command="{Binding CloseCommand}"
+                    Style="{DynamicResource Styles.Button.Regular}" />
+        </StackPanel>
+
+        <StackPanel Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Right">
+            <Button Content="advanced"
+                    Command="{Binding State.OpenAdvancedCommand}"
+                    Style="{DynamicResource Styles.Button.Regular}" />
+
+            <Button Content="create"
+                    Command="{Binding State.FastCreateCommand}"
+                    Style="{DynamicResource Styles.Button.Accent}" />
+        </StackPanel>
+    </Grid>
+</UserControl>

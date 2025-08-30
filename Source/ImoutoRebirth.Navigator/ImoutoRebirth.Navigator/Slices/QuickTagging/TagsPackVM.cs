@@ -6,18 +6,18 @@ namespace ImoutoRebirth.Navigator.Slices.QuickTagging;
 internal partial class TagsPackVM : ObservableObject
 {
     [ObservableProperty]
-    private IReadOnlyCollection<Tag> _tags;
+    public partial IReadOnlyCollection<Tag> Tags { get; set; }
 
     [ObservableProperty]
-    private char _key;
+    public partial char Key { get; set; }
 
     [ObservableProperty]
-    private bool? _isSuccess = null;
+    public partial bool? IsSuccess { get; set; } = null;
 
     public TagsPackVM(IReadOnlyCollection<Tag> tags, char key)
     {
-        _tags = tags;
-        _key = key;
+        Tags = tags;
+        Key = key;
     }
 }
 

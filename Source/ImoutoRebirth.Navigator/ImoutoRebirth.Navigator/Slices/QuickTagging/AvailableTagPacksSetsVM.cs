@@ -12,7 +12,7 @@ internal partial class AvailableTagPacksSetsVM : ObservableObject
     public ObservableCollection<TagsPacksSetVM> Sets { get; } = new();
 
     [ObservableProperty]
-    private TagsPacksSetVM _selected;
+    public partial TagsPacksSetVM Selected { get; set; }
 
     public AvailableTagPacksSetsVM()
     {

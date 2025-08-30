@@ -7,33 +7,25 @@ namespace ImoutoRebirth.Navigator.ViewModel.SettingsSlice;
 internal partial class DestinationFolderVM : FolderVM
 {
     [ObservableProperty]
-    [NotifyCanExecuteChangedFor(nameof(SaveCommand))]
-    [NotifyDataErrorInfo]
-    [NotNullOrWhiteSpace]
-    [Directory("Please enter valid folder name")]
-    private bool _needDevideImagesByHash;
+    public partial bool NeedDevideImagesByHash { get; set; }
+
+    [ObservableProperty]
+    public partial bool NeedRename { get; set; }
 
     [ObservableProperty]
     [NotifyCanExecuteChangedFor(nameof(SaveCommand))]
     [NotifyDataErrorInfo]
     [NotNullOrWhiteSpace("Please enter folder name")]
     [Directory("Please enter valid folder name")]
-    private bool _needRename;
-    
-    [ObservableProperty]
-    [NotifyCanExecuteChangedFor(nameof(SaveCommand))]
-    [NotifyDataErrorInfo]
-    [NotNullOrWhiteSpace("Please enter folder name")]
-    [Directory("Please enter valid folder name")]
     private string? _incorrectFormatSubpath;
-    
+
     [ObservableProperty]
     [NotifyCanExecuteChangedFor(nameof(SaveCommand))]
     [NotifyDataErrorInfo]
     [NotNullOrWhiteSpace("Please enter folder name")]
     [Directory("Please enter valid folder name")]
-    private string? _incorrectHashSubpath;
-    
+    public partial string? IncorrectHashSubpath { get; set; }
+
     [ObservableProperty]
     [NotifyCanExecuteChangedFor(nameof(SaveCommand))]
     [NotifyDataErrorInfo]
@@ -51,10 +43,10 @@ internal partial class DestinationFolderVM : FolderVM
         string nonHashSubpath)
         : base(id, path)
     {
-        _needDevideImagesByHash = needDevideImagesByHash;
-        _needRename = needRename;
+        NeedDevideImagesByHash = needDevideImagesByHash;
+        NeedRename = needRename;
         _incorrectFormatSubpath = incorrectFormatSubpath;
-        _incorrectHashSubpath = incorrectHashSubpath;
+        IncorrectHashSubpath = incorrectHashSubpath;
         _nonHashSubpath = nonHashSubpath;
     }
 

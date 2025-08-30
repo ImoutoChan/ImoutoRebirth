@@ -32,6 +32,7 @@ public static class ServiceLocator
         sc.AddTransient<IFileNoteService, FileNoteService>();
         sc.AddTransient<ITagService, TagService>();
         sc.AddTransient<IFileLoadingService, FileLoadingService>();
+        sc.AddTransient<IMessenger, WeakReferenceMessenger>();
 
         sc.AddTransient<ISettingsUpgradeService, SettingsUpgradeService>();
 
