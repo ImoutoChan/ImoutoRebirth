@@ -10,6 +10,7 @@
         <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
         <ImplicitUsings>true</ImplicitUsings>
         <ServerGarbageCollection>false</ServerGarbageCollection>
+        <ApplicationIcon>window-icon.ico</ApplicationIcon>
     </PropertyGroup>
 
     <PropertyGroup>

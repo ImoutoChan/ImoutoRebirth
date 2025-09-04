@@ -14,6 +14,9 @@
 ### Room
 * Add webhook upload settings to source folder configuration (enable/disable toggle and URL field)
 
+### Infrastructure
+* Add shared icon to all Windows service executables
+
 # v4.28.2
 
 ### Highlights
