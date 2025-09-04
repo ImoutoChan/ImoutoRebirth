@@ -91,6 +91,10 @@ public class ConfigurationBuilder : IConfigurationBuilder
                 "UserId": "{{_configuration.Api.Rule34UserId}}",
                 "ApiKey": "{{_configuration.Api.Rule34ApiKey}}"
               },
+              "YandereSettings": {
+                "Delay": 0,
+                "BotUserAgent": "Arachne/{{currentVersion}}"
+              },
               "OpenSearchUri": "{{_configuration.OpenSearchUri}}",
               "Jaeger": {
                 "Host": "{{_configuration.Jaeger.Host}}",
@@ -112,7 +116,8 @@ public class ConfigurationBuilder : IConfigurationBuilder
               },
               "Yandere": {
                 "ApiKey": "{{_configuration.Api.YandereApiKey}}",
-                "Login": "{{_configuration.Api.YandereLogin}}"
+                "Login": "{{_configuration.Api.YandereLogin}}",
+                "BotUserAgent": "Harpy/{{currentVersion}}"
               },
               "Gelbooru": {
                 "UserId": "{{_configuration.Api.GelbooruUserId}}",

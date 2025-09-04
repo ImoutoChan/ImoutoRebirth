@@ -18,8 +18,9 @@ public static class ServiceCollectionExtensions
         this IServiceCollection services,
         IConfiguration configuration)
     {
-        var userAgent = configuration.GetSection("Danbooru").GetValue<string>("BotUserAgent");
-        
+        var danbooruUserAgent = configuration.GetSection("Danbooru").GetValue<string>("BotUserAgent");
+        var yandereUserAgent = configuration.GetSection("Yandere").GetValue<string>("BotUserAgent");
+
         services.AddDefaultMediatR(x => x.RegisterServicesFromAssemblyContaining<FavoritesSaveCommand>());
         services.AddLoggingBehavior();
 
@@ -36,14 +37,18 @@ public static class ServiceCollectionExtensions
 
         services.AddHttpClient<DanbooruFavoritesLoader>(x =>
         {
-            if (!string.IsNullOrWhiteSpace(userAgent))
-                x.DefaultRequestHeaders.Add("User-Agent", userAgent);
+            if (!string.IsNullOrWhiteSpace(danbooruUserAgent))
+                x.DefaultRequestHeaders.Add("User-Agent", danbooruUserAgent);
         });
-        services.AddHttpClient<YandereFavoritesLoader>();
+        services.AddHttpClient<YandereFavoritesLoader>(x =>
+        {
+            if (!string.IsNullOrWhiteSpace(yandereUserAgent))
+                x.DefaultRequestHeaders.Add("User-Agent", yandereUserAgent);
+        });
         services.AddHttpClient<PostSaver>().ConfigureHttpClient(x =>
         {
-            if (!string.IsNullOrWhiteSpace(userAgent))
-                x.DefaultRequestHeaders.Add("User-Agent", userAgent);
+            if (!string.IsNullOrWhiteSpace(danbooruUserAgent))
+                x.DefaultRequestHeaders.Add("User-Agent", danbooruUserAgent);
 
             x.Timeout = TimeSpan.FromMinutes(5);
         });

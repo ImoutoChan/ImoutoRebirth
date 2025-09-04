@@ -19,7 +19,8 @@ public static class ServiceCollectionExtensions
         GelbooruSettings gelbooruSettings,
         Rule34Settings rule34Settings,
         SankakuSettings sankakuSettings,
-        ExHentaiSettings exHentaiSettings)
+        ExHentaiSettings exHentaiSettings,
+        YandereSettings yandereSettings)
     {
         services.AddTransient<IExHentaiMetadataProvider, ExHentaiMetadataProvider>();
         services.AddTransient<ExHentaiMetadataProvider>();
@@ -71,6 +72,7 @@ public static class ServiceCollectionExtensions
         services.AddTransient<GelbooruSettings>(x => gelbooruSettings);
         services.AddTransient<Rule34Settings>(x => rule34Settings);
         services.AddTransient<SankakuSettings>(x => sankakuSettings);
+        services.AddTransient<YandereSettings>(x => yandereSettings);
         services.AddTransient<IOptions<Imouto.BooruParser.Implementations.Sankaku.SankakuSettings>>(_ =>
             Options.Create(new Imouto.BooruParser.Implementations.Sankaku.SankakuSettings
             {

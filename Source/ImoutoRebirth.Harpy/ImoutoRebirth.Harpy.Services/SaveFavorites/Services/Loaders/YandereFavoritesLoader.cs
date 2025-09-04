@@ -40,7 +40,7 @@ internal class YandereFavoritesLoader
         do
         {
             var result = await _httpClient.GetStringAsync(url + $"&page={page}");
-            posts = JsonSerializer.Deserialize<Post[]>(result) ?? Array.Empty<Post>();
+            posts = JsonSerializer.Deserialize<Post[]>(result) ?? [];
             var notEmptyPosts = posts.Where(x => x is { Md5: not null, FileUrl: not null });
             
             foreach (var post in notEmptyPosts)

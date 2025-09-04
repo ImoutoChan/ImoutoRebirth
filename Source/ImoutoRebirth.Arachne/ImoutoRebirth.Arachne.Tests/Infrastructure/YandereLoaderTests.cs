@@ -3,6 +3,7 @@ using Flurl.Http.Configuration;
 using Imouto.BooruParser;
 using Imouto.BooruParser.Implementations.Sankaku;
 using ImoutoRebirth.Arachne.Infrastructure.LoaderFabrics;
+using ImoutoRebirth.Arachne.Infrastructure.Models.Settings;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Options;
 using SankakuSettings = ImoutoRebirth.Arachne.Infrastructure.Models.Settings.SankakuSettings;
@@ -48,7 +49,7 @@ public class YandereLoaderTests
     public async Task ShouldHaveMd5OnChildren()
     {
         // arrange
-        var fabric = new YandereLoaderFabric(new FlurlClientCache());
+        var fabric = new YandereLoaderFabric(new FlurlClientCache(), new YandereSettings() {BotUserAgent = "UnitTests/1.0.0"});
         var loader = fabric.Create();
         
         // act
@@ -64,7 +65,7 @@ public class YandereLoaderTests
     public async Task ShouldHaveMd5OnParentPost()
     {
         // arrange
-        var fabric = new YandereLoaderFabric(new FlurlClientCache());
+        var fabric = new YandereLoaderFabric(new FlurlClientCache(), new YandereSettings() {BotUserAgent = "UnitTests/1.0.0"});
         var loader = fabric.Create();
         
         // act
@@ -80,7 +81,7 @@ public class YandereLoaderTests
     public async Task ShouldWorkWithPostWithoutSiblings()
     {
         // arrange
-        var fabric = new YandereLoaderFabric(new FlurlClientCache());
+        var fabric = new YandereLoaderFabric(new FlurlClientCache(), new YandereSettings() {BotUserAgent = "UnitTests/1.0.0"});
         var loader = fabric.Create();
         
         // act

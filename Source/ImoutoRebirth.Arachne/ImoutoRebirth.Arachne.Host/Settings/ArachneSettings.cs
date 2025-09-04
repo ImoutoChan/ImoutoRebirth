@@ -13,4 +13,6 @@ public class ArachneSettings
     public required SankakuSettings SankakuSettings { get; set; }
 
     public required ExHentaiSettings ExHentaiSettings { get; set; }
+
+    public required YandereSettings YandereSettings { get; set; }
 }

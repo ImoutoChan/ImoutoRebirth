@@ -39,7 +39,7 @@ internal class DanbooruFavoritesLoader
                 {
                     UserId = int.TryParse(gelbooruConfiguration.Value.UserId, out var userId) ? userId : 0,
                     ApiKey = gelbooruConfiguration.Value.ApiKey,
-                    PauseBetweenRequestsInMs = 0,
+                    PauseBetweenRequestsInMs = 0
                 }));
     }
 
