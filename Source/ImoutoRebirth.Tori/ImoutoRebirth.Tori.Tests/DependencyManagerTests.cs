@@ -13,6 +13,8 @@ public class DependencyManagerTests
     public DependencyManagerTests(ITestOutputHelper output) => _output = output;
 
     [Fact]
+    [Trait("ExternalResourceRequired", "True")]
+    [Trait("ExternalResource", "Postgres")]
     public async Task DependencyManager_WhenCalledOnLocal_ShouldReturnVersions()
     {
         var manager = new DependencyManager(
@@ -40,6 +42,8 @@ public class DependencyManagerTests
     }
 
     [Fact]
+    [Trait("ExternalResourceRequired", "True")]
+    [Trait("ExternalResource", "Postgres")]
     public async Task DependencyManager_WhenCalledOnLocal_ShouldInstallPostgres()
     {
         var manager = new DependencyManager(

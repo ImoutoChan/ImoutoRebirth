@@ -25,7 +25,7 @@
     english,
     translated
   ],
-  Rating: 4.52,
+  Rating: 4.51,
   ThumbnailUrl: https://ehgt.org/w/01/493/96471-sdkeqwcd.webp,
   GalleryId: 2921730,
   GalleryToken: d97ebe632e,
