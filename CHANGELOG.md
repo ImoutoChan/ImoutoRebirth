@@ -1,5 +1,13 @@
 # Unreleased
 
+# v4.29.1
+
+### Highlights
+
+* This version introduces new "create collection" window with multi-step wizard interface
+* New service Lamia extracts media tags from files (codec, resolution, duration) and adds them to your files
+* Pause/resume video on click in player area in Navigator
+
 ### Navigator
 * Add close button for the quick tagging window
 * Settings are now preserved between versions of Navigator apps
