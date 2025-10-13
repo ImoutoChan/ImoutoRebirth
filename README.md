@@ -63,7 +63,7 @@ For viewing and managing collections, and tagging. It's essentially an explorer.
 
 For viewing individual images. Its use is not mandatory, you can use your favorite image viewer, but Imouto Viewer allows you to read Notes from booru (usually these are translations of text in images), view and add your own tags.
 
-![Imouto Navigator](https://raw.githubusercontent.com/ImoutoChan/ImoutoRebirth/master/Docs/Screens/Imouto%20Viewer.png "Imouto Viewer")
+![Imouto Viewer](https://raw.githubusercontent.com/ImoutoChan/ImoutoRebirth/master/Docs/Screens/Imouto%20Viewer.png "Imouto Viewer")
 
 # Installation
 
