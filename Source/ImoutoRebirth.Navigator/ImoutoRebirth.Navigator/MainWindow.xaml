@@ -23,7 +23,7 @@
                           xmlns:quickTagging="clr-namespace:ImoutoRebirth.Navigator.Slices.QuickTagging"
                           xmlns:navigator="clr-namespace:ImoutoRebirth.Navigator"
                           xmlns:tz="http://schemas.abtsoftware.co.uk/transitionz"
-                          xmlns:createCollectionWizard="clr-namespace:ImoutoRebirth.Navigator.Slices.CreateCollectionWizard"
+                          xmlns:vwp="clr-namespace:WpfToolkit.Controls;assembly=VirtualizingWrapPanel"
                           d:DataContext="{d:DesignInstance viewModel:MainWindowVM, IsDesignTimeCreatable=False}"
                           mc:Ignorable="d"
                           WindowStartupLocation="CenterScreen"
@@ -208,10 +208,9 @@
 
                 <ListBox.ItemsPanel>
                     <ItemsPanelTemplate>
-                        <userControl:VirtualizingWrapPanel IsItemsHost="True"
-                                                           Orientation="Horizontal"
-                                                           ItemWidth="{Binding SlotSize.Width}"
-                                                           ItemHeight="{Binding SlotSize.Height}" />
+                        <vwp:VirtualizingWrapPanel
+                            ItemSize="{Binding SlotSize}"
+                            IsItemsHost="True" />
                     </ItemsPanelTemplate>
                 </ListBox.ItemsPanel>
 

@@ -61,6 +61,7 @@
         <PackageReference Include="Serilog.Sinks.Console" />
         <PackageReference Include="Serilog.Sinks.File" />
         <PackageReference Include="VideoLAN.LibVLC.Windows" />
+        <PackageReference Include="VirtualizingWrapPanel" />
         <PackageReference Include="Vlc.DotNet.Wpf" />
         <PackageReference Include="WpfAnimatedGif" />
         <PackageReference Include="Newtonsoft.Json" />

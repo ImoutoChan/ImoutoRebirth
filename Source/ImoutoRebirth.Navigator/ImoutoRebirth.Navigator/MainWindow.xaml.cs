@@ -10,6 +10,7 @@ using ImoutoRebirth.Navigator.ViewModel;
 using ImoutoRebirth.Navigator.ViewModel.ListEntries;
 using MahApps.Metro.Controls;
 using MahApps.Metro.Controls.Dialogs;
+using WpfToolkit.Controls;
 
 namespace ImoutoRebirth.Navigator;
 
@@ -22,6 +23,7 @@ internal partial class MainWindow
     private ScrollViewer? _scrollViewerElement;
     private readonly Stack<IReadOnlyCollection<WeakReference<INavigatorListEntry>>> _lastSelectedItems = new();
     private IReadOnlyCollection<WeakReference<INavigatorListEntry>> _currentSelectedItems = [];
+    private VirtualizingWrapPanel? _virtualizingWrapPanel;
 
     public MainWindow()
     {
@@ -62,11 +64,7 @@ internal partial class MainWindow
 
     #region Properties
 
-    public IEnumerable<INavigatorListEntry> VisibleItems =>
-        from INavigatorListEntry item in MediaListBox.Items
-        let listBoxItem = (UIElement)MediaListBox.ItemContainerGenerator.ContainerFromItem(item)
-        where IsFullyOrPartiallyVisible(listBoxItem, ScrollViewerElement)
-        select item;
+    public IEnumerable<INavigatorListEntry> VisibleItems => GetVisibleItems();
 
     public IEnumerable<INavigatorListEntry> SelectedEntries
         => MediaListBox.SelectedItems.Cast<INavigatorListEntry>();
@@ -101,16 +99,49 @@ internal partial class MainWindow
         }
         return null;
     }
+    
+    private IReadOnlyList<INavigatorListEntry> GetVisibleItems()
+    {
+        var itemsHost = _virtualizingWrapPanel ??= MediaListBox.FindChild<VirtualizingWrapPanel>();
+        if (itemsHost is null)
+            return [];
 
-    private static bool IsFullyOrPartiallyVisible(UIElement? child, UIElement? scrollViewer)
+        var result = new List<INavigatorListEntry>();
+
+        var viewportRect = new Rect(
+            new Point(0, 0),
+            ScrollViewerElement.RenderSize);
+
+        foreach (var container in itemsHost.Children.OfType<UIElement>())
+        {
+            if (!IsFullyOrPartiallyVisible(container, ScrollViewerElement, viewportRect))
+                continue;
+
+            var item = (INavigatorListEntry)MediaListBox
+                .ItemContainerGenerator
+                .ItemFromContainer(container);
+
+            result.Add(item);
+        }
+
+        return result;
+    }
+
+    private static bool IsFullyOrPartiallyVisible(
+        UIElement? child,
+        UIElement? scrollViewer,
+        Rect viewportRectangle)
     {
         if (child == null || scrollViewer == null)
             return false;
 
+        if (child.RenderSize.Width <= 0 || child.RenderSize.Height <= 0)
+            return false;
+
         var childTransform = child.TransformToAncestor(scrollViewer);
         var childRectangle = childTransform.TransformBounds(new Rect(new Point(0, 0), child.RenderSize));
-        var ownerRectangle = new Rect(new Point(0, 0), scrollViewer.RenderSize);
-        return ownerRectangle.IntersectsWith(childRectangle);
+
+        return viewportRectangle.IntersectsWith(childRectangle);
     }
 
     public async Task<MessageDialogResult> ShowMessageDialog(

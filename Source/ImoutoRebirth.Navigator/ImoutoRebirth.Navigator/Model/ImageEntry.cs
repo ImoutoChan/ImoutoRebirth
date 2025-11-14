@@ -15,7 +15,7 @@ internal class ImageEntry
     private readonly FileInfo _imageFileInfo;
     private BitmapSource? _image;
     private Size _viewPort;
-    private bool _isLoading; //TODO MAKE COMMON ENUM STATUS NOT FLAGS
+    private bool _isLoading = true; //TODO MAKE COMMON ENUM STATUS NOT FLAGS
     private bool _isLoaded;
 
     public ImageEntry(string path, Size viewPort = new Size())
