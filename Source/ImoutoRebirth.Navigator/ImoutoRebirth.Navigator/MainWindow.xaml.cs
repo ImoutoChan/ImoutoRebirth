@@ -99,7 +99,7 @@ internal partial class MainWindow
         }
         return null;
     }
-    
+
     private IReadOnlyList<INavigatorListEntry> GetVisibleItems()
     {
         var itemsHost = _virtualizingWrapPanel ??= MediaListBox.FindChild<VirtualizingWrapPanel>();

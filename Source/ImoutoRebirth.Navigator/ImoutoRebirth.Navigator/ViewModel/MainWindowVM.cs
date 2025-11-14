@@ -23,6 +23,7 @@ using System.IO;
 using System.Text;
 using System.Windows;
 using System.Windows.Threading;
+using ImoutoRebirth.Common.WPF;
 using File = System.IO.File;
 
 namespace ImoutoRebirth.Navigator.ViewModel;
@@ -81,7 +82,10 @@ internal partial class MainWindowVM : ObservableObject
         _imoutoViewerService = ServiceLocator.GetService<IImoutoViewerService>();
         _messenger = ServiceLocator.GetService<IMessenger>();
 
-        NavigatorList.CollectionChanged += (_, _) => OnPropertyChanged(nameof(LoadedCount));
+        NavigatorList.CollectionChanged += (_, _) =>
+        {
+            T.Debounce(100, () => OnPropertyChanged(nameof(LoadedCount)));
+        };
 
         _appendNewContentTimer.Tick += (_, _) => { /*LoadNew();*/ };
         Title = DefaultTitle;
@@ -448,12 +452,17 @@ internal partial class MainWindowVM : ObservableObject
     [RelayCommand]
     private void LoadPreviews()
     {
-        ImageEntry.PreviewLoadingThreadQueue.ClearQueue();
+        T.Debounce(
+            100,
+            () =>
+            {
+                ImageEntry.PreviewLoadingThreadQueue.ClearQueue();
 
-        foreach (var listEntry in _view.VisibleItems)
-        {
-            listEntry.Load();
-        }
+                foreach (var listEntry in _view.VisibleItems)
+                {
+                    listEntry.Load();
+                }
+            });
     }
 
     [RelayCommand]
