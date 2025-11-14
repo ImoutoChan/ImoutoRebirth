@@ -1,5 +1,12 @@
 # Unreleased
 
+### Infrastructure
+* Migrated to .NET 10 runtime
+* Updated all dependencies
+
+### Navigator
+* Various performance improvements
+
 # v4.29.1
 
 ### Highlights
