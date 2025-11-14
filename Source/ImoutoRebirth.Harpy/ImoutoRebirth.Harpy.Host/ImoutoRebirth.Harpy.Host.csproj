@@ -15,7 +15,6 @@
 
     <ItemGroup>
         <PackageReference Include="Microsoft.Extensions.Hosting.WindowsServices" />
-        <PackageReference Include="System.Private.Uri" />
     </ItemGroup>
 
     <ItemGroup>

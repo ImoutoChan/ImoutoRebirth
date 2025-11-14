@@ -1,34 +1,40 @@
 ﻿using System.Diagnostics.CodeAnalysis;
 using System.Reflection;
-using Microsoft.OpenApi.Any;
-using Microsoft.OpenApi.Extensions;
-using Microsoft.OpenApi.Models;
+using System.Text.Json.Nodes;
+using Microsoft.OpenApi;
 using Swashbuckle.AspNetCore.SwaggerGen;
 
 namespace ImoutoRebirth.Common.WebApi;
 
 public sealed class EnumFilter : ISchemaFilter
 {
-    public void Apply(OpenApiSchema schema, SchemaFilterContext context)
+    public void Apply(IOpenApiSchema schemaInput, SchemaFilterContext context)
     {
+        var schema = (OpenApiSchema)schemaInput;
+
         if (!IsEnum(context.Type, out var enumName, out var enumType)) 
             return;
 
-        var extension = new OpenApiObject
+        var extension = new JsonObject
         {
-            ["name"] = new OpenApiString(enumName),
-            ["modelAsString"] = new OpenApiBoolean(false)
+            {"name", enumName},
+            {"modelAsString", false}
         };
 
-        var names = new OpenApiArray();
-        names.AddRange(Enum.GetNames(enumType).Select(x => new OpenApiString(x) as IOpenApiAny));
+        var names = new JsonArray();
+        foreach (var name in Enum.GetNames(enumType))
+            names.Add(name);
 
-        schema.AddExtension("x-ms-enum", extension);
-        
-        schema.AddExtension("x-enumFlags", new OpenApiBoolean(IsFlagsEnum(enumType)));
-        schema.AddExtension("x-enumNames", names);
-        
-        schema.Enum = Enum.GetNames(enumType).Select(x => new OpenApiString(x) as IOpenApiAny).ToList();
+        schema.Extensions ??= new Dictionary<string, IOpenApiExtension>();
+
+        schema.Extensions.Add("x-ms-enum", new JsonNodeExtension(extension));
+        schema.Extensions.Add("x-enumFlags", new JsonNodeExtension(IsFlagsEnum(enumType)));
+        schema.Extensions.Add("x-enumNames", new JsonNodeExtension(names));
+
+        schema.Enum ??= new List<JsonNode>();
+        schema.Enum.Clear();
+        foreach (var name in Enum.GetNames(enumType))
+            schema.Enum.Add(name);
     }
 
     private static bool IsEnum(

@@ -4,6 +4,7 @@ using ImoutoRebirth.Common.WebApi;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.ResponseCompression;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.OpenApi;
 using Scalar.AspNetCore;
 
 namespace ImoutoRebirth.Lilin.UI.WebApi;
@@ -38,7 +39,10 @@ public static class WebEndpointsExtensions
     {
         app.UseRequestDecompression();
         app.UseResponseCompression();
-        app.UseSwagger();
+        app.UseSwagger(options =>
+        {
+            options.OpenApiVersion = OpenApiSpecVersion.OpenApi3_1;
+        });
         app.UseSwaggerUI(c =>
         {
             c.SwaggerEndpoint("/swagger/v1.0/swagger.json", "ImoutoRebirth.Lilin API V1.0");

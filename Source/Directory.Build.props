@@ -2,7 +2,7 @@
 
     <PropertyGroup>
         <!-- Ignore unavailable nuget sources -->
-        <NoWarn>$(NoWarn);NU1801</NoWarn>
+        <NoWarn>$(NoWarn);NU1801;NU1608</NoWarn>
     </PropertyGroup>
 
     <ItemGroup>

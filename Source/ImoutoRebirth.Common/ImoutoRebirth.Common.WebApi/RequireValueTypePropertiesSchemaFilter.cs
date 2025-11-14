@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.Reflection;
-using Microsoft.OpenApi.Models;
+using Microsoft.OpenApi;
 using Swashbuckle.AspNetCore.SwaggerGen;
 
 namespace ImoutoRebirth.Common.WebApi;
@@ -18,8 +18,10 @@ public sealed class RequireValueTypePropertiesSchemaFilter : ISchemaFilter
     /// Adds non-nullable value type properties in a <see cref="Type"/> to the set of required properties
     /// for that type.
     /// </summary>
-    public void Apply(OpenApiSchema schema, SchemaFilterContext context)
+    public void Apply(IOpenApiSchema schemaInput, SchemaFilterContext context)
     {
+        var schema = (OpenApiSchema)schemaInput;
+
         foreach (var property in context.Type.GetProperties())
         {
             var schemaPropertyName = GetMemberCamelCaseName(property);
@@ -47,10 +49,7 @@ public sealed class RequireValueTypePropertiesSchemaFilter : ISchemaFilter
                 continue;
 
             // Make the value type member required
-            if (schema.Required == null)
-            {
-                schema.Required = new HashSet<string>();
-            }
+            schema.Required ??= new SortedSet<string>();
             schema.Required.Add(schemaPropertyName);
         }
     }

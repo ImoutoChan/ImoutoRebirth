@@ -48,15 +48,13 @@ internal partial class UgoiraEntryVM : BaseEntryVM, INavigatorListEntry, IPixelS
             
         var ratingTask = LoadRating();
 
-        await using var zipToOpen = new FileStream(Path, FileMode.Open, FileAccess.Read);
-        using var archive = new ZipArchive(zipToOpen, ZipArchiveMode.Read);
-
+        await using var archive = await ZipFile.OpenReadAsync(Path);
         var preview = archive.Entries.FirstOrDefault();
 
         if (preview == null)
             return;
 
-        await using var previewStream = preview.Open();
+        await using var previewStream = await preview.OpenAsync();
         await using var resultImage = new MemoryStream();
         await previewStream.CopyToAsync(resultImage);
         resultImage.Position = 0;

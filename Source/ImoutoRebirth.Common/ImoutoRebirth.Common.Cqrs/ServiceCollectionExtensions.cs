@@ -1,4 +1,4 @@
-﻿using System.Reflection;
+﻿using System.Runtime.CompilerServices;
 using ImoutoRebirth.Common.Cqrs.Behaviors;
 using ImoutoRebirth.Common.Cqrs.Events;
 using MediatR;
@@ -8,38 +8,42 @@ namespace ImoutoRebirth.Common.Cqrs;
 
 public static class ServiceCollectionExtensions
 {
-    public static IServiceCollection AddTransactionBehavior(this IServiceCollection services)
+    extension(IServiceCollection services)
     {
-        services.AddTransient(typeof(IPipelineBehavior<,>), typeof(TransactionBehavior<,>));
-        services.AddTransient(typeof(IPipelineBehavior<,>), typeof(EventProcessingBehavior<,>));
-        services.AddTransient<IEventPublisher, EventPublisher>();
+        public IServiceCollection AddTransactionBehavior()
+        {
+            services.AddTransient(typeof(IPipelineBehavior<,>), typeof(TransactionBehavior<,>));
+            services.AddTransient(typeof(IPipelineBehavior<,>), typeof(EventProcessingBehavior<,>));
+            services.AddTransient<IEventPublisher, EventPublisher>();
 
-        return services;
+            return services;
+        }
+
+        public IServiceCollection AddLoggingBehavior()
+        {
+            services.AddTransient(typeof(IPipelineBehavior<,>), typeof(LoggingBehavior<,>));
+            services.AddTransient(typeof(IStreamPipelineBehavior<,>), typeof(LoggingStreamBehavior<,>));
+
+            return services;
+        }
+
+        public IServiceCollection AddDefaultMediatR(Action<MediatRServiceConfiguration> configuration)
+        {
+            services.AddMediatR(configuration);
+            Accessors.Set(null, true);
+
+            return services;
+        }
     }
+}
 
-    public static IServiceCollection AddLoggingBehavior(this IServiceCollection services)
-    {
-        services.AddTransient(typeof(IPipelineBehavior<,>), typeof(LoggingBehavior<,>));
-        services.AddTransient(typeof(IStreamPipelineBehavior<,>), typeof(LoggingStreamBehavior<,>));
+file static class Accessors
+{
+    private const string Type
+        = $"Microsoft.Extensions.DependencyInjection.{nameof(MediatRServiceCollectionExtensions)}, {nameof(MediatR)}";
 
-        return services;
-    }
-
-    public static IServiceCollection AddDefaultMediatR(
-        this IServiceCollection services,
-        Action<MediatRServiceConfiguration> configuration)
-    {
-        var licenseFixProperties = typeof(Mediator).Assembly.GetTypes()
-            .Where(x => x.Name == "ServiceCollectionExtensions")
-            .SelectMany(x => x
-                .GetProperties(BindingFlags.Static | BindingFlags.NonPublic)
-                .Where(y => y.Name == "LicenseChecked"));
-
-        foreach (var licenseFixProperty in licenseFixProperties)
-            licenseFixProperty.SetValue(null, true);
-
-        services.AddMediatR(configuration);
-
-        return services;
-    }
+    [UnsafeAccessor(UnsafeAccessorKind.StaticMethod, Name = "set_LicenseChecked")]
+    internal static extern void Set(
+        [UnsafeAccessorType(Type)] object? _,
+        bool value);
 }

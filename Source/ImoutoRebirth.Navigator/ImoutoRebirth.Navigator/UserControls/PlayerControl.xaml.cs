@@ -60,7 +60,8 @@ public partial class PlayerControl
 
         if (!TryGetVlcLibDirectory(out var vlcLibDirectory)) 
             return;
-        
+
+        Log.Information("Using VLC library at {Path}", vlcLibDirectory?.FullName);
         _control.SourceProvider.CreatePlayer(vlcLibDirectory);
         _control.SourceProvider.MediaPlayer.PositionChanged 
             += (_, args) 

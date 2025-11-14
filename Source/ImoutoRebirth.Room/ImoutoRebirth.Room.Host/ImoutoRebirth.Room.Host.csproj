@@ -17,9 +17,9 @@
         <PackageReference Include="Microsoft.Extensions.Hosting.WindowsServices" />
         <PackageReference Include="Microsoft.EntityFrameworkCore.Design">
             <PrivateAssets>all</PrivateAssets>
-            <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+            <IncludeAssets>runtime; build; native; analyzers; buildtransitive</IncludeAssets>
+            <ExcludeAssets>contentFiles</ExcludeAssets>
         </PackageReference>
-        <PackageReference Include="System.Private.Uri" />
     </ItemGroup>
 
     <ItemGroup>

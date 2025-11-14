@@ -65,9 +65,11 @@ public partial class PrerequisitesStepViewModel : ObservableObject, IStep
 
     public int State => 1;
 
-    public string ServiceName => Enumerable.FirstOrDefault<InstalledPostgresInfo>(PostgresWindowsServices)?.ServiceName ?? (IsLoading ? "loading..." : "not found");
+    public string ServiceName => PostgresWindowsServices.FirstOrDefault()?.ServiceName
+                                 ?? (IsLoading ? "loading..." : "not found");
 
-    public string ServiceVersion => Enumerable.FirstOrDefault<InstalledPostgresInfo>(PostgresWindowsServices)?.Version?.ToString() ?? (IsLoading ? "loading..." : "not found");
+    public string ServiceVersion => PostgresWindowsServices.FirstOrDefault()?.Version?.ToString()
+                                    ?? (IsLoading ? "loading..." : "not found");
 
     public string Port => IsLoading ? "loading..." : IsPostgresPortInUse ? "5432" : "not used";
 
@@ -130,5 +132,5 @@ public partial class PrerequisitesStepViewModel : ObservableObject, IStep
 
 public class PrerequisitesSettings
 {
-    public required string DotnetRuntimeRequiredVersion { get; set; } = "9.0.6";
+    public required string DotnetRuntimeRequiredVersion { get; set; } = "10.0.0";
 }

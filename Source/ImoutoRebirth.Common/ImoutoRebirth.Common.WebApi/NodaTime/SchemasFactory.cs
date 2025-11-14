@@ -1,5 +1,4 @@
-﻿using Microsoft.OpenApi.Any;
-using Microsoft.OpenApi.Models;
+﻿using Microsoft.OpenApi;
 using NodaTime;
 
 namespace ImoutoRebirth.Common.WebApi.NodaTime;
@@ -25,8 +24,8 @@ public class SchemasFactory
             ZonedDateTime = () => StringSchema(examples.ZonedDateTime),
             Interval = () => new OpenApiSchema
             {
-                Type = "object",
-                Properties = new Dictionary<string, OpenApiSchema>
+                Type = JsonSchemaType.Object,
+                Properties = new Dictionary<string, IOpenApiSchema>
                 {
                     { ResolvePropertyName(nameof(Interval.Start)), StringSchema(examples.Interval.Start, "date-time") },
                     { ResolvePropertyName(nameof(Interval.End)), StringSchema(examples.Interval.End, "date-time") },
@@ -34,8 +33,8 @@ public class SchemasFactory
             },
             DateInterval = () => new OpenApiSchema
             {
-                Type = "object",
-                Properties = new Dictionary<string, OpenApiSchema>
+                Type = JsonSchemaType.Object,
+                Properties = new Dictionary<string, IOpenApiSchema>
                 {
                     { ResolvePropertyName(nameof(DateInterval.Start)), StringSchema(examples.DateInterval.Start, "date") },
                     { ResolvePropertyName(nameof(DateInterval.End)), StringSchema(examples.DateInterval.End, "date") },
@@ -54,9 +53,9 @@ public class SchemasFactory
     {
         return new OpenApiSchema
         {
-            Type = "string",
+            Type = JsonSchemaType.String,
             Example = _settings.ShouldGenerateExamples
-                ? new OpenApiString(FormatToJson(exampleObject))
+                ? FormatToJson(exampleObject)
                 : null,
             Format = format
         };

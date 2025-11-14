@@ -7,6 +7,7 @@ using ImoutoRebirth.Common.WebApi.NodaTime;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.ResponseCompression;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.OpenApi;
 using NodaTime;
 using NodaTime.Serialization.SystemTextJson;
 using Scalar.AspNetCore;
@@ -42,7 +43,10 @@ public static class WebEndpointsExtensions
     {
         app.UseRequestDecompression();
         app.UseResponseCompression();
-        app.UseSwagger();
+        app.UseSwagger(options =>
+        {
+            options.OpenApiVersion = OpenApiSpecVersion.OpenApi3_1;
+        });
         app.UseSwaggerUI(c =>
         {
             c.SwaggerEndpoint("/swagger/v1.0/swagger.json", "ImoutoRebirth.Room API V1.0");
