@@ -9,7 +9,9 @@
 
     <ItemGroup>
         <PackageReference Include="AutoMapper"/>
-        <PackageReference Include="Lib.Harmony" />
+        <!--<PackageReference Include="Lib.Harmony" />-->
+        <PackageReference Include="Lib.Harmony.Thin"/>
+        <PackageReference Include="MonoMod.Core"/>
     </ItemGroup>
 
 </Project>

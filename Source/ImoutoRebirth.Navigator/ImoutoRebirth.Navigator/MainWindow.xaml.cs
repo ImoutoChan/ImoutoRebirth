@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.ComponentModel;
+using System.Diagnostics.CodeAnalysis;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -64,7 +65,7 @@ internal partial class MainWindow
 
     #region Properties
 
-    public IEnumerable<INavigatorListEntry> VisibleItems => GetVisibleItems();
+    public IReadOnlyCollection<INavigatorListEntry> VisibleItems => GetVisibleItems();
 
     public IEnumerable<INavigatorListEntry> SelectedEntries
         => MediaListBox.SelectedItems.Cast<INavigatorListEntry>();
@@ -100,13 +101,13 @@ internal partial class MainWindow
         return null;
     }
 
-    private IReadOnlyList<INavigatorListEntry> GetVisibleItems()
+    private IReadOnlyCollection<INavigatorListEntry> GetVisibleItems()
     {
         var itemsHost = _virtualizingWrapPanel ??= MediaListBox.FindChild<VirtualizingWrapPanel>();
         if (itemsHost is null)
             return [];
 
-        var result = new List<INavigatorListEntry>();
+        var result = new List<(double, INavigatorListEntry)>();
 
         var viewportRect = new Rect(
             new Point(0, 0),
@@ -114,24 +115,27 @@ internal partial class MainWindow
 
         foreach (var container in itemsHost.Children.OfType<UIElement>())
         {
-            if (!IsFullyOrPartiallyVisible(container, ScrollViewerElement, viewportRect))
+            if (!IsFullyOrPartiallyVisible(container, ScrollViewerElement, viewportRect, out var position))
                 continue;
 
             var item = (INavigatorListEntry)MediaListBox
                 .ItemContainerGenerator
                 .ItemFromContainer(container);
 
-            result.Add(item);
+            result.Add((position.Value.Y, item));
         }
 
-        return result;
+        return result.OrderBy(x => x.Item1).Select(x => x.Item2).ToList();
     }
 
     private static bool IsFullyOrPartiallyVisible(
         UIElement? child,
         UIElement? scrollViewer,
-        Rect viewportRectangle)
+        Rect viewportRectangle,
+        [NotNullWhen(returnValue: true)] out Point? position)
     {
+        position = null;
+
         if (child == null || scrollViewer == null)
             return false;
 
@@ -139,6 +143,7 @@ internal partial class MainWindow
             return false;
 
         var childTransform = child.TransformToAncestor(scrollViewer);
+        position = childTransform.Transform(new Point(0, 0));
         var childRectangle = childTransform.TransformBounds(new Rect(new Point(0, 0), child.RenderSize));
 
         return viewportRectangle.IntersectsWith(childRectangle);

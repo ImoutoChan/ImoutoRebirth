@@ -24,6 +24,7 @@ using System.Text;
 using System.Windows;
 using System.Windows.Threading;
 using ImoutoRebirth.Common.WPF;
+using ObservableCollections;
 using File = System.IO.File;
 
 namespace ImoutoRebirth.Navigator.ViewModel;
@@ -82,10 +83,12 @@ internal partial class MainWindowVM : ObservableObject
         _imoutoViewerService = ServiceLocator.GetService<IImoutoViewerService>();
         _messenger = ServiceLocator.GetService<IMessenger>();
 
-        NavigatorList.CollectionChanged += (_, _) =>
-        {
-            T.Debounce(100, () => OnPropertyChanged(nameof(LoadedCount)));
-        };
+        NavigatorListInternal = new();
+        NavigatorListView
+            = NavigatorListInternal.ToNotifyCollectionChanged(SynchronizationContextCollectionEventDispatcher.Current);
+
+        NavigatorListInternal.CollectionChanged
+            += (in _) => T.Debounce(100, () => OnPropertyChanged(nameof(LoadedCount)));
 
         _appendNewContentTimer.Tick += (_, _) => { /*LoadNew();*/ };
         Title = DefaultTitle;
@@ -103,6 +106,7 @@ internal partial class MainWindowVM : ObservableObject
 
         _view = new MainWindow { DataContext = this };
         _view.SelectedItemsChanged += OnViewOnSelectedItemsChanged;
+        _view.Loaded += (_, _) => ZoomToRowElements(6);
 
         _messenger.Register<QuickTaggingCloseRequest>(this, (_, _) => ShowQuickTagging = false);
         _messenger.Register<OpenCreateCollectionWizardRequest>(this, (_, _) => OpenCreateCollectionWizard());
@@ -127,14 +131,16 @@ internal partial class MainWindowVM : ObservableObject
             return;
 
         TagSearchVM.UpdateCurrentTags(SelectedItem.DbId);
-        FileInfoVM.UpdateCurrentInfo(SelectedItem, NavigatorList.IndexOf(SelectedItem));
+        FileInfoVM.UpdateCurrentInfo(SelectedItem, NavigatorListInternal.IndexOf(SelectedItem));
     }
 
     public Size SlotSize => new(_previewSize + 30, _previewSize + 30);
 
     private Size PreviewSize => new(_previewSize, _previewSize);
 
-    public ObservableCollection<INavigatorListEntry> NavigatorList { get; } = new();
+    public ObservableList<INavigatorListEntry> NavigatorListInternal { get; }
+
+    public NotifyCollectionChangedSynchronizedViewList<INavigatorListEntry> NavigatorListView { get; }
 
     public TagSearchVM TagSearchVM { get; set; }
 
@@ -146,7 +152,7 @@ internal partial class MainWindowVM : ObservableObject
 
     public TagsMergeVM TagsMerge { get; set; }
 
-    public int LoadedCount => NavigatorList.Count;
+    public int LoadedCount => NavigatorListInternal.Count;
 
     public bool ShowPreview => Settings.ShowPreviewOnSelect;
 
@@ -214,7 +220,11 @@ internal partial class MainWindowVM : ObservableObject
                 var mpcHcExe = new FileInfo(@"C:\Program Files\MPC-HC\mpc-hc64.exe");
                 if (mpcHcExe.Exists)
                 {
-                    var videos = NavigatorList.Where(x => x.Type == ListEntryType.Video).Select(x => x.Path).ToList();
+                    var videos = NavigatorListInternal
+                        .Where(x => x.Type == ListEntryType.Video)
+                        .Select(x => x.Path)
+                        .ToList();
+
                     var pathToPlaylist = CreatePlayList(videos, video.Path);
 
                     new Process
@@ -277,7 +287,7 @@ internal partial class MainWindowVM : ObservableObject
         vm.CurrentEntryNameChanged += OnCurrentEntryNameChanged;
         vm.CloseRequested += OnFullScreenPreviewVMCloseRequested;
 
-        vm.SetCurrentEntry(navigatorListEntry, NavigatorList);
+        vm.SetCurrentEntry(navigatorListEntry, NavigatorListInternal);
 
         FullScreenPreviewVM = vm;
         Title = Path.GetFileName(navigatorListEntry.Path);
@@ -329,39 +339,26 @@ internal partial class MainWindowVM : ObservableObject
     }
 
     [RelayCommand]
-    private void Shuffle()
+    private async Task Shuffle()
     {
-        lock (NavigatorList)
+        var shuffled = await Task.Run(() =>
         {
-            var copy = NavigatorList.ToList();
+            var copy = NavigatorListInternal.ToList();
+            return copy.Shuffle().Index().ToDictionary(x => x.Item, x => x.Index);
+        });
 
-            NavigatorList.Clear();
-            foreach (var navigatorListEntry in copy.Shuffle())
-            {
-                NavigatorList.Add(navigatorListEntry);
-            }
+        lock (NavigatorListInternal)
+        {
+            NavigatorListInternal.Clear();
+            NavigatorListInternal.Sort(
+                Comparer<INavigatorListEntry>.Create((x, y) => shuffled[x].CompareTo(shuffled[y])));
         }
     }
 
     [RelayCommand]
     private void Reverse()
     {
-        lock (NavigatorList)
-        {
-            var newCollection = NavigatorList.ToList();
-            for (int i = 0; i < newCollection.Count / 2; i++)
-            {
-                // swap newCollection[i] and newCollection[newCollection.Count - 1 - i]
-                (newCollection[i], newCollection[newCollection.Count - 1 - i])
-                    = (newCollection[newCollection.Count - 1 - i], newCollection[i]);
-            }
-
-            NavigatorList.Clear();
-            foreach (var navigatorListEntry in newCollection)
-            {
-                NavigatorList.Add(navigatorListEntry);
-            }
-        }
+        NavigatorListInternal.Reverse();
     }
 
     public void SetStatusError(string error, string message)
@@ -399,23 +396,19 @@ internal partial class MainWindowVM : ObservableObject
                         _ => throw new ArgumentOutOfRangeException()
                     };
 
-                    foreach (var navigatorListEntry in entries)
-                    {
-                        ct.ThrowIfCancellationRequested();
-                        NavigatorList.Add(navigatorListEntry);
-                    }
+                    NavigatorListInternal.AddRange(entries);
                 },
                 () =>
                 {
                     TotalCount = 0;
-                    NavigatorList.Clear();
+                    NavigatorListInternal.Clear();
                     IsLoading = false;
                 },
                 () =>
                 {
                     _appendNewContentTimer.Stop();
                     IsLoading = true;
-                    NavigatorList.Clear();
+                    NavigatorListInternal.Clear();
 
                 },
                 () =>
@@ -438,9 +431,9 @@ internal partial class MainWindowVM : ObservableObject
         OnPropertyChanged(nameof(SlotSize));
 
         //Performance ?
-        lock (NavigatorList)
+        lock (NavigatorListInternal)
         {
-            foreach (var imageEntry in NavigatorList)
+            foreach (var imageEntry in NavigatorListInternal)
             {
                 imageEntry.UpdatePreview(PreviewSize);
             }
@@ -452,12 +445,11 @@ internal partial class MainWindowVM : ObservableObject
     [RelayCommand]
     private void LoadPreviews()
     {
+        ImageEntry.PreviewLoadingThreadQueue.ClearQueue();
         T.Debounce(
             100,
             () =>
             {
-                ImageEntry.PreviewLoadingThreadQueue.ClearQueue();
-
                 foreach (var listEntry in _view.VisibleItems)
                 {
                     listEntry.Load();
@@ -505,7 +497,7 @@ internal partial class MainWindowVM : ObservableObject
             return;
         }
 
-        NavigatorList.Remove(selectedItem!);
+        NavigatorListInternal.Remove(selectedItem!);
         Status = "File successfully removed";
     }
 

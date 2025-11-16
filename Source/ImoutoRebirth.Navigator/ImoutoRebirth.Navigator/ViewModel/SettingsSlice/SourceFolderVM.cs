@@ -17,6 +17,7 @@ public partial class SourceFolderVM : FolderVM
 
     [ObservableProperty]
     public partial bool AddTagFromFileName { get; set; }
+
     [ObservableProperty]
     private bool _isWebhookUploadEnabled;
 

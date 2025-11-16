@@ -172,17 +172,17 @@ internal class ImageEntry
 
     private async Task<BitmapImage> LoadBitmapImage(
         Size resizedSize,
-        CancellationToken cancellationToken = default)
+        CancellationToken ct = default)
     {
         return await Task.Run(
-            () =>
+            async () =>
             {
                 using var stream = new MemoryStream();
                 var useStream = false;
                 if (ImageFormat is ImageFormat.WEBP)
                 {
                     var decoder = new SimpleDecoder();
-                    var bytes = File.ReadAllBytes(_path);
+                    var bytes = await File.ReadAllBytesAsync(_path, ct);
                     var bitmap = decoder.DecodeFromBytes(bytes, bytes.Length);
                     bitmap.Save(stream, System.Drawing.Imaging.ImageFormat.Png);
                     stream.Seek(0, SeekOrigin.Begin);
@@ -212,7 +212,7 @@ internal class ImageEntry
 
                 return bi;
             },
-            cancellationToken);
+            ct);
     }
 
     public event EventHandler? ImageChanged;

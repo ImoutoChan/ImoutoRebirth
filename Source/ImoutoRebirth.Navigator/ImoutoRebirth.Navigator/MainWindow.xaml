@@ -179,7 +179,7 @@
                      Grid.Column="1"
                      Grid.RowSpan="2"
                      ScrollViewer.HorizontalScrollBarVisibility="Disabled"
-                     ItemsSource="{Binding Path=NavigatorList, UpdateSourceTrigger=PropertyChanged}"
+                     ItemsSource="{Binding Path=NavigatorListView, UpdateSourceTrigger=PropertyChanged}"
                      SelectionMode="Extended"
                      Visibility="{Binding Path=IsLoading, Converter={StaticResource ConditionVisibilityConverter}, ConverterParameter=false, Mode=OneWay}"
                      ItemContainerStyle="{DynamicResource ListBoxItemStyle}"
@@ -208,8 +208,9 @@
 
                 <ListBox.ItemsPanel>
                     <ItemsPanelTemplate>
-                        <vwp:VirtualizingWrapPanel
+                        <userControl:ExtVirtualizingWrapPanel
                             ItemSize="{Binding SlotSize}"
+                            SpacingMode="None"
                             IsItemsHost="True" />
                     </ItemsPanelTemplate>
                 </ListBox.ItemsPanel>

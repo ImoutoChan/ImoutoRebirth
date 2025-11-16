@@ -1,65 +1,67 @@
-﻿using System.Collections.Concurrent;
+﻿using System.Threading.Channels;
 using Serilog;
 
 namespace ImoutoRebirth.Navigator.Utils;
 
 public class AsyncThreadQueue : IDisposable
 {
-    private readonly Task _task;
-    private ConcurrentQueue<Func<Task>> _queue;
-    private bool _isRunning = true;
+    private readonly Channel<Func<Task>> _channel;
+    private readonly CancellationTokenSource _cts = new();
+    private readonly Task _task1;
+    private readonly Task _task2;
 
     public AsyncThreadQueue()
     {
-        _queue = new ConcurrentQueue<Func<Task>>();
-        _task = Task.Run(ThreadMethod);
+        _channel = Channel.CreateUnbounded<Func<Task>>();
+        _task1 = Task.Run(ThreadMethod);
+        _task2 = Task.Run(ThreadMethod);
     }
 
 
     public void ClearQueue()
     {
-        _queue = new ConcurrentQueue<Func<Task>>();
+        while (_channel.Reader.TryRead(out _)) { }
     }
 
     public void Add(Func<Task> action)
     {
-        _queue.Enqueue(action);
-    }
-
-    private Func<Task>? GetFromQueue()
-    {
-        _queue.TryDequeue(out var result);
-
-        return result;
+        _channel.Writer.TryWrite(action);
     }
 
     private async Task ThreadMethod()
     {
-        while (_isRunning)
+        while (!_cts.Token.IsCancellationRequested)
         {
-            var action = GetFromQueue();
-
-            if (action != null)
+            try
             {
+                await _channel.Reader.WaitToReadAsync(_cts.Token);
+
+                if (!_channel.Reader.TryRead(out var action))
+                    continue;
+
                 try
                 {
-                    await action.Invoke();
+                    await action();
                 }
                 catch (Exception ex)
                 {
                     Log.Error(ex, "Error in method");
                 }
-
             }
-            else
+            catch (OperationCanceledException)
             {
-                SpinWait.SpinUntil(() => !_queue.IsEmpty);
+                break;
+            }
+            catch (ChannelClosedException)
+            {
+                break;
             }
         }
     }
 
     public void Dispose()
     {
-        _isRunning = false;
+        _channel.Writer.Complete();
+        _cts.Dispose();
     }
 }

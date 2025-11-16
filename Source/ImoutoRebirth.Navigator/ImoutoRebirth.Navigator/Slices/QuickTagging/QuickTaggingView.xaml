@@ -297,9 +297,9 @@
                 <ItemsControl Grid.Row="1" ItemsSource="{Binding AvailableTagPacksSets.Selected.Packs}">
                     <ItemsControl.ItemsPanel>
                         <ItemsPanelTemplate>
-                            <userControls:VirtualizingWrapPanel IsItemsHost="True"
-                                                                Orientation="Horizontal"
-                                                                ItemWidth="105" />
+                            <WrapPanel IsItemsHost="True"
+                                       Orientation="Horizontal"
+                                       ItemWidth="105" />
                         </ItemsPanelTemplate>
                     </ItemsControl.ItemsPanel>
 
