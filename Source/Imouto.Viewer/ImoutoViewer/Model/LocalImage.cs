@@ -264,8 +264,8 @@ internal class LocalImage
     {
         _image = null;
 
-        GC.Collect();
-        GC.WaitForPendingFinalizers();
+        // GC.Collect();
+        // GC.WaitForPendingFinalizers();
     }
 
     public void Resize(Size viewPort, ResizeType resizedType = ResizeType.Default)

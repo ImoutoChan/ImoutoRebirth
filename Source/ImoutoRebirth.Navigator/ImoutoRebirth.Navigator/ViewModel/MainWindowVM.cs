@@ -349,16 +349,17 @@ internal partial class MainWindowVM : ObservableObject
 
         lock (NavigatorListInternal)
         {
-            NavigatorListInternal.Clear();
             NavigatorListInternal.Sort(
                 Comparer<INavigatorListEntry>.Create((x, y) => shuffled[x].CompareTo(shuffled[y])));
         }
+        LoadPreviews();
     }
 
     [RelayCommand]
     private void Reverse()
     {
         NavigatorListInternal.Reverse();
+        LoadPreviews();
     }
 
     public void SetStatusError(string error, string message)
@@ -397,6 +398,7 @@ internal partial class MainWindowVM : ObservableObject
                     };
 
                     NavigatorListInternal.AddRange(entries);
+                    LoadPreviews();
                 },
                 () =>
                 {
@@ -499,6 +501,7 @@ internal partial class MainWindowVM : ObservableObject
 
         NavigatorListInternal.Remove(selectedItem!);
         Status = "File successfully removed";
+        LoadPreviews();
     }
 
     [RelayCommand]
