@@ -21,19 +21,19 @@ using static Z7Tasks;
     AutoGenerate = false)]
 class Build : NukeBuild
 {
-    Project[] ProjectsToPublish => new[]
-    {
-        Solution.ImoutoRebirth_Arachne.ImoutoRebirth_Arachne_Host,
-        Solution.ImoutoRebirth_Harpy.ImoutoRebirth_Harpy_Host,
-        Solution.ImoutoRebirth_Kekkai.ImoutoRebirth_Kekkai,
-        Solution.ImoutoRebirth_Lilin.ImoutoRebirth_Lilin_Host,
-        Solution.ImoutoRebirth_Meido.ImoutoRebirth_Meido_Host,
-        Solution.ImoutoRebirth_Navigator.ImoutoRebirth_Navigator,
-        Solution.ImoutoRebirth_Room.ImoutoRebirth_Room_Host,
-        Solution.ImoutoRebirth_Tori.ImoutoRebirth_Tori_UI,
-        Solution.Imouto_Viewer.ImoutoViewer,
-        Solution.ImoutoRebirth_Lamia.ImoutoRebirth_Lamia_Host,
-    };
+    Project[] ProjectsToPublish =>
+    [
+        SolutionX.ImoutoRebirth_Arachne.ImoutoRebirth_Arachne_Host,
+        SolutionX.ImoutoRebirth_Harpy.ImoutoRebirth_Harpy_Host,
+        SolutionX.ImoutoRebirth_Kekkai.ImoutoRebirth_Kekkai,
+        SolutionX.ImoutoRebirth_Lilin.ImoutoRebirth_Lilin_Host,
+        SolutionX.ImoutoRebirth_Meido.ImoutoRebirth_Meido_Host,
+        SolutionX.ImoutoRebirth_Navigator.ImoutoRebirth_Navigator,
+        SolutionX.ImoutoRebirth_Room.ImoutoRebirth_Room_Host,
+        SolutionX.ImoutoRebirth_Tori.ImoutoRebirth_Tori_UI,
+        SolutionX.Imouto_Viewer.ImoutoViewer,
+        SolutionX.ImoutoRebirth_Lamia.ImoutoRebirth_Lamia_Host
+    ];
 
     AbsolutePath[] NukeFilesToPublish => new[]
     {
@@ -66,9 +66,9 @@ class Build : NukeBuild
 
     AbsolutePath OutputLatestDirectory =>
         OutputDirectory / (VersionedFolder == BuildToVersionedFolder.True ? VersionedName : "latest");
-    
-    [Solution(GenerateProjects = true)]
-    readonly Solution Solution;
+
+    [SolutionX(GenerateProjects = true)]
+    readonly SolutionX SolutionX;
 
     [GitVersion(NoFetch = true)]
     readonly GitVersion GitVersion;
@@ -87,7 +87,7 @@ class Build : NukeBuild
     Target Restore => _ => _
         .Executes(() =>
         {
-            DotNetRestore(s => s.SetProjectFile(Solution)
+            DotNetRestore(s => s.SetProjectFile(SolutionX)
                 .SetVerbosity(DotNetVerbosity.quiet));
         });
 
@@ -97,7 +97,7 @@ class Build : NukeBuild
         {
             DotNetBuild(s => s
                 .SetVerbosity(DotNetVerbosity.quiet)
-                .SetProjectFile(Solution)
+                .SetProjectFile(SolutionX)
                 .SetConfiguration(Configuration)
                 .SetAssemblyVersion(GitVersion.AssemblySemVer)
                 .SetVersion(GitVersion.NuGetVersionV2)

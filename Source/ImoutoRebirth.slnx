@@ -1,0 +1,139 @@
+<Solution>
+  <Folder Name="/Imouto.Viewer/">
+    <Project Path="Imouto.Viewer/ImoutoViewer/ImoutoViewer.csproj" />
+  </Folder>
+  <Folder Name="/ImoutoRebirth.Arachne/">
+    <Project Path="ImoutoRebirth.Arachne/ImoutoRebirth.Arachne.Core/ImoutoRebirth.Arachne.Core.csproj" />
+    <Project Path="ImoutoRebirth.Arachne/ImoutoRebirth.Arachne.Host/ImoutoRebirth.Arachne.Host.csproj" />
+    <Project Path="ImoutoRebirth.Arachne/ImoutoRebirth.Arachne.Infrastructure/ImoutoRebirth.Arachne.Infrastructure.csproj" />
+    <Project Path="ImoutoRebirth.Arachne/ImoutoRebirth.Arachne.MessageContracts/ImoutoRebirth.Arachne.MessageContracts.csproj" />
+    <Project Path="ImoutoRebirth.Arachne/ImoutoRebirth.Arachne.Service/ImoutoRebirth.Arachne.Service.csproj" />
+    <Project Path="ImoutoRebirth.Arachne/ImoutoRebirth.Arachne.Tests/ImoutoRebirth.Arachne.Tests.csproj" />
+  </Folder>
+  <Folder Name="/ImoutoRebirth.Common/">
+    <Project Path="ImoutoRebirth.Common/ImoutoRebirth.Common.Application/ImoutoRebirth.Common.Application.csproj" />
+    <Project Path="ImoutoRebirth.Common/ImoutoRebirth.Common.AutoMapper/ImoutoRebirth.Common.AutoMapper.csproj" />
+    <Project Path="ImoutoRebirth.Common/ImoutoRebirth.Common.Cqrs/ImoutoRebirth.Common.Cqrs.csproj" />
+    <Project Path="ImoutoRebirth.Common/ImoutoRebirth.Common.Domain.EntityFrameworkCore/ImoutoRebirth.Common.Domain.EntityFrameworkCore.csproj" />
+    <Project Path="ImoutoRebirth.Common/ImoutoRebirth.Common.Domain/ImoutoRebirth.Common.Domain.csproj" />
+    <Project Path="ImoutoRebirth.Common/ImoutoRebirth.Common.EntityFrameworkCore/ImoutoRebirth.Common.EntityFrameworkCore.csproj" />
+    <Project Path="ImoutoRebirth.Common/ImoutoRebirth.Common.Host/ImoutoRebirth.Common.Host.csproj" />
+    <Project Path="ImoutoRebirth.Common/ImoutoRebirth.Common.Infrastructure/ImoutoRebirth.Common.Infrastructure.csproj" />
+    <Project Path="ImoutoRebirth.Common/ImoutoRebirth.Common.Logging/ImoutoRebirth.Common.Logging.csproj" />
+    <Project Path="ImoutoRebirth.Common/ImoutoRebirth.Common.MassTransit/ImoutoRebirth.Common.MassTransit.csproj" />
+    <Project Path="ImoutoRebirth.Common/ImoutoRebirth.Common.OpenTelemetry/ImoutoRebirth.Common.OpenTelemetry.csproj" />
+    <Project Path="ImoutoRebirth.Common/ImoutoRebirth.Common.Quartz/ImoutoRebirth.Common.Quartz.csproj" />
+    <Project Path="ImoutoRebirth.Common/ImoutoRebirth.Common.Tests/ImoutoRebirth.Common.Tests.csproj" />
+    <Project Path="ImoutoRebirth.Common/ImoutoRebirth.Common.WebApi.Client.Generators/ImoutoRebirth.Common.WebApi.Client.Generators.csproj" />
+    <Project Path="ImoutoRebirth.Common/ImoutoRebirth.Common.WebApi.Client/ImoutoRebirth.Common.WebApi.Client.csproj" />
+    <Project Path="ImoutoRebirth.Common/ImoutoRebirth.Common.WebApi/ImoutoRebirth.Common.WebApi.csproj" />
+    <Project Path="ImoutoRebirth.Common/ImoutoRebirth.Common.WebP/ImoutoRebirth.Common.WebP.csproj" />
+    <Project Path="ImoutoRebirth.Common/ImoutoRebirth.Common.WindowsAssociationManager/ImoutoRebirth.Common.WindowsAssociationManager.csproj" />
+    <Project Path="ImoutoRebirth.Common/ImoutoRebirth.Common.WPF/ImoutoRebirth.Common.WPF.csproj" />
+    <Project Path="ImoutoRebirth.Common/ImoutoRebirth.Common/ImoutoRebirth.Common.csproj" />
+  </Folder>
+  <Folder Name="/ImoutoRebirth.Harpy/">
+    <Project Path="ImoutoRebirth.Harpy/ImoutoRebirth.Harpy.Host/ImoutoRebirth.Harpy.Host.csproj" />
+    <Project Path="ImoutoRebirth.Harpy/ImoutoRebirth.Harpy.Services/ImoutoRebirth.Harpy.Services.csproj" />
+  </Folder>
+  <Folder Name="/ImoutoRebirth.Hasami/">
+    <Project Path="ImoutoRebirth.Hasami/ImoutoRebirth.Hasami/ImoutoRebirth.Hasami.csproj" />
+  </Folder>
+  <Folder Name="/ImoutoRebirth.Kekkai/">
+    <Project Path="ImoutoRebirth.Kekkai/ImoutoRebirth.Kekkai/ImoutoRebirth.Kekkai.csproj" />
+  </Folder>
+  <Folder Name="/ImoutoRebirth.Lamia/">
+    <Project Path="ImoutoRebirth.Lamia/ImoutoRebirth.Lamia.Application/ImoutoRebirth.Lamia.Application.csproj" />
+    <Project Path="ImoutoRebirth.Lamia/ImoutoRebirth.Lamia.Domain/ImoutoRebirth.Lamia.Domain.csproj" />
+    <Project Path="ImoutoRebirth.Lamia/ImoutoRebirth.Lamia.Host/ImoutoRebirth.Lamia.Host.csproj" />
+    <Project Path="ImoutoRebirth.Lamia/ImoutoRebirth.Lamia.Infrastructure/ImoutoRebirth.Lamia.Infrastructure.csproj" />
+    <Project Path="ImoutoRebirth.Lamia/ImoutoRebirth.Lamia.IntegrationTests/ImoutoRebirth.Lamia.IntegrationTests.csproj" />
+    <Project Path="ImoutoRebirth.Lamia/ImoutoRebirth.Lamia.MessageContracts/ImoutoRebirth.Lamia.MessageContracts.csproj" />
+    <Project Path="ImoutoRebirth.Lamia/ImoutoRebirth.Lamia.UI/ImoutoRebirth.Lamia.UI.csproj" />
+  </Folder>
+  <Folder Name="/ImoutoRebirth.Lilin/">
+    <Project Path="ImoutoRebirth.Lilin/ImoutoRebirth.Lilin.Application/ImoutoRebirth.Lilin.Application.csproj" />
+    <Project Path="ImoutoRebirth.Lilin/ImoutoRebirth.Lilin.DataAccess/ImoutoRebirth.Lilin.DataAccess.csproj" />
+    <Project Path="ImoutoRebirth.Lilin/ImoutoRebirth.Lilin.Domain.Tests/ImoutoRebirth.Lilin.Domain.Tests.csproj" />
+    <Project Path="ImoutoRebirth.Lilin/ImoutoRebirth.Lilin.Domain/ImoutoRebirth.Lilin.Domain.csproj" />
+    <Project Path="ImoutoRebirth.Lilin/ImoutoRebirth.Lilin.Host/ImoutoRebirth.Lilin.Host.csproj" />
+    <Project Path="ImoutoRebirth.Lilin/ImoutoRebirth.Lilin.Infrastructure/ImoutoRebirth.Lilin.Infrastructure.csproj" />
+    <Project Path="ImoutoRebirth.Lilin/ImoutoRebirth.Lilin.IntegrationTests/ImoutoRebirth.Lilin.IntegrationTests.csproj" />
+    <Project Path="ImoutoRebirth.Lilin/ImoutoRebirth.Lilin.MessageContracts/ImoutoRebirth.Lilin.MessageContracts.csproj" />
+    <Project Path="ImoutoRebirth.Lilin/ImoutoRebirth.Lilin.UI/ImoutoRebirth.Lilin.UI.csproj" />
+    <Project Path="ImoutoRebirth.Lilin/ImoutoRebirth.Lilin.WebApi.Client/ImoutoRebirth.Lilin.WebApi.Client.csproj" />
+  </Folder>
+  <Folder Name="/ImoutoRebirth.Meido/">
+    <Project Path="ImoutoRebirth.Meido/ImoutoRebirth.Meido.Application/ImoutoRebirth.Meido.Application.csproj" />
+    <Project Path="ImoutoRebirth.Meido/ImoutoRebirth.Meido.DataAccess/ImoutoRebirth.Meido.DataAccess.csproj" />
+    <Project Path="ImoutoRebirth.Meido/ImoutoRebirth.Meido.Domain/ImoutoRebirth.Meido.Domain.csproj" />
+    <Project Path="ImoutoRebirth.Meido/ImoutoRebirth.Meido.Host/ImoutoRebirth.Meido.Host.csproj" />
+    <Project Path="ImoutoRebirth.Meido/ImoutoRebirth.Meido.Infrastructure/ImoutoRebirth.Meido.Infrastructure.csproj" />
+    <Project Path="ImoutoRebirth.Meido/ImoutoRebirth.Meido.MessageContracts/ImoutoRebirth.Meido.MessageContracts.csproj" />
+    <Project Path="ImoutoRebirth.Meido/ImoutoRebirth.Meido.UI/ImoutoRebirth.Meido.UI.csproj" />
+  </Folder>
+  <Folder Name="/ImoutoRebirth.Navigator/">
+    <Project Path="ImoutoRebirth.Navigator/ImoutoRebirth.Navigator/ImoutoRebirth.Navigator.csproj" />
+  </Folder>
+  <Folder Name="/ImoutoRebirth.Room/">
+    <Project Path="ImoutoRebirth.Room/ImoutoRebirth.Room.Application/ImoutoRebirth.Room.Application.csproj" />
+    <Project Path="ImoutoRebirth.Room/ImoutoRebirth.Room.DataAccess.Tests/ImoutoRebirth.Room.DataAccess.Tests.csproj" />
+    <Project Path="ImoutoRebirth.Room/ImoutoRebirth.Room.DataAccess/ImoutoRebirth.Room.DataAccess.csproj" />
+    <Project Path="ImoutoRebirth.Room/ImoutoRebirth.Room.Database/ImoutoRebirth.Room.Database.csproj" />
+    <Project Path="ImoutoRebirth.Room/ImoutoRebirth.Room.Domain/ImoutoRebirth.Room.Domain.csproj" />
+    <Project Path="ImoutoRebirth.Room/ImoutoRebirth.Room.Host/ImoutoRebirth.Room.Host.csproj" />
+    <Project Path="ImoutoRebirth.Room/ImoutoRebirth.Room.Infrastructure/ImoutoRebirth.Room.Infrastructure.csproj" />
+    <Project Path="ImoutoRebirth.Room/ImoutoRebirth.Room.IntegrationTests/ImoutoRebirth.Room.IntegrationTests.csproj" />
+    <Project Path="ImoutoRebirth.Room/ImoutoRebirth.Room.UI/ImoutoRebirth.Room.UI.csproj" />
+    <Project Path="ImoutoRebirth.Room/ImoutoRebirth.Room.WebApi.Client/ImoutoRebirth.Room.WebApi.Client.csproj" />
+  </Folder>
+  <Folder Name="/ImoutoRebirth.Tori/">
+    <Project Path="ImoutoRebirth.Tori/ImoutoRebirth.Tori.Tests/ImoutoRebirth.Tori.Tests.csproj" />
+    <Project Path="ImoutoRebirth.Tori/ImoutoRebirth.Tori.UI/ImoutoRebirth.Tori.UI.csproj" />
+    <Project Path="ImoutoRebirth.Tori/ImoutoRebirth.Tori/ImoutoRebirth.Tori.csproj" />
+  </Folder>
+  <Folder Name="/Tools/" />
+  <Folder Name="/Tools/Docs/">
+    <File Path="../Docs/Functions.md" />
+    <File Path="../Docs/How to find my accounts login info.md" />
+  </Folder>
+  <Folder Name="/Tools/NSwagGeneration/">
+    <File Path="../Tools/NSwagGeneration/DefaultService.nswag" />
+    <File Path="../Tools/NSwagGeneration/generate-lilin.ps1" />
+    <File Path="../Tools/NSwagGeneration/generate-room.ps1" />
+  </Folder>
+  <Folder Name="/Tools/NukeBuild/">
+    <Project Path="../Tools/NukeBuild.Generators/NukeBuild.Generators.csproj" />
+    <Project Path="../Tools/NukeBuild/NukeBuild.csproj">
+      <Build Project="false" />
+    </Project>
+  </Folder>
+  <Folder Name="/Tools/OpenSearch/">
+    <File Path="../Tools/Dependencies/OpenSearch/docker-compose.yml" />
+  </Folder>
+  <Folder Name="/Tools/OpenTelemetry/">
+    <File Path="../Tools/Dependencies/OpenTelemetry/collector.yml" />
+    <File Path="../Tools/Dependencies/OpenTelemetry/docker-compose.yml" />
+    <File Path="../Tools/Dependencies/OpenTelemetry/prometheus.yaml" />
+    <File Path="../Tools/Dependencies/OpenTelemetry/README.md" />
+  </Folder>
+  <Folder Name="/Tools/ResQueue/">
+    <File Path="../Tools/Dependencies/ResQueue/docker-compose.yml" />
+  </Folder>
+  <Folder Name="/Tools/Root/">
+    <File Path="../.github/workflows/release.yml" />
+    <File Path="../BuildAndDeploy.ps1" />
+    <File Path="../BuildAndDeploySkipTests.ps1" />
+    <File Path="../BuildSkipTests.ps1" />
+    <File Path="../CHANGELOG.md" />
+    <File Path="../CHANGELOG.TEMPLATE.md" />
+    <File Path="../Docs/Functions.md" />
+    <File Path="../README.md" />
+    <File Path="../README.RU.md" />
+    <File Path="Directory.Build.props" />
+    <File Path="Directory.Packages.props" />
+    <File Path="global.json" />
+    <File Path="ImoutoRebirth.sln.DotSettings" />
+    <File Path="NuGet.config" />
+  </Folder>
+</Solution>

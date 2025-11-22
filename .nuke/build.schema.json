@@ -112,7 +112,7 @@
             "Release"
           ]
         },
-        "Solution": {
+        "SolutionX": {
           "type": "string",
           "description": "Path to a solution file that is automatically loaded"
         },

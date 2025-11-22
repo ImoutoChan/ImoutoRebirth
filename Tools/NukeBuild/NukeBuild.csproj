@@ -3,7 +3,7 @@
     <PropertyGroup>
         <OutputType>Exe</OutputType>
         <TargetFramework>net10.0</TargetFramework>
-        <NoWarn>CS0649;CS0169</NoWarn>
+        <NoWarn>CS0649;CS0169;NU1903</NoWarn>
         <NukeRootDirectory>..\..</NukeRootDirectory>
         <NukeTelemetryVersion>1</NukeTelemetryVersion>
         <RootNamespace></RootNamespace>
@@ -11,6 +11,7 @@
     </PropertyGroup>
 
     <ItemGroup>
+        <PackageReference Include="matkoch.Microsoft.VisualStudio.SolutionPersistence" Version="1.0.61" />
         <PackageReference Include="Nuke.Common" Version="9.0.4" />
     </ItemGroup>
 
@@ -19,12 +20,28 @@
     </ItemGroup>
 
     <ItemGroup>
+        <PackageReference Include="IgnoresAccessChecksToGenerator" PrivateAssets="All" Version="0.8.0" />
+        <IgnoresAccessChecksTo Include="Nuke.Common" />
+        <IgnoresAccessChecksTo Include="Nuke.Build" />
+        <IgnoresAccessChecksTo Include="Nuke.SolutionModel" />
+    </ItemGroup>
+
+    <ItemGroup>
         <None Update="configuration.json">
             <CopyToOutputDirectory>Always</CopyToOutputDirectory>
         </None>
+
         <None Update="install.cmd">
           <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
         </None>
+    </ItemGroup>
+
+    <ItemGroup>
+        <ProjectReference
+                Include="..\NukeBuild.Generators\NukeBuild.Generators.csproj"
+                ReferenceOutputAssembly="false"
+                OutputItemType="Analyzer"
+                PrivateAssets="All" />
     </ItemGroup>
 
 </Project>
