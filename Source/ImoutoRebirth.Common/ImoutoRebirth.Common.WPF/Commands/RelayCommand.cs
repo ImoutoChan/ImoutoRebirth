@@ -26,21 +26,21 @@ public class RelayCommand : ICommand
     public void Execute(object? parameter) => _execute(parameter);
 }
 
-public class RelayCommand<T> : ICommand
+public class RelayCommand<TProperty> : ICommand
 {
-    private readonly Action<T?> _execute;
-    private readonly Predicate<T?>? _canExecute;
+    private readonly Action<TProperty?> _execute;
+    private readonly Predicate<TProperty?>? _canExecute;
 
-    public RelayCommand(Action<T?> execute, Predicate<T?>? canExecute = null)
+    public RelayCommand(Action<TProperty?> execute, Predicate<TProperty?>? canExecute = null)
     {
         _execute = execute ?? throw new ArgumentNullException(nameof(execute));
         _canExecute = canExecute;
     }
 
     [DebuggerStepThrough]
-    bool ICommand.CanExecute(object? parameter) => _canExecute?.Invoke((T?)parameter) ?? true;
+    bool ICommand.CanExecute(object? parameter) => _canExecute?.Invoke((TProperty?)parameter) ?? true;
 
-    void ICommand.Execute(object? parameter) => _execute((T?)parameter);
+    void ICommand.Execute(object? parameter) => _execute((TProperty?)parameter);
 
     public event EventHandler? CanExecuteChanged
     {

@@ -12,7 +12,6 @@ public static class EnumerableExtensions
 
     public static IEnumerable<T> WhereNotNull<T>(this IEnumerable<T?> source) => source.Where(x => x != null)!;
 
-
     extension<T>(IEnumerable<T> source)
     {
         public bool None() => !source.Any();
@@ -30,5 +29,7 @@ public static class EnumerableExtensions
 
         public bool ContainsAnyOfIgnoreCase(IReadOnlyCollection<string> value)
             => source.Any(x => value.ContainsIgnoreCase(x));
+
+        public string JoinStrings(string separator = "") => string.Join(separator, source);
     }
 }

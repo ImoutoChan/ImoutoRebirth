@@ -14,6 +14,7 @@ public static class ServiceCollectionExtensions
         services.AddTransient<ICollectionFileRepository, CollectionFileRepository>();
         services.AddTransient<ICollectionRepository, CollectionRepository>();
         services.AddTransient<ICollectionFileCacheService, CollectionFileCacheService>();
+        services.AddTransient<IIntegrityReportRepository, IntegrityReportRepository>();
         services.AddTransient<IMd5PresenceCache, Md5PresenceCache>();
 
         return services;

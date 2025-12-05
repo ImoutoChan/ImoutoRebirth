@@ -13,6 +13,7 @@
 
     <ItemGroup>
         <ProjectReference Include="..\..\ImoutoRebirth.Common\ImoutoRebirth.Common.Cqrs\ImoutoRebirth.Common.Cqrs.csproj" />
+        <ProjectReference Include="..\..\ImoutoRebirth.Common\ImoutoRebirth.Common.Jobs\ImoutoRebirth.Common.Jobs.csproj" />
         <ProjectReference Include="..\ImoutoRebirth.Room.Domain\ImoutoRebirth.Room.Domain.csproj" />
     </ItemGroup>
 

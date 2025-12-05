@@ -4,6 +4,7 @@ using ImoutoRebirth.Lilin.WebApi.Client;
 using ImoutoRebirth.Navigator.Services.Collections;
 using ImoutoRebirth.Navigator.Services.ImoutoViewer;
 using ImoutoRebirth.Navigator.Services.Tags;
+using ImoutoRebirth.Navigator.Slices.IntegrityReport.Services;
 using ImoutoRebirth.Room.WebApi.Client;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -25,7 +26,7 @@ public static class ServiceLocator
         sc.AddTransient<ICollectionService, CollectionService>();
         sc.AddTransient<IDestinationFolderService, DestinationFolderService>();
         sc.AddTransient<ISourceFolderService, SourceFolderService>();
-        
+        sc.AddTransient<IIntegrityReportService, IntegrityReportService>();
 
         sc.AddTransient<IFileService, FileService>();
         sc.AddTransient<IFileTagService, FileTagService>();

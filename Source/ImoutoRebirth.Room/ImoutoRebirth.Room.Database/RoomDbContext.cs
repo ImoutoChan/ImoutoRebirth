@@ -24,11 +24,18 @@ public class RoomDbContext : DbContext, IUnitOfWork
 
     public required DbSet<CollectionFileEntity> CollectionFiles { get; set; }
 
+    public required DbSet<IntegrityReportEntity> IntegrityReports { get; set; }
+
+    public required DbSet<IntegrityReportCollectionEntity> IntegrityReportCollections { get; set; }
+
+    public required DbSet<IntegrityReportFileStatusEntity> IntegrityReportFileStatuses { get; set; }
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         BuildSourceFolderEntity(modelBuilder);
         BuildDestinationFolderEntity(modelBuilder);
         BuildCollectionFileEntity(modelBuilder);
+        BuildIntegrityReport(modelBuilder);
 
         base.OnModelCreating(modelBuilder);
     }
@@ -113,4 +120,37 @@ public class RoomDbContext : DbContext, IUnitOfWork
         modelBuilder.Entity<CollectionFileEntity>()
             .HasQueryFilter(x => !x.IsRemoved);
     }
+
+    private static void BuildIntegrityReport(ModelBuilder modelBuilder)
+    {
+        modelBuilder.Entity<IntegrityReportEntity>(builder =>
+        {
+            builder.ToTable("IntegrityReports");
+            builder.HasKey(x => x.ReportId);
+
+            builder.HasMany(x => x.Collections)
+                .WithOne(x => x.Report)
+                .HasForeignKey(x => x.ReportId)
+                .OnDelete(DeleteBehavior.Cascade);
+        });
+
+        modelBuilder.Entity<IntegrityReportCollectionEntity>(builder =>
+        {
+            builder.ToTable("IntegrityReportCollections");
+            builder.HasKey(x => new { x.ReportId, x.CollectionId });
+
+            builder.HasMany(x => x.FileStatuses)
+                .WithOne(x => x.Collection)
+                .HasForeignKey(x => new { x.ReportId, x.CollectionId })
+                .OnDelete(DeleteBehavior.Cascade);
+        });
+
+        modelBuilder.Entity<IntegrityReportFileStatusEntity>(builder =>
+        {
+            builder.ToTable("IntegrityReportFileStatuses");
+            builder.HasKey(x => new { x.ReportId, x.CollectionId, x.FileId });
+        });
+    }
+
+
 }

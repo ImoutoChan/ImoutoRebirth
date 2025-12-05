@@ -13,4 +13,8 @@
         <PackageReference Include="NodaTime.Serialization.SystemTextJson" />
     </ItemGroup>
 
+    <ItemGroup>
+        <ProjectReference Include="..\ImoutoRebirth.Common\ImoutoRebirth.Common.csproj" />
+    </ItemGroup>
+
 </Project>

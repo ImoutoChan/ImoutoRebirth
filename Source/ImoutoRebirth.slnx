@@ -19,6 +19,7 @@
     <Project Path="ImoutoRebirth.Common/ImoutoRebirth.Common.EntityFrameworkCore/ImoutoRebirth.Common.EntityFrameworkCore.csproj" />
     <Project Path="ImoutoRebirth.Common/ImoutoRebirth.Common.Host/ImoutoRebirth.Common.Host.csproj" />
     <Project Path="ImoutoRebirth.Common/ImoutoRebirth.Common.Infrastructure/ImoutoRebirth.Common.Infrastructure.csproj" />
+    <Project Path="ImoutoRebirth.Common/ImoutoRebirth.Common.Jobs/ImoutoRebirth.Common.Jobs.csproj" />
     <Project Path="ImoutoRebirth.Common/ImoutoRebirth.Common.Logging/ImoutoRebirth.Common.Logging.csproj" />
     <Project Path="ImoutoRebirth.Common/ImoutoRebirth.Common.MassTransit/ImoutoRebirth.Common.MassTransit.csproj" />
     <Project Path="ImoutoRebirth.Common/ImoutoRebirth.Common.OpenTelemetry/ImoutoRebirth.Common.OpenTelemetry.csproj" />

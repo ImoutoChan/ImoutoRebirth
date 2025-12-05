@@ -29,14 +29,21 @@ public static class EntityFrameworkServiceCollectionExtensions
 {
     public static IServiceCollection AddPostgresDbContext<TContext>(
         this IServiceCollection services,
-        string connectionString)
+        string connectionString,
+        Action<NpgsqlDbContextOptionsBuilder>? npgsqlOptionsAction = null,
+        Action<NpgsqlDataSourceBuilder>? dataSourceAction = null)
         where TContext : DbContext
     {
         var dataSourceBuilder = new NpgsqlDataSourceBuilder(connectionString);
         dataSourceBuilder.UseNodaTime();
+        dataSourceAction?.Invoke(dataSourceBuilder);
         var dataSource = dataSourceBuilder.Build();
         
-        services.AddDbContext<TContext>(o => o.UseNpgsql(dataSource, builder => builder.UseEfNodaTime()));
+        services.AddDbContext<TContext>(o => o.UseNpgsql(dataSource, builder =>
+        {
+            builder.UseEfNodaTime();
+            npgsqlOptionsAction?.Invoke(builder);
+        }));
 
         return services;
     }

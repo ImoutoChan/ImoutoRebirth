@@ -7,8 +7,11 @@ public class CommandQueryAttribute : Attribute
 {
     public IsolationLevel IsolationLevel { get; }
 
-    public CommandQueryAttribute(IsolationLevel isolationLevel)
+    public bool NoTransaction { get; set; }
+
+    public CommandQueryAttribute(IsolationLevel isolationLevel = IsolationLevel.ReadCommitted, bool noTransaction = false)
     {
         IsolationLevel = isolationLevel;
+        NoTransaction = noTransaction;
     }
 }

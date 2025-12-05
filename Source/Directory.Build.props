@@ -1,9 +1,7 @@
 <Project>
 
     <PropertyGroup>
-        <!-- Ignore unavailable nuget sources -->
-        <!-- NU1608 Detected package version outside of dependency constraint: Npgsql.EntityFrameworkCore.PostgreSQL until 10 is ready-->
-        <NoWarn>$(NoWarn);NU1801;NU1608</NoWarn>
+        <NoWarn>$(NoWarn);</NoWarn>
     </PropertyGroup>
 
     <ItemGroup>

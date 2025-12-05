@@ -24,6 +24,7 @@
                           xmlns:navigator="clr-namespace:ImoutoRebirth.Navigator"
                           xmlns:tz="http://schemas.abtsoftware.co.uk/transitionz"
                           xmlns:vwp="clr-namespace:WpfToolkit.Controls;assembly=VirtualizingWrapPanel"
+                          xmlns:integrityReport="clr-namespace:ImoutoRebirth.Navigator.Slices.IntegrityReport"
                           d:DataContext="{d:DesignInstance viewModel:MainWindowVM, IsDesignTimeCreatable=False}"
                           mc:Ignorable="d"
                           WindowStartupLocation="CenterScreen"
@@ -98,6 +99,20 @@
                                  DataContext="{Binding Path=TagsMerge}"
                                  >
                 <flyouts:TagsMergeView />
+            </metroControl:Flyout>
+
+            <metroControl:Flyout x:Name="IntegrityReportsFlyout"
+                                 Width="550"
+                                 Header="Integrity Reports"
+                                 Position="Right"
+                                 DataContext="{Binding Path=IntegrityReports}">
+                <b:Interaction.Triggers>
+                    <b:EventTrigger EventName="IsOpenChanged">
+                        <b:InvokeCommandAction Command="{Binding FlyoutOpenChangedCommand}" />
+                    </b:EventTrigger>
+                </b:Interaction.Triggers>
+
+                <integrityReport:IntegrityReportsView />
             </metroControl:Flyout>
         </metroControl:FlyoutsControl>
     </metroControl:MetroWindow.Flyouts>

@@ -360,6 +360,7 @@ public class ExHentaiMetadataProviderTests : IClassFixture<TestConfiguration>
             new [] { "3083613", "25faded29b" },
             new [] { "2873324", "e949c2765d" },
             new [] { "2867085", "7fa0159874" },
+            new [] { "3662611", "cf3350c65a" },
         ]);
     }
 }
