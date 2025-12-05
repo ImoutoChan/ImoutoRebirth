@@ -59,7 +59,8 @@ public static class WebEndpointsExtensions
         app.MapCollectionFilesEndpoints();
         app.MapDestinationFoldersEndpoints();
         app.MapSourceFoldersEndpoints();
-        
+        app.MapIntegrityReportsEndpoints();
+
         return app;
     }
 

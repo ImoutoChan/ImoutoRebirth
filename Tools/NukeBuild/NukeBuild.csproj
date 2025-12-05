@@ -12,7 +12,7 @@
 
     <ItemGroup>
         <PackageReference Include="matkoch.Microsoft.VisualStudio.SolutionPersistence" Version="1.0.61" />
-        <PackageReference Include="Nuke.Common" Version="9.0.4" />
+        <PackageReference Include="Nuke.Common" Version="[9.0.4]" />
     </ItemGroup>
 
     <ItemGroup>

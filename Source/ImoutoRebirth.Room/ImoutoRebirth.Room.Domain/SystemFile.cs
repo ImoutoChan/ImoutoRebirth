@@ -103,7 +103,7 @@ public partial class SystemFile
 
     private static bool IsFileReady(FileInfo fileInfo)
     {
-        // If the file can be opened for exclusive access it means that the file
+        // If the file can be opened for exclusive access, it means that the file
         // is no longer locked by another process.
         try
         {

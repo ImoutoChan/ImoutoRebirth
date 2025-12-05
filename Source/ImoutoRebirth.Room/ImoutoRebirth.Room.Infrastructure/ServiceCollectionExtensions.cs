@@ -14,6 +14,7 @@ public static class ServiceCollectionExtensions
     public static IServiceCollection AddRoomInfrastructure(this IServiceCollection services)
     {
         services.AddTransient<IImageService, ImageService>();
+        services.AddTransient<IIntegrityReportExporter, IntegrityReportExporter>();
         services.AddTransient<IRemoteCommandService, RemoteCommandService>();
         services.AddHttpClient<IWebhookUploader, WebhookUploader>();
         services.AddScoped<IEventStorage, EventStorage>();

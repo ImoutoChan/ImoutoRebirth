@@ -21,7 +21,7 @@
       translated
     ],
     Rating: 4.49,
-    ThumbnailUrl: https://ehgt.org/e4/16/e41614d8449685d860f5f9e534fd8adeccdc92d4-1512400-1225-1750-jpg_250.jpg,
+    ThumbnailUrl: https://ehgt.org/w/00/427/71367-cnzk1ish.webp,
     GalleryId: 861082,
     GalleryToken: db0866f23e,
     Category: Doujinshi,
@@ -59,7 +59,7 @@
       japanese
     ],
     Rating: 4.55,
-    ThumbnailUrl: https://ehgt.org/5c/71/5c714491694f2ab3608a26d718128a61b31ab690-3338736-1225-1750-jpg_250.jpg,
+    ThumbnailUrl: https://ehgt.org/w/00/412/38474-4iloomjs.webp,
     GalleryId: 829074,
     GalleryToken: 198e5a4e4f,
     Category: Doujinshi,

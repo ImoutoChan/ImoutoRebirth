@@ -28,6 +28,28 @@ public static class ExtraTaskExtensions
         return taskArray.Select(x => x.Result).ToArray();
     }
 
+    public static async Task WhenAllWithDegreeOfParallelism(
+        this IEnumerable<Task> tasks,
+        int degreeOfParallelism,
+        CancellationToken ct)
+    {
+        using var enumerator = tasks.GetEnumerator();
+        var runningTasks = new List<Task>();
+
+        while (enumerator.MoveNext())
+        {
+            ct.ThrowIfCancellationRequested();
+            runningTasks.Add(enumerator.Current);
+            if (runningTasks.Count < degreeOfParallelism)
+                continue;
+
+            var completed = await Task.WhenAny(runningTasks);
+            runningTasks.Remove(completed);
+        }
+
+        await Task.WhenAll(runningTasks);
+    }
+
     public static async Task<(TTaskResult Result, TWith With)> With<TTaskResult, TWith>(
         this Task<TTaskResult> task,
         TWith with)

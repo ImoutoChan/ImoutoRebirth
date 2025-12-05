@@ -1,39 +1,55 @@
-﻿using System.Diagnostics;
-
-namespace ImoutoRebirth.Common.WPF.Converters;
+﻿namespace ImoutoRebirth.Common.WPF.Converters;
 
 public static class Converts
 {
-    public static T? To<T>(object? value, bool enableException = false)
+    public static ToT? To<ToT>(object? value, bool enableException = false)
     {
-        Type t = typeof(T);
+        Type t = typeof(ToT);
 
-        if (value is string && string.IsNullOrEmpty((string)value) && t != typeof(string))
+        if (value is string stringValue
+            && string.IsNullOrEmpty(stringValue)
+            && t != typeof(string))
+        {
             value = null;
+        }
 
         if (value == null || value == DBNull.Value)
-            return default(T);
-        else if (value is T)
-            return (T)value;
+        {
+            return default;
+        }
+        else if (value is ToT toT)
+        {
+            return toT;
+        }
         else
+        {
             try
             {
-                if (!t.IsGenericType && t.IsEnum)
+                if (t is
+                    {
+                        IsGenericType: false,
+                        IsEnum: true
+                    })
+                {
                     if (value is string)
-                        return (T)Enum.ToObject(t, value);
-                    else
-                        return (T)value;
+                        return (ToT)Enum.ToObject(t, value);
 
-                if (t.IsGenericType && (t.GetGenericTypeDefinition() == typeof(Nullable<>)))
+                    return (ToT)value;
+                }
+
+                if (t.IsGenericType && t.GetGenericTypeDefinition() == typeof(Nullable<>))
+                {
                     t = Nullable.GetUnderlyingType(t)!;
-                return (T)Convert.ChangeType(value, t);
+                }
+                return (ToT)Convert.ChangeType(value, t);
             }
             catch (Exception ex)
             {
                 if (enableException)
-                    throw new Exception("Ошибка конвертации в методе To", ex);
-                Debug.WriteLine("Ошибка конвертации в методе To", "Converts");
-                return default(T);
+                    throw new InvalidOperationException("Unable to convert object to " + t.Name, ex);
+
+                return default;
             }
+        }
     }
 }

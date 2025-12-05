@@ -6,6 +6,8 @@ using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.OpenApi;
 using Swashbuckle.AspNetCore.SwaggerGen;
+using ImoutoRebirth.Common;
+using Microsoft.AspNetCore.Mvc.ApiExplorer;
 
 namespace ImoutoRebirth.Common.WebApi;
 
@@ -66,17 +68,12 @@ public static class ServiceCollectionExtensions
                 Version = "v1.0"
             });
             
-            c.TagActionsBy(e =>
-            {
-                var controllerName = e.RelativePath?.Split("/").FirstOrDefault(x => !string.IsNullOrWhiteSpace(x));
-                return [controllerName?.ToUpperInvariant()[..1] + controllerName?[1..]];
-            });
+            c.TagActionsBy(e => [GetControllerName(e.RelativePath)]);
             
             c.CustomOperationIds(e =>
             {
                 var name = e.ActionDescriptor.EndpointMetadata.OfType<RouteNameMetadata>().FirstOrDefault()?.RouteName;
-                var controllerName = e.RelativePath?.Split("/").FirstOrDefault(x => !string.IsNullOrWhiteSpace(x));
-                var upperControllerName = controllerName?.ToUpperInvariant()[..1] + controllerName?[1..];
+                var upperControllerName = GetControllerName(e.RelativePath);
                 
                 return upperControllerName + '_' + name;
             });
@@ -85,6 +82,18 @@ public static class ServiceCollectionExtensions
         });
 
         return services;
+    }
+
+    private static string? GetControllerName(string? relativePath)
+    {
+        var path = relativePath?.Split("/").FirstOrDefault(x => !string.IsNullOrWhiteSpace(x));
+
+        var controllerName = path
+            ?.Split('-')
+            .Select(x => x.Trim())
+            .Select(x => x.ToUpperInvariant()[..1] + x[1..])
+            .JoinStrings();
+        return controllerName;
     }
 
     public static WebApplication MapRootTo(this WebApplication app, string redirectPath)

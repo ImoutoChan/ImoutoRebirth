@@ -8,6 +8,10 @@
     </PropertyGroup>
 
     <ItemGroup>
+        <PackageReference Include="NodaTime" />
+    </ItemGroup>
+
+    <ItemGroup>
         <ProjectReference Include="..\..\ImoutoRebirth.Common\ImoutoRebirth.Common.Domain\ImoutoRebirth.Common.Domain.csproj" />
         <ProjectReference Include="..\..\ImoutoRebirth.Common\ImoutoRebirth.Common\ImoutoRebirth.Common.csproj" />
     </ItemGroup>

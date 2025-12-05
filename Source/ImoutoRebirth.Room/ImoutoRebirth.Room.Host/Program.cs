@@ -36,7 +36,7 @@ builder.Services
     .AddRoomDataAccess()
     .AddRoomDatabase(configuration.GetRequiredConnectionString("RoomDatabase"))
     .AddRoomInfrastructure()
-    .AddRoomUi()
+    .AddRoomUi(configuration)
     .AddSqlMassTransit(builder.Configuration, "room", с => с.AddRoomMassTransitSetup())
     .AddWebEndpoints()
     .AddOpenTelemetry(builder.Environment, builder.Configuration);

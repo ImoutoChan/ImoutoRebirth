@@ -56,7 +56,7 @@ internal class CollectionFilesModelsQueryHandler
 
     private IQueryable<CollectionFileEntity> BuildFilesQuery(CollectionFilesQuery query)
     {
-        var files = _roomDbContext.CollectionFiles.AsQueryable();
+        var files = _roomDbContext.CollectionFiles.AsNoTracking().AsQueryable();
 
         if (query.CollectionId.HasValue)
             files = files.Where(x => x.CollectionId == query.CollectionId.Value);

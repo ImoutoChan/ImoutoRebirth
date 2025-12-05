@@ -8,12 +8,12 @@ public static class UIHelper
     /// <summary>
     /// Finds a parent of a given item on the visual tree.
     /// </summary>
-    /// <typeparam name="T">The type of the queried item.</typeparam>
+    /// <typeparam name="TType">The type of the queried item.</typeparam>
     /// <param name="child">A direct or indirect child of the queried item.</param>
     /// <returns>The first parent item that matches the submitted type parameter. 
     /// If not matching item can be found, a null reference is being returned.</returns>
-    public static T? FindVisualParent<T>(DependencyObject child)
-        where T : DependencyObject
+    public static TType? FindVisualParent<TType>(DependencyObject child)
+        where TType : DependencyObject
     {
         // get parent item
         var parentObject = VisualTreeHelper.GetParent(child);
@@ -23,13 +23,13 @@ public static class UIHelper
             // we’ve reached the end of the tree
             null => null,
             // check if the parent matches the type we’re looking for
-            T parent => parent,
-            _ => FindVisualParent<T>(parentObject)
+            TType parent => parent,
+            _ => FindVisualParent<TType>(parentObject)
         };
     }
 
-    public static T? FindVisualChild<T>(DependencyObject? parent, string? withName) 
-        where T : DependencyObject
+    public static TType? FindVisualChild<TType>(DependencyObject? parent, string? withName)
+        where TType : DependencyObject
     {
         if (parent == null) 
             return null;
@@ -40,9 +40,9 @@ public static class UIHelper
         {
             var child = VisualTreeHelper.GetChild(parent, i);
 
-            if (child is not T childType)
+            if (child is not TType childType)
             {
-                var foundChild = FindVisualChild<T>(child, withName);
+                var foundChild = FindVisualChild<TType>(child, withName);
 
                 if (foundChild != null) 
                     return foundChild;
@@ -55,7 +55,7 @@ public static class UIHelper
                 }
                 else
                 {
-                    var foundChild = FindVisualChild<T>(childType, withName);
+                    var foundChild = FindVisualChild<TType>(childType, withName);
                     
                     if (foundChild != null) 
                         return foundChild;
@@ -70,11 +70,11 @@ public static class UIHelper
         return null;
     }
 
-    public static T? GetParentOfType<T>(this DependencyObject? child) where T : DependencyObject
+    public static TType? GetParentOfType<TType>(this DependencyObject? child) where TType : DependencyObject
     {
         while (child != null)
         {
-            if (child is T t)
+            if (child is TType t)
                 return t;
 
             child = VisualTreeHelper.GetParent(child);

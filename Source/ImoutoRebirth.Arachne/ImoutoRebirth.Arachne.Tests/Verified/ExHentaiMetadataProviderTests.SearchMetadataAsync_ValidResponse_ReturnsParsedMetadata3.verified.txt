@@ -6,6 +6,8 @@
     ],
     Publisher: ,
     Tags: [
+      language:english,
+      language:translated,
       parody:original,
       artist:mamaloni,
       female:big clit,
@@ -17,23 +19,25 @@
       female:solo action,
       female:squirting,
       other:full color,
-      other:mosaic censorship
+      other:mosaic censorship,
+      other:no penetration
     ],
     Languages: [
-      japanese
+      english,
+      translated
     ],
-    Rating: 4.52,
-    ThumbnailUrl: https://ehgt.org/w/01/460/42204-pqxivp13.webp,
-    GalleryId: 2867085,
-    GalleryToken: 7fa0159874,
+    Rating: 4.58,
+    ThumbnailUrl: https://ehgt.org/w/02/134/09861-dxd05xmo.webp,
+    GalleryId: 3662611,
+    GalleryToken: cf3350c65a,
     Category: Doujinshi,
-    UploaderName: 111yami111,
-    FilesCount: 14,
-    FileSize: 20637542,
+    UploaderName: ValacBroker,
+    FilesCount: 16,
+    FileSize: 18534166,
     IsExpunged: false,
     TorrentCount: 1,
-    JapaneseTitle: [mamaloni] はじめて買った大人のおもちゃでえぐいクリオナおぼえちゃった女の子,
-    PostedAt: 2024-03-24 19:44:41 +0,
-    FileIdFromSource: 2867085|7fa0159874
+    JapaneseTitle: [mamaloni] はじめて買った大人のおもちゃでえぐいクリオナおぼえちゃった女の子 [英訳],
+    PostedAt: 2025-11-30 09:00:33 +0,
+    FileIdFromSource: 3662611|cf3350c65a
   }
 ]

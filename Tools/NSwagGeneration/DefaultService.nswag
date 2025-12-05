@@ -1,5 +1,5 @@
 {
-  "runtime": "Net90",
+  "runtime": "Net100",
   "defaultVariables": "Port=11111,ServiceName=Unknown",
   "documentGenerator": {
     "fromDocument": {

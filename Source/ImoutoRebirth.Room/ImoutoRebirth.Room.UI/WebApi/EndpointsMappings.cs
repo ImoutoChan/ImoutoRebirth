@@ -3,6 +3,7 @@ using ImoutoRebirth.Room.Application.Cqrs;
 using ImoutoRebirth.Room.Application.Cqrs.CollectionFileSlice;
 using ImoutoRebirth.Room.Application.Cqrs.CollectionSlice;
 using ImoutoRebirth.Room.Application.Cqrs.FoldersSlice;
+using ImoutoRebirth.Room.Application.Cqrs.IntegritySlice;
 using MediatR;
 using Microsoft.AspNetCore.Builder;
 
@@ -74,6 +75,27 @@ internal static class EndpointsMappings
             .WithName("UpdateFileMetadata");
     }
 
+    public static void MapIntegrityReportsEndpoints(this WebApplication app)
+    {
+        var files = app.MapGroup("/integrity-reports");
+
+        files.MapPost("", (CreateIntegrityReportJobCommand command, IMediator mediator, CancellationToken ct)
+                => mediator.Send(command, ct))
+            .WithName("BuildIntegrityReport");
+
+        files.MapGet("", (IMediator mediator, CancellationToken ct, int count = 10, int skip = 0)
+                => mediator.Send(new IntegrityReportsQuery(count, skip), ct))
+            .WithName("GetIntegrityReports");
+
+        files.MapPut("/{reportId:guid}/pause", (Guid reportId, IMediator mediator, CancellationToken ct)
+                    => mediator.Send(new PauseIntegrityReportJobCommand(reportId), ct))
+            .WithName("PauseIntegrityReport");
+
+        files.MapPut("/{reportId:guid}/resume", (Guid reportId, IMediator mediator, CancellationToken ct)
+                    => mediator.Send(new ResumeIntegrityReportJobCommand(reportId), ct))
+            .WithName("ResumeIntegrityReport");
+    }
+
     public static void MapDestinationFoldersEndpoints(this WebApplication app)
     {
         var destinationFolders = app.MapGroup("/collections");
@@ -111,6 +133,4 @@ internal static class EndpointsMappings
                 => mediator.Send(new DeleteSourceFolderCommand(collectionId, sourceFolderId), ct))
             .WithName("DeleteSourceFolder");
     }
-
-
 }

@@ -1,11 +1,20 @@
 {
   "$schema": "https://json.schemastore.org/launchsettings.json",
   "profiles": {
-    "ImoutoRebirth.Room.Host": {
+    "Room Dev": {
       "commandName": "Project",
       "launchBrowser": false,
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
+      },
+      "applicationUrl": "http://localhost:11401"
+    },
+    "Room Prod": {
+      "commandName": "Project",
+      "launchBrowser": false,
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development",
+        "ASPNETCORE_SourceFolderWatcherHostedServiceDisabled": "true"
       },
       "applicationUrl": "http://localhost:11401"
     }

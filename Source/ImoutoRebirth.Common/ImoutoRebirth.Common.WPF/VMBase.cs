@@ -27,33 +27,33 @@ public class VMBase : INotifyPropertyChanged
 
     protected virtual bool ThrowOnInvalidPropertyName { get; private set; }
 
-    protected void OnPropertyChanged<T>(ref T value, T newValue, Expression<Func<T>> action) 
+    protected void OnPropertyChanged<TProperty>(ref TProperty value, TProperty newValue, Expression<Func<TProperty>> action)
         => OnPropertyChanged(ref value, newValue, GetPropertyName(action));
     
-    private void OnPropertyChanged<T>(ref T value, T newValue, string propertyName)
+    private void OnPropertyChanged<TProperty>(ref TProperty value, TProperty newValue, string propertyName)
     {
-        if (EqualityComparer<T>.Default.Equals(value, newValue))
+        if (EqualityComparer<TProperty>.Default.Equals(value, newValue))
             return;
 
         OnPropertyChanging(ref value, newValue, propertyName);
     }
 
-    private void OnPropertyChanging<T>(ref T value, T newValue, string propertyName)
+    private void OnPropertyChanging<TProperty>(ref TProperty value, TProperty newValue, string propertyName)
     {
-        if (EqualityComparer<T>.Default.Equals(value, newValue))
+        if (EqualityComparer<TProperty>.Default.Equals(value, newValue))
             return;
 
         value = newValue;
         RaisePropertyChanged(propertyName);
     }
 
-    public void OnPropertyChanged<T>(Expression<Func<T>> action)
+    public void OnPropertyChanged<TProperty>(Expression<Func<TProperty>> action)
     {
         var propertyName = GetPropertyName(action);
         RaisePropertyChanged(propertyName);
     }
 
-    public static string GetPropertyName<T>(Expression<Func<T>> action)
+    public static string GetPropertyName<TProperty>(Expression<Func<TProperty>> action)
     {
         var expression = (MemberExpression)action.Body;
         var propertyName = expression.Member.Name;

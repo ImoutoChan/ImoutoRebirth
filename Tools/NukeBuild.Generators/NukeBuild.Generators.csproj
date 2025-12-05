@@ -14,9 +14,9 @@
 
     <ItemGroup>
         <PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="[4.12.0]" PrivateAssets="all" />
-        <PackageReference Include="Nuke.Common" Version="9.0.4" />
-        <PackageReference Include="Nuke.Utilities" Version="9.0.4" />
-        <PackageReference Include="Nuke.SolutionModel" Version="9.0.4" />
+        <PackageReference Include="Nuke.Common" Version="[9.0.4]" />
+        <PackageReference Include="Nuke.Utilities" Version="[9.0.4]" />
+        <PackageReference Include="Nuke.SolutionModel" Version="[9.0.4]" />
         <PackageReference Include="Newtonsoft.Json" Version="13.0.4" />
 
         <PackageReference Include="matkoch.Microsoft.VisualStudio.SolutionPersistence"
