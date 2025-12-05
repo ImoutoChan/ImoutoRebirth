@@ -1,11 +1,16 @@
 # Unreleased
 
+### Highlights
+* NEW FEATURE Integrity reports (Settings => Integrity Reports) will anylize your collections for missing or corrupted files.
+
 ### Infrastructure
 * Migrated to .NET 10 runtime
 * Updated all dependencies
 
 ### Navigator
 * Various performance improvements
+* NEW FEATURE Integrity reports (Settings => Integrity Reports) will anylize your collections for missing or corrupted files.
+* Supports continuations and export to the different formats (csv json).
 
 # v4.29.1
 
