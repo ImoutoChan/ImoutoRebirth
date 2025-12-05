@@ -11,9 +11,9 @@ internal class IntegrityReportService : IIntegrityReportService
     public async Task<IReadOnlyCollection<IntegrityReportResult>> GetReportsAsync(int count, int skip)
         => await _client.GetIntegrityReportsAsync(count, skip);
 
-    public async Task<Guid> CreateReportAsync(IReadOnlyCollection<Guid>? collectionIds, string? saveToFolder)
+    public async Task<Guid> CreateReportAsync(IReadOnlyCollection<Guid>? collectionIds, string? exportToFolder)
     {
-        var command = new CreateIntegrityReportJobCommand(collectionIds, saveToFolder);
+        var command = new CreateIntegrityReportJobCommand(exportToFolder, collectionIds);
         return await _client.BuildIntegrityReportAsync(command);
     }
 

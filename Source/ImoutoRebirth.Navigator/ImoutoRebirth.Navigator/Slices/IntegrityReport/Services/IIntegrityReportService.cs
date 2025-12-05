@@ -6,7 +6,7 @@ public interface IIntegrityReportService
 {
     Task<IReadOnlyCollection<IntegrityReportResult>> GetReportsAsync(int count, int skip);
 
-    Task<Guid> CreateReportAsync(IReadOnlyCollection<Guid>? collectionIds, string? saveToFolder);
+    Task<Guid> CreateReportAsync(IReadOnlyCollection<Guid>? collectionIds, string? exportToFolder);
 
     Task PauseReportAsync(Guid reportId);
 
