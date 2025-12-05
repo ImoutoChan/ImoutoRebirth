@@ -193,6 +193,9 @@
         <Page Update="Slices\CreateCollectionWizard\Steps\AdvancedView.xaml">
             <SubType>Designer</SubType>
         </Page>
+        <Page Update="Slices\IntegrityReport\IntegrityReportsView.xaml">
+            <SubType>Designer</SubType>
+        </Page>
     </ItemGroup>
 
     <ItemGroup>

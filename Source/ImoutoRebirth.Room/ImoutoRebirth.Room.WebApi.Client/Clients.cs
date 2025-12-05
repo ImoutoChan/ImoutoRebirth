@@ -2549,17 +2549,17 @@ namespace ImoutoRebirth.Room.WebApi.Client
     public partial class CreateIntegrityReportJobCommand
     {
         [System.Text.Json.Serialization.JsonConstructor]
-        public CreateIntegrityReportJobCommand(System.Collections.Generic.IReadOnlyCollection<System.Guid>? @onlyCollectionIds, string? @saveReportFilesToFolder)
+        public CreateIntegrityReportJobCommand(string? @exportToFolder, System.Collections.Generic.IReadOnlyCollection<System.Guid>? @onlyCollectionIds)
         {
             this.OnlyCollectionIds = @onlyCollectionIds;
-            this.SaveReportFilesToFolder = @saveReportFilesToFolder;
+            this.ExportToFolder = @exportToFolder;
         }
 
         [System.Text.Json.Serialization.JsonPropertyName("onlyCollectionIds")]
         public System.Collections.Generic.IReadOnlyCollection<System.Guid>? OnlyCollectionIds { get; }
 
-        [System.Text.Json.Serialization.JsonPropertyName("saveReportFilesToFolder")]
-        public string? SaveReportFilesToFolder { get; }
+        [System.Text.Json.Serialization.JsonPropertyName("exportToFolder")]
+        public string? ExportToFolder { get; }
 
     }
 
@@ -2675,14 +2675,14 @@ namespace ImoutoRebirth.Room.WebApi.Client
     public partial class IntegrityReportResult
     {
         [System.Text.Json.Serialization.JsonConstructor]
-        public IntegrityReportResult(System.Collections.Generic.IReadOnlyCollection<IntegrityReportCollectionResult> @collections, int @expectedTotalFileCount, int @processedFileCount, System.Guid @reportId, string @saveReportFilesToFolder, System.DateTimeOffset @startedOn, ReportStatus @status)
+        public IntegrityReportResult(System.Collections.Generic.IReadOnlyCollection<IntegrityReportCollectionResult> @collections, int @expectedTotalFileCount, string @exportToFolder, int @processedFileCount, System.Guid @reportId, System.DateTimeOffset @startedOn, ReportStatus @status)
         {
             this.ReportId = @reportId;
             this.StartedOn = @startedOn;
             this.Status = @status;
             this.ExpectedTotalFileCount = @expectedTotalFileCount;
             this.ProcessedFileCount = @processedFileCount;
-            this.SaveReportFilesToFolder = @saveReportFilesToFolder;
+            this.ExportToFolder = @exportToFolder;
             this.Collections = @collections;
         }
 
@@ -2702,8 +2702,8 @@ namespace ImoutoRebirth.Room.WebApi.Client
         [System.Text.Json.Serialization.JsonPropertyName("processedFileCount")]
         public int ProcessedFileCount { get; }
 
-        [System.Text.Json.Serialization.JsonPropertyName("saveReportFilesToFolder")]
-        public string SaveReportFilesToFolder { get; }
+        [System.Text.Json.Serialization.JsonPropertyName("exportToFolder")]
+        public string ExportToFolder { get; }
 
         [System.Text.Json.Serialization.JsonPropertyName("collections")]
         public System.Collections.Generic.IReadOnlyCollection<IntegrityReportCollectionResult> Collections { get; }

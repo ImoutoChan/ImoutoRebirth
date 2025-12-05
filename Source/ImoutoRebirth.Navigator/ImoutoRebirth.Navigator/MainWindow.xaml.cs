@@ -179,7 +179,15 @@ internal partial class MainWindow
         _currentSelectedItems = SelectedEntries.Select(x => new WeakReference<INavigatorListEntry>(x)).ToList();
         SelectedItemsChanged?.Invoke(this, EventArgs.Empty);
     }
-    
+
+    public void OpenIntegrityReportsFlyout()
+    {
+        foreach (Flyout item in Flyouts.Items)
+            item.IsOpen = false;
+
+        IntegrityReportsFlyout.IsOpen = true;
+    }
+
     #endregion Methods
 
     #region Event handlers

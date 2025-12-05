@@ -1,4 +1,5 @@
-﻿using ImoutoRebirth.Common.Cqrs.Abstract;
+﻿using ImoutoRebirth.Common;
+using ImoutoRebirth.Common.Cqrs.Abstract;
 using ImoutoRebirth.Room.Application.Services;
 using ImoutoRebirth.Room.Domain.IntegrityAggregate;
 using MediatR;
@@ -9,7 +10,7 @@ namespace ImoutoRebirth.Room.Application.Cqrs.IntegritySlice;
 
 public record CreateIntegrityReportJobCommand(
     IReadOnlyCollection<Guid>? OnlyCollectionIds,
-    string? SaveReportFilesToFolder) : ICommand<Guid>;
+    string? ExportToFolder) : ICommand<Guid>;
 
 internal class BuildIntegrityReportCommandHandler : ICommandHandler<CreateIntegrityReportJobCommand, Guid>
 {
@@ -32,15 +33,15 @@ internal class BuildIntegrityReportCommandHandler : ICommandHandler<CreateIntegr
 
     public async Task<Guid> Handle(CreateIntegrityReportJobCommand command, CancellationToken ct)
     {
-        var (onlyCollectionIds, saveReportFilesToFolder) = command;
+        var (onlyCollectionIds, exportToFolder) = command;
 
         var collections = await _collectionRepository.GetAll(ct);
         var now = _clock.GetCurrentInstant();
 
-        if (onlyCollectionIds != null)
+        if (onlyCollectionIds.SafeAny())
             collections = collections.Where(x => onlyCollectionIds.Contains(x.Id)).ToList();
 
-        var newReport = IntegrityReport.Create(now, collections, saveReportFilesToFolder);
+        var newReport = IntegrityReport.Create(now, collections, exportToFolder);
         await _integrityReportRepository.Create(newReport);
         return newReport.ReportId;
     }

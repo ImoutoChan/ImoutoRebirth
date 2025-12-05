@@ -12,7 +12,7 @@ public record IntegrityReportResult(
     ReportStatus Status,
     int ExpectedTotalFileCount,
     int ProcessedFileCount,
-    string SaveReportFilesToFolder,
+    string ExportToFolder,
     IReadOnlyCollection<IntegrityReportCollectionResult> Collections);
 
 public record IntegrityReportCollectionResult(

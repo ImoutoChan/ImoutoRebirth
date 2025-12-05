@@ -26,6 +26,7 @@ using System.Windows.Threading;
 using ImoutoRebirth.Common.WPF;
 using ObservableCollections;
 using File = System.IO.File;
+using ImoutoRebirth.Navigator.Slices.IntegrityReport.ViewModels;
 
 namespace ImoutoRebirth.Navigator.ViewModel;
 
@@ -147,6 +148,8 @@ internal partial class MainWindowVM : ObservableObject
     public CollectionManagerVm CollectionManager { get; } = new();
 
     public SettingsVM Settings { get; } = new();
+
+    public IntegrityReportsVM IntegrityReports { get; } = new();
 
     public TagsEditVM TagsEdit { get; set; }
 
