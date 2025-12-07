@@ -1,7 +1,8 @@
 # Unreleased
 
 ### Highlights
-* NEW FEATURE Integrity reports (Settings => Integrity Reports) will anylize your collections for missing or corrupted files.
+* NEW FEATURE Integrity reports (Settings => Integrity Reports) will anylize your collections for missing or corrupted files
+* Significantly improved video slider seek experience
 
 ### Infrastructure
 * Migrated to .NET 10 runtime
@@ -9,8 +10,9 @@
 
 ### Navigator
 * Various performance improvements
-* NEW FEATURE Integrity reports (Settings => Integrity Reports) will anylize your collections for missing or corrupted files.
-* Supports continuations and export to the different formats (csv json).
+* NEW FEATURE Integrity reports (Settings => Integrity Reports) will anylize your collections for missing or corrupted files
+* Supports continuations and export to the different formats (csv json)
+* Significantly improved video slider seek experience
 
 # v4.29.1
 

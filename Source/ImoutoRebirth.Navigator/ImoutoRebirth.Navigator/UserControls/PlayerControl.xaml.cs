@@ -21,18 +21,17 @@ public partial class PlayerControl
 
     public static void ResetLastMediaPositions() => LastMediaPositionValues.Clear();
 
-    private bool _isPlayed;
     private VlcControl _control;
-    private bool _isDisposed = false;
+    private bool _isDisposed;
 
-    private bool IsPlayed
+    private bool IsPlaying
     {
-        get => _isPlayed;
+        get;
         set
         {
-            _isPlayed = value;
+            field = value;
 
-            switch (_isPlayed)
+            switch (field)
             {
                 case false:
                     _control.SourceProvider.MediaPlayer?.Pause();
@@ -102,47 +101,9 @@ public partial class PlayerControl
                 }
             };
 
-        Slider.ValueChanged += OnSliderOnValueChanged;
+        Slider.Loaded += SliderOnLoaded;
+        Slider.Unloaded += SliderOnUnloaded;
     }
-    
-    private void OnSliderOnValueChanged(object _, RoutedPropertyChangedEventArgs<double> args)
-    {
-        try
-        {
-            if (_control.SourceProvider.MediaPlayer == null || _isDisposed)
-                return;
-
-            var newValue = (float)args.NewValue / 100;
-
-            if (_isDisposed)
-                return;
-
-            var oldValue = _control.SourceProvider.MediaPlayer.Position;
-
-            var absoluteDiff = Math.Abs(oldValue - newValue);
-
-            if (_isDisposed)
-                return;
-
-            var length = _control.SourceProvider.MediaPlayer.Length;
-
-            var msDiff = absoluteDiff * length;
-
-            if (msDiff < 1000) return;
-
-            var set = (float)args.NewValue / 100;
-
-            if (_isDisposed)
-                return;
-
-            Task.Run(() => _control.SourceProvider.MediaPlayer.Position = set);
-        }
-        catch (Exception e)
-        {
-            Log.Warning(e, "Ignoring player error on slider change");
-        }
-    }
-
 
     private static bool TryGetVlcLibDirectory(out DirectoryInfo? vlcLibDirectory)
     {
@@ -209,7 +170,7 @@ public partial class PlayerControl
                 else
                 {
                     if (player?.IsPlaying() == true)
-                        control.IsPlayed = false;
+                        control.IsPlaying = false;
 
                 }
             }
@@ -221,7 +182,7 @@ public partial class PlayerControl
                     mediaOptions = mediaOptions.Append("start-time=" + position / 1000).ToArray();
                 
                 player.SetMedia(new FileInfo(newPropertyValue), mediaOptions);
-                control.IsPlayed = true;
+                control.IsPlaying = true;
             }
         }));
     }
@@ -244,9 +205,9 @@ public partial class PlayerControl
         var shouldPause = (bool) e.NewValue;
         var control = (PlayerControl) d;
             
-        if (shouldPause && control.IsPlayed)
+        if (shouldPause && control.IsPlaying)
         {
-            control.IsPlayed = false;
+            control.IsPlaying = false;
         }
     }
 
@@ -289,7 +250,7 @@ public partial class PlayerControl
 
     private void PlayButton_OnClick(object sender, RoutedEventArgs e)
     {
-        IsPlayed = !IsPlayed;
+        IsPlaying = !IsPlaying;
     }
 
     private void Root_OnMouseLeftButtonUp(object sender, MouseButtonEventArgs e)
@@ -303,7 +264,7 @@ public partial class PlayerControl
                 return;
         }
 
-        IsPlayed = !IsPlayed;
+        IsPlaying = !IsPlaying;
     }
 
     private static string GetPrettyTime(long time, long? length = null)

@@ -99,6 +99,9 @@
         <Compile Update="UserControls\PlayerControl.xaml.cs">
             <DependentUpon>PlayerControl.xaml</DependentUpon>
         </Compile>
+        <Compile Update="UserControls\PlayerControl.xaml.Slider.cs">
+            <DependentUpon>PlayerControl.xaml</DependentUpon>
+        </Compile>
         <Compile Update="UserControls\RatingControl.xaml.cs">
             <DependentUpon>RatingControl.xaml</DependentUpon>
         </Compile>

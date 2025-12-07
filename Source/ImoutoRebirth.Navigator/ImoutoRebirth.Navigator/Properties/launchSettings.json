@@ -1,0 +1,13 @@
+{
+  "profiles": {
+    "ImoutoNavigator": {
+      "commandName": "Project"
+    },
+    "ImoutoNavigator Fast": {
+      "commandName": "Project",
+      "environmentVariables": {
+        "IMOUTO_FAST_DEV_MODE": "true"
+      }
+    }
+  }
+}

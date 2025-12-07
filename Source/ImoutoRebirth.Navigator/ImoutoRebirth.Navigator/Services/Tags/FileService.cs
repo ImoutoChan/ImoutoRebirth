@@ -96,8 +96,13 @@ internal class FileService : IFileService
         int skip,
         CancellationToken ct)
     {
+        var fastDevMode = Environment.GetEnvironmentVariable("IMOUTO_FAST_DEV_MODE") == "true";
+
         if (!tags.Any())
         {
+            if (fastDevMode)
+                take = 100;
+
             var filesMapped = await _roomCache.GetFilesFromCollection(collectionId, skip, take);
             return (filesMapped, filesMapped.Any());
         }
@@ -121,7 +126,7 @@ internal class FileService : IFileService
         var roomIds = await _roomCache.GetIds(collectionId, default, default);
         var files = await _roomCache.GetFilesByIds(roomIds.Where(x =>  lilinIdsHashSet.Contains(x)).ToList());
 
-        return (files, files.Any() && take != int.MaxValue);
+        return (files, files.Any() && take != int.MaxValue && !fastDevMode);
     }
 
     public async Task<int> CountFiles(
