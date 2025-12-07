@@ -52,6 +52,11 @@ public class TestWebApplicationFactory<TProgram>
                     d => d.ServiceType == typeof(IHostedService)
                          && d.ImplementationType?.Name == "QuartzHostedService"))
                 
+                // disable integrity report background service
+                .Union(services.Where(
+                    d => d.ServiceType == typeof(IHostedService)
+                         && d.ImplementationType?.Name == "IntegrityReportJobBackgroundService"))
+
             // replace IWebhookUploader with mock
             .Union(services.Where(x => x.ServiceType == typeof(IWebhookUploader)))
                 .ToList();
