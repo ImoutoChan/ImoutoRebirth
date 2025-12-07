@@ -39,7 +39,7 @@ internal class ArchiveImageList : ILocalImageList
             ".zip" => true,
             ".cbz" => true,
             _ => false
-        } || ArchiveFactory.IsArchive(archiveFile.FullName, out _);
+        } || IsArchive(archiveFile);
     }
 
     public LocalImage? CurrentImage => _currentIndex >= 0 && _currentIndex < _images.Count
@@ -122,6 +122,21 @@ internal class ArchiveImageList : ILocalImageList
         imagePaths.AddRange(extractedFiles.Where(file => file.IsImage()));
 
         return imagePaths;
+    }
+
+    private static bool IsArchive(FileInfo archiveFile)
+    {
+        // Swallowing the exceptions here until
+        // https://github.com/adamhathcock/sharpcompress/issues/1064
+        // is fixed
+        try
+        {
+            return ArchiveFactory.IsArchive(archiveFile.FullName, out _);
+        }
+        catch
+        {
+            return false;
+        }
     }
 
     public void Dispose() => _tempDirManager.Dispose();
