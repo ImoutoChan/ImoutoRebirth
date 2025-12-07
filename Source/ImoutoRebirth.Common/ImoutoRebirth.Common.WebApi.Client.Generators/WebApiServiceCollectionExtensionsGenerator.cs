@@ -4,6 +4,11 @@ using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Text;
 
+[assembly: System.Diagnostics.CodeAnalysis.SuppressMessage(
+    "RoslynDiagnostics",
+    "RS1041:Do not use obsoleted APIs",
+    Justification = "The project is targeting both .NET 10 and .NET Standard")]
+
 namespace ImoutoRebirth.Common.WebApi.Client.Generators;
 
 [Generator]

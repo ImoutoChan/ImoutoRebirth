@@ -2,8 +2,12 @@
     <PropertyGroup>
         <ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
         <CentralPackageTransitivePinningEnabled>false</CentralPackageTransitivePinningEnabled>
+
         <MicrosoftMinorVersion>10.0.0</MicrosoftMinorVersion>
-        <OpenTelemetryVersion>1.13.1</OpenTelemetryVersion>
+        <OpenTelemetryVersion>1.14.0</OpenTelemetryVersion>
+        
+        <!-- Depends on .net core SDK/VS version, see https://github.com/dotnet/roslyn/blob/main/docs/wiki/NuGet-packages.md-->
+        <RoslynVersion>5.0.0</RoslynVersion>
     </PropertyGroup>
     <ItemGroup>
         <PackageVersion Include="AspNetCoreInjection.TypedFactories" Version="1.2.0"/>
@@ -27,7 +31,7 @@
         <PackageVersion Include="MediatR" Version="14.0.0"/>
         <PackageVersion Include="Microsoft-WindowsAPICodePack-Core" Version="1.1.5"/>
         <PackageVersion Include="Microsoft-WindowsAPICodePack-Shell" Version="1.1.5"/>
-        <PackageVersion Include="Microsoft.CodeAnalysis.CSharp" Version="[4.12.0]"/>
+        <PackageVersion Include="Microsoft.CodeAnalysis.CSharp" Version="$(RoslynVersion)"/>
         <PackageVersion Include="Microsoft.AspNetCore.Mvc.Testing" Version="$(MicrosoftMinorVersion)"/>
         <PackageVersion Include="Microsoft.EntityFrameworkCore" Version="$(MicrosoftMinorVersion)"/>
         <PackageVersion Include="Microsoft.EntityFrameworkCore.Design" Version="$(MicrosoftMinorVersion)">
@@ -65,13 +69,13 @@
         <PackageVersion Include="Npgsql.EntityFrameworkCore.PostgreSQL.NodaTime" Version="10.0.0"/>
         <PackageVersion Include="Npgsql.OpenTelemetry" Version="10.0.0"/>
         <PackageVersion Include="ObservableCollections" Version="3.3.4"/>
-        <PackageVersion Include="OpenTelemetry" Version="1.14.0"/>
-        <PackageVersion Include="OpenTelemetry.Api" Version="1.14.0"/>
-        <PackageVersion Include="OpenTelemetry.Exporter.OpenTelemetryProtocol" Version="1.14.0"/>
-        <PackageVersion Include="OpenTelemetry.Extensions.Hosting" Version="1.14.0"/>
-        <PackageVersion Include="OpenTelemetry.Instrumentation.AspNetCore" Version="1.14.0"/>
-        <PackageVersion Include="OpenTelemetry.Instrumentation.Http" Version="1.14.0"/>
-        <PackageVersion Include="OpenTelemetry.Instrumentation.Runtime" Version="1.14.0"/>
+        <PackageVersion Include="OpenTelemetry" Version="$(OpenTelemetryVersion)"/>
+        <PackageVersion Include="OpenTelemetry.Api" Version="$(OpenTelemetryVersion)"/>
+        <PackageVersion Include="OpenTelemetry.Exporter.OpenTelemetryProtocol" Version="$(OpenTelemetryVersion)"/>
+        <PackageVersion Include="OpenTelemetry.Extensions.Hosting" Version="$(OpenTelemetryVersion)"/>
+        <PackageVersion Include="OpenTelemetry.Instrumentation.AspNetCore" Version="$(OpenTelemetryVersion)"/>
+        <PackageVersion Include="OpenTelemetry.Instrumentation.Http" Version="$(OpenTelemetryVersion)"/>
+        <PackageVersion Include="OpenTelemetry.Instrumentation.Runtime" Version="$(OpenTelemetryVersion)"/>
         <PackageVersion Include="Quartz" Version="3.15.1"/>
         <PackageVersion Include="ResQueue.MassTransit" Version="1.4.1"/>
         <PackageVersion Include="SciChart.Wpf.UI.Transitionz" Version="4.0.271"/>
