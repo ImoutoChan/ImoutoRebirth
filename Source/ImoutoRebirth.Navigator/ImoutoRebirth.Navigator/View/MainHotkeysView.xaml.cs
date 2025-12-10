@@ -23,6 +23,7 @@ public class MainHotkeysViewModel
         new("W A S D", "like arrow keys"),
         new("T", "add tags"),
         new("M", "merge tags"),
+        new("F5", "refresh"),
         new("CTRL + Q", "quick tagging"),
     ];
 }

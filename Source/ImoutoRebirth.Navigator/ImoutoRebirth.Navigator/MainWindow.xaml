@@ -160,6 +160,8 @@
         <KeyBinding Modifiers="Control"
                     Key="C"
                     Command="{Binding CopyCommand}" />
+        <KeyBinding Key="F5"
+                    Command="{Binding RefreshCommand}" />
     </metroControl:MetroWindow.InputBindings>
 
     <Grid MouseLeftButtonUp="Grid_MouseLeftButtonUp"
