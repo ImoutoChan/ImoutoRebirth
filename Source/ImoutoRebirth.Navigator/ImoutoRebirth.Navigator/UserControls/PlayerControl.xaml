@@ -13,7 +13,7 @@
         <converters:PlayerPositionConverter x:Key="PlayerPositionConverter" />
         <converters1:ConditionVisibilityConverter x:Key="ConditionVisibilityConverter" />
     </UserControl.Resources>
-    <Grid x:Name="Root" MouseLeftButtonUp="Root_OnMouseLeftButtonUp">
+    <Grid x:Name="Root" MouseLeftButtonDown="Root_OnMouseLeftButtonDown">
         <Grid VerticalAlignment="Center">
             <Grid.RowDefinitions>
                 <RowDefinition Height="*" />

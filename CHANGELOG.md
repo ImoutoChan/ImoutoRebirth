@@ -13,6 +13,7 @@
 * NEW FEATURE Integrity reports (Settings => Integrity Reports) will anylize your collections for missing or corrupted files
 * Supports continuations and export to the different formats (csv json)
 * Significantly improved video slider seek experience
+* Fixed video pause/play to trigger on click down instead of button release
 
 # v4.29.1
 

@@ -253,7 +253,7 @@ public partial class PlayerControl
         IsPlaying = !IsPlaying;
     }
 
-    private void Root_OnMouseLeftButtonUp(object sender, MouseButtonEventArgs e)
+    private void Root_OnMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
     {
         if (e.OriginalSource is DependencyObject d)
         {
