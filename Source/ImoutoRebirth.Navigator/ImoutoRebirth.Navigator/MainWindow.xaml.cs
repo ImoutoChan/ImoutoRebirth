@@ -57,6 +57,8 @@ internal partial class MainWindow
                 }
 
                 _lastExtentHeight = newExtentHeight;
+
+                UpdateScrollToBottomButtonVisibility();
             };
         };
     }
@@ -186,6 +188,34 @@ internal partial class MainWindow
             item.IsOpen = false;
 
         IntegrityReportsFlyout.IsOpen = true;
+    }
+
+    private void UpdateScrollToBottomButtonVisibility()
+    {
+        var scroll = ScrollViewerElement;
+
+        if (scroll.ScrollableHeight <= 0)
+        {
+            ScrollToBottomButton.Tag = false;
+            ScrollToTopButton.Tag = false;
+            return;
+        }
+
+        var scrollAtTheBottom = scroll.ContentVerticalOffset + scroll.ViewportHeight >= scroll.ScrollableHeight - 10;
+        ScrollToBottomButton.Tag = !scrollAtTheBottom;
+
+        var scrollAtTheTop = scroll.ContentVerticalOffset < 10;
+        ScrollToTopButton.Tag = !scrollAtTheTop;
+    }
+
+    private void ScrollToBottomButton_Click(object sender, RoutedEventArgs e)
+    {
+        ScrollViewerElement.ScrollToEnd();
+    }
+
+    private void ScrollToTopButton_Click(object sender, RoutedEventArgs e)
+    {
+        ScrollViewerElement.ScrollToHome();
     }
 
     #endregion Methods
