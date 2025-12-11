@@ -63,6 +63,6 @@ jobs:
           files: ./Artifacts/ImoutoRebirth-*.*
           prerelease: true
           body: |
-            This is an untested nightly build of ImoutoRebirth. It may be unstable or contain bugs.
-            For regular use, please download the latest stable release.
-          name: '[NIGHTLY] ImoutoRebirth ${{ steps.gitversion.outputs.fullSemVer }}'
+            Unstable. Please download the [latest stable release](https://github.com/ImoutoChan/ImoutoRebirth/releases/latest) instead.
+          name: |
+            🕯️ ImoutoRebirth ${{ steps.gitversion.outputs.fullSemVer }}
