@@ -4,7 +4,7 @@ on:
   push:
     tags:
       - '*'
-        
+
 permissions:
   contents: write
 
@@ -32,7 +32,7 @@ jobs:
           fetch-depth: 0
 
       - name: Run GitVersion
-        id:   gitversion
+        id: gitversion
         uses: GitTools/actions/gitversion/execute@a41619580c25efb59dfc062e92990914141abcad # v0.10.2
 
       - name: Cache .nuke/temp, ~/.nuget/packages
@@ -42,13 +42,27 @@ jobs:
             .nuke/temp
             ~/.nuget/packages
           key: ${{ runner.os }}-${{ hashFiles('**/global.json', '**/*.csproj', '**/Directory.Packages.props') }}
-      
+
       - name: Pack 7ZSfx installer
         run: .\Tools\NukeBuild\build.cmd Test Pack7ZSfx PrepareChangelog
 
+      # STABLE tag v1.2.3
       - name: Upload 7ZSfx installer to github release
+        if: ${{ !contains(github.ref, '-') }}
         uses: softprops/action-gh-release@de2c0eb89ae2a093876385947365aca7b0e5f844 # v1.0.0
         with:
           files: ./Artifacts/ImoutoRebirth-*.*
           body_path: ./CHANGELOG.RESULT.md
           name: ImoutoRebirth ${{ steps.gitversion.outputs.majorMinorPatch }}
+
+      # NIGHTLY tag v1.2.3-nightly.4
+      - name: Upload 7ZSfx installer to github prerelease
+        if: ${{ contains(github.ref, '-nightly.') }}
+        uses: softprops/action-gh-release@de2c0eb89ae2a093876385947365aca7b0e5f844 # v1.0.0
+        with:
+          files: ./Artifacts/ImoutoRebirth-*.*
+          prerelease: true
+          body: |
+            This is an untested nightly build of ImoutoRebirth. It may be unstable or contain bugs.
+            For regular use, please download the latest stable release.
+          name: [NIGHTLY] ImoutoRebirth ${{ steps.gitversion.outputs.fullSemVer }}
