@@ -65,4 +65,4 @@ jobs:
           body: |
             This is an untested nightly build of ImoutoRebirth. It may be unstable or contain bugs.
             For regular use, please download the latest stable release.
-          name: [NIGHTLY] ImoutoRebirth ${{ steps.gitversion.outputs.fullSemVer }}
+          name: '[NIGHTLY] ImoutoRebirth ${{ steps.gitversion.outputs.fullSemVer }}'
