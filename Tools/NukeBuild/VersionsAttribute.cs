@@ -10,10 +10,6 @@ public partial class VersionsAttribute : ValueInjectionAttributeBase
 {
     public override object GetValue(MemberInfo member, object instance)
     {
-        var gitVersionGetter = new GitVersionAttribute { NoFetch = true };
-
-        var gitVersion = (GitVersion)gitVersionGetter.GetValue(null, null)!;
-
         try
         {
             var tag = GitTasks.Git("describe --tags --exact-match")
@@ -38,6 +34,8 @@ public partial class VersionsAttribute : ValueInjectionAttributeBase
             // ignored
         }
 
+        var gitVersionGetter = new GitVersionAttribute { NoFetch = true };
+        var gitVersion = (GitVersion)gitVersionGetter.GetValue(null, null)!;
         return new VersionsInfo(gitVersion.FullSemVer, gitVersion.AssemblySemVer);
     }
 
