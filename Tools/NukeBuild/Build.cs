@@ -35,20 +35,19 @@ class Build : NukeBuild
         SolutionX.ImoutoRebirth_Lamia.ImoutoRebirth_Lamia_Host
     ];
 
-    AbsolutePath[] NukeFilesToPublish => new[]
-    {
+    AbsolutePath[] NukeFilesToPublish =>
+    [
         BuildAssemblyDirectory / "configuration.json",
         BuildAssemblyDirectory / "install.cmd"
-    };
+    ];
 
     Dictionary<string, RelativePath[]> DirectoriesToDeleteForProject => new()
     {
         {
-            "ImoutoRebirth.Navigator", new[]
-            {
+            "ImoutoRebirth.Navigator", [
                 (RelativePath)"de",
                 (RelativePath)"libvlc" / "win-x86"
-            }
+            ]
         }
     };
 
@@ -67,7 +66,7 @@ class Build : NukeBuild
     AbsolutePath OutputLatestDirectory =>
         OutputDirectory / (VersionedFolder == BuildToVersionedFolder.True ? VersionedName : "latest");
 
-    [SolutionX(GenerateProjects = true)]
+    [Solution(GenerateProjects = true)]
     readonly SolutionX SolutionX;
 
     [GitVersion(NoFetch = true)]

@@ -104,7 +104,6 @@
     <File Path="../Tools/NSwagGeneration/generate-room.ps1" />
   </Folder>
   <Folder Name="/Tools/NukeBuild/">
-    <Project Path="../Tools/NukeBuild.Generators/NukeBuild.Generators.csproj" />
     <Project Path="../Tools/NukeBuild/NukeBuild.csproj">
       <Build Project="false" />
     </Project>
