@@ -72,7 +72,7 @@ class Build : NukeBuild
     [GitVersion(NoFetch = true)]
     readonly GitVersion GitVersion;
     
-    string VersionedName => "ImoutoRebirth-" + GitVersion.NuGetVersionV2;
+    string VersionedName => "ImoutoRebirth-" + GitVersion.FullSemVer;
     
     Target Clean => _ => _
         .Before(Restore)

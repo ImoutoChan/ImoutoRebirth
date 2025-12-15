@@ -121,6 +121,7 @@
     <File Path="../Tools/Dependencies/ResQueue/docker-compose.yml" />
   </Folder>
   <Folder Name="/Tools/Root/">
+    <File Path="../.github/workflows/release-alpha.yml" />
     <File Path="../.github/workflows/release.yml" />
     <File Path="../BuildAndDeploy.ps1" />
     <File Path="../BuildAndDeploySkipTests.ps1" />

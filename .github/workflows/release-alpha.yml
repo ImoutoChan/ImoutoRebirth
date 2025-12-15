@@ -1,9 +1,9 @@
-name: Release
+name: Release Alpha
 
 on:
   push:
-    tags:
-      - 'v*'
+    branches:
+      - alpha
 
 permissions:
   contents: write
@@ -31,10 +31,6 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Fail if prerelease tag
-        if: contains(github.ref, '-')
-        run: exit 1
-
       - name: Run GitVersion
         id: gitversion
         uses: GitTools/actions/gitversion/execute@a41619580c25efb59dfc062e92990914141abcad # v0.10.2
@@ -50,10 +46,13 @@ jobs:
       - name: Pack 7ZSfx installer
         run: .\Tools\NukeBuild\build.cmd Test Pack7ZSfx PrepareChangelog
 
-      # STABLE tag v1.2.3
-      - name: Upload 7ZSfx installer to github release
+      # alpha v1.2.3-alpha.4
+      - name: Upload 7ZSfx installer to github prerelease
         uses: softprops/action-gh-release@de2c0eb89ae2a093876385947365aca7b0e5f844 # v1.0.0
         with:
+          prerelease: true
+          tag_name: v${{ steps.gitversion.outputs.fullSemVer }}
           files: ./Artifacts/ImoutoRebirth-*.*
-          body_path: ./CHANGELOG.RESULT.md
-          name: ImoutoRebirth ${{ steps.gitversion.outputs.majorMinorPatch }}
+          body: |
+            Unstable. Please download the [latest stable release](https://github.com/ImoutoChan/ImoutoRebirth/releases/latest) instead.
+          name: 🕯️ ImoutoRebirth ${{ steps.gitversion.outputs.fullSemVer }}
