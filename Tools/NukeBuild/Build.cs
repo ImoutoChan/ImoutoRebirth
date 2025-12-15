@@ -60,7 +60,7 @@ class Build : NukeBuild
     readonly BuildToVersionedFolder VersionedFolder = BuildToVersionedFolder.True;
 
     AbsolutePath SourceDirectory => RootDirectory;
-    
+
     AbsolutePath OutputDirectory => RootDirectory / "Artifacts";
 
     AbsolutePath OutputLatestDirectory =>
@@ -71,9 +71,12 @@ class Build : NukeBuild
 
     [GitVersion(NoFetch = true)]
     readonly GitVersion GitVersion;
-    
-    string VersionedName => "ImoutoRebirth-" + GitVersion.NuGetVersionV2;
-    
+
+    [Versions]
+    readonly VersionsInfo Versions;
+
+    string VersionedName => "ImoutoRebirth-" + Versions.FullSemVersion;
+
     Target Clean => _ => _
         .Before(Restore)
         .Executes(() =>
@@ -98,11 +101,12 @@ class Build : NukeBuild
                 .SetVerbosity(DotNetVerbosity.quiet)
                 .SetProjectFile(SolutionX)
                 .SetConfiguration(Configuration)
-                .SetAssemblyVersion(GitVersion.AssemblySemVer)
-                .SetVersion(GitVersion.NuGetVersionV2)
+                .SetAssemblyVersion(Versions.AssemblyVersion)
+                .SetVersion(Versions.AssemblyVersion)
+                .SetInformationalVersion(Versions.FullSemVersion)
                 .EnableNoRestore());
         });
-    
+
     Target Test => _ => _
         .DependsOn(Compile)
         .Before(Publish)
@@ -144,8 +148,9 @@ class Build : NukeBuild
             DotNetPublish(s => s
                 .SetVerbosity(DotNetVerbosity.quiet)
                 .SetConfiguration(Configuration)
-                .SetAssemblyVersion(GitVersion.AssemblySemVer)
-                .SetVersion(GitVersion.NuGetVersionV2)
+                .SetAssemblyVersion(Versions.AssemblyVersion)
+                .SetVersion(Versions.AssemblyVersion)
+                .SetInformationalVersion(Versions.FullSemVersion)
                 .CombineWith(publishableProjects, (_, v) => _
                     .SetProject(v.Project)
                     .SetOutput(v.ProjectOutput)));
@@ -163,7 +168,7 @@ class Build : NukeBuild
                 nukeFileToPublish.CopyToDirectory(OutputLatestDirectory, ExistsPolicy.FileOverwrite);
 
             return;
-            
+
             AbsolutePath[] GetDirectoriesToDelete(string projectName, AbsolutePath projectOutput)
                 => DirectoriesToDeleteForProject
                     .GetValueOrDefault(projectName, [])
@@ -180,13 +185,13 @@ class Build : NukeBuild
                 .AsSfx()
                 .SetOutputArchiveFile(OutputLatestDirectory.Parent / $"{VersionedName}.exe")
                 .SetSourceDirectory(OutputLatestDirectory));
-            
+
             PackAs7Z(s => s
                 .CreateArchive()
                 .SetOutputArchiveFile(OutputLatestDirectory.Parent / $"{VersionedName}.7z")
                 .SetSourceDirectory(OutputLatestDirectory));
         });
-    
+
     Target PrepareChangelog => _ => _
         .Executes(() =>
         {
@@ -195,22 +200,22 @@ class Build : NukeBuild
             var changelogTemplate = RootDirectory / "CHANGELOG.TEMPLATE.md";
 
             var changelogTemplateContent = File.ReadAllText(changelogTemplate);
-            
+
             var changelogContent = new StringBuilder();
-            changelogContent.AppendLine($"## Changes in v{GitVersion.NuGetVersionV2}");
+            changelogContent.AppendLine($"## Changes in v{Versions.FullSemVersion}");
             var empty = true;
             foreach (var changeLogLine in File.ReadLines(changelog))
             {
                 if (changeLogLine.StartsWith("# Unreleased"))
                     continue;
-                
+
                 if (changeLogLine.StartsWith("# "))
                     break;
 
                 empty = false;
                 changelogContent.AppendLine(changeLogLine);
             }
-            
+
             var newChangelogContent = empty
                 ? changelogTemplateContent
                 : changelogTemplateContent + Environment.NewLine + changelogContent;

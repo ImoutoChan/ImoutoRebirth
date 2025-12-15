@@ -13,27 +13,14 @@ jobs:
     name: windows-latest
     runs-on: windows-latest
     steps:
-      - name: Install GitVersion
-        uses: GitTools/actions/gitversion/setup@a41619580c25efb59dfc062e92990914141abcad # v0.10.2
-        with:
-          versionSpec: '5.5.0'
-
-      - uses: actions/setup-dotnet@3447fd6a9f9e57506b15f895c5b76d3b197dc7c2 # v3.2.0
-        with:
-          dotnet-version: '3.1.x'
-
-      - uses: actions/setup-dotnet@3447fd6a9f9e57506b15f895c5b76d3b197dc7c2 # v3.2.0
-        with:
-          dotnet-version: '8.0.x'
-
       - name: Checkout code
         uses: actions/checkout@8ade135a41bc03ea155e62e844d188df1ea18608 # v4.1.0
         with:
           fetch-depth: 0
 
-      - name: Run GitVersion
-        id: gitversion
-        uses: GitTools/actions/gitversion/execute@a41619580c25efb59dfc062e92990914141abcad # v0.10.2
+      - uses: actions/setup-dotnet@3447fd6a9f9e57506b15f895c5b76d3b197dc7c2 # v3.2.0
+        with:
+          dotnet-version: '10.0.x'
 
       - name: Cache .nuke/temp, ~/.nuget/packages
         uses: actions/cache@5a3ec84eff668545956fd18022155c47e93e2684 # v4.2.3
@@ -43,21 +30,34 @@ jobs:
             ~/.nuget/packages
           key: ${{ runner.os }}-${{ hashFiles('**/global.json', '**/*.csproj', '**/Directory.Packages.props') }}
 
+      - name: Extract version info from tag
+        id: ver
+        shell: pwsh
+        run: |
+          $tag = "${{ github.ref_name }}"
+          $version = $tag.TrimStart('v','V')
+          $isPrerelease = $version -match '-'
+          
+          "version=$version"       >> $env:GITHUB_OUTPUT
+          "isPrerelease=$isPrerelease" >> $env:GITHUB_OUTPUT
+
+          Write-Host "Detected version: $version (prerelease=$isPrerelease)"
+
       - name: Pack 7ZSfx installer
         run: .\Tools\NukeBuild\build.cmd Test Pack7ZSfx PrepareChangelog
 
       # STABLE tag v1.2.3
       - name: Upload 7ZSfx installer to github release
-        if: ${{ !contains(github.ref, '-') }}
+        if: ${{ steps.ver.outputs.isPrerelease == 'False' }}
         uses: softprops/action-gh-release@de2c0eb89ae2a093876385947365aca7b0e5f844 # v1.0.0
         with:
           files: ./Artifacts/ImoutoRebirth-*.*
           body_path: ./CHANGELOG.RESULT.md
-          name: ImoutoRebirth ${{ steps.gitversion.outputs.majorMinorPatch }}
+          name: ImoutoRebirth ${{ steps.ver.outputs.version }}
 
-      # NIGHTLY tag v1.2.3-nightly.4
+      # ALPHA tag v1.2.3-alpha.4
       - name: Upload 7ZSfx installer to github prerelease
-        if: ${{ contains(github.ref, '-') }}
+        if: ${{ steps.ver.outputs.isPrerelease == 'True' }}
         uses: softprops/action-gh-release@de2c0eb89ae2a093876385947365aca7b0e5f844 # v1.0.0
         with:
           files: ./Artifacts/ImoutoRebirth-*.*
@@ -65,4 +65,4 @@ jobs:
           body: |
             Unstable. Please download the [latest stable release](https://github.com/ImoutoChan/ImoutoRebirth/releases/latest) instead.
           name: |
-            🕯️ ImoutoRebirth ${{ steps.gitversion.outputs.fullSemVer }}
+            🕯️ ImoutoRebirth ${{ steps.ver.outputs.version }}
