@@ -5,6 +5,7 @@ using ImoutoRebirth.Navigator.Services.Collections;
 using ImoutoRebirth.Navigator.Services.ImoutoViewer;
 using ImoutoRebirth.Navigator.Services.Tags;
 using ImoutoRebirth.Navigator.Slices.IntegrityReport.Services;
+using ImoutoRebirth.Navigator.Slices.Updates.Services;
 using ImoutoRebirth.Room.WebApi.Client;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -36,6 +37,12 @@ public static class ServiceLocator
         sc.AddTransient<IMessenger, WeakReferenceMessenger>();
 
         sc.AddTransient<ISettingsUpgradeService, SettingsUpgradeService>();
+
+        sc.AddHttpClient<IUpdateService, UpdateService>(client =>
+        {
+            client.DefaultRequestHeaders.Add("User-Agent", "ImoutoRebirth-Updater");
+            client.Timeout = TimeSpan.FromSeconds(30);
+        });
 
         sc.AddRoomWebApiClients(Settings.Default.RoomHost);
         sc.AddLilinWebApiClients(Settings.Default.LilinHost);

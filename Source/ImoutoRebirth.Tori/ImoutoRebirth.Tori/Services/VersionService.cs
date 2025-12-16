@@ -1,4 +1,6 @@
-﻿namespace ImoutoRebirth.Tori.Services;
+﻿using System.Reflection;
+
+namespace ImoutoRebirth.Tori.Services;
 
 public interface IVersionService
 {
@@ -13,7 +15,11 @@ public class VersionService : IVersionService
 {
     private const string VersionFileName = "version.txt";
 
-    public string GetNewVersion() => typeof(VersionService).Assembly.GetName().Version!.ToString();
+    public string GetNewVersion()
+        => Assembly.GetEntryAssembly()
+               ?.GetCustomAttribute<AssemblyInformationalVersionAttribute>()
+               ?.InformationalVersion
+           ?? typeof(VersionService).Assembly.GetName().Version!.ToString();
 
     public async Task<string> GetLocalVersion(DirectoryInfo installedLocation)
     {

@@ -112,5 +112,6 @@
         <PackageVersion Include="Xabe.FFmpeg" Version="6.0.2"/>
         <PackageVersion Include="Xabe.FFmpeg.Downloader" Version="6.0.2"/>
         <PackageVersion Include="AspNetCoreInjection.TypedFactories.ServantSoftware" Version="2.0.11"/>
+        <PackageVersion Include="Semver" Version="3.0.0"/>
     </ItemGroup>
 </Project>

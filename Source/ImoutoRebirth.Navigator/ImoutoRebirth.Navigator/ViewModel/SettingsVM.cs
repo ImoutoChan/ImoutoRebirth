@@ -7,6 +7,7 @@ using ControlzEx.Theming;
 using ImoutoRebirth.Common;
 using ImoutoRebirth.Navigator.Services;
 using ImoutoRebirth.Navigator.Services.Collections;
+using ImoutoRebirth.Navigator.Slices.Updates.ViewModels;
 using ImoutoRebirth.Navigator.UserControls;
 using MahApps.Metro.Theming;
 
@@ -146,6 +147,8 @@ internal partial class SettingsVM : ObservableObject
         get => Settings.Default.RoomHost;
         set => Settings.Default.RoomHost = value;
     }
+
+    public UpdatesVM Updates { get; } = new();
 
     [RelayCommand]
     private static void Save() => Settings.Default.Save();

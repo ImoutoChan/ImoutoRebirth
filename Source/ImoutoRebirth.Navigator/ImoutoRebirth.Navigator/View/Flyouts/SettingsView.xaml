@@ -7,8 +7,12 @@
              xmlns:viewModel="clr-namespace:ImoutoRebirth.Navigator.ViewModel"
              mc:Ignorable="d"
              d:DesignHeight="600"
-             d:DesignWidth="300" 
+             d:DesignWidth="300"
              d:DataContext="{d:DesignInstance viewModel:SettingsVM, IsDesignTimeCreatable=False}">
+    <UserControl.Resources>
+        <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
+    </UserControl.Resources>
+
     <Grid Margin="20">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
@@ -118,19 +122,18 @@
                 <controls:ToggleSwitch Margin="0,25,0,0"
                                        Header="Show system tags"
                                        IsOn="{Binding ShowSystemTags}" />
-                
+
                 <StackPanel Margin="0,25,0,0">
                     <TextBlock Text="Order mode" />
 
                     <ComboBox Margin="0,5,0,0"
                               ItemsSource="{Binding AvailableOrderModes, Mode=OneWay}"
-                              SelectedItem="{Binding SelectedOrderMode, Mode=TwoWay}">
-                    </ComboBox>
+                              SelectedItem="{Binding SelectedOrderMode, Mode=TwoWay}" />
                 </StackPanel>
 
                 <TextBlock Margin="0,25,0,0"
                            Text="Path Overrides" />
-                
+
                 <TextBox Text="{Binding PathOverrides, UpdateSourceTrigger=PropertyChanged}"
                          controls:TextBoxHelper.Watermark="Format: art->ART;;;tag->TAG"
                          controls:TextBoxHelper.UseFloatingWatermark="True"
@@ -138,7 +141,7 @@
 
                 <TextBlock Margin="0,25,0,0"
                            Text="Room Host" />
-                
+
                 <TextBox Text="{Binding RoomHost, UpdateSourceTrigger=PropertyChanged}"
                          controls:TextBoxHelper.Watermark="http://miyu:11301/"
                          controls:TextBoxHelper.UseFloatingWatermark="True"
@@ -146,7 +149,7 @@
 
                 <TextBlock Margin="0,25,0,0"
                            Text="Lilin Host" />
-                
+
                 <TextBox Text="{Binding LilinHost, UpdateSourceTrigger=PropertyChanged}"
                          controls:TextBoxHelper.Watermark="http://miyu:11302/"
                          controls:TextBoxHelper.UseFloatingWatermark="True"
@@ -156,10 +159,115 @@
                         Command="{Binding ResetLastPlayedPositionsCommand}"
                         Margin="0,25,0,0" />
 
-                <Button Content="Integrity Reports"
+                <Button Content="Integrity Reports..."
                         Click="IntegrityReportsButton_Click"
                         Margin="0,25,0,0" />
             </StackPanel>
         </ScrollViewer>
+
+        <!-- Updates Section -->
+        <StackPanel Margin="0,35,0,0"
+                    Grid.Row="2">
+
+            <!-- Current Version -->
+            <TextBlock Margin="0,10,0,0">
+                <Run Text="Current version:"
+                     FontWeight="SemiBold"
+                     FontSize="14" />
+
+                <Run Text="{Binding Updates.CurrentVersion, Mode=OneWay}" 
+                     FontWeight="Bold" />
+
+                <!-- <TextBlock HorizontalAlignment="Right"> -->
+                <!--     <Hyperlink Command="{Binding Updates.ToggleShowUpdatesControlCommand}">check updates</Hyperlink> -->
+                <!-- </TextBlock> -->
+            </TextBlock>
+
+            <StackPanel Visibility="{Binding Updates.ShowUpdatesControl, Converter={StaticResource BooleanToVisibilityConverter}}">
+                <!-- Update Channel -->
+                <StackPanel Margin="0,10,0,0">
+                    <TextBlock Text="Update Channel"
+                               FontSize="10"
+                               Opacity="0.8"/>
+
+                    <ComboBox ItemsSource="{Binding Updates.AvailableChannels}"
+                              SelectedItem="{Binding Updates.SelectedChannel, Mode=TwoWay}"
+                              Margin="0,5,0,0" />
+                </StackPanel>
+
+                <!-- Latest Versions Display -->
+                <Grid Margin="0,10,0,0">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+
+                    <TextBlock TextAlignment="Left" Grid.Column="0">
+                        <TextBlock Text="Latest in Stable"
+                                   FontSize="10"
+                                   Opacity="0.8" />
+                        <LineBreak />
+
+                        <Run Text="{Binding Updates.LatestStableVersion, Mode=OneWay}"
+                             FontWeight="SemiBold" />
+                        <LineBreak />
+
+                        <TextBlock Text="{Binding Updates.LatestStableDate, Mode=OneWay}"
+                                   FontSize="10"
+                                   Opacity="0.8" />
+                    </TextBlock>
+
+                    <TextBlock TextAlignment="Right" Margin="0,0,0,0" Grid.Column="1">
+                        <TextBlock Text="Latest in Alpha"
+                                   FontSize="10"
+                                   Opacity="0.8" />
+                        <LineBreak />
+                        <Run Text="{Binding Updates.LatestNightlyVersion, Mode=OneWay}"
+                             FontWeight="SemiBold" />
+                        <LineBreak />
+                        <TextBlock Text="{Binding Updates.LatestNightlyDate, Mode=OneWay}"
+                                   FontSize="10"
+                                   Opacity="0.8" />
+                    </TextBlock>
+                </Grid>
+
+                <!-- Status Message -->
+                <TextBlock Text="{Binding Updates.StatusMessage}"
+                           Foreground="{DynamicResource MahApps.Brushes.Gray3}"
+                           TextWrapping="Wrap"
+                           Margin="0,5,0,0"
+                           Visibility="{Binding Updates.HasStatusMessage, Converter={StaticResource BooleanToVisibilityConverter}}" />
+
+                <!-- Progress Bar (visible during download) -->
+                <Grid Margin="0,10,0,0"
+                      Visibility="{Binding Updates.IsDownloading, Converter={StaticResource BooleanToVisibilityConverter}}">
+                    <ProgressBar Value="{Binding Updates.DownloadProgress, Mode=OneWay}"
+                                 Maximum="100"
+                                 Height="18"
+                                 Style="{StaticResource MahApps.Styles.ProgressBar}" />
+
+                    <TextBlock Text="{Binding Updates.DownloadProgress, StringFormat='{}{0:F1}%'}"
+                               HorizontalAlignment="Center"
+                               VerticalAlignment="Center" />
+                </Grid>
+
+                <!-- Buttons -->
+                <StackPanel Orientation="Vertical" Margin="0,20,0,0">
+                    <Button Content="CHECK FOR UPDATES"
+                            Style="{DynamicResource MahApps.Styles.Button.Dialogs}"
+                            Command="{Binding Updates.CheckForUpdatesCommand}" />
+
+                    <Button Command="{Binding Updates.UpdateCommand}"
+                            Margin="0,10,0,0"
+                            Style="{DynamicResource MahApps.Styles.Button.Dialogs.Accent}"
+                            Visibility="{Binding Updates.IsUpdateAvailable, Converter={StaticResource BooleanToVisibilityConverter}}">
+                        <TextBlock>
+                            <Run Text="UPDATE TO" />
+                            <Run Text="{Binding Updates.UpdateTo, Mode=OneWay}" />
+                        </TextBlock>
+                    </Button>
+                </StackPanel>
+            </StackPanel>
+        </StackPanel>
     </Grid>
 </UserControl>

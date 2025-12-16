@@ -14,8 +14,9 @@
 * Supports continuations and export to the different formats (csv json)
 * Significantly improved video slider seek experience
 * Fixed video pause/play to trigger on click down instead of button release
-* Added F5 keyboard shortcut for refresh
-* Added scroll up down buttons
+* Add F5 keyboard shortcut for refresh
+* Add scroll up/down buttons
+* Add update button in settings
 
 # v4.29.1
 

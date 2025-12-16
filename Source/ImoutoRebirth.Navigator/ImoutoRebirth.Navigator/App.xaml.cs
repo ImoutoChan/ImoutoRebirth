@@ -33,8 +33,13 @@ public partial class App : Application
         MainWindowVM = new MainWindowVM();
         await MainWindowVM.InitializeContextAsync();
         MainWindowVM.ShowWindow();
-        
+
         splashScreen.Close(fadeoutDuration: TimeSpan.FromMilliseconds(100));
+
+        _ = Task.Run(async () =>
+        {
+            await MainWindowVM.Settings.Updates.CheckForUpdatesOnStartupAsync();
+        });
     }
 
     public static Guid AppGuid = Guid.NewGuid();
