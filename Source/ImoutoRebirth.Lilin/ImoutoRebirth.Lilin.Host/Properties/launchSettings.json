@@ -1,6 +1,6 @@
 {
   "profiles": {
-    "ImoutoRebirth.Lilin.Host": {
+    "Lilin Dev": {
       "commandName": "Project",
       "launchBrowser": false,
       "environmentVariables": {

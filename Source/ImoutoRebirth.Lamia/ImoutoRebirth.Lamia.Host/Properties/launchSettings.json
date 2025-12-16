@@ -1,7 +1,7 @@
 {
   "$schema": "https://json.schemastore.org/launchsettings.json",
   "profiles": {
-    "ImoutoRebirth.Lamia.Host": {
+    "Lamia Dev": {
       "commandName": "Project",
       "environmentVariables": {
         "LAMIA_ENVIRONMENT": "Development"

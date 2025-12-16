@@ -1,6 +1,6 @@
 {
   "profiles": {
-    "ImoutoRebirth.Meido.Host": {
+    "Meido Dev": {
       "commandName": "Project",
       "launchBrowser": false,
       "environmentVariables": {

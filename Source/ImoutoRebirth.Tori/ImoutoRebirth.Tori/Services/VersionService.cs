@@ -16,10 +16,11 @@ public class VersionService : IVersionService
     private const string VersionFileName = "version.txt";
 
     public string GetNewVersion()
-        => Assembly.GetEntryAssembly()
+        => (Assembly.GetEntryAssembly()
                ?.GetCustomAttribute<AssemblyInformationalVersionAttribute>()
                ?.InformationalVersion
-           ?? typeof(VersionService).Assembly.GetName().Version!.ToString();
+           ?? typeof(VersionService).Assembly.GetName().Version!.ToString()).Split('+')
+            .First();
 
     public async Task<string> GetLocalVersion(DirectoryInfo installedLocation)
     {

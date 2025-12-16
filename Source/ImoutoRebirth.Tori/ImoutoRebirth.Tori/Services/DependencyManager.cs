@@ -151,7 +151,7 @@ public partial class DependencyManager : IDependencyManager
     {
         _logger.LogInformation("Installing ASP.NET Core runtime {Version}...", version);
 
-        var result = await ExecuteChocoCommand($"install dotnet-9.0-aspnetruntime --version {version} -y");
+        var result = await ExecuteChocoCommand($"install dotnet-aspnetruntime --version {version} -y");
 
         if (result.ExitCode == 0)
         {
@@ -169,7 +169,7 @@ public partial class DependencyManager : IDependencyManager
     {
         _logger.LogInformation("Installing .NET Desktop runtime {Version}...", version);
 
-        var result = await ExecuteChocoCommand($"install dotnet-9.0-desktopruntime --version {version} -y");
+        var result = await ExecuteChocoCommand($"install dotnet-desktopruntime --version {version} -y");
 
         if (result.ExitCode == 0)
         {

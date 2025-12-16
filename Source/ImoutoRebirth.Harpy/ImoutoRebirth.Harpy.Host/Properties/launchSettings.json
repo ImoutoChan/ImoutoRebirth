@@ -1,6 +1,6 @@
 {
   "profiles": {
-    "ImoutoRebirth.Harpy.Host": {
+    "Harpy Dev": {
       "commandName": "Project",
       "environmentVariables": {
         "HARPY_ENVIRONMENT": "Development"

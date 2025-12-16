@@ -132,5 +132,5 @@ public partial class PrerequisitesStepViewModel : ObservableObject, IStep
 
 public class PrerequisitesSettings
 {
-    public required string DotnetRuntimeRequiredVersion { get; set; } = "10.0.0";
+    public required string DotnetRuntimeRequiredVersion { get; set; } = "10.0.1";
 }
