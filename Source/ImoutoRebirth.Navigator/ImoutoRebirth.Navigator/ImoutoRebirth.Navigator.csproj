@@ -27,6 +27,8 @@
 
     <ItemGroup>
         <None Remove="Resources\Entypo.ttf" />
+        <None Remove="Resources\Fonts\Inter\Inter-Italic.ttf" />
+        <None Remove="Resources\Fonts\Inter\Inter.ttf" />
         <None Remove="Resources\Icon\49a7b0a953e5106e5942169f3cb0c237.ico" />
         <None Remove="Resources\Icon\window-icon.ico" />
         <None Update="libwebp.dll">
@@ -38,6 +40,8 @@
         <None Update="Resources\Icon\appicon.png">
             <CopyToOutputDirectory>Always</CopyToOutputDirectory>
         </None>
+        <Resource Include="Resources\Fonts\Inter\Inter-Italic.ttf" />
+        <Resource Include="Resources\Fonts\Inter\Inter.ttf" />
         <Resource Include="Resources\Fonts\Supreme\Supreme-Variable.ttf" />
         <Resource Include="Resources\Fonts\Supreme\Supreme-VariableItalic.ttf" />
         <Resource Include="Resources\Icon\splashscreen.png">
@@ -94,7 +98,7 @@
             <DependentUpon>Settings.settings</DependentUpon>
             <AutoGen>True</AutoGen>
         </Compile>
-        <Compile Update="UserControls\FavoriteControl.xaml.cs">
+        <Compile Update="Slices\FileInfo\FavoriteControl.xaml.cs">
             <DependentUpon>FavoriteControl.xaml</DependentUpon>
         </Compile>
         <Compile Update="UserControls\PlayerControl.xaml.cs">
@@ -103,14 +107,14 @@
         <Compile Update="UserControls\PlayerControl.xaml.Slider.cs">
             <DependentUpon>PlayerControl.xaml</DependentUpon>
         </Compile>
-        <Compile Update="UserControls\RatingControl.xaml.cs">
+        <Compile Update="Slices\FileInfo\RatingControl.xaml.cs">
             <DependentUpon>RatingControl.xaml</DependentUpon>
         </Compile>
         <Compile Update="UserControls\TagView.xaml.cs">
             <DependentUpon>TagView.xaml</DependentUpon>
         </Compile>
-        <Compile Update="View\FileInfoView.xaml.cs">
-            <DependentUpon>FileInfoView.xaml</DependentUpon>
+        <Compile Update="View\FileInfoNiceView.xaml.cs">
+            <DependentUpon>FileInfoNiceView.xaml</DependentUpon>
         </Compile>
         <Compile Update="View\Flyouts\CollectionsView.xaml.cs">
             <DependentUpon>CollectionsView.xaml</DependentUpon>
@@ -152,19 +156,16 @@
         <Page Update="styles.xaml">
             <SubType>Designer</SubType>
         </Page>
-        <Page Update="UserControls\FavoriteControl.xaml">
+        <Page Update="Slices\FileInfo\FavoriteControl.xaml">
             <SubType>Designer</SubType>
         </Page>
         <Page Update="UserControls\PlayerControl.xaml">
             <SubType>Designer</SubType>
         </Page>
-        <Page Update="UserControls\RatingControl.xaml">
+        <Page Update="Slices\FileInfo\RatingControl.xaml">
             <SubType>Designer</SubType>
         </Page>
         <Page Update="UserControls\TagView.xaml">
-            <SubType>Designer</SubType>
-        </Page>
-        <Page Update="View\FileInfoView.xaml">
             <SubType>Designer</SubType>
         </Page>
         <Page Update="View\Flyouts\CollectionsView.xaml">

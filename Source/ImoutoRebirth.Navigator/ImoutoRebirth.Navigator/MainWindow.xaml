@@ -25,6 +25,7 @@
                           xmlns:tz="http://schemas.abtsoftware.co.uk/transitionz"
                           xmlns:vwp="clr-namespace:WpfToolkit.Controls;assembly=VirtualizingWrapPanel"
                           xmlns:integrityReport="clr-namespace:ImoutoRebirth.Navigator.Slices.IntegrityReport"
+                          xmlns:fileInfo="clr-namespace:ImoutoRebirth.Navigator.Slices.FileInfo"
                           d:DataContext="{d:DesignInstance viewModel:MainWindowVM, IsDesignTimeCreatable=False}"
                           mc:Ignorable="d"
                           WindowStartupLocation="CenterScreen"
@@ -55,6 +56,21 @@
 
         <wpfHelpers:BindingProxy x:Key="DataContextProxy"
                                  Data="{Binding}" />
+
+        <DrawingImage x:Key="HeartFilledDrawingImage">
+            <DrawingImage.Drawing>
+                <DrawingGroup ClipGeometry="M-3,-3 V44 H54 V-3 H-3 Z">
+                    <DrawingGroup.Transform>
+                        <TranslateTransform X="0" Y="0"/>
+                    </DrawingGroup.Transform>
+                    <GeometryDrawing Brush="{DynamicResource FileInfoNice.FavoriteAccent}" Geometry="F1 M48,41z M0,0z M23.6014,5.46666C6.95324,-9.00179 -16.4184,19.3276 23.6014,38.4981 63.3423,20.2183 40.0512,-9.00176 23.6014,5.46666z">
+                        <GeometryDrawing.Pen>
+                            <Pen Brush="{DynamicResource FileInfoNice.FavoriteAccent}" Thickness="5" StartLineCap="Round" EndLineCap="Round" LineJoin="Round" />
+                        </GeometryDrawing.Pen>
+                    </GeometryDrawing>
+                </DrawingGroup>
+            </DrawingImage.Drawing>
+        </DrawingImage>
     </metroControl:MetroWindow.Resources>
 
     <metroControl:MetroWindow.Flyouts>
@@ -403,18 +419,15 @@
                                             <Label.Effect>
                                                 <DropShadowEffect Color="{Binding Source={StaticResource MahApps.Brushes.ThemeBackground}, Path=Color, Mode=OneTime}"
                                                                   BlurRadius="5"
-                                                                  Opacity="0.9"
+                                                                  Opacity="0.7"
                                                                   Direction="315"
                                                                   ShadowDepth="3" />
                                             </Label.Effect>
                                             <Label.Template>
                                                 <ControlTemplate>
-                                                    <iconPacks:PackIconModern
-                                                        Width="23"
-                                                        Height="23"
-                                                        Kind="Heart"
-                                                        Foreground="PaleVioletRed">
-                                                    </iconPacks:PackIconModern>
+                                                    <Image Source="{DynamicResource HeartFilledDrawingImage}"
+                                                           Width="23"
+                                                           Height="23" />
                                                 </ControlTemplate>
                                             </Label.Template>
                                         </Label>
@@ -852,20 +865,20 @@
                                     ConverterParameter=true}"
                                  />
 
-            <view:FileInfoView Grid.Column="0"
+            <fileInfo:FileInfoNiceView Grid.Column="0"
                                Grid.Row="1"
                                MinWidth="200"
                                MaxWidth="298"
                                DataContext="{Binding FileInfoVM}">
-                <view:FileInfoView.Visibility>
+                <fileInfo:FileInfoNiceView.Visibility>
                     <MultiBinding Converter="{StaticResource MultiBooleanVisibilityConverter}">
                         <Binding Path="HasValue" Mode="OneWay" />
                         <Binding Path="DataContext.ShowTags"
                                  RelativeSource="{RelativeSource Mode=FindAncestor, AncestorType={x:Type metroControl:MetroWindow}}"
                                  Mode="OneWay" />
                     </MultiBinding>
-                </view:FileInfoView.Visibility>
-            </view:FileInfoView>
+                </fileInfo:FileInfoNiceView.Visibility>
+            </fileInfo:FileInfoNiceView>
 
             <view:StatusBarView Grid.Row="2"
                                 Grid.Column="0"

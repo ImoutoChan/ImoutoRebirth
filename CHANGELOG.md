@@ -3,6 +3,7 @@
 ### Highlights
 * NEW FEATURE Integrity reports (Settings => Integrity Reports) will anylize your collections for missing or corrupted files
 * Significantly improved video slider seek experience
+* Redesign FileInfo view
 
 ### Infrastructure
 * Migrated to .NET 10 runtime
@@ -17,6 +18,7 @@
 * Add F5 keyboard shortcut for refresh
 * Add scroll up/down buttons
 * Add update button in settings
+* Redesign FileInfo view
 
 # v4.29.1
 

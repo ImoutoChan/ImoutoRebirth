@@ -5,9 +5,6 @@ using System.Windows.Input;
 
 namespace ImoutoRebirth.Navigator.Slices.QuickTagging;
 
-/// <summary>
-///     Interaction logic for FileInfoView.xaml
-/// </summary>
 public partial class QuickTaggingView : UserControl
 {
     public QuickTaggingView()

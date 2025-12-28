@@ -1,0 +1,293 @@
+<UserControl x:Class="ImoutoRebirth.Navigator.Slices.FileInfo.FileInfoNiceView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:viewModel="clr-namespace:ImoutoRebirth.Navigator.ViewModel"
+             xmlns:userControls="clr-namespace:ImoutoRebirth.Navigator.UserControls"
+             xmlns:fileInfo="clr-namespace:ImoutoRebirth.Navigator.Slices.FileInfo"
+             mc:Ignorable="d"
+             d:DesignHeight="120"
+             d:DesignWidth="200"
+             d:DataContext="{d:DesignInstance viewModel:FileInfoVM, d:IsDesignTimeCreatable=False}">
+    <UserControl.Resources>
+        <fileInfo:HumanReadableSizeConverter x:Key="HumanReadableSizeConverter" />
+        <fileInfo:FileExtensionFromPathConverter x:Key="FileExtensionConverter" />
+        <fileInfo:NotNullChooserMultiConverter x:Key="CoalesceMultiConverter" />
+
+        <DrawingImage x:Key="ImageDraw">
+            <DrawingImage.Drawing>
+                <DrawingGroup ClipGeometry="M0,0 V18 H28 V0 H0 Z">
+                    <GeometryDrawing Brush="#FFFFFAFA" Geometry="F1 M28,18z M0,0z M4.1126,15.5494C3.6126,15.0494,3.1126,13.0494,3.1126,13.0494L0.385924,13.5039C0.385924,13.5039 6.1126,6.54945 6.6126,5.54944 7.1126,4.54944 10.1126,12.0494 10.1126,12.0494 10.1126,12.0494 17.1126,1.54944 17.6126,0.549444 18.1126,-0.450556 27.1126,14.0494 27.1126,14.0494L24.1126,10.5494C24.1126,10.5494 24.6126,16.0494 24.1126,16.0494 23.6126,16.0494 20.1126,12.5494 20.1126,12.5494 20.1126,12.5494 20.6126,16.5494 20.1126,16.5494 19.6126,16.5494 15.6126,13.5494 15.6126,13.5494L13.6126,17.0494C13.1126,17.0494 11.1126,14.0494 11.1126,14.0494 11.1126,14.0494 9.6126,16.5494 8.6126,16.5494 7.6126,16.5494 6.6126,13.5494 6.6126,13.5494 6.6126,13.5494 4.6126,16.0494 4.1126,15.5494z" />
+
+                    <GeometryDrawing Geometry="F1 M28,18z M0,0z M0.112602,13.5494L0.385924,13.5039 M0.385924,13.5039L3.1126,13.0494C3.1126,13.0494 3.6126,15.0494 4.1126,15.5494 4.6126,16.0494 6.6126,13.5494 6.6126,13.5494 6.6126,13.5494 7.6126,16.5494 8.6126,16.5494 9.6126,16.5494 11.1126,14.0494 11.1126,14.0494 11.1126,14.0494 13.1126,17.0494 13.6126,17.0494L15.6126,13.5494C15.6126,13.5494 19.6126,16.5494 20.1126,16.5494 20.6126,16.5494 20.1126,12.5494 20.1126,12.5494 20.1126,12.5494 23.6126,16.0494 24.1126,16.0494 24.6126,16.0494 24.1126,10.5494 24.1126,10.5494L27.1126,14.0494C27.1126,14.0494 18.1126,-0.450556 17.6126,0.549444 17.1126,1.54944 10.1126,12.0494 10.1126,12.0494 10.1126,12.0494 7.1126,4.54944 6.6126,5.54944 6.1126,6.54945 0.385924,13.5039 0.385924,13.5039z">
+                        <GeometryDrawing.Pen>
+                            <Pen Brush="#FFFFFFFF" Thickness="1" StartLineCap="Flat" EndLineCap="Flat" LineJoin="Miter" />
+                        </GeometryDrawing.Pen>
+                    </GeometryDrawing>
+                </DrawingGroup>
+            </DrawingImage.Drawing>
+        </DrawingImage>
+
+    </UserControl.Resources>
+
+    <Border BorderThickness="0,3,3,0"
+            BorderBrush="{DynamicResource MahApps.Brushes.Accent}"
+            TextElement.FontFamily="{StaticResource Fonts.Inter}"
+            TextElement.Foreground="{DynamicResource FileInfoNice.Foreground}"
+            >
+        <Grid Margin="30,8,30,0"
+              Width="225">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+            </Grid.RowDefinitions>
+
+            <!-- Hash at the top -->
+            <TextBlock Grid.Row="1"
+                       HorizontalAlignment="Center"
+                       Margin="0,0,0,0"
+                       FontSize="11"
+                       FontWeight="Regular"
+                       Height="15"
+                       Visibility="{Binding Hash, Converter={StaticResource ConditionVisibilityConverter}, ConverterParameter=!null}">
+                <TextBlock 
+                    Text="{Binding Hash}"
+                    Foreground="DarkRed"
+                    ToolTip="The calculated hash does not match the stored value; the file is either corrupted or has been modified"
+                    Visibility="{Binding IsHashValid, Converter={StaticResource ConditionVisibilityConverter}, ConverterParameter=false}"/>
+
+                <TextBlock
+                    Text="{Binding Hash}"
+                    Visibility="{Binding IsHashValid, Converter={StaticResource ConditionVisibilityConverter}, ConverterParameter=true}" />
+            </TextBlock>
+            
+            <TextBlock Grid.Row="1"
+                       HorizontalAlignment="Left"
+                       Margin="5,0,5,0"
+                       FontSize="10"
+                       Height="15"
+                       Opacity="0.7"
+                       Visibility="{Binding Hash, Converter={StaticResource ConditionVisibilityConverter}, ConverterParameter=null}">
+                <Hyperlink Command="{Binding CalculateHashCommand}"
+                           Foreground="{DynamicResource FileInfoNice.Foreground}">
+                    <Run Text="Calculate hash" />
+                </Hyperlink>
+            </TextBlock>
+
+            <!-- Main content area -->
+            <fileInfo:TiltCard Grid.Row="2"
+                                   x:Name="CardTilt"
+                                   Margin="0,3,0,0"
+                                   HorizontalAlignment="Center" 
+                                   VerticalAlignment="Center"
+                                   CardWidth="225" 
+                                   CardHeight="128"
+                                   MaxAngle="8" 
+                                   HoverScale="1.03" 
+                                   Smooth="0.18"
+                                   MouseEnter="CardTilt_MouseEnter"
+                                   MouseLeave="CardTilt_MouseLeave"
+                                   CardClick="CardTilt_CardClick"
+                                   CardDoubleClick="CardTilt_CardDoubleClick">
+                <fileInfo:TiltCard.CardContent>
+                    <Border Background="{DynamicResource FileInfoNice.Background}"
+                            CornerRadius="4"
+                            Padding="5,5"
+                            Height="128"
+                            Width="225"
+                            Cursor="Hand">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="Auto" />
+                            </Grid.ColumnDefinitions>
+
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="*" />
+                                <RowDefinition Height="Auto" />
+                            </Grid.RowDefinitions>
+
+                            <!-- File extension badge -->
+                            <Border 
+                                Grid.Column="0"
+                                Grid.Row="0"
+                                CornerRadius="3"
+                                Padding="4,0,4,0"
+                                VerticalAlignment="Top">
+                                <Border.Style>
+                                    <Style TargetType="Border">
+                                        <Setter Property="Background" Value="{DynamicResource FileInfoNice.Foreground}" />
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type Window}}, Path=DataContext.TagSearchVM.IsFavorite}" Value="True">
+                                                <Setter Property="Background" Value="{DynamicResource FileInfoNice.FavoriteAccent}" />
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </Border.Style>
+                                <TextBlock Margin="0,-2,0,0" 
+                                           Text="{Binding Name, Converter={StaticResource FileExtensionConverter}}"
+                                           Foreground="{DynamicResource FileInfoNice.Background}"
+                                           FontWeight="Bold"
+                                           FontSize="28" />
+                            </Border>
+
+                            <fileInfo:FavoriteControl 
+                                Grid.Column="0" 
+                                Grid.Row="0"
+                                VerticalAlignment="Bottom"
+                                HorizontalAlignment="Left"
+                                Margin="10,0,0,10"
+                                IsChecked="{Binding 
+                                    RelativeSource={RelativeSource 
+                                        Mode=FindAncestor,
+                                        AncestorType={x:Type Window}}, 
+                                    Path=DataContext.TagSearchVM.IsFavorite,
+                                    Mode=TwoWay}"/>
+
+                            <!-- Center: Image icon and width -->
+                            <StackPanel 
+                                Grid.Column="1"
+                                Grid.Row="0"
+                                HorizontalAlignment="Right"
+                                VerticalAlignment="Bottom"
+                                Margin="0,15,10,0">
+                                <StackPanel.Visibility>
+                                    <MultiBinding Converter="{StaticResource CoalesceMultiConverter}">
+                                        <Binding Path="PixelSizeWidth" Converter="{StaticResource ConditionVisibilityConverter}" ConverterParameter="!null" />
+                                        <Binding RelativeSource="{RelativeSource Mode=FindAncestor, AncestorType={x:Type Window}}" Path="DataContext.TagSearchVM.TagPixelWidth" Converter="{StaticResource ConditionVisibilityConverter}" ConverterParameter="!null" />
+                                    </MultiBinding>
+                                </StackPanel.Visibility>
+
+                                <Image Source="{StaticResource ImageDraw}"
+                                   Width="65"
+                                   Height="45"
+                                   HorizontalAlignment="Right" />
+
+                                <TextBlock HorizontalAlignment="Center"
+                                   FontWeight="SemiBold"
+                                   FontSize="22">
+                                    <TextBlock.Text>
+                                        <MultiBinding Converter="{StaticResource CoalesceMultiConverter}">
+                                            <Binding Path="PixelSizeWidth" Mode="OneWay" />
+                                            <Binding RelativeSource="{RelativeSource Mode=FindAncestor, AncestorType={x:Type Window}}" Path="DataContext.TagSearchVM.TagPixelWidth" Mode="OneWay" />
+                                        </MultiBinding>
+                                    </TextBlock.Text>
+                                    <TextBlock.Style>
+                                        <Style TargetType="TextBlock">
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type Window}}, Path=DataContext.TagSearchVM.IsFavorite}" Value="True">
+                                                    <Setter Property="Foreground" Value="{DynamicResource FileInfoNice.FavoriteAccent}" />
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </TextBlock.Style>
+                                </TextBlock>
+                            </StackPanel>
+
+                            <!-- Right side: Height (vertical) -->
+                            <TextBlock 
+                                Grid.Column="2"
+                                Grid.Row="0"
+                                VerticalAlignment="Top"
+                                FontWeight="SemiBold"
+                                FontSize="22"
+                                Margin="0,8,0,20">
+                                <TextBlock.Visibility>
+                                    <MultiBinding Converter="{StaticResource CoalesceMultiConverter}">
+                                        <Binding Path="PixelSizeHeight" Converter="{StaticResource ConditionVisibilityConverter}" ConverterParameter="!null" />
+                                        <Binding RelativeSource="{RelativeSource Mode=FindAncestor, AncestorType={x:Type Window}}" Path="DataContext.TagSearchVM.TagPixelHeight" Converter="{StaticResource ConditionVisibilityConverter}" ConverterParameter="!null" />
+                                    </MultiBinding>
+                                </TextBlock.Visibility>
+                                <TextBlock.Style>
+                                    <Style TargetType="TextBlock">
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type Window}}, Path=DataContext.TagSearchVM.IsFavorite}" Value="True">
+                                                <Setter Property="Foreground" Value="{DynamicResource FileInfoNice.FavoriteAccent}" />
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </TextBlock.Style>
+                                <TextBlock.LayoutTransform>
+                                    <RotateTransform Angle="-90" />
+                                </TextBlock.LayoutTransform>
+
+                                <Run>
+                                    <Run.Text>
+                                        <MultiBinding Converter="{StaticResource CoalesceMultiConverter}">
+                                            <Binding Path="PixelSizeHeight" Mode="OneWay" />
+                                            <Binding RelativeSource="{RelativeSource Mode=FindAncestor, AncestorType={x:Type Window}}" Path="DataContext.TagSearchVM.TagPixelHeight" Mode="OneWay" />
+                                        </MultiBinding>
+                                    </Run.Text>
+                                </Run>
+                            </TextBlock>
+
+
+                            <!-- Bottom row: Size Date and Order number -->
+                            <Grid
+                                Grid.Column="0"
+                                Grid.ColumnSpan="3"
+                                Grid.Row="1"
+                                Margin="0,3,0,0">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="Auto" />
+                                    <ColumnDefinition Width="*" />
+                                </Grid.ColumnDefinitions>
+
+                                <TextBlock Grid.Column="0"
+                                           HorizontalAlignment="Left"
+                                           FontWeight="Regular"
+                                           FontSize="13"
+                                           Opacity="0.7"
+                                           Text="{Binding Size, Converter={StaticResource HumanReadableSizeConverter}}" />
+
+                                <TextBlock Grid.Column="1"
+                                           HorizontalAlignment="Center"
+                                           FontWeight="Regular"
+                                           FontSize="13"
+                                           Opacity="0.7"
+                                           Text="{Binding AddedOn, StringFormat='d MMM yy'}" />
+
+                                <TextBlock Grid.Column="2"
+                                           HorizontalAlignment="Right"
+                                           FontWeight="Regular"
+                                           FontSize="13"
+                                           Opacity="0.7"
+                                           Text="{Binding OrderNumber, StringFormat='#{0}'}" />
+                            </Grid>
+                        </Grid>
+                    </Border>
+
+                </fileInfo:TiltCard.CardContent>
+            </fileInfo:TiltCard>
+
+            <fileInfo:RatingControl 
+                x:Name="RatingControl"
+                Grid.Row="4"
+                Margin="0,10,0,0"
+                Value="{Binding 
+                    RelativeSource={RelativeSource 
+                        Mode=FindAncestor, 
+                        AncestorType={x:Type Window}}, 
+                    Path=DataContext.TagSearchVM.Rate,
+                    Mode=TwoWay}" />
+
+            <Border Grid.Row="0"
+                    Margin="-15,0,-15,15">
+                <TextBlock 
+                    Text="{Binding Name}"
+                    HorizontalAlignment="Center"
+                    VerticalAlignment="Center"
+                    FontSize="14"
+                    FontWeight="SemiBold"
+                    TextWrapping="Wrap" />
+            </Border>
+        </Grid>
+    </Border>
+</UserControl>

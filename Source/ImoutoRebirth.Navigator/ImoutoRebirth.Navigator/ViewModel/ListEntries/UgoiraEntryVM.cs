@@ -60,6 +60,7 @@ internal partial class UgoiraEntryVM : BaseEntryVM, INavigatorListEntry, IPixelS
         resultImage.Position = 0;
 
         Image = BitmapFrame.Create(resultImage, BitmapCreateOptions.None, BitmapCacheOption.OnLoad);
+        OnPropertyChanged(nameof(PixelSize));
 
         IsLoading = false;
 

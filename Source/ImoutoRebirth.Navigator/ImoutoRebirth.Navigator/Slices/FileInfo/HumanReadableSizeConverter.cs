@@ -1,7 +1,7 @@
 ﻿using System.Globalization;
 using System.Windows.Data;
 
-namespace ImoutoRebirth.Navigator.Converters;
+namespace ImoutoRebirth.Navigator.Slices.FileInfo;
 
 [ValueConversion(typeof (string), typeof (long?))]
 internal class HumanReadableSizeConverter : IValueConverter

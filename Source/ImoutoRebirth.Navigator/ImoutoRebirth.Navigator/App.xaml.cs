@@ -2,6 +2,7 @@
 using System.Windows;
 using System.Windows.Threading;
 using ImoutoRebirth.Navigator.Services;
+using ImoutoRebirth.Navigator.Slices.FileInfo;
 using ImoutoRebirth.Navigator.ViewModel;
 using Serilog;
 
@@ -74,6 +75,8 @@ public partial class App : Application
         {
             Log.Error((Exception)e.ExceptionObject, "Dispatcher Unhandled exception: " + e.IsTerminating);
         };
+
+        ThemeService.Initialize(this);
 
         base.OnStartup(startupEventArgs);
     }

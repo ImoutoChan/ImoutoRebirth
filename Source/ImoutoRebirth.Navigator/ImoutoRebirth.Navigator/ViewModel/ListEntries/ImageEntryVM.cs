@@ -16,6 +16,7 @@ internal class ImageEntryVM : BaseEntryVM, INavigatorListEntry, IPixelSizable
         {
             OnPropertyChanged(nameof(IsLoading));
             OnPropertyChanged(nameof(Image));
+            OnPropertyChanged(nameof(PixelSize));
         };
 
         Type = ImageEntry.ImageFormat switch

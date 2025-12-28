@@ -29,6 +29,8 @@ internal partial class TagSearchVM : ObservableObject
     private readonly ITagService _tagService;
     private Tag? _favoriteTag;
     private Tag? _rateTag;
+    private int? _tagPixelWidth;
+    private int? _tagPixelHeight;
 
     [ObservableProperty]
     public partial bool ValueEnterMode { get; set; }
@@ -53,6 +55,26 @@ internal partial class TagSearchVM : ObservableObject
 
     [ObservableProperty]
     private bool _forcedShowHotKeys = false;
+
+    public int? TagPixelWidth
+    {
+        get => _tagPixelWidth;
+        private set
+        {
+            _tagPixelWidth = value;
+            OnPropertyChanged();
+        }
+    }
+
+    public int? TagPixelHeight
+    {
+        get => _tagPixelHeight;
+        private set
+        {
+            _tagPixelHeight = value;
+            OnPropertyChanged();
+        }
+    }
 
     public TagSearchVM()
     {
@@ -167,6 +189,8 @@ internal partial class TagSearchVM : ObservableObject
         if (fileId == null)
         {
             IsRateSet = false;
+            TagPixelWidth = null;
+            TagPixelHeight = null;
 
             return;
         }
@@ -215,6 +239,7 @@ internal partial class TagSearchVM : ObservableObject
         GetFavorite(tags);
         GetRate(tags);
         GetUgoiraFrameData(tags);
+        GetPixelSize(tags);
         IsRateSet = true;
 
         SetShowHotKeys();
@@ -517,6 +542,15 @@ internal partial class TagSearchVM : ObservableObject
         var frameData = JsonConvert.DeserializeObject<UgoiraFrameData>(frameDataTag.Value)!;
 
         UgoiraFrameDelays = frameData.Data.Select(x => new DelayItem(x.Delay, x.File)).ToList();
+    }
+
+    private void GetPixelSize(IReadOnlyCollection<FileTag> tags)
+    {
+        var widthTag = tags.FirstOrDefault(x => x.Tag is { Title: "width", HasValue: true });
+        var heightTag = tags.FirstOrDefault(x => x.Tag is { Title: "height", HasValue: true });
+
+        TagPixelWidth = widthTag?.Value != null && int.TryParse(widthTag.Value, out var width) ? width : null;
+        TagPixelHeight = heightTag?.Value != null && int.TryParse(heightTag.Value, out var height) ? height : null;
     }
 
     private async void SetFavorite(bool value, Guid fileId)

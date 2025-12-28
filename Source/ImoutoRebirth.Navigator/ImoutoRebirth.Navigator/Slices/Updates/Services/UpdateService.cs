@@ -46,7 +46,7 @@ internal sealed class UpdateService : IUpdateService
         IProgress<double>? progress = null,
         CancellationToken ct = default)
     {
-        var file = new FileInfo(destinationPath);
+        var file = new System.IO.FileInfo(destinationPath);
         file.Directory?.Delete(true);
         file.Directory?.Create();
 

@@ -18,6 +18,9 @@
                 <Setter Property="Height"
                         Value="25" />
             </Style>
+
+            <FontFamily x:Key="Fonts.Supreme">pack://application:,,,/Resources/Fonts/Supreme/#Supreme</FontFamily>
+            <FontFamily x:Key="Fonts.Inter">pack://application:,,,/Resources/Fonts/Inter/#Inter</FontFamily>
         </ResourceDictionary>
     </Application.Resources>
 </Application>

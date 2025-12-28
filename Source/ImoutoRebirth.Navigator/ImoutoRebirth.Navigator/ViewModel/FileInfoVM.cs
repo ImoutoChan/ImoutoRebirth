@@ -22,7 +22,12 @@ internal partial class FileInfoVM : ObservableObject
     public partial long? Size { get; set; }
 
     [ObservableProperty]
-    public partial Size? PixelSize { get; set; }
+    [NotifyPropertyChangedFor(nameof(PixelSizeWidth), nameof(PixelSizeHeight))]
+    private partial Size? PixelSize { get; set; }
+
+    public double? PixelSizeWidth => PixelSize?.Width;
+
+    public double? PixelSizeHeight => PixelSize?.Height;
 
     [ObservableProperty]
     [NotifyCanExecuteChangedFor(nameof(CalculateHashCommand))]
@@ -91,7 +96,26 @@ internal partial class FileInfoVM : ObservableObject
         Name = fi.Name;
         Size = fi.Length;
         Hash = null;
-        PixelSize = navigatorListEntry is IPixelSizable pixelSizable ? pixelSizable.PixelSize : null;
+
+        if (navigatorListEntry is IPixelSizable pixelSizable)
+        {
+            PixelSize = pixelSizable.PixelSize;
+
+            if (navigatorListEntry is ObservableObject oo)
+            {
+                oo.PropertyChanged += (_, args) =>
+                {
+                    if (args.PropertyName == "PixelSize")
+                    {
+                        PixelSize = pixelSizable.PixelSize;
+                    }
+                };
+            }
+        }
+        else
+        {
+            PixelSize = null;
+        }
 
         _fileInfo = fi;
 

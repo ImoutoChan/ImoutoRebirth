@@ -70,12 +70,13 @@ internal partial class DodjiEntryVM : BaseEntryVM, INavigatorListEntry, IPixelSi
         if (preview == null)
             return;
 
-        await using var previewStream = preview.OpenEntryStream();
+        await using var previewStream = await preview.OpenEntryStreamAsync();
         await using var resultImage = new MemoryStream();
         await previewStream.CopyToAsync(resultImage);
         resultImage.Seek(0, SeekOrigin.Begin);
 
         Image = BitmapFrame.Create(resultImage, BitmapCreateOptions.None, BitmapCacheOption.OnLoad);
+        OnPropertyChanged(nameof(PixelSize));
 
         IsLoading = false;
         _isLoaded = true;

@@ -1,0 +1,62 @@
+﻿<UserControl x:Class="ImoutoRebirth.Navigator.Slices.FileInfo.RatingControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
+             mc:Ignorable="d"
+             d:DesignHeight="50"
+             d:DesignWidth="300">
+    <UserControl.Resources>
+        <Style TargetType="Border"
+               x:Key="StarItemBorderStyle">
+            <Setter Property="Background" Value="Transparent" />
+            <EventSetter Event="MouseEnter" Handler="StarBorder_MouseEnter" />
+            <EventSetter Event="MouseLeave" Handler="StarBorder_MouseLeave" />
+            <EventSetter Event="MouseLeftButtonUp" Handler="StarBorder_MouseLeftButtonUp" />
+        </Style>
+
+        <Style TargetType="iconPacks:PackIconMaterial"
+               x:Key="StarItemStyle">
+            <Setter Property="Opacity" Value="0.8" />
+            <Setter Property="Kind" Value="StarOutline" />
+            <Setter Property="Height" Value="33" />
+            <Setter Property="Width" Value="33" />
+            <Setter Property="Margin" Value="3,0" />
+            <Setter Property="Foreground" Value="{DynamicResource MahApps.Brushes.Accent}" />
+        </Style>
+    </UserControl.Resources>
+    
+    <Grid Margin="5" 
+          MouseLeave="OuterGridRating_MouseLeave"
+          HorizontalAlignment="Center"
+          Cursor="Hand"
+          Height="41">
+        <WrapPanel Name="RatingPanel">
+            <Border Style="{StaticResource StarItemBorderStyle}"
+                    ToolTip="Rate 1/5">
+                <iconPacks:PackIconMaterial Style="{StaticResource StarItemStyle}" />
+            </Border>
+
+            <Border Style="{StaticResource StarItemBorderStyle}"
+                    ToolTip="Rate 2/5">
+                <iconPacks:PackIconMaterial Style="{StaticResource StarItemStyle}" />
+            </Border>
+
+            <Border Style="{StaticResource StarItemBorderStyle}"
+                    ToolTip="Rate 3/5">
+                <iconPacks:PackIconMaterial Style="{StaticResource StarItemStyle}" />
+            </Border>
+
+            <Border Style="{StaticResource StarItemBorderStyle}"
+                    ToolTip="Rate 4/5">
+                <iconPacks:PackIconMaterial Style="{StaticResource StarItemStyle}" />
+            </Border>
+
+            <Border Style="{StaticResource StarItemBorderStyle}"
+                    ToolTip="Rate 5/5">
+                <iconPacks:PackIconMaterial Style="{StaticResource StarItemStyle}" />
+            </Border>
+        </WrapPanel>
+    </Grid>
+</UserControl>

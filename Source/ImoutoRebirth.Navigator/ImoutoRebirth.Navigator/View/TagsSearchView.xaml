@@ -4,7 +4,6 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:metroControl="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
-             xmlns:userControls="clr-namespace:ImoutoRebirth.Navigator.UserControls"
              xmlns:viewModel="clr-namespace:ImoutoRebirth.Navigator.ViewModel"
              xmlns:local="clr-namespace:ImoutoRebirth.Navigator.View"
              xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
@@ -173,30 +172,6 @@
                                               Kind="InputKeyboard"
                                               Foreground="{DynamicResource MahApps.Brushes.ThemeForeground}"/>
                 </Button>
-
-                <Border Grid.Row="9"
-                        BorderThickness="1"
-                        BorderBrush="{DynamicResource MahApps.Brushes.Accent}" />
-
-                <!-- Rating/fav Control -->
-
-                <DockPanel Grid.Row="10"
-                           LastChildFill="False">
-                    <userControls:FavoriteControl
-                        IsChecked="{Binding IsFavorite, Mode=TwoWay}"
-                        Visibility="{Binding
-                            IsRateSet,
-                            Converter={StaticResource ConditionVisibilityConverter},
-                            ConverterParameter=true}" />
-
-                    <userControls:RatingControl
-                        DockPanel.Dock="Right"
-                        Value="{Binding Rate, Mode=TwoWay}"
-                        Visibility="{Binding
-                            IsRateSet,
-                            Converter={StaticResource ConditionVisibilityConverter},
-                            ConverterParameter=true}" />
-                </DockPanel>
             </Grid>
         </Border>
 
