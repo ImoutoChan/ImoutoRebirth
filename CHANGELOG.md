@@ -19,6 +19,7 @@
 * Add scroll up/down buttons
 * Add update button in settings
 * Redesign FileInfo view
+* Fix updater error if temp folder no longer exists
 
 # v4.29.1
 

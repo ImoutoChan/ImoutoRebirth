@@ -47,7 +47,10 @@ internal sealed class UpdateService : IUpdateService
         CancellationToken ct = default)
     {
         var file = new System.IO.FileInfo(destinationPath);
-        file.Directory?.Delete(true);
+
+        if (file.Directory?.Exists == true)
+            file.Directory?.Delete(true);
+
         file.Directory?.Create();
 
         using var response = await _httpClient.GetAsync(
