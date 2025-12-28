@@ -26,7 +26,7 @@
       english,
       translated
     ],
-    Rating: 4.57,
+    Rating: 4.52,
     ThumbnailUrl: https://ehgt.org/w/02/134/09861-dxd05xmo.webp,
     GalleryId: 3662611,
     GalleryToken: cf3350c65a,
