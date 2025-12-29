@@ -21,6 +21,7 @@
 * Redesign FileInfo view
 * Fix updater error if temp folder no longer exists
 * Search by tag values
+* Reset last played position when playing in the last 10% of the video
 
 # v4.29.1
 

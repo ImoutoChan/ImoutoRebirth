@@ -82,16 +82,29 @@ public partial class PlayerControl
             {
                 try
                 {
+                    // time and length are in ms
                     var time = args.NewTime;
                     var length = _control.SourceProvider.MediaPlayer.Length;
+
                     var timeString = $"{GetPrettyTime(time, length)} / {GetPrettyTime(length)}";
+
                     Dispatcher.BeginInvoke((Action)(() =>
                     {
                         var source = Source;
                         if (source == null) 
                             return;
-                        
-                        LastMediaPositionValues[source] = time;
+
+                        var percent = length > 0 ? (double)time * 100 / length : 0;
+                        if (percent > 90)
+                        {
+                            LastMediaPositionValues.TryRemove(source, out var _);
+                        }
+                        else
+                        {
+                            LastMediaPositionValues[source] = time;
+                        }
+
+
                         TimeTextBlock.Text = timeString;
                     }));
                 }
