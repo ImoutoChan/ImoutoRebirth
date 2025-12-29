@@ -48,4 +48,39 @@ public partial class TagsSearchView : UserControl
             e.Handled = true;
         }
     }
+
+    private void EnteredValueTextBox_KeyDown(object sender, KeyEventArgs e)
+    {
+        if (e.Key == Key.Down)
+        {
+            if (ValuesHintListBox.SelectedIndex < ValuesHintListBox.Items.Count - 1)
+            {
+                ValuesHintListBox.SelectedIndex += 1;
+            }
+            else
+            {
+                ValuesHintListBox.SelectedIndex = 0;
+            }
+
+            e.Handled = true;
+        }
+        else if (e.Key == Key.Up)
+        {
+            if (ValuesHintListBox.SelectedIndex > 0)
+            {
+                ValuesHintListBox.SelectedIndex -= 1;
+            }
+            else
+            {
+                ValuesHintListBox.SelectedIndex = ValuesHintListBox.Items.Count - 1;
+            }
+
+            e.Handled = true;
+        }
+        else if (e.Key == Key.Enter)
+        {
+            ((TagSearchVM)DataContext).SelectTagValueCommand.Execute(ValuesHintListBox.SelectedItem);
+            e.Handled = true;
+        }
+    }
 }

@@ -30,10 +30,10 @@ internal partial class BindedTagVM : ObservableObject
     public partial SearchType SearchType { get; set; }
 
     private readonly Guid? _fileId;
-    private readonly Action? _updateAction;
+    private readonly Func<Task>? _updateAction;
     private readonly IFileTagService _fileTagService;
 
-    public BindedTagVM(FileTag model, Guid? fileId, Action? updateAction)
+    public BindedTagVM(FileTag model, Guid? fileId, Func<Task>? updateAction)
     {
         Model = model;
         _fileTagService = ServiceLocator.GetService<IFileTagService>();
@@ -99,8 +99,8 @@ internal partial class BindedTagVM : ObservableObject
         {
             await _fileTagService.UnbindTags(new UnbindTagRequest(_fileId.Value, Model.Tag.Id, Model.Value,
                 Model.Source));
-            
-            OnReloadRequested();
+
+            await OnReloadRequested();
         }
         catch (Exception ex)
         {
@@ -122,7 +122,7 @@ internal partial class BindedTagVM : ObservableObject
                 { new FileTag(_fileId.Value, Model.Tag, newCountValue, Model.Source) },
                 SameTagHandleStrategy.ReplaceExistingValue);
             
-            OnReloadRequested();
+            await OnReloadRequested();
         }
         catch (Exception ex)
         {
@@ -132,5 +132,5 @@ internal partial class BindedTagVM : ObservableObject
 
     public override string ToString() => $"{Tag.Id} - {Tag.Title} : {Value}";
 
-    protected virtual void OnReloadRequested() => _updateAction?.Invoke();
+    protected virtual Task OnReloadRequested() => _updateAction?.Invoke() ?? Task.CompletedTask;
 }

@@ -44,27 +44,36 @@
                          Text="{Binding Path=SearchString, UpdateSourceTrigger=PropertyChanged}"
                          PreviewKeyDown="TextBox_KeyDown" />
 
-                <DockPanel Grid.Row="2"
-                           Margin="5"
-                           Visibility="{Binding
-                                ValueEnterMode,
-                                Converter={StaticResource ConditionVisibilityConverter},
-                                ConverterParameter=true}">
-                    <ComboBox DockPanel.Dock="Left"
+                <Grid Grid.Row="2"
+                      Margin="5"
+                      Visibility="{Binding
+                           ValueEnterMode,
+                           Converter={StaticResource ConditionVisibilityConverter},
+                           ConverterParameter=true}">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="Auto" />
+                    </Grid.ColumnDefinitions>
+
+                    <ComboBox Grid.Column="0"
                               Width="60"
                               ItemsSource="{Binding Comparators}"
                               SelectedItem="{Binding SelectedComparator}" />
 
-                    <Button DockPanel.Dock="Right"
+                    <TextBox Grid.Column="1"
+                             Margin="5,0"
+                             Style="{DynamicResource MetroTextBox}"
+                             metroControl:TextBoxHelper.Watermark="Search available values"
+                             Padding="4"
+                             Text="{Binding EnteredValue, UpdateSourceTrigger=PropertyChanged}"
+                             PreviewKeyDown="EnteredValueTextBox_KeyDown" />
+
+                    <Button Grid.Column="2"
                             Width="60"
                             Content="Ok"
                             Command="{Binding EnterValueOkCommand}" />
-
-                    <TextBox Margin="5,0"
-                             Style="{DynamicResource MetroTextBox}"
-                             metroControl:TextBoxHelper.Watermark="Value"
-                             Text="{Binding EnteredValue}" />
-                </DockPanel>
+                </Grid>
 
                 <!-- fav rate buttons -->
                 <StackPanel Grid.Row="3" Orientation="Horizontal">
@@ -175,6 +184,7 @@
             </Grid>
         </Border>
 
+        <!-- hint box tags -->
         <Border Grid.Column="0"
                 BorderThickness="1"
                 BorderBrush="{DynamicResource MahApps.Brushes.Accent}"
@@ -202,6 +212,63 @@
                                 CommandParameter="{Binding}"
                                 Template="{StaticResource TagElementControlTemplate}"
                                 HorizontalContentAlignment="Left" />
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ListBox>
+        </Border>
+
+        <!-- hint box tag values -->
+        <Border Grid.Column="0"
+                BorderThickness="1"
+                BorderBrush="{DynamicResource MahApps.Brushes.Accent}"
+                HorizontalAlignment="Stretch"
+                VerticalAlignment="Top"
+                Margin="70,107,73,0"
+                Visibility="{Binding
+                    HintBoxValues.Count,
+                    Converter={StaticResource ConditionVisibilityConverter},
+                    ConverterParameter=!0}">
+            <ListBox x:Name="ValuesHintListBox"
+                     ItemsSource="{Binding HintBoxValues}"
+                     SelectedItem="{Binding SelectedHintBoxValue}"
+                     Padding="0"
+                     ItemContainerStyle="{StaticResource SearchHintListBoxItemContainerStyle}"
+                     ScrollViewer.CanContentScroll="False"
+                     ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                     VirtualizingPanel.ScrollUnit="Item">
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <Button
+                            Command="{Binding 
+                                RelativeSource={RelativeSource 
+                                    FindAncestor,
+                                    AncestorType={x:Type UserControl}},
+                                Path=DataContext.SelectTagValueCommand}"
+                            CommandParameter="{Binding}"
+                            HorizontalContentAlignment="Left">
+                            <Button.Template>
+                                <ControlTemplate>
+                                    <DockPanel LastChildFill="True"
+                                               Cursor="Hand">
+                                        <Label Background="Transparent"
+                                               x:Name="label"
+                                               HorizontalContentAlignment="Stretch"
+                                               Padding="10,4,5,2">
+                                            <Label.Content>
+                                                <TextBlock TextAlignment="Left"
+                                                           VerticalAlignment="Center">
+                                                    <Run Text="{Binding Mode=OneWay}"
+                                                         Foreground="{DynamicResource MahApps.Brushes.Accent}"
+                                                         FontFamily="Comic Sans MS"
+                                                         FontSize="13"
+                                                         FontWeight="Bold" />
+                                                </TextBlock>
+                                            </Label.Content>
+                                        </Label>
+                                    </DockPanel>
+                                </ControlTemplate>
+                            </Button.Template>
+                        </Button>
                     </DataTemplate>
                 </ItemsControl.ItemTemplate>
             </ListBox>

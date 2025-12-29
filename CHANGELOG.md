@@ -20,6 +20,7 @@
 * Add update button in settings
 * Redesign FileInfo view
 * Fix updater error if temp folder no longer exists
+* Search by tag values
 
 # v4.29.1
 

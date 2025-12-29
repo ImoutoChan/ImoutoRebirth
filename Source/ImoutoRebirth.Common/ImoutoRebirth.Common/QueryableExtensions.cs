@@ -68,4 +68,6 @@ public static class QueryableExtensions
 
         return source;
     }
+
+    public static IQueryable<T> WhereNotNull<T>(this IQueryable<T?> source) => source.Where(x => x != null)!;
 }

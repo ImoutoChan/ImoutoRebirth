@@ -35,6 +35,11 @@ internal class TagService : ITagService
         return _mapper.Map<IReadOnlyCollection<Tag>>(results);
     }
 
+    public async Task<IReadOnlyCollection<string>> SearchTagValues(Guid tagId, string? value, int count, CancellationToken ct)
+    {
+        return await _tagsClient.SearchTagValuesAsync(new(count, value, tagId), ct);
+    }
+
     public async Task<IReadOnlyCollection<Tag>> GetPopularUserTags(int count)
     {
         var results = await _tagsClient.GetPopularTagsAsync(count);

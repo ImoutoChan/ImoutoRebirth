@@ -4,15 +4,30 @@ namespace ImoutoRebirth.Navigator.Utils;
 
 public static class TaskExtensions
 {
-    public static async void LogAndSuppressExceptions(this Task task)
+    extension(Task task)
     {
-        try
+        public async void LogAndSuppressExceptions()
         {
-            await task;
+            try
+            {
+                await task;
+            }
+            catch (Exception e)
+            {
+                Log.Error(e, "Exception in task");
+            }
         }
-        catch (Exception e)
+
+        public async void OnException(Action<Exception> onException)
         {
-            Log.Error(e, "Exception in task");
+            try
+            {
+                await task;
+            }
+            catch (Exception e)
+            {
+                onException(e);
+            }
         }
     }
 }

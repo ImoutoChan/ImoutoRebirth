@@ -5,6 +5,7 @@ using BindTagsCommand = ImoutoRebirth.Lilin.WebApi.Client.BindTagsCommand;
 using CreateTagCommand = ImoutoRebirth.Lilin.Application.TagSlice.CreateTagCommand;
 using MetadataSource = ImoutoRebirth.Lilin.WebApi.Client.MetadataSource;
 using TagsSearchQuery = ImoutoRebirth.Lilin.Application.TagSlice.TagsSearchQuery;
+using TagValuesSearchQuery = ImoutoRebirth.Lilin.Application.TagSlice.TagValuesSearchQuery;
 
 namespace ImoutoRebirth.Lilin.IntegrationTests;
 
@@ -321,6 +322,43 @@ public class TagsTests(TestWebApplicationFactory<Program> _webApp)
         // assert
         var tagToCleanCount = context.Tags.Count(x => x.Id == tagToClean.Id);
         tagToCleanCount.Should().Be(0);
+    }
+
+    [Fact]
+    public async Task SearchTagValues()
+    {
+        // arrange
+
+        var httpClient = _webApp.Client;
+
+        var fileIds = Enumerable.Range(0, 100).Select(_ => Guid.NewGuid()).ToList();
+
+        var types = await httpClient.GetFromJsonAsync<IReadOnlyCollection<TagType>>("/tags/types");
+        var newTag1 = await CreateNewTag(httpClient, types, "popular tag");
+
+        var requests
+                          = fileIds.Take(20).Select((x, i) => new BindTag(x, MetadataSource.Manual, newTag1.Id, "girl" + i))
+            .Union(fileIds.Skip(20).Take(20).Select((x, i) => new BindTag(x, MetadataSource.Manual, newTag1.Id, i + "girl")))
+            .Union(fileIds.Skip(40).Take(20).Select((x, i) => new BindTag(x, MetadataSource.Manual, newTag1.Id, i + "girl" + i)))
+            .Union(fileIds.Skip(60).Take(20).Select((x, i) => new BindTag(x, MetadataSource.Manual, newTag1.Id, "girl")))
+            .Union(fileIds.Skip(80).Take(20).Select((x, i) => new BindTag(x, MetadataSource.Manual, newTag1.Id, "1girl")))
+            .ToList();
+
+        await httpClient.PostAsJsonAsync("/files/tags", new BindTagsCommand(
+            requests, SameTagHandleStrategy.ReplaceExistingValue));
+
+        // act
+        var foundTagValues = await httpClient.PostAsJsonAsync(
+                "/tags/values/search",
+                new TagValuesSearchQuery(newTag1.Id, "girl", 200))
+            .ReadResult<IReadOnlyCollection<string>>();
+
+        // assert
+        foundTagValues.Should().NotBeNull();
+        foundTagValues.Should().NotBeEmpty();
+        foundTagValues.Should().HaveCountGreaterThanOrEqualTo(3);
+        foundTagValues.All(x => x.Contains("girl")).Should().BeTrue();
+        foundTagValues.Distinct().Count().Should().Be(foundTagValues.Count);
     }
     
     private static async Task<Tag> CreateNewTag(

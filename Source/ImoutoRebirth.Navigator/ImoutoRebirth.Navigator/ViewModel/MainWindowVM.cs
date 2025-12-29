@@ -131,7 +131,12 @@ internal partial class MainWindowVM : ObservableObject
         if (SelectedItem == null)
             return;
 
-        TagSearchVM.UpdateCurrentTags(SelectedItem.DbId);
+        TagSearchVM.UpdateCurrentTags(SelectedItem.DbId)
+            .OnException(ex =>
+            {
+                App.MainWindowVM?.SetStatusError("Error while updating current tags", ex.Message);
+                Log.Error(ex, "Error while updating current tags for {SelectedItemDbId}", SelectedItem.DbId);
+            });
         FileInfoVM.UpdateCurrentInfo(SelectedItem, NavigatorListInternal.IndexOf(SelectedItem));
     }
 
