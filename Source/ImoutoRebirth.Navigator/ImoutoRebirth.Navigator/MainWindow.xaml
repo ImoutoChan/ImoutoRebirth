@@ -197,6 +197,7 @@
             </Grid.ColumnDefinitions>
 
             <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
                 <RowDefinition Height="*" />
                 <RowDefinition Height="Auto" />
                 <RowDefinition Height="Auto" />
@@ -204,13 +205,13 @@
 
             <metroControl:ProgressRing IsActive="{Binding Path=IsLoading, Mode=OneWay}"
                                        Grid.Column="1"
-                                       Grid.RowSpan="2"
+                                       Grid.RowSpan="3"
                                        Visibility="{Binding Path=IsLoading, Converter={StaticResource ConditionVisibilityConverter}, ConverterParameter=true, Mode=OneWay}" />
             
             <ListBox x:Name="MediaListBox"
                      Grid.Row="0"
                      Grid.Column="1"
-                     Grid.RowSpan="2"
+                     Grid.RowSpan="3"
                      ScrollViewer.HorizontalScrollBarVisibility="Disabled"
                      ItemsSource="{Binding Path=NavigatorListView, UpdateSourceTrigger=PropertyChanged}"
                      SelectionMode="Extended"
@@ -550,7 +551,7 @@
                                   Height="{Binding Path=ViewPortSize.Height}">
                                 <userControl:UgoiraPlayer
                                     Source="{Binding Path}"
-                                    FrameDelays="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type Window}}, Path=DataContext.TagSearchVM.UgoiraFrameDelays}" />
+                                    FrameDelays="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type Window}}, Path=DataContext.CurrentFileTagsVM.UgoiraFrameDelays}" />
                             </Grid>
                         </Border>
                     </DataTemplate>
@@ -848,28 +849,51 @@
             </ListBox>
 
             <GridSplitter Grid.Column="0"
-                          Grid.RowSpan="2"
+                          Grid.RowSpan="3"
                           Width="0"
                           ShowsPreview="True"
                           Background="{DynamicResource MahApps.Brushes.Accent}" />
 
-            <view:TagsSearchView Grid.Row="0"
-                                 Grid.Column="0"
-                                 MinWidth="200"
-                                 MaxWidth="298"
-                                 DataContext="{Binding TagSearchVM}"
-                                 Visibility="{Binding 
+            <Border Grid.Row="0"
+                    Grid.Column="0"
+                    BorderThickness="0,0,3,3"
+                    BorderBrush="{DynamicResource MahApps.Brushes.Accent}">
+                <view:TagsSearchView 
+                    MinWidth="200"
+                    MaxWidth="298"
+                    DataContext="{Binding TagSearchVM}"
+                    Visibility="{Binding 
                                     Path=DataContext.ShowTags, 
                                     RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type metroControl:MetroWindow}},
                                     Converter={StaticResource ConditionVisibilityConverter},
                                     ConverterParameter=true}"
-                                 />
+                />
+            </Border>
 
-            <fileInfo:FileInfoNiceView Grid.Column="0"
-                               Grid.Row="1"
-                               MinWidth="200"
-                               MaxWidth="298"
-                               DataContext="{Binding FileInfoVM}">
+            <Border
+                Grid.Row="1"
+                Grid.Column="0"
+                BorderThickness="0,0,3,0"
+                BorderBrush="{DynamicResource MahApps.Brushes.Accent}">
+                <view:CurrentFileTagsView
+                    MinWidth="200"
+                    MaxWidth="298"
+                    DataContext="{Binding CurrentFileTagsVM}"
+                    Visibility="{Binding 
+                        Path=DataContext.ShowTags, 
+                        RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type metroControl:MetroWindow}},
+                        Converter={StaticResource ConditionVisibilityConverter},
+                        ConverterParameter=true}"
+                    />
+            </Border>
+
+
+            <fileInfo:FileInfoNiceView 
+                Grid.Column="0"
+                Grid.Row="2"
+                MinWidth="200"
+                MaxWidth="298"
+                DataContext="{Binding FileInfoVM}">
                 <fileInfo:FileInfoNiceView.Visibility>
                     <MultiBinding Converter="{StaticResource MultiBooleanVisibilityConverter}">
                         <Binding Path="HasValue" Mode="OneWay" />
@@ -880,7 +904,7 @@
                 </fileInfo:FileInfoNiceView.Visibility>
             </fileInfo:FileInfoNiceView>
 
-            <view:StatusBarView Grid.Row="2"
+            <view:StatusBarView Grid.Row="3"
                                 Grid.Column="0"
                                 Grid.ColumnSpan="2" />
         </Grid>

@@ -248,6 +248,7 @@
                                     Height="15"
                                     Margin="7, 0, 0, 0"
                                     Style="{DynamicResource MahApps.Styles.Button.Circle}"
+                                    Cursor="Hand"
                                     HorizontalAlignment="Left"
                                     Command="{Binding IncrementCounterCommand}"
                                     Visibility="{Binding 
@@ -268,7 +269,7 @@
                                 <Hyperlink TextDecorations="None"
                                            Command="{Binding RelativeSource={RelativeSource FindAncestor,
                                                                                             AncestorType={x:Type UserControl}},
-                                                             Path=DataContext.SelectBindedTagCommand}"
+                                                             Path=DataContext.SelectTagToSearchCommand}"
                                            CommandParameter="{Binding}">
                                     <TextBlock TextWrapping="Wrap"
                                                ToolTip="{Binding Title}"
@@ -316,6 +317,7 @@
                                     Height="15"
                                     Margin="0, 0, 0, 0"
                                     Style="{DynamicResource MahApps.Styles.Button.Circle}"
+                                    Cursor="Hand"
                                     HorizontalAlignment="Left"
                                     Command="{Binding UnbindCommand}"
                                     Visibility="{Binding 

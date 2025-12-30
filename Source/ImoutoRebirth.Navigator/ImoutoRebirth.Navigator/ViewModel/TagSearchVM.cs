@@ -1,30 +1,23 @@
-﻿using System.Collections.ObjectModel;
-using System.Diagnostics;
-using System.Net;
-using CommunityToolkit.Mvvm.ComponentModel;
+﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-using ImoutoRebirth.Common;
+using CommunityToolkit.Mvvm.Messaging;
 using ImoutoRebirth.Navigator.Services;
 using ImoutoRebirth.Navigator.Services.Tags;
 using ImoutoRebirth.Navigator.Services.Tags.Model;
-using ImoutoRebirth.Navigator.UserControls;
 using ImoutoRebirth.Navigator.Utils;
 using ImoutoRebirth.Navigator.ViewModel.SettingsSlice;
 using Newtonsoft.Json;
 using Serilog;
+using System.Collections.ObjectModel;
 using SearchType = ImoutoRebirth.Navigator.Services.Tags.Model.SearchType;
 using Tag = ImoutoRebirth.Navigator.Services.Tags.Model.Tag;
 
 namespace ImoutoRebirth.Navigator.ViewModel;
 
-internal partial class TagSearchVM : ObservableObject
+internal partial class TagSearchVM : ObservableObject, IRecipient<SelectTagToSearchRequest>
 {
     private const string SilentValueEnterFlag = "!#!#!forced!#!#!";
 
-    private int _rate;
-    private Guid? _lastListEntryId;
-    private bool _isFavorite;
-    private readonly IFileTagService _fileTagService;
     private readonly ITagService _tagService;
     private Tag? _favoriteTag;
     private Tag? _rateTag;
@@ -36,33 +29,15 @@ internal partial class TagSearchVM : ObservableObject
     public partial string? SelectedComparator { get; set; }
 
     [ObservableProperty]
-    public partial IReadOnlyCollection<DelayItem>? UgoiraFrameDelays { get; set; }
-
-    [ObservableProperty]
-    public partial bool IsRateSet { get; set; }
-
-    [ObservableProperty]
     public partial Tag? SelectedHintBoxTag { get; set; }
 
     [ObservableProperty]
     public partial string? SelectedHintBoxValue { get; set; }
 
-    [ObservableProperty]
-    public partial bool ShowHotKeys { get; set; } = true;
-
-    [ObservableProperty]
-    private partial bool ForcedShowHotKeys { get; set; } = false;
-
-    [ObservableProperty]
-    public partial int? TagPixelWidth { get; set; }
-
-    [ObservableProperty]
-    public partial int? TagPixelHeight { get; set; }
-
     public TagSearchVM()
     {
-        _fileTagService = ServiceLocator.GetService<IFileTagService>();
         _tagService = ServiceLocator.GetService<ITagService>();
+        ServiceLocator.GetMessenger().RegisterAll(this);
 
         Collections.Add(new("All", null));
 
@@ -70,8 +45,6 @@ internal partial class TagSearchVM : ObservableObject
 
         ResetValueEnter();
     }
-
-    public ObservableCollection<TagSourceVM> CurrentTagsSources { get; } = [];
 
     public ObservableCollection<KeyValuePair<string, Guid?>> Collections { get; } = [];
 
@@ -160,46 +133,6 @@ internal partial class TagSearchVM : ObservableObject
 
     private Tag? EditedTag { get; set; }
 
-    public int Rate
-    {
-        get => _rate;
-        set
-        {
-            _rate = value;
-            OnPropertyChanged();
-
-            if (_lastListEntryId != null)
-            {
-                SetRate(value, _lastListEntryId.Value)
-                    .OnException(ex =>
-                    {
-                        App.MainWindowVM?.SetStatusError("Error while setting rate", ex.Message);
-                        Log.Error(ex, "Error while setting rate");
-                    });
-            }
-        }
-    }
-
-    public bool IsFavorite
-    {
-        get => _isFavorite;
-        set
-        {
-            _isFavorite = value;
-            OnPropertyChanged();
-
-            if (_lastListEntryId != null)
-            {
-                SetFavorite(value, _lastListEntryId.Value)
-                    .OnException(ex =>
-                    {
-                        App.MainWindowVM?.SetStatusError("Error while setting favorite", ex.Message);
-                        Log.Error(ex, "Error while setting favorite");
-                    });
-            }
-        }
-    }
-
     public void AddCollections(ObservableCollection<CollectionVM> collections)
     {
         Collections.Clear();
@@ -209,67 +142,6 @@ internal partial class TagSearchVM : ObservableObject
         {
             Collections.Add(new(collectionVm.Name, collectionVm.Id));
         }
-    }
-
-    public async Task UpdateCurrentTags(Guid? fileId)
-    {
-        if (fileId == null)
-        {
-            IsRateSet = false;
-            TagPixelWidth = null;
-            TagPixelHeight = null;
-
-            return;
-        }
-
-        var id = fileId.Value;
-
-        var tags = await _fileTagService.GetFileTags(id);
-
-        _lastListEntryId = id;
-
-        var tagVmsCollection = tags
-            .Select(x =>  new BindedTagVM(x, id, () => UpdateCurrentTags(_lastListEntryId)))
-            .ToList();
-
-        CurrentTagsSources.Clear();
-
-        var userTags = tagVmsCollection
-            .Where(x => x.Model.Source == FileTagSource.Manual)
-            .ToList();
-
-        if (userTags.Any())
-        {
-            CurrentTagsSources.Add(new TagSourceVM(
-                "User",
-                new ObservableCollection<BindedTagVM>(userTags
-                    .OrderBy(x => x.TypePriority)
-                    .ThenBy(x => x.Tag.Title))));
-        }
-
-        var parsedSources = tagVmsCollection.Select(x => x.Model.Source)
-            .Where(x => x != FileTagSource.Manual)
-            .OrderBy(x => x)
-            .Distinct();
-
-        foreach (var parsedSource in parsedSources)
-        {
-            CurrentTagsSources.Add(new TagSourceVM(
-                parsedSource.ToString(),
-                new ObservableCollection<BindedTagVM>(tagVmsCollection
-                    .Where(x => Settings.Default.ShowSystemTags || x.Tag.Type.Title != "LocalMeta")
-                    .Where(x => x.Model.Source == parsedSource)
-                    .OrderBy(x => x.TypePriority)
-                    .ThenBy(x => x.Tag.Title))));
-        }
-
-        GetFavorite(tags);
-        GetRate(tags);
-        GetUgoiraFrameData(tags);
-        GetPixelSize(tags);
-        IsRateSet = true;
-
-        SetShowHotKeys();
     }
 
     private async Task SearchTagsAsync(string searchString)
@@ -309,15 +181,8 @@ internal partial class TagSearchVM : ObservableObject
     }
 
     [RelayCommand]
-    private async Task SelectTag(object? param)
+    private async Task SelectTag(Tag tag)
     {
-        var tag = param as Tag;
-
-        if (tag == null)
-        {
-            return;
-        }
-
         if (tag.Title == "BooruPostId" && int.TryParse(SearchString, out var number))
         {
             var value = $"={number}";
@@ -363,11 +228,8 @@ internal partial class TagSearchVM : ObservableObject
     }
 
     [RelayCommand]
-    private void SelectTagValue(object? param)
+    private void SelectTagValue(string tagValue)
     {
-        if (param is not string tagValue)
-            return;
-
         if (ValueEnterMode)
         {
             EnteredValue = SilentValueEnterFlag + tagValue;
@@ -376,33 +238,8 @@ internal partial class TagSearchVM : ObservableObject
     }
 
     [RelayCommand]
-    private void ExploreTag(object? param)
+    private async Task SelectStaticTag(string staticMode)
     {
-        if (param is not BindedTagVM tag)
-            return;
-
-        var tagName = WebUtility.UrlEncode(tag.Title.Replace(" ", "_"));
-        Process.Start(new ProcessStartInfo($"https://danbooru.donmai.us/posts?tags={tagName}")
-            { UseShellExecute = true });
-    }
-
-    [RelayCommand]
-    private void DraftAddTag(BindedTagVM? tag)
-    {
-        if (tag != null)
-            OnDraftAddRequested(tag);
-    }
-
-    [RelayCommand]
-    private async Task SelectStaticTag(object? param)
-    {
-        var staticMode = param as string;
-
-        if (staticMode == null)
-        {
-            return;
-        }
-
         var favTag = await LoadFavoriteTag();
         var rateTag = await LoadRateTag();
 
@@ -465,15 +302,8 @@ internal partial class TagSearchVM : ObservableObject
     }
 
     [RelayCommand]
-    private void UnselectTag(object? param)
+    private void UnselectTag(SearchTagVM tag)
     {
-        var tag = param as SearchTagVM;
-
-        if (tag == null)
-        {
-            return;
-        }
-
         var tagInList = SelectedBindedTags.FirstOrDefault(x => x.Tag.Id == tag.Tag.Id && x.Value == tag.Value);
         if (tagInList != null)
         {
@@ -492,21 +322,15 @@ internal partial class TagSearchVM : ObservableObject
     }
 
     [RelayCommand]
-    private async Task EnterValueOk(object? obj)
+    private async Task EnterValueOk()
     {
-        await SelectTag(EditedTag);
+        if (EditedTag != null)
+            await SelectTag(EditedTag);
     }
 
     [RelayCommand]
-    private void InvertSearchType(object? param)
+    private void InvertSearchType(SearchTagVM tag)
     {
-        var tag = param as SearchTagVM;
-
-        if (tag == null)
-        {
-            return;
-        }
-
         var tagInList = SelectedBindedTags.FirstOrDefault(x => x.Tag.Id == tag.Tag.Id && x.Value == tag.Value);
         if (tagInList != null)
         {
@@ -518,88 +342,16 @@ internal partial class TagSearchVM : ObservableObject
         OnSelectedTagsUpdated();
     }
 
-    [RelayCommand]
-    private void SelectBindedTag(object? param)
+    public void Receive(SelectTagToSearchRequest request)
     {
-        var tag = param as BindedTagVM;
+        var (tag, value) = request;
+        value = value?.StartsWith('=') == false ? '=' + value : value;
 
-        if (tag == null)
+        if (SelectedBindedTags.All(x => x.Tag.Id != tag.Id || x.Value != value))
         {
-            return;
+            SelectedBindedTags.Add(new(new(tag, value)));
+            OnSelectedTagsUpdated();
         }
-
-        if (SelectedBindedTags.All(x => x.Tag.Id != tag.Tag.Id || x.Value != tag.Value))
-        {
-            SelectedBindedTags.Add(new SearchTagVM(new SearchTag(tag.Tag, tag.Value, SearchType.Include)));
-        }
-
-        OnSelectedTagsUpdated();
-    }
-
-    [RelayCommand]
-    private void ToggleShowHotKeys()
-    {
-        ForcedShowHotKeys = !ForcedShowHotKeys;
-        SetShowHotKeys();
-    }
-
-    private void SetShowHotKeys()
-    {
-        ShowHotKeys = ForcedShowHotKeys || CurrentTagsSources.None(x => x.Tags.Any());
-    }
-
-    private void GetRate(IReadOnlyCollection<FileTag> tags)
-    {
-        var rateTag = tags.FirstOrDefault(x => x.Tag is { Title: "Rate", HasValue: true });
-        
-        if (rateTag?.Value != null && int.TryParse(rateTag.Value, out var rate))
-        {
-            _rate = rate;
-        }
-        else
-        {
-            _rate = 0;
-        }
-
-        OnPropertyChanged(nameof(Rate));
-    }
-
-    private async Task SetRate(int value, Guid fileId)
-    {
-        await _fileTagService.SetRate(fileId, new Rate(value));
-    }
-
-    private void GetFavorite(IReadOnlyCollection<FileTag> tags)
-    {
-        var favTag = tags.FirstOrDefault(x => x.Tag.Title == "Favorite");
-        _isFavorite = favTag != null;
-        OnPropertyChanged(nameof(IsFavorite));
-    }
-
-    private void GetUgoiraFrameData(IReadOnlyCollection<FileTag> tags)
-    {
-        var frameDataTag = tags.FirstOrDefault(x => x.Tag.Title == "UgoiraFrameData");
-
-        if (frameDataTag == null || string.IsNullOrEmpty(frameDataTag.Value))
-            return;
-
-        var frameData = JsonConvert.DeserializeObject<UgoiraFrameData>(frameDataTag.Value)!;
-
-        UgoiraFrameDelays = frameData.Data.Select(x => new DelayItem(x.Delay, x.File)).ToList();
-    }
-
-    private void GetPixelSize(IReadOnlyCollection<FileTag> tags)
-    {
-        var widthTag = tags.FirstOrDefault(x => x.Tag is { Title: "width", HasValue: true });
-        var heightTag = tags.FirstOrDefault(x => x.Tag is { Title: "height", HasValue: true });
-
-        TagPixelWidth = widthTag?.Value != null && int.TryParse(widthTag.Value, out var width) ? width : null;
-        TagPixelHeight = heightTag?.Value != null && int.TryParse(heightTag.Value, out var height) ? height : null;
-    }
-
-    private async Task SetFavorite(bool value, Guid fileId)
-    {
-        await _fileTagService.SetFavorite(fileId, value);
     }
 
     public event EventHandler? SelectedTagsUpdated;
@@ -616,14 +368,6 @@ internal partial class TagSearchVM : ObservableObject
     {
         var handler = SelectedCollectionChanged;
         handler?.Invoke(this, EventArgs.Empty);
-    }
-
-    public event EventHandler<BindedTagVM>? DraftAddRequested;
-
-    private void OnDraftAddRequested(BindedTagVM tag)
-    {
-        var handler = DraftAddRequested;
-        handler?.Invoke(this, tag);
     }
 }
 
@@ -703,3 +447,5 @@ internal class UgoiraFrameData
         public required string File { get; set; }
     }
 }
+
+internal record SelectTagToSearchRequest(Tag Tag, string? Value);

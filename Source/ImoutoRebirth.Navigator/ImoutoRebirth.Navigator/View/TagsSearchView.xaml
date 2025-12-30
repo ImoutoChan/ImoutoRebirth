@@ -5,189 +5,115 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:metroControl="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
              xmlns:viewModel="clr-namespace:ImoutoRebirth.Navigator.ViewModel"
-             xmlns:local="clr-namespace:ImoutoRebirth.Navigator.View"
-             xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
-             xmlns:tz="http://schemas.abtsoftware.co.uk/transitionz"
              mc:Ignorable="d"
              d:DataContext="{d:DesignInstance viewModel:TagSearchVM, IsDesignTimeCreatable=False}"
              d:DesignHeight="300"
              d:DesignWidth="300"
              x:Name="Root">
     <Grid>
-        <Border Grid.Column="0"
-                BorderThickness="0,0,3,0"
-                BorderBrush="{DynamicResource MahApps.Brushes.Accent}">
-            <Grid>
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="Auto" />
-                    <RowDefinition Height="Auto" />
-                    <RowDefinition Height="Auto" />
-                    <RowDefinition Height="Auto" />
-                    <RowDefinition Height="Auto" />
-                    <RowDefinition Height="Auto" />
-                    <RowDefinition Height="Auto" />
-                    <RowDefinition Height="*" />
-                    <RowDefinition Height="Auto" />
-                    <RowDefinition Height="Auto" />
-                    <RowDefinition Height="Auto" />
-                    <RowDefinition Height="Auto" />
-                </Grid.RowDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
 
-                <ComboBox Margin="5"
-                          ItemsSource="{Binding Collections}"
-                          SelectedItem="{Binding SelectedCollection}"
-                          DisplayMemberPath="Key" />
+        <!-- select collection -->
+        <ComboBox Margin="5"
+                  ItemsSource="{Binding Collections}"
+                  SelectedItem="{Binding SelectedCollection}"
+                  DisplayMemberPath="Key" />
 
-                <TextBox x:Name="TagsSearchTextBox"
-                         Grid.Row="1"
-                         Margin="5"
-                         metroControl:TextBoxHelper.Watermark="Search for tags"
-                         FontSize="14"
-                         Text="{Binding Path=SearchString, UpdateSourceTrigger=PropertyChanged}"
-                         PreviewKeyDown="TextBox_KeyDown" />
+        <!-- search tag -->
+        <TextBox x:Name="TagsSearchTextBox"
+                 Grid.Row="1"
+                 Margin="5"
+                 metroControl:TextBoxHelper.Watermark="Search for tags"
+                 FontSize="14"
+                 Text="{Binding Path=SearchString, UpdateSourceTrigger=PropertyChanged}"
+                 PreviewKeyDown="TextBox_KeyDown" />
 
-                <Grid Grid.Row="2"
-                      Margin="5"
-                      Visibility="{Binding
-                           ValueEnterMode,
-                           Converter={StaticResource ConditionVisibilityConverter},
-                           ConverterParameter=true}">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="Auto" />
-                        <ColumnDefinition Width="*" />
-                        <ColumnDefinition Width="Auto" />
-                    </Grid.ColumnDefinitions>
+        <!-- enter tag value -->
+        <Grid Grid.Row="2"
+              Margin="5"
+              Visibility="{Binding
+                   ValueEnterMode,
+                   Converter={StaticResource ConditionVisibilityConverter},
+                   ConverterParameter=true}">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="Auto" />
+            </Grid.ColumnDefinitions>
 
-                    <ComboBox Grid.Column="0"
-                              Width="60"
-                              ItemsSource="{Binding Comparators}"
-                              SelectedItem="{Binding SelectedComparator}" />
+            <ComboBox Grid.Column="0"
+                      Width="60"
+                      ItemsSource="{Binding Comparators}"
+                      SelectedItem="{Binding SelectedComparator}" />
 
-                    <TextBox x:Name="TagValuesSearchTextBox"
-                             Grid.Column="1"
-                             Margin="5,0"
-                             Style="{DynamicResource MetroTextBox}"
-                             metroControl:TextBoxHelper.Watermark="Search available values"
-                             Padding="4"
-                             Text="{Binding EnteredValue, UpdateSourceTrigger=PropertyChanged}"
-                             PreviewKeyDown="EnteredValueTextBox_KeyDown" />
+            <TextBox x:Name="TagValuesSearchTextBox"
+                     Grid.Column="1"
+                     Margin="5,0"
+                     Style="{DynamicResource MetroTextBox}"
+                     metroControl:TextBoxHelper.Watermark="Search available values"
+                     Padding="4"
+                     Text="{Binding EnteredValue, UpdateSourceTrigger=PropertyChanged}"
+                     PreviewKeyDown="EnteredValueTextBox_KeyDown" />
 
-                    <Button Grid.Column="2"
-                            Width="60"
-                            Content="Ok"
-                            Command="{Binding EnterValueOkCommand}" />
-                </Grid>
+            <Button Grid.Column="2"
+                    Width="60"
+                    Content="Ok"
+                    Command="{Binding EnterValueOkCommand}" />
+        </Grid>
 
-                <!-- fav rate buttons -->
-                <StackPanel Grid.Row="3" Orientation="Horizontal">
-                    <Button
-                        Style="{StaticResource ButtonStyleDefault}"
-                        Margin="4"
-                        Command="{Binding
-                            RelativeSource={RelativeSource
-                                FindAncestor,
-                                AncestorType={x:Type UserControl}},
-                                Path=DataContext.SelectStaticTagCommand}"
-                        CommandParameter="Favorite">
-                        Fav
-                    </Button>
-                    <Button
-                        Style="{StaticResource ButtonStyleDefault}"
-                        Margin="5"
-                        Command="{Binding
-                            RelativeSource={RelativeSource
-                                FindAncestor,
-                                AncestorType={x:Type UserControl}},
-                                Path=DataContext.SelectStaticTagCommand}"
-                        CommandParameter="Rated5">
-                        Rated5
-                    </Button>
-                    <Button
-                        Style="{StaticResource ButtonStyleDefault}"
-                        Margin="5"
-                        Command="{Binding
-                            RelativeSource={RelativeSource
-                                FindAncestor,
-                                AncestorType={x:Type UserControl}},
-                                Path=DataContext.SelectStaticTagCommand}"
-                        CommandParameter="Rated4">
-                        Rated4
-                    </Button>
-                    <Button
-                        Style="{StaticResource ButtonStyleDefault}"
-                        Margin="4"
-                        Command="{Binding
-                            RelativeSource={RelativeSource
-                                FindAncestor,
-                                AncestorType={x:Type UserControl}},
-                                Path=DataContext.SelectStaticTagCommand}"
-                        CommandParameter="Unrated">
-                        Unrated
-                    </Button>
-                </StackPanel>
+        <!-- fav rate buttons -->
+        <StackPanel Grid.Row="3" Orientation="Horizontal">
+            <Button
+                Style="{StaticResource ButtonStyleDefault}"
+                Margin="4"
+                Command="{Binding SelectStaticTagCommand}"
+                CommandParameter="Favorite">
+                Fav
+            </Button>
 
-                <Border Grid.Row="4"
-                        BorderThickness="1"
-                        BorderBrush="{DynamicResource MahApps.Brushes.Accent}" />
+            <Button
+                Style="{StaticResource ButtonStyleDefault}"
+                Margin="5"
+                Command="{Binding SelectStaticTagCommand}"
+                CommandParameter="Rated5">
+                Rated5
+            </Button>
 
-                <ItemsControl x:Name="SelectedTags"
-                              Grid.Row="4"
-                              ItemsSource="{Binding Path=SelectedBindedTags, UpdateSourceTrigger=PropertyChanged}"
-                              ItemTemplate="{StaticResource SelectedBindedTagsElementDataTemplate}" />
+            <Button
+                Style="{StaticResource ButtonStyleDefault}"
+                Margin="5"
+                Command="{Binding SelectStaticTagCommand}"
+                CommandParameter="Rated4">
+                Rated4
+            </Button>
 
-                <Border Grid.Row="6"
-                        BorderThickness="1"
-                        BorderBrush="{DynamicResource MahApps.Brushes.Accent}" />
+            <Button
+                Style="{StaticResource ButtonStyleDefault}"
+                Margin="4"
+                Command="{Binding SelectStaticTagCommand}"
+                CommandParameter="Unrated">
+                Unrated
+            </Button>
+        </StackPanel>
 
-                <ScrollViewer Grid.Row="7"
-                              HorizontalScrollBarVisibility="Disabled"
-                              VerticalScrollBarVisibility="Auto">
-                    <ItemsControl x:Name="CurrentTags"
-                                  Margin="10"
-                                  ItemsSource="{Binding Path=CurrentTagsSources}"
-                                  ItemTemplate="{StaticResource CurrentTagsSourceDataTemplate}" />
-                </ScrollViewer>
-
-                <!-- Hot keys cheat sheet -->
-                <Border
-                    Grid.Row="7"
-                    Margin="34 5 5 26"
-                    Padding="0"
-                    HorizontalAlignment="Left"
-                    VerticalAlignment="Bottom"
-                    tz:Transitionz.Opacity="{tz:OpacityParams From='0.5', To='1', Duration=200, TransitionOn=Visibility}"
-                    tz:Transitionz.Translate="{tz:TranslateParams From='-10,10', To='0,0', Duration=200, TransitionOn=Visibility}"
-                    tz:Transitionz.Visibility="{Binding
-                        RelativeSource={RelativeSource
-                            FindAncestor,
-                            AncestorType={x:Type local:TagsSearchView}},
-                        Path=DataContext.ShowHotKeys,
-                        Converter={StaticResource ConditionVisibilityConverter},
-                        ConverterParameter=true}">
-
-                    <local:MainHotkeysView />
-                </Border>
-
-                <Button
-                    Grid.Row="7"
-                    Margin="5"
-                    HorizontalAlignment="Left"
-                    VerticalAlignment="Bottom"
-                    Width="24"
-                    Height="24"
-                    Style="{StaticResource MahApps.Styles.Button.Circle}"
-                    Background="{DynamicResource MahApps.Brushes.ThemeBackground}"
-                    Command="{Binding ToggleShowHotKeysCommand}"
-                    Visibility="{Binding Path=CurrentTagsSources.Count, Converter={StaticResource ConditionVisibilityConverter}, ConverterParameter='>0'}">
-                    <iconPacks:PackIconModern Width="14"
-                                              Height="14"
-                                              Kind="InputKeyboard"
-                                              Foreground="{DynamicResource MahApps.Brushes.ThemeForeground}"/>
-                </Button>
-            </Grid>
+        <!-- currently selected tags -->
+        <Border Grid.Row="4"
+                BorderThickness="0,3,0,0"
+                BorderBrush="{DynamicResource MahApps.Brushes.Accent}"
+                Visibility="{Binding SelectedBindedTags.Count, Converter={StaticResource ConditionVisibilityConverter}, ConverterParameter='>0'}">
+            <ItemsControl x:Name="SelectedTags"
+                          ItemsSource="{Binding Path=SelectedBindedTags, UpdateSourceTrigger=PropertyChanged}"
+                          ItemTemplate="{StaticResource SelectedBindedTagsElementDataTemplate}" />
         </Border>
 
-        <!-- hint box tags -->
+
+        <!-- search tags popup -->
         <Popup x:Name="TagsHintPopup"
                PlacementTarget="{Binding ElementName=TagsSearchTextBox}"
                Placement="Bottom"
@@ -224,7 +150,7 @@
             </Border>
         </Popup>
 
-        <!-- hint box tag values -->
+        <!-- search tag values popup -->
         <Popup x:Name="ValuesHintPopup"
                PlacementTarget="{Binding ElementName=TagValuesSearchTextBox}"
                Placement="Bottom"
@@ -253,11 +179,7 @@
                     <ItemsControl.ItemTemplate>
                         <DataTemplate>
                             <Button
-                                Command="{Binding 
-                                    RelativeSource={RelativeSource 
-                                        FindAncestor,
-                                        AncestorType={x:Type UserControl}},
-                                    Path=DataContext.SelectTagValueCommand}"
+                                Command="{Binding DataContext.SelectTagValueCommand, RelativeSource={RelativeSource AncestorType=ListBox}}"
                                 CommandParameter="{Binding}"
                                 HorizontalContentAlignment="Left">
                                 <Button.Template>

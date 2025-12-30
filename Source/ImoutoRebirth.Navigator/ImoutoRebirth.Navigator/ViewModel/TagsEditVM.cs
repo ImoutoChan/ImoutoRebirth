@@ -2,6 +2,7 @@
 using System.Collections.ObjectModel;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using CommunityToolkit.Mvvm.Messaging;
 using ImoutoRebirth.Common;
 using ImoutoRebirth.Navigator.Behaviors;
 using ImoutoRebirth.Navigator.Services;
@@ -13,13 +14,11 @@ using Tag = ImoutoRebirth.Navigator.Services.Tags.Model.Tag;
 
 namespace ImoutoRebirth.Navigator.ViewModel;
 
-internal partial class TagsEditVM : ObservableObject, IDropable
+internal partial class TagsEditVM : ObservableObject, IDropable, IRecipient<SelectTagInTagEditRequest>
 {
     private readonly IFileTagService _fileTagService;
     private readonly ITagService _tagService;
     private readonly MainWindowVM _parentVm;
-
-    private string? _searchText;
 
     [ObservableProperty]
     public partial CreateTagVM? CreateTagVM { get; set; }
@@ -35,6 +34,8 @@ internal partial class TagsEditVM : ObservableObject, IDropable
 
     public TagsEditVM(MainWindowVM parentVm)
     {
+        ServiceLocator.GetMessenger().RegisterAll(this);
+
         parentVm.PropertyChanged += (_, args) =>
         {
             if (args.PropertyName == nameof(MainWindowVM.SelectedEntries))
@@ -74,10 +75,10 @@ internal partial class TagsEditVM : ObservableObject, IDropable
 
     public string? SearchText
     {
-        get => _searchText;
+        get;
         set
         {
-            _searchText = value;
+            field = value;
             OnPropertyChanged();
             SearchTagsAsync();
         }
@@ -261,10 +262,11 @@ internal partial class TagsEditVM : ObservableObject, IDropable
             UsersTopTags.Add(new SearchTagVM(new SearchTag(tag, null)));
     }
 
-    public void DraftAddTag(BindedTagVM tag)
+    public void Receive(SelectTagInTagEditRequest request)
     {
+        var tag = request.Tag;
         var value = tag.Tag.IsCounter ? "Counter:1" : null;
-        
+
         var searchTagVm = new SearchTagVM(new SearchTag(tag.Tag, value));
 
         if (SelectedTags.Any(x => x.Tag.Id == searchTagVm.Tag.Id && x.Value == searchTagVm.Value))
@@ -272,7 +274,7 @@ internal partial class TagsEditVM : ObservableObject, IDropable
 
         SelectedTags.Add(searchTagVm);
     }
-    
+
     private async void SearchTagsAsync()
     {
         var searchPattern = SearchText;
@@ -320,3 +322,5 @@ internal partial class TagsEditVM : ObservableObject, IDropable
         }
     }
 }
+
+internal record SelectTagInTagEditRequest(BindedTagVM Tag);

@@ -95,13 +95,13 @@ internal partial class MainWindowVM : ObservableObject
         Title = DefaultTitle;
 
         TagSearchVM = new TagSearchVM();
+        CurrentFileTagsVM = new CurrentFileTagsVM();
         TagsEdit = new TagsEditVM(this);
         QuickTagging = new QuickTaggingVM(this);
         TagsMerge = new TagsMergeVM();
         
         TagSearchVM.SelectedTagsUpdated += TagSearchVM_SelectedTagsUpdated;
         TagSearchVM.SelectedCollectionChanged += TagSearchVMOnSelectedCollectionChanged;
-        TagSearchVM.DraftAddRequested += TagSearchVMOnDraftAddRequested;
 
         Settings.ShowPreviewOnSelectChanged += Settings_ShowPreviewOnSelectChanged;
 
@@ -131,7 +131,7 @@ internal partial class MainWindowVM : ObservableObject
         if (SelectedItem == null)
             return;
 
-        TagSearchVM.UpdateCurrentTags(SelectedItem.DbId)
+        CurrentFileTagsVM.UpdateCurrentTags(SelectedItem.DbId)
             .OnException(ex =>
             {
                 App.MainWindowVM?.SetStatusError("Error while updating current tags", ex.Message);
@@ -149,6 +149,8 @@ internal partial class MainWindowVM : ObservableObject
     public NotifyCollectionChangedSynchronizedViewList<INavigatorListEntry> NavigatorListView { get; }
 
     public TagSearchVM TagSearchVM { get; set; }
+
+    public CurrentFileTagsVM CurrentFileTagsVM { get; set; }
 
     public CollectionManagerVm CollectionManager { get; } = new();
 
@@ -573,8 +575,6 @@ internal partial class MainWindowVM : ObservableObject
     private async void TagSearchVM_SelectedTagsUpdated(object? sender, EventArgs e) => await Refresh();
 
     private async void TagSearchVMOnSelectedCollectionChanged(object? sender, EventArgs eventArgs) => await Refresh();
-
-    private void TagSearchVMOnDraftAddRequested(object? sender, BindedTagVM tag) => TagsEdit.DraftAddTag(tag);
 
     private void Settings_ShowPreviewOnSelectChanged(object? sender, EventArgs e) => OnPropertyChanged(nameof(ShowPreview));
 }
