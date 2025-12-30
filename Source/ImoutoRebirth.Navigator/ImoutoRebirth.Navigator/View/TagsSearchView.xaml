@@ -11,7 +11,8 @@
              mc:Ignorable="d"
              d:DataContext="{d:DesignInstance viewModel:TagSearchVM, IsDesignTimeCreatable=False}"
              d:DesignHeight="300"
-             d:DesignWidth="300">
+             d:DesignWidth="300"
+             x:Name="Root">
     <Grid>
         <Border Grid.Column="0"
                 BorderThickness="0,0,3,0"
@@ -37,7 +38,8 @@
                           SelectedItem="{Binding SelectedCollection}"
                           DisplayMemberPath="Key" />
 
-                <TextBox Grid.Row="1"
+                <TextBox x:Name="TagsSearchTextBox"
+                         Grid.Row="1"
                          Margin="5"
                          metroControl:TextBoxHelper.Watermark="Search for tags"
                          FontSize="14"
@@ -61,7 +63,8 @@
                               ItemsSource="{Binding Comparators}"
                               SelectedItem="{Binding SelectedComparator}" />
 
-                    <TextBox Grid.Column="1"
+                    <TextBox x:Name="TagValuesSearchTextBox"
+                             Grid.Column="1"
                              Margin="5,0"
                              Style="{DynamicResource MetroTextBox}"
                              metroControl:TextBoxHelper.Watermark="Search available values"
@@ -185,93 +188,105 @@
         </Border>
 
         <!-- hint box tags -->
-        <Border Grid.Column="0"
-                BorderThickness="1"
-                BorderBrush="{DynamicResource MahApps.Brushes.Accent}"
-                HorizontalAlignment="Stretch"
-                VerticalAlignment="Top"
-                Margin="5,68,8,0"
-                Visibility="{Binding
-                    HintBoxTags.Count,
-                    Converter={StaticResource ConditionVisibilityConverter},
-                    ConverterParameter=!0}">
-
-            <ListBox x:Name="HintListBox"
-                     ItemsSource="{Binding HintBoxTags}"
-                     SelectedItem="{Binding SelectedHintBoxTag}"
-                     Padding="0"
-                     ItemContainerStyle="{StaticResource SearchHintListBoxItemContainerStyle}"
-                     ScrollViewer.CanContentScroll="False"
-                     ScrollViewer.HorizontalScrollBarVisibility="Disabled"
-                     VirtualizingPanel.ScrollUnit="Item">
-                <ItemsControl.ItemTemplate>
-                    <DataTemplate>
-                        <Button Command="{Binding RelativeSource={RelativeSource FindAncestor,
-                                                                             AncestorType={x:Type UserControl}},
-                                                                             Path=DataContext.SelectTagCommand}"
-                                CommandParameter="{Binding}"
-                                Template="{StaticResource TagElementControlTemplate}"
-                                HorizontalContentAlignment="Left" />
-                    </DataTemplate>
-                </ItemsControl.ItemTemplate>
-            </ListBox>
-        </Border>
+        <Popup x:Name="TagsHintPopup"
+               PlacementTarget="{Binding ElementName=TagsSearchTextBox}"
+               Placement="Bottom"
+               StaysOpen="False"
+               AllowsTransparency="True"
+               PopupAnimation="Fade"
+               IsOpen="{Binding
+                        HintBoxTags.Count,
+                        Converter={StaticResource BooleanResultConverter},
+                        ConverterParameter=!0,
+                        Mode=OneWay}">
+            <Border BorderThickness="1"
+                    BorderBrush="{DynamicResource MahApps.Brushes.Accent}"
+                    Background="{DynamicResource MahApps.Brushes.ThemeBackground}"
+                    MinWidth="{Binding ElementName=TagsSearchTextBox, Path=ActualWidth}">
+                <ListBox x:Name="HintListBox"
+                         DataContext="{Binding ElementName=Root, Path=DataContext}"
+                         ItemsSource="{Binding HintBoxTags}"
+                         SelectedItem="{Binding SelectedHintBoxTag}"
+                         Padding="0"
+                         ItemContainerStyle="{StaticResource SearchHintListBoxItemContainerStyle}"
+                         ScrollViewer.CanContentScroll="False"
+                         ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                         VirtualizingPanel.ScrollUnit="Item">
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <Button Command="{Binding DataContext.SelectTagCommand, RelativeSource={RelativeSource AncestorType=ListBox}}"
+                                    CommandParameter="{Binding}"
+                                    Template="{StaticResource TagElementControlTemplate}"
+                                    HorizontalContentAlignment="Left" />
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ListBox>
+            </Border>
+        </Popup>
 
         <!-- hint box tag values -->
-        <Border Grid.Column="0"
+        <Popup x:Name="ValuesHintPopup"
+               PlacementTarget="{Binding ElementName=TagValuesSearchTextBox}"
+               Placement="Bottom"
+               StaysOpen="False"
+               AllowsTransparency="True"
+               PopupAnimation="Fade"
+               IsOpen="{Binding
+                        HintBoxValues.Count,
+                        Converter={StaticResource BooleanResultConverter},
+                        ConverterParameter=!0,
+                        Mode=OneWay}">
+            <Border 
                 BorderThickness="1"
                 BorderBrush="{DynamicResource MahApps.Brushes.Accent}"
-                HorizontalAlignment="Stretch"
-                VerticalAlignment="Top"
-                Margin="70,107,73,0"
-                Visibility="{Binding
-                    HintBoxValues.Count,
-                    Converter={StaticResource ConditionVisibilityConverter},
-                    ConverterParameter=!0}">
-            <ListBox x:Name="ValuesHintListBox"
-                     ItemsSource="{Binding HintBoxValues}"
-                     SelectedItem="{Binding SelectedHintBoxValue}"
-                     Padding="0"
-                     ItemContainerStyle="{StaticResource SearchHintListBoxItemContainerStyle}"
-                     ScrollViewer.CanContentScroll="False"
-                     ScrollViewer.HorizontalScrollBarVisibility="Disabled"
-                     VirtualizingPanel.ScrollUnit="Item">
-                <ItemsControl.ItemTemplate>
-                    <DataTemplate>
-                        <Button
-                            Command="{Binding 
-                                RelativeSource={RelativeSource 
-                                    FindAncestor,
-                                    AncestorType={x:Type UserControl}},
-                                Path=DataContext.SelectTagValueCommand}"
-                            CommandParameter="{Binding}"
-                            HorizontalContentAlignment="Left">
-                            <Button.Template>
-                                <ControlTemplate>
-                                    <DockPanel LastChildFill="True"
-                                               Cursor="Hand">
-                                        <Label Background="Transparent"
-                                               x:Name="label"
-                                               HorizontalContentAlignment="Stretch"
-                                               Padding="10,4,5,2">
-                                            <Label.Content>
-                                                <TextBlock TextAlignment="Left"
-                                                           VerticalAlignment="Center">
-                                                    <Run Text="{Binding Mode=OneWay}"
-                                                         Foreground="{DynamicResource MahApps.Brushes.Accent}"
-                                                         FontFamily="Comic Sans MS"
-                                                         FontSize="13"
-                                                         FontWeight="Bold" />
-                                                </TextBlock>
-                                            </Label.Content>
-                                        </Label>
-                                    </DockPanel>
-                                </ControlTemplate>
-                            </Button.Template>
-                        </Button>
-                    </DataTemplate>
-                </ItemsControl.ItemTemplate>
-            </ListBox>
-        </Border>
+                Background="{DynamicResource MahApps.Brushes.ThemeBackground}"
+                MinWidth="{Binding ElementName=TagValuesSearchTextBox, Path=ActualWidth}">
+                <ListBox x:Name="ValuesHintListBox"
+                         DataContext="{Binding ElementName=Root, Path=DataContext}"
+                         ItemsSource="{Binding HintBoxValues}"
+                         SelectedItem="{Binding SelectedHintBoxValue}"
+                         Padding="0"
+                         ItemContainerStyle="{StaticResource SearchHintListBoxItemContainerStyle}"
+                         ScrollViewer.CanContentScroll="False"
+                         ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                         VirtualizingPanel.ScrollUnit="Item">
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <Button
+                                Command="{Binding 
+                                    RelativeSource={RelativeSource 
+                                        FindAncestor,
+                                        AncestorType={x:Type UserControl}},
+                                    Path=DataContext.SelectTagValueCommand}"
+                                CommandParameter="{Binding}"
+                                HorizontalContentAlignment="Left">
+                                <Button.Template>
+                                    <ControlTemplate>
+                                        <DockPanel LastChildFill="True"
+                                                   Cursor="Hand">
+                                            <Label Background="Transparent"
+                                                   x:Name="label"
+                                                   HorizontalContentAlignment="Stretch"
+                                                   Padding="10,4,5,2">
+                                                <Label.Content>
+                                                    <TextBlock TextAlignment="Left"
+                                                               VerticalAlignment="Center">
+                                                        <Run Text="{Binding Mode=OneWay}"
+                                                             Foreground="{DynamicResource MahApps.Brushes.Accent}"
+                                                             FontFamily="Comic Sans MS"
+                                                             FontSize="13"
+                                                             FontWeight="Bold" />
+                                                    </TextBlock>
+                                                </Label.Content>
+                                            </Label>
+                                        </DockPanel>
+                                    </ControlTemplate>
+                                </Button.Template>
+                            </Button>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ListBox>
+            </Border>
+        </Popup>
     </Grid>
 </UserControl>
