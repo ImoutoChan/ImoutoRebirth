@@ -4,6 +4,7 @@
 * NEW FEATURE Integrity reports (Settings => Integrity Reports) will anylize your collections for missing or corrupted files
 * Significantly improved video slider seek experience
 * Redesign FileInfo view
+* Add basic browser-like navigation for your searches (back/forward buttons)
 
 ### Infrastructure
 * Migrated to .NET 10 runtime
@@ -22,6 +23,7 @@
 * Fix updater error if temp folder no longer exists
 * Search by tag values
 * Reset last played position when playing in the last 10% of the video
+* Add basic browser-like navigation for your searches (back/forward buttons)
 
 # v4.29.1
 

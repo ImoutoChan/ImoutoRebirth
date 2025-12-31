@@ -1,4 +1,5 @@
-﻿using System.Windows.Controls;
+﻿using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Input;
 using ImoutoRebirth.Navigator.ViewModel;
 
@@ -82,5 +83,18 @@ public partial class TagsSearchView : UserControl
             ((TagSearchVM)DataContext).SelectTagValueCommand.Execute(ValuesHintListBox.SelectedItem);
             e.Handled = true;
         }
+    }
+
+    private void EnterValueGrid_OnIsVisibleChanged(object _, DependencyPropertyChangedEventArgs e)
+    {
+        if (e.NewValue is not true) 
+            return;
+
+        Dispatcher.BeginInvoke(System.Windows.Threading.DispatcherPriority.Input, () =>
+        {
+            TagValuesSearchTextBox.Focus();
+            Keyboard.Focus(TagValuesSearchTextBox);
+            TagValuesSearchTextBox.SelectAll();
+        });
     }
 }

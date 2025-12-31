@@ -5,7 +5,9 @@
                     xmlns:viewModel="clr-namespace:ImoutoRebirth.Navigator.ViewModel"
                     xmlns:Imouto.Navigator="clr-namespace:ImoutoRebirth.Navigator"
                     xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
-                    xmlns:converters="clr-namespace:ImoutoRebirth.Common.WPF.Converters;assembly=ImoutoRebirth.Common.WPF">
+                    xmlns:converters="clr-namespace:ImoutoRebirth.Common.WPF.Converters;assembly=ImoutoRebirth.Common.WPF"
+                    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+                    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" mc:Ignorable="d">
     <ResourceDictionary.MergedDictionaries>
         <ResourceDictionary Source="Resources/Icons.xaml" />
     </ResourceDictionary.MergedDictionaries>
@@ -49,7 +51,8 @@
         <Label Background="{TemplateBinding Background}"
                x:Name="label"
                HorizontalContentAlignment="Stretch"
-               Padding="10,4,5,2">
+               Padding="10,4,5,2" 
+               d:DataContext="{d:DesignInstance Type=viewModel:SearchTagVM}">
             <Label.Content>
                 <TextBlock TextAlignment="Left"
                            VerticalAlignment="Center"
@@ -59,8 +62,12 @@
                          FontFamily="Comic Sans MS"
                          FontSize="13"
                          FontWeight="Bold" />
+
                     <Run Text="{Binding Tag.Count, StringFormat=' ({0})', Mode=OneWay}"
+                         FontSize="13"
+                         FontWeight="Regular"
                          Foreground="{StaticResource MahApps.Brushes.Gray3}"/>
+
                     <Run Text="{Binding ValueView, Mode=OneWay}"
                          wpfHelpers:RunVisibility.Visible="{Binding Value, Converter={StaticResource BooleanResultConverter}, ConverterParameter=!null}" />
                 </TextBlock>

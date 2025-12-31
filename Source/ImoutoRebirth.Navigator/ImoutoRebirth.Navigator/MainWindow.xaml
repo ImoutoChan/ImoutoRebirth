@@ -888,21 +888,25 @@
             </Border>
 
 
-            <fileInfo:FileInfoNiceView 
+            <Border 
                 Grid.Column="0"
                 Grid.Row="2"
-                MinWidth="200"
-                MaxWidth="298"
-                DataContext="{Binding FileInfoVM}">
-                <fileInfo:FileInfoNiceView.Visibility>
-                    <MultiBinding Converter="{StaticResource MultiBooleanVisibilityConverter}">
-                        <Binding Path="HasValue" Mode="OneWay" />
-                        <Binding Path="DataContext.ShowTags"
-                                 RelativeSource="{RelativeSource Mode=FindAncestor, AncestorType={x:Type metroControl:MetroWindow}}"
-                                 Mode="OneWay" />
-                    </MultiBinding>
-                </fileInfo:FileInfoNiceView.Visibility>
-            </fileInfo:FileInfoNiceView>
+                BorderThickness="0,3,3,0"
+                BorderBrush="{DynamicResource MahApps.Brushes.Accent}">
+                <fileInfo:FileInfoNiceView 
+                    MinWidth="200"
+                    MaxWidth="298"
+                    DataContext="{Binding FileInfoVM}">
+                    <fileInfo:FileInfoNiceView.Visibility>
+                        <MultiBinding Converter="{StaticResource MultiBooleanVisibilityConverter}">
+                            <Binding Path="HasValue" Mode="OneWay" />
+                            <Binding Path="DataContext.ShowTags"
+                                     RelativeSource="{RelativeSource Mode=FindAncestor, AncestorType={x:Type metroControl:MetroWindow}}"
+                                     Mode="OneWay" />
+                        </MultiBinding>
+                    </fileInfo:FileInfoNiceView.Visibility>
+                    </fileInfo:FileInfoNiceView>
+            </Border>
 
             <view:StatusBarView Grid.Row="3"
                                 Grid.Column="0"

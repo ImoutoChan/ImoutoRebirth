@@ -5,6 +5,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:metroControl="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
              xmlns:viewModel="clr-namespace:ImoutoRebirth.Navigator.ViewModel"
+             xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
              mc:Ignorable="d"
              d:DataContext="{d:DesignInstance viewModel:TagSearchVM, IsDesignTimeCreatable=False}"
              d:DesignHeight="300"
@@ -20,10 +21,44 @@
         </Grid.RowDefinitions>
 
         <!-- select collection -->
-        <ComboBox Margin="5"
-                  ItemsSource="{Binding Collections}"
-                  SelectedItem="{Binding SelectedCollection}"
-                  DisplayMemberPath="Key" />
+        <Grid
+            Margin="5,5,5,0"
+            HorizontalAlignment="Stretch">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+
+            <Button Grid.Column="0"
+                    Command="{Binding BackToPrevSearchCommand}"
+                    Width="25"
+                    Height="25"
+                    Style="{DynamicResource MahApps.Styles.Button.Circle}"
+                    HorizontalAlignment="Left">
+                <iconPacks:PackIconModern Width="10"
+                                          Height="10"
+                                          Kind="ArrowLeft" />
+            </Button>
+
+            <Button Grid.Column="1"
+                    Margin="5,0,0,0"
+                    Command="{Binding ForwardToNextSearchCommand}"
+                    Width="25"
+                    Height="25"
+                    Style="{DynamicResource MahApps.Styles.Button.Circle}"
+                    HorizontalAlignment="Left">
+                <iconPacks:PackIconModern Width="10"
+                                          Height="10"
+                                          Kind="ArrowRight" />
+            </Button>
+
+            <ComboBox Grid.Column="2"
+                      Margin="8,0,0,0"
+                      HorizontalAlignment="Stretch" ItemsSource="{Binding Collections}"
+                      SelectedItem="{Binding SelectedCollection}"
+                      DisplayMemberPath="Key" />
+        </Grid>
 
         <!-- search tag -->
         <TextBox x:Name="TagsSearchTextBox"
@@ -40,7 +75,8 @@
               Visibility="{Binding
                    ValueEnterMode,
                    Converter={StaticResource ConditionVisibilityConverter},
-                   ConverterParameter=true}">
+                   ConverterParameter=true}"
+              IsVisibleChanged="EnterValueGrid_OnIsVisibleChanged">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="Auto" />
                 <ColumnDefinition Width="*" />
@@ -56,10 +92,10 @@
                      Grid.Column="1"
                      Margin="5,0"
                      Style="{DynamicResource MetroTextBox}"
-                     metroControl:TextBoxHelper.Watermark="Search available values"
+                     metroControl:TextBoxHelper.Watermark="Search for values"
                      Padding="4"
                      Text="{Binding EnteredValue, UpdateSourceTrigger=PropertyChanged}"
-                     PreviewKeyDown="EnteredValueTextBox_KeyDown" />
+                     PreviewKeyDown="EnteredValueTextBox_KeyDown"/>
 
             <Button Grid.Column="2"
                     Width="60"

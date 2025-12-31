@@ -9,6 +9,8 @@ using ImoutoRebirth.Navigator.ViewModel.SettingsSlice;
 using Newtonsoft.Json;
 using Serilog;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
+using ImoutoRebirth.Common;
 using SearchType = ImoutoRebirth.Navigator.Services.Tags.Model.SearchType;
 using Tag = ImoutoRebirth.Navigator.Services.Tags.Model.Tag;
 
@@ -21,6 +23,9 @@ internal partial class TagSearchVM : ObservableObject, IRecipient<SelectTagToSea
     private readonly ITagService _tagService;
     private Tag? _favoriteTag;
     private Tag? _rateTag;
+
+    private TagSearchHistory _history = new();
+    private KeyValuePair<string, Guid?> _selectedCollection;
 
     [ObservableProperty]
     public partial bool ValueEnterMode { get; set; }
@@ -40,7 +45,6 @@ internal partial class TagSearchVM : ObservableObject, IRecipient<SelectTagToSea
         ServiceLocator.GetMessenger().RegisterAll(this);
 
         Collections.Add(new("All", null));
-
         SelectedCollection = Collections.First();
 
         ResetValueEnter();
@@ -50,10 +54,10 @@ internal partial class TagSearchVM : ObservableObject, IRecipient<SelectTagToSea
 
     public KeyValuePair<string, Guid?> SelectedCollection
     {
-        get;
+        get => _selectedCollection;
         set
         {
-            field = value;
+            _selectedCollection = value;
             OnPropertyChanged();
             OnSelectedCollectionChanged();
         }
@@ -138,10 +142,9 @@ internal partial class TagSearchVM : ObservableObject, IRecipient<SelectTagToSea
         Collections.Clear();
         Collections.Add(new("All", null));
         SelectedCollection = Collections.First();
-        foreach (var collectionVm in collections)
-        {
+        
+        foreach (var collectionVm in collections) 
             Collections.Add(new(collectionVm.Name, collectionVm.Id));
-        }
     }
 
     private async Task SearchTagsAsync(string searchString)
@@ -342,6 +345,48 @@ internal partial class TagSearchVM : ObservableObject, IRecipient<SelectTagToSea
         OnSelectedTagsUpdated();
     }
 
+    [RelayCommand(CanExecute = nameof(IsPrevSearchAvailable))]
+    private void BackToPrevSearch()
+    {
+        var prevSearch = _history.Back();
+        if (prevSearch == null)
+            return;
+
+        _selectedCollection = prevSearch.SelectedCollection;
+        OnPropertyChanged(nameof(SelectedCollection));
+
+        SelectedBindedTags.SortList(prevSearch.SelectedTags);
+
+        SearchString = string.Empty;
+        OnSelectedTagsUpdated(saveToHistory: false);
+
+        ForwardToNextSearchCommand.NotifyCanExecuteChanged();
+        BackToPrevSearchCommand.NotifyCanExecuteChanged();
+    }
+
+    private bool IsPrevSearchAvailable() => _history.CanBack();
+
+    [RelayCommand(CanExecute = nameof(IsNextSearchAvailable))]
+    private void ForwardToNextSearch()
+    {
+        var nextSearch = _history.Forward();
+        if (nextSearch == null)
+            return;
+
+        _selectedCollection = nextSearch.SelectedCollection;
+        OnPropertyChanged(nameof(SelectedCollection));
+
+        SelectedBindedTags.SortList(nextSearch.SelectedTags);
+
+        SearchString = string.Empty;
+        OnSelectedTagsUpdated(saveToHistory: false);
+
+        ForwardToNextSearchCommand.NotifyCanExecuteChanged();
+        BackToPrevSearchCommand.NotifyCanExecuteChanged();
+    }
+
+    private bool IsNextSearchAvailable() => _history.CanForward();
+
     public void Receive(SelectTagToSearchRequest request)
     {
         var (tag, value) = request;
@@ -356,8 +401,15 @@ internal partial class TagSearchVM : ObservableObject, IRecipient<SelectTagToSea
 
     public event EventHandler? SelectedTagsUpdated;
 
-    private void OnSelectedTagsUpdated()
+    private void OnSelectedTagsUpdated(bool saveToHistory = true)
     {
+        if (saveToHistory)
+        {
+            _history.Save(SelectedCollection, SelectedBindedTags);
+            ForwardToNextSearchCommand.NotifyCanExecuteChanged();
+            BackToPrevSearchCommand.NotifyCanExecuteChanged();
+        }
+
         var handler = SelectedTagsUpdated;
         handler?.Invoke(this, EventArgs.Empty);
     }
@@ -366,6 +418,10 @@ internal partial class TagSearchVM : ObservableObject, IRecipient<SelectTagToSea
 
     private void OnSelectedCollectionChanged()
     {
+        _history.Save(SelectedCollection, SelectedBindedTags);
+        ForwardToNextSearchCommand.NotifyCanExecuteChanged();
+        BackToPrevSearchCommand.NotifyCanExecuteChanged();
+
         var handler = SelectedCollectionChanged;
         handler?.Invoke(this, EventArgs.Empty);
     }
@@ -449,3 +505,64 @@ internal class UgoiraFrameData
 }
 
 internal record SelectTagToSearchRequest(Tag Tag, string? Value);
+
+internal class TagSearchHistory
+{
+    private readonly Stack<TagSearchHistoryItem> _history = new();
+    private int _currentDepth = 0;
+
+    public void Save(
+        KeyValuePair<string, Guid?> selectedCollection,
+        IReadOnlyCollection<SearchTagVM> selectedTags)
+    {
+        for (var i = 0; i < _currentDepth; i++) 
+            _history.Pop();
+        _currentDepth = 0;
+
+        if (_history.TryPeek(out var topValue))
+        {
+            var alreadyPushed
+                = topValue.SelectedCollection.Value == selectedCollection.Value
+                  && topValue.SelectedTags.Count == selectedTags.Count
+                  && topValue.SelectedTags.All(x => selectedTags.Any(y => x.Tag.Id == y.Tag.Id && x.Value == y.Value));
+
+            if (alreadyPushed)
+                return;
+        }
+
+        _history.Push(new(selectedCollection, selectedTags.ToList()));
+    }
+
+    public TagSearchHistoryItem? Back()
+    {
+        if (_currentDepth + 1 >= _history.Count)
+            return null;
+
+        _currentDepth++;
+        return _history.ElementAt(_currentDepth);
+    }
+
+    public TagSearchHistoryItem? Forward()
+    {
+        if (_currentDepth - 1 < 0)
+            return null;
+
+        _currentDepth--;
+        return _history.ElementAt(_currentDepth);
+    }
+
+    public bool CanForward() => _currentDepth > 0;
+
+    public bool CanBack() => _currentDepth < _history.Count - 1;
+}
+
+[DebuggerDisplay("{Preview}")]
+internal record TagSearchHistoryItem(
+    KeyValuePair<string, Guid?> SelectedCollection,
+    IReadOnlyCollection<SearchTagVM> SelectedTags)
+{
+    public string Preview => SelectedCollection.Key
+                             + " ["
+                             + SelectedTags.Select(x => x.Tag.Title + " " + x.Value).JoinStrings(", ")
+                             + "]";
+}
