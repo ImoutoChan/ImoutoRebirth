@@ -6,37 +6,37 @@ using Quartz;
 
 namespace ImoutoRebirth.Lilin.UI.Quartz;
 
-public class RecalculateTagsCountersJob : IJob
+public class DeleteEmptyLocationTagsJob : IJob
 {
     private readonly IMediator _mediator;
 
-    public RecalculateTagsCountersJob(IMediator mediator) => _mediator = mediator;
+    public DeleteEmptyLocationTagsJob(IMediator mediator) => _mediator = mediator;
 
-    public Task Execute(IJobExecutionContext context) => _mediator.Send(new UpdateTagsCountersCommand());
+    public Task Execute(IJobExecutionContext context) => _mediator.Send(new DeleteEmptyLocationTagsCommand());
 
     public class Description : IQuartzJobDescription
     {
         private readonly int _repeatEveryMinutes;
 
-        public Description(IOptions<RecalculateTagCountersSettings> options)
+        public Description(IOptions<DeleteEmptyLocationTagsSettings> options)
         {
             _repeatEveryMinutes = options.Value.RepeatEveryMinutes;
         }
 
         public IJobDetail GetJobDetails()
-            => JobBuilder.Create<RecalculateTagsCountersJob>()
-                .WithIdentity("Recalculate tags counters")
+            => JobBuilder.Create<DeleteEmptyLocationTagsJob>()
+                .WithIdentity("Delete empty location tags")
                 .Build();
 
         public ITrigger GetJobTrigger()
             => TriggerBuilder.Create()
-                .WithIdentity("Recalculate tags counters trigger")
+                .WithIdentity("Delete empty location tags trigger")
                 .WithSchedule(SimpleScheduleBuilder.RepeatMinutelyForever(_repeatEveryMinutes))
                 .Build();
     }
 }
 
-public class RecalculateTagCountersSettings
+public class DeleteEmptyLocationTagsSettings
 {
-    public int RepeatEveryMinutes { get; set; } = 5;
+    public int RepeatEveryMinutes { get; set; } = 15;
 }

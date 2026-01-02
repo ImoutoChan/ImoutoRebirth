@@ -8,10 +8,10 @@ using CreateTagCommand = ImoutoRebirth.Lilin.Application.TagSlice.CreateTagComma
 namespace ImoutoRebirth.Lilin.IntegrationTests;
 
 [Collection("WebApplication")]
-public class UpdateTagsCountersCommandTests(TestWebApplicationFactory<Program> _webApp)
+public class DeleteEmptyLocationTagsCommandTests(TestWebApplicationFactory<Program> _webApp)
 {
     [Fact]
-    public async Task UpdateTagsCountersCommand()
+    public async Task DeleteEmptyLocationTagsCommand()
     {
         // arrange
         using var scope = _webApp.GetScope();
@@ -26,10 +26,11 @@ public class UpdateTagsCountersCommandTests(TestWebApplicationFactory<Program> _
         var file5Id = Guid.NewGuid();
 
         var types = await httpClient.GetFromJsonAsync<IReadOnlyCollection<TagType>>("/tags/types");
-        var newTag1 = await CreateNewTag(httpClient, types, "1girl");
-        var newTag2 = await CreateNewTag(httpClient, types, "2girl");
-        var newTag3 = await CreateNewTag(httpClient, types, "solo");
-        var newTag4 = await CreateNewTag(httpClient, types, "blue hair");
+        var newTag1 = await CreateNewTag(httpClient, "subfolder1", types, "Location");
+        var newTag2 = await CreateNewTag(httpClient, "subfolder2", types, "Location");
+        var newTag3 = await CreateNewTag(httpClient, "subfolder3", types, "Location");
+        var newTag4 = await CreateNewTag(httpClient, "subfolder4", types, "Location");
+        var newTag5 = await CreateNewTag(httpClient, "filename", types, "Location");
 
         await httpClient.PostAsJsonAsync("/files/tags", new BindTagsCommand(
         [
@@ -37,7 +38,6 @@ public class UpdateTagsCountersCommandTests(TestWebApplicationFactory<Program> _
             new(file1Id, MetadataSource.Manual, newTag3.Id, null),
             new(file1Id, MetadataSource.Manual, newTag4.Id, null),
 
-            new(file2Id, MetadataSource.Manual, newTag2.Id, null),
             new(file2Id, MetadataSource.Manual, newTag4.Id, null),
             
             new(file3Id, MetadataSource.Manual, newTag1.Id, null),
@@ -46,30 +46,28 @@ public class UpdateTagsCountersCommandTests(TestWebApplicationFactory<Program> _
             new(file4Id, MetadataSource.Manual, newTag3.Id, null),
             new(file4Id, MetadataSource.Manual, newTag4.Id, null),
 
-            new(file5Id, MetadataSource.Manual, newTag2.Id, null),
+            new(file5Id, MetadataSource.Manual, newTag5.Id, null),
         ], SameTagHandleStrategy.ReplaceExistingValue));
         
         // act
-        await mediator.Send(new UpdateTagsCountersCommand());
+        await mediator.Send(new DeleteEmptyLocationTagsCommand());
 
         // assert
-        var tag1 = context.Tags.First(x => x.Id == newTag1.Id);
-        tag1.Count.Should().Be(2);
-        var tag2 = context.Tags.First(x => x.Id == newTag2.Id);
-        tag2.Count.Should().Be(2);
-        var tag3 = context.Tags.First(x => x.Id == newTag3.Id);
-        tag3.Count.Should().Be(3);
-        var tag4 = context.Tags.First(x => x.Id == newTag4.Id);
-        tag4.Count.Should().Be(3);
+        context.Tags.Any(x => x.Id == newTag1.Id).Should().BeTrue();
+        context.Tags.Any(x => x.Id == newTag2.Id).Should().BeFalse();
+        context.Tags.Any(x => x.Id == newTag3.Id).Should().BeTrue();
+        context.Tags.Any(x => x.Id == newTag4.Id).Should().BeTrue();
+        context.Tags.Any(x => x.Id == newTag5.Id).Should().BeTrue();
     }
     
     private static async Task<Tag> CreateNewTag(
         HttpClient client,
-        IReadOnlyCollection<TagType>? types,
         string namePrefix,
+        IReadOnlyCollection<TagType>? types,
+        string type = "General",
         bool hasValue = false)
     {
-        var typeId = types!.First(x => x.Name == "General").Id;
+        var typeId = types!.First(x => x.Name == type).Id;
         return await client
             .PostAsJsonAsync(
                 "/tags",

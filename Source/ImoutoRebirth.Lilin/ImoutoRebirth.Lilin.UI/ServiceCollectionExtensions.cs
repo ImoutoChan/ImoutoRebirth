@@ -14,10 +14,14 @@ public static class ServiceCollectionExtensions
         IConfiguration configuration)
     {
         services.AddQuartzJob<RecalculateTagsCountersJob, RecalculateTagsCountersJob.Description>();
+        services.AddQuartzJob<DeleteEmptyLocationTagsJob, DeleteEmptyLocationTagsJob.Description>();
         services.AddMemoryCache();
 
         services.Configure<RecalculateTagCountersSettings>(
             configuration.GetSection(nameof(RecalculateTagCountersSettings)));
+
+        services.Configure<DeleteEmptyLocationTagsSettings>(
+            configuration.GetSection(nameof(DeleteEmptyLocationTagsSettings)));
 
         return services;
     }
