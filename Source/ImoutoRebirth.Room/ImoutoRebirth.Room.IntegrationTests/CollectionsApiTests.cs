@@ -504,7 +504,11 @@ public class CollectionsApiTests : IDisposable
         File.Exists(renamedFileInDb.Path).Should().BeTrue();
 
         _harness.Sent.SelectMessages<ProcessRenamedFileCommand>().Any(x
-                => x.FileId == files[0].Id && x.Md5 == files[0].Md5 && x.NewFileName == newName)
+                => x.FileId == firstFile.Id && x.Md5 == firstFile.Md5 && x.NewFileName == newName)
+            .Should().BeTrue();
+
+        _harness.Sent.SelectMessages<ExtractFileMetadataCommand>().Any(x
+                => x.FileId == firstFile.Id && x.FileFullName == renamedFileInDb.Path)
             .Should().BeTrue();
     }
 
@@ -545,7 +549,11 @@ public class CollectionsApiTests : IDisposable
         File.Exists(renamedFileInDb.Path).Should().BeTrue();
 
         _harness.Sent.SelectMessages<ProcessRenamedFileCommand>().Any(x
-                => x.FileId == files[0].Id && x.Md5 == files[0].Md5 && x.NewFileName == newName)
+                => x.FileId == firstFile.Id && x.Md5 == firstFile.Md5 && x.NewFileName == newName)
+            .Should().BeTrue();
+
+        _harness.Sent.SelectMessages<ExtractFileMetadataCommand>().Any(x
+                => x.FileId == firstFile.Id && x.FileFullName == renamedFileInDb.Path)
             .Should().BeTrue();
     }
 
@@ -643,7 +651,11 @@ public class CollectionsApiTests : IDisposable
         ).Should().BeTrue();
 
         _harness.Sent.SelectMessages<ProcessRenamedFileCommand>().Any(x
-                => x.FileId == files[0].Id && x.Md5 == files[0].Md5 && x.NewFileName == newName)
+                => x.FileId == firstFile.Id && x.Md5 == firstFile.Md5 && x.NewFileName == newName)
+            .Should().BeTrue();
+
+        _harness.Sent.SelectMessages<ExtractFileMetadataCommand>().Any(x
+                => x.FileId == firstFile.Id && x.FileFullName == renamedFileInDb.Path)
             .Should().BeTrue();
     }
 

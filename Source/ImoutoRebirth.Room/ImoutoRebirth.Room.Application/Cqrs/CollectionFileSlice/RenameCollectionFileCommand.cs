@@ -72,6 +72,7 @@ internal class RenameCollectionFileCommandHandler
 
         await UpdateLocationTags(collection, file);
         await _remoteCommandService.RequestMetadataUpdateForRenamedFile(file.Id, file.Md5, newFileName);
+        await _remoteCommandService.UpdateFileMetadataRequest(file.Id, file.Path);
 
         return newFullName;
     }
