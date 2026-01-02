@@ -26,6 +26,8 @@ public static class ServiceCollectionExtensions
         this MassTransitConfigurator builder)
         => builder
             .AddCommand<NewFileCommand>()
+            .AddCommand<ProcessRenamedFileCommand>()
             .AddCommand<ExtractFileMetadataCommand>()
-            .AddCommand<UpdateMetadataCommand>();
+            .AddCommand<UpdateMetadataCommand>()
+            .AddCommand<UpdateLocationTagsCommand>();
 }

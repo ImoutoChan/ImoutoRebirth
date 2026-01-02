@@ -8,7 +8,7 @@ public class ParsingStatus
 {
     public Guid FileId { get; }
 
-    public string Md5 { get; }
+    public string Md5 { get; private set; }
 
     public MetadataSource Source { get; }
 
@@ -55,6 +55,22 @@ public class ParsingStatus
         {
             new ParsingStatusCreated(created)
         };
+    }
+
+    public DomainResult Update(
+        string md5,
+        string fileName,
+        Instant now)
+    {
+        ArgumentValidator.NotNullOrWhiteSpace(() => md5);
+        ArgumentValidator.NotNullOrWhiteSpace(() => fileName);
+
+        Status = Status.UpdateRequested;
+        Md5 = md5;
+        FileName = fileName;
+        UpdatedAt = now;
+
+        return [new ParsingStatusUpdated(this)];
     }
 
     public DomainResult SetSearchResult(SearchStatus result, string? fileIdFromSource, string? error, Instant now)

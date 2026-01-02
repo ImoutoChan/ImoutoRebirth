@@ -187,4 +187,19 @@ internal class FileService : IFileService
         await _collectionFilesClient.DeleteCollectionFileAsync(fileId);
         _roomCache.Clear();
     }
+
+    public async Task<string> RenameFile(Guid fileId, string newName)
+    {
+        var newFullPath = await _collectionFilesClient.RenameCollectionFileAsync(fileId, newName);
+        _roomCache.Clear();
+
+        return newFullPath;
+    }
+
+    public async Task<(bool CanRename, string? WhyNot)> CanRenameFile(Guid fileId, string newName)
+    {
+        var result = await _collectionFilesClient.CanRenameCollectionFileAsync(fileId, newName);
+
+        return (result.CanRename, result.ReasonWhyNot);
+    }
 }

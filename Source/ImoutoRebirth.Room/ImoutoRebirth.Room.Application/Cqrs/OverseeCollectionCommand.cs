@@ -72,8 +72,8 @@ internal class OverseeCollectionCommandHandler : ICommandHandler<OverseeCollecti
     {
         var newId = await _mediator.Send(new SaveNewFileCommand(collectionId, moved));
 
-        await _remoteCommandService.SaveTags(newId, moved.SourceTags);
-        await _remoteCommandService.UpdateMetadataRequest(newId, moved.SystemFile.Md5, moved.SystemFile.File.Name);
+        await _remoteCommandService.SaveLocationTags(newId, moved.SourceTags);
+        await _remoteCommandService.RequestMetadataUpdate(newId, moved.SystemFile.Md5, moved.SystemFile.File.Name);
         await _remoteCommandService.UpdateFileMetadataRequest(newId, moved.MovedFileInfo.FullName);
 
         if (sourceFolder.IsWebhookUploadEnabled && !string.IsNullOrWhiteSpace(sourceFolder.WebhookUploadUrl))

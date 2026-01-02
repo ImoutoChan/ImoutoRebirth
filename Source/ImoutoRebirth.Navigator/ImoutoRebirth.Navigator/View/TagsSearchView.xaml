@@ -25,39 +25,41 @@
             Margin="5,5,5,0"
             HorizontalAlignment="Stretch">
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="Auto" />
-                <ColumnDefinition Width="Auto" />
                 <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="Auto" />
             </Grid.ColumnDefinitions>
 
-            <Button Grid.Column="0"
+            <ComboBox Grid.Column="0"
+                      Margin="0,0,8,0"
+                      HorizontalAlignment="Stretch" ItemsSource="{Binding Collections}"
+                      SelectedItem="{Binding SelectedCollection}"
+                      DisplayMemberPath="Key" />
+
+            <Button Grid.Column="1"
                     Command="{Binding BackToPrevSearchCommand}"
                     Width="25"
                     Height="25"
                     Style="{DynamicResource MahApps.Styles.Button.Circle}"
+                    Cursor="Hand"
                     HorizontalAlignment="Left">
                 <iconPacks:PackIconModern Width="10"
                                           Height="10"
                                           Kind="ArrowLeft" />
             </Button>
 
-            <Button Grid.Column="1"
+            <Button Grid.Column="2"
                     Margin="5,0,0,0"
                     Command="{Binding ForwardToNextSearchCommand}"
                     Width="25"
                     Height="25"
                     Style="{DynamicResource MahApps.Styles.Button.Circle}"
+                    Cursor="Hand"
                     HorizontalAlignment="Left">
                 <iconPacks:PackIconModern Width="10"
                                           Height="10"
                                           Kind="ArrowRight" />
             </Button>
-
-            <ComboBox Grid.Column="2"
-                      Margin="8,0,0,0"
-                      HorizontalAlignment="Stretch" ItemsSource="{Binding Collections}"
-                      SelectedItem="{Binding SelectedCollection}"
-                      DisplayMemberPath="Key" />
         </Grid>
 
         <!-- search tag -->

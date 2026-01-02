@@ -1,4 +1,5 @@
-﻿using ImoutoRebirth.Common.EntityFrameworkCore;
+﻿using ImoutoRebirth.Common;
+using ImoutoRebirth.Common.EntityFrameworkCore;
 using ImoutoRebirth.Lilin.Application.Persistence;
 using ImoutoRebirth.Lilin.Domain.TagAggregate;
 using ImoutoRebirth.Lilin.DataAccess;
@@ -34,6 +35,18 @@ internal class TagRepository : ITagRepository
 
         return await _lilinDbContext.Tags
             .Where(x => _lilinDbContext.AsQueryable(tags).Any(t => x.Name == t.Name && x.TypeId == t.TypeId))
+            .Include(x => x.Type)
+            .Select(x => x.ToModel())
+            .ToListAsync(ct);
+    }
+
+    public async Task<IReadOnlyCollection<Tag>> GetBatch(IReadOnlyCollection<Guid> ids, CancellationToken ct = default)
+    {
+        if (ids.None())
+            return [];
+
+        return await _lilinDbContext.Tags
+            .Where(x => ids.Contains(x.Id))
             .Include(x => x.Type)
             .Select(x => x.ToModel())
             .ToListAsync(ct);

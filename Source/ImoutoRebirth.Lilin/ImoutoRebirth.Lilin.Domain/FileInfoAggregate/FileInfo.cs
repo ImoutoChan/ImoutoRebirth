@@ -1,4 +1,5 @@
-﻿using ImoutoRebirth.Common.Domain;
+﻿using ImoutoRebirth.Common;
+using ImoutoRebirth.Common.Domain;
 
 namespace ImoutoRebirth.Lilin.Domain.FileInfoAggregate;
 
@@ -45,7 +46,29 @@ public class FileInfo
             _notes.Add(note);
         }
 
-        return new DomainResult { new FileInfoUpdatedDomainEvent(this, source) };
+        return [new FileInfoUpdatedDomainEvent(this, source)];
+    }
+
+    public DomainResult UpdateLocationTags(
+        IReadOnlyCollection<FileTag> newLocationTags,
+        IReadOnlyCollection<Guid> presentedLocationTagIds)
+    {
+        var obsoleteLocationTagIds = presentedLocationTagIds.ToHashSet();
+
+        foreach (var tag in newLocationTags)
+        {
+            if (_tags.Any(x => x.Equals(tag)))
+            {
+                obsoleteLocationTagIds.Remove(tag.TagId);
+                continue;
+            }
+
+            _tags.Add(tag);
+        }
+
+        _tags = _tags.Where(x => !obsoleteLocationTagIds.Contains(x.TagId)).ToList();
+
+        return [new FileInfoUpdatedDomainEvent(this, MetadataSource.Manual)];
     }
 
     public DomainResult RemoveFileTag(Guid tagId, MetadataSource source, string? value)

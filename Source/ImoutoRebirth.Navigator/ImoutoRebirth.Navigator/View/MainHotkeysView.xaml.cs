@@ -24,6 +24,7 @@ public class MainHotkeysViewModel
         new("T", "add tags"),
         new("M", "merge tags"),
         new("F5", "refresh"),
+        new("F2", "rename"),
         new("CTRL + Q", "quick tagging"),
     ];
 }

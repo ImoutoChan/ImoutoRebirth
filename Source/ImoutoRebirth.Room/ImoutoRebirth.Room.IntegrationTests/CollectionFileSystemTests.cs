@@ -14,6 +14,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Moq;
 using Xunit;
+using UpdateLocationTagsCommand = ImoutoRebirth.Lilin.MessageContracts.UpdateLocationTagsCommand;
 
 namespace ImoutoRebirth.Room.IntegrationTests;
 
@@ -119,10 +120,9 @@ public class CollectionFileSystemTests : IDisposable
             .Should().BeTrue();
 
         _harness.Sent
-            .AnyMessage<UpdateMetadataCommand>(x
+            .AnyMessage<UpdateLocationTagsCommand>(x
                 => x.FileId == savedFile.Id
-                   && x.MetadataSource == MetadataSource.Manual
-                   && x.FileTags.Any(y => y is { Type: "Location", Name: "file1-5f30f9953332c230d11e3f26db5ae9a0.jpg" }))
+                   && x.LocationTags.Any(y => y is "file1-5f30f9953332c230d11e3f26db5ae9a0.jpg"))
             .Should().BeTrue();
     }
 
@@ -171,11 +171,10 @@ public class CollectionFileSystemTests : IDisposable
             .Should().BeTrue();
 
         _harness.Sent
-            .AnyMessage<UpdateMetadataCommand>(x
+            .AnyMessage<UpdateLocationTagsCommand>(x
                 => x.FileId == savedFile.Id
-                   && x.MetadataSource == MetadataSource.Manual
-                   && x.FileTags.Any(y => y is { Type: "Location", Name: "file1-5f30f9953332c230d11e3f26db5ae9a0.jpg" })
-                   && x.FileTags.Any(y => y is { Type: "Location", Name: "inner" }))
+                   && x.LocationTags.Any(y => y is "file1-5f30f9953332c230d11e3f26db5ae9a0.jpg")
+                   && x.LocationTags.Any(y => y is "inner"))
             .Should().BeTrue();
     }
 
@@ -438,10 +437,9 @@ public class CollectionFileSystemTests : IDisposable
         var dbFile = _context.CollectionFiles.First(x => x.CollectionId == collectionId);
 
         _harness.Sent
-            .AnyMessage<UpdateMetadataCommand>(x
+            .AnyMessage<UpdateLocationTagsCommand>(x
                 => x.FileId == dbFile.Id
-                   && x.MetadataSource == MetadataSource.Manual
-                   && x.FileTags.Any(y => y is { Type: "Location", Name: "file1-5f30f9953332c230d11e3f26db5ae9a0.jpg" }))
+                   && x.LocationTags.Any(y => y is "file1-5f30f9953332c230d11e3f26db5ae9a0.jpg"))
             .Should().BeTrue();
     }
 
@@ -516,10 +514,9 @@ public class CollectionFileSystemTests : IDisposable
             .Should().BeTrue();
 
         _harness.Sent
-            .AnyMessage<UpdateMetadataCommand>(x
+            .AnyMessage<UpdateLocationTagsCommand>(x
                 => x.FileId == savedFile.Id
-                   && x.MetadataSource == MetadataSource.Manual
-                   && x.FileTags.Any(y => y is { Type: "Location", Name: "inner" }))
+                   && x.LocationTags.Any(y => y is "inner"))
             .Should().BeTrue();
     }
 

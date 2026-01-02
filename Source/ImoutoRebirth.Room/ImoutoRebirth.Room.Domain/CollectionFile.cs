@@ -1,4 +1,6 @@
-﻿namespace ImoutoRebirth.Room.Domain;
+﻿using ImoutoRebirth.Common;
+
+namespace ImoutoRebirth.Room.Domain;
 
 public class CollectionFile
 {
@@ -22,11 +24,21 @@ public class CollectionFile
 
     public Guid CollectionId { get; }
 
-    public string Path { get; }
+    public string Path { get; private set; }
 
     public string Md5 { get; }
 
     public long Size { get; }
 
     public string OriginalPath { get; }
+
+    public void Rename(string newFileName)
+    {
+        var directory = System.IO.Path.GetDirectoryName(Path);
+
+        if (directory == null)
+            throw new DomainException("Can't determine directory for new file path.");
+
+        Path = System.IO.Path.Combine(directory, newFileName);
+    }
 }

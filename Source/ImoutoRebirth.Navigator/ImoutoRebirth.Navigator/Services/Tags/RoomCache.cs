@@ -82,6 +82,7 @@ internal class RoomCache : IRoomCache
         }
 
         _resetCacheToken = new CancellationTokenSource();
+        Files.Clear();
     }
 
     public async Task<IReadOnlyCollection<File>> GetFilesFromCollection(Guid? collectionId, int? skip, int? take)

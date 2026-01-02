@@ -29,6 +29,15 @@ internal class CollectionFileRepository : ICollectionFileRepository
         _memoryCache = memoryCache;
     }
 
+    public async Task<CollectionFile?> GetById(Guid id)
+    {
+        var file = await _roomDbContext.CollectionFiles
+            .AsNoTracking()
+            .FirstOrDefaultAsync(x => x.Id == id);
+
+        return file?.ToModel();
+    }
+
     public async Task Create(CollectionFile collectionFile)
     {
         var entity = collectionFile.ToEntity();
@@ -39,6 +48,18 @@ internal class CollectionFileRepository : ICollectionFileRepository
         await _roomDbContext.SaveChangesAsync();
         
         _md5PresenceCache.Remove(entity.Md5);
+    }
+
+    public async Task Update(CollectionFile updates)
+    {
+        var file = await _roomDbContext.CollectionFiles.FindAsync(updates.Id);
+
+        if (file == null)
+            throw new EntityNotFoundException<CollectionFileEntity>(updates.Id);
+
+        file.Path = updates.Path;
+
+        await _roomDbContext.SaveChangesAsync();
     }
 
     public async Task<IReadOnlyCollection<string>> FilterOutExistingPaths(

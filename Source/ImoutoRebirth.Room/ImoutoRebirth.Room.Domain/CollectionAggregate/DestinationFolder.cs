@@ -45,7 +45,9 @@ public class DestinationFolder
             DefaultValues.DestinationFolderEntityWithoutHashErrorSubfolder);
     
     public bool IsDefault() => Id == Guid.Empty;
-    
+
+    public bool AllowManualFileRenaming() => !ShouldRenameByHash;
+
     public SystemFileMoved Move(SystemFilePreparedToMove preparedToMove)
     {
         if (preparedToMove.MoveProblem == MoveProblem.AlreadyContains)

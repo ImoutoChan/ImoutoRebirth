@@ -18,6 +18,11 @@ public record ActualizeFileInfoForSourceCommand(
     IReadOnlyCollection<ActualizeTag> Tags,
     IReadOnlyCollection<ActualizeNote> Notes) : ICommand;
 
+[CommandQuery(IsolationLevel.Serializable)]
+public record ActualizeLocationTagsCommand(
+    Guid FileId,
+    IReadOnlyCollection<string> LocationTags) : ICommand;
+
 public record ActualizeTag(
     string Type,
     string Name,
@@ -33,7 +38,9 @@ public record ActualizeNote(
     int Width,
     int Height);
 
-internal class ActualizeFileInfoForSourceCommandHandler : ICommandHandler<ActualizeFileInfoForSourceCommand>
+internal class ActualizeFileInfoForSourceCommandHandler
+    : ICommandHandler<ActualizeFileInfoForSourceCommand>
+    , ICommandHandler<ActualizeLocationTagsCommand>
 {
     private readonly ITagTypeRepository _tagTypeRepository;
     private readonly ITagRepository _tagRepository;
@@ -63,6 +70,22 @@ internal class ActualizeFileInfoForSourceCommandHandler : ICommandHandler<Actual
                 
         var result = fileInfo.UpdateMetadata(source, newFileTags, newFileNotes);
         
+        _eventStorage.AddRange(result);
+        await _fileInfoRepository.Save(fileInfo);
+    }
+
+    public async Task Handle(ActualizeLocationTagsCommand command, CancellationToken ct)
+    {
+        var (fileId, tags) = command;
+
+        var fileInfo = await _fileInfoRepository.Get(fileId, ct);
+        var newLocationTags = await PrepareLocationTags(fileId, tags);
+
+        var presentedTags = await _tagRepository.GetBatch(fileInfo.Tags.Select(x => x.TagId).ToList(), ct);
+        var presentedLocationTagIds = presentedTags.Where(x => x.Type.Name == "Location").Select(x => x.Id).ToList();
+
+        var result = fileInfo.UpdateLocationTags(newLocationTags, presentedLocationTagIds);
+
         _eventStorage.AddRange(result);
         await _fileInfoRepository.Save(fileInfo);
     }
@@ -98,7 +121,26 @@ internal class ActualizeFileInfoForSourceCommandHandler : ICommandHandler<Actual
             return [];
 
         var typesByName = await GetOrCreateTagTypes(tags);
+
         return await GetOrCreateTags(tags, typesByName, fileId, source);
+    }
+
+    private async Task<IReadOnlyCollection<FileTag>> PrepareLocationTags(
+        Guid fileId,
+        IReadOnlyCollection<string> tags)
+    {
+        const string locationTagTypeName = "Location";
+
+        if (tags.None())
+            return [];
+
+        var tagActualizers = tags
+            .Select(x => new ActualizeTag(locationTagTypeName, x, null, null, TagOptions.None))
+            .ToList();
+
+        var typesByName = await GetOrCreateTagTypes(tagActualizers);
+
+        return await GetOrCreateTags(tagActualizers, typesByName, fileId, MetadataSource.Manual);
     }
 
     private async Task<IReadOnlyDictionary<string, TagType>> GetOrCreateTagTypes(

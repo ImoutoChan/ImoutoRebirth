@@ -4,7 +4,11 @@ namespace ImoutoRebirth.Room.Application.Services;
 
 public interface ICollectionFileRepository
 {
+    Task<CollectionFile?> GetById(Guid id);
+
     Task Create(CollectionFile collectionFile);
+
+    Task Update(CollectionFile file);
 
     Task<IReadOnlyCollection<string>> FilterOutExistingPaths(
         Guid collectionId,

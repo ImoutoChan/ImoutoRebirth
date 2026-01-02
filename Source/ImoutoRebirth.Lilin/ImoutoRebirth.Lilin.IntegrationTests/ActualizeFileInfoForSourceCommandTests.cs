@@ -271,7 +271,6 @@ public class ActualizeFileInfoForSourceCommandTests(TestWebApplicationFactory<Pr
         fourthTag.Should().NotBeNull();
         fourthTag!.Type!.Name.Should().Be(newTags[3].Type);
     }
-    
 
     [Fact]
     public async Task ActualizeFileInfoForSourceCommandShouldUpdateTagParams()

@@ -19,4 +19,8 @@ internal interface IFileService
     Task<FileMetadata> GetFileMetadata(Guid fileId);
 
     Task RemoveFile(Guid fileId);
+
+    Task<string> RenameFile(Guid fileId, string newName);
+
+    Task<(bool CanRename, string? WhyNot)> CanRenameFile(Guid fileId, string newName);
 }

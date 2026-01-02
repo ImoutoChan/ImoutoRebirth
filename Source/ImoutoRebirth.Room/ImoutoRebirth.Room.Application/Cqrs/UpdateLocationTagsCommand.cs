@@ -1,4 +1,5 @@
-﻿using ImoutoRebirth.Common.Cqrs.Abstract;
+﻿using ImoutoRebirth.Common;
+using ImoutoRebirth.Common.Cqrs.Abstract;
 using ImoutoRebirth.Room.Application.Cqrs.CollectionFileSlice;
 using ImoutoRebirth.Room.Application.Services;
 using ImoutoRebirth.Room.Domain;
@@ -109,9 +110,9 @@ internal class UpdateLocationTagsCommandHandler : ICommandHandler<UpdateLocation
                 "Saving location tags for {FileId} {FilePath} {Tags}",
                 foundFile.Id,
                 foundFile.Path,
-                readyTags);
+                readyTags.JoinStrings(", "));
                 
-            await _remoteCommandService.SaveTags(foundFile.Id, readyTags);
+            await _remoteCommandService.SaveLocationTags(foundFile.Id, readyTags);
         }
     }
 }

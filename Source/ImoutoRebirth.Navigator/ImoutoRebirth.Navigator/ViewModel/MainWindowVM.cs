@@ -24,6 +24,7 @@ using System.Text;
 using System.Windows;
 using System.Windows.Threading;
 using ImoutoRebirth.Common.WPF;
+using ImoutoRebirth.Lilin.WebApi.Client;
 using ObservableCollections;
 using File = System.IO.File;
 using ImoutoRebirth.Navigator.Slices.IntegrityReport.ViewModels;
@@ -40,7 +41,6 @@ internal partial class MainWindowVM : ObservableObject
     private readonly IFileNoteService _fileNoteService;
     private readonly IFileLoadingService _fileLoadingService;
     private readonly IImoutoViewerService _imoutoViewerService;
-    private readonly IMessenger _messenger;
     private readonly DispatcherTimer _appendNewContentTimer = new() { Interval = TimeSpan.FromSeconds(5) };
 
     private int _previewSize = 256;
@@ -82,7 +82,6 @@ internal partial class MainWindowVM : ObservableObject
         _fileTagService = ServiceLocator.GetService<IFileTagService>();
         _fileNoteService = ServiceLocator.GetService<IFileNoteService>();
         _imoutoViewerService = ServiceLocator.GetService<IImoutoViewerService>();
-        _messenger = ServiceLocator.GetService<IMessenger>();
 
         NavigatorListInternal = new();
         NavigatorListView
@@ -109,9 +108,10 @@ internal partial class MainWindowVM : ObservableObject
         _view.SelectedItemsChanged += OnViewOnSelectedItemsChanged;
         _view.Loaded += (_, _) => ZoomToRowElements(6);
 
-        _messenger.Register<QuickTaggingCloseRequest>(this, (_, _) => ShowQuickTagging = false);
-        _messenger.Register<OpenCreateCollectionWizardRequest>(this, (_, _) => OpenCreateCollectionWizard());
-        _messenger.Register<RefreshCollectionsRequest>(this, (_, _) => InitializeAsync().LogAndSuppressExceptions());
+        var messenger = ServiceLocator.GetService<IMessenger>();
+        messenger.Register<QuickTaggingCloseRequest>(this, (_, _) => ShowQuickTagging = false);
+        messenger.Register<OpenCreateCollectionWizardRequest>(this, (_, _) => OpenCreateCollectionWizard());
+        messenger.Register<RefreshCollectionsRequest>(this, (_, _) => InitializeAsync().LogAndSuppressExceptions());
     }
 
     public void ShowWindow() => _view.Show();
@@ -512,6 +512,79 @@ internal partial class MainWindowVM : ObservableObject
         NavigatorListInternal.Remove(selectedItem!);
         Status = "File successfully removed";
         LoadPreviews();
+    }
+
+    [RelayCommand]
+    private async Task RenameFile(INavigatorListEntry? selectedItem)
+    {
+        var dbId = selectedItem?.DbId;
+
+        if (dbId == null)
+            return;
+
+        var mySettings = new MetroDialogSettings
+        {
+            AffirmativeButtonText = "OK",
+            NegativeButtonText = "Cancel",
+            DefaultText = Path.GetFileName(selectedItem?.Path),
+            ColorScheme = MetroDialogColorScheme.Accented,
+            AnimateShow = false,
+            AnimateHide = false,
+        };
+
+        var result = await _view.ShowInputAsync(
+            title: "Renaming File",
+            message: "Enter new file name:",
+            settings: mySettings);
+
+        if (string.IsNullOrWhiteSpace(result))
+            return;
+
+        var canRename = await _fileService.CanRenameFile(dbId.Value, result);
+        if (!canRename.CanRename)
+        {
+            await _view.ShowMessageDialog(
+                "Renaming File",
+                "Can't rename file: " + canRename.WhyNot,
+                MessageDialogStyle.Affirmative,
+                new());
+            return;
+        }
+
+        try
+        {
+            var newFullName = await _fileService.RenameFile(dbId.Value, result);
+
+            var newEntry = EntryVMFactory.CreateListEntry(
+                newFullName,
+                new(_previewSize, _previewSize),
+                ServiceLocator.GetService<FilesClient>(),
+                dbId);
+
+            if (newEntry == null)
+            {
+                Log.Warning("Unable to load new entry after renaming for {DbId}", dbId.Value);
+                return;
+            }
+
+            var index = NavigatorListInternal.IndexOf(selectedItem!);
+            NavigatorListInternal.RemoveAt(index);
+            NavigatorListInternal.Insert(index, newEntry);
+
+            Status = "File successfully renamed";
+            LoadPreviews();
+        }
+        catch (Exception e)
+        {
+            Log.Error(e, "Unable to rename file {DbId}", dbId.Value);
+            SetStatusError(e.Message, "Unable to rename file");
+            await _view.ShowMessageDialog(
+                "Renaming File",
+                "Unable to rename:" + e.Message,
+                MessageDialogStyle.Affirmative,
+                new());
+            return;
+        }
     }
 
     [RelayCommand]

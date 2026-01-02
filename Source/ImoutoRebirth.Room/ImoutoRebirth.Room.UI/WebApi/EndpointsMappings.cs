@@ -62,17 +62,25 @@ internal static class EndpointsMappings
                 => mediator.Send(new UpdateLocationTagsCommand(), ct))
             .WithName("UpdateSourceTags");
 
-        files.MapDelete("/{id:guid}", (Guid id, IMediator mediator, CancellationToken ct)
+        files.MapDelete("{id:guid}", (Guid id, IMediator mediator, CancellationToken ct)
                 => mediator.Send(new DeleteCollectionFileCommand(id), ct))
             .WithName("DeleteCollectionFile");
 
-        files.MapGet("/{id:guid}", (Guid id, IMediator mediator, CancellationToken ct)
+        files.MapGet("{id:guid}", (Guid id, IMediator mediator, CancellationToken ct)
                 => mediator.Send(new CollectionFileMetadataQuery(id), ct))
             .WithName("GetCollectionFileMetadata");
 
-        files.MapPost("/update-file-metadata", (IMediator mediator, CancellationToken ct)
+        files.MapPost("update-file-metadata", (IMediator mediator, CancellationToken ct)
                 => mediator.Send(new UpdateFileMetadataCommand(), ct))
             .WithName("UpdateFileMetadata");
+
+        files.MapPatch("{id:guid}/rename", (Guid id, string newFileName, IMediator mediator, CancellationToken ct)
+                => mediator.Send(new RenameCollectionFileCommand(id, newFileName), ct))
+            .WithName("RenameCollectionFile");
+
+        files.MapGet("{id:guid}/renaming-availability", (Guid id, string newFileName, IMediator mediator, CancellationToken ct)
+                => mediator.Send(new CanRenameCollectionFileToCommand(id, newFileName), ct))
+            .WithName("CanRenameCollectionFile");
     }
 
     public static void MapIntegrityReportsEndpoints(this WebApplication app)

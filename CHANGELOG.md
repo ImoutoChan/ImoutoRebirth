@@ -5,6 +5,7 @@
 * Significantly improved video slider seek experience
 * Redesign FileInfo view
 * Add basic browser-like navigation for your searches (back/forward buttons)
+* Add file renaming support
 
 ### Infrastructure
 * Migrated to .NET 10 runtime
@@ -24,6 +25,7 @@
 * Search by tag values
 * Reset last played position when playing in the last 10% of the video
 * Add basic browser-like navigation for your searches (back/forward buttons)
+* Add file renaming support (RMB or F2). The file will be renamed both on disk and in the database. Location tags will be updated as well. Dodji metadata will also be requested for the new name.
 
 # v4.29.1
 

@@ -13,23 +13,24 @@ internal class RemoteCommandService : IRemoteCommandService
 
     public RemoteCommandService(IBus bus) => _bus = bus;
 
-    public async Task UpdateMetadataRequest(Guid fileId, string md5, string fileName)
+    public async Task RequestMetadataUpdate(Guid fileId, string md5, string fileName)
     {
         var command = new NewFileCommand(md5, fileId, fileName);
         await _bus.Send(command);
     }
 
-    public async Task SaveTags(Guid fileId, IReadOnlyCollection<string> tags)
+    public async Task RequestMetadataUpdateForRenamedFile(Guid fileId, string md5, string newFileName)
+    {
+        var command = new ProcessRenamedFileCommand(md5, fileId, newFileName);
+        await _bus.Send(command);
+    }
+
+    public async Task SaveLocationTags(Guid fileId, IReadOnlyCollection<string> tags)
     {
         if (tags.None())
             return;
         
-        var command = new UpdateMetadataCommand(
-            fileId,
-            MetadataSource.Manual,
-            [],
-            tags.Select(x => new FileTag("Location", x, null, [])).ToArray());
-
+        var command = new UpdateLocationTagsCommand(fileId, tags.ToArray());
         await _bus.Send(command);
     }
 

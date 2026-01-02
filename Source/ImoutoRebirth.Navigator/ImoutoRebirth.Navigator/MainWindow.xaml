@@ -178,6 +178,9 @@
                     Command="{Binding CopyCommand}" />
         <KeyBinding Key="F5"
                     Command="{Binding RefreshCommand}" />
+        <KeyBinding Key="F2"
+                    Command="{Binding RenameFileCommand}"
+                    CommandParameter="{Binding ElementName=MediaListBox, Path=SelectedItem}" />
     </metroControl:MetroWindow.InputBindings>
 
     <Grid MouseLeftButtonUp="Grid_MouseLeftButtonUp"
@@ -837,6 +840,9 @@
                                               CommandParameter="{Binding Path=Tag.DataContext, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type ContextMenu}}}" />
                                     <MenuItem Header="Show in explorer"
                                               Command="{Binding Data.ShowInExplorerCommand}"
+                                              CommandParameter="{Binding Path=Tag.DataContext, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type ContextMenu}}}" />
+                                    <MenuItem Header="Rename"
+                                              Command="{Binding Data.RenameFileCommand}"
                                               CommandParameter="{Binding Path=Tag.DataContext, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type ContextMenu}}}" />
                                     <MenuItem Header="Remove from collection"
                                               Command="{Binding Data.RemoveImageCommand}"

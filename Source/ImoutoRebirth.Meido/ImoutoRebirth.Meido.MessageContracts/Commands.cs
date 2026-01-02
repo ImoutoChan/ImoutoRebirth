@@ -22,5 +22,7 @@ public record NotesUpdatedCommand(int SourceId, string[] PostIds, DateTimeOffset
 
 public record NewFileCommand(string Md5, Guid FileId, string FileName);
 
+public record ProcessRenamedFileCommand(string Md5, Guid FileId, string NewFileName);
+
 
 

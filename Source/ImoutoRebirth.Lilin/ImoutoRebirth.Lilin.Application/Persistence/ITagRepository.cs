@@ -12,6 +12,8 @@ public interface ITagRepository
         IReadOnlyCollection<TagIdentifier> tags,
         CancellationToken ct = default);
 
+    Task<IReadOnlyCollection<Tag>> GetBatch(IReadOnlyCollection<Guid> ids, CancellationToken ct = default);
+
     Task Update(Tag tag);
 
     Task Create(Tag tag);

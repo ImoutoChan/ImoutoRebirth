@@ -19,6 +19,10 @@ public record UpdateMetadataCommand(
     FileNote[] FileNotes,
     FileTag[] FileTags);
 
+public record UpdateLocationTagsCommand(
+    Guid FileId,
+    string[] LocationTags);
+
 public record FileTag(string Type, string Name, string? Value, string[]? Synonyms);
 
 public record FileNote(

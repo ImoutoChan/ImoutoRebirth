@@ -61,10 +61,3 @@ public class AggregateNotFoundException : DomainException
     public static AggregateNotFoundException Create<T>(object? id = null)
         => new(typeof(T).Name, id?.ToString());
 }
-
-public class DomainException : Exception
-{
-    public DomainException(string message) : base(message)
-    {
-    }
-}
