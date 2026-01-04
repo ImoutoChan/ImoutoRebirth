@@ -854,6 +854,73 @@
                 </ListBox.Resources>
             </ListBox>
 
+            <!-- Scroll to Bottom Button -->
+            <Button 
+                Grid.Row="0"
+                Grid.Column="1"
+                Grid.RowSpan="3"
+                x:Name="ScrollToTopButton"
+                Width="34"
+                Height="34"
+                HorizontalAlignment="Right"
+                VerticalAlignment="Bottom"
+                Margin="0,0,45,105"
+                Click="ScrollToTopButton_Click"
+                ToolTip="Scroll to top"
+                Cursor="Hand"
+                Background="{DynamicResource MahApps.Brushes.ThemeBackground}"
+                Style="{DynamicResource MahApps.Styles.Button.Circle}"
+                tz:Transitionz.Opacity="{tz:OpacityParams From='0', To='1', Duration=100, TransitionOn=Visibility}"
+                tz:Transitionz.Translate="{tz:TranslateParams From='-10,-10', To='0,0', Duration=100, TransitionOn=Visibility}"
+                tz:Transitionz.Visibility="{Binding
+                    RelativeSource={RelativeSource Mode=Self},
+                    Path=Tag,
+                    Converter={StaticResource ConditionVisibilityConverter},
+                    ConverterParameter=true}">
+                <iconPacks:PackIconModern Kind="ChevronUp"
+                                      Width="12"
+                                      Height="12"
+                                      Foreground="{DynamicResource MahApps.Brushes.ThemeForeground}"
+                                      RenderTransformOrigin="0.5,0.5">
+                    <iconPacks:PackIconModern.RenderTransform>
+                        <TranslateTransform Y="1" />
+                    </iconPacks:PackIconModern.RenderTransform>
+                </iconPacks:PackIconModern>
+            </Button>
+
+            <Button 
+                Grid.Row="0"
+                Grid.Column="1"
+                Grid.RowSpan="3"
+                x:Name="ScrollToBottomButton"
+                Width="34"
+                Height="34"
+                HorizontalAlignment="Right"
+                VerticalAlignment="Bottom"
+                Margin="0,0,45,65"
+                Click="ScrollToBottomButton_Click"
+                ToolTip="Scroll to bottom"
+                Cursor="Hand"
+                Background="{DynamicResource MahApps.Brushes.ThemeBackground}"
+                Style="{DynamicResource MahApps.Styles.Button.Circle}"
+                tz:Transitionz.Opacity="{tz:OpacityParams From='0', To='1', Duration=100, TransitionOn=Visibility}"
+                tz:Transitionz.Translate="{tz:TranslateParams From='10,10', To='0,0', Duration=100, TransitionOn=Visibility}"
+                tz:Transitionz.Visibility="{Binding
+                    RelativeSource={RelativeSource Mode=Self},
+                    Path=Tag,
+                    Converter={StaticResource ConditionVisibilityConverter},
+                    ConverterParameter=true}">
+                <iconPacks:PackIconModern Kind="ChevronDown"
+                                      Width="12"
+                                      Height="12"
+                                      Foreground="{DynamicResource MahApps.Brushes.ThemeForeground}"
+                                      RenderTransformOrigin="0.5,0.5">
+                    <iconPacks:PackIconModern.RenderTransform>
+                        <TranslateTransform Y="1" />
+                    </iconPacks:PackIconModern.RenderTransform>
+                </iconPacks:PackIconModern>
+            </Button>
+
             <GridSplitter Grid.Column="0"
                           Grid.RowSpan="3"
                           Width="0"
@@ -941,64 +1008,5 @@
                     Converter={StaticResource ConditionVisibilityConverter},
                     ConverterParameter=true|false}"/>
         </Grid>
-
-        <!-- Scroll to Bottom Button -->
-        <Button x:Name="ScrollToTopButton"
-                Width="34"
-                Height="34"
-                HorizontalAlignment="Right"
-                VerticalAlignment="Bottom"
-                Margin="0,0,45,105"
-                Click="ScrollToTopButton_Click"
-                ToolTip="Scroll to top"
-                Cursor="Hand"
-                Background="{DynamicResource MahApps.Brushes.ThemeBackground}"
-                Style="{DynamicResource MahApps.Styles.Button.Circle}"
-                tz:Transitionz.Opacity="{tz:OpacityParams From='0', To='1', Duration=400, TransitionOn=Visibility}"
-                tz:Transitionz.Translate="{tz:TranslateParams From='-10,-10', To='0,0', Duration=400, TransitionOn=Visibility}"
-                tz:Transitionz.Visibility="{Binding
-                    RelativeSource={RelativeSource Mode=Self},
-                    Path=Tag,
-                    Converter={StaticResource ConditionVisibilityConverter},
-                    ConverterParameter=true}">
-            <iconPacks:PackIconModern Kind="ChevronUp"
-                                      Width="12"
-                                      Height="12"
-                                      Foreground="{DynamicResource MahApps.Brushes.ThemeForeground}"
-                                      RenderTransformOrigin="0.5,0.5">
-                <iconPacks:PackIconModern.RenderTransform>
-                    <TranslateTransform Y="1" />
-                </iconPacks:PackIconModern.RenderTransform>
-            </iconPacks:PackIconModern>
-        </Button>
-
-        <Button x:Name="ScrollToBottomButton"
-                Width="34"
-                Height="34"
-                HorizontalAlignment="Right"
-                VerticalAlignment="Bottom"
-                Margin="0,0,45,65"
-                Click="ScrollToBottomButton_Click"
-                ToolTip="Scroll to bottom"
-                Cursor="Hand"
-                Background="{DynamicResource MahApps.Brushes.ThemeBackground}"
-                Style="{DynamicResource MahApps.Styles.Button.Circle}"
-                tz:Transitionz.Opacity="{tz:OpacityParams From='0', To='1', Duration=200, TransitionOn=Visibility}"
-                tz:Transitionz.Translate="{tz:TranslateParams From='10,10', To='0,0', Duration=200, TransitionOn=Visibility}"
-                tz:Transitionz.Visibility="{Binding
-                    RelativeSource={RelativeSource Mode=Self},
-                    Path=Tag,
-                    Converter={StaticResource ConditionVisibilityConverter},
-                    ConverterParameter=true}">
-            <iconPacks:PackIconModern Kind="ChevronDown"
-                                      Width="12"
-                                      Height="12"
-                                      Foreground="{DynamicResource MahApps.Brushes.ThemeForeground}"
-                                      RenderTransformOrigin="0.5,0.5">
-                <iconPacks:PackIconModern.RenderTransform>
-                    <TranslateTransform Y="1" />
-                </iconPacks:PackIconModern.RenderTransform>
-            </iconPacks:PackIconModern>
-        </Button>
     </Grid>
 </metroControl:MetroWindow>
