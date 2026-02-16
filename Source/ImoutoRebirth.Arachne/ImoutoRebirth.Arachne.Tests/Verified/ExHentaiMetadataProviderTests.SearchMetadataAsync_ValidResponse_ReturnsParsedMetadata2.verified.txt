@@ -20,7 +20,7 @@
       chinese,
       translated
     ],
-    Rating: 4.49,
+    Rating: 4.46,
     ThumbnailUrl: https://ehgt.org/w/00/427/71367-cnzk1ish.webp,
     GalleryId: 861082,
     GalleryToken: db0866f23e,
@@ -58,7 +58,7 @@
     Languages: [
       japanese
     ],
-    Rating: 4.55,
+    Rating: 4.51,
     ThumbnailUrl: https://ehgt.org/w/00/412/38474-4iloomjs.webp,
     GalleryId: 829074,
     GalleryToken: 198e5a4e4f,

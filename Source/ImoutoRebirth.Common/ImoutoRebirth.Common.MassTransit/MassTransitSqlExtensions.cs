@@ -19,6 +19,8 @@ public static class MassTransitSqlExtensions
         bool shouldAutoConfigureEndpoints = true,
         params Assembly[] addConsumersFromAssemblies)
     {
+        Community.Fix();
+
         var configurator = new MassTransitConfigurator();
         configure?.Invoke(configurator);
         
@@ -60,7 +62,7 @@ public static class MassTransitSqlExtensions
                     // types should be public to register automatically
                     x.AddConsumers(addConsumersFromAssemblies);
                 }
-                
+
                 x.UsingPostgres((context, cfg) =>
                 {
                     cfg.UseSqlMessageScheduler();

@@ -54,7 +54,7 @@ internal partial class DodjiEntryVM : BaseEntryVM, INavigatorListEntry, IPixelSi
 
         var ratingTask = LoadRating();
 
-        using var archive = ArchiveFactory.Open(Path);
+        using var archive = ArchiveFactory.OpenArchive(Path);
         var preview = archive.Entries
           .FirstOrDefault(
               x => x is

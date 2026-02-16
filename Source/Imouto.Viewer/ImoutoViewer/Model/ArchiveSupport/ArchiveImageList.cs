@@ -2,17 +2,18 @@
 using System.IO.Compression;
 using ImoutoViewer.Extensions;
 using SharpCompress.Archives;
+using SharpCompress.Common;
 
 namespace ImoutoViewer.Model.ArchiveSupport;
 
 internal class ArchiveImageList : ILocalImageList
 {
-    private readonly Action<double> _loadingProgressReportAction;
+    private readonly Action<ProgressReport> _loadingProgressReportAction;
     private readonly TemporaryDirectoryManager _tempDirManager;
     private readonly List<LocalImage> _images;
     private int _currentIndex;
 
-    public ArchiveImageList(string archiveFilePath, Action<double> loadingProgressReportAction)
+    public ArchiveImageList(string archiveFilePath, Action<ProgressReport> loadingProgressReportAction)
     {
         var archive = new FileInfo(archiveFilePath);
 
@@ -114,8 +115,8 @@ internal class ArchiveImageList : ILocalImageList
         }
         else // if (extension is ".rar" or ".7z" or ...)
         {
-            using var archive = ArchiveFactory.Open(archiveFile.FullName);
-            archive.ExtractToDirectory(_tempDirManager.TempDirectoryPath, _loadingProgressReportAction);
+            using var archive = ArchiveFactory.OpenArchive(archiveFile.FullName);
+            archive.WriteToDirectory(_tempDirManager.TempDirectoryPath, new Progress<ProgressReport>(_loadingProgressReportAction));
         }
 
         var extractedFiles = Directory.GetFiles(_tempDirManager.TempDirectoryPath, "*.*", SearchOption.AllDirectories);

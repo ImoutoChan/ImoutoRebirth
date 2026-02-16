@@ -10,6 +10,8 @@
     <ItemGroup>
         <PackageReference Include="Humanizer.Core" />
         <PackageReference Include="MassTransit.SqlTransport.PostgreSQL" />
+        <PackageReference Include="Lib.Harmony.Thin"/>
+        <PackageReference Include="MonoMod.Core"/>
     </ItemGroup>
 
 </Project>

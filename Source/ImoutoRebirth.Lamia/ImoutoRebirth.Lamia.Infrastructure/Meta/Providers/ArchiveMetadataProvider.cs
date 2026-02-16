@@ -15,7 +15,7 @@ internal class ArchiveMetadataProvider : IMetadataForFileProvider
         var extension = fileInfo.Extension.TrimStart('.').ToLowerInvariant();
 
         await using var fs = fileInfo.Open(FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
-        using var archive = ArchiveFactory.Open(fs);
+        using var archive = ArchiveFactory.OpenArchive(fs);
         var archiveFileCount = archive.Entries.Count(e => !e.IsDirectory);
         var firstImage = archive.Entries.FirstOrDefault(x => x.Key?.IsImage() == true);
 
@@ -28,7 +28,7 @@ internal class ArchiveMetadataProvider : IMetadataForFileProvider
         FileMetadata? firstImageMetadata = null;
         if (firstImage is not null)
         {
-            await using var stream = firstImage.OpenEntryStream();
+            await using var stream = await firstImage.OpenEntryStreamAsync();
             firstImageMetadata = await GetFirstImageMetadata(stream, firstImage.Key!, firstImage.Size);
         }
 

@@ -270,7 +270,7 @@ internal class MainWindowVM : VMBase, IDragable, IDropable
         {
             imageList = new ArchiveImageList(images.First(), progress =>
             {
-                LoadingProgress = (int)(progress * 100);
+                LoadingProgress = (int)(progress.PercentComplete ?? 0);
                 UpdateView();
             });
         }
@@ -315,7 +315,7 @@ internal class MainWindowVM : VMBase, IDragable, IDropable
             {
                 imageList = new ArchiveImageList(fileNames.First(), progress =>
                 {
-                    LoadingProgress = (int)(progress * 100);
+                    LoadingProgress = (int)(progress.PercentComplete ?? 0);
                     UpdateView();
                 });
             }
