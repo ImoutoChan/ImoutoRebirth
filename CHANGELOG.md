@@ -1,11 +1,14 @@
 # Unreleased
 
 ### Highlights
-* NEW FEATURE Integrity reports (Settings => Integrity Reports) will anylize your collections for missing or corrupted files
+* **new!** Integrity reports (Settings => Integrity Reports) will analyze your collections for missing or corrupted files
 * Significantly improved video slider seek experience
-* Redesign FileInfo view
-* Add basic browser-like navigation for your searches (back/forward buttons)
-* Add file renaming support
+* Redesign FileInfo view (click to fav, double click to fav+5star)
+* Add basic browser-like navigation for your searches (back/forward buttons, you can use mouse buttons too)
+* Add file renaming support (RMB or F2)
+* You can now update the app directly from the settings
+
+![Imouto Navigator](https://raw.githubusercontent.com/ImoutoChan/ImoutoRebirth/master/Docs/Screens/New%20Features%20in%204.30.png "Imouto Navigator")
 
 ### Infrastructure
 * Migrated to .NET 10 runtime
@@ -13,16 +16,16 @@
 
 ### Navigator
 * Various performance improvements
-* NEW FEATURE Integrity reports (Settings => Integrity Reports) will anylize your collections for missing or corrupted files
-* Supports continuations and export to the different formats (csv json)
+* **new!** Integrity reports (Settings => Integrity Reports) will analyze your collections for missing or corrupted files
+  * Supports continuations and export to the different formats (csv json)
 * Significantly improved video slider seek experience
 * Fixed video pause/play to trigger on click down instead of button release
 * Add F5 keyboard shortcut for refresh
 * Add scroll up/down buttons
 * Add update button in settings
 * Redesign FileInfo view
-* Fix updater error if temp folder no longer exists
-* Search by tag values
+* Fix updater error when the temp folder no longer exists
+* Search tag values
 * Reset last played position when playing in the last 10% of the video
 * Add basic browser-like navigation for your searches (back/forward buttons)
 * Add file renaming support (RMB or F2). The file will be renamed both on disk and in the database. Location tags will be updated as well. Dodji metadata will also be requested for the new name.
