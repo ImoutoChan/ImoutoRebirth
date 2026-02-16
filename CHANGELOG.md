@@ -1,5 +1,7 @@
 # Unreleased
 
+# v4.30.0
+
 ### Highlights
 * **new!** Integrity reports (Settings => Integrity Reports) will analyze your collections for missing or corrupted files
 * Significantly improved video slider seek experience
