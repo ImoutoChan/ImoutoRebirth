@@ -216,7 +216,10 @@ public class ExHentaiMetadataProviderTests : IClassFixture<TestConfiguration>
         // assert
         result.Should().BeOfType<Metadata>();
         var metadata = (Metadata)result;
-        metadata.FileIdFromSource.Should().Be("1007805|1d5c9d5deb");
+
+        // Idk why but now it only finds French translation
+        // (C83) [LockerRoom (100 Yen Locker)] LR-03 (Sword Art Online) [French] {SAXtrad}
+        metadata.FileIdFromSource.Should().Be("3198150|7b9be6a177");
         metadata.IsFound.Should().BeTrue();
 
         await Verify(metadata.Tags);

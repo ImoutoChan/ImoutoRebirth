@@ -106,7 +106,7 @@ public class CollectionFileSystemTests : IDisposable
 
         _harness.Sent
             .AnyMessage<NewFileCommand>(
-                x => x.FileId == savedFile.Id && x is
+                x => x?.FileId == savedFile.Id && x is
                 {
                     Md5: "5f30f9953332c230d11e3f26db5ae9a0",
                     FileName: "file1-5f30f9953332c230d11e3f26db5ae9a0.jpg"
@@ -115,13 +115,13 @@ public class CollectionFileSystemTests : IDisposable
 
         _harness.Sent
             .AnyMessage<ExtractFileMetadataCommand>(x
-                => x.FileId == savedFile.Id
+                => x?.FileId == savedFile.Id
                    && x.FileFullName == savedFile.Path)
             .Should().BeTrue();
 
         _harness.Sent
             .AnyMessage<UpdateLocationTagsCommand>(x
-                => x.FileId == savedFile.Id
+                => x?.FileId == savedFile.Id
                    && x.LocationTags.Any(y => y is "file1-5f30f9953332c230d11e3f26db5ae9a0.jpg"))
             .Should().BeTrue();
     }
@@ -159,20 +159,20 @@ public class CollectionFileSystemTests : IDisposable
 
         _harness.Sent
             .AnyMessage<NewFileCommand>(
-                x => x.FileId == savedFile.Id
+                x => x?.FileId == savedFile.Id
                      && x.Md5 == "5f30f9953332c230d11e3f26db5ae9a0"
                      && x.FileName == file.Name)
             .Should().BeTrue();
 
         _harness.Sent
             .AnyMessage<ExtractFileMetadataCommand>(x
-                => x.FileId == savedFile.Id
+                => x?.FileId == savedFile.Id
                    && x.FileFullName == savedFile.Path)
             .Should().BeTrue();
 
         _harness.Sent
             .AnyMessage<UpdateLocationTagsCommand>(x
-                => x.FileId == savedFile.Id
+                => x?.FileId == savedFile.Id
                    && x.LocationTags.Any(y => y is "file1-5f30f9953332c230d11e3f26db5ae9a0.jpg")
                    && x.LocationTags.Any(y => y is "inner"))
             .Should().BeTrue();
@@ -438,7 +438,7 @@ public class CollectionFileSystemTests : IDisposable
 
         _harness.Sent
             .AnyMessage<UpdateLocationTagsCommand>(x
-                => x.FileId == dbFile.Id
+                => x?.FileId == dbFile.Id
                    && x.LocationTags.Any(y => y is "file1-5f30f9953332c230d11e3f26db5ae9a0.jpg"))
             .Should().BeTrue();
     }
@@ -469,7 +469,7 @@ public class CollectionFileSystemTests : IDisposable
         
         _harness.Sent
             .AnyMessage<UpdateMetadataCommand>(x
-                => x.FileId == dbFile.Id && x.FileTags.Any(y => y.Name == "file1-5f30f9953332c230d11e3f26db5ae9a0.jpg"))
+                => x?.FileId == dbFile.Id && x.FileTags.Any(y => y.Name == "file1-5f30f9953332c230d11e3f26db5ae9a0.jpg"))
             .Should().BeFalse();
     }
 
@@ -499,7 +499,7 @@ public class CollectionFileSystemTests : IDisposable
 
         _harness.Sent
             .AnyMessage<NewFileCommand>(
-                x => x.FileId == savedFile.Id
+                x => x?.FileId == savedFile.Id
                      && x is
                      {
                          Md5: "5f30f9953332c230d11e3f26db5ae9a0",
@@ -509,13 +509,13 @@ public class CollectionFileSystemTests : IDisposable
 
         _harness.Sent
             .AnyMessage<ExtractFileMetadataCommand>(x
-                => x.FileId == savedFile.Id
+                => x?.FileId == savedFile.Id
                    && x.FileFullName == savedFile.Path)
             .Should().BeTrue();
 
         _harness.Sent
             .AnyMessage<UpdateLocationTagsCommand>(x
-                => x.FileId == savedFile.Id
+                => x?.FileId == savedFile.Id
                    && x.LocationTags.Any(y => y is "inner"))
             .Should().BeTrue();
     }
@@ -546,20 +546,20 @@ public class CollectionFileSystemTests : IDisposable
 
         _harness.Sent
             .AnyMessage<NewFileCommand>(
-                x => x.FileId == savedFile.Id
+                x => x?.FileId == savedFile.Id
                      && x.Md5 == "5f30f9953332c230d11e3f26db5ae9a0"
                      && x.FileName == file.Name)
             .Should().BeTrue();
 
         _harness.Sent
             .AnyMessage<ExtractFileMetadataCommand>(x
-                => x.FileId == savedFile.Id
+                => x?.FileId == savedFile.Id
                    && x.FileFullName == savedFile.Path)
             .Should().BeTrue();
 
         _harness.Sent
             .AnyMessage<UpdateMetadataCommand>(x
-                => x.FileId == savedFile.Id
+                => x?.FileId == savedFile.Id
                    && x.MetadataSource == MetadataSource.Manual
                    && x.FileTags.Any(y => y is { Type: "Location", Name: "inner" }))
             .Should().BeFalse();

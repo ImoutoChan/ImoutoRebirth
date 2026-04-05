@@ -50,6 +50,28 @@ public static class ExtraTaskExtensions
         await Task.WhenAll(runningTasks);
     }
 
+    public static async Task<T[]> WhenAllWithDegreeOfParallelism<T>(
+        this IEnumerable<Task<T>> tasks,
+        int degreeOfParallelism,
+        CancellationToken ct)
+    {
+        using var enumerator = tasks.GetEnumerator();
+        var runningTasks = new List<Task<T>>();
+
+        while (enumerator.MoveNext())
+        {
+            ct.ThrowIfCancellationRequested();
+            runningTasks.Add(enumerator.Current);
+            if (runningTasks.Count < degreeOfParallelism)
+                continue;
+
+            var completed = await Task.WhenAny(runningTasks);
+            runningTasks.Remove(completed);
+        }
+
+        return await Task.WhenAll(runningTasks);
+    }
+
     public static async Task<(TTaskResult Result, TWith With)> With<TTaskResult, TWith>(
         this Task<TTaskResult> task,
         TWith with)

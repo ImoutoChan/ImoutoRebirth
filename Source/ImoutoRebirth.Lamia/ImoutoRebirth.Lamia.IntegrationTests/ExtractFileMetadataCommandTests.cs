@@ -30,11 +30,12 @@ public class ExtractFileMetadataCommandTests(LamiaApplicationFactory<Program> _a
         // assert
         var sent = harness.Sent
             .Select<UpdateMetadataCommand>()
-            .FirstOrDefault(x => x.Context.Message.FileId == fileId);
+            .FirstOrDefault(x => x.Context?.Message.FileId == fileId);
 
         sent.Should().NotBeNull();
 
-        var message = sent.Context.Message;
+        var message = sent.Context?.Message;
+        message.Should().NotBeNull();
 
         message.FileId.Should().Be(fileId);
         message.MetadataSource.Should().Be(MetadataSource.Lamia);
@@ -93,11 +94,12 @@ public class ExtractFileMetadataCommandTests(LamiaApplicationFactory<Program> _a
         // assert
         var sent = harness.Sent
             .Select<UpdateMetadataCommand>()
-            .FirstOrDefault(x => x.Context.Message.FileId == fileId);
+            .FirstOrDefault(x => x.Context?.Message.FileId == fileId);
 
         sent.Should().NotBeNull();
 
-        var message = sent.Context.Message;
+        var message = sent.Context?.Message;
+        message.Should().NotBeNull();
 
         message.FileId.Should().Be(fileId);
         message.MetadataSource.Should().Be(MetadataSource.Lamia);
@@ -150,11 +152,12 @@ public class ExtractFileMetadataCommandTests(LamiaApplicationFactory<Program> _a
         // assert
         var sent = harness.Sent
             .Select<UpdateMetadataCommand>()
-            .FirstOrDefault(x => x.Context.Message.FileId == fileId);
+            .FirstOrDefault(x => x.Context?.Message.FileId == fileId);
 
         sent.Should().NotBeNull();
 
-        var message = sent.Context.Message;
+        var message = sent.Context?.Message;
+        message.Should().NotBeNull();
 
         message.FileId.Should().Be(fileId);
         message.MetadataSource.Should().Be(MetadataSource.Lamia);
@@ -209,11 +212,12 @@ public class ExtractFileMetadataCommandTests(LamiaApplicationFactory<Program> _a
         // assert
         var sent = harness.Sent
             .Select<UpdateMetadataCommand>()
-            .FirstOrDefault(x => x.Context.Message.FileId == fileId);
+            .FirstOrDefault(x => x.Context?.Message.FileId == fileId);
 
         sent.Should().NotBeNull();
 
-        var message = sent.Context.Message;
+        var message = sent.Context?.Message;
+        message.Should().NotBeNull();
 
         message.FileId.Should().Be(fileId);
         message.MetadataSource.Should().Be(MetadataSource.Lamia);
@@ -272,11 +276,12 @@ public class ExtractFileMetadataCommandTests(LamiaApplicationFactory<Program> _a
         // assert
         var sent = harness.Sent
             .Select<UpdateMetadataCommand>()
-            .FirstOrDefault(x => x.Context.Message.FileId == fileId);
+            .FirstOrDefault(x => x.Context?.Message.FileId == fileId);
 
         sent.Should().NotBeNull();
 
-        var message = sent.Context.Message;
+        var message = sent.Context?.Message;
+        message.Should().NotBeNull();
 
         message.FileId.Should().Be(fileId);
         message.MetadataSource.Should().Be(MetadataSource.Lamia);
@@ -330,11 +335,12 @@ public class ExtractFileMetadataCommandTests(LamiaApplicationFactory<Program> _a
         // assert
         var sent = harness.Sent
             .Select<UpdateMetadataCommand>()
-            .FirstOrDefault(x => x.Context.Message.FileId == fileId);
+            .FirstOrDefault(x => x.Context?.Message.FileId == fileId);
 
         sent.Should().NotBeNull();
 
-        var message = sent.Context.Message;
+        var message = sent.Context?.Message;
+        message.Should().NotBeNull();
 
         message.FileId.Should().Be(fileId);
         message.MetadataSource.Should().Be(MetadataSource.Lamia);
@@ -388,11 +394,12 @@ public class ExtractFileMetadataCommandTests(LamiaApplicationFactory<Program> _a
         // assert
         var sent = harness.Sent
             .Select<UpdateMetadataCommand>()
-            .FirstOrDefault(x => x.Context.Message.FileId == fileId);
+            .FirstOrDefault(x => x.Context?.Message.FileId == fileId);
 
         sent.Should().NotBeNull();
 
-        var message = sent.Context.Message;
+        var message = sent.Context?.Message;
+        message.Should().NotBeNull();
 
         message.FileId.Should().Be(fileId);
         message.MetadataSource.Should().Be(MetadataSource.Lamia);

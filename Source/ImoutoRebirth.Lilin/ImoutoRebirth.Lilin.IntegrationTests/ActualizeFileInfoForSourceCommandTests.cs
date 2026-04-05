@@ -95,7 +95,7 @@ public class ActualizeFileInfoForSourceCommandTests(TestWebApplicationFactory<Pr
         firstFileNote.Height.Should().Be(expectedFileNote.Height);
         
         harness.Sent
-            .AnyMessage<SavedCommand>(x => x.FileId == command.FileId && x.SourceId == (int)command.MetadataSource)
+            .AnyMessage<SavedCommand>(x => x?.FileId == command.FileId && x.SourceId == (int)command.MetadataSource)
             .Should().BeTrue();
     }
     
@@ -411,7 +411,7 @@ public class ActualizeFileInfoForSourceCommandTests(TestWebApplicationFactory<Pr
         firstFileNote.Height.Should().Be(expectedFileNote.Height);
         
         harness.Sent
-            .AnyMessage<SavedCommand>(x => x.FileId == fileId && x.SourceId == (int)command.MetadataSource)
+            .AnyMessage<SavedCommand>(x => x?.FileId == fileId && x.SourceId == (int)command.MetadataSource)
             .Should().BeTrue();
     }
     
@@ -498,11 +498,11 @@ public class ActualizeFileInfoForSourceCommandTests(TestWebApplicationFactory<Pr
         firstFileNoteCount.Should().Be(2);
         
         harness.Sent
-            .AnyMessage<SavedCommand>(x => x.FileId == fileId && x.SourceId == (int)MetadataSource.Danbooru)
+            .AnyMessage<SavedCommand>(x => x?.FileId == fileId && x.SourceId == (int)MetadataSource.Danbooru)
             .Should().BeTrue();
         
         harness.Sent
-            .AnyMessage<SavedCommand>(x => x.FileId == fileId && x.SourceId == (int)MetadataSource.Yandere)
+            .AnyMessage<SavedCommand>(x => x?.FileId == fileId && x.SourceId == (int)MetadataSource.Yandere)
             .Should().BeTrue();
     }
 }

@@ -116,7 +116,7 @@ internal class ArchiveImageList : ILocalImageList
         else // if (extension is ".rar" or ".7z" or ...)
         {
             using var archive = ArchiveFactory.OpenArchive(archiveFile.FullName);
-            archive.WriteToDirectory(_tempDirManager.TempDirectoryPath, new Progress<ProgressReport>(_loadingProgressReportAction));
+            archive.WriteToDirectory(_tempDirManager.TempDirectoryPath, progress: new Progress<ProgressReport>(_loadingProgressReportAction));
         }
 
         var extractedFiles = Directory.GetFiles(_tempDirManager.TempDirectoryPath, "*.*", SearchOption.AllDirectories);

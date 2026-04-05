@@ -13,25 +13,25 @@ public class ExtVirtualizingWrapPanel : WpfToolkit.Controls.VirtualizingWrapPane
 
         var step = rem > 0 ? rem : itemHeight;
 
-        return -Math.Min(step, ViewportSize.Height);
+        return -Math.Min(step, ViewportHeight);
     }
 
     protected override double GetLineDownScrollAmount()
     {
         var itemHeight = base.GetLineDownScrollAmount();
 
-        var bottomOffset = VerticalOffset + ViewportSize.Height;
+        var bottomOffset = VerticalOffset + ViewportHeight;
         var rem = Mod(bottomOffset, itemHeight);
         if (rem < 0.5)
             rem = 0;
 
         var step = rem > 0 ? (itemHeight - rem) : itemHeight;
 
-        var remaining = ExtentHeight - ViewportSize.Height - VerticalOffset;
+        var remaining = ExtentHeight - ViewportHeight - VerticalOffset;
         if (remaining <= 0)
             return 0;
 
-        return Math.Min(step, Math.Min(remaining, ViewportSize.Height));
+        return Math.Min(step, Math.Min(remaining, ViewportHeight));
     }
 
     private static double Mod(double x, double m)
