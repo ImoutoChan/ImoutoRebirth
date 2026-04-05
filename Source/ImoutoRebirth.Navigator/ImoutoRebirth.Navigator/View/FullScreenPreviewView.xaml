@@ -14,10 +14,15 @@
     xmlns:b="http://schemas.microsoft.com/xaml/behaviors"
     xmlns:model="clr-namespace:ImoutoRebirth.Navigator.Services.Tags.Model"
     xmlns:notes="clr-namespace:ImoutoRebirth.Common.WPF.Notes;assembly=ImoutoRebirth.Common.WPF"
+    xmlns:behaviors="clr-namespace:ImoutoRebirth.Navigator.Behaviors"
     d:DataContext="{d:DesignInstance viewModel:FullScreenPreviewVM, IsDesignTimeCreatable=False}"
     d:DesignHeight="300" 
     d:DesignWidth="300"
     PreviewMouseWheel="OnPreviewMouseWheel">
+
+    <b:Interaction.Behaviors>
+        <behaviors:MouseMoveDragBehavior />
+    </b:Interaction.Behaviors>
 
     <UserControl.InputBindings>
         <MouseBinding Gesture="MiddleClick" Command="{Binding CloseCommand}" />

@@ -2,13 +2,14 @@
 using System.Windows.Media.Imaging;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using ImoutoRebirth.Navigator.Behaviors;
 using ImoutoRebirth.Navigator.Services.Tags.Model;
 using ImoutoRebirth.Navigator.UserControls;
 using ImoutoRebirth.Navigator.ViewModel.ListEntries;
 
 namespace ImoutoRebirth.Navigator.ViewModel;
 
-internal partial class FullScreenPreviewVM : ObservableObject
+internal partial class FullScreenPreviewVM : ObservableObject, IDragable
 {
     private readonly Func<INavigatorListEntry, Task<List<DelayItem>?>> _ugoiraDelaysGetter;
     private readonly Func<INavigatorListEntry, Task<IReadOnlyCollection<FileNote>>> _notesGetter;
@@ -63,6 +64,9 @@ internal partial class FullScreenPreviewVM : ObservableObject
     public BitmapSource? DodjiImage => Type == ListEntryType.Dodji ? CurrentEntry?.Image : null;
 
     public double Zoom => ViewPortSize.Width / _bitmapImage?.PixelWidth ?? 1;
+
+    public object Data => CurrentEntry?.Data ?? new DataObject();
+    public DragDropEffects AllowDragDropEffects => DragDropEffects.Copy;
 
     public async void SetCurrentEntry(INavigatorListEntry forEntry, IList<INavigatorListEntry> list)
     {

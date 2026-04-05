@@ -1,5 +1,8 @@
 # Unreleased
 
+### Navigator
+* Add draggable behavior to the fullscreen preview
+
 # v4.30.0
 
 ### Highlights
