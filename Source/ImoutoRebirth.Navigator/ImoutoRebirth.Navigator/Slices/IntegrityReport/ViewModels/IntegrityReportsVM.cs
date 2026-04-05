@@ -1,4 +1,5 @@
 ﻿using System.Collections.ObjectModel;
+using System.IO;
 using System.Windows.Threading;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
@@ -238,7 +239,9 @@ internal partial class IntegrityReportsVM : ObservableObject
                 ? null
                 : selectedCollections;
 
-            var savePath = string.IsNullOrWhiteSpace(SaveReportPath) ? null : SaveReportPath;
+            var savePath = string.IsNullOrWhiteSpace(SaveReportPath)
+                ? GetDefaultSaveReportPath()
+                : SaveReportPath;
             var reportId = await _reportService.CreateReportAsync(collectionIds, savePath);
 
             IsCreatingReport = false;
@@ -257,6 +260,13 @@ internal partial class IntegrityReportsVM : ObservableObject
             IsLoading = false;
         }
     }
+
+    private static string GetDefaultSaveReportPath()
+        => Path.Combine(
+            Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
+            "ImoutoRebirth",
+            "IntegrityReports");
+
 
     [RelayCommand(CanExecute = nameof(CanPauseReport))]
     private async Task PauseReportAsync()
