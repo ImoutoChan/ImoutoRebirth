@@ -87,7 +87,7 @@ internal class IntegrityReportJobRunner : IIntegrityReportJobRunner
 
             using var progress = new LoggerProgressReporter(_loggerFactory, filesToProcess.Count);
 
-            var parallelCount = Environment.ProcessorCount * 2;
+            var parallelCount = Math.Max(Environment.ProcessorCount / 2, 1);
 
             var filesToCheckChannel = Channel.CreateUnbounded<CollectionFile>();
             var checkedFilesToSaveChannel = Channel.CreateBounded<IntegrityReportFileStatus>(parallelCount * 100);
