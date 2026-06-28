@@ -106,20 +106,24 @@ public partial class DependencyManager : IDependencyManager
         return IsPostgresPortInUse();
     }
 
-    public async Task<bool> IsDotnetAspNetRuntimeInstalled(string version)
+    public Task<bool> IsDotnetAspNetRuntimeInstalled(string version)
+        => IsDotnetRuntimeInstalled("Microsoft.AspNetCore.App", version);
+
+    public Task<bool> IsDotnetDesktopRuntimeInstalled(string version)
+        => IsDotnetRuntimeInstalled("Microsoft.WindowsDesktop.App", version);
+
+    private async Task<bool> IsDotnetRuntimeInstalled(string runtimeName, string requiredVersion)
     {
         var outputResult = await _dotnetRuntimesOutput.Value;
 
-        var pattern = $@"Microsoft\.AspNetCore\.App\s+{Regex.Escape(version)}\b";
-        return Regex.IsMatch(outputResult.Output, pattern);
-    }
+        if (!Version.TryParse(requiredVersion, out var required))
+            return false;
 
-    public async Task<bool> IsDotnetDesktopRuntimeInstalled(string version)
-    {
-        var outputResult = await _dotnetRuntimesOutput.Value;
+        var pattern = $@"{Regex.Escape(runtimeName)}\s+(?<version>\d+\.\d+\.\d+)";
 
-        var pattern = $@"Microsoft\.WindowsDesktop\.App\s+{Regex.Escape(version)}\b";
-        return Regex.IsMatch(outputResult.Output, pattern);
+        return Regex.Matches(outputResult.Output, pattern)
+            .Select(match => Version.TryParse(match.Groups["version"].Value, out var v) ? v : null)
+            .Any(v => v is not null && v.Major == required.Major && v >= required);
     }
 
     public async Task<IReadOnlyCollection<string>> GetDotnetRuntimes()
