@@ -56,13 +56,21 @@ jobs:
           name: ImoutoRebirth ${{ steps.ver.outputs.version }}
 
       # ALPHA tag v1.2.3-alpha.4
-      - name: Upload 7ZSfx installer to github prerelease
+      - name: Upload 7ZSfx installer to github prerelease draft
         if: ${{ steps.ver.outputs.isPrerelease == 'True' }}
         uses: softprops/action-gh-release@718ea10b132b3b2eba29c1007bb80653f286566b # v3.0.1
         with:
           files: ./Artifacts/ImoutoRebirth-*.*
           prerelease: true
+          draft: true
           body: |
             Unstable. Please download the [latest stable release](https://github.com/ImoutoChan/ImoutoRebirth/releases/latest) instead.
           name: |
             🕯️ ImoutoRebirth ${{ steps.ver.outputs.version }}
+
+      - name: Publish prerelease draft
+        if: ${{ steps.ver.outputs.isPrerelease == 'True' }}
+        shell: pwsh
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: gh release edit "${{ github.ref_name }}" --draft=false --prerelease
