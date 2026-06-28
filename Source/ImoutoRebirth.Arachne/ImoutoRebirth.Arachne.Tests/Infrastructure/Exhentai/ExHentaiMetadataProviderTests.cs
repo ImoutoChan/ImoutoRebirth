@@ -74,7 +74,7 @@ public class ExHentaiMetadataProviderTests : IClassFixture<TestConfiguration>
     public async Task SearchMetadataAsync_ValidResponseWithoutAuth_ReturnsParsedMetadata1()
     {
         // arrange
-        var provider = new ExHentaiMetadataProvider(_flurlClientCache, _emptyAuthConfig, _loggerMock.Object);
+        var provider = new ExHentaiMetadataProvider(_flurlClientCache, _authConfig, _loggerMock.Object);
 
         // act
         var result = await provider.DeepSearchMetadataAsync("[Mint no Chicchai Oana (Mint Muzzlini)] Toxic JK Netorare Jigo Houkoku... [English] [Solid Rose]");

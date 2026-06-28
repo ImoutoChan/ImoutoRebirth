@@ -8,7 +8,7 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="SixLabors.ImageSharp"/>
+        <PackageReference Include="SixLabors.ImageSharp" ExcludeAssets="build;buildTransitive"/>
         <PackageReference Include="Microsoft.Extensions.Configuration.Binder"/>
         <PackageReference Include="Microsoft.Extensions.Http"/>
         <PackageReference Include="Xabe.FFmpeg"/>
