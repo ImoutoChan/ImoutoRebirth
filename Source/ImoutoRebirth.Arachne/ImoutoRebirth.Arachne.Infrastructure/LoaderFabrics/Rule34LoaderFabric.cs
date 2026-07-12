@@ -33,5 +33,5 @@ internal class Rule34LoaderFabric : IBooruLoaderFabric, IAvailabilityProvider
         }));
 
     public IAvailabilityChecker CreateAvailabilityChecker()
-        => new SimpleAvailabilityChecker(_flurlClientCache, new Uri("https://rule34.xxx"));
+        => new SimpleAvailabilityChecker(_flurlClientCache, new Uri("https://api.rule34.xxx"));
 }
