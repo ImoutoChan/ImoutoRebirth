@@ -28,7 +28,8 @@ internal class Rule34LoaderFabric : IBooruLoaderFabric, IAvailabilityProvider
         {
             ApiKey = _settings.ApiKey,
             UserId = int.TryParse(_settings.UserId, out var userId) ? userId : 0,
-            PauseBetweenRequestsInMs = 1000
+            PauseBetweenRequestsInMs = 1000,
+            BotUserAgent = _settings.BotUserAgent
         }));
 
     public IAvailabilityChecker CreateAvailabilityChecker()

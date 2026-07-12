@@ -5,4 +5,6 @@ public class Rule34Settings
     public required string UserId { get; set; }
 
     public required string ApiKey { get; set; }
+
+    public required string BotUserAgent { get; set; }
 }

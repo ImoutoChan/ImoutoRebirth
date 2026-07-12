@@ -9,24 +9,24 @@
     </PropertyGroup>
     <ItemGroup>
         <PackageVersion Include="AspNetCoreInjection.TypedFactories" Version="1.2.0"/>
-        <PackageVersion Include="AutoMapper" Version="16.1.1"/>
+        <PackageVersion Include="AutoMapper" Version="16.2.0"/>
         <PackageVersion Include="CommunityToolkit.Mvvm" Version="8.4.2"/>
         <PackageVersion Include="coverlet.collector" Version="10.0.1"/>
         <PackageVersion Include="AwesomeAssertions" Version="9.4.0"/>
         <PackageVersion Include="CsvHelper" Version="33.1.0"/>
         <PackageVersion Include="GihanSoft.String.NaturalComparer" Version="3.5.0"/>
         <PackageVersion Include="Humanizer.Core" Version="3.0.10"/>
-        <PackageVersion Include="IgnoresAccessChecksToGenerator" Version="0.8.0"/>
-        <PackageVersion Include="Imouto.BooruParser" Version="4.2.5"/>
+        <PackageVersion Include="IgnoresAccessChecksToGenerator" Version="1.0.0"/>
+        <PackageVersion Include="Imouto.BooruParser" Version="4.3.3"/>
         <PackageVersion Include="ImoutoRebirth.ApngWpfPlayer" Version="1.4.2"/>
         <PackageVersion Include="JetBrains.DotMemoryUnit" Version="3.2.20220510"/>
         <PackageVersion Include="Lib.Harmony.Thin" Version="2.4.2"/>
-        <PackageVersion Include="MonoMod.Core" Version="1.3.4"/>
+        <PackageVersion Include="MonoMod.Core" Version="1.3.5"/>
         <PackageVersion Include="Mackiovello.Maybe" Version="1.0.0"/>
         <PackageVersion Include="MahApps.Metro" Version="2.4.11"/>
         <PackageVersion Include="MahApps.Metro.IconPacks" Version="6.2.1"/>
         <PackageVersion Include="MassTransit.SqlTransport.PostgreSQL" Version="9.1.2"/>
-        <PackageVersion Include="MediatR" Version="14.1.0"/>
+        <PackageVersion Include="MediatR" Version="14.2.0"/>
         <PackageVersion Include="Microsoft-WindowsAPICodePack-Core" Version="1.1.5"/>
         <PackageVersion Include="Microsoft-WindowsAPICodePack-Shell" Version="1.1.5"/>
         <PackageVersion Include="Microsoft.CodeAnalysis.CSharp" Version="5.3.0"/>
@@ -61,10 +61,10 @@
         <PackageVersion Include="Moq" Version="4.20.72"/>
         <PackageVersion Include="Newtonsoft.Json" Version="13.0.4"/>
         <PackageVersion Include="NinjaNye.SearchExtensions" Version="4.0.1"/>
-        <PackageVersion Include="NodaTime" Version="3.3.2"/>
+        <PackageVersion Include="NodaTime" Version="3.3.3"/>
         <PackageVersion Include="Npgsql" Version="10.0.3"/>
-        <PackageVersion Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="10.0.2"/>
-        <PackageVersion Include="Npgsql.EntityFrameworkCore.PostgreSQL.NodaTime" Version="10.0.2"/>
+        <PackageVersion Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="10.0.3"/>
+        <PackageVersion Include="Npgsql.EntityFrameworkCore.PostgreSQL.NodaTime" Version="10.0.3"/>
         <PackageVersion Include="Npgsql.OpenTelemetry" Version="10.0.3"/>
         <PackageVersion Include="ObservableCollections" Version="3.3.4"/>
         <PackageVersion Include="OpenTelemetry" Version="$(OpenTelemetryVersion)"/>
@@ -73,11 +73,11 @@
         <PackageVersion Include="OpenTelemetry.Extensions.Hosting" Version="$(OpenTelemetryVersion)"/>
         <PackageVersion Include="OpenTelemetry.Instrumentation.AspNetCore" Version="$(OpenTelemetryVersion)"/>
         <PackageVersion Include="OpenTelemetry.Instrumentation.Http" Version="$(OpenTelemetryVersion)"/>
-        <PackageVersion Include="OpenTelemetry.Instrumentation.Runtime" Version="1.15.1"/>
+        <PackageVersion Include="OpenTelemetry.Instrumentation.Runtime" Version="1.16.0"/>
         <PackageVersion Include="Quartz" Version="3.18.2"/>
         <PackageVersion Include="ResQueue.MassTransit" Version="1.4.1"/>
         <PackageVersion Include="SciChart.Wpf.UI.Transitionz" Version="4.0.271"/>
-        <PackageVersion Include="Serilog" Version="4.3.1"/>
+        <PackageVersion Include="Serilog" Version="4.4.0"/>
         <PackageVersion Include="Serilog.Enrichers.Thread" Version="4.0.0"/>
         <PackageVersion Include="Serilog.Exceptions" Version="8.4.0"/>
         <PackageVersion Include="Serilog.Extensions.Logging" Version="10.0.0"/>
@@ -92,7 +92,7 @@
         <PackageVersion Include="System.Reactive.Async" Version="6.0.0-alpha.18"/>
         <PackageVersion Include="System.ServiceProcess.ServiceController" Version="$(MicrosoftMinorVersion)"/>
         <PackageVersion Include="VideoLAN.LibVLC.Windows" Version="3.0.23.1"/>
-        <PackageVersion Include="VirtualizingWrapPanel" Version="2.5.2"/>
+        <PackageVersion Include="VirtualizingWrapPanel" Version="2.5.3"/>
         <PackageVersion Include="Vlc.DotNet.Wpf" Version="3.1.0"/>
         <PackageVersion Include="WpfAnimatedGif" Version="2.0.2"/>
         <PackageVersion Include="XAMLTools.MSBuild" Version="1.0.0-alpha0178"/>
@@ -103,9 +103,9 @@
         </PackageVersion>
         <PackageVersion Include="NodaTime.Serialization.SystemTextJson" Version="1.4.0"/>
         <PackageVersion Include="SharpCompress" Version="0.49.1"/>
-        <PackageVersion Include="stbychkov.AutoLoggerMessage" Version="1.0.15"/>
+        <PackageVersion Include="stbychkov.AutoLoggerMessage" Version="1.0.17"/>
         <PackageVersion Include="Microsoft.AspNetCore.OpenApi" Version="$(MicrosoftMinorVersion)"/>
-        <PackageVersion Include="Scalar.AspNetCore" Version="2.16.6"/>
+        <PackageVersion Include="Scalar.AspNetCore" Version="2.16.11"/>
         <PackageVersion Include="Verify.Xunit" Version="31.12.5"/>
         <PackageVersion Include="Xabe.FFmpeg" Version="6.0.2"/>
         <PackageVersion Include="Xabe.FFmpeg.Downloader" Version="6.0.2"/>

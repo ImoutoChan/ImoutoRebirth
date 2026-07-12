@@ -12,7 +12,7 @@
   {
     Type: LocalMeta,
     Name: Score,
-    Value: 4.54
+    Value: 4.55
   },
   {
     Type: Copyright,

@@ -89,7 +89,8 @@ public class ConfigurationBuilder : IConfigurationBuilder
               },
               "Rule34Settings": {
                 "UserId": "{{_configuration.Api.Rule34UserId}}",
-                "ApiKey": "{{_configuration.Api.Rule34ApiKey}}"
+                "ApiKey": "{{_configuration.Api.Rule34ApiKey}}",
+                "BotUserAgent": "Arachne/{{currentVersion}}"
               },
               "YandereSettings": {
                 "Delay": 0,
