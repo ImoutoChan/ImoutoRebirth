@@ -2,6 +2,10 @@
 
 ### Navigator
 * Add draggable behavior to the fullscreen preview
+* Click a tag source name in the current file tags panel to copy its tags as text. The menu offers "Copy tags as text" (grouped by tag type, one type per line) and "Copy general tags as text" (general tags only, shown only when the source has any)
+
+### Viewer
+* Click a tag source name in the tags panel to copy its tags as text. The menu offers "Copy tags as text" (grouped by tag type, one type per line) and "Copy general tags as text" (general tags only, shown only when the source has any)
 
 # v4.30.0
 

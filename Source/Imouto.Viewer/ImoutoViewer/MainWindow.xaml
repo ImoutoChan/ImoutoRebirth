@@ -520,7 +520,32 @@
                                 <StackPanel>
                                     <TextBlock Text="{Binding Title}"
                                                FontSize="15"
-                                               Margin="0,0,0,2" />
+                                               Margin="0,0,0,2"
+                                               Cursor="Hand"
+                                               HorizontalAlignment="Left"
+                                               behavior:LeftClickContextMenu.Enabled="True"
+                                               ToolTip="Copy tags">
+                                        <TextBlock.Style>
+                                            <Style TargetType="TextBlock">
+                                                <Setter Property="FontWeight" Value="Bold" />
+                                                <Setter Property="TextDecorations" Value="Underline" />
+                                                <Style.Triggers>
+                                                    <Trigger Property="IsMouseOver" Value="True">
+                                                        <Setter Property="Foreground" Value="{DynamicResource MahApps.Brushes.Accent}" />
+                                                    </Trigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </TextBlock.Style>
+                                        <TextBlock.ContextMenu>
+                                            <ContextMenu>
+                                                <MenuItem Header="Copy tags as text"
+                                                          Command="{Binding CopyTagsAsTextCommand}" />
+                                                <MenuItem Header="Copy general tags as text"
+                                                          Command="{Binding CopyGeneralTagsAsTextCommand}"
+                                                          Visibility="{Binding HasGeneralTags, Converter={StaticResource ConditionVisibilityConverter}, ConverterParameter=true, FallbackValue=Collapsed}" />
+                                            </ContextMenu>
+                                        </TextBlock.ContextMenu>
+                                    </TextBlock>
 
                                     <ItemsControl ItemsSource="{Binding TagsCollection}">
                                         <ItemsControl.ItemTemplate>

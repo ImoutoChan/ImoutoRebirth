@@ -39,6 +39,8 @@ internal class BindedTagVM : VMBase
 
     public Guid Id => _modelTag.Tag.Id;
 
+    public string Type => _modelTag.Tag.Type.Title;
+
     public Brush TypeBrush => _typeBrush ?? (_typeBrush = new SolidColorBrush(ColorExtensions.ToColor(_modelTag.Tag.Type.Color)));
 
     public string Source => _modelTag.Source.ToString();
