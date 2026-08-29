@@ -70,7 +70,7 @@ public class ConfigurationBuilder : IConfigurationBuilder
                 "Login": "{{_configuration.Api.DanbooruLogin}}",
                 "ApiKey": "{{_configuration.Api.DanbooruApiKey}}",
                 "UserId": "{{_configuration.Api.DanbooruUserId}}",
-                "Delay": "1",
+                "Delay": "1000",
                 "BotUserAgent": "Arachne/{{currentVersion}}"
               },
               "SankakuSettings": {
