@@ -38,7 +38,7 @@ public static class ServiceCollectionExtensions
         services.AddHttpClient<DanbooruFavoritesLoader>(x =>
         {
             if (!string.IsNullOrWhiteSpace(danbooruUserAgent))
-                x.DefaultRequestHeaders.Add("User-Agent", danbooruUserAgent);
+                x.DefaultRequestHeaders.TryAddWithoutValidation("User-Agent", danbooruUserAgent);
         });
         services.AddHttpClient<YandereFavoritesLoader>(x =>
         {
@@ -48,7 +48,7 @@ public static class ServiceCollectionExtensions
         services.AddHttpClient<PostSaver>().ConfigureHttpClient(x =>
         {
             if (!string.IsNullOrWhiteSpace(danbooruUserAgent))
-                x.DefaultRequestHeaders.Add("User-Agent", danbooruUserAgent);
+                x.DefaultRequestHeaders.TryAddWithoutValidation("User-Agent", danbooruUserAgent);
 
             x.Timeout = TimeSpan.FromMinutes(5);
         });
