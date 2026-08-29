@@ -61,4 +61,15 @@ internal class TagService : ITagService
     {
         await _tagsClient.DeleteTagAsync(tagId);
     }
+
+    public async Task<IReadOnlyCollection<Tag>> GetTagAliases(Guid tagId, CancellationToken ct)
+    {
+        var results = await _tagsClient.GetTagAliasesAsync(tagId, ct);
+        return _mapper.Map<IReadOnlyCollection<Tag>>(results);
+    }
+
+    public async Task SetTagAliases(Guid tagId, IReadOnlyCollection<Guid> aliasTagIds)
+    {
+        await _tagsClient.SetTagAliasesAsync(new SetTagAliasesCommand(aliasTagIds.ToList(), tagId));
+    }
 }

@@ -19,4 +19,8 @@ internal interface ITagService
     Task MergeTags(Guid tagToCleanId, Guid tagToEnrichId);
 
     Task DeleteTag(Guid tagId);
+
+    Task<IReadOnlyCollection<Tag>> GetTagAliases(Guid tagId, CancellationToken ct = default);
+
+    Task SetTagAliases(Guid tagId, IReadOnlyCollection<Guid> aliasTagIds);
 }

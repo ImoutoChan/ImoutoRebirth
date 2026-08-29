@@ -19,6 +19,8 @@ public class LilinDbContext : DbContext, IUnitOfWork
 
     public required DbSet<FileTagEntity> FileTags { get; set; }
 
+    public required DbSet<TagAliasEntity> TagAliases { get; set; }
+
     public LilinDbContext(DbContextOptions<LilinDbContext> options, IEventStorage eventStorage) : base(options) 
         => _eventStorage = eventStorage;
 
@@ -50,6 +52,25 @@ public class LilinDbContext : DbContext, IUnitOfWork
             b.Property(x => x.Count).HasDefaultValue(0);
 
             b.HasIndex(x => new { x.TypeId, x.Name }).IsUnique();
+        });
+
+        modelBuilder.Entity<TagAliasEntity>(b =>
+        {
+            b.HasKey(x => new {x.TagId, x.AliasTagId});
+
+            b.HasOne(x => x.Tag)
+                .WithMany()
+                .HasForeignKey(x => x.TagId)
+                .IsRequired()
+                .OnDelete(DeleteBehavior.Cascade);
+
+            b.HasOne(x => x.AliasTag)
+                .WithMany()
+                .HasForeignKey(x => x.AliasTagId)
+                .IsRequired()
+                .OnDelete(DeleteBehavior.Cascade);
+
+            b.HasIndex(x => x.AliasTagId);
         });
 
         modelBuilder.Entity<NoteEntity>(b =>

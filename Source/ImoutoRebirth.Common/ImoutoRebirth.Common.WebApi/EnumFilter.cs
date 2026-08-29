@@ -10,9 +10,10 @@ public sealed class EnumFilter : ISchemaFilter
 {
     public void Apply(IOpenApiSchema schemaInput, SchemaFilterContext context)
     {
-        var schema = (OpenApiSchema)schemaInput;
+        if (schemaInput is not OpenApiSchema schema)
+            return;
 
-        if (!IsEnum(context.Type, out var enumName, out var enumType)) 
+        if (!IsEnum(context.Type, out var enumName, out var enumType))
             return;
 
         var extension = new JsonObject

@@ -30,6 +30,13 @@ internal partial class TagsMergeVM : ObservableObject
     public partial ObservableCollection<SearchTagVM> FoundTags { get; set; } = new();
 
     [ObservableProperty]
+    [NotifyCanExecuteChangedFor(nameof(SaveAliasesCommand))]
+    public partial SearchTagVM? AliasesAnchor { get; set; }
+
+    [ObservableProperty]
+    public partial ObservableCollection<SearchTagVM> AliasTags { get; set; } = new();
+
+    [ObservableProperty]
     public partial bool IsInProgress { get; set; }
 
     [ObservableProperty]
@@ -119,6 +126,75 @@ internal partial class TagsMergeVM : ObservableObject
         }
     }
     
+    [RelayCommand]
+    private async Task AddToAliases(SearchTagVM? tag)
+    {
+        if (tag == null)
+            return;
+
+        if (AliasesAnchor == null)
+        {
+            AliasesAnchor = tag;
+            AliasTags.Clear();
+
+            try
+            {
+                var aliases = await _tagService.GetTagAliases(tag.Tag.Id);
+
+                if (AliasesAnchor == tag)
+                    foreach (var alias in aliases)
+                        AliasTags.Add(new SearchTagVM(new SearchTag(alias, null)));
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex, "Tag aliases load error");
+            }
+
+            return;
+        }
+
+        if (tag.Tag.Id == AliasesAnchor.Tag.Id || AliasTags.Any(x => x.Tag.Id == tag.Tag.Id))
+            return;
+
+        AliasTags.Add(tag);
+    }
+
+    [RelayCommand]
+    private void RemoveFromAliases(SearchTagVM tag) => AliasTags.Remove(tag);
+
+    [RelayCommand]
+    private void ResetAliases()
+    {
+        AliasesAnchor = null;
+        AliasTags.Clear();
+    }
+
+    private bool CanSaveAliases() => AliasesAnchor != null;
+
+    [RelayCommand(CanExecute = nameof(CanSaveAliases))]
+    private async Task SaveAliases()
+    {
+        var anchor = AliasesAnchor;
+
+        if (anchor == null)
+            return;
+
+        try
+        {
+            IsInProgress = true;
+
+            await _tagService.SetTagAliases(anchor.Tag.Id, AliasTags.Select(x => x.Tag.Id).ToList());
+
+            IsSuccess = true;
+            await Task.Delay(500);
+            IsSuccess = false;
+        }
+        finally
+        {
+            IsInProgress = false;
+        }
+    }
+
     private async void SearchTagsAsync()
     {
         var searchPattern = SearchText;

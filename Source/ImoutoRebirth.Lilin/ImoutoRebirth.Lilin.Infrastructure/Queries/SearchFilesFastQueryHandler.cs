@@ -15,14 +15,14 @@ internal class SearchFilesFastQueryHandler
 
     public async Task<IReadOnlyCollection<Guid>> Handle(SearchFilesFastQuery request, CancellationToken ct)
     {
-        var tagSearchEntries = request.TagSearchEntries;
+        var tagSearchEntries = await _lilinDbContext.ExpandAliases(request.TagSearchEntries, ct);
         var queryable = _lilinDbContext.GetSearchFilesIdsQueryable(tagSearchEntries);
         return await queryable.ToListAsync(cancellationToken: ct);
     }
 
     public async Task<int> Handle(SearchFilesFastCountQuery request, CancellationToken ct)
     {
-        var tagSearchEntries = request.TagSearchEntries;
+        var tagSearchEntries = await _lilinDbContext.ExpandAliases(request.TagSearchEntries, ct);
         var queryable = _lilinDbContext.GetSearchFilesIdsQueryable(tagSearchEntries);
         return await queryable.CountAsync(cancellationToken: ct);
     }

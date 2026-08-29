@@ -20,7 +20,8 @@ public sealed class RequireValueTypePropertiesSchemaFilter : ISchemaFilter
     /// </summary>
     public void Apply(IOpenApiSchema schemaInput, SchemaFilterContext context)
     {
-        var schema = (OpenApiSchema)schemaInput;
+        if (schemaInput is not OpenApiSchema schema)
+            return;
 
         foreach (var property in context.Type.GetProperties())
         {

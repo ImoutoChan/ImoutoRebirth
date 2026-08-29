@@ -82,6 +82,14 @@ internal static class EndpointsMappings
         tags.MapPost("/merge", (MergeTagsCommand command, IMediator mediator, CancellationToken ct)
             => mediator.Send(command, ct))
             .WithName("MergeTags");
+
+        tags.MapGet("/{tagId:guid}/aliases", (Guid tagId, IMediator mediator, CancellationToken ct)
+            => mediator.Send(new TagAliasesQuery(tagId), ct))
+            .WithName("GetTagAliases");
+
+        tags.MapPost("/aliases", (SetTagAliasesCommand command, IMediator mediator, CancellationToken ct)
+            => mediator.Send(command, ct))
+            .WithName("SetTagAliases");
         
         tags.MapDelete("/{tagId:guid}", (Guid tagId, IMediator mediator, CancellationToken ct)
             => mediator.Send(new DeleteTagCommand(tagId), ct))

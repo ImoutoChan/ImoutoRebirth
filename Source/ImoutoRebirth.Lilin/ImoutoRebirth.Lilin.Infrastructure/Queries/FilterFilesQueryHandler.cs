@@ -15,7 +15,8 @@ internal class FilterFilesQueryHandler
 
     public async Task<IReadOnlyCollection<Guid>> Handle(FilterFilesQuery request, CancellationToken ct)
     {
-        var (fileIds, tagSearchEntries) = request;
+        var (fileIds, requestedTagSearchEntries) = request;
+        var tagSearchEntries = await _lilinDbContext.ExpandAliases(requestedTagSearchEntries, ct);
 
         if (tagSearchEntries.All(x => x.TagSearchScope == TagSearchScope.Excluded))
         {
@@ -41,7 +42,8 @@ internal class FilterFilesQueryHandler
 
     public async Task<int> Handle(FilterFilesCountQuery request, CancellationToken ct)
     {
-        var (fileIds, tagSearchEntries) = request;
+        var (fileIds, requestedTagSearchEntries) = request;
+        var tagSearchEntries = await _lilinDbContext.ExpandAliases(requestedTagSearchEntries, ct);
 
         if (tagSearchEntries.All(x => x.TagSearchScope == TagSearchScope.Excluded))
         {

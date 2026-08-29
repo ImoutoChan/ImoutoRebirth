@@ -6,6 +6,7 @@ using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.DependencyInjection;
 using BindTagsCommand = ImoutoRebirth.Lilin.WebApi.Client.BindTagsCommand;
 using CreateTagCommand = ImoutoRebirth.Lilin.Application.TagSlice.CreateTagCommand;
+using SetTagAliasesCommand = ImoutoRebirth.Lilin.Application.TagSlice.SetTagAliasesCommand;
 using UnbindTagsCommand = ImoutoRebirth.Lilin.WebApi.Client.UnbindTagsCommand;
 using AppRelativeShortInfo = ImoutoRebirth.Lilin.Application.FileInfoSlice.Queries.RelativeShortInfo;
 using AppRelativeType = ImoutoRebirth.Lilin.Application.FileInfoSlice.Queries.RelativeType;
@@ -1212,6 +1213,127 @@ public class FileTagsTests(TestWebApplicationFactory<Program> _webApp)
         relativeInfoBatch.Should().HaveCount(0);
     }
     
+    [Fact]
+    public async Task SearchFilesFastWithAliases()
+    {
+        // arrange
+        var httpClient = _webApp.Client;
+
+        var file1Id = Guid.NewGuid();
+        var file2Id = Guid.NewGuid();
+        var file3Id = Guid.NewGuid();
+        var file4Id = Guid.NewGuid();
+
+        var types = await httpClient.GetFromJsonAsync<IReadOnlyCollection<TagType>>("/tags/types");
+        var tagA = await CreateNewTag(httpClient, types, "1girl");
+        var tagB = await CreateNewTag(httpClient, types, "solo");
+        var tagC = await CreateNewTag(httpClient, types, "blue hair");
+
+        await httpClient.PostAsJsonAsync("/files/tags", new BindTagsCommand(
+        [
+            new(file1Id, MetadataSource.Manual, tagA.Id, null),
+            new(file2Id, MetadataSource.Manual, tagB.Id, null),
+            new(file3Id, MetadataSource.Manual, tagC.Id, null),
+            new(file4Id, MetadataSource.Manual, tagA.Id, null),
+            new(file4Id, MetadataSource.Manual, tagC.Id, null),
+        ], SameTagHandleStrategy.ReplaceExistingValue));
+
+        await httpClient.PostAsJsonAsync("/tags/aliases", new SetTagAliasesCommand(tagA.Id, [tagB.Id]));
+
+        // act
+        var foundByA = await httpClient
+            .PostAsJsonAsync(
+                "/files/search-fast",
+                new SearchFilesFastQuery([new(tagA.Id, TagSearchScope.Included, null)]))
+            .ReadResult<IReadOnlyCollection<Guid>>();
+
+        var foundByB = await httpClient
+            .PostAsJsonAsync(
+                "/files/search-fast",
+                new SearchFilesFastQuery([new(tagB.Id, TagSearchScope.Included, null)]))
+            .ReadResult<IReadOnlyCollection<Guid>>();
+
+        var foundByAAndC = await httpClient
+            .PostAsJsonAsync(
+                "/files/search-fast",
+                new SearchFilesFastQuery([
+                    new(tagA.Id, TagSearchScope.Included, null),
+                    new(tagC.Id, TagSearchScope.Included, null)
+                ]))
+            .ReadResult<IReadOnlyCollection<Guid>>();
+
+        var foundByCExcludeA = await httpClient
+            .PostAsJsonAsync(
+                "/files/search-fast",
+                new SearchFilesFastQuery([
+                    new(tagC.Id, TagSearchScope.Included, null),
+                    new(tagA.Id, TagSearchScope.Excluded, null)
+                ]))
+            .ReadResult<IReadOnlyCollection<Guid>>();
+
+        var countByA = await httpClient
+            .PostAsJsonAsync(
+                "/files/search-fast/count",
+                new SearchFilesFastQuery([new(tagA.Id, TagSearchScope.Included, null)]))
+            .ReadResult<int>();
+
+        // assert
+        foundByA.Should().BeEquivalentTo([file1Id, file2Id, file4Id]);
+        foundByB.Should().BeEquivalentTo([file1Id, file2Id, file4Id]);
+        foundByAAndC.Should().BeEquivalentTo([file4Id]);
+        foundByCExcludeA.Should().BeEquivalentTo([file3Id]);
+        countByA.Should().Be(3);
+    }
+
+    [Fact]
+    public async Task SearchFilesFastAliasesAreNotTransitive()
+    {
+        // arrange
+        var httpClient = _webApp.Client;
+
+        var fileAId = Guid.NewGuid();
+        var fileBId = Guid.NewGuid();
+        var fileCId = Guid.NewGuid();
+
+        var types = await httpClient.GetFromJsonAsync<IReadOnlyCollection<TagType>>("/tags/types");
+        var tagA = await CreateNewTag(httpClient, types, "1girl");
+        var tagB = await CreateNewTag(httpClient, types, "solo");
+        var tagC = await CreateNewTag(httpClient, types, "1woman");
+
+        await httpClient.PostAsJsonAsync("/files/tags", new BindTagsCommand(
+        [
+            new(fileAId, MetadataSource.Manual, tagA.Id, null),
+            new(fileBId, MetadataSource.Manual, tagB.Id, null),
+            new(fileCId, MetadataSource.Manual, tagC.Id, null),
+        ], SameTagHandleStrategy.ReplaceExistingValue));
+
+        await httpClient.PostAsJsonAsync("/tags/aliases", new SetTagAliasesCommand(tagB.Id, [tagA.Id, tagC.Id]));
+
+        // act
+        var foundByA = await httpClient
+            .PostAsJsonAsync(
+                "/files/search-fast",
+                new SearchFilesFastQuery([new(tagA.Id, TagSearchScope.Included, null)]))
+            .ReadResult<IReadOnlyCollection<Guid>>();
+
+        var foundByB = await httpClient
+            .PostAsJsonAsync(
+                "/files/search-fast",
+                new SearchFilesFastQuery([new(tagB.Id, TagSearchScope.Included, null)]))
+            .ReadResult<IReadOnlyCollection<Guid>>();
+
+        var foundByC = await httpClient
+            .PostAsJsonAsync(
+                "/files/search-fast",
+                new SearchFilesFastQuery([new(tagC.Id, TagSearchScope.Included, null)]))
+            .ReadResult<IReadOnlyCollection<Guid>>();
+
+        // assert
+        foundByA.Should().BeEquivalentTo([fileAId, fileBId]);
+        foundByB.Should().BeEquivalentTo([fileAId, fileBId, fileCId]);
+        foundByC.Should().BeEquivalentTo([fileBId, fileCId]);
+    }
+
     private static async Task<Tag> CreateNewTag(
         HttpClient client,
         IReadOnlyCollection<TagType>? types,

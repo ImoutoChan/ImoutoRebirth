@@ -1,11 +1,15 @@
 # Unreleased
 
 ### Navigator
+* **new!** Tag aliases: mark tags as aliases of each other in the merge flyout (press M), searching by any of them finds files tagged with any other. Click ⊕ on a found tag to pick the anchor tag and see its aliases, ⊕ on other tags to add them, then Save
 * Add draggable behavior to the fullscreen preview
 * Click a tag source name in the current file tags panel to copy its tags as text. The menu offers "Copy tags as text" (grouped by tag type, one type per line) and "Copy general tags as text" (general tags only, shown only when the source has any)
 
 ### Viewer
 * Click a tag source name in the tags panel to copy its tags as text. The menu offers "Copy tags as text" (grouped by tag type, one type per line) and "Copy general tags as text" (general tags only, shown only when the source has any)
+
+### Lilin
+* **new!** Tag aliases: a new TagAliases table stores symmetric tag-to-tag pairs; file search expands every searched tag to itself plus its aliases (works for include, exclude and value filters), new endpoints GET /tags/{tagId}/aliases and POST /tags/aliases
 
 # v4.30.0
 

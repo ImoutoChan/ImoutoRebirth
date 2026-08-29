@@ -2,6 +2,7 @@
 using ImoutoRebirth.Lilin.Application.FileInfoSlice.Queries;
 using ImoutoRebirth.Lilin.DataAccess;
 using ImoutoRebirth.Lilin.DataAccess.Entities;
+using Microsoft.EntityFrameworkCore;
 
 namespace ImoutoRebirth.Lilin.Infrastructure;
 
@@ -11,11 +12,40 @@ internal enum SearchOptions
     FileShouldHaveAnyIncludedTags
 }
 
+internal record SearchEntry(IReadOnlyCollection<Guid> TagIds, string? Value, TagSearchScope TagSearchScope);
+
 internal static class FileTagDbContextSearchExtensions
 {
-    public static IQueryable<Guid> GetSearchFilesIdsQueryable(
+    public static async Task<IReadOnlyCollection<SearchEntry>> ExpandAliases(
         this LilinDbContext context,
         IReadOnlyCollection<TagSearchEntry> tagSearchEntries,
+        CancellationToken ct)
+    {
+        if (!tagSearchEntries.Any())
+            return [];
+
+        var tagIds = tagSearchEntries.Select(x => x.TagId).Distinct().ToList();
+
+        var pairs = await context.TagAliases
+            .Where(x => tagIds.Contains(x.TagId) || tagIds.Contains(x.AliasTagId))
+            .Select(x => new { x.TagId, x.AliasTagId })
+            .ToListAsync(cancellationToken: ct);
+
+        var aliasesByTagId = pairs
+            .SelectMany(x => new[] { (Tag: x.TagId, Alias: x.AliasTagId), (Tag: x.AliasTagId, Alias: x.TagId) })
+            .ToLookup(x => x.Tag, x => x.Alias);
+
+        return tagSearchEntries
+            .Select(x => new SearchEntry(
+                [x.TagId, ..aliasesByTagId[x.TagId]],
+                x.Value,
+                x.TagSearchScope))
+            .ToList();
+    }
+
+    public static IQueryable<Guid> GetSearchFilesIdsQueryable(
+        this LilinDbContext context,
+        IReadOnlyCollection<SearchEntry> tagSearchEntries,
         SearchOptions searchOptions = SearchOptions.FileShouldHaveAllIncludedTags)
     {
         IQueryable<Guid>? queryable;
@@ -28,7 +58,7 @@ internal static class FileTagDbContextSearchExtensions
             var includeFirst = include.First();
 
             queryable = context.FileTags
-                .Where(x => x.TagId == includeFirst.TagId)
+                .MakeTagFilter(includeFirst)
                 .MakeValueFilter(includeFirst.Value)
                 .Select(x => x.FileId);
 
@@ -38,7 +68,7 @@ internal static class FileTagDbContextSearchExtensions
                 {
                     queryable = queryable.Intersect(
                         context.FileTags
-                            .Where(x => x.TagId == includeEntry.TagId)
+                            .MakeTagFilter(includeEntry)
                             .MakeValueFilter(includeEntry.Value)
                             .Select(x => x.FileId)
                     );
@@ -47,7 +77,7 @@ internal static class FileTagDbContextSearchExtensions
                 {
                     queryable = queryable.Union(
                         context.FileTags
-                            .Where(x => x.TagId == includeEntry.TagId)
+                            .MakeTagFilter(includeEntry)
                             .MakeValueFilter(includeEntry.Value)
                             .Select(x => x.FileId)
                     );
@@ -63,13 +93,26 @@ internal static class FileTagDbContextSearchExtensions
         {
             queryable = queryable.Except(
                 context.FileTags
-                    .Where(x => x.TagId == excludeEntry.TagId)
+                    .MakeTagFilter(excludeEntry)
                     .MakeValueFilter(excludeEntry.Value)
                     .Select(x => x.FileId)
             );
         }
 
         return queryable;
+    }
+
+    private static IQueryable<FileTagEntity> MakeTagFilter(
+        this IQueryable<FileTagEntity> query,
+        SearchEntry entry)
+    {
+        if (entry.TagIds.Count == 1)
+        {
+            var tagId = entry.TagIds.First();
+            return query.Where(x => x.TagId == tagId);
+        }
+
+        return query.Where(x => entry.TagIds.Contains(x.TagId));
     }
 
     public static IQueryable<FileTagEntity> MakeValueFilter(
