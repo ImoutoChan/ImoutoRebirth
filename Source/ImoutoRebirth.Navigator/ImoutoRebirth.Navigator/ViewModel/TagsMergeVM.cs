@@ -42,6 +42,12 @@ internal partial class TagsMergeVM : ObservableObject
     [ObservableProperty]
     public partial bool IsSuccess { get; set; }
 
+    [ObservableProperty]
+    public partial bool IsAliasesInProgress { get; set; }
+
+    [ObservableProperty]
+    public partial bool IsAliasesSuccess { get; set; }
+
     public TagsMergeVM() => _tagService = ServiceLocator.GetService<ITagService>();
 
     public string? SearchText
@@ -68,6 +74,14 @@ internal partial class TagsMergeVM : ObservableObject
         TagToEnrich = x;
     }
 
+    [RelayCommand]
+    private void ResetMerge()
+    {
+        TagToClean = null;
+        TagToEnrich = null;
+        CleanedTag = null;
+    }
+
 
     private bool CanMergeTags(object? obj) => TagToClean != null && TagToEnrich != null;
 
@@ -85,7 +99,8 @@ internal partial class TagsMergeVM : ObservableObject
             IsInProgress = true;
 
             await _tagService.MergeTags(tagToClean.Tag.Id, tagToEnrich.Tag.Id);
-            
+
+            IsInProgress = false;
             IsSuccess = true;
             await Task.Delay(500);
             IsSuccess = false;
@@ -113,7 +128,8 @@ internal partial class TagsMergeVM : ObservableObject
             IsInProgress = true;
 
             await _tagService.DeleteTag(cleanedTag.Tag.Id);
-            
+
+            IsInProgress = false;
             IsSuccess = true;
             await Task.Delay(500);
             IsSuccess = false;
@@ -181,17 +197,18 @@ internal partial class TagsMergeVM : ObservableObject
 
         try
         {
-            IsInProgress = true;
+            IsAliasesInProgress = true;
 
             await _tagService.SetTagAliases(anchor.Tag.Id, AliasTags.Select(x => x.Tag.Id).ToList());
 
-            IsSuccess = true;
+            IsAliasesInProgress = false;
+            IsAliasesSuccess = true;
             await Task.Delay(500);
-            IsSuccess = false;
+            IsAliasesSuccess = false;
         }
         finally
         {
-            IsInProgress = false;
+            IsAliasesInProgress = false;
         }
     }
 

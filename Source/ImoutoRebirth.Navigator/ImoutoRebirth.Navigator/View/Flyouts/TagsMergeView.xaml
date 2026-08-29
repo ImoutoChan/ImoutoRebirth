@@ -12,21 +12,14 @@
              d:DesignWidth="1400">
     <Grid Margin="15,15,15,15">
         <Grid.ColumnDefinitions>
-            <!-- 0 --><ColumnDefinition Width="200" />
-            <!-- 1 --><ColumnDefinition Width="*"
-                                        MinWidth="15" />
-            <!-- 2 --><ColumnDefinition Width="200" />
-            <!-- 2 --><ColumnDefinition Width="*"
-                                        MinWidth="15" />
-            <!-- 2 --><ColumnDefinition Width="Auto" />
+            <!-- 0 search --><ColumnDefinition Width="200" />
+            <!-- 1 --><ColumnDefinition Width="30" />
+            <!-- 2 clean --><ColumnDefinition Width="200" />
             <!-- 3 --><ColumnDefinition Width="15" />
-            <!-- 4 --><ColumnDefinition Width="200" />
-            <!-- 5 --><ColumnDefinition Width="15" />
-            <!-- 8 --><ColumnDefinition Width="200" />
-            <!-- 9 --><ColumnDefinition Width="15" />
-            <!-- 10 --><ColumnDefinition Width="Auto"
-                                         MaxWidth="200" />
-            <!-- 11 --><ColumnDefinition Width="*" />
+            <!-- 4 enrich --><ColumnDefinition Width="200" />
+            <!-- 5 divider --><ColumnDefinition Width="60" />
+            <!-- 6 aliases --><ColumnDefinition Width="200" />
+            <!-- 7 --><ColumnDefinition Width="*" />
         </Grid.ColumnDefinitions>
 
         <Grid.RowDefinitions>
@@ -58,70 +51,50 @@
 
                     <ItemsControl.ItemTemplate>
                         <DataTemplate>
-                            <Grid>
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="*" />
-                                    <ColumnDefinition Width="Auto" />
-                                </Grid.ColumnDefinitions>
+                            <Label Name="Label"
+                                   HorizontalContentAlignment="Stretch"
+                                   Padding="10,4,5,2">
+                                <Label.Style>
+                                    <Style TargetType="Label">
+                                        <Setter Property="Background"
+                                                Value="Transparent" />
+                                        <Style.Triggers>
+                                            <Trigger Property="IsMouseOver"
+                                                     Value="True">
+                                                <Setter Property="Background"
+                                                        Value="{StaticResource MahApps.Brushes.Accent3}" />
+                                            </Trigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </Label.Style>
 
-                                <Label Name="Label"
-                                       Grid.Column="0"
-                                       HorizontalContentAlignment="Stretch"
-                                       Padding="10,4,5,2">
-                                    <Label.Style>
-                                        <Style TargetType="Label">
-                                            <Setter Property="Background"
-                                                    Value="Transparent" />
-                                            <Style.Triggers>
-                                                <Trigger Property="IsMouseOver"
-                                                         Value="True">
-                                                    <Setter Property="Background"
-                                                            Value="{StaticResource MahApps.Brushes.Accent3}" />
-                                                </Trigger>
-                                            </Style.Triggers>
-                                        </Style>
-                                    </Label.Style>
+                                <Label.InputBindings>
+                                    <MouseBinding Gesture="LeftClick"
+                                                  Command="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}}, Path=DataContext.SelectTagToCleanCommand}"
+                                                  CommandParameter="{Binding}" />
+                                    <MouseBinding Gesture="RightClick"
+                                                  Command="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}}, Path=DataContext.SelectTagToEnrichCommand}"
+                                                  CommandParameter="{Binding}" />
+                                    <MouseBinding MouseAction="MiddleClick"
+                                                  Command="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}}, Path=DataContext.AddToAliasesCommand}"
+                                                  CommandParameter="{Binding}" />
+                                </Label.InputBindings>
 
-                                    <Label.InputBindings>
-                                        <MouseBinding Gesture="LeftClick"
-                                                      Command="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}}, Path=DataContext.SelectTagToCleanCommand}"
-                                                      CommandParameter="{Binding}" />
-                                        <MouseBinding Gesture="RightClick"
-                                                      Command="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}}, Path=DataContext.SelectTagToEnrichCommand}"
-                                                      CommandParameter="{Binding}" />
-                                    </Label.InputBindings>
+                                <Label.Content>
+                                    <TextBlock TextWrapping="Wrap"
+                                               ToolTip="{Binding Tag.Title}"
+                                               VerticalAlignment="Center">
+                                        <Run Text="{Binding Tag.Title, Mode=OneWay}"
+                                             Foreground="{Binding TypeBrush}"
+                                             FontFamily="Comic Sans MS"
+                                             FontSize="13"
+                                             FontWeight="Bold" />
 
-                                    <Label.Content>
-                                        <TextBlock TextWrapping="Wrap"
-                                                   ToolTip="{Binding Tag.Title}"
-                                                   VerticalAlignment="Center">
-                                            <Run Text="{Binding Tag.Title, Mode=OneWay}"
-                                                 Foreground="{Binding TypeBrush}"
-                                                 FontFamily="Comic Sans MS"
-                                                 FontSize="13"
-                                                 FontWeight="Bold" />
-
-                                            <Run Text="{Binding Tag.Count, StringFormat=' ({0})', Mode=OneWay}"
-                                                 Foreground="{StaticResource MahApps.Brushes.Gray3}" />
-                                        </TextBlock>
-                                    </Label.Content>
-                                </Label>
-
-                                <Button Grid.Column="1"
-                                        Width="15"
-                                        Height="15"
-                                        Margin="0,0,7,0"
-                                        Style="{DynamicResource MahApps.Styles.Button.Circle}"
-                                        Cursor="Hand"
-                                        VerticalAlignment="Center"
-                                        ToolTip="Add to aliases"
-                                        Command="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}}, Path=DataContext.AddToAliasesCommand}"
-                                        CommandParameter="{Binding}">
-                                    <iconPacks:PackIconModern Width="6"
-                                                              Height="6"
-                                                              Kind="Add" />
-                                </Button>
-                            </Grid>
+                                        <Run Text="{Binding Tag.Count, StringFormat=' ({0})', Mode=OneWay}"
+                                             Foreground="{StaticResource MahApps.Brushes.Gray3}" />
+                                    </TextBlock>
+                                </Label.Content>
+                            </Label>
                         </DataTemplate>
                     </ItemsControl.ItemTemplate>
                 </ItemsControl>
@@ -130,7 +103,8 @@
         
         <TextBlock Grid.Column="0"
                    Grid.Row="2"
-                   Text="Left click for clean, right click for enrich, ⊕ for aliases"
+                   Text="Left click for clean, right click for enrich, middle click for aliases"
+                   TextWrapping="Wrap"
                    Margin="0,0,0,5"
                    FontSize="10" />
 
@@ -284,6 +258,14 @@
                        Visibility="{Binding TagToEnrich.Tag.HasValue, Converter={StaticResource ConditionVisibilityConverter}, ConverterParameter=true, Mode=OneWay}" />
         </Grid>
 
+        <Border Grid.Column="5"
+                Grid.Row="0"
+                Grid.RowSpan="3"
+                Width="1"
+                HorizontalAlignment="Center"
+                Background="{DynamicResource MahApps.Brushes.Gray7}"
+                Visibility="{Binding Path=AliasesAnchor, Converter={StaticResource ConditionVisibilityConverter}, ConverterParameter=!null}" />
+
         <!-- Aliases of the anchor tag -->
         <TextBlock Grid.Column="6"
                    Grid.Row="0"
@@ -373,6 +355,23 @@
               Height="25"
               Margin="0,5,0,0"
               Visibility="{Binding Path=AliasesAnchor, Converter={StaticResource ConditionVisibilityConverter}, ConverterParameter=!null}">
+            <controls:ProgressRing IsActive="True"
+                                   HorizontalAlignment="Left"
+                                   Height="20"
+                                   Width="20"
+                                   Visibility="{Binding IsAliasesInProgress, ConverterParameter=true, Converter={StaticResource ConditionVisibilityConverter}}" />
+
+            <Rectangle HorizontalAlignment="Left"
+                       Fill="{StaticResource MahApps.Brushes.Accent}"
+                       Height="20"
+                       Width="20"
+                       Visibility="{Binding IsAliasesSuccess, ConverterParameter=true, Converter={StaticResource ConditionVisibilityConverter}}">
+                <Rectangle.OpacityMask>
+                    <VisualBrush Stretch="Fill"
+                                 Visual="{DynamicResource appbar_check}" />
+                </Rectangle.OpacityMask>
+            </Rectangle>
+
             <StackPanel Orientation="Horizontal"
                         HorizontalAlignment="Right">
                 <Button Content="Reset"
@@ -419,10 +418,17 @@
                 </Rectangle.OpacityMask>
             </Rectangle>
 
-            <Button Content="Merge"
-                    HorizontalAlignment="Right"
-                    Width="85"
-                    Command="{Binding MergeTagsCommand}" />
+            <StackPanel Orientation="Horizontal"
+                        HorizontalAlignment="Right">
+                <Button Content="Reset"
+                        Width="60"
+                        Margin="0,0,5,0"
+                        Command="{Binding ResetMergeCommand}" />
+
+                <Button Content="Merge"
+                        Width="85"
+                        Command="{Binding MergeTagsCommand}" />
+            </StackPanel>
         </Grid>
     </Grid>
 </UserControl>

@@ -2,7 +2,7 @@
   {
     Type: LocalMeta,
     Name: BooruPostId,
-    Value: 3198150|7b9be6a177
+    Value: 1007805|1d5c9d5deb
   },
   {
     Type: LocalMeta,
@@ -12,7 +12,7 @@
   {
     Type: LocalMeta,
     Name: Score,
-    Value: 4.55
+    Value: 4.14
   },
   {
     Type: Copyright,
@@ -29,26 +29,26 @@
   {
     Type: LocalMeta,
     Name: PostedByUsername,
-    Value: koeurby
+    Value: drift49187
   },
   {
     Type: LocalMeta,
     Name: FilesCount,
-    Value: 16
+    Value: 15
   },
   {
     Type: LocalMeta,
     Name: FileSize,
-    Value: 49774017
+    Value: 58479334
   },
   {
     Type: LocalMeta,
     Name: PostedDateTime,
-    Value: 17.01.2025 05:20:36
+    Value: 19.12.2016 08:55:58
   },
   {
     Type: Meta,
-    Name: french
+    Name: russian
   },
   {
     Type: Meta,
@@ -117,14 +117,6 @@
   {
     Type: General,
     Name: cousin
-  },
-  {
-    Type: General,
-    Name: female:defloration
-  },
-  {
-    Type: General,
-    Name: defloration
   },
   {
     Type: General,
