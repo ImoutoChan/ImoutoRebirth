@@ -19,6 +19,7 @@ public record AppConfiguration(
     public record ApiSettings(
         string DanbooruLogin,
         string DanbooruApiKey,
+        string DanbooruUserId,
         string SankakuLogin,
         string SankakuPassword,
         string YandereLogin,
@@ -93,6 +94,7 @@ public record AppConfiguration(
             Api: new(
                 DanbooruLogin: configurationDictionary["DanbooruLogin"],
                 DanbooruApiKey: configurationDictionary["DanbooruApiKey"],
+                DanbooruUserId: configurationDictionary["DanbooruUserId"],
                 SankakuLogin: configurationDictionary["SankakuLogin"],
                 SankakuPassword: configurationDictionary["SankakuPassword"],
                 YandereLogin: configurationDictionary["YandereLogin"],
@@ -139,6 +141,7 @@ public record AppConfiguration(
         {
             ["DanbooruLogin"] = Api.DanbooruLogin,
             ["DanbooruApiKey"] = Api.DanbooruApiKey,
+            ["DanbooruUserId"] = Api.DanbooruUserId,
             ["SankakuLogin"] = Api.SankakuLogin,
             ["SankakuPassword"] = Api.SankakuPassword,
             ["YandereLogin"] = Api.YandereLogin,
@@ -189,6 +192,7 @@ public record AppConfiguration(
         {
             "DanbooruLogin",
             "DanbooruApiKey",
+            "DanbooruUserId",
             "SankakuLogin",
             "SankakuPassword",
             "YandereLogin",
@@ -306,6 +310,18 @@ public record AppConfiguration(
             // version 6 to version 7, add rule34 options
             configuration.Add("Rule34UserId", "");
             configuration.Add("Rule34ApiKey", "");
+
+            await File.WriteAllTextAsync(
+                globalConfigurationFile.FullName,
+                JsonSerializer.Serialize(configuration, new JsonSerializerOptions { WriteIndented = true }));
+
+            wasMigrated = true;
+        }
+
+        if (!configuration.ContainsKey("DanbooruUserId"))
+        {
+            // version 7 to version 8, add danbooru user id
+            configuration.Add("DanbooruUserId", "");
 
             await File.WriteAllTextAsync(
                 globalConfigurationFile.FullName,

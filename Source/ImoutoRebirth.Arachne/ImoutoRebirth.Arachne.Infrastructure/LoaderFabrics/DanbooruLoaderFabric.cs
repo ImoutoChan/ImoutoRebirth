@@ -29,7 +29,7 @@ internal class DanbooruLoaderFabric : IBooruLoaderFabric, IAvailabilityProvider
             ApiKey = _settings.ApiKey,
             Login = _settings.Login,
             PauseBetweenRequestsInMs = _settings.Delay,
-            BotUserAgent = _settings.BotUserAgent
+            BotUserAgent = _settings.GetUserAgent()
         }));
 
     public IAvailabilityChecker CreateAvailabilityChecker()

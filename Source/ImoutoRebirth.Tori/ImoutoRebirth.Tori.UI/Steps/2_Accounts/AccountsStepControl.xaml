@@ -55,6 +55,11 @@
                             Header="api key"
                             Text="{Binding DanbooruApiKey}" />
 
+                        <userControls:InputControl
+                            Margin="0,10,0,0"
+                            Header="user id"
+                            Text="{Binding DanbooruUserId}" />
+
                         <StackPanel
                             Orientation="Horizontal"
                             Margin="-30,37,0,0">

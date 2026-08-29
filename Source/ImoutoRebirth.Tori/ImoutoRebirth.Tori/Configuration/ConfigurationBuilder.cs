@@ -69,6 +69,7 @@ public class ConfigurationBuilder : IConfigurationBuilder
               "DanbooruSettings": {
                 "Login": "{{_configuration.Api.DanbooruLogin}}",
                 "ApiKey": "{{_configuration.Api.DanbooruApiKey}}",
+                "UserId": "{{_configuration.Api.DanbooruUserId}}",
                 "Delay": "1",
                 "BotUserAgent": "Arachne/{{currentVersion}}"
               },
@@ -113,6 +114,7 @@ public class ConfigurationBuilder : IConfigurationBuilder
               "Danbooru": {
                 "ApiKey": "{{_configuration.Api.DanbooruApiKey}}",
                 "Login": "{{_configuration.Api.DanbooruLogin}}",
+                "UserId": "{{_configuration.Api.DanbooruUserId}}",
                 "BotUserAgent": "Harpy/{{currentVersion}}"
               },
               "Yandere": {

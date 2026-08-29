@@ -94,6 +94,7 @@ Template and default values
 {
   "DanbooruLogin": "",
   "DanbooruApiKey": "",
+  "DanbooruUserId": "",
   "SankakuLogin": "",
   "SankakuPassword": "",
   "YandereLogin": "",
@@ -126,6 +127,7 @@ Template and default values
 |-------------------------------------------|----------|---------|
 | DanbooruLogin                             |          | Optional but recommended, only if you want ImoutoRebirth to search tags for your files in danbooru |
 | DanbooruApiKey                            |          | Optional but recommended, you can find it at the end of your danbooru profile page, API Key row |
+| DanbooruUserId                            |          | Optional but recommended, your numeric danbooru user id: the ID row at the top of your profile page (or the number in your profile url https://danbooru.donmai.us/users/<id>). Danbooru requires it in the api user agent, without it some requests fail with 403 |
 | SankakuLogin                              |          | Optional, your sankaku login |
 | SankakuPassword                           |          | Optional, your sankaku password |
 | YandereLogin                              |          | Optional but recommended, only if you want ImoutoRebirth to search tags for your files in yandere |

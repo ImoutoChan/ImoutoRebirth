@@ -11,6 +11,10 @@
     * Select the first item
     * Shift+click on the last item to select everything
   * Click **Create**
+* user id
+  * https://danbooru.donmai.us/profile
+  * The **User ID** row at the top of the page, it's a number
+  * Danbooru requires it in the user agent of every api client, without it some requests are rejected with 403
 
 ## SankakuComplex
 * Just enter your account login and password

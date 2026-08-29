@@ -22,6 +22,10 @@ public partial class AccountsStepViewModel : ObservableObject, IStep
     private string _danbooruApiKey;
 
     [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(IsDanbooruFilled))]
+    private string _danbooruUserId;
+
+    [ObservableProperty]
     [NotifyPropertyChangedFor(nameof(IsSankakuFilled))]
     private string _sankakuLogin;
 
@@ -69,7 +73,10 @@ public partial class AccountsStepViewModel : ObservableObject, IStep
     [NotifyPropertyChangedFor(nameof(IsExhentaiFilled))]
     private string _exHentaiUserAgent;
 
-    public bool IsDanbooruFilled => !string.IsNullOrWhiteSpace(DanbooruLogin) && !string.IsNullOrWhiteSpace(DanbooruApiKey);
+    public bool IsDanbooruFilled
+        => !string.IsNullOrWhiteSpace(DanbooruLogin)
+           && !string.IsNullOrWhiteSpace(DanbooruApiKey)
+           && !string.IsNullOrWhiteSpace(DanbooruUserId);
 
     public bool IsSankakuFilled => !string.IsNullOrWhiteSpace(SankakuLogin) && !string.IsNullOrWhiteSpace(SankakuPassword);
 
@@ -94,6 +101,7 @@ public partial class AccountsStepViewModel : ObservableObject, IStep
 
         DanbooruApiKey = currentConfiguration.Api.DanbooruApiKey;
         DanbooruLogin = currentConfiguration.Api.DanbooruLogin;
+        DanbooruUserId = currentConfiguration.Api.DanbooruUserId;
         SankakuLogin = currentConfiguration.Api.SankakuLogin;
         SankakuPassword = currentConfiguration.Api.SankakuPassword;
         YandereLogin = currentConfiguration.Api.YandereLogin;
@@ -137,7 +145,8 @@ public partial class AccountsStepViewModel : ObservableObject, IStep
                 Api = x.Api with
                 {
                     DanbooruLogin = DanbooruLogin ?? "",
-                    DanbooruApiKey = DanbooruApiKey ?? ""
+                    DanbooruApiKey = DanbooruApiKey ?? "",
+                    DanbooruUserId = DanbooruUserId ?? ""
                 }
             });
         }
@@ -148,7 +157,8 @@ public partial class AccountsStepViewModel : ObservableObject, IStep
                 Api = x.Api with
                 {
                     DanbooruLogin = "",
-                    DanbooruApiKey = ""
+                    DanbooruApiKey = "",
+                    DanbooruUserId = ""
                 }
             });
         }

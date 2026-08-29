@@ -86,7 +86,7 @@ public static class ServiceCollectionExtensions
                 Login = danbooruSettings.Login,
                 ApiKey = danbooruSettings.ApiKey,
                 PauseBetweenRequestsInMs = danbooruSettings.Delay,
-                BotUserAgent = danbooruSettings.BotUserAgent
+                BotUserAgent = danbooruSettings.GetUserAgent()
             }));
 
         services.AddTransient<IBooruPostConverter, BooruPostConverter>();

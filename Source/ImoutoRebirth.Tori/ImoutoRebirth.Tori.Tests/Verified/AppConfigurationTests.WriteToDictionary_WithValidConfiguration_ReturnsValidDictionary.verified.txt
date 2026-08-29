@@ -1,6 +1,7 @@
 ﻿{
   DanbooruApiKey: danbooruKey123,
   DanbooruLogin: danbooruUser,
+  DanbooruUserId: 123456,
   ExHentaiIgneous: igneous,
   ExHentaiIpbMemberId: memberId,
   ExHentaiIpbPassHash: passHash,

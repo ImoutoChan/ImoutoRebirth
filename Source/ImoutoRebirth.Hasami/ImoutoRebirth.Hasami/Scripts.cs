@@ -85,7 +85,8 @@ internal static partial class Scripts
             x.Login = configuration.GetValue<string>("DanbooruSettings:Login");
             x.ApiKey = configuration.GetValue<string>("DanbooruSettings:ApiKey");
             x.PauseBetweenRequestsInMs = 0;
-            x.BotUserAgent = configuration.GetValue<string>("DanbooruSettings:UserAgent");
+            var userId = configuration.GetValue<string>("DanbooruSettings:UserId");
+            x.BotUserAgent = $"{configuration.GetValue<string>("DanbooruSettings:UserAgent")}; user #{userId}";
         });
         services.Configure<SankakuSettings>(x =>
         {

@@ -155,7 +155,7 @@ public class AppConfigurationTests
             var deserializedDictionary = JsonSerializer.Deserialize<Dictionary<string, string>>(fileContent);
 
             deserializedDictionary.Should().NotBeNull();
-            deserializedDictionary.Should().HaveCount(32);
+            deserializedDictionary.Should().HaveCount(33);
             deserializedDictionary["DanbooruLogin"].Should().Be("danbooruUser");
             deserializedDictionary["HarpySavePath"].Should().Be(@"C:\Data\Harpy");
         }
@@ -367,12 +367,48 @@ public class AppConfigurationTests
         }
     }
 
+    [Fact]
+    public async Task ReadFromFile_MigratesV7ToV8Format()
+    {
+        // arrange
+        var tempFile = Path.GetTempFileName();
+        try
+        {
+            var configDictionary = CreateValidConfigurationDictionary();
+            configDictionary.Remove("DanbooruUserId");
+
+            await File.WriteAllTextAsync(tempFile, JsonSerializer.Serialize(configDictionary));
+            var fileInfo = new FileInfo(tempFile);
+
+            // act
+            var appConfig = await AppConfiguration.ReadFromFile(fileInfo);
+
+            // assert
+            appConfig.Should().NotBeNull();
+            appConfig.Api.DanbooruUserId.Should().Be("");
+
+            // check that the V8 key was added to the file
+            var updatedFileContent = await File.ReadAllTextAsync(tempFile);
+            var updatedDictionary = JsonSerializer.Deserialize<Dictionary<string, string>>(updatedFileContent);
+
+            updatedDictionary.Should().NotBeNull();
+            updatedDictionary.Should().ContainKey("DanbooruUserId");
+        }
+        finally
+        {
+            // cleanup
+            if (File.Exists(tempFile))
+                File.Delete(tempFile);
+        }
+    }
+
     private static Dictionary<string, string> CreateValidConfigurationDictionary()
     {
         return new Dictionary<string, string>
         {
             ["DanbooruLogin"] = "danbooruUser",
             ["DanbooruApiKey"] = "danbooruKey123",
+            ["DanbooruUserId"] = "danbooruUserId",
             ["SankakuLogin"] = "sankakuUser",
             ["SankakuPassword"] = "sankakuPass123",
             ["YandereLogin"] = "yandereUser",
@@ -422,6 +458,7 @@ public class AppConfigurationTests
             Api: new AppConfiguration.ApiSettings(
                 DanbooruLogin: "danbooruUser",
                 DanbooruApiKey: "danbooruKey123",
+                DanbooruUserId: "123456",
                 SankakuLogin: "sankakuUser",
                 SankakuPassword: "sankakuPass123",
                 YandereLogin: "yandereUser",

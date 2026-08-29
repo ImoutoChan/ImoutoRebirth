@@ -15,6 +15,10 @@ internal class YandereBooruConfiguration : BooruConfiguration
 
 internal class DanbooruBooruConfiguration : BooruConfiguration
 {
+    public required string UserId { get; set; }
+
+    public string GetUserAgent()
+        => int.TryParse(UserId, out var userId) ? $"{BotUserAgent}; user #{userId}" : BotUserAgent;
 }
 
 internal class GelbooruBooruConfiguration

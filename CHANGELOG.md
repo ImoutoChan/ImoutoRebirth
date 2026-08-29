@@ -11,6 +11,9 @@
 ### Lilin
 * **new!** Tag aliases: a new TagAliases table stores symmetric tag-to-tag pairs; file search expands every searched tag to itself plus its aliases (works for include, exclude and value filters), new endpoints GET /tags/{tagId}/aliases and POST /tags/aliases
 
+### Arachne
+* **Important** Please enter your danbooru id on update. Danbooru now requires your numeric user id in the api user agent (`user #<id>`), without it some requests fail with 403
+
 # v4.30.0
 
 ### Highlights

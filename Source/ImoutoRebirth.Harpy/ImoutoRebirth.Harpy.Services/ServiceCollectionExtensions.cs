@@ -18,7 +18,7 @@ public static class ServiceCollectionExtensions
         this IServiceCollection services,
         IConfiguration configuration)
     {
-        var danbooruUserAgent = configuration.GetSection("Danbooru").GetValue<string>("BotUserAgent");
+        var danbooruUserAgent = configuration.GetSection("Danbooru").Get<DanbooruBooruConfiguration>()?.GetUserAgent();
         var yandereUserAgent = configuration.GetSection("Yandere").GetValue<string>("BotUserAgent");
 
         services.AddDefaultMediatR(x => x.RegisterServicesFromAssemblyContaining<FavoritesSaveCommand>());
