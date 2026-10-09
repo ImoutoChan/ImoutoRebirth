@@ -307,7 +307,6 @@ public class CollectionsApiTests : IDisposable
         testFile2.CopyTo(Path.Combine(sourceFolderPath, testFile2.Name));
         
         await _mediator.Send(new OverseeCommand());
-        await Task.Delay(250);
         
         var files = await _context.CollectionFiles
             .Where(x => x.CollectionId == collectionId)
