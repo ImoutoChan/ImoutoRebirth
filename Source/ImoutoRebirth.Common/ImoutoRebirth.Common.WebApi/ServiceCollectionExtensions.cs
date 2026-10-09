@@ -6,8 +6,6 @@ using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.OpenApi;
 using Swashbuckle.AspNetCore.SwaggerGen;
-using ImoutoRebirth.Common;
-using Microsoft.AspNetCore.Mvc.ApiExplorer;
 
 namespace ImoutoRebirth.Common.WebApi;
 

@@ -12,7 +12,8 @@ public class RecalculateTagsCountersJob : IJob
 
     public RecalculateTagsCountersJob(IMediator mediator) => _mediator = mediator;
 
-    public Task Execute(IJobExecutionContext context) => _mediator.Send(new UpdateTagsCountersCommand());
+    public async ValueTask Execute(IJobExecutionContext context, CancellationToken ct)
+        => await _mediator.Send(new UpdateTagsCountersCommand(), ct);
 
     public class Description : IQuartzJobDescription
     {
@@ -31,7 +32,7 @@ public class RecalculateTagsCountersJob : IJob
         public ITrigger GetJobTrigger()
             => TriggerBuilder.Create()
                 .WithIdentity("Recalculate tags counters trigger")
-                .WithSchedule(SimpleScheduleBuilder.RepeatMinutelyForever(_repeatEveryMinutes))
+                .WithSimpleSchedule(TimeSpan.FromMinutes(_repeatEveryMinutes))
                 .Build();
     }
 }

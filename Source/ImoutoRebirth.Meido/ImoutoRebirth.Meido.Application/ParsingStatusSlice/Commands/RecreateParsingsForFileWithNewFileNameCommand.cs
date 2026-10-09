@@ -3,7 +3,6 @@ using ImoutoRebirth.Common.Domain;
 using ImoutoRebirth.Meido.Application.Infrastructure;
 using ImoutoRebirth.Meido.Domain;
 using ImoutoRebirth.Meido.Domain.ParsingStatusAggregate;
-using Microsoft.Extensions.Logging;
 using NodaTime;
 
 namespace ImoutoRebirth.Meido.Application.ParsingStatusSlice.Commands;

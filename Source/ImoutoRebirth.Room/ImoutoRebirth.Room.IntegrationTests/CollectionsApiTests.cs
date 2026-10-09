@@ -2,14 +2,11 @@
 using ImoutoRebirth.Common.MassTransit;
 using ImoutoRebirth.Common.Tests;
 using ImoutoRebirth.Lamia.MessageContracts;
-using ImoutoRebirth.Lilin.MessageContracts;
 using ImoutoRebirth.Room.Application.Cqrs;
 using ImoutoRebirth.Room.Application.Cqrs.CollectionFileSlice;
 using ImoutoRebirth.Room.Application.Cqrs.FoldersSlice;
-using ImoutoRebirth.Room.Application.Cqrs.IntegritySlice;
 using ImoutoRebirth.Room.Database;
 using ImoutoRebirth.Room.Domain;
-using ImoutoRebirth.Room.Domain.IntegrityAggregate;
 using ImoutoRebirth.Room.IntegrationTests.Fixtures;
 using MassTransit.Testing;
 using MediatR;

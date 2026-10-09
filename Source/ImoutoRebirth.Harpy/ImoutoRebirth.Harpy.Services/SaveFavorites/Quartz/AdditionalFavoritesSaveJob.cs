@@ -11,14 +11,14 @@ internal class AdditionalFavoritesSaveJob : IJob
 
     public AdditionalFavoritesSaveJob(IMediator mediator) => _mediator = mediator;
 
-    public async Task Execute(IJobExecutionContext context)
+    public async ValueTask Execute(IJobExecutionContext context, CancellationToken ct)
     {
-        if (!await FavoritesSaveJob.Lock.WaitAsync(0))
+        if (!await FavoritesSaveJob.Lock.WaitAsync(0, ct))
             return;
 
         try
         {
-            await _mediator.Send(new FavoritesSaveCommand());
+            await _mediator.Send(new FavoritesSaveCommand(), ct);
         }
         finally
         {

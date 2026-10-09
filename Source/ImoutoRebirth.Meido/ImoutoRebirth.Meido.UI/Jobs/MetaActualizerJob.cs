@@ -18,8 +18,8 @@ internal class MetaActualizerJob : IJob
         _actualizerSettings = actualizerSettings;
     }
 
-    public async Task Execute(IJobExecutionContext context) 
-        => await _mediator.Send(new RequestActualizationCommand(_actualizerSettings.Value.ActiveSources ?? []));
+    public async ValueTask Execute(IJobExecutionContext context, CancellationToken ct)
+        => await _mediator.Send(new RequestActualizationCommand(_actualizerSettings.Value.ActiveSources ?? []), ct);
 
     public class Description : IQuartzJobDescription
     {
@@ -38,7 +38,7 @@ internal class MetaActualizerJob : IJob
         public ITrigger GetJobTrigger()
             => TriggerBuilder.Create()
                 .WithIdentity("Oversee trigger")
-                .WithSchedule(SimpleScheduleBuilder.RepeatMinutelyForever(_repeatEveryMinutes))
+                .WithSimpleSchedule(TimeSpan.FromMinutes(_repeatEveryMinutes))
                 .Build();
     }
 }

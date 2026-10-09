@@ -40,6 +40,7 @@
     ],
     Publisher: C78,
     Tags: [
+      language:japanese,
       parody:bleach,
       character:genryusai shigekuni yamamoto,
       character:rangiku matsumoto,

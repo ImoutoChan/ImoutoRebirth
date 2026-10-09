@@ -1,8 +1,6 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-using CommunityToolkit.Mvvm.Messaging;
 using ImoutoRebirth.Common.WPF.ValidationAttributes;
-using ImoutoRebirth.Navigator.Services;
 using ImoutoRebirth.Navigator.Slices.CreateCollectionWizard.Steps;
 using Microsoft.WindowsAPICodePack.Dialogs;
 using System.Collections.ObjectModel;

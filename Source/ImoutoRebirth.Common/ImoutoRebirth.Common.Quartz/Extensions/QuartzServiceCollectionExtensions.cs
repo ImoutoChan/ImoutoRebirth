@@ -1,46 +1,33 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using Quartz;
-using Quartz.Impl;
-using Quartz.Spi;
 
 namespace ImoutoRebirth.Common.Quartz.Extensions;
 
 public static class QuartzServiceCollectionExtensions
 {
-    internal static IServiceCollection AddQuartz(this IServiceCollection serviceCollection)
+    internal static IServiceCollection AddQuartz(this IServiceCollection services)
     {
-        serviceCollection.AddSingleton<IJobFactory, QuartzJobFactory>();
-        serviceCollection.AddSingleton<QuartzHostedService>();
-        serviceCollection.AddSingleton<IScheduler>(CreateSchedule);
+        global::Quartz.QuartzServiceCollectionExtensions.AddQuartz(services);
+        services.AddQuartzHostedService(x => x.WaitForJobsToComplete = true);
+        services.AddHostedService<QuartzJobsScheduler>();
 
-        return serviceCollection;
+        return services;
     }
 
     public static IServiceCollection AddQuartzJob<TJob, TJobDescription>(
-        this IServiceCollection serviceCollection,
+        this IServiceCollection services,
         Func<IServiceProvider, TJobDescription>? factory = null,
         ServiceLifetime lifetime = ServiceLifetime.Transient)
         where TJob : IJob
         where TJobDescription : IQuartzJobDescription
     {
-        serviceCollection.Add(new ServiceDescriptor(typeof(TJob), typeof(TJob), lifetime));
+        services.Add(new ServiceDescriptor(typeof(TJob), typeof(TJob), lifetime));
 
-        serviceCollection.Add(
+        services.Add(
             factory == null
                 ? new ServiceDescriptor(typeof(IQuartzJobDescription), typeof(TJobDescription), lifetime)
                 : new ServiceDescriptor(typeof(IQuartzJobDescription), x => factory(x), lifetime));
 
-        return serviceCollection;
-    }
-
-    private static IScheduler CreateSchedule(IServiceProvider provider)
-    {
-        var schedulerFactory = new StdSchedulerFactory();
-        var jobFactory = provider.GetRequiredService<IJobFactory>();
-
-        var scheduler = schedulerFactory.GetSchedulerSynchronously();
-        scheduler.JobFactory = jobFactory;
-
-        return scheduler;
+        return services;
     }
 }

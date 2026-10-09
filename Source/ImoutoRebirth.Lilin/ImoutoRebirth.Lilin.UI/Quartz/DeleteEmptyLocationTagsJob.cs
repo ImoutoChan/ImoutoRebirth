@@ -12,7 +12,8 @@ public class DeleteEmptyLocationTagsJob : IJob
 
     public DeleteEmptyLocationTagsJob(IMediator mediator) => _mediator = mediator;
 
-    public Task Execute(IJobExecutionContext context) => _mediator.Send(new DeleteEmptyLocationTagsCommand());
+    public async ValueTask Execute(IJobExecutionContext context, CancellationToken ct)
+        => await _mediator.Send(new DeleteEmptyLocationTagsCommand(), ct);
 
     public class Description : IQuartzJobDescription
     {
@@ -31,7 +32,7 @@ public class DeleteEmptyLocationTagsJob : IJob
         public ITrigger GetJobTrigger()
             => TriggerBuilder.Create()
                 .WithIdentity("Delete empty location tags trigger")
-                .WithSchedule(SimpleScheduleBuilder.RepeatMinutelyForever(_repeatEveryMinutes))
+                .WithSimpleSchedule(TimeSpan.FromMinutes(_repeatEveryMinutes))
                 .Build();
     }
 }

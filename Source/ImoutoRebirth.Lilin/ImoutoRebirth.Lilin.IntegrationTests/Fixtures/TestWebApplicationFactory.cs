@@ -45,7 +45,13 @@ public class TestWebApplicationFactory<TProgram>
                 // disable quartz 
                 .Union(services.Where(
                     d => d.ServiceType == typeof(IHostedService)
-                         && d.ImplementationType?.Name == "QuartzHostedService"))
+                         && d.ImplementationType?.Name is "QuartzHostedService" or "QuartzJobsScheduler"))
+
+                // disable migrator
+                .Union(services.Where(
+                    d => d.ServiceType == typeof(IHostedService)
+                         && d.ImplementationType?.Name is "SqlTransportMigrationHostedService"))
+
                 .ToList();
 
             foreach (var descriptor in descriptors)
@@ -60,7 +66,7 @@ public class TestWebApplicationFactory<TProgram>
         var host = base.CreateHost(builder);
 
         using var scope = host.Services.CreateScope();
-        scope.ServiceProvider.GetRequiredService<LilinDbContext>().Database.MigrateAsync();
+        scope.ServiceProvider.GetRequiredService<LilinDbContext>().Database.Migrate();
 
         return host;
     }

@@ -20,12 +20,12 @@ public class FaultToleranceJob : IJob
         _faultToleranceSettings = faultToleranceSettings;
     }
 
-    public async Task Execute(IJobExecutionContext context)
+    public async ValueTask Execute(IJobExecutionContext context, CancellationToken ct)
     {
         if (!_faultToleranceSettings.Value.IsEnabled)
             return;
 
-        await _mediator.Send(new RequeueFaultedParsingsCommand());
+        await _mediator.Send(new RequeueFaultedParsingsCommand(), ct);
     }
 
     public class Description : IQuartzJobDescription
@@ -45,7 +45,7 @@ public class FaultToleranceJob : IJob
         public ITrigger GetJobTrigger()
             => TriggerBuilder.Create()
                 .WithIdentity("FaultTolerance trigger")
-                .WithSchedule(SimpleScheduleBuilder.RepeatMinutelyForever(_repeatEveryMinutes))
+                .WithSimpleSchedule(TimeSpan.FromMinutes(_repeatEveryMinutes))
                 .Build();
     }
 }

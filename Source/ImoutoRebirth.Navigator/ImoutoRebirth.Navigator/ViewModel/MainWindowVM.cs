@@ -16,7 +16,6 @@ using MahApps.Metro.Controls.Dialogs;
 using Newtonsoft.Json;
 using Serilog;
 using System.Collections;
-using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.Diagnostics;
 using System.IO;

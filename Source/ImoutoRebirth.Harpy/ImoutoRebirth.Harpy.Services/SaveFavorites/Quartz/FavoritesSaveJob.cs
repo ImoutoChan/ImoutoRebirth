@@ -14,27 +14,25 @@ internal class FavoritesSaveJob : IJob
 
     public FavoritesSaveJob(IMediator mediator) => _mediator = mediator;
 
-    public async Task Execute(IJobExecutionContext context)
+    public async ValueTask Execute(IJobExecutionContext context, CancellationToken ct)
     {
-        if (!await Lock.WaitAsync(0))
+        if (!await Lock.WaitAsync(0, ct))
             return;
 
         try
         {
-            var somethingNewWasSaved = await _mediator.Send(new FavoritesSaveCommand());
+            var somethingNewWasSaved = await _mediator.Send(new FavoritesSaveCommand(), ct);
 
             if (!somethingNewWasSaved)
                 return;
 
-            await context.Scheduler.ScheduleJob(
-                JobBuilder.Create<AdditionalFavoritesSaveJob>()
-                    .WithIdentity(nameof(AdditionalFavoritesSaveJob))
-                    .Build(),
+            await context.Scheduler.ScheduleJob<AdditionalFavoritesSaveJob>(
                 TriggerBuilder.Create()
                     .WithIdentity(nameof(AdditionalFavoritesSaveJob))
-                    .StartAt(DateBuilder.FutureDate(5, IntervalUnit.Second))
-                    .WithSimpleSchedule(x => x.WithIntervalInSeconds(5).WithRepeatCount(12))
-                    .Build());
+                    .StartAt(DateTimeOffset.UtcNow.AddSeconds(5))
+                    .WithSimpleSchedule(TimeSpan.FromSeconds(5), 12)
+                    .Build(),
+                cancellationToken: ct);
         }
         finally
         {
@@ -59,7 +57,7 @@ internal class FavoritesSaveJob : IJob
         public ITrigger GetJobTrigger()
             => TriggerBuilder.Create()
                 .WithIdentity("Save favorites trigger")
-                .WithSchedule(SimpleScheduleBuilder.RepeatMinutelyForever(_repeatEveryMinutes))
+                .WithSimpleSchedule(TimeSpan.FromMinutes(_repeatEveryMinutes))
                 .Build();
     }
 }

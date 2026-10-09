@@ -36,6 +36,7 @@ public static class ServiceCollectionExtensions
             {
                 builder
                     .AddMeter("ImoutoRebirth")
+                    .AddMeter("Quartz")
                     .SetResourceBuilder(ResourceBuilder
                         .CreateDefault()
                         .AddService(applicationName)

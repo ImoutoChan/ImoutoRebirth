@@ -50,15 +50,26 @@ public class TestWebApplicationFactory<TProgram>
                 // disable quartz 
                 .Union(services.Where(
                     d => d.ServiceType == typeof(IHostedService)
-                         && d.ImplementationType?.Name == "QuartzHostedService"))
+                         && d.ImplementationType?.Name is "QuartzHostedService" or "QuartzJobsScheduler"))
+
+                // disable migrator
+                .Union(services.Where(
+                    d => d.ServiceType == typeof(IHostedService)
+                         && d.ImplementationType?.Name is "SqlTransportMigrationHostedService"))
                 
                 // disable integrity report background service
                 .Union(services.Where(
                     d => d.ServiceType == typeof(IHostedService)
                          && d.ImplementationType?.Name == "IntegrityReportJobBackgroundService"))
 
-            // replace IWebhookUploader with mock
-            .Union(services.Where(x => x.ServiceType == typeof(IWebhookUploader)))
+                // disable source folder watcher, tests run oversee explicitly
+                .Union(services.Where(
+                    d => d.ServiceType == typeof(IHostedService)
+                         && d.ImplementationType?.Name == "SourceFolderWatcherHostedService"))
+
+                // replace IWebhookUploader with mock
+                .Union(services.Where(x => x.ServiceType == typeof(IWebhookUploader)))
+
                 .ToList();
 
             foreach (var descriptor in descriptors)
@@ -72,7 +83,7 @@ public class TestWebApplicationFactory<TProgram>
         var host = base.CreateHost(builder);
 
         using var scope = host.Services.CreateScope();
-        scope.ServiceProvider.GetRequiredService<RoomDbContext>().Database.MigrateAsync();
+        scope.ServiceProvider.GetRequiredService<RoomDbContext>().Database.Migrate();
 
         return host;
     }

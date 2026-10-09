@@ -5,8 +5,6 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using ControlzEx.Theming;
 using ImoutoRebirth.Common;
-using ImoutoRebirth.Navigator.Services;
-using ImoutoRebirth.Navigator.Services.Collections;
 using ImoutoRebirth.Navigator.Slices.Updates.ViewModels;
 using ImoutoRebirth.Navigator.UserControls;
 using MahApps.Metro.Theming;

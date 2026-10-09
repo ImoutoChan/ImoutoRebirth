@@ -15,6 +15,9 @@
 * **Important** Please enter your danbooru id on update. Danbooru now requires your numeric user id in the api user agent (`user #<id>`), without it some requests fail with 403
 * Danbooru requests are now paced at 1 per second (Delay 1000 ms in the generated config), danbooru rate limits longer sessions with 429 otherwise
 
+### Infrastructure
+* Updated all dependencies
+
 # v4.30.0
 
 ### Highlights
