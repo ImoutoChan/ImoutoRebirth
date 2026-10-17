@@ -14,6 +14,7 @@ internal class SortingDescriptor
         return
         [
             new SortingDescriptor { Name = "Name", Method = SortMethod.ByName },
+            new SortingDescriptor { Name = "Alphanumeric name", Method = SortMethod.ByAlphanumericName },
             new SortingDescriptor { Name = "Date created", Method = SortMethod.ByCreateDate },
             new SortingDescriptor { Name = "Date modified", Method = SortMethod.ByUpdateDate },
             new SortingDescriptor { Name = "Size", Method = SortMethod.BySize }
@@ -25,6 +26,7 @@ internal class SortingDescriptor
         return
         [
             new SortingDescriptor { Name = "Name", Method = SortMethod.ByName },
+            new SortingDescriptor { Name = "Alphanumeric name", Method = SortMethod.ByAlphanumericName },
             new SortingDescriptor { Name = "Date created", Method = SortMethod.ByCreateDate },
             new SortingDescriptor { Name = "Date modified", Method = SortMethod.ByUpdateDate }
         ];

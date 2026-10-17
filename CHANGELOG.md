@@ -7,6 +7,7 @@
 
 ### Viewer
 * Click a tag source name in the tags panel to copy its tags as text. The menu offers "Copy tags as text" (grouped by tag type, one type per line) and "Copy general tags as text" (general tags only, shown only when the source has any)
+* Add alphanumeric sorting for file enumeration
 
 ### Lilin
 * **new!** Tag aliases: a new TagAliases table stores symmetric tag-to-tag pairs; file search expands every searched tag to itself plus its aliases (works for include, exclude and value filters), new endpoints GET /tags/{tagId}/aliases and POST /tags/aliases

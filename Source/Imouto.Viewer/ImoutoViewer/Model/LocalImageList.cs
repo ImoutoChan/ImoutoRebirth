@@ -10,12 +10,10 @@ internal class LocalImageList : IEnumerable, ILocalImageList
 
     #region Static fields
 
-    private static SortMethod _filesSortMethod = SortMethod.ByName;
-
+    private static SortMethod _filesSortMethod = SortMethod.ByAlphanumericName;
     private static SortMethod _foldersSortMethod = SortMethod.ByCreateDate;
-
-    private static DirectorySearchFlags _filesGettingMethod = DirectorySearchFlags.Folder |
-                                                              DirectorySearchFlags.AllDepthSubfolders;
+    private static DirectorySearchFlags _filesGettingMethod
+        = DirectorySearchFlags.Folder | DirectorySearchFlags.AllDepthSubfolders;
 
     #endregion Static fields
 
@@ -91,6 +89,7 @@ internal class LocalImageList : IEnumerable, ILocalImageList
             SortMethod.ByCreateDate => file.CreationTimeUtc,
             SortMethod.ByUpdateDate => file.LastWriteTimeUtc,
             SortMethod.BySize => file.Length,
+            SortMethod.ByAlphanumericName => file.GetAlphanumericName(),
             _ => file.Name
         };
     }
@@ -101,6 +100,8 @@ internal class LocalImageList : IEnumerable, ILocalImageList
         {
             default:
                 return dirPath.Name;
+            case SortMethod.ByAlphanumericName:
+                return dirPath.GetAlphanumericName();
             case SortMethod.ByCreateDate:
                 return dirPath.CreationTimeUtc;
             case SortMethod.ByUpdateDate:

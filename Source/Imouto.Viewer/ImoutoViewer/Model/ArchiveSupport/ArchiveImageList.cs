@@ -24,7 +24,6 @@ internal class ArchiveImageList : ILocalImageList
 
         _tempDirManager = new TemporaryDirectoryManager();
         _images = LoadImagesFromArchive(archive);
-        ResortFiles();
         _currentIndex = _images.Any() ? 0 : -1;
     }
 
@@ -87,7 +86,7 @@ internal class ArchiveImageList : ILocalImageList
 
     public void ResortFiles()
     {
-        _images.Sort((img1, img2) => string.Compare(img1.Path, img2.Path, StringComparison.OrdinalIgnoreCase));
+        // Files in archive are already sorted by the only supported way
     }
 
     private List<LocalImage> LoadImagesFromArchive(FileInfo archiveFile)
@@ -95,7 +94,10 @@ internal class ArchiveImageList : ILocalImageList
         try
         {
             var imagePaths = ExtractImagePaths(archiveFile);
-            return imagePaths.Select(path => new LocalImage(path)).ToList();
+            return imagePaths
+                .Select(path => new LocalImage(path))
+                .OrderBy(x => x.Path.GetAlphanumericName(), StringComparer.OrdinalIgnoreCase)
+                .ToList();
         }
         catch (Exception e)
         {

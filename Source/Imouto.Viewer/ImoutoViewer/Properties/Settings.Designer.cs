@@ -52,7 +52,7 @@ namespace ImoutoViewer.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("ByName")]
+        [global::System.Configuration.DefaultSettingValueAttribute("ByAlphanumericName")]
         public global::ImoutoViewer.Model.SortMethod FilesSorting {
             get {
                 return ((global::ImoutoViewer.Model.SortMethod)(this["FilesSorting"]));

@@ -6,5 +6,6 @@ internal enum SortMethod
     ByName,
     ByCreateDate,
     ByUpdateDate,
-    BySize
+    BySize,
+    ByAlphanumericName
 }
