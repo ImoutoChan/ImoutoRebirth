@@ -40,6 +40,7 @@ internal class ImageMetadataProvider : IMetadataForFileProvider
             Codec: mediaInfo?.VideoStreams?.FirstOrDefault()?.Codec,
             AudioCodec: null,
             Framerate: null,
+            Bpms: null,
             MaybeUgoira: false);
     }
 }

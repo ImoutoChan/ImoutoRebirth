@@ -18,7 +18,8 @@ internal class VideoMetadataProvider : IMetadataForFileProvider
 
         var mediaInfo = await _ffmpegAccessor.GetMediaInfo(filePath);
         var videoStream = mediaInfo.VideoStreams.FirstOrDefault();
-        var audioStream = mediaInfo.AudioStreams.FirstOrDefault();
+        var audioStream = mediaInfo.AudioStreams.FirstOrDefault(x => x.Default == 1)
+                          ?? mediaInfo.AudioStreams.FirstOrDefault();
 
         if (videoStream is null)
             throw new InvalidDataException("File recognised as video but video stream is missing.");
@@ -33,6 +34,19 @@ internal class VideoMetadataProvider : IMetadataForFileProvider
         var audioCodec = audioStream?.Codec;
         var framerate = videoStream.Framerate;
 
+        IReadOnlyCollection<int>? bpms = null;
+        if (audioStream != null && duration >= BpmCalculator.MinDuration)
+        {
+            var windows = _ffmpegAccessor.GetMonoAudioWindows(
+                filePath,
+                audioStream.Index,
+                BpmCalculator.SampleRate,
+                BpmCalculator.Window,
+                BpmCalculator.MaxDuration);
+
+            bpms = await BpmCalculator.DetermineBpms(windows);
+        }
+
         return new FileMetadata(
             SizeInBytes: size,
             MediaFileType: MediaFileType.Video,
@@ -46,6 +60,7 @@ internal class VideoMetadataProvider : IMetadataForFileProvider
             Codec: codec,
             AudioCodec: audioCodec,
             Framerate: framerate,
+            Bpms: bpms,
             MaybeUgoira: false);
     }
 }

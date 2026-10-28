@@ -9,6 +9,10 @@
 * Click a tag source name in the tags panel to copy its tags as text. The menu offers "Copy tags as text" (grouped by tag type, one type per line) and "Copy general tags as text" (general tags only, shown only when the source has any)
 * Add alphanumeric sorting for file enumeration
 
+### Lamia
+* **new!** Detect BPM of the music in videos (`bpm` meta tag). Audio is analyzed in 30 second windows, so a video with several songs gets a `bpm` tag for each tempo. Run "update file metadata" in Room to fill it for existing files
+* Audio tags now come from the default audio track when a video has several
+
 ### Lilin
 * **new!** Tag aliases: a new TagAliases table stores symmetric tag-to-tag pairs; file search expands every searched tag to itself plus its aliases (works for include, exclude and value filters), new endpoints GET /tags/{tagId}/aliases and POST /tags/aliases
 

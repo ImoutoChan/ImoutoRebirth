@@ -421,6 +421,9 @@ public class ExtractFileMetadataCommandTests(LamiaApplicationFactory<Program> _a
         tagsWithValues.Should().ContainKey("duration");
         tagsWithValues["duration"].Should().Be("0:10");
 
+        tagsWithValues.Should().ContainKey("bpm");
+        tagsWithValues["bpm"].Should().Be("153");
+
         tagsWithoutValues.Should().Contain("type:video");
         tagsWithoutValues.Should().Contain("animated");
         tagsWithoutValues.Should().Contain("video");
@@ -435,11 +438,38 @@ public class ExtractFileMetadataCommandTests(LamiaApplicationFactory<Program> _a
         tagsWithoutValues.Should().Contain("30fps");
         tagsWithoutValues.Should().Contain("30+fps");
 
-        tagsWithValues.Should().HaveCount(4);
+        tagsWithValues.Should().HaveCount(5);
         tagsWithoutValues.Should().HaveCount(13);
-        message.FileTags.Should().HaveCount(17);
+        message.FileTags.Should().HaveCount(18);
 
         message.FileTags.Should().AllSatisfy(tag => tag.Type.Should().Be("Meta"));
         message.FileTags.Should().AllSatisfy(tag => tag.Synonyms.Should().BeNull());
+    }
+
+    [Fact]
+    public async Task ExtractFileMetadataCommandFromVideoWithTwoTemposTest()
+    {
+        // arrange
+        using var scope = _app.GetScope();
+        var harness = scope.ServiceProvider.GetRequiredService<ITestHarness>();
+
+        var file = new FileInfo(Path.Combine(_app.TestsLocation, "Resources", "video_two_tempos.mp4"));
+        var fileId = Guid.NewGuid();
+
+        // act
+        await harness.Bus.Send(new ExtractFileMetadataCommand(file.FullName, fileId));
+
+        // assert
+        var sent = harness.Sent
+            .Select<UpdateMetadataCommand>()
+            .FirstOrDefault(x => x.Context?.Message.FileId == fileId);
+
+        sent.Should().NotBeNull();
+
+        var message = sent.Context?.Message;
+        message.Should().NotBeNull();
+
+        var bpms = message.FileTags.Where(x => x.Name == "bpm").Select(x => x.Value);
+        bpms.Should().BeEquivalentTo("120", "90");
     }
 }

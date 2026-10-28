@@ -47,6 +47,7 @@ internal class ArchiveMetadataProvider : IMetadataForFileProvider
                 Codec: null,
                 AudioCodec: null,
                 Framerate: null,
+                Bpms: null,
                 MaybeUgoira: true);
         }
 
@@ -63,6 +64,7 @@ internal class ArchiveMetadataProvider : IMetadataForFileProvider
             Codec: null,
             AudioCodec: null,
             Framerate: null,
+            Bpms: null,
             MaybeUgoira: false);
     }
 
@@ -91,6 +93,7 @@ internal class ArchiveMetadataProvider : IMetadataForFileProvider
             Codec: null,
             AudioCodec: null,
             Framerate: null,
+            Bpms: null,
             MaybeUgoira: false);
     }
 }

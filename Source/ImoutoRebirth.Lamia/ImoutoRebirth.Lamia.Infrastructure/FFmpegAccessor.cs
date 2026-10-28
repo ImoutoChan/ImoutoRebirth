@@ -1,4 +1,6 @@
-﻿using Microsoft.Extensions.Options;
+﻿using System.Diagnostics;
+using System.Runtime.InteropServices;
+using Microsoft.Extensions.Options;
 using Xabe.FFmpeg;
 using Xabe.FFmpeg.Downloader;
 
@@ -7,6 +9,13 @@ namespace ImoutoRebirth.Lamia.Infrastructure;
 internal interface IFFmpegAccessor
 {
     Task<IMediaInfo> GetMediaInfo(string fileName);
+
+    IAsyncEnumerable<float[]> GetMonoAudioWindows(
+        string fileName,
+        int streamIndex,
+        int sampleRate,
+        TimeSpan window,
+        TimeSpan maxDuration);
 }
 
 internal class FFmpegAccessor : IFFmpegAccessor
@@ -57,6 +66,40 @@ internal class FFmpegAccessor : IFFmpegAccessor
         await Prepare();
 
         return await FFmpeg.GetMediaInfo(fileName);
+    }
+
+    public async IAsyncEnumerable<float[]> GetMonoAudioWindows(
+        string fileName,
+        int streamIndex,
+        int sampleRate,
+        TimeSpan window,
+        TimeSpan maxDuration)
+    {
+        await Prepare();
+
+        using var process = Process.Start(new ProcessStartInfo(Path.Combine(FFmpeg.ExecutablesPath, "ffmpeg"))
+        {
+            ArgumentList =
+            {
+                "-nostdin", "-v", "error",
+                "-t", ((int)maxDuration.TotalSeconds).ToString(),
+                "-i", fileName,
+                "-map", $"0:{streamIndex}",
+                "-ac", "1", "-ar", sampleRate.ToString(), "-f", "f32le", "pipe:1"
+            },
+            RedirectStandardOutput = true,
+            UseShellExecute = false,
+            CreateNoWindow = true
+        })!;
+
+        var output = process.StandardOutput.BaseStream;
+        var buffer = new byte[(int)window.TotalSeconds * sampleRate * sizeof(float)];
+
+        int read;
+        while ((read = await output.ReadAtLeastAsync(buffer, buffer.Length, throwOnEndOfStream: false)) > 0)
+            yield return MemoryMarshal.Cast<byte, float>(buffer.AsSpan(0, read)).ToArray();
+
+        await process.WaitForExitAsync();
     }
 }
 

@@ -14,6 +14,7 @@
         <PackageReference Include="Xabe.FFmpeg"/>
         <PackageReference Include="Xabe.FFmpeg.Downloader"/>
         <PackageReference Include="SharpCompress"/>
+        <PackageReference Include="SoundTouch.Net"/>
     </ItemGroup>
 
     <ItemGroup>

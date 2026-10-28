@@ -1,5 +1,4 @@
-﻿using ImoutoRebirth.Common;
-using ImoutoRebirth.Common.Application;
+﻿using ImoutoRebirth.Common.Application;
 using ImoutoRebirth.Common.Cqrs.Abstract;
 using ImoutoRebirth.Lamia.Application.Services;
 using ImoutoRebirth.Lilin.MessageContracts;
@@ -41,9 +40,9 @@ internal class CreateParsingsForNewFileCommandHandler : ICommandHandler<ExtractM
                 .ToArray();
 
             _logger.LogInformation(
-                "Metadata extracted for {FileFullName} with tags:\n{Tags}",
+                "Metadata extracted for {FileFullName} with tags: {Tags}",
                 fileFullName,
-                DefaultJsonSerializer.SerializeIndented(extractedTags));
+                extractedTags.Select(x => x.tagValue == null ? x.tagName : $"{x.tagName}={x.tagValue}"));
 
             await _distributedCommandBus.SendAsync(
                 new UpdateMetadataCommand(fileId, MetadataSource.Lamia, [], tags),

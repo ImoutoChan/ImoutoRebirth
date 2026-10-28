@@ -15,6 +15,7 @@ public record FileMetadata(
     string? Codec,
     string? AudioCodec,
     double? Framerate,
+    IReadOnlyCollection<int>? Bpms,
     bool MaybeUgoira)
 {
     public IEnumerable<(string tagName, string? tagValue)> ExtractTags()
@@ -115,6 +116,9 @@ public record FileMetadata(
             else
                 yield return ("120+fps", null);
         }
+
+        foreach (var bpm in Bpms ?? [])
+            yield return ("bpm", bpm.ToString());
 
         if (MaybeUgoira)
             yield return ("maybe ugoira", null);
