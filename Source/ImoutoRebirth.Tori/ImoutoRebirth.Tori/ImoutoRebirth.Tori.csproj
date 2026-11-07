@@ -25,4 +25,8 @@
         <ProjectReference Include="..\..\ImoutoRebirth.Common\ImoutoRebirth.Common\ImoutoRebirth.Common.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+        <InternalsVisibleTo Include="ImoutoRebirth.Tori.Tests" />
+    </ItemGroup>
+
 </Project>

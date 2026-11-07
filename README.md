@@ -80,6 +80,8 @@ The main idea of the app is that you have different collections with media that 
 6. Leave everything else as default, **click install** and wait (installing postgres can take up to 10 minutes)
 7. Optionally, you can install the Chrome or Firefox extension, which will highlight saved images and related images. Links: [chrome](https://chrome.google.com/webstore/detail/imouto-extension/ieilellpakdngfomipoedkgfaeddfffc) [firefox](https://addons.mozilla.org/en-US/firefox/addon/imouto-extension/)
 
+When creating services, the Tori installer ensures that the Windows service startup timeout is at least 120 seconds. An existing longer timeout is preserved. If the installer increases ServicesPipeTimeout, restart Windows to apply the new limit. This setting applies to all services on the computer.
+
 **Video guide with first launch, collection configuration, demo some features, Imouto Extensions demo**: https://youtu.be/7Gnbc3296GU
 
 Old video guide with installation and initial configuration, while obsolete still can give you some insights: https://youtu.be/rEg0WMQgmoE
@@ -99,6 +101,8 @@ Template and default values
   "SankakuPassword": "",
   "YandereLogin": "",
   "YandereApiKey": "",
+  "Rule34UserId": "",
+  "Rule34ApiKey": "",
   "RoomPort": "11301",
   "LilinPort": "11302",
   "KekkaiPort": "11303",
@@ -153,6 +157,8 @@ Template and default values
 | ExHentaiUserAgent                         |          | Optional, user agent to use for ExHentai requests |
 | GelbooruApiKey                            |          | Optional, your Gelbooru API key |
 | GelbooruUserId                            |          | Optional, your Gelbooru user id |
+| Rule34UserId                              |          | Optional, your Rule34 user id |
+| Rule34ApiKey                              |          | Optional, your Rule34 API key |
 
 ## ImoutoRebirth Architecture
 
