@@ -3,7 +3,6 @@ using System.Diagnostics.CodeAnalysis;
 using System.ServiceProcess;
 using ImoutoRebirth.Common;
 using Microsoft.Extensions.Logging;
-using Microsoft.Win32;
 
 namespace ImoutoRebirth.Tori.Services;
 
@@ -64,13 +63,6 @@ public class FakeWindowsServicesManager : IWindowsServicesManager
 
     public Task CreateServices(IReadOnlyCollection<(string Name, string ExePath)> newServices)
     {
-        if (newServices.Count != 0)
-        {
-            _logger.LogInformation(
-                "Would ensure the system-wide Windows service startup timeout is at least {TimeoutSeconds} seconds; increasing it requires a Windows restart",
-                WindowsServicesManager.MinimumStartupTimeoutMilliseconds / 1000);
-        }
-
         foreach (var service in newServices)
         {
             _logger.LogInformation("Creating {ServiceName} with exe {ServiceExe}", service.Name, service.ExePath);
@@ -105,12 +97,9 @@ public class FakeWindowsServicesManager : IWindowsServicesManager
 [SuppressMessage("Interoperability", "CA1416:Validate platform compatibility")]
 public class WindowsServicesManager : IWindowsServicesManager
 {
-    internal const int MinimumStartupTimeoutMilliseconds = 120_000;
-    private const string ServiceControlRegistryPath = @"SYSTEM\CurrentControlSet\Control";
-    private const string StartupTimeoutRegistryValue = "ServicesPipeTimeout";
+    private static readonly TimeSpan ServiceStartupTimeout = TimeSpan.FromSeconds(30);
 
     private readonly ILogger<WindowsServiceUpdater> _logger;
-    private TimeSpan _startupTimeout = TimeSpan.FromMilliseconds(MinimumStartupTimeoutMilliseconds);
 
     public WindowsServicesManager(ILogger<WindowsServiceUpdater> logger) => _logger = logger;
 
@@ -151,7 +140,7 @@ public class WindowsServicesManager : IWindowsServicesManager
             await Task.Run(() =>
             {
                 service.Start();
-                service.WaitForStatus(ServiceControllerStatus.Running, _startupTimeout);
+                service.WaitForStatus(ServiceControllerStatus.Running, ServiceStartupTimeout);
             });
             _logger.LogInformation("Started {ServiceName}", service.ServiceName);
         }
@@ -202,8 +191,6 @@ public class WindowsServicesManager : IWindowsServicesManager
             throw new Exception($"Service with name {nameConflictService.ServiceName} already exists");
         }
 
-        ConfigureServiceStartupTimeout();
-
         foreach (var service in newServices)
         {
             _logger.LogInformation("Creating {ServiceName} with exe {ServiceExe}", service.Name, service.ExePath);
@@ -229,46 +216,6 @@ public class WindowsServicesManager : IWindowsServicesManager
 
             _logger.LogInformation("Created {ServiceName}", service.Name);
         }
-    }
-
-    private void ConfigureServiceStartupTimeout()
-    {
-        using var controlKey = Registry.LocalMachine.OpenSubKey(ServiceControlRegistryPath, writable: true)
-            ?? throw new InvalidOperationException("Unable to open the Windows Service Control Manager settings.");
-
-        var previousValue = controlKey.GetValue(StartupTimeoutRegistryValue);
-        var timeoutMilliseconds = EnsureMinimumStartupTimeout(controlKey);
-        _startupTimeout = TimeSpan.FromMilliseconds(timeoutMilliseconds);
-
-        if (previousValue is int previousTimeout && unchecked((uint)previousTimeout) == timeoutMilliseconds)
-        {
-            _logger.LogInformation(
-                "Windows service startup timeout is already {TimeoutSeconds} seconds",
-                _startupTimeout.TotalSeconds);
-            return;
-        }
-
-        // SCM reads this system-wide setting at boot; sc.exe create has no per-service equivalent.
-        _logger.LogWarning(
-            "Increased the system-wide Windows service startup timeout to {TimeoutSeconds} seconds. Restart Windows for the Service Control Manager to use the new timeout",
-            _startupTimeout.TotalSeconds);
-    }
-
-    internal static uint EnsureMinimumStartupTimeout(RegistryKey controlKey)
-    {
-        // REG_DWORD is unsigned, although RegistryKey returns it as a signed Int32.
-        if (controlKey.GetValue(StartupTimeoutRegistryValue) is int configuredTimeout)
-        {
-            var timeoutMilliseconds = unchecked((uint)configuredTimeout);
-            if (timeoutMilliseconds >= MinimumStartupTimeoutMilliseconds)
-                return timeoutMilliseconds;
-        }
-
-        controlKey.SetValue(
-            StartupTimeoutRegistryValue,
-            MinimumStartupTimeoutMilliseconds,
-            RegistryValueKind.DWord);
-        return MinimumStartupTimeoutMilliseconds;
     }
 
     private static async Task<IReadOnlyCollection<ServiceController>> GetWindowsServices()

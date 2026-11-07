@@ -65,7 +65,8 @@ public static class SerilogExtensions
             return configuration.WriteTo.OpenSearch(
                 nodeUris: url,
                 indexFormat: indexFormat,
-                restrictedToMinimumLevel: LogEventLevel.Verbose);
+                restrictedToMinimumLevel: LogEventLevel.Verbose,
+                detectOpenSearchVersion: false);
         }
     }
 
