@@ -9,11 +9,15 @@ internal class SimpleAvailabilityChecker : IAvailabilityChecker
 {
     private readonly IFlurlClientCache _flurlClientCache;
     private readonly Uri _domain;
+    private readonly string _userAgent;
 
-    public SimpleAvailabilityChecker(IFlurlClientCache flurlClientCache, Uri domain)
+    public SimpleAvailabilityChecker(IFlurlClientCache flurlClientCache,
+        Uri domain,
+        string userAgent = "Arachne/4.23.1.0")
     {
         _flurlClientCache = flurlClientCache;
         _domain = domain;
+        _userAgent = userAgent;
     }
 
     public async Task<bool> IsAvailable(CancellationToken ct)
@@ -25,7 +29,7 @@ internal class SimpleAvailabilityChecker : IAvailabilityChecker
         {
             var response = await client
                 .WithTimeout(TimeSpan.FromSeconds(15))
-                .WithHeader("User-Agent", "Arachne/4.23.1.0")
+                .WithHeader("User-Agent", _userAgent)
                 .Request()
                 .HeadAsync(cancellationToken: ct);
 

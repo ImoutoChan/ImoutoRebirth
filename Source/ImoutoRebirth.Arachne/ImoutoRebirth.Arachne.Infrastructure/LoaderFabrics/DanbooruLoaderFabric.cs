@@ -33,5 +33,8 @@ internal class DanbooruLoaderFabric : IBooruLoaderFabric, IAvailabilityProvider
         }));
 
     public IAvailabilityChecker CreateAvailabilityChecker()
-        => new SimpleAvailabilityChecker(_flurlClientCache, new Uri("https://danbooru.donmai.us"));
+        => new SimpleAvailabilityChecker(
+            _flurlClientCache,
+            new Uri("https://danbooru.donmai.us"),
+            _settings.GetUserAgent());
 }
