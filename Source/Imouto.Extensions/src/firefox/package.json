@@ -1,15 +1,15 @@
 {
   "name": "imouto-extension",
-  "version": "6.0.1",
+  "version": "6.0.2",
   "description": "",
   "main": "background.js",
   "scripts": {
-    "build:contentscript-background": "set NODE_ENV=production && webpack --config webpack.config.js",
+    "build:contentscript-background": "webpack --mode production --no-devtool",
     "build": "npm run build:contentscript-background",
-    "build:dev": "set NODE_ENV=development && webpack --config webpack.config.js",
-    "watch:contentscript-background": "set NODE_ENV=development && webpack --config webpack.config.js -w",
+    "build:dev": "webpack --mode development --devtool inline-source-map",
+    "watch:contentscript-background": "webpack --mode development --devtool inline-source-map -w",
     "watch": "npm run watch:contentscript-background",
-    "clean": "rimraf ../../artifacts/firefox && copyfiles manifest.json ../../artifacts/firefox && copyfiles -u 2 ./../../assets/**/* ../../artifacts/firefox/",
+    "clean": "rimraf ../../artifacts/firefox && copyfiles manifest.json ../../artifacts/firefox && copyfiles -u 2 \"../../assets/img/{normal,grayscale}/*.png\" ../../artifacts/firefox/",
     "publish": "npm run build && cd ../../artifacts/firefox && powershell Compress-Archive -Path * -DestinationPath ../imouto-extension-firefox.zip -Force",
     "prebuild": "npm run clean",
     "prewatch": "npm run clean"

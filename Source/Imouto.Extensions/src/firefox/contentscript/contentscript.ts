@@ -1,4 +1,5 @@
 import './contentscript.scss';
+import type { FileStatusReply, KekkaiResponse } from '../../shared/fileStatus';
 
 export class HashResult {
     public hash: string;
@@ -16,20 +17,12 @@ export interface FoundFile {
     md5: string;
 }
 
-export interface KekkaiResponse {
-    hash: string;
-    status: "NotFound" | "Present" | "RelativePresent";
-}
-
-
 const hashesResult: HashResult[] = [];
-const token = "";
-const remoteKekkai = "http://localhost:11303/FileStatus?token=" + token;
+const pendingHashes = new Set<string>();
 
 let logEnabled = false;
 let loadingCounter: number = 0;
 let localShowOwnedMediaBorders = true;
-let lastRequest;
 
 const log = (obj: any): void => {
     if (logEnabled) {
@@ -41,14 +34,15 @@ const requestImagesInfo = async (): Promise<void> => {
     const { showOwnedMediaBorders } = await chrome.storage.local.get("showOwnedMediaBorders");
     localShowOwnedMediaBorders = showOwnedMediaBorders == undefined ? true : showOwnedMediaBorders;
     
-    const imgsToRequest 
-        = Array.from(document.getElementsByTagName("img"))
-            .filter(x => /\/[^\s"]*[a-zA-Z0-9]{32}(\.[a-zA-Z0-9]*|\/)/ig.test(x.src))
-            .map(x => x.src.match(/[a-zA-Z0-9]{32}/i)[0])
-            .filter(x => !hashesResult.map(x => x.hash).some(y => y === x));
-
-    if (imgsToRequest.length > 0) {
-        await tryMd5(imgsToRequest);
+    const imgsToRequest = new Set<string>();
+    for (const img of Array.from(document.getElementsByTagName("img"))) {
+        const hash = img.src.match(/([a-f0-9]{32})(?:\.[a-z0-9]*|\/)/i)?.[1].toLowerCase();
+        if (hash && !pendingHashes.has(hash) && !hashesResult.some(result => result.hash === hash)) {
+            imgsToRequest.add(hash);
+        }
+    }
+    if (imgsToRequest.size > 0) {
+        await tryMd5(Array.from(imgsToRequest));
     }
     updateView();
 };
@@ -102,36 +96,17 @@ const updateView = (): void => {
 };
 
 const getFromKekkai = async (hashes: string[], timerKey: string) => {
-    if (lastRequest && lastRequest.abort) {
-        lastRequest.abort();
-    }
-    
-    const body = JSON.stringify(hashes);
-    log("requestedHashes: " + body);
-    
-    lastRequest = new AbortController();
-    const config = {
-        method: "POST",
-        headers: { 'Content-Type': 'application/json' },
-        body: body,
-        signal: lastRequest.signal
-    };
-
+    hashes.forEach(hash => pendingHashes.add(hash));
     try {
-        const response = await fetch(remoteKekkai, config);
-        if (!response.ok) {
-            log(`HTTP error! status: ${response.status}`);
-            throw new Error(`HTTP error! status: ${response.status}`);
+        const reply: FileStatusReply = await chrome.runtime.sendMessage({ type: "getFileStatuses", hashes });
+        if ("error" in reply) {
+            throw new Error(reply.error);
         }
-        const data = await response.json();
-        log("Kekkai result element: " + JSON.stringify(data));
-    
-        const results = data.map(x => <HashResult>{ hash: x.hash, result: ToImgStatus(x) });
-        saveResults(results);
-        updateView();
+        saveResults(reply.results.map(item => ({ hash: item.hash, result: ToImgStatus(item) })));
     } catch (error) {
-        log("Kekkai fail: " + JSON.stringify(error));
+        log("Kekkai fail: " + String(error));
     } finally {
+        hashes.forEach(hash => pendingHashes.delete(hash));
         console.timeEnd(timerKey);
     }
 };

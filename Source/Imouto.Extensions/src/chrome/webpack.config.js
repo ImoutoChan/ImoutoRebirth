@@ -9,8 +9,6 @@ let prodPlugins = [];
 // );
 
 module.exports = {
-  mode: 'development',
-  devtool: 'inline-source-map',
   entry: {
     contentscript: join(__dirname, 'contentscript/contentscript.ts'),
     background: join(__dirname, 'background/background.ts'),
@@ -27,7 +25,7 @@ module.exports = {
         use: {
           loader: 'ts-loader',
           options: {
-            configFile: 'tsconfig.json'
+            configFile: join(__dirname, 'tsconfig.json')
           }
         }
       },

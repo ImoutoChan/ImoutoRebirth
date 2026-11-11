@@ -1,8 +1,7 @@
-// toggle showOwnedMediaBorders
-chrome.storage.local.set({ showOwnedMediaBorders: true });
+import "../../shared/fileStatus";
 
 chrome.action.onClicked.addListener(async () => {
-    const { showOwnedMediaBorders } = await chrome.storage.local.get("showOwnedMediaBorders");
+    const { showOwnedMediaBorders = true } = await chrome.storage.local.get("showOwnedMediaBorders");
     
     if (showOwnedMediaBorders) {
         console.log('showOwnedMediaBorders: false');
