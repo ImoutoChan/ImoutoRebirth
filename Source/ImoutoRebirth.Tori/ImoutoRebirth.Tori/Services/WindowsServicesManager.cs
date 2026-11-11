@@ -1,4 +1,5 @@
-﻿using System.Diagnostics;
+﻿using System.ComponentModel;
+using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.ServiceProcess;
 using ImoutoRebirth.Common;
@@ -97,7 +98,11 @@ public class FakeWindowsServicesManager : IWindowsServicesManager
 [SuppressMessage("Interoperability", "CA1416:Validate platform compatibility")]
 public class WindowsServicesManager : IWindowsServicesManager
 {
-    private static readonly TimeSpan ServiceStartupTimeout = TimeSpan.FromSeconds(30);
+    private const int ErrorServiceRequestTimeout = 1053;
+    private const int ErrorServiceAlreadyRunning = 1056;
+    private const int MaxStartAttempts = 10;
+    private static readonly TimeSpan StartRetryDelay = TimeSpan.FromSeconds(5);
+    private static readonly TimeSpan PendingStatusTimeout = TimeSpan.FromMinutes(2);
 
     private readonly ILogger<WindowsServiceUpdater> _logger;
 
@@ -136,13 +141,71 @@ public class WindowsServicesManager : IWindowsServicesManager
         
         foreach (var service in services)
         {
-            _logger.LogInformation("Starting {ServiceName}", service.ServiceName);
-            await Task.Run(() =>
-            {
-                service.Start();
-                service.WaitForStatus(ServiceControllerStatus.Running, ServiceStartupTimeout);
-            });
+            await StartService(service);
             _logger.LogInformation("Started {ServiceName}", service.ServiceName);
+        }
+    }
+
+    private async Task StartService(ServiceController service)
+    {
+        for (var attempt = 1; ; attempt++)
+        {
+            var status = await WaitForStableStatus(service);
+            if (status == ServiceControllerStatus.Running)
+                return;
+
+            if (status != ServiceControllerStatus.Stopped)
+                throw new InvalidOperationException($"Unable to start {service.ServiceName} in state {status}.");
+
+            _logger.LogInformation("Starting {ServiceName} (attempt {Attempt}/{MaxAttempts})",
+                service.ServiceName, attempt, MaxStartAttempts);
+            try
+            {
+                await Task.Run(service.Start);
+            }
+            catch (InvalidOperationException ex) when (
+                ex.InnerException is Win32Exception { NativeErrorCode: ErrorServiceRequestTimeout })
+            {
+                status = await WaitForStableStatus(service);
+                if (status == ServiceControllerStatus.Running)
+                    return;
+
+                if (status != ServiceControllerStatus.Stopped || attempt == MaxStartAttempts)
+                    throw;
+
+                _logger.LogWarning("Windows timed out starting {ServiceName} (1053). Retrying in {Delay}.",
+                    service.ServiceName, StartRetryDelay);
+                await Task.Delay(StartRetryDelay);
+                continue;
+            }
+            catch (InvalidOperationException ex) when (
+                ex.InnerException is Win32Exception { NativeErrorCode: ErrorServiceAlreadyRunning })
+            {
+                // Another caller started the service between the status check and Start.
+            }
+
+            status = await WaitForStableStatus(service);
+            if (status != ServiceControllerStatus.Running)
+                throw new InvalidOperationException($"{service.ServiceName} entered state {status} during startup.");
+
+            return;
+        }
+    }
+
+    private static async Task<ServiceControllerStatus> WaitForStableStatus(ServiceController service)
+    {
+        var timer = Stopwatch.StartNew();
+        while (true)
+        {
+            service.Refresh();
+            var status = service.Status;
+            if (status is not (ServiceControllerStatus.StartPending or ServiceControllerStatus.StopPending))
+                return status;
+
+            if (timer.Elapsed >= PendingStatusTimeout)
+                throw new System.TimeoutException($"{service.ServiceName} remained {status} for {PendingStatusTimeout}.");
+
+            await Task.Delay(TimeSpan.FromSeconds(1));
         }
     }
 
