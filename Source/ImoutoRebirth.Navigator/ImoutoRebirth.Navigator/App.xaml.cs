@@ -10,6 +10,8 @@ namespace ImoutoRebirth.Navigator;
 
 public partial class App : Application
 {
+    private VlcLibraryImages? _videoLibraries;
+
     public App() => Startup += async (_, _) =>
     {
         try
@@ -25,6 +27,9 @@ public partial class App : Application
 
     private async Task RunApp()
     {
+        var videoLibraries = VlcLibraryImages.PrepareAsync(
+            Path.Combine(AppContext.BaseDirectory, "libvlc", IntPtr.Size == 4 ? "win-x86" : "win-x64"));
+
         var splashScreen = new SplashScreen(@"\Resources\Icon\splashscreen.png");
         splashScreen.Show(autoClose: false, topMost: false);
         
@@ -33,6 +38,7 @@ public partial class App : Application
 
         MainWindowVM = new MainWindowVM();
         await MainWindowVM.InitializeContextAsync();
+        _videoLibraries = await videoLibraries;
         MainWindowVM.ShowWindow();
 
         splashScreen.Close(fadeoutDuration: TimeSpan.FromMilliseconds(100));
@@ -89,6 +95,7 @@ public partial class App : Application
 
     protected override void OnExit(ExitEventArgs e)
     {
+        _videoLibraries?.Dispose();
         Log.Information("Application Exiting");
         Log.CloseAndFlush();
 
