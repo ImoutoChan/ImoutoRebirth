@@ -75,6 +75,7 @@
   </Folder>
   <Folder Name="/ImoutoRebirth.Navigator/">
     <Project Path="ImoutoRebirth.Navigator/ImoutoRebirth.Navigator/ImoutoRebirth.Navigator.csproj" />
+    <Project Path="ImoutoRebirth.Navigator/ImoutoRebirth.Navigator.Tests/ImoutoRebirth.Navigator.Tests.csproj" />
   </Folder>
   <Folder Name="/ImoutoRebirth.Room/">
     <Project Path="ImoutoRebirth.Room/ImoutoRebirth.Room.Application/ImoutoRebirth.Room.Application.csproj" />

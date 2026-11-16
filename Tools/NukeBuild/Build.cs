@@ -158,6 +158,13 @@ class Build : NukeBuild
             foreach (var directoryToDelete in publishableProjects.SelectMany(x => x.DirectoriesToDelete))
                 directoryToDelete.DeleteDirectory();
 
+            var vlcCache = VlcPluginCache.Generate(
+                OutputLatestDirectory / "ImoutoRebirth.Navigator" / "libvlc" / "win-x64");
+            Serilog.Log.Information(
+                "Generated VLC plugin cache {CachePath} ({Size} bytes)",
+                vlcCache.FullName,
+                vlcCache.Length);
+
             foreach (var appSettingsFile in publishableProjects
                          .SelectMany(x => x.ProjectOutput.GetFiles("appsettings*")))
             {

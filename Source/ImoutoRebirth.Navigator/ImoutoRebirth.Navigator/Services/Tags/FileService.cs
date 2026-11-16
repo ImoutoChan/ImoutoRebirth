@@ -1,4 +1,4 @@
-﻿using AutoMapper;
+using AutoMapper;
 using ImoutoRebirth.Lilin.WebApi.Client;
 using ImoutoRebirth.Navigator.Services.Tags.Model;
 using ImoutoRebirth.Room.WebApi.Client;
@@ -71,11 +71,11 @@ internal class FileService : IFileService
     {
         if (!tags.Any())
         {
-            var filesMapped = await _roomCache.GetFilesFromCollection(collectionId, skip, take);
+            var filesMapped = await _roomCache.GetFilesFromCollection(collectionId, skip, take, token);
             return (filesMapped, filesMapped.Any());
         }
 
-        var roomFilesIds = await _roomCache.GetIds(collectionId, skip, take);
+        var roomFilesIds = await _roomCache.GetIds(collectionId, skip, take, token);
         
         var lilinFilesThatSatisfyConditions = await _filesClient
             .FilterFilesAsync(
@@ -84,7 +84,7 @@ internal class FileService : IFileService
                     _mapper.Map<List<TagSearchEntry>>(tags)),
                 token);
 
-        var files = await _roomCache.GetFilesByIds(lilinFilesThatSatisfyConditions);
+        var files = await _roomCache.GetFilesByIds(lilinFilesThatSatisfyConditions, token);
 
         return (files, roomFilesIds.Any());
     }
@@ -103,16 +103,16 @@ internal class FileService : IFileService
             if (fastDevMode)
                 take = 100;
 
-            var filesMapped = await _roomCache.GetFilesFromCollection(collectionId, skip, take);
-            return (filesMapped, filesMapped.Any());
+            var filesMapped = await _roomCache.GetFilesFromCollection(collectionId, skip, take, ct);
+            return (filesMapped, !fastDevMode && take != int.MaxValue && filesMapped.Count == take);
         }
 
         if (tags.All(x => x.SearchType == SearchType.Exclude))
         {
-            var allRoomIds = await _roomCache.GetIds(collectionId, default, default);
+            var allRoomIds = await _roomCache.GetIds(collectionId, default, default, ct);
             var filteredLilinIds = await _filesClient
                 .FilterFilesAsync(new (allRoomIds, _mapper.Map<List<TagSearchEntry>>(tags)), ct);
-            var filteredFiles = await _roomCache.GetFilesByIds(filteredLilinIds);
+            var filteredFiles = await _roomCache.GetFilesByIds(filteredLilinIds, ct);
             return (filteredFiles, filteredFiles.Any() && take != int.MaxValue);
         }
         
@@ -123,8 +123,8 @@ internal class FileService : IFileService
                 ct);
         var lilinIdsHashSet = lilinIds.ToHashSet();
 
-        var roomIds = await _roomCache.GetIds(collectionId, default, default);
-        var files = await _roomCache.GetFilesByIds(roomIds.Where(x =>  lilinIdsHashSet.Contains(x)).ToList());
+        var roomIds = await _roomCache.GetIds(collectionId, default, default, ct);
+        var files = await _roomCache.GetFilesByIds(roomIds.Where(x =>  lilinIdsHashSet.Contains(x)).ToList(), ct);
 
         return (files, files.Any() && take != int.MaxValue && !fastDevMode);
     }
@@ -136,13 +136,14 @@ internal class FileService : IFileService
     {
         if (!tags.Any())
         {
-            var allRoomIds = await _roomCache.GetIds(collectionId, default, default);
-            return allRoomIds.Count;
+            return await _collectionFilesClient.CountCollectionFilesAsync(
+                new(default, collectionId, default, default, default, default),
+                ct);
         }
 
         if (tags.All(x => x.SearchType == SearchType.Exclude))
         {
-            var allRoomIds = await _roomCache.GetIds(collectionId, default, default);
+            var allRoomIds = await _roomCache.GetIds(collectionId, default, default, ct);
             return await _filesClient
                 .CountFilterFilesAsync(new (allRoomIds, _mapper.Map<List<TagSearchEntry>>(tags)), ct);
         }
@@ -154,7 +155,7 @@ internal class FileService : IFileService
                 ct);
         var lilinIdsHashSet = lilinIds.ToHashSet();
 
-        var roomIds = await _roomCache.GetIds(collectionId, default, default);
+        var roomIds = await _roomCache.GetIds(collectionId, default, default, ct);
 
         return roomIds.Count(x => lilinIdsHashSet.Contains(x));
     }

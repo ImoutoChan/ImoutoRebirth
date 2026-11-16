@@ -4,6 +4,8 @@
 * **new!** Tag aliases: mark tags as aliases of each other in the merge flyout (press M), searching by any of them finds files tagged with any other. Middle click a found tag to pick the anchor tag and see its aliases, middle click other tags to add them, then Save
 * Add draggable behavior to the fullscreen preview
 * Click a tag source name in the current file tags panel to copy its tags as text. The menu offers "Copy tags as text" (grouped by tag type, one type per line) and "Copy general tags as text" (general tags only, shown only when the source has any)
+* Generate the VLC plugin cache when publishing releases to avoid loading every video plugin during cold startup
+* Speed up startup by binding the completed file list, running the initial search once, and loading only file IDs and paths from Room into the existing cache
 
 ### Viewer
 * Click a tag source name in the tags panel to copy its tags as text. The menu offers "Copy tags as text" (grouped by tag type, one type per line) and "Copy general tags as text" (general tags only, shown only when the source has any)

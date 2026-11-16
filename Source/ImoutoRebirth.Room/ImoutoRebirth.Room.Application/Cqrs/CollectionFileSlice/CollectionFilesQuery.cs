@@ -1,4 +1,4 @@
-﻿using ImoutoRebirth.Common.Cqrs.Abstract;
+using ImoutoRebirth.Common.Cqrs.Abstract;
 using ImoutoRebirth.Room.Domain;
 
 namespace ImoutoRebirth.Room.Application.Cqrs.CollectionFileSlice;
@@ -33,3 +33,5 @@ public record CollectionFilesModelsQuery(CollectionFilesQuery Query) : IQuery<IR
 public record CollectionFilesIdsQuery(CollectionFilesQuery Query) : IQuery<IReadOnlyCollection<Guid>>;
 
 public record CollectionFilesCountQuery(CollectionFilesQuery Query) : IQuery<int>;
+
+public record CollectionFilesSummariesQuery(CollectionFilesQuery Query) : IQuery<IReadOnlyCollection<CollectionFileSummary>>;

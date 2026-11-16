@@ -1,4 +1,4 @@
-﻿using ImoutoRebirth.Common.Cqrs.Abstract;
+using ImoutoRebirth.Common.Cqrs.Abstract;
 using ImoutoRebirth.Room.Application.Cqrs.CollectionFileSlice;
 using ImoutoRebirth.Room.DataAccess.Mappers;
 using ImoutoRebirth.Room.Database;
@@ -11,6 +11,7 @@ namespace ImoutoRebirth.Room.DataAccess.Queries;
 internal class CollectionFilesModelsQueryHandler 
     : IQueryHandler<CollectionFilesModelsQuery, IReadOnlyCollection<CollectionFile>>
         , IQueryHandler<CollectionFilesIdsQuery, IReadOnlyCollection<Guid>>
+        , IQueryHandler<CollectionFilesSummariesQuery, IReadOnlyCollection<CollectionFileSummary>>
         , IQueryHandler<CollectionFilesCountQuery, int>
 {
     private readonly RoomDbContext _roomDbContext;
@@ -34,6 +35,21 @@ internal class CollectionFilesModelsQueryHandler
         var loaded = await files.ToListAsync(cancellationToken: ct);
 
         return loaded.Select(x => x.ToModel()).ToList();
+    }
+
+    public async Task<IReadOnlyCollection<CollectionFileSummary>> Handle(
+        CollectionFilesSummariesQuery request,
+        CancellationToken ct)
+    {
+        var files = BuildFilesQuery(request.Query);
+
+        if (request.Query.Skip.HasValue)
+            files = files.Skip(request.Query.Skip.Value);
+
+        if (request.Query.Count.HasValue)
+            files = files.Take(request.Query.Count.Value);
+
+        return await files.Select(x => new CollectionFileSummary(x.Id, x.Path)).ToListAsync(ct);
     }
 
     public async Task<IReadOnlyCollection<Guid>> Handle(CollectionFilesIdsQuery request, CancellationToken ct)
@@ -70,7 +86,7 @@ internal class CollectionFilesModelsQueryHandler
         if (query.Md5 != null && query.Md5.Any())
             files = files.Where(x => query.Md5.Contains(x.Md5));
 
-        files = files.OrderBy(x => x.AddedOn);
+        files = files.OrderBy(x => x.AddedOn).ThenBy(x => x.Id);
 
         return files;
     }

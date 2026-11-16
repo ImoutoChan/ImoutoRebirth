@@ -1,4 +1,4 @@
-﻿using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
 using ImoutoRebirth.Common;
@@ -103,7 +103,7 @@ internal partial class MainWindowVM : ObservableObject
 
         Settings.ShowPreviewOnSelectChanged += Settings_ShowPreviewOnSelectChanged;
 
-        _view = new MainWindow { DataContext = this };
+        _view = new MainWindow();
         _view.SelectedItemsChanged += OnViewOnSelectedItemsChanged;
         _view.Loaded += (_, _) => ZoomToRowElements(6);
 
@@ -113,7 +113,11 @@ internal partial class MainWindowVM : ObservableObject
         messenger.Register<RefreshCollectionsRequest>(this, (_, _) => InitializeAsync().LogAndSuppressExceptions());
     }
 
-    public void ShowWindow() => _view.Show();
+    public void ShowWindow()
+    {
+        _view.DataContext = this;
+        _view.Show();
+    }
 
     private async Task InitializeAsync()
     {
@@ -640,7 +644,15 @@ internal partial class MainWindowVM : ObservableObject
 
     public async Task InitializeContextAsync()
     {
-        await InitializeAsync();
+        TagSearchVM.SelectedCollectionChanged -= TagSearchVMOnSelectedCollectionChanged;
+        try
+        {
+            await InitializeAsync();
+        }
+        finally
+        {
+            TagSearchVM.SelectedCollectionChanged += TagSearchVMOnSelectedCollectionChanged;
+        }
         await Refresh();
     }
 
