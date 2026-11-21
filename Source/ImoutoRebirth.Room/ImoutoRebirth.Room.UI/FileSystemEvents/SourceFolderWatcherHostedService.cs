@@ -20,21 +20,16 @@ internal class SourceFolderWatcherHostedService : BackgroundService
         _watcher = watcher;
     }
 
-    protected override async Task ExecuteAsync(CancellationToken stoppingToken)
+    protected override async Task ExecuteAsync(CancellationToken ct)
     {
-        await _watcher.Refresh(null, stoppingToken);
-        await RunChangesReactor();
-
-        while (!stoppingToken.IsCancellationRequested) 
-            await Task.Delay(1000, stoppingToken);
-    }
-    
-    private async Task RunChangesReactor()
-    {
-        await _watcher.Observable
-            .Where(x => x.Type != FileSystemWatcherEventType.Deleted)
+        await using var subscription = await _watcher.Changes
             .Throttle(TimeSpan.FromMilliseconds(250))
             .SubscribeAsync(async _ => await TriggerOversee());
+
+        await _watcher.Refresh(null, ct);
+
+        while (!ct.IsCancellationRequested)
+            await Task.Delay(1000, ct);
     }
 
     private async Task TriggerOversee()

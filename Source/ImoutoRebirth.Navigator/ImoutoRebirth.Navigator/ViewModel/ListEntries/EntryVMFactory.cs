@@ -1,33 +1,34 @@
 ﻿using System.Runtime.InteropServices;
 using System.Text;
 using System.Windows;
-using ImoutoRebirth.Lilin.WebApi.Client;
 using ImoutoRebirth.Navigator.Model;
 
 namespace ImoutoRebirth.Navigator.ViewModel.ListEntries;
 
 internal static class EntryVMFactory
 {
+    private static readonly string[] ImageExtensions = [".jpg", ".png", ".jpeg", ".bmp", ".gif", ".tiff", ".webp", ".jfif"];
+    private static readonly string[] VideoExtensions = Enum.GetNames<VideoFormat>().Select(x => "." + x).ToArray();
+
     public static INavigatorListEntry? CreateListEntry(
         string path,
         Size initPreviewSize,
-        FilesClient filesClient,
         Guid? dbId = null)
     {
         path = OverridePath(path);
 
         if (IsImage(path))
-            return new ImageEntryVM(path, filesClient, initPreviewSize, dbId);
+            return new ImageEntryVM(path, initPreviewSize, dbId);
 
         if (!FileExists(path))
             return null;
 
         if (IsVideo(path))
-            return new VideoEntryVM(path, filesClient, initPreviewSize, dbId);
+            return new VideoEntryVM(path, initPreviewSize, dbId);
 
         if (path.EndsWith(".zip"))
         {
-            return new UgoiraEntryVM(path, filesClient, initPreviewSize, dbId);
+            return new UgoiraEntryVM(path, initPreviewSize, dbId);
         }
 
         if (path.EndsWith(".cbz")
@@ -36,22 +37,27 @@ internal static class EntryVMFactory
             || path.EndsWith(".7z")
             || path.EndsWith(".cb7"))
         {
-            return new DodjiEntryVM(path, filesClient, initPreviewSize, dbId);
+            return new DodjiEntryVM(path, initPreviewSize, dbId);
         }
 
         return null;
     }
 
-    private static bool IsImage(string path)
-    {
-        string[] formats = { ".jpg", ".png", ".jpeg", ".bmp", ".gif", ".tiff", ".webp", ".jfif" };
-        return formats.Any(item => path.EndsWith(item, StringComparison.OrdinalIgnoreCase));
-    }
+    private static bool IsImage(string path) => HasExtension(path, ImageExtensions);
 
-    private static bool IsVideo(string path) 
-        => Enum.GetNames<VideoFormat>().Any(x => path.EndsWith('.' + x, StringComparison.OrdinalIgnoreCase)) 
-           || path.EndsWith(".m4v") 
-           || path.EndsWith(".swf");
+    private static bool IsVideo(string path)
+        => HasExtension(path, VideoExtensions) || path.EndsWith(".m4v") || path.EndsWith(".swf");
+
+    private static bool HasExtension(string path, string[] extensions)
+    {
+        foreach (var extension in extensions)
+        {
+            if (path.EndsWith(extension, StringComparison.OrdinalIgnoreCase))
+                return true;
+        }
+
+        return false;
+    }
 
     private static string OverridePath(string path)
     {

@@ -24,28 +24,28 @@ public partial class CollectionsView
 
     private async void RenameButton_Click(object sender, RoutedEventArgs e)
     {
-        var parentWindow = Window.GetWindow(this) as MainWindow;
-        //parentWindow.MetroDialogOptions.ColorScheme = MetroDialogColorScheme.Theme;
-
-        var result = await parentWindow.ShowInputAsync("Rename collection", "New name");
-
-        if (result == null || DataContext is not CollectionManagerVm vm) //user pressed cancel
+        if (Window.GetWindow(this) is not MainWindow parentWindow
+            || DataContext is not CollectionManagerVm { SelectedCollection: { } collection })
             return;
 
-        var error = vm.Rename(result);
-        if (error != null)
-        {
-            await parentWindow.ShowMessageAsync("Can not create collection", error);
-        }
-        else
-        {
-            var dialog = (BaseMetroDialog)(parentWindow!.Resources["SuccessCreateCollectionDialog"])!;
-            dialog = dialog.ShowDialogExternally();
+        var name = await parentWindow.ShowInputAsync("Rename collection", "New name");
+        if (name == null)
+            return;
 
-            await Task.Delay(1500);
-
-            await dialog.RequestCloseAsync();
+        try
+        {
+            await collection.Rename(name);
         }
+        catch (Exception ex)
+        {
+            await parentWindow.ShowMessageAsync("Cannot rename collection", ex.Message);
+            return;
+        }
+
+        var dialog = (BaseMetroDialog)parentWindow.Resources["SuccessRenameCollectionDialog"];
+        dialog = dialog.ShowDialogExternally();
+        await Task.Delay(1500);
+        await dialog.RequestCloseAsync();
     }
 
     private async void DeleteButton_Click(object sender, RoutedEventArgs e)

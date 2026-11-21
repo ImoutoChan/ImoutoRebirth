@@ -58,7 +58,7 @@ internal class RenameCollectionFileCommandHandler
         if (!File.Exists(oldFullName))
             throw new DomainException($"File '{oldFullName}' does not exist.");
 
-        if (File.Exists(newFullName))
+        if (DestinationExists(oldFullName, newFullName))
             throw new DomainException($"File '{newFullName}' already exists.");
 
         await _collectionFileRepository.Update(file);
@@ -75,6 +75,18 @@ internal class RenameCollectionFileCommandHandler
         await _remoteCommandService.UpdateFileMetadataRequest(file.Id, file.Path);
 
         return newFullName;
+    }
+
+    private static bool DestinationExists(string original, string destination)
+    {
+        if (!File.Exists(destination))
+            return false;
+
+        if (original == destination || !original.Equals(destination, StringComparison.OrdinalIgnoreCase))
+            return true;
+
+        return Directory.EnumerateFiles(Path.GetDirectoryName(destination)!, Path.GetFileName(destination))
+            .Contains(destination, StringComparer.Ordinal);
     }
 
     private async Task UpdateLocationTags(Collection collection, CollectionFile file)
@@ -156,7 +168,7 @@ internal class RenameCollectionFileCommandHandler
             return new(false, $"The file '{oldFullName}' seems to be missing, please make sure that the collection file is available");
         }
 
-        if (File.Exists(newFullName))
+        if (DestinationExists(oldFullName, newFullName))
         {
             return new(false, $"The file '{newFullName}' already exists, please select a different name");
         }

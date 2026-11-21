@@ -2,6 +2,8 @@
 
 internal class ImoutoViewerArgs
 {
+    public Guid? PlaylistId { get; init; }
+
     public Guid? CollectionId { get; }
 
     public IReadOnlyCollection<SearchTagDto> SearchTags { get; }

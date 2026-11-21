@@ -39,6 +39,7 @@ internal partial class MainWindowVM : ObservableObject
     private readonly IFileTagService _fileTagService;
     private readonly IFileNoteService _fileNoteService;
     private readonly IFileLoadingService _fileLoadingService;
+    private readonly GalleryRatingLoader _ratingLoader = new(ServiceLocator.GetService<FilesClient>());
     private readonly IImoutoViewerService _imoutoViewerService;
     private readonly DispatcherTimer _appendNewContentTimer = new() { Interval = TimeSpan.FromSeconds(5) };
 
@@ -131,16 +132,14 @@ internal partial class MainWindowVM : ObservableObject
     {
         OnPropertyChanged(nameof(SelectedEntries));
 
-        if (SelectedItem == null)
-            return;
-
-        CurrentFileTagsVM.UpdateCurrentTags(SelectedItem.DbId)
+        var selected = SelectedItem;
+        CurrentFileTagsVM.UpdateCurrentTags(selected?.DbId)
             .OnException(ex =>
             {
                 App.MainWindowVM?.SetStatusError("Error while updating current tags", ex.Message);
-                Log.Error(ex, "Error while updating current tags for {SelectedItemDbId}", SelectedItem.DbId);
+                Log.Error(ex, "Error while updating current tags for {SelectedItemDbId}", selected?.DbId);
             });
-        FileInfoVM.UpdateCurrentInfo(SelectedItem, NavigatorListInternal.IndexOf(SelectedItem));
+        FileInfoVM.UpdateCurrentInfo(selected, selected == null ? -1 : NavigatorListInternal.IndexOf(selected));
     }
 
     public Size SlotSize => new(_previewSize + 30, _previewSize + 30);
@@ -215,16 +214,17 @@ internal partial class MainWindowVM : ObservableObject
         UpdatePreviews();
     }
 
-    [RelayCommand]
-    private void OpenFile(INavigatorListEntry? navigatorListEntry)
+    [RelayCommand(AllowConcurrentExecutions = true)]
+    private async Task OpenFile(INavigatorListEntry? navigatorListEntry)
     {
         switch (navigatorListEntry)
         {
             case ImageEntryVM image:
-                _imoutoViewerService.OpenFile(
+                await _imoutoViewerService.OpenFile(
                     image.Path,
                     TagSearchVM.SelectedCollection.Value,
-                    TagSearchVM.SelectedBindedTags.Select(x => x.Model));
+                    TagSearchVM.SelectedBindedTags.Select(x => x.Model),
+                    NavigatorListInternal.OfType<ImageEntryVM>().Select(x => x.Path));
                 break;
             case VideoEntryVM video:
             {
@@ -460,12 +460,18 @@ internal partial class MainWindowVM : ObservableObject
     [RelayCommand]
     private void LoadPreviews()
     {
+        _ratingLoader.Cancel();
         ImageEntry.PreviewLoadingThreadQueue.ClearQueue();
         T.Debounce(
             100,
             () =>
             {
-                foreach (var listEntry in _view.VisibleItems)
+                if (FullScreenPreviewVM?.CurrentEntry is DodjiEntryVM currentArchive)
+                    currentArchive.Load();
+
+                var visible = _view.VisibleItems;
+                _ratingLoader.LoadAsync(visible).LogAndSuppressExceptions();
+                foreach (var listEntry in visible)
                 {
                     listEntry.Load();
                 }
@@ -561,7 +567,6 @@ internal partial class MainWindowVM : ObservableObject
             var newEntry = EntryVMFactory.CreateListEntry(
                 newFullName,
                 new(_previewSize, _previewSize),
-                ServiceLocator.GetService<FilesClient>(),
                 dbId);
 
             if (newEntry == null)

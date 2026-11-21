@@ -126,7 +126,7 @@ public record FileMetadata(
 
     private static string FormatDuration(TimeSpan ts)
     {
-        return ts.Hours > 0
+        return ts.TotalHours >= 1
             ? $"{(int)ts.TotalHours}:{ts.Minutes:D2}:{ts.Seconds:D2}"
             : $"{ts.Minutes}:{ts.Seconds:D2}";
     }
@@ -137,7 +137,8 @@ public enum MediaFileType
     Image,
     Animation,
     Video,
-    Archive
+    Archive,
+    Audio
 }
 
 [DebuggerDisplay("{Width}x{Height}")]

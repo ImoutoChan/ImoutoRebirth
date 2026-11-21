@@ -1,4 +1,5 @@
-﻿using System.Text.Json;
+﻿using System.Globalization;
+using System.Text.Json;
 
 namespace ImoutoRebirth.Tori.Configuration;
 
@@ -11,6 +12,7 @@ public interface IConfigurationBuilder
 
 public class ConfigurationBuilder : IConfigurationBuilder
 {
+    private static readonly JsonSerializerOptions JsonOptions = new() { WriteIndented = true };
     private readonly AppConfiguration _configuration;
 
     public ConfigurationBuilder(AppConfiguration configuration)
@@ -24,8 +26,13 @@ public class ConfigurationBuilder : IConfigurationBuilder
         var serviceDirectories = updaterLocation.GetDirectories();
         foreach (var serviceDirectory in serviceDirectories)
         {
-            var configuration = serviceDirectory.Name switch
+            object? configuration = serviceDirectory.Name switch
             {
+                "Imouto.Viewer" => new
+                {
+                    RoomUrl = $"http://localhost:{_configuration.Ports.RoomPort}/",
+                    LilinUrl = $"http://localhost:{_configuration.Ports.LilinPort}/"
+                },
                 "ImoutoRebirth.Arachne" => GetArachneConfiguration(newVersion),
                 "ImoutoRebirth.Harpy" => GetHarpyConfiguration(newVersion),
                 "ImoutoRebirth.Kekkai" => GetKekkaiConfiguration(),
@@ -39,18 +46,9 @@ public class ConfigurationBuilder : IConfigurationBuilder
             if (configuration == null)
                 continue;
 
-            try
-            {
-                JsonSerializer.Deserialize<dynamic>(configuration);
-            }
-            catch (Exception e)
-            {
-                throw new Exception($"Unable to parse built configuration for {serviceDirectory.Name}", e);
-            }
-
             await File.WriteAllTextAsync(
                 Path.Combine(serviceDirectory.FullName, "appsettings.Production.json"),
-                configuration);
+                JsonSerializer.Serialize(configuration, JsonOptions));
         }
     }
 
@@ -58,212 +56,142 @@ public class ConfigurationBuilder : IConfigurationBuilder
 
     public AppConfiguration GetCurrentConfiguration() => _configuration;
 
-    private string GetArachneConfiguration(string currentVersion)
-    {
-        return
-            $$"""
+    private object GetArachneConfiguration(string currentVersion)
+        => new
+        {
+            ConnectionStrings = new { MassTransit = _configuration.Connection.MassTransitConnectionString },
+            DanbooruSettings = new
             {
-              "ConnectionStrings": {
-                "MassTransit": "{{_configuration.Connection.MassTransitConnectionString}}"
-              },
-              "DanbooruSettings": {
-                "Login": "{{_configuration.Api.DanbooruLogin}}",
-                "ApiKey": "{{_configuration.Api.DanbooruApiKey}}",
-                "UserId": "{{_configuration.Api.DanbooruUserId}}",
-                "Delay": "1000",
-                "BotUserAgent": "Arachne/{{currentVersion}}"
-              },
-              "SankakuSettings": {
-                "Login": "{{_configuration.Api.SankakuLogin}}",
-                "Password": "{{_configuration.Api.SankakuPassword}}",
-                "Delay": "6000"
-              },
-              "ExHentaiSettings": {
-                "IpbMemberId": "{{_configuration.ExHentai.IpbMemberId}}",
-                "IpbPassHash": "{{_configuration.ExHentai.IpbPassHash}}",
-                "Igneous": "{{_configuration.ExHentai.Igneous}}",
-                "UserAgent": "{{_configuration.ExHentai.UserAgent}}"
-              },
-              "GelbooruSettings": {
-                "UserId": "{{_configuration.Api.GelbooruUserId}}",
-                "ApiKey": "{{_configuration.Api.GelbooruApiKey}}"
-              },
-              "Rule34Settings": {
-                "UserId": "{{_configuration.Api.Rule34UserId}}",
-                "ApiKey": "{{_configuration.Api.Rule34ApiKey}}",
-                "BotUserAgent": "Arachne/{{currentVersion}}"
-              },
-              "YandereSettings": {
-                "Delay": 0,
-                "BotUserAgent": "Arachne/{{currentVersion}}"
-              },
-              "OpenSearchUri": "{{_configuration.OpenSearchUri}}",
-              "Jaeger": {
-                "Host": "{{_configuration.Jaeger.Host}}",
-                "Port": {{_configuration.Jaeger.Port}}
-              }
-            }
-            """;
-    }
+                Login = _configuration.Api.DanbooruLogin,
+                ApiKey = _configuration.Api.DanbooruApiKey,
+                UserId = _configuration.Api.DanbooruUserId,
+                Delay = "1000",
+                BotUserAgent = $"Arachne/{currentVersion}"
+            },
+            SankakuSettings = new
+            {
+                Login = _configuration.Api.SankakuLogin,
+                Password = _configuration.Api.SankakuPassword,
+                Delay = "6000"
+            },
+            ExHentaiSettings = _configuration.ExHentai,
+            GelbooruSettings = new { UserId = _configuration.Api.GelbooruUserId, ApiKey = _configuration.Api.GelbooruApiKey },
+            Rule34Settings = new
+            {
+                UserId = _configuration.Api.Rule34UserId,
+                ApiKey = _configuration.Api.Rule34ApiKey,
+                BotUserAgent = $"Arachne/{currentVersion}"
+            },
+            YandereSettings = new { Delay = 0, BotUserAgent = $"Arachne/{currentVersion}" },
+            _configuration.OpenSearchUri,
+            Jaeger
+        };
 
-    private string GetHarpyConfiguration(string currentVersion)
-    {
-        return
-            $$"""
+    private object GetHarpyConfiguration(string currentVersion)
+        => new
+        {
+            Danbooru = new
             {
-              "Danbooru": {
-                "ApiKey": "{{_configuration.Api.DanbooruApiKey}}",
-                "Login": "{{_configuration.Api.DanbooruLogin}}",
-                "UserId": "{{_configuration.Api.DanbooruUserId}}",
-                "BotUserAgent": "Harpy/{{currentVersion}}"
-              },
-              "Yandere": {
-                "ApiKey": "{{_configuration.Api.YandereApiKey}}",
-                "Login": "{{_configuration.Api.YandereLogin}}",
-                "BotUserAgent": "Harpy/{{currentVersion}}"
-              },
-              "Gelbooru": {
-                "UserId": "{{_configuration.Api.GelbooruUserId}}",
-                "ApiKey": "{{_configuration.Api.GelbooruApiKey}}"
-              },
-              "Saver": {
-                "SaveToPath": "{{_configuration.Harpy.SavePath}}",
-                "RoomUrl": "http://localhost:{{_configuration.Ports.RoomPort}}/"
-              },
-              "FavoritesSaveJobSettings": {
-                "RepeatEveryMinutes": {{_configuration.Harpy.FavoritesSaveJobRepeatEveryMinutes}}
-              },
-              "OpenSearchUri": "{{_configuration.OpenSearchUri}}",
-              "Jaeger": {
-                "Host": "{{_configuration.Jaeger.Host}}",
-                "Port": {{_configuration.Jaeger.Port}}
-              }
-            }
-            """;
-    }
+                ApiKey = _configuration.Api.DanbooruApiKey,
+                Login = _configuration.Api.DanbooruLogin,
+                UserId = _configuration.Api.DanbooruUserId,
+                BotUserAgent = $"Harpy/{currentVersion}"
+            },
+            Yandere = new
+            {
+                ApiKey = _configuration.Api.YandereApiKey,
+                Login = _configuration.Api.YandereLogin,
+                BotUserAgent = $"Harpy/{currentVersion}"
+            },
+            Gelbooru = new { UserId = _configuration.Api.GelbooruUserId, ApiKey = _configuration.Api.GelbooruApiKey },
+            Saver = new
+            {
+                SaveToPath = _configuration.Harpy.SavePath,
+                RoomUrl = $"http://localhost:{_configuration.Ports.RoomPort}/"
+            },
+            FavoritesSaveJobSettings = new
+            {
+                RepeatEveryMinutes = int.Parse(_configuration.Harpy.FavoritesSaveJobRepeatEveryMinutes, CultureInfo.InvariantCulture)
+            },
+            _configuration.OpenSearchUri,
+            Jaeger
+        };
 
-    private string GetKekkaiConfiguration()
-    {
-        return
-            $$"""
-            {
-              "AuthToken": "{{_configuration.Kekkai.AuthToken}}",
-              "OpenSearchUri": "{{_configuration.OpenSearchUri}}",
-              "LilinUrl": "http://localhost:{{_configuration.Ports.LilinPort}}",
-              "RoomUrl": "http://localhost:{{_configuration.Ports.RoomPort}}",
-              "Kestrel": {
-                "EndPoints": {
-                  "Http": {
-                    "Url": "http://*:{{_configuration.Ports.KekkaiPort}}"
-                  }
-                }
-              },
-              "Jaeger": {
-                "Host": "{{_configuration.Jaeger.Host}}",
-                "Port": {{_configuration.Jaeger.Port}}
-              }
-            }
-            """;
-    }
+    private object GetKekkaiConfiguration()
+        => new
+        {
+            _configuration.Kekkai.AuthToken,
+            _configuration.OpenSearchUri,
+            LilinUrl = $"http://localhost:{_configuration.Ports.LilinPort}",
+            RoomUrl = $"http://localhost:{_configuration.Ports.RoomPort}",
+            Kestrel = Kestrel(_configuration.Ports.KekkaiPort),
+            Jaeger
+        };
 
-    private string GetLilinConfiguration()
-    {
-        return
-            $$"""
+    private object GetLilinConfiguration()
+        => new
+        {
+            ConnectionStrings = new
             {
-              "ConnectionStrings": {
-                "LilinDatabase": "{{_configuration.Connection.LilinConnectionString}}",
-                "MassTransit": "{{_configuration.Connection.MassTransitConnectionString}}"
-              },
-              "RecalculateTagCountersSettings": {
-                "RepeatEveryMinutes": 15
-              },
-              "OpenSearchUri": "{{_configuration.OpenSearchUri}}",
-              "Kestrel": {
-                "EndPoints": {
-                  "Http": {
-                    "Url": "http://*:{{_configuration.Ports.LilinPort}}"
-                  }
-                }
-              },
-              "Jaeger": {
-                "Host": "{{_configuration.Jaeger.Host}}",
-                "Port": {{_configuration.Jaeger.Port}}
-              }
-            }
-            """;
-    }
+                LilinDatabase = _configuration.Connection.LilinConnectionString,
+                MassTransit = _configuration.Connection.MassTransitConnectionString
+            },
+            RecalculateTagCountersSettings = new { RepeatEveryMinutes = 15 },
+            _configuration.OpenSearchUri,
+            Kestrel = Kestrel(_configuration.Ports.LilinPort),
+            Jaeger
+        };
 
-    private string GetMeidoConfiguration()
-    {
-        return
-            $$"""
+    private object GetMeidoConfiguration()
+        => new
+        {
+            ConnectionStrings = new
             {
-              "ConnectionStrings": {
-                "MeidoDatabase": "{{_configuration.Connection.MeidoConnectionString}}",
-                "MassTransit": "{{_configuration.Connection.MassTransitConnectionString}}"
-              },
-              "OpenSearchUri": "{{_configuration.OpenSearchUri}}",
-              "MetadataActualizerSettings": {
-                "RepeatEveryMinutes": {{_configuration.Meido.MetadataActualizerRepeatEveryMinutes}},
-                "ActiveSources": [
-                  "Yandere", "Danbooru"
-                ] 
-              },
-              "FaultToleranceSettings": {
-                "RepeatEveryMinutes": {{_configuration.Meido.FaultToleranceRepeatEveryMinutes}},
-                "IsEnabled": {{_configuration.Meido.FaultToleranceIsEnabled}}
-              },
-              "Jaeger": {
-                "Host": "{{_configuration.Jaeger.Host}}",
-                "Port": {{_configuration.Jaeger.Port}}
-              }
-            }
-            """;
-    }
+                MeidoDatabase = _configuration.Connection.MeidoConnectionString,
+                MassTransit = _configuration.Connection.MassTransitConnectionString
+            },
+            _configuration.OpenSearchUri,
+            MetadataActualizerSettings = new
+            {
+                RepeatEveryMinutes = int.Parse(_configuration.Meido.MetadataActualizerRepeatEveryMinutes, CultureInfo.InvariantCulture),
+                ActiveSources = new[] { "Yandere", "Danbooru" }
+            },
+            FaultToleranceSettings = new
+            {
+                RepeatEveryMinutes = int.Parse(_configuration.Meido.FaultToleranceRepeatEveryMinutes, CultureInfo.InvariantCulture),
+                IsEnabled = bool.Parse(_configuration.Meido.FaultToleranceIsEnabled)
+            },
+            Jaeger
+        };
 
-    private string GetLamiaConfiguration()
-    {
-        return
-            $$"""
-            {
-              "ConnectionStrings": {
-                "MassTransit": "{{_configuration.Connection.MassTransitConnectionString}}"
-              },
-              "OpenSearchUri": "{{_configuration.OpenSearchUri}}",
-              "Jaeger": {
-                "Host": "{{_configuration.Jaeger.Host}}",
-                "Port": {{_configuration.Jaeger.Port}}
-              },
-              "FFmpeg": {
-                "Path": "{{_configuration.FFmpegPath}}"
-              }
-            }
-            """;
-    }
+    private object GetLamiaConfiguration()
+        => new
+        {
+            ConnectionStrings = new { MassTransit = _configuration.Connection.MassTransitConnectionString },
+            _configuration.OpenSearchUri,
+            Jaeger,
+            FFmpeg = new { Path = _configuration.FFmpegPath }
+        };
 
-    private string GetRoomConfiguration()
-    {
-        return
-            $$"""
+    private object GetRoomConfiguration()
+        => new
+        {
+            Kestrel = Kestrel(_configuration.Ports.RoomPort),
+            ConnectionStrings = new
             {
-              "Kestrel": {
-                "EndPoints": {
-                  "Http": {
-                    "Url": "http://*:{{_configuration.Ports.RoomPort}}"
-                  }
-                }
-              },
-              "ConnectionStrings": {
-                "RoomDatabase": "{{_configuration.Connection.RoomConnectionString}}",
-                "MassTransit": "{{_configuration.Connection.MassTransitConnectionString}}"
-              },
-              "OpenSearchUri": "{{_configuration.OpenSearchUri}}",
-              "Jaeger": {
-                "Host": "{{_configuration.Jaeger.Host}}",
-                "Port": {{_configuration.Jaeger.Port}}
-              }
-            }
-            """;
-    }
+                RoomDatabase = _configuration.Connection.RoomConnectionString,
+                MassTransit = _configuration.Connection.MassTransitConnectionString
+            },
+            _configuration.OpenSearchUri,
+            Jaeger
+        };
+
+    private object Jaeger => new
+    {
+        _configuration.Jaeger.Host,
+        Port = int.Parse(_configuration.Jaeger.Port, CultureInfo.InvariantCulture)
+    };
+
+    private static object Kestrel(string port)
+        => new { EndPoints = new { Http = new { Url = $"http://*:{port}" } } };
 }

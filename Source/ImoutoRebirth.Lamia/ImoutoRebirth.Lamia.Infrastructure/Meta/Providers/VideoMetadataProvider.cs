@@ -21,18 +21,17 @@ internal class VideoMetadataProvider : IMetadataForFileProvider
         var audioStream = mediaInfo.AudioStreams.FirstOrDefault(x => x.Default == 1)
                           ?? mediaInfo.AudioStreams.FirstOrDefault();
 
-        if (videoStream is null)
-            throw new InvalidDataException("File recognised as video but video stream is missing.");
+        if (videoStream is null && audioStream is null)
+            throw new InvalidDataException("File contains no audio or video streams.");
 
-        var resolution = new Resolution(videoStream.Width, videoStream.Height);
-
-        var aspectRatio = AspectRatioCalculator.DetermineAspectRatio(resolution);
+        var resolution = videoStream is null ? null : new Resolution(videoStream.Width, videoStream.Height);
+        var aspectRatio = resolution is null ? null : AspectRatioCalculator.DetermineAspectRatio(resolution);
 
         var duration = mediaInfo.Duration;
         var hasAudio = audioStream != null;
-        var codec = videoStream.Codec;
+        var codec = videoStream?.Codec;
         var audioCodec = audioStream?.Codec;
-        var framerate = videoStream.Framerate;
+        var framerate = videoStream?.Framerate;
 
         IReadOnlyCollection<int>? bpms = null;
         if (audioStream != null && duration >= BpmCalculator.MinDuration)
@@ -49,7 +48,7 @@ internal class VideoMetadataProvider : IMetadataForFileProvider
 
         return new FileMetadata(
             SizeInBytes: size,
-            MediaFileType: MediaFileType.Video,
+            MediaFileType: videoStream is null ? MediaFileType.Audio : MediaFileType.Video,
             Extension: extension,
             Resolution: resolution,
             AspectRatio: aspectRatio,

@@ -13,14 +13,14 @@ internal class FileLoadingService : IFileLoadingService
         _fileService = fileService;
     }
 
-    public async Task<IList<string>> LoadFiles(
+    public async Task<IReadOnlyCollection<string>> LoadFiles(
         Guid? collectionId,
         IReadOnlyCollection<SearchTag> searchTags,
-        CancellationToken cancellationToken = default)
+        CancellationToken ct = default)
     {
         try
         {
-            return await LoadEntries(collectionId, searchTags, cancellationToken);
+            return await LoadEntries(collectionId, searchTags, ct);
         }
         catch (Exception ex) when (ex is TaskCanceledException or OperationCanceledException)
         {
@@ -34,17 +34,17 @@ internal class FileLoadingService : IFileLoadingService
         }
     }
 
-    private async Task<IList<string>> LoadEntries(
+    private async Task<IReadOnlyCollection<string>> LoadEntries(
         Guid? collectionId,
         IReadOnlyCollection<SearchTag> searchTags,
-        CancellationToken cancellationToken)
+        CancellationToken ct)
     {
-        cancellationToken.ThrowIfCancellationRequested();
+        ct.ThrowIfCancellationRequested();
 
         var found = await _fileService.SearchFiles(
             collectionId,
             searchTags,
-            cancellationToken);
+            ct);
 
         return found.Select(x => x.Path).ToList();
     }
@@ -52,13 +52,13 @@ internal class FileLoadingService : IFileLoadingService
     private async Task<int> GetCount(
         Guid? collectionId,
         IReadOnlyCollection<SearchTag> searchTags,
-        CancellationToken cancellationToken)
+        CancellationToken ct)
     {
-        cancellationToken.ThrowIfCancellationRequested();
+        ct.ThrowIfCancellationRequested();
 
         return await _fileService.CountFiles(
             collectionId,
             searchTags,
-            cancellationToken);
+            ct);
     }
 }

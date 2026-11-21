@@ -1,7 +1,6 @@
 using System.Windows;
 using System.Windows.Media.Imaging;
 using CommunityToolkit.Mvvm.ComponentModel;
-using ImoutoRebirth.Lilin.WebApi.Client;
 using Microsoft.WindowsAPICodePack.Shell;
 
 namespace ImoutoRebirth.Navigator.ViewModel.ListEntries;
@@ -23,31 +22,24 @@ internal partial class VideoEntryVM: BaseEntryVM, INavigatorListEntry
     [ObservableProperty]
     private BitmapSource? _image;
 
-    public VideoEntryVM(string path, FilesClient filesClient, Size initPreviewSize, Guid? dbId)
-        : base(dbId, filesClient)
+    public VideoEntryVM(string path, Size initPreviewSize, Guid? dbId)
+        : base(dbId)
     {
         Path = path;
         Type = ListEntryType.Video;
         ViewPortSize = initPreviewSize;
-        DbId = dbId;
     }
 
     public string Path { get; }
 
     public ListEntryType Type { get; }
 
-    public Guid? DbId { get; }
-
     public void UpdatePreview(Size previewSize)
     {
         ViewPortSize = previewSize;
     }
 
-    public async void Load()
-    {
-        LoadPreview();
-        await LoadRating();
-    }
+    public void Load() => LoadPreview();
 
     public void Pause()
     {

@@ -1,14 +1,13 @@
 ﻿using System.Windows;
 using System.Windows.Media.Imaging;
-using ImoutoRebirth.Lilin.WebApi.Client;
 using ImoutoRebirth.Navigator.Model;
 
 namespace ImoutoRebirth.Navigator.ViewModel.ListEntries;
 
 internal class ImageEntryVM : BaseEntryVM, INavigatorListEntry, IPixelSizable
 {
-    public ImageEntryVM(string imagePath, FilesClient filesClient, Size initPreviewSize, Guid? dbId)
-        : base(dbId, filesClient)
+    public ImageEntryVM(string imagePath, Size initPreviewSize, Guid? dbId)
+        : base(dbId)
     {
         ImageEntry = new ImageEntry(imagePath, initPreviewSize);
         
@@ -16,6 +15,7 @@ internal class ImageEntryVM : BaseEntryVM, INavigatorListEntry, IPixelSizable
         {
             OnPropertyChanged(nameof(IsLoading));
             OnPropertyChanged(nameof(Image));
+            OnPropertyChanged(nameof(GifSourceUri));
             OnPropertyChanged(nameof(PixelSize));
         };
 
@@ -26,13 +26,13 @@ internal class ImageEntryVM : BaseEntryVM, INavigatorListEntry, IPixelSizable
             ImageFormat.WEBP => ListEntryType.WebP,
             _ => ListEntryType.Image
         };
-
-        DbId = dbId;
     }
 
     public bool IsLoading => ImageEntry.IsLoading;
 
     public BitmapSource? Image => ImageEntry.Image;
+
+    public Uri? GifSourceUri => Type == ListEntryType.Gif && Image is BitmapImage bitmap ? bitmap.UriSource : null;
 
     public Size ViewPortSize => ImageEntry.ViewPort;
     
@@ -42,8 +42,6 @@ internal class ImageEntryVM : BaseEntryVM, INavigatorListEntry, IPixelSizable
 
     private ImageEntry ImageEntry { get; }
 
-    public Guid? DbId { get; }
-
     public string Path => ImageEntry.FullName;
 
     public void UpdatePreview(Size previewSize)
@@ -52,11 +50,7 @@ internal class ImageEntryVM : BaseEntryVM, INavigatorListEntry, IPixelSizable
         OnPropertyChanged(nameof(ViewPortSize));
     }
 
-    public async void Load()
-    {
-        ImageEntry.DoLoadAsync();
-        await LoadRating();
-    }
+    public void Load() => ImageEntry.DoLoadAsync();
 
     public object Data => new DataObject(DataFormats.FileDrop, new[] { ImageEntry.FullName });
 

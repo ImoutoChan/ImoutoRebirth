@@ -1,5 +1,6 @@
 ﻿using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
+using System.IO;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media.Imaging;
@@ -8,11 +9,13 @@ using AutoMapper;
 using ImoutoRebirth.Common.WPF;
 using ImoutoViewer.Behavior;
 using ImoutoRebirth.Common.WPF.Commands;
+using ImoutoViewer.ImoutoRebirth.NavigatorArgs;
 using ImoutoViewer.ImoutoRebirth.Services;
 using ImoutoViewer.ImoutoRebirth.Services.Tags.Model;
 using ImoutoViewer.Model;
 using ImoutoViewer.Model.ArchiveSupport;
 using ImoutoViewer.ViewModel.SettingsModels;
+using SharpCompress.Common;
 
 namespace ImoutoViewer.ViewModel;
 
@@ -21,9 +24,12 @@ internal class MainWindowVM : VMBase, IDragable, IDropable
     #region Fields
 
     private readonly Guid _appGuid = Guid.NewGuid();
+    private readonly Task _archiveCleanup = Task.Run(TemporaryDirectoryManager.CleanupOldTempDirectories);
 
     private readonly MainWindow _mainWindowView;
     private ILocalImageList? _imageList;
+    private CancellationTokenSource? _opening;
+    private string? _openError;
     private bool _isSlideShowActive;
     private DispatcherTimer? _timer;
     private readonly TagsVM _tagsVM;
@@ -46,6 +52,11 @@ internal class MainWindowVM : VMBase, IDragable, IDropable
 
         _mainWindowView = new MainWindow { DataContext = this };
         _mainWindowView.SizeChanged += _mainWindowView_SizeChanged;
+        _mainWindowView.Closed += (_, _) =>
+        {
+            _opening?.Cancel();
+            ReplaceImageList(null);
+        };
         _mainWindowView.Client.SizeChanged += _mainWindowView_SizeChanged;
         _tagsVM = new TagsVM(this);
         _addTagVM = new AddTagVM(this);
@@ -182,17 +193,11 @@ internal class MainWindowVM : VMBase, IDragable, IDropable
 
     public double Zoom => CurrentLocalImage?.Zoom ?? 1;
 
-    public BitmapSource? Image =>
-        CurrentLocalImage != null && CurrentLocalImage.ImageFormat != ImageFormat.GIF
-            ? CurrentLocalImage.Image
-            : null;
+    public BitmapSource? Image => CurrentLocalImage?.Image;
 
-    public BitmapSource? AnimutedImage =>
-        CurrentLocalImage is { ImageFormat: ImageFormat.GIF }
-            ? CurrentLocalImage.Image
-            : null;
-
-    public bool IsAnimuted => CurrentLocalImage is { ImageFormat: ImageFormat.GIF };
+    public Uri? AnimatedImageUri => CurrentLocalImage is { ImageFormat: ImageFormat.GIF, Image: BitmapFrame } image
+        ? new Uri(image.Path)
+        : null;
 
     public bool IsLoading { get; private set; }
 
@@ -208,9 +213,9 @@ internal class MainWindowVM : VMBase, IDragable, IDropable
 
     public OpenWithVM OpenWith { get; private set; }
 
-    public bool IsError => _imageList?.CurrentImage is { IsError: true };
+    public bool IsError => _openError != null || _imageList?.CurrentImage is { IsError: true };
 
-    public string? ErrorMessage => _imageList?.CurrentImage?.ErrorMessage;
+    public string? ErrorMessage => _openError ?? _imageList?.CurrentImage?.ErrorMessage;
 
     public string ImagePath => CurrentLocalImage?.Path ?? "";
 
@@ -250,87 +255,28 @@ internal class MainWindowVM : VMBase, IDragable, IDropable
         Tags.ShowTags = Settings.ShowTags;
     }
 
-    private async Task InitializeImageList(IReadOnlyCollection<string>? images)
+    private async Task<ILocalImageList> LoadImageList(
+        IReadOnlyCollection<string> paths,
+        ImoutoViewerArgs? search,
+        IProgress<ProgressReport> progress,
+        CancellationToken ct)
     {
-        TemporaryDirectoryManager.CleanupOldTempDirectories();
-        if (_imageList != null)
+        await _archiveCleanup;
+        ct.ThrowIfCancellationRequested();
+
+        if (search != null)
         {
-            _imageList.CurrentImageChanged -= _imageList_CurrentImageChanged;
-            _imageList?.Dispose();
-            _imageList = null;
-            OnPropertyChanged(nameof(CurrentLocalImage));
-            UpdateView();
+            var files = await _fileLoadingService.LoadFiles(
+                search.CollectionId,
+                _mapper.Map<IReadOnlyCollection<SearchTag>>(search.SearchTags),
+                ct);
+            return new LocalImageList(files, selectedFilePath: paths.FirstOrDefault(), fromNavigator: true);
         }
 
-        ApplicationProperties.BoundToNavigatorSearch = false;
+        if (paths.Count == 1 && ArchiveImageList.IsSupportedArchive(paths.First()))
+            return await ArchiveImageList.OpenAsync(paths.First(), progress, ct);
 
-        ILocalImageList imageList;
-
-        if (images?.Count == 1 && ArchiveImageList.IsSupportedArchive(images.First()))
-        {
-            imageList = new ArchiveImageList(images.First(), progress =>
-            {
-                LoadingProgress = (int)(progress.PercentComplete ?? 0);
-                UpdateView();
-            });
-        }
-        else if (images != null)
-        {
-            imageList = new LocalImageList(images);
-        }
-        else if (ApplicationProperties.NavigatorSearchParams != null)
-        {
-            ApplicationProperties.BoundToNavigatorSearch = true;
-
-            var searchParams = ApplicationProperties.NavigatorSearchParams;
-
-            try
-            {
-                var files = await _fileLoadingService.LoadFiles(
-                    searchParams.CollectionId,
-                    _mapper.Map<IReadOnlyCollection<SearchTag>>(searchParams.SearchTags));
-
-                if (files.Any())
-                {
-                    imageList = new LocalImageList(files, -1, ApplicationProperties.FileNamesToOpen?.FirstOrDefault());
-                }
-                else
-                {
-                    imageList = new LocalImageList();
-                }
-            }
-            catch (Exception e)
-            {
-                Debug.WriteLine(e.Message);
-                imageList = new LocalImageList();
-            }
-
-        }
-        else if (ApplicationProperties.FileNamesToOpen?.Any() == true)
-        {
-            var fileNames = ApplicationProperties.FileNamesToOpen;
-            ApplicationProperties.FileNamesToOpen = ArraySegment<string>.Empty;
-
-            if (fileNames.Count == 1 && ArchiveImageList.IsSupportedArchive(fileNames.First()))
-            {
-                imageList = new ArchiveImageList(fileNames.First(), progress =>
-                {
-                    LoadingProgress = (int)(progress.PercentComplete ?? 0);
-                    UpdateView();
-                });
-            }
-            else
-            {
-                imageList = new LocalImageList(fileNames);
-            }
-        }
-        else
-        {
-            imageList = new LocalImageList();
-        }
-
-        imageList.CurrentImageChanged += _imageList_CurrentImageChanged;
-        _imageList = imageList;
+        return new LocalImageList(paths);
     }
 
     private void UpdateView()
@@ -342,9 +288,8 @@ internal class MainWindowVM : VMBase, IDragable, IDropable
             OnPropertyChanged("Title");
             OnPropertyChanged("ViewportHeight");
             OnPropertyChanged("ViewportWidth");
-            OnPropertyChanged("AnimutedImage");
+            OnPropertyChanged(nameof(AnimatedImageUri));
             OnPropertyChanged("Image");
-            OnPropertyChanged("IsAnimuted");
             OnPropertyChanged("IsError");
             OnPropertyChanged("ErrorMessage");
             OnPropertyChanged("DirStatus");
@@ -378,16 +323,110 @@ internal class MainWindowVM : VMBase, IDragable, IDropable
 
     private async void InitializeImageListAsync(IReadOnlyCollection<string>? images = null)
     {
+        _opening?.Cancel();
+        _openError = null;
+        var search = images == null ? ApplicationProperties.NavigatorSearchParams : null;
+        var paths = images ?? ApplicationProperties.FileNamesToOpen ?? [];
+        if (images == null)
+            ApplicationProperties.FileNamesToOpen = [];
+
+        if (search?.PlaylistId is Guid playlistId && paths.FirstOrDefault() is { } selectedPath)
+        {
+            var list = new NavigatorImageList(selectedPath);
+            ReplaceImageList(list);
+
+            try
+            {
+                await list.LoadPlaylist(
+                    playlistId,
+                    ct => _fileLoadingService.LoadFiles(
+                        search.CollectionId,
+                        _mapper.Map<IReadOnlyCollection<SearchTag>>(search.SearchTags),
+                        ct));
+                if (ReferenceEquals(list, _imageList))
+                    OnPropertyChanged(nameof(FileStatus));
+            }
+            catch (Exception error)
+            {
+                Debug.WriteLine(error);
+            }
+
+            return;
+        }
+
+        using var opening = new CancellationTokenSource();
+        _opening = opening;
         IsLoading = true;
-        OnPropertyChanged("Status");
-        OnPropertyChanged("IsLoading");
+        LoadingProgress = 0;
+        OnPropertyChanged(nameof(Status));
+        OnPropertyChanged(nameof(IsLoading));
+        OnPropertyChanged(nameof(LoadingProgress));
 
-        await Task.Run(() => InitializeImageList(images));
+        var progress = new Progress<ProgressReport>(report =>
+        {
+            var percent = (int)(report.PercentComplete ?? 0);
+            if (_opening == opening && LoadingProgress != percent)
+            {
+                LoadingProgress = percent;
+                OnPropertyChanged(nameof(LoadingProgress));
+            }
+        });
 
-        IsLoading = false;
+        try
+        {
+            var loaded = await Task.Run(() => LoadImageList(paths, search, progress, opening.Token), opening.Token);
+            if (opening.IsCancellationRequested)
+            {
+                loaded.Dispose();
+                return;
+            }
+
+            ReplaceImageList(loaded);
+        }
+        catch (OperationCanceledException) when (opening.IsCancellationRequested)
+        {
+        }
+        catch (Exception error)
+        {
+            if (opening.IsCancellationRequested)
+                return;
+
+            if (_imageList == null)
+            {
+                _openError = error.Message;
+            }
+            else
+            {
+                View.ShowMessageDialog("Unable to open file", error.Message);
+            }
+        }
+        finally
+        {
+            if (_opening == opening)
+                _opening = null;
+            if (!opening.IsCancellationRequested)
+            {
+                LoadingProgress = 100;
+                IsLoading = false;
+                UpdateView();
+            }
+        }
+    }
+
+    private void ReplaceImageList(ILocalImageList? list)
+    {
+        var previous = _imageList;
+        if (previous != null)
+            previous.CurrentImageChanged -= _imageList_CurrentImageChanged;
+
+        _imageList = list;
+        if (list != null)
+            list.CurrentImageChanged += _imageList_CurrentImageChanged;
+
+        OnPropertyChanged(nameof(CurrentLocalImage));
         UpdateView();
-
         _tagsVM.ReloadAsync();
+        previous?.Dispose();
     }
 
     #endregion Methods
@@ -493,13 +532,11 @@ internal class MainWindowVM : VMBase, IDragable, IDropable
     private void NextImage()
     {
         _imageList?.Next();
-        UpdateView();
     }
 
     private void PrevImage()
     {
         _imageList?.Previous();
-        UpdateView();
     }
 
     private void ZoomIn()
@@ -535,13 +572,11 @@ internal class MainWindowVM : VMBase, IDragable, IDropable
     private void NextFolder()
     {
         _imageList?.NextFolder();
-        UpdateView();
     }
 
     private void PrevFolder()
     {
         _imageList?.PrevFolder();
-        UpdateView();
     }
 
     private void FixZoom()
@@ -602,7 +637,7 @@ internal class MainWindowVM : VMBase, IDragable, IDropable
     private void _imageList_CurrentImageChanged(object? sender, EventArgs e)
     {
         _mainWindowView.ScrollViewerObject.IsNeedScrollHome = true;
-
+        UpdateView();
         _tagsVM.ReloadAsync();
     }
 

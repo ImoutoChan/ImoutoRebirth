@@ -3,6 +3,7 @@ using ImoutoRebirth.Lilin.Application.TagSlice;
 using ImoutoRebirth.Lilin.WebApi.Client;
 using MediatR;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.EntityFrameworkCore;
 using CreateTagCommand = ImoutoRebirth.Lilin.Application.TagSlice.CreateTagCommand;
 
 namespace ImoutoRebirth.Lilin.IntegrationTests;
@@ -49,6 +50,13 @@ public class UpdateTagsCountersCommandTests(TestWebApplicationFactory<Program> _
             new(file5Id, MetadataSource.Manual, newTag2.Id, null),
         ], SameTagHandleStrategy.ReplaceExistingValue));
         
+        var unusedTag = await CreateNewTag(httpClient, types, "unused");
+        await context.Tags.Where(x => x.Id == unusedTag.Id)
+            .ExecuteUpdateAsync(s => s.SetProperty(x => x.Count, 1));
+        await httpClient.PostAsJsonAsync("/files/tags", new BindTagsCommand(
+            [new(file1Id, MetadataSource.Danbooru, newTag1.Id, null)],
+            SameTagHandleStrategy.ReplaceExistingValue));
+
         // act
         await mediator.Send(new UpdateTagsCountersCommand());
 
@@ -61,6 +69,15 @@ public class UpdateTagsCountersCommandTests(TestWebApplicationFactory<Program> _
         tag3.Count.Should().Be(3);
         var tag4 = context.Tags.First(x => x.Id == newTag4.Id);
         tag4.Count.Should().Be(3);
+        context.Tags.Single(x => x.Id == unusedTag.Id).Count.Should().Be(0);
+
+        var rowVersion = await ReadTagVersion();
+        await mediator.Send(new UpdateTagsCountersCommand());
+        (await ReadTagVersion()).Should().Be(rowVersion);
+
+        Task<string> ReadTagVersion() => context.Database
+            .SqlQuery<string>($"""SELECT xmin::text AS "Value" FROM "Tags" WHERE "Id" = {newTag1.Id}""")
+            .SingleAsync();
     }
     
     private static async Task<Tag> CreateNewTag(

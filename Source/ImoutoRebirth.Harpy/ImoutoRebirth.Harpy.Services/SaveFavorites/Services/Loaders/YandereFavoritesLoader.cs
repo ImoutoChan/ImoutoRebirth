@@ -1,4 +1,5 @@
-﻿using System.Text.Json;
+﻿using System.Runtime.CompilerServices;
+using System.Text.Json;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 
@@ -26,7 +27,7 @@ internal class YandereFavoritesLoader
         _enabled = !string.IsNullOrWhiteSpace(_booruConfiguration.Login);
     }
 
-    public async IAsyncEnumerable<Post> GetFavoritesUrls()
+    public async IAsyncEnumerable<Post> GetFavoritesUrls([EnumeratorCancellation] CancellationToken ct = default)
     {
         if (!_enabled)
         {
@@ -39,7 +40,7 @@ internal class YandereFavoritesLoader
         var url = string.Format(FavoritesUrl, _booruConfiguration.Login, _booruConfiguration.ApiKey);
         do
         {
-            var result = await _httpClient.GetStringAsync(url + $"&page={page}");
+            var result = await _httpClient.GetStringAsync(url + $"&page={page}", ct);
             posts = JsonSerializer.Deserialize<Post[]>(result) ?? [];
             var notEmptyPosts = posts.Where(x => x is { Md5: not null, FileUrl: not null });
             

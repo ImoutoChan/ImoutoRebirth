@@ -1,4 +1,6 @@
-﻿using ImoutoRebirth.Common;
+﻿using System.Collections.Concurrent;
+using System.Runtime.ExceptionServices;
+using ImoutoRebirth.Common;
 using ImoutoRebirth.Common.Cqrs.Abstract;
 using ImoutoRebirth.Harpy.Services.SaveFavorites.Services;
 using ImoutoRebirth.Harpy.Services.SaveFavorites.Services.Loaders;
@@ -49,53 +51,85 @@ internal class FavoritesSaveCommandHandler : ICommandHandler<FavoritesSaveComman
         
         _logger.LogTrace("Loading favorite posts");
 
-        var checkedDanbooruPosts = await GetNewPostsFromBooru(
-            _danbooruFavoritesLoader.GetFavoritesUrls(),
-            ct);
+        var downloads = new ConcurrentDictionary<string, Download>(StringComparer.OrdinalIgnoreCase);
+        await Task.WhenAll(
+            SaveFavorites(_danbooruFavoritesLoader.GetFavoritesUrls()),
+            SaveFavorites(_yandereFavoritesLoader.GetFavoritesUrls()));
 
-        var checkedYanderePosts = await GetNewPostsFromBooru(
-            _yandereFavoritesLoader.GetFavoritesUrls(),
-            ct);
+        ct.ThrowIfCancellationRequested();
 
-        var postsToSave = checkedDanbooruPosts.Reverse().Union(checkedYanderePosts.Reverse()).ToList();
-
-        if (!postsToSave.Any())
+        var savedCount = downloads.Values.Count(x => x.Saved);
+        if (savedCount > 0)
         {
-            _logger.LogTrace("No new posts were found in danbooru or yandere");
-            return false;
+            _logger.LogInformation("Saved {PostsCount} favorite posts", savedCount);
+            return true;
         }
 
-        _logger.LogInformation(
-            "Found new posts: Danbooru {DanbooruPostsCount} Yandere {YanderePostsCount}",
-            checkedDanbooruPosts.Count,
-            checkedYanderePosts.Count);
+        if (downloads.Values.FirstOrDefault(x => x.Error != null)?.Error is { } error)
+            ExceptionDispatchInfo.Throw(error);
 
-        await _postSaver.SavePosts(postsToSave, _saverOptions.Value.SaveToPath);
+        _logger.LogTrace("No new posts were found in danbooru or yandere");
+        return false;
 
-        _logger.LogInformation("Saved {PostsCount} favorite posts", postsToSave.Count);
+        async Task SaveFavorites(IAsyncEnumerable<Post> loader)
+        {
+            var posts = await GetNewPostsFromBooru(loader, ct);
 
-        return true;
+            foreach (var post in posts.Reverse())
+            {
+                var download = downloads.GetOrAdd(post.Md5, static _ => new Download());
+                await download.Gate.WaitAsync(ct);
+
+                try
+                {
+                    if (download.Saved)
+                        continue;
+
+                    await _postSaver.SavePost(post, _saverOptions.Value.SaveToPath, ct);
+                    download.Saved = true;
+                }
+                catch (Exception e) when (!ct.IsCancellationRequested
+                                          && e is HttpRequestException or IOException or UnauthorizedAccessException or OperationCanceledException)
+                {
+                    download.Error = e;
+                    _logger.LogWarning(e, "Unable to save favorite post {Md5}", post.Md5);
+                }
+                finally
+                {
+                    download.Gate.Release();
+                }
+            }
+        }
+    }
+
+    private class Download
+    {
+        public SemaphoreSlim Gate { get; } = new(1);
+
+        public bool Saved { get; set; }
+
+        public Exception? Error { get; set; }
     }
 
     private async Task<IReadOnlyCollection<Post>> GetNewPostsFromBooru(
         IAsyncEnumerable<Post> loader,
-        CancellationToken cancellationToken)
+        CancellationToken ct)
     {
         var uncheckedPosts = new List<Post>(20);
         var checkedPosts = new List<Post>(20);
 
         try
         {
-            await foreach (var favoritePost in loader.WithCancellation(cancellationToken))
+            await foreach (var favoritePost in loader.WithCancellation(ct))
             {
                 uncheckedPosts.Add(favoritePost);
 
                 if (uncheckedPosts.Count < CheckPostsBatchSize)
                     continue;
 
-                var onlyNew = await _roomSavedChecker.GetOnlyNewPosts(uncheckedPosts);
+                var onlyNew = await _roomSavedChecker.GetOnlyNewPosts(uncheckedPosts, ct);
                 if (onlyNew.None())
-                    break;
+                    return checkedPosts;
 
                 checkedPosts.AddRange(onlyNew);
                 uncheckedPosts.Clear();
@@ -103,13 +137,13 @@ internal class FavoritesSaveCommandHandler : ICommandHandler<FavoritesSaveComman
 
             if (uncheckedPosts.Any())
             {
-                var onlyNew = await _roomSavedChecker.GetOnlyNewPosts(uncheckedPosts);
+                var onlyNew = await _roomSavedChecker.GetOnlyNewPosts(uncheckedPosts, ct);
                 
                 if (onlyNew.Any())
                     checkedPosts.AddRange(onlyNew);
             }
         }
-        catch (Exception e)
+        catch (Exception e) when (!ct.IsCancellationRequested)
         {
             _logger.LogWarning(e, "Unable to retrieve favorite posts");
             return Array.Empty<Post>();

@@ -1,4 +1,4 @@
-﻿using System.Linq.Expressions;
+using System.Linq.Expressions;
 using ImoutoRebirth.Lilin.Application.FileInfoSlice.Queries;
 using ImoutoRebirth.Lilin.DataAccess;
 using ImoutoRebirth.Lilin.DataAccess.Entities;
@@ -99,7 +99,7 @@ internal static class FileTagDbContextSearchExtensions
             );
         }
 
-        return queryable;
+        return include.Count <= 1 && exclude.Count == 0 ? queryable.Distinct() : queryable;
     }
 
     private static IQueryable<FileTagEntity> MakeTagFilter(
@@ -168,11 +168,11 @@ internal static class FileTagDbContextSearchExtensions
     ///     'xxx*' => end, 'xxx'
     /// </summary>
     private static (AsteriskPlace Place, string Value) ExtractAsteriskFlag(string source)
-        => (source[0], source[^1]) switch
+        => source switch
         {
-            ('*', '*') => (AsteriskPlace.Both, source[1..^2]),
-            ('*', _) => (AsteriskPlace.Start, source[1..]),
-            (_, '*') => (AsteriskPlace.End, source[..^2]),
+            ['*', .., '*'] => (AsteriskPlace.Both, source[1..^1]),
+            ['*', ..] => (AsteriskPlace.Start, source[1..]),
+            [.., '*'] => (AsteriskPlace.End, source[..^1]),
             _ => (AsteriskPlace.None, source)
         };
 
@@ -184,11 +184,11 @@ internal static class FileTagDbContextSearchExtensions
     ///     '=asd' => true, 'asd'
     /// </summary>
     private static (bool flag, string value) ExtractEqualityFlag(string tagValue)
-        => (tagValue[0], tagValue[1]) switch
+        => tagValue switch
         {
-            ('=', _) => (true, tagValue.Substring(1)),
-            ('!', '=') => (false, tagValue.Substring(2)),
-            ('!', _) => (false, tagValue.Substring(1)),
+            ['=', ..] => (true, tagValue[1..]),
+            ['!', '=', ..] => (false, tagValue[2..]),
+            ['!', ..] => (false, tagValue[1..]),
             _ => (true, tagValue)
         };
 

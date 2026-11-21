@@ -97,15 +97,18 @@ public class Installer : IInstaller
         var localVersion = await _versionService.GetLocalVersion(installLocation);
         _logger.LogInformation("New version {NewVersion}", newVersion);
 
-        if (localVersion == newVersion && !forceUpdate)
+        if (localVersion == newVersion && !forceUpdate && !newConfiguration.WasMigrated
+            && File.Exists(Path.Combine(installLocation.FullName, ConfigurationService.ConfigurationFilename)))
         {
-            _logger.LogInformation("Everything is up to date");
+            var current = await _configurationService.PrepareFinalConfigurationFileForUpdate(installLocation, updaterLocation);
+            if (current == newConfiguration)
+            {
+                _logger.LogInformation("Everything is up to date");
+                return;
+            }
         }
-        else
-        {
-            _logger.LogInformation("Detected installed version {LocalVersion}, updating", localVersion);
-            await WizardUpdateProgram(newVersion, installLocation, updaterLocation, newConfiguration);
-        }
+
+        await WizardUpdateProgram(newVersion, installLocation, updaterLocation, newConfiguration);
     }
 
     private async Task EasyUpdateProgram(string newVersion, DirectoryInfo installLocation, DirectoryInfo updaterLocation)

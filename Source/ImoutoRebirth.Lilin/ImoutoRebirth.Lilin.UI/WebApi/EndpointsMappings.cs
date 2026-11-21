@@ -22,6 +22,10 @@ internal static class EndpointsMappings
                 => mediator.Send(new RelativesQuery(fileMd5Hash), ct))
             .WithName("GetRelativesInfo");
 
+        files.MapPost("/ratings", (FileRatingsQuery query, IMediator mediator, CancellationToken ct)
+                => mediator.Send(query, ct))
+            .WithName("GetFileRatings");
+
         files.MapPost("/relatives", (IReadOnlyCollection<string> fileMd5Hashes, IMediator mediator, CancellationToken ct)
                 => mediator.Send(new RelativesBatchQuery(fileMd5Hashes), ct))
             .WithName("GetRelativesInfoBatch");

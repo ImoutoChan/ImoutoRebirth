@@ -10,7 +10,7 @@ namespace ImoutoRebirth.Hasami;
 
 internal static partial class Scripts
 {
-    public static async Task SplitBasedOnFoundInExHentai()
+    public static async Task<int> SplitBasedOnFoundInExHentai()
     {
         var sourcePath = new DirectoryInfo(@"C:\Playground\DodjiMetaSearching\Processed\SourcePlay\Archived\1");
         var targetFoundPath = new DirectoryInfo(Path.Combine(sourcePath.FullName, "!found"));
@@ -22,6 +22,7 @@ internal static partial class Scripts
         targetMissPath.Create();
 
         int counter = 0;
+        var failed = 0;
         foreach (var file in files)
         {
             try
@@ -58,9 +59,12 @@ internal static partial class Scripts
             }
             catch (Exception e)
             {
-                Console.WriteLine(e);
+                failed++;
+                Console.Error.WriteLine(e);
             }
         }
+        Console.WriteLine($"Moved {files.Length - failed} of {files.Length} files. Failed: {failed}.");
+        return failed == 0 ? 0 : 1;
     }
 
     private static async Task<IReadOnlyCollection<FoundMetadata>> FindOnExHentai(string fileName)

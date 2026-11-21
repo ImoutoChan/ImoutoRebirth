@@ -47,30 +47,48 @@ public class SourceFolder
 
     public string? WebhookUploadUrl { get; }
 
-    public IEnumerable<FileInfo> GetAllFileInfo()
+    public IEnumerable<FileInfo> GetAllFileInfo(DestinationFolder? destination = null)
     {
-        var directoryInfo = new DirectoryInfo(Path);
-
-        if (!directoryInfo.Exists)
+        var root = new DirectoryInfo(Path);
+        if (!root.Exists)
             return [];
 
-        return 
+        destination ??= DestinationFolder.Default;
+        var quarantine = new HashSet<string>(StringComparer.OrdinalIgnoreCase)
+        {
+            destination.FormatErrorSubfolder,
+            destination.HashErrorSubfolder,
+            destination.WithoutHashErrorSubfolder
+        };
+
+        var files = EnumerateSourceDirectories(root).SelectMany(directory =>
             SupportedExtensions.SafeNone()
-                ? directoryInfo.GetFiles("*.*", SearchOption.AllDirectories)
-                : SupportedExtensions.Select(x => "*." + x)
-                    .SelectMany(x => directoryInfo.EnumerateFiles(x, SearchOption.AllDirectories))
-                    .OrderBy(x => x.LastWriteTimeUtc)
-                    .DistinctBy(x => x.FullName);
+                ? directory.EnumerateFiles()
+                : SupportedExtensions.SelectMany(ext => directory.EnumerateFiles("*." + ext)));
+
+        return files.OrderBy(file => file.LastWriteTimeUtc).DistinctBy(file => file.FullName);
+
+        IEnumerable<DirectoryInfo> EnumerateSourceDirectories(DirectoryInfo directory)
+        {
+            yield return directory;
+            foreach (var child in directory.EnumerateDirectories())
+            {
+                if (destination.DestinationDirectory == null && quarantine.Contains(child.Name))
+                    continue;
+                foreach (var descendant in EnumerateSourceDirectories(child))
+                    yield return descendant;
+            }
+        }
     }
     
     public SystemFilePreparedToMove PrepareFileToMove(
         SystemFile file, 
-        bool hasFileInCollectionWithSameMd5,
+        string? existingFilePath,
         bool isCorrectImage)
     {
-        var moveInformation = new SystemFilePreparedToMove(file);
+        var moveInformation = new SystemFilePreparedToMove(file, existingFilePath);
 
-        moveInformation.SetProblem(FindProblems(file, hasFileInCollectionWithSameMd5, isCorrectImage));
+        moveInformation.SetProblem(FindProblems(file, existingFilePath != null, isCorrectImage));
 
         if (ShouldAddTagFromFilename) 
             moveInformation.AddSourceTags(file.GetTagsFromName());

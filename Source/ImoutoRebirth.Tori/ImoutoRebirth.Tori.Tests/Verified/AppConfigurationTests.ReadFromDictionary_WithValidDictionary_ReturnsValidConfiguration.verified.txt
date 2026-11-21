@@ -24,7 +24,7 @@
     LilinPort: 5002
   },
   Harpy: {
-    SavePath: C:\\Data\\Harpy,
+    SavePath: C:\Data\Harpy,
     FavoritesSaveJobRepeatEveryMinutes: 60
   },
   Meido: {

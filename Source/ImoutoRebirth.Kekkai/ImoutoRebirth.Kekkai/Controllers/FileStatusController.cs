@@ -14,5 +14,5 @@ public class FileStatusController : ControllerBase
 
     [HttpPost]
     public IAsyncEnumerable<FileStatusResult> GetAsync(IReadOnlyCollection<string> hashes) 
-        => _mediator.CreateStream(new FilesStatusesQuery(hashes.Distinct().ToList()));
+        => _mediator.CreateStream(new FilesStatusesQuery(hashes.Select(x => x.ToLowerInvariant()).Distinct().ToList()));
 }

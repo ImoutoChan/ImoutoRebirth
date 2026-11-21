@@ -159,6 +159,22 @@ public class TagsTests(TestWebApplicationFactory<Program> _webApp)
     }
 
     [Fact]
+    public async Task SearchTags_PrefixMatchesFillRemainingSlotsAfterExactMatch()
+    {
+        var client = _webApp.Client;
+        var types = await client.GetFromJsonAsync<IReadOnlyCollection<TagType>>("/tags/types");
+        var exact = await CreateNewTag(client, types, "limit");
+        await CreateNewTag(client, types, exact.Name!);
+        await CreateNewTag(client, types, exact.Name!);
+
+        var result = await client.PostAsJsonAsync("/tags/search", new TagsSearchQuery(exact.Name, 2))
+            .ReadResult<IReadOnlyCollection<Tag>>();
+
+        result.Should().HaveCount(2);
+        result.First().Id.Should().Be(exact.Id);
+    }
+
+    [Fact]
     public async Task SearchTagsWithEmptyRequest()
     {
         // arrange
@@ -256,7 +272,7 @@ public class TagsTests(TestWebApplicationFactory<Program> _webApp)
     }
     
     [Fact]
-    public async Task MergeTags()
+    public async Task MergeTags_MovesUniqueBindingsAndDeduplicatesOverlappingBindings()
     {
         // arrange
         using var scope = _webApp.GetScope();
@@ -279,11 +295,9 @@ public class TagsTests(TestWebApplicationFactory<Program> _webApp)
             new(file2Id, MetadataSource.Manual, tagToClean.Id, null),
             new(file3Id, MetadataSource.Manual, tagToClean.Id, null),
             new(file4Id, MetadataSource.Manual, tagToClean.Id, null),
-            new(file5Id, MetadataSource.Manual, tagToClean.Id, null),
             new(file1Id, MetadataSource.Manual, tagToEnrich.Id, null),
             new(file2Id, MetadataSource.Manual, tagToEnrich.Id, null),
             new(file3Id, MetadataSource.Manual, tagToEnrich.Id, null),
-            new(file4Id, MetadataSource.Manual, tagToEnrich.Id, null),
             new(file5Id, MetadataSource.Manual, tagToEnrich.Id, null)
             
         ], SameTagHandleStrategy.ReplaceExistingValue));
@@ -292,17 +306,18 @@ public class TagsTests(TestWebApplicationFactory<Program> _webApp)
         var tagToEnrichCountBefore = context.FileTags.Count(x => x.TagId == tagToEnrich.Id);
         
         // act
-        await httpClient.PostAsJsonAsync($"tags/merge/", new MergeTagsCommand(tagToClean.Id, tagToEnrich.Id));
+        var response = await httpClient.PostAsJsonAsync("tags/merge/", new MergeTagsCommand(tagToClean.Id, tagToEnrich.Id));
+        response.EnsureSuccessStatusCode();
         
         // assert
-        tagToCleanCountBefore.Should().Be(5);
-        tagToEnrichCountBefore.Should().Be(5);
+        tagToCleanCountBefore.Should().Be(4);
+        tagToEnrichCountBefore.Should().Be(4);
         
         var tagToCleanCount = context.FileTags.Count(x => x.TagId == tagToClean.Id);
         tagToCleanCount.Should().Be(0);
         
-        var tagToEnrichCount = context.FileTags.Count(x => x.TagId == tagToEnrich.Id);
-        tagToEnrichCount.Should().Be(tagToCleanCountBefore + tagToEnrichCountBefore);
+        var enrichedFileIds = context.FileTags.Where(x => x.TagId == tagToEnrich.Id).Select(x => x.FileId).ToList();
+        enrichedFileIds.Should().BeEquivalentTo(new[] { file1Id, file2Id, file3Id, file4Id, file5Id });
     }
     
     [Fact]

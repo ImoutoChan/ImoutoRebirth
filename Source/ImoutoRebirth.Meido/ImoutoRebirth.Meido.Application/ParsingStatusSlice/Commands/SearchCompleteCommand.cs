@@ -1,4 +1,5 @@
-﻿using ImoutoRebirth.Common.Cqrs.Abstract;
+using ImoutoRebirth.Common.Cqrs.Abstract;
+using ImoutoRebirth.Common.Cqrs.Behaviors;
 using ImoutoRebirth.Common.Domain;
 using ImoutoRebirth.Meido.Application.Infrastructure;
 using ImoutoRebirth.Meido.Domain;
@@ -8,6 +9,7 @@ using NodaTime;
 
 namespace ImoutoRebirth.Meido.Application.ParsingStatusSlice.Commands;
 
+[CommandQuery(System.Data.IsolationLevel.RepeatableRead)]
 public record SaveCompletedSearchCommand(
     MetadataSource Source,
     Guid FileId,
@@ -125,14 +127,14 @@ internal class SaveCompletedSearchCommandHandler : ICommandHandler<SaveCompleted
         var now = _clock.GetCurrentInstant();
 
         var status = await _parsingStatusRepository.Get(fileId, MetadataSource.ExHentai);
-        var check = await _parsingStatusRepository.Get(fileId, MetadataSource.Schale);
+        if (status == null)
+            return;
 
-        if (check != null || status == null)
+        var existing = await _parsingStatusRepository.Get(fileId, MetadataSource.Schale);
+        if (existing != null)
         {
-            _logger.LogWarning(
-                "Can't create a parsing status with duplicate key {FileId}, {Source}",
-                fileId,
-                MetadataSource.Schale);
+            if (existing.FileName != status.FileName || existing.Md5 != status.Md5)
+                _eventStorage.AddRange(existing.Update(status.Md5, status.FileName, now).EventsCollection);
             return;
         }
 

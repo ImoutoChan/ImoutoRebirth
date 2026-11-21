@@ -1,4 +1,4 @@
-﻿using System.Data;
+using System.Data;
 using ImoutoRebirth.Common;
 using ImoutoRebirth.Common.Cqrs.Abstract;
 using ImoutoRebirth.Common.Cqrs.Behaviors;
@@ -166,6 +166,7 @@ internal class ActualizeFileInfoForSourceCommandHandler
         
         var toCreate = tagsToProcess
             .Where(x => !foundTags.Any(y => y.Name == x.Tag.Name && y.Type.Id == x.Type.Id))
+            .DistinctBy(x => (x.Type.Id, x.Tag.Name))
             .Select(x => Tag.Create(x.Type, x.Tag.Name, x.HasValue, x.Tag.Synonyms, x.Tag.Options))
             .ToList();
 

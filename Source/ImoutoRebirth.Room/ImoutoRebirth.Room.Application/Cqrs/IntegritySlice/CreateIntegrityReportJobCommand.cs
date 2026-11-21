@@ -1,5 +1,4 @@
-﻿using ImoutoRebirth.Common;
-using ImoutoRebirth.Common.Cqrs.Abstract;
+﻿using ImoutoRebirth.Common.Cqrs.Abstract;
 using ImoutoRebirth.Room.Application.Services;
 using ImoutoRebirth.Room.Domain.IntegrityAggregate;
 using MediatR;
@@ -38,7 +37,7 @@ internal class BuildIntegrityReportCommandHandler : ICommandHandler<CreateIntegr
         var collections = await _collectionRepository.GetAll(ct);
         var now = _clock.GetCurrentInstant();
 
-        if (onlyCollectionIds.SafeAny())
+        if (onlyCollectionIds != null)
             collections = collections.Where(x => onlyCollectionIds.Contains(x.Id)).ToList();
 
         var newReport = IntegrityReport.Create(now, collections, exportToFolder);

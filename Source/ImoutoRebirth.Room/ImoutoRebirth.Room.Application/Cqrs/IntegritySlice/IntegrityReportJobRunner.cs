@@ -50,13 +50,13 @@ internal class IntegrityReportJobRunner : IIntegrityReportJobRunner
             if (unfinished is null)
                 return;
 
-            job = new (RoomJobType.IntegrityReportBuilder, new CancellationTokenSource());
+            job = new (RoomJobType.IntegrityReportBuilder, unfinished.ReportId, new CancellationTokenSource());
             _runningJobs.Add(job);
 
-            var token = CancellationTokenSource.CreateLinkedTokenSource(ct, job.Interruptable.Token);
-            await BuildReport(unfinished, token.Token);
+            using var linkedCts = CancellationTokenSource.CreateLinkedTokenSource(ct, job.Interruptable.Token);
+            await BuildReport(unfinished, linkedCts.Token);
         }
-        catch (TaskCanceledException e) when (job?.Interruptable.IsCancellationRequested == true)
+        catch (OperationCanceledException e) when (job?.Interruptable.IsCancellationRequested == true)
         {
             _logger.LogInformation(e, "Integrity report building was paused by user");
         }
@@ -66,7 +66,11 @@ internal class IntegrityReportJobRunner : IIntegrityReportJobRunner
         }
         finally
         {
-            _runningJobs.Interrupt(RoomJobType.IntegrityReportBuilder);
+            if (job != null)
+            {
+                _runningJobs.Interrupt(job.JobType, job.Id);
+                job.Interruptable.Dispose();
+            }
         }
     }
 
@@ -123,43 +127,61 @@ internal class IntegrityReportJobRunner : IIntegrityReportJobRunner
             {
                 var statusesBatch = new List<IntegrityReportFileStatus>(parallelCount * 100);
                 var chunksProcessed = 0;
-                while (await checkedFilesToSaveChannel.Reader.WaitToReadAsync(ct))
+                try
                 {
-                    try
+                    while (await checkedFilesToSaveChannel.Reader.WaitToReadAsync(ct))
                     {
-                        while (checkedFilesToSaveChannel.Reader.TryRead(out var status)
-                               && statusesBatch.Count < parallelCount * 100)
+                        while (statusesBatch.Count < parallelCount * 100
+                               && checkedFilesToSaveChannel.Reader.TryRead(out var status))
                         {
-                            progress.ReportItemProcessed();
                             statusesBatch.Add(status);
                         }
-
-                        foreach (var status in statusesBatch)
-                            report.SaveFileStatus(collection.CollectionId, status);
 
                         await _integrityReportRepository.ReportFiles(
                             statusesBatch,
                             report.ReportId,
                             collection.CollectionId);
 
-                        chunksProcessed++;
-                        if (chunksProcessed % 10 == 0)
+                        foreach (var status in statusesBatch)
                         {
-                            await _integrityReportRepository.Update(report);
+                            report.SaveFileStatus(collection.CollectionId, status);
+                            progress.ReportItemProcessed();
                         }
+
+                        if (++chunksProcessed % 10 == 0)
+                            await _integrityReportRepository.Update(report);
 
                         statusesBatch.Clear();
                     }
-                    catch (Exception e)
-                    {
-                        _logger.LogWarning(e, "An error occurred while saving integrity report files");
-                    }
+                }
+                catch (Exception e)
+                {
+                    checkedFilesToSaveChannel.Writer.TryComplete(e);
+                    throw;
                 }
             };
 
             await Task.WhenAll(fileStatusCheckersAll(), checkedFilesPersistence());
 
-            var savedToPaths = await _integrityReportExporter.ExportReportToFiles(collection, report.ExportToFolder);
+            var checkedIds = collection.GetAlreadyProcessedFileIds().ToHashSet();
+            if (allCollectionFiles.Any(file => !checkedIds.Contains(file.Id)))
+                throw new InvalidOperationException("Integrity results are incomplete.");
+
+            IReadOnlyCollection<string> savedToPaths;
+            try
+            {
+                savedToPaths = await _integrityReportExporter.ExportReportToFiles(collection, report.ExportToFolder);
+            }
+            catch (Exception ex) when (ex is IOException or UnauthorizedAccessException or ArgumentException or NotSupportedException)
+            {
+                _logger.LogError(
+                    ex,
+                    "Pausing integrity report {ReportId} after export failed in {Folder}",
+                    report.ReportId,
+                    report.ExportToFolder);
+                await UpdateReportStatus(report, ReportStatus.Paused);
+                return;
+            }
 
             report.SetCollectionCompleted(collection.CollectionId, savedToPaths);
             await _integrityReportRepository.Update(report);

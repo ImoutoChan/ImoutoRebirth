@@ -55,7 +55,7 @@
         <PackageReference Include="Microsoft.Extensions.DependencyInjection" />
         <PackageReference Include="Microsoft.Xaml.Behaviors.Wpf" />
         <PackageReference Include="Newtonsoft.Json" />
-        <PackageReference Include="WpfAnimatedGif" />
+        <PackageReference Include="XamlAnimatedGif" />
         <PackageReference Include="GihanSoft.String.NaturalComparer" />
         <PackageReference Include="SharpCompress" />
     </ItemGroup>

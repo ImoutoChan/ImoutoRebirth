@@ -1,11 +1,14 @@
-﻿using System.Windows;
+﻿using System.IO;
+using System.Windows;
 using System.Windows.Media.Imaging;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using ImoutoRebirth.Navigator.Behaviors;
+using ImoutoRebirth.Navigator.Model;
 using ImoutoRebirth.Navigator.Services.Tags.Model;
 using ImoutoRebirth.Navigator.UserControls;
 using ImoutoRebirth.Navigator.ViewModel.ListEntries;
+using Serilog;
 
 namespace ImoutoRebirth.Navigator.ViewModel;
 
@@ -18,7 +21,7 @@ internal partial class FullScreenPreviewVM : ObservableObject, IDragable
 
     [ObservableProperty]
     [NotifyPropertyChangedFor(nameof(PngPath))]
-    [NotifyPropertyChangedFor(nameof(GifPath))]
+    [NotifyPropertyChangedFor(nameof(GifSourceUri))]
     [NotifyPropertyChangedFor(nameof(VideoPath))]
     [NotifyPropertyChangedFor(nameof(UgoiraPath))]
     [NotifyPropertyChangedFor(nameof(ImagePath))]
@@ -30,7 +33,7 @@ internal partial class FullScreenPreviewVM : ObservableObject, IDragable
 
     [ObservableProperty]
     [NotifyPropertyChangedFor(nameof(PngPath))]
-    [NotifyPropertyChangedFor(nameof(GifPath))]
+    [NotifyPropertyChangedFor(nameof(GifSourceUri))]
     [NotifyPropertyChangedFor(nameof(VideoPath))]
     [NotifyPropertyChangedFor(nameof(UgoiraPath))]
     [NotifyPropertyChangedFor(nameof(ImagePath))]
@@ -56,12 +59,15 @@ internal partial class FullScreenPreviewVM : ObservableObject, IDragable
     }
 
     public string? PngPath => Type == ListEntryType.Png ? Path : null;
-    public string? GifPath => Type == ListEntryType.Gif ? Path : null;
+
+    public Uri? GifSourceUri => Type == ListEntryType.Gif && Uri.TryCreate(Path, UriKind.Absolute, out var uri)
+        ? uri
+        : null;
+
     public string? VideoPath => Type == ListEntryType.Video ? Path : null;
     public string? UgoiraPath => Type == ListEntryType.Ugoira ? Path : null;
     public string? ImagePath => Type == ListEntryType.Image ? Path : null;
     public string? WebPPath => Type == ListEntryType.WebP ? Path : null;
-    public BitmapSource? DodjiImage => Type == ListEntryType.Dodji ? CurrentEntry?.Image : null;
 
     public double Zoom => ViewPortSize.Width / _bitmapImage?.PixelWidth ?? 1;
 
@@ -70,23 +76,41 @@ internal partial class FullScreenPreviewVM : ObservableObject, IDragable
 
     public async void SetCurrentEntry(INavigatorListEntry forEntry, IList<INavigatorListEntry> list)
     {
-        if (Type != forEntry.Type)
+        var type = forEntry.Type;
+        string? path = forEntry.Path;
+        _bitmapImage = null;
+        if (type is ListEntryType.Image or ListEntryType.Png)
+        {
+            try
+            {
+                if (type == ListEntryType.Png && !PngAnimation.IsAnimated(path))
+                    type = ListEntryType.Image;
+
+                _bitmapImage = new BitmapImage(new Uri(path));
+            }
+            catch (Exception e) when (e is IOException or UnauthorizedAccessException or FormatException or NotSupportedException)
+            {
+                Log.Warning(e, "Unable to read fullscreen preview {Path}", path);
+                path = null;
+            }
+        }
+
+        if (Type != type)
         {
             Type = null;
             Path = null;
 
-            Path = forEntry.Path;
-            Type = forEntry.Type;
+            Path = path;
+            Type = type;
         }
         else
         {
-            Path = forEntry.Path;
+            Path = path;
         }
 
-        if (Type is ListEntryType.Image or ListEntryType.Png)
-            _bitmapImage = new BitmapImage(new Uri(Path));
-
         CurrentEntry = forEntry;
+        if (forEntry is DodjiEntryVM archive)
+            archive.Load();
         _list = list;
 
         var notesTask = _notesGetter(forEntry);

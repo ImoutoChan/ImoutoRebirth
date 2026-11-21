@@ -20,5 +20,5 @@ internal interface IFileLoadingService
     Task<int> GetCount(
         Guid? collectionId,
         IReadOnlyCollection<SearchTag> searchTags,
-        CancellationToken token = default);
+        CancellationToken ct = default);
 }

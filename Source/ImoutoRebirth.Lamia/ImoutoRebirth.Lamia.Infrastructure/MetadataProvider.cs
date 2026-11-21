@@ -10,14 +10,9 @@ internal class MetadataProvider : IMetadataProvider
 
     public MetadataProvider(IEnumerable<IMetadataForFileProvider> providers) => _providers = providers;
 
-    public Task<FileMetadata> GetMetadata(string filePath)
+    public async Task<FileMetadata?> GetMetadata(string filePath)
     {
-        foreach (var provider in _providers)
-        {
-            if (provider.IsProviderFor(filePath))
-                return provider.GetMetadata(filePath);
-        }
-
-        throw new NotSupportedException($"File format isn't supported: {filePath}");
+        var provider = _providers.FirstOrDefault(x => x.IsProviderFor(filePath));
+        return provider is null ? null : await provider.GetMetadata(filePath);
     }
 }

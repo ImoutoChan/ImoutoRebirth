@@ -50,12 +50,12 @@ internal class OverseeCollectionCommandHandler : ICommandHandler<OverseeCollecti
         var anyFileAdded = false;
         foreach (var sourceFolder in collection.SourceFolders)
         {
-            var prepared = PrepareNewFiles(collectionId, sourceFolder, ct);
+            var prepared = PrepareNewFiles(collectionId, sourceFolder, collection.DestinationFolder, ct);
             var withoutDuplicates = RemoveMd5Duplicates(prepared);
             
             await foreach (var preparedToMove in withoutDuplicates)
             {
-                var moved = MoveFile(collection, preparedToMove);
+                var moved = MoveFile(collection, preparedToMove, sourceFolder.Path);
 
                 if (!moved.RequireSave) 
                     continue;
@@ -82,7 +82,7 @@ internal class OverseeCollectionCommandHandler : ICommandHandler<OverseeCollecti
         }
     }
 
-    private SystemFileMoved MoveFile(Collection collection, SystemFilePreparedToMove preparedToMove)
+    private SystemFileMoved MoveFile(Collection collection, SystemFilePreparedToMove preparedToMove, string sourceRoot)
     {
         using var loggerScope = _logger.BeginScope(
             "Processing new file in source: {NewFile}, {MoveProblem}, {@SourceTags}",
@@ -92,7 +92,7 @@ internal class OverseeCollectionCommandHandler : ICommandHandler<OverseeCollecti
 
         try
         {
-            return collection.DestinationFolder.Move(preparedToMove);
+            return collection.DestinationFolder.Move(preparedToMove, sourceRoot);
         }
         catch (Exception e)
         {
@@ -125,9 +125,10 @@ internal class OverseeCollectionCommandHandler : ICommandHandler<OverseeCollecti
     private async IAsyncEnumerable<SystemFilePreparedToMove> PrepareNewFiles(
         Guid collectionId,
         SourceFolder sourceFolder,
+        DestinationFolder destinationFolder,
         [EnumeratorCancellation] CancellationToken ct)
     {
-        var files = sourceFolder.GetAllFileInfo().ToList();
+        var files = sourceFolder.GetAllFileInfo(destinationFolder).ToList();
         var filteredFiles = await FilterOutExistingFiles(collectionId, files, ct);
 
         foreach (var file in filteredFiles)
@@ -140,7 +141,7 @@ internal class OverseeCollectionCommandHandler : ICommandHandler<OverseeCollecti
                 continue;
             }
 
-            var existingFile = await _collectionFileRepository.GetWithMd5(collectionId, systemFile.Md5, ct);
+            var existingFile = await _collectionFileRepository.GetWithMd5(collectionId, systemFile.Md5, file.FullName, ct);
 
             var isCorrectIfImage
                 = !_imageService.IsImageHasSupportedExtension(systemFile)
@@ -148,7 +149,7 @@ internal class OverseeCollectionCommandHandler : ICommandHandler<OverseeCollecti
 
             var preparedToMove = sourceFolder.PrepareFileToMove(
                 systemFile,
-                existingFile != null,
+                existingFile,
                 isCorrectIfImage);
 
             yield return preparedToMove;

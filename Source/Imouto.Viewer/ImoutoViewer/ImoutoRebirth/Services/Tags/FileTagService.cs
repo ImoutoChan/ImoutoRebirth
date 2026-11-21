@@ -61,7 +61,7 @@ internal class FileTagService : IFileTagService
 
     public async Task BindTags(IReadOnlyCollection<FileTag> fileTags)
     {
-        var requests = _mapper.Map<IReadOnlyCollection<BindTag>>(fileTags);
+        var requests = fileTags.Select(tag => new BindTag(tag.FileId, _mapper.Map<MetadataSource>(tag.Source), tag.Tag.Id, tag.Value)).ToList();
 
         await _filesClient.BindTagsAsync(
             new BindTagsCommand(requests, SameTagHandleStrategy.AddNewFileTag));
@@ -76,18 +76,13 @@ internal class FileTagService : IFileTagService
         await _filesClient.UnbindTagsAsync(new UnbindTagsCommand(tags));
     }
 
-    public async Task<IReadOnlyCollection<FileTag>> GetFileTags(Guid fileId)
+    public async Task<(IReadOnlyCollection<FileTag> Tags, IReadOnlyCollection<FileNote> Notes)> GetFileMetadata(
+        Guid fileId,
+        CancellationToken ct)
     {
-        var info = await _filesClient.GetFileInfoAsync(fileId);
-
-        return _mapper.Map<IReadOnlyCollection<FileTag>>(info.Tags);
-    }
-
-    public async Task<IReadOnlyCollection<FileNote>> GetFileNotes(Guid fileId)
-    {
-        var info = await _filesClient.GetFileInfoAsync(fileId);
-
-        return _mapper.Map<IReadOnlyCollection<FileNote>>(info.Notes);
+        var info = await _filesClient.GetFileInfoAsync(fileId, ct);
+        return (_mapper.Map<IReadOnlyCollection<FileTag>>(info.Tags),
+            _mapper.Map<IReadOnlyCollection<FileNote>>(info.Notes));
     }
 
     private async Task<Tag> GetOrCreateTag(string name, string typeName, bool hasValue)

@@ -1,4 +1,4 @@
-﻿using ImoutoRebirth.Arachne.Core;
+using ImoutoRebirth.Arachne.Core;
 using ImoutoRebirth.Arachne.MessageContracts;
 using ImoutoRebirth.Arachne.Service.Extensions;
 using ImoutoRebirth.Meido.MessageContracts;
@@ -14,17 +14,20 @@ public class LoadTagHistoryCommandConsumer : IConsumer<LoadTagHistoryCommand>
     private readonly IArachneSearchService _arachneSearchService;
     private readonly SearchEngineHistoryAccessor _searchEngineHistoryAccessor;
     private readonly IBus _bus;
+    private readonly SearchEngineAvailability _availability;
 
     public LoadTagHistoryCommandConsumer(
         ILogger<LoadTagHistoryCommandConsumer> logger,
         IArachneSearchService arachneSearchService,
         TagsSearchEngineHistoryAccessor searchEngineHistoryAccessor,
-        IBus bus)
+        IBus bus,
+        SearchEngineAvailability availability)
     {
         _logger = logger;
         _arachneSearchService = arachneSearchService;
         _searchEngineHistoryAccessor = searchEngineHistoryAccessor;
         _bus = bus;
+        _availability = availability;
     }
 
     public async Task Consume(ConsumeContext<LoadTagHistoryCommand> context)
@@ -39,6 +42,12 @@ public class LoadTagHistoryCommandConsumer : IConsumer<LoadTagHistoryCommand>
         
         var lastProcessedTagHistoryId = context.Message.LastProcessedTagHistoryId;
         var searchEngineType = context.Message.SearchEngineType.ToModel();
+
+        if (!_availability.IsAvailable(searchEngineType))
+        {
+            _logger.LogTrace("Skipping history request for unavailable {SearchEngine}", searchEngineType);
+            return;
+        }
 
         if (!_searchEngineHistoryAccessor.GainAccess(searchEngineType))
         {

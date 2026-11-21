@@ -3,14 +3,16 @@ using System.Windows;
 using System.Windows.Media.Imaging;
 using CommunityToolkit.Mvvm.ComponentModel;
 using ImoutoRebirth.Common;
-using ImoutoRebirth.Lilin.WebApi.Client;
+using ImoutoRebirth.Navigator.Model;
+using Serilog;
 using SharpCompress.Archives;
+using SharpCompress.Common;
 
 namespace ImoutoRebirth.Navigator.ViewModel.ListEntries;
 
 internal partial class DodjiEntryVM : BaseEntryVM, INavigatorListEntry, IPixelSizable
 {
-    private bool _isLoaded = false;
+    private bool _isLoaded;
 
     [ObservableProperty]
     private Size _viewPortSize;
@@ -23,19 +25,15 @@ internal partial class DodjiEntryVM : BaseEntryVM, INavigatorListEntry, IPixelSi
 
     public DodjiEntryVM(
         string path,
-        FilesClient filesClient,
         Size viewPortSize,
         Guid? dbId)
-        : base(dbId, filesClient)
+        : base(dbId)
     {
-        DbId = dbId;
         ViewPortSize = viewPortSize;
         Path = path;
     }
 
     public ListEntryType Type => ListEntryType.Dodji;
-
-    public Guid? DbId { get; }
 
     public string Path { get; }
 
@@ -47,41 +45,50 @@ internal partial class DodjiEntryVM : BaseEntryVM, INavigatorListEntry, IPixelSi
 
     public async void Load()
     {
-        if (_isLoaded)
+        if (_isLoaded || IsLoading)
             return;
 
         IsLoading = true;
 
-        var ratingTask = LoadRating();
+        try
+        {
+            Image = await ImageEntry.PreviewLoadingThreadQueue.Run(LoadCover);
+            OnPropertyChanged(nameof(PixelSize));
+            _isLoaded = true;
+        }
+        catch (OperationCanceledException)
+        {
+        }
+        catch (Exception e) when (e is IOException or UnauthorizedAccessException or InvalidDataException
+                                  or SharpCompressException or NotSupportedException or FormatException)
+        {
+            Log.Warning(e, "Unable to read archive cover {Path}", Path);
+        }
+        finally
+        {
+            IsLoading = false;
+        }
+    }
 
+    private BitmapSource? LoadCover()
+    {
         using var archive = ArchiveFactory.OpenArchive(Path);
-        var preview = archive.Entries
-          .FirstOrDefault(
-              x => x is
-                   {
-                       Size: > 0,
-                       IsDirectory: false
-                   }
-                   && (x.Key.EndsWithIgnoreCase(".jpg")
-                       || x.Key.EndsWithIgnoreCase(".jpeg")
-                       || x.Key.EndsWithIgnoreCase(".png")))
+        var preview = archive.Entries.FirstOrDefault(x => x is { Size: > 0, IsDirectory: false }
+            && (x.Key.EndsWithIgnoreCase(".jpg") || x.Key.EndsWithIgnoreCase(".jpeg") || x.Key.EndsWithIgnoreCase(".png")))
             ?? archive.Entries.FirstOrDefault(x => x is { Size: > 0, IsDirectory: false });
 
         if (preview == null)
-            return;
+            return null;
 
-        await using var previewStream = await preview.OpenEntryStreamAsync();
-        await using var resultImage = new MemoryStream();
-        await previewStream.CopyToAsync(resultImage);
-        resultImage.Seek(0, SeekOrigin.Begin);
+        using var stream = preview.OpenEntryStream();
+        using var buffer = new MemoryStream();
 
-        Image = BitmapFrame.Create(resultImage, BitmapCreateOptions.None, BitmapCacheOption.OnLoad);
-        OnPropertyChanged(nameof(PixelSize));
+        stream.CopyTo(buffer);
+        buffer.Position = 0;
 
-        IsLoading = false;
-        _isLoaded = true;
-
-        await ratingTask;
+        var image = BitmapFrame.Create(buffer, BitmapCreateOptions.None, BitmapCacheOption.OnLoad);
+        image.Freeze();
+        return image;
     }
 
     public void UpdatePreview(Size previewSize)

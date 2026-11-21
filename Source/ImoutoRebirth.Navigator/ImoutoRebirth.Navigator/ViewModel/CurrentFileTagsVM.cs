@@ -18,6 +18,7 @@ namespace ImoutoRebirth.Navigator.ViewModel;
 internal partial class CurrentFileTagsVM : ObservableObject
 {
     private Guid? _lastListEntryId;
+    private int _tagsRequest;
     private int _rate;
     private bool _isFavorite;
     private readonly IFileTagService _fileTagService;
@@ -54,6 +55,9 @@ internal partial class CurrentFileTagsVM : ObservableObject
         get => _rate;
         set
         {
+            if (!IsRateSet)
+                return;
+
             _rate = value;
             OnPropertyChanged();
 
@@ -74,6 +78,9 @@ internal partial class CurrentFileTagsVM : ObservableObject
         get => _isFavorite;
         set
         {
+            if (!IsRateSet)
+                return;
+
             _isFavorite = value;
             OnPropertyChanged();
 
@@ -91,26 +98,26 @@ internal partial class CurrentFileTagsVM : ObservableObject
 
     public async Task UpdateCurrentTags(Guid? fileId)
     {
-        if (fileId == null)
-        {
-            IsRateSet = false;
-            TagPixelWidth = null;
-            TagPixelHeight = null;
+        var request = ++_tagsRequest;
+        _lastListEntryId = fileId;
+        IsRateSet = false;
+        CurrentTagsSources.Clear();
+        TagPixelWidth = null;
+        TagPixelHeight = null;
+        UgoiraFrameDelays = null;
+        GetRate([]);
+        GetFavorite([]);
 
+        if (fileId is not { } id)
             return;
-        }
-
-        var id = fileId.Value;
 
         var tags = await _fileTagService.GetFileTags(id);
-
-        _lastListEntryId = id;
+        if (request != _tagsRequest)
+            return;
 
         var tagVmsCollection = tags
             .Select(x => new BindedTagVM(x, id, () => UpdateCurrentTags(_lastListEntryId)))
             .ToList();
-
-        CurrentTagsSources.Clear();
 
         var userTags = tagVmsCollection
             .Where(x => x.Model.Source == FileTagSource.Manual)

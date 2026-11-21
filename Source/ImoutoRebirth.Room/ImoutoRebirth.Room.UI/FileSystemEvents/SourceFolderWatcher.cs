@@ -14,7 +14,7 @@ namespace ImoutoRebirth.Room.UI.FileSystemEvents;
 internal class SourceFolderWatcher : ISourceFolderWatcher
 {
     private readonly IServiceProvider _serviceProvider;
-    private readonly Subject<FileSystemWatcherEvent> _subject = new();
+    private readonly ISubject<System.Reactive.Unit> _changes = Subject.Synchronize(new Subject<System.Reactive.Unit>());
     private readonly ILogger<SourceFolderWatcher> _logger;
 
     private FileSystemWatcherEventStream? _currentEventStream;
@@ -24,7 +24,7 @@ internal class SourceFolderWatcher : ISourceFolderWatcher
     {
         _serviceProvider = serviceProvider;
         _logger = logger;
-        Observable = _subject.ToAsyncObservable();
+        Changes = _changes.ToAsyncObservable();
     }
     
     public async Task Refresh(IReadOnlyCollection<string>? folders, CancellationToken ct)
@@ -47,10 +47,10 @@ internal class SourceFolderWatcher : ISourceFolderWatcher
             _logger);
 
         _subscriptionToken = await _currentEventStream.Observable
-            .SubscribeAsync(
-                x => _subject.OnNext(x), 
-                x => _subject.OnError(x),
-                () => _subject.OnCompleted());
+            .Where(x => x.Type != FileSystemWatcherEventType.Deleted)
+            .SubscribeAsync(_ => _changes.OnNext(System.Reactive.Unit.Default));
+
+        _changes.OnNext(System.Reactive.Unit.Default);
     }
     
     private async Task<IReadOnlyCollection<string>> GetSourceFolders(CancellationToken ct)
@@ -60,5 +60,5 @@ internal class SourceFolderWatcher : ISourceFolderWatcher
         return await mediator.Send(new OversawSourceFoldersQuery(), ct);
     }
 
-    public IAsyncObservable<FileSystemWatcherEvent> Observable { get; }
+    public IAsyncObservable<System.Reactive.Unit> Changes { get; }
 }

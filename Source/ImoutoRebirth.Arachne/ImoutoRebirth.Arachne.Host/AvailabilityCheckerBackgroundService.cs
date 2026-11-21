@@ -1,4 +1,4 @@
-﻿using ImoutoRebirth.Arachne.Core.Models;
+using ImoutoRebirth.Arachne.Core.Models;
 using ImoutoRebirth.Arachne.Infrastructure.Abstract;
 using ImoutoRebirth.Arachne.Service.Consumers;
 using ImoutoRebirth.Arachne.Service.SearchEngineHistory;
@@ -14,6 +14,7 @@ internal class AvailabilityCheckerBackgroundService : BackgroundService
 {
     private readonly IEnumerable<IAvailabilityProvider> _availabilityProviders;
     private readonly IBusControl _busControl;
+    private readonly SearchEngineAvailability _availability;
     private readonly IServiceProvider _serviceProvider;
     private readonly ILogger<AvailabilityCheckerBackgroundService> _logger;
 
@@ -25,11 +26,13 @@ internal class AvailabilityCheckerBackgroundService : BackgroundService
     public AvailabilityCheckerBackgroundService(
         IEnumerable<IAvailabilityProvider> availabilityProviders,
         IBusControl busControl,
+        SearchEngineAvailability availability,
         ILogger<AvailabilityCheckerBackgroundService> logger,
         IServiceProvider serviceProvider)
     {
         _availabilityProviders = availabilityProviders;
         _busControl = busControl;
+        _availability = availability;
         _logger = logger;
         _serviceProvider = serviceProvider;
     }
@@ -55,12 +58,12 @@ internal class AvailabilityCheckerBackgroundService : BackgroundService
 
     private async Task CheckAvailability(CancellationToken ct)
     {
-        var enginesIsAvailable = new Dictionary<SearchEngineType, bool>();
         foreach (var availabilityProvider in _availabilityProviders)
         {
             var booruType = availabilityProvider.ForType;
             var availabilityChecker = availabilityProvider.CreateAvailabilityChecker();
             var isAvailable = await availabilityChecker.IsAvailable(ct);
+            _availability.Set(booruType, isAvailable);
 
             if (isAvailable)
             {
@@ -70,10 +73,9 @@ internal class AvailabilityCheckerBackgroundService : BackgroundService
             {
                 await StopEndpoint(booruType, ct);
             }
-            enginesIsAvailable[booruType] = isAvailable;
         }
         
-        if (enginesIsAvailable[SearchEngineType.Danbooru] && enginesIsAvailable[SearchEngineType.Yandere])
+        if (_availability.IsAvailable(SearchEngineType.Danbooru) || _availability.IsAvailable(SearchEngineType.Yandere))
         {
             StartHistoryEndpoint();
         }

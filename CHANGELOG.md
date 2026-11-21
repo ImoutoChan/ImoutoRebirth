@@ -1,5 +1,7 @@
 # Unreleased
 
+* Fix various bugs and improve performance
+
 ### Navigator
 * **new!** Tag aliases: mark tags as aliases of each other in the merge flyout (press M), searching by any of them finds files tagged with any other. Middle click a found tag to pick the anchor tag and see its aliases, middle click other tags to add them, then Save
 * Add draggable behavior to the fullscreen preview

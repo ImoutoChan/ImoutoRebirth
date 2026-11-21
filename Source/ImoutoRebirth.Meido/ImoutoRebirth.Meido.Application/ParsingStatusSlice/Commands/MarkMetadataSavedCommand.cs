@@ -1,5 +1,6 @@
-﻿using ImoutoRebirth.Common;
+using ImoutoRebirth.Common;
 using ImoutoRebirth.Common.Cqrs.Abstract;
+using ImoutoRebirth.Common.Cqrs.Behaviors;
 using ImoutoRebirth.Common.Domain;
 using ImoutoRebirth.Meido.Application.Infrastructure;
 using ImoutoRebirth.Meido.Domain;
@@ -7,6 +8,7 @@ using NodaTime;
 
 namespace ImoutoRebirth.Meido.Application.ParsingStatusSlice.Commands;
 
+[CommandQuery(System.Data.IsolationLevel.RepeatableRead)]
 public record MarkMetadataSavedCommand(Guid FileId, MetadataSource Source) : ICommand;
 
 internal class MarkMetadataSavedCommandHandler : ICommandHandler<MarkMetadataSavedCommand>

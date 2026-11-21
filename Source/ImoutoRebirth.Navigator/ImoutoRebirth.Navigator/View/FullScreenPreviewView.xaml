@@ -7,7 +7,7 @@
     mc:Ignorable="d"
     xmlns:viewModel="clr-namespace:ImoutoRebirth.Navigator.ViewModel"
     xmlns:apngPlayer="clr-namespace:ImoutoRebirth.Navigator.ApngWpfPlayer.ApngPlayer;assembly=ImoutoRebirth.Navigator.ApngWpfPlayer"
-    xmlns:gif="http://wpfanimatedgif.codeplex.com"
+    xmlns:gif="https://github.com/XamlAnimatedGif/XamlAnimatedGif"
     xmlns:userControls="clr-namespace:ImoutoRebirth.Navigator.UserControls"
     xmlns:attachedProperties="clr-namespace:ImoutoRebirth.Common.WPF.AttachedProperties;assembly=ImoutoRebirth.Common.WPF"
     xmlns:view="clr-namespace:ImoutoRebirth.Navigator.View"
@@ -45,7 +45,7 @@
 
             <Image
                 SizeChanged="ViewPort_OnSizeChanged"
-                Source="{Binding Path=DodjiImage, TargetNullValue={x:Null}}"
+                Source="{Binding Path=CurrentEntry.Image, TargetNullValue={x:Null}}"
                 Visibility="{Binding Path=Type, Converter={StaticResource ConditionVisibilityConverter}, ConverterParameter=Dodji}"
                 IsVisibleChanged="OnIsVisibleChanged" />
 
@@ -57,7 +57,7 @@
                 IsVisibleChanged="OnIsVisibleChanged" />
 
             <Image
-                gif:ImageBehavior.AnimatedSource="{Binding GifPath, TargetNullValue={x:Null}}"
+                gif:AnimationBehavior.SourceUri="{Binding GifSourceUri}"
                 Visibility="{Binding Path=Type, Converter={StaticResource ConditionVisibilityConverter}, ConverterParameter=Gif}"
                 IsVisibleChanged="OnIsVisibleChanged" />
 

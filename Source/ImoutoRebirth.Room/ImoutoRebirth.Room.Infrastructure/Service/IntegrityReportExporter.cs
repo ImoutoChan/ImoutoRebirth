@@ -14,8 +14,10 @@ internal class IntegrityReportExporter : IIntegrityReportExporter
     {
         Directory.CreateDirectory(exportToFolder);
 
+        var invalidChars = Path.GetInvalidFileNameChars();
+        var collectionName = string.Concat(report.CollectionName.Select(c => invalidChars.Contains(c) ? '_' : c));
         var fileName =
-            $"Integrity Report {report.CollectionName} (id {report.CollectionId}) {DateTimeOffset.Now:yy-MM-dd-HH-mm}";
+            $"Integrity Report {collectionName} (id {report.CollectionId}) {DateTimeOffset.Now:yy-MM-dd-HH-mm}";
 
         var fullJsonFileName = await WriteJson(report, exportToFolder, fileName);
         var fullCsvFileName = await WriteCsv(report, exportToFolder, fileName);

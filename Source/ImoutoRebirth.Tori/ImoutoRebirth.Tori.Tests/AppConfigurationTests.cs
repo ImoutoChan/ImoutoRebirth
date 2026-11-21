@@ -52,7 +52,7 @@ public class AppConfigurationTests
     }
 
     [Fact]
-    public void ReadFromDictionary_PathWithBackslashes_ConvertsToDoubleBackslashes()
+    public void ReadFromDictionary_PreservesPathWithBackslashes()
     {
         // arrange
         var configDictionary = CreateValidConfigurationDictionary();
@@ -62,7 +62,7 @@ public class AppConfigurationTests
         var appConfig = AppConfiguration.ReadFromDictionary(configDictionary, false);
 
         // assert
-        appConfig.Harpy.SavePath.Should().Be(@"C:\\Path\\With\\Backslashes");
+        appConfig.Harpy.SavePath.Should().Be(@"C:\Path\With\Backslashes");
     }
 
     [Fact]
@@ -79,22 +79,37 @@ public class AppConfigurationTests
     }
 
     [Theory]
-    [InlineData(@"C:\\Simple\\Path", @"C:\Simple\Path")]
-    [InlineData(@"Path\\With\\\\Double\\\\Backslashes", @"Path\With\\Double\\Backslashes")]
-    [InlineData(@"D:\\Program Files\\App", @"D:\Program Files\App")]
-    [InlineData(@"Network\\\\Share", @"Network\\Share")]
-    public void WriteToDictionary_WithDifferentBackslashFormats_HandlesBackslashesCorrectly(
-        string internalPath,
-        string expectedPath)
+    [InlineData(@"C:\Simple\Path")]
+    [InlineData(@"\\server\share")]
+    public void WriteToDictionary_PreservesPath(string path)
     {
-        // arrange
-        var testConfig = CreateValidAppConfiguration(internalPath);
+        var config = CreateValidAppConfiguration(path);
 
-        // act
-        var dictionary = testConfig.WriteToDictionary();
+        config.WriteToDictionary()["HarpySavePath"].Should().Be(path);
+    }
 
-        // assert
-        dictionary["HarpySavePath"].Should().Be(expectedPath);
+    [Fact]
+    public async Task ProductionConfiguration_RoundTripsPathsAndPasswords()
+    {
+        var config = CreateValidAppConfiguration();
+        config = config with { Api = config.Api with { SankakuPassword = "quoted\"\\value" } };
+        var root = Directory.CreateTempSubdirectory();
+        try
+        {
+            var lamia = root.CreateSubdirectory("ImoutoRebirth.Lamia");
+            var arachne = root.CreateSubdirectory("ImoutoRebirth.Arachne");
+
+            await new ConfigurationBuilder(config).WriteProductionConfigurations("1.0", root);
+
+            using var media = JsonDocument.Parse(await File.ReadAllTextAsync(Path.Combine(lamia.FullName, "appsettings.Production.json")));
+            using var sources = JsonDocument.Parse(await File.ReadAllTextAsync(Path.Combine(arachne.FullName, "appsettings.Production.json")));
+            media.RootElement.GetProperty("FFmpeg").GetProperty("Path").GetString().Should().Be(config.FFmpegPath);
+            sources.RootElement.GetProperty("SankakuSettings").GetProperty("Password").GetString().Should().Be(config.Api.SankakuPassword);
+        }
+        finally
+        {
+            root.Delete(true);
+        }
     }
 
     [Fact]
@@ -114,7 +129,7 @@ public class AppConfigurationTests
             // assert
             appConfig.Should().NotBeNull();
             appConfig.Api.DanbooruLogin.Should().Be("danbooruUser");
-            appConfig.Harpy.SavePath.Should().Be(@"C:\\Data\\Harpy");
+            appConfig.Harpy.SavePath.Should().Be(@"C:\Data\Harpy");
             appConfig.OpenSearchUri.Should().Be("http://localhost:9200");
         }
         finally
@@ -477,7 +492,7 @@ public class AppConfigurationTests
                 KekkaiPort: "5001",
                 LilinPort: "5002"),
             Harpy: new AppConfiguration.HarpySettings(
-                SavePath: harpyPath ?? @"C:\\Data\\Harpy",
+                SavePath: harpyPath ?? @"C:\Data\Harpy",
                 FavoritesSaveJobRepeatEveryMinutes: "60"),
             Meido: new AppConfiguration.MeidoSettings(
                 MetadataActualizerRepeatEveryMinutes: "30",

@@ -65,11 +65,9 @@ internal static class AspectRatioCalculator
 
         var ratio = (decimal)left / right;
 
-        foreach (var (key, value) in CloseToStandardLookup)
-        {
-            if (Math.Abs(key - ratio) <= 0.02m)
-                return new(AspectRatioType.Standard, value, null, orientation);
-        }
+        var (closest, standard) = CloseToStandardLookup.MinBy(entry => Math.Abs(entry.Key - ratio));
+        if (Math.Abs(closest - ratio) <= 0.02m)
+            return new(AspectRatioType.Standard, standard, null, orientation);
 
         return new(AspectRatioType.Custom, StandardAspectRatio.Other, Math.Round(ratio, 2), orientation);
     }

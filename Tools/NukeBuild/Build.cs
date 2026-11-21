@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Text.Json;
 using Nuke.Common;
 using Nuke.Common.CI.GitHubActions;
 using Nuke.Common.IO;
@@ -170,6 +171,12 @@ class Build : NukeBuild
             {
                 appSettingsFile.DeleteFile();
             }
+
+            var packageFiles = publishableProjects
+                .Where(project => project.ProjectName != "ImoutoRebirth.Tori")
+                .SelectMany(project => Directory.EnumerateFiles(project.ProjectOutput, "*", SearchOption.AllDirectories))
+                .ToDictionary(path => Path.GetRelativePath(OutputLatestDirectory, path), path => new FileInfo(path).Length);
+            File.WriteAllText(OutputLatestDirectory / "package-files.json", JsonSerializer.Serialize(packageFiles));
 
             foreach (var nukeFileToPublish in NukeFilesToPublish)
                 nukeFileToPublish.CopyToDirectory(OutputLatestDirectory, ExistsPolicy.FileOverwrite);

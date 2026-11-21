@@ -1,4 +1,8 @@
-﻿using System.Security.Cryptography;
+﻿using System.ComponentModel;
+using System.Runtime.InteropServices;
+using System.Security.AccessControl;
+using System.Security.Cryptography;
+using Microsoft.Win32.SafeHandles;
 using System.Text.RegularExpressions;
 using ImoutoRebirth.Room.Domain.CollectionAggregate;
 
@@ -51,10 +55,10 @@ public partial class SystemFile
     public IReadOnlyCollection<string> GetTagsFromPathForSourceFolder(SourceFolder sourceFolder) 
         => GetTags(sourceFolder).ToList();
 
-    public bool MoveFile(ref FileInfo newFile)
+    public void MoveFile(ref FileInfo newFile)
     {
         if (string.Equals(File.FullName, newFile.FullName, StringComparison.OrdinalIgnoreCase))
-            return true;
+            return;
 
         if (!File.Exists)
             throw new ArgumentException(nameof(File));
@@ -63,24 +67,63 @@ public partial class SystemFile
             newFile.Directory.Create();
 
         if (newFile.Exists)
-            return MoveToExisted(ref newFile);
-
-        System.IO.File.Move(File.FullName, newFile.FullName);
-
-        return true;
+        {
+            MoveToExisted(ref newFile);
+        }
+        else
+        {
+            System.IO.File.Move(File.FullName, newFile.FullName);
+        }
     }
 
     public void Delete() => File.Delete();
 
-    private bool MoveToExisted(ref FileInfo newFile)
+    public bool DeleteIfDuplicateOf(FileInfo retainedFile)
     {
-        var newSystemFile = Create(newFile);
-        
-        if (Md5 == newSystemFile!.Md5)
-        {
-            File.Delete();
+        if (!OperatingSystem.IsWindows()
+            || string.Equals(File.FullName, retainedFile.FullName, StringComparison.OrdinalIgnoreCase)
+            || !retainedFile.Exists)
             return false;
+
+        using var retained = retainedFile.Open(FileMode.Open, FileAccess.Read, FileShare.Read);
+        using var incoming = File.Create(
+            FileMode.Open,
+            FileSystemRights.Read | FileSystemRights.Delete,
+            FileShare.Read,
+            4096,
+            FileOptions.SequentialScan,
+            null);
+
+        if (retained.Length != incoming.Length)
+            return false;
+
+        var incomingBytes = new byte[64 * 1024];
+        var retainedBytes = new byte[incomingBytes.Length];
+        int read;
+        while ((read = incoming.Read(incomingBytes)) > 0)
+        {
+            retained.ReadExactly(retainedBytes.AsSpan(0, read));
+            if (!incomingBytes.AsSpan(0, read).SequenceEqual(retainedBytes.AsSpan(0, read)))
+                return false;
         }
+
+        const int fileDispositionInfo = 4;
+        byte deleteOnClose = 1;
+        if (!SetFileInformationByHandle(incoming.SafeFileHandle, fileDispositionInfo, ref deleteOnClose, sizeof(byte)))
+            throw new IOException("Unable to delete the verified duplicate.", new Win32Exception(Marshal.GetLastWin32Error()));
+
+        return true;
+    }
+
+    [DllImport("kernel32.dll", SetLastError = true)]
+    [return: MarshalAs(UnmanagedType.Bool)]
+    private static extern bool SetFileInformationByHandle(
+        SafeFileHandle file, int infoClass, ref byte value, int size);
+
+    private void MoveToExisted(ref FileInfo newFile)
+    {
+        if (DeleteIfDuplicateOf(newFile))
+            return;
 
         var counter = 0;
         FileInfo countedFile;
@@ -97,8 +140,6 @@ public partial class SystemFile
 
         File.MoveTo(countedFile.FullName);
         newFile = countedFile;
-
-        return true;
     }
 
     private static bool IsFileReady(FileInfo fileInfo)

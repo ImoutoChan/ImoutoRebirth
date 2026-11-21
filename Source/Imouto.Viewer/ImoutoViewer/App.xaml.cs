@@ -50,10 +50,4 @@ internal static class ApplicationProperties
                ?? ArraySegment<string>.Empty;
         set => Application.Current.Properties["FileNamesToOpen"] = value;
     }
-
-    public static bool BoundToNavigatorSearch
-    {
-        get => Application.Current.Properties["BoundToNavigatorSearch"] is bool value && value;
-        set => Application.Current.Properties["BoundToNavigatorSearch"] = value;
-    }
 }

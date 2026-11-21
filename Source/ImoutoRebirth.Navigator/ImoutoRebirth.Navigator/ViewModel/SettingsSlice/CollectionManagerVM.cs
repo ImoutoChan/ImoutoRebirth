@@ -20,19 +20,6 @@ internal partial class CollectionManagerVm : ObservableObject
 
     public ObservableCollection<CollectionVM> Collections { get; } = new();
 
-    public string? Rename(string param)
-    {
-        try
-        {
-            SelectedCollection?.Rename(param);
-            return null;
-        }
-        catch (Exception ex)
-        {
-            return ex.Message;
-        }
-    }
-
     public async Task<string?> CreateCollection(string name)
     {
         try

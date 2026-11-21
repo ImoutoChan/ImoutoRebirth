@@ -4,8 +4,8 @@ namespace ImoutoViewer.ImoutoRebirth.Services;
 
 internal interface IFileLoadingService
 {
-    Task<IList<string>> LoadFiles(
+    Task<IReadOnlyCollection<string>> LoadFiles(
         Guid? collectionId,
         IReadOnlyCollection<SearchTag> searchTags,
-        CancellationToken cancellationToken = default);
+        CancellationToken ct = default);
 }

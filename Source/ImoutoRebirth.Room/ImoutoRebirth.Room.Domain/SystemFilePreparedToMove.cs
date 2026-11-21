@@ -2,7 +2,13 @@
 
 public class SystemFilePreparedToMove
 {
-    public SystemFilePreparedToMove(SystemFile systemFile) => SystemFile = systemFile;
+    public SystemFilePreparedToMove(SystemFile systemFile, string? existingFilePath = null)
+    {
+        SystemFile = systemFile;
+        ExistingFilePath = existingFilePath;
+    }
+
+    public string? ExistingFilePath { get; }
 
     public SystemFile SystemFile { get; }
 

@@ -4,5 +4,5 @@ namespace ImoutoRebirth.Lamia.Application.Services;
 
 public interface IMetadataProvider
 {
-    public Task<FileMetadata> GetMetadata(string filePath);
+    public Task<FileMetadata?> GetMetadata(string filePath);
 }

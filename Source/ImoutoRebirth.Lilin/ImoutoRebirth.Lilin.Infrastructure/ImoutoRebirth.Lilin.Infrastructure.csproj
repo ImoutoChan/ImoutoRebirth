@@ -9,6 +9,7 @@
 
     <ItemGroup>
         <PackageReference Include="NinjaNye.SearchExtensions" />
+        <InternalsVisibleTo Include="ImoutoRebirth.Lilin.IntegrationTests" />
     </ItemGroup>
 
     <ItemGroup>

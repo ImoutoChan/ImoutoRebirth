@@ -48,36 +48,41 @@ public class DestinationFolder
 
     public bool AllowManualFileRenaming() => !ShouldRenameByHash;
 
-    public SystemFileMoved Move(SystemFilePreparedToMove preparedToMove)
+    public SystemFileMoved Move(SystemFilePreparedToMove preparedToMove, string sourceRoot)
     {
         if (preparedToMove.MoveProblem == MoveProblem.AlreadyContains)
         {
-            var shouldDelete = DestinationDirectory != null;
-
-            if (shouldDelete)
-                preparedToMove.SystemFile.File.Delete();
+            var deleted = DestinationDirectory != null
+                && preparedToMove.ExistingFilePath is { } path
+                && preparedToMove.SystemFile.DeleteIfDuplicateOf(new FileInfo(path));
 
             return preparedToMove.CreateMovedFail(
                 $"File with this md5 already contains in database | " +
                 $"Md5: {preparedToMove.SystemFile.Md5} " +
                 $"File: {preparedToMove.SystemFile.File.FullName} | " +
-                $"File deleted: {shouldDelete}");
+                $"File deleted: {deleted}");
         }
 
-        var newFile = GetNewPath(preparedToMove);
+        var newFile = GetNewPath(preparedToMove, sourceRoot);
         
-        var wasANewFile = preparedToMove.SystemFile.MoveFile(ref newFile);
+        preparedToMove.SystemFile.MoveFile(ref newFile);
 
-        return preparedToMove.CreateMoved(wasANewFile && preparedToMove.MoveProblem == MoveProblem.None, newFile);
+        return preparedToMove.CreateMoved(preparedToMove.MoveProblem == MoveProblem.None, newFile);
     }
 
-    private FileInfo GetNewPath(SystemFilePreparedToMove moveInformation)
+    private FileInfo GetNewPath(SystemFilePreparedToMove moveInformation, string sourceRoot)
     {
         var newPathParts = new List<string>();
 
-        AddDestinationFolder(moveInformation, newPathParts);
-
         var problemSubfolder = GetProblemSubfolder(moveInformation.MoveProblem);
+        if (problemSubfolder != null && DestinationDirectory == null)
+        {
+            newPathParts.Add(sourceRoot);
+        }
+        else
+        {
+            AddDestinationFolder(moveInformation, newPathParts);
+        }
 
         var renamed = false;
 

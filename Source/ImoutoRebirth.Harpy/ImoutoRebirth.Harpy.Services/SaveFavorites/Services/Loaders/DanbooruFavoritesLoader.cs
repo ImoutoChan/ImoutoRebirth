@@ -1,4 +1,5 @@
-﻿using System.Text.Json;
+﻿using System.Runtime.CompilerServices;
+using System.Text.Json;
 using System.Text.Json.Serialization;
 using Flurl.Http.Configuration;
 using Imouto.BooruParser.Implementations.Gelbooru;
@@ -43,7 +44,7 @@ internal class DanbooruFavoritesLoader
                 }));
     }
 
-    public async IAsyncEnumerable<Post> GetFavoritesUrls()
+    public async IAsyncEnumerable<Post> GetFavoritesUrls([EnumeratorCancellation] CancellationToken ct = default)
     {
         if (!_enabled)
         {
@@ -56,7 +57,7 @@ internal class DanbooruFavoritesLoader
         var url = string.Format(FavoritesUrl, _booruConfiguration.Login, _booruConfiguration.ApiKey);
         do
         {
-            var result = await _httpClient.GetStringAsync(url + $"&page={page}");
+            var result = await _httpClient.GetStringAsync(url + $"&page={page}", ct);
             posts = DeserializePosts(result).ToArray();
 
             var notEmptyPosts = posts.Where(x => x is { Md5: not null, FileUrl: not null });

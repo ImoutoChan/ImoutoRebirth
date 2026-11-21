@@ -1,6 +1,5 @@
 ﻿using System.Windows;
 using ImoutoRebirth.Common;
-using ImoutoRebirth.Lilin.WebApi.Client;
 using ImoutoRebirth.Navigator.Services.Tags;
 using ImoutoRebirth.Navigator.Services.Tags.Model;
 using ImoutoRebirth.Navigator.ViewModel.ListEntries;
@@ -13,12 +12,10 @@ internal class FileLoadingService : IFileLoadingService
     private readonly SemaphoreSlim _operationLocker = new(1);
     private readonly object _ctsLocker = new();
     private readonly IFileService _fileService;
-    private readonly FilesClient _filesClient;
 
-    public FileLoadingService(IFileService fileService, FilesClient filesClient)
+    public FileLoadingService(IFileService fileService)
     {
         _fileService = fileService;
-        _filesClient = filesClient;
     }
 
     public async Task LoadFiles(
@@ -34,7 +31,7 @@ internal class FileLoadingService : IFileLoadingService
         int skip = 0)
     {
         var newCts = new CancellationTokenSource();
-        var token = newCts.Token;
+        var ct = newCts.Token;
 
         lock (_ctsLocker)
         {
@@ -42,14 +39,14 @@ internal class FileLoadingService : IFileLoadingService
             _lastOperationCts = newCts;
         }
 
-        await _operationLocker.WaitAsync(token);
+        await _operationLocker.WaitAsync(ct);
 
         try
         {
             initAction();
 
-            var counterTask = UpdateCounter(collectionId, searchTags, counterUpdater, token);
-            var loadTask = BulkLoadEntries(bulkFactor, previewSize, collectionId, searchTags, entryUpdater, skip, token);
+            var counterTask = UpdateCounter(collectionId, searchTags, counterUpdater, ct);
+            var loadTask = BulkLoadEntries(bulkFactor, previewSize, collectionId, searchTags, entryUpdater, skip, ct);
 
             await Task.WhenAll(counterTask, loadTask);
 
@@ -69,9 +66,9 @@ internal class FileLoadingService : IFileLoadingService
         Guid? collectionId,
         IReadOnlyCollection<SearchTag> searchTags,
         Action<int> counterUpdater,
-        CancellationToken token)
+        CancellationToken ct)
     {
-        var count = await GetCount(collectionId, searchTags, token);
+        var count = await GetCount(collectionId, searchTags, ct);
         counterUpdater(count);
         return count;
     }
@@ -83,14 +80,14 @@ internal class FileLoadingService : IFileLoadingService
         IReadOnlyCollection<SearchTag> searchTags,
         Action<IReadOnlyCollection<INavigatorListEntry>, CancellationToken> entryUpdater,
         int skip,
-        CancellationToken token)
+        CancellationToken ct)
     {
         var page = 0;
         bool cont;
 
         do
         {
-            token.ThrowIfCancellationRequested();
+            ct.ThrowIfCancellationRequested();
 
             var entries = await LoadNewEntries(
                 count: bulkFactor,
@@ -98,12 +95,12 @@ internal class FileLoadingService : IFileLoadingService
                 previewSize: previewSize,
                 collectionId: collectionId,
                 searchTags: searchTags,
-                token: token);
+                ct: ct);
 
             page++;
             cont = entries.Continue;
 
-            entryUpdater(entries.Item1, token);
+            entryUpdater(entries.Item1, ct);
         } while (cont);
     }
 
@@ -113,13 +110,13 @@ internal class FileLoadingService : IFileLoadingService
         int previewSize,
         Guid? collectionId,
         IReadOnlyCollection<SearchTag> searchTags,
-        CancellationToken token)
+        CancellationToken ct)
     {
-        var entries = await Task.Run(async () => await NavigatorListEntries(token), token);
+        var entries = await Task.Run(NavigatorListEntries, ct);
 
         return entries;
 
-        async Task<(List<INavigatorListEntry> Files, bool Continue)> NavigatorListEntries(CancellationToken ct)
+        async Task<(IReadOnlyCollection<INavigatorListEntry> Files, bool Continue)> NavigatorListEntries()
         {
             var result = await _fileService.SearchFiles(
                 collectionId,
@@ -133,7 +130,6 @@ internal class FileLoadingService : IFileLoadingService
                     x => EntryVMFactory.CreateListEntry(
                         x.Path,
                         new Size(previewSize, previewSize),
-                        _filesClient,
                         x.Id))
                 .WhereNotNull()
                 .SkipExceptions()
@@ -147,13 +143,13 @@ internal class FileLoadingService : IFileLoadingService
     public async Task<int> GetCount(
         Guid? collectionId,
         IReadOnlyCollection<SearchTag> searchTags,
-        CancellationToken token)
+        CancellationToken ct)
     {
-        token.ThrowIfCancellationRequested();
+        ct.ThrowIfCancellationRequested();
 
         return await _fileService.CountFiles(
             collectionId,
             searchTags,
-            token);
+            ct);
     }
 }

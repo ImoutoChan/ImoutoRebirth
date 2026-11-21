@@ -4,29 +4,33 @@ public interface IRunningJobs<T> where T : Enum
 {
     void Add(RunningJob<T> job);
 
-    void Interrupt(T type);
+    void Interrupt(T type, Guid id);
 }
 
-public record RunningJob<T>(T JobType, CancellationTokenSource Interruptable) where T : Enum;
+public record RunningJob<T>(T JobType, Guid Id, CancellationTokenSource Interruptable) where T : Enum;
 
 internal class RunningJobs<TJobType> : IRunningJobs<TJobType>
     where TJobType : Enum
 {
     private readonly List<RunningJob<TJobType>> _jobs = new();
 
-    public void Add(RunningJob<TJobType> job) => _jobs.Add(job);
-
-    public void Interrupt(TJobType type)
+    public void Add(RunningJob<TJobType> job)
     {
-        var job = _jobs.FirstOrDefault(x => x.JobType.Equals(type));
+        lock (_jobs)
+            _jobs.Add(job);
+    }
 
-        if (job == null)
-            return;
+    public void Interrupt(TJobType type, Guid id)
+    {
+        lock (_jobs)
+        {
+            var job = _jobs.FirstOrDefault(x => x.JobType.Equals(type) && x.Id == id);
+            if (job == null)
+                return;
 
-        if (!job.Interruptable.IsCancellationRequested)
+            _jobs.Remove(job);
             job.Interruptable.Cancel();
-
-        _jobs.Remove(job);
+        }
     }
 }
 

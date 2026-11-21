@@ -16,7 +16,8 @@ internal class TagsVM : VMBase
 
     private readonly MainWindowVM _parent;
 
-    private string _currentPath = "";
+    private string? _currentPath;
+    private CancellationTokenSource? _metadataRequest;
     private bool _showTags;
     private bool _isLastSuccessConnected;
     private bool _showNotes;
@@ -79,43 +80,50 @@ internal class TagsVM : VMBase
 
     public async void ReloadAsync(bool fullReload = false)
     {
+        var path = _parent.CurrentLocalImage?.Path;
+        var pathChanged = path != _currentPath;
+        if (!pathChanged && !fullReload)
+            return;
+
+        _metadataRequest?.Cancel();
+        _currentPath = path;
+        CurrentId = null;
+        if (pathChanged)
+        {
+            NotesCollection.Clear();
+            TagsCollection.Clear();
+            SourcesCollection.Clear();
+        }
+
+        if (path == null)
+            return;
+
+        using var request = new CancellationTokenSource();
+        _metadataRequest = request;
         try
         {
-            var path = _parent.CurrentLocalImage?.Path;
-
-            if (path == null)
+            var result = await Task.Run(() => LoadTagsTask(path, request.Token), request.Token);
+            if (request.IsCancellationRequested)
                 return;
 
-            var needReload = false;
-            lock (_currentPath)
-            {
-                if (_currentPath != path)
-                {
-                    _currentPath = path;
-                    needReload = true;
-                }
-            }
-
-            if (needReload || fullReload)
-            {
-                var tagsAndNotes = await LoadTagsTask(path);
-                _isLastSuccessConnected = true;
-
-                lock (_currentPath)
-                {
-                    if (_currentPath == path)
-                    {
-                        NotesReload(tagsAndNotes.Notes);
-                        TagsReload(tagsAndNotes.Tags);
-                    }
-                }
-            }
+            CurrentId = result.FileId;
+            _isLastSuccessConnected = true;
+            NotesReload(result.Notes);
+            TagsReload(result.Tags);
         }
         catch (Exception ex)
         {
+            if (request.IsCancellationRequested)
+                return;
+
             _isLastSuccessConnected = false;
             OnPropertyChanged(() => ShowTags);
             Debug.WriteLine(ex.Message);
+        }
+        finally
+        {
+            if (_metadataRequest == request)
+                _metadataRequest = null;
         }
     }
 
@@ -137,7 +145,7 @@ internal class TagsVM : VMBase
 
     public async void UnbindTagAsync(BindedTagVM bindedTagVM)
     {
-        if (CurrentId == null)
+        if (CurrentId != bindedTagVM.Model.FileId || !bindedTagVM.IsEditable)
         {
             _parent.View.ShowMessageDialog("Removing tag from current image", "Can't remove tag: image is not in database");
             return;
@@ -145,7 +153,8 @@ internal class TagsVM : VMBase
 
         try
         {
-            await UnbindTagTask(CurrentId.Value, bindedTagVM.Id);
+            var tag = bindedTagVM.Model;
+            await _fileTagService.UnbindTags(new UnbindTagRequest(tag.FileId, tag.Tag.Id, tag.Value, tag.Source));
 
             _parent.View.ShowMessageDialog("Removing tag from current image", "Tag successfully removed");
         }
@@ -159,17 +168,20 @@ internal class TagsVM : VMBase
 
     public async void BindTagAsync(AddTagVM addTagVM)
     {
-        if (_parent.Tags.CurrentId == null)
+        if (CurrentId is not { } fileId)
         {
             _parent.View.ShowMessageDialog("Adding tag to current image", "Can't add tag: image is not in database");
             return;
         }
 
+        if (addTagVM.SelectedTag is not { } tag)
+            return;
+
         addTagVM.IsEnabled = false;
 
         try
         {
-            await BindTagTask(addTagVM);
+            await _fileTagService.BindTags([new FileTag(fileId, tag, tag.HasValue ? addTagVM.Value : null, FileTagSource.Manual)]);
 
             _parent.View.ShowMessageDialog("Adding tag to current image", "Tag successfully added");
             _parent.View.CloseAllFlyouts();
@@ -200,31 +212,29 @@ internal class TagsVM : VMBase
             createTagVm.SynonymsCollection);
     }
 
-    private async Task<(IReadOnlyCollection<FileTag> Tags, IReadOnlyCollection<NoteM> Notes)> LoadTagsTask(string path)
+    private async Task<(Guid? FileId, IReadOnlyCollection<FileTag> Tags, IReadOnlyCollection<NoteM> Notes)> LoadTagsTask(
+        string path,
+        CancellationToken ct)
     {
-        var md5Hash = GetMd5Checksum(new FileInfo(path));
-        var files = await _fileService.SearchFiles(md5Hash);
-
-        if (!files.Any())
+        string md5Hash;
+        using (var stream = System.IO.File.Open(path, FileMode.Open, FileAccess.Read, FileShare.Read | FileShare.Delete))
         {
-            return
-            (
-                Array.Empty<FileTag>().ToList(),
-                Array.Empty<NoteM>().ToList()
-            );
+            var hash = await MD5.HashDataAsync(stream, ct);
+            md5Hash = Convert.ToHexStringLower(hash);
         }
 
+        var files = await _fileService.SearchFiles(md5Hash, ct);
+        if (files.Count == 0)
+            return (null, [], []);
+
         var file = files.First();
-
-        var tags = await _fileTagService.GetFileTags(file.Id);
-        var notes = await _fileTagService.GetFileNotes(file.Id);
-
+        var (tags, notes) = await _fileTagService.GetFileMetadata(file.Id, ct);
         var notesModels = notes.Select(x => new NoteM(x.Label!, x.PositionFromLeft,
             x.PositionFromTop, x.Width, x.Height, x.Source)).ToList();
 
-        return (tags, notesModels);
+        var canEdit = files.Count == 1 || string.Equals(file.Path, path, StringComparison.OrdinalIgnoreCase);
+        return (canEdit ? file.Id : null, tags, notesModels);
     }
-
 
     private void TagsReload(IReadOnlyCollection<FileTag> tags)
     {
@@ -316,51 +326,6 @@ internal class TagsVM : VMBase
                     x => SourcesCollection.Last()
                         .TagsCollection.Add(x));
         }
-    }
-
-    private Task UnbindTagTask(Guid imageId, Guid tagId)
-    {
-        // TODO remove tag
-
-        //return Task.Run(() =>
-        //{
-        //    ImoutoService.Use(imoutoService =>
-        //    {
-        //        imoutoService.UnbindTag(imageId, tagId);
-        //    });
-        //});
-
-        return Task.CompletedTask;
-    }
-
-    private Task BindTagTask(AddTagVM addTagVM)
-    {
-        // TODO add tag
-        //return Task.Run(() =>
-        //{
-        //    ImoutoService.Use(imoutoService =>
-        //    {
-        //        imoutoService.BindTag(CurrentId.Value, new BindedTag
-        //        {
-        //            Tag = addTagVM.SelectedTag,
-        //            DateAdded = DateTime.Now,
-        //            Source = Source.User,
-        //            Value = (addTagVM.SelectedTag.HasValue)
-        //                    ? addTagVM.Value
-        //                    : null
-        //        });
-        //    });
-        //});
-
-        return Task.CompletedTask;
-    }
-
-    private static string GetMd5Checksum(FileInfo fileInfo)
-    {
-        using var md5 = MD5.Create();
-        using var stream = fileInfo.OpenRead();
-
-        return BitConverter.ToString(md5.ComputeHash(stream)).Replace("-", "").ToLower();
     }
 
     #endregion Private methods

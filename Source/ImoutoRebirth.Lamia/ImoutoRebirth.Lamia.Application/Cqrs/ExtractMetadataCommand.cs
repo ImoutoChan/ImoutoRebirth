@@ -28,29 +28,27 @@ internal class CreateParsingsForNewFileCommandHandler : ICommandHandler<ExtractM
     {
         var (fileId, fileFullName) = command;
 
-        try
+        _logger.LogInformation("Extracting metadata for {FileFullName}", fileFullName);
+        var metadata = await _metadataProvider.GetMetadata(fileFullName);
+        if (metadata is null)
         {
-            _logger.LogInformation("Extracting metadata for {FileFullName}", fileFullName);
-            var metadata = await _metadataProvider.GetMetadata(fileFullName);
-
-            var extractedTags = metadata.ExtractTags().Distinct().ToList();
-
-            var tags = extractedTags
-                .Select(x => new FileTag("Meta", x.tagName, x.tagValue, null))
-                .ToArray();
-
-            _logger.LogInformation(
-                "Metadata extracted for {FileFullName} with tags: {Tags}",
-                fileFullName,
-                extractedTags.Select(x => x.tagValue == null ? x.tagName : $"{x.tagName}={x.tagValue}"));
-
-            await _distributedCommandBus.SendAsync(
-                new UpdateMetadataCommand(fileId, MetadataSource.Lamia, [], tags),
-                ct);
+            _logger.LogInformation("Skipping unsupported file {FileFullName}", fileFullName);
+            return;
         }
-        catch (Exception e)
-        {
-            _logger.LogError(e, "Exception occured while extracting metadata");
-        }
+
+        var extractedTags = metadata.ExtractTags().Distinct().ToList();
+
+        var tags = extractedTags
+            .Select(x => new FileTag("Meta", x.tagName, x.tagValue, null))
+            .ToArray();
+
+        _logger.LogInformation(
+            "Metadata extracted for {FileFullName} with tags: {Tags}",
+            fileFullName,
+            extractedTags.Select(x => x.tagValue == null ? x.tagName : $"{x.tagName}={x.tagValue}"));
+
+        await _distributedCommandBus.SendAsync(
+            new UpdateMetadataCommand(fileId, MetadataSource.Lamia, [], tags),
+            ct);
     }
 }

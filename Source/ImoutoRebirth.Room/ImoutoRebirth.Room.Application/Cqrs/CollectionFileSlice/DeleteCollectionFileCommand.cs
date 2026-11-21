@@ -41,8 +41,11 @@ internal class DeleteCollectionFileCommandHandler : ICommandHandler<DeleteCollec
         if (found.None())
             return;
 
-        foreach (var file in found) 
-            await DeleteCollectionFile(file);
+        foreach (var file in found)
+        {
+            if (!await _collectionFileRepository.HasOtherReference(file.Id, file.Path, ct))
+                await DeleteCollectionFile(file);
+        }
 
         await _collectionFileRepository.Remove(id);
     }

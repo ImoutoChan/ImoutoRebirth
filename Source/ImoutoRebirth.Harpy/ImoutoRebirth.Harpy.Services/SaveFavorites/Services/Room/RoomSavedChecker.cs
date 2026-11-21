@@ -9,10 +9,11 @@ internal class RoomSavedChecker
     public RoomSavedChecker(CollectionFilesClient collectionFilesClient) 
         => _collectionFilesClient = collectionFilesClient;
 
-    public async Task<IReadOnlyCollection<Post>> GetOnlyNewPosts(IReadOnlyCollection<Post> allPosts)
+    public async Task<IReadOnlyCollection<Post>> GetOnlyNewPosts(IReadOnlyCollection<Post> allPosts, CancellationToken ct)
     {
         var results = await _collectionFilesClient.SearchCollectionFilesAsync(
-            new(null, null, null, allPosts.Select(x => x.Md5).ToArray(), null, null));
+            new(null, null, null, allPosts.Select(x => x.Md5).ToArray(), null, null),
+            ct);
 
         var existed = results.Select(x => x.Md5).ToHashSet();
         return allPosts.Where(x => !existed.Contains(x.Md5)).ToArray();

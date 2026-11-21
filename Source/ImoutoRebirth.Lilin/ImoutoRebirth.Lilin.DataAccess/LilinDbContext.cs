@@ -49,6 +49,7 @@ public class LilinDbContext : DbContext, IUnitOfWork
                 .OnDelete(DeleteBehavior.Restrict);
 
             b.HasIndex(x => new {x.Name});
+            b.HasIndex(x => x.Count);
             b.Property(x => x.Count).HasDefaultValue(0);
 
             b.HasIndex(x => new { x.TypeId, x.Name }).IsUnique();

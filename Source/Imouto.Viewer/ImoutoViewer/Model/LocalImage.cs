@@ -1,9 +1,11 @@
-﻿using System.IO;
+﻿using System.Drawing;
+using System.IO;
 using System.Windows;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using ImoutoRebirth.Common.WebP;
 using ImoutoViewer.ViewModel.SettingsModels;
+using Gdi = System.Drawing.Imaging;
 using Size = System.Windows.Size;
 
 namespace ImoutoViewer.Model;
@@ -342,32 +344,66 @@ internal class LocalImage
 
     #region Methods
 
-    private void Load()
+    internal void Preload()
+    {
+        if (IsError)
+            return;
+
+        Load(BitmapCacheOption.OnLoad);
+        _image?.Freeze();
+    }
+
+    private void Load(BitmapCacheOption cacheOption = BitmapCacheOption.OnDemand)
     {
         try
         {
             try
             {
-                _image = LoadImage(_filePath);
+                _image = LoadImage(_filePath, cacheOption);
             }
             catch (ArgumentException)
             {
                 //Process fail in color reading exception.
-                _image = LoadImage(_filePath, BitmapCreateOptions.IgnoreColorProfile);
+                _image = LoadImage(_filePath, cacheOption, BitmapCreateOptions.IgnoreColorProfile);
             }
         }
         catch (Exception e)
         {
-            IsError = true;
-            ErrorMessage = e.Message;
+            SetError(e);
         }
     }
 
+    internal void SetError(Exception error)
+    {
+        IsError = true;
+        ErrorMessage = error.Message;
+    }
+
     private static BitmapSource LoadImage(
-        string filePath, 
+        string filePath,
+        BitmapCacheOption cacheOption,
         BitmapCreateOptions options = BitmapCreateOptions.None)
     {
-        var bitmap = GetBitmap(options, filePath);
+        if (filePath.EndsWith(".webp", StringComparison.OrdinalIgnoreCase))
+            return LoadWebP(filePath);
+
+        BitmapFrame bitmap;
+        if (cacheOption == BitmapCacheOption.OnLoad)
+        {
+            using var input = File.OpenRead(filePath);
+            if (filePath.EndsWith(".gif", StringComparison.OrdinalIgnoreCase))
+            {
+                var firstFrame = BitmapFrame.Create(input, options, BitmapCacheOption.OnDemand);
+                var detachedPoster = new WriteableBitmap(firstFrame);
+                return BitmapFrame.Create(detachedPoster);
+            }
+
+            bitmap = BitmapFrame.Create(input, options, BitmapCacheOption.OnLoad);
+        }
+        else
+        {
+            bitmap = BitmapFrame.Create(new Uri(filePath), options, cacheOption);
+        }
 
         var defaultRotation = GetDefaultRotation(bitmap);
 
@@ -376,25 +412,30 @@ internal class LocalImage
             : bitmap;
     }
 
-    private static BitmapSource GetBitmap(BitmapCreateOptions options, string filePath)
+    private static BitmapSource LoadWebP(string filePath)
     {
-        var file = new FileInfo(filePath);
-        var isWebp = file.FullName.EndsWith(".webp", StringComparison.OrdinalIgnoreCase);
-
-        if (!isWebp)
-        {
-            var fileUri = new Uri(filePath);
-            return BitmapFrame.Create(fileUri, options, BitmapCacheOption.OnDemand);
-        }
-        
-        using var stream = new MemoryStream();
-        var decoder = new SimpleDecoder();
         var bytes = File.ReadAllBytes(filePath);
-        var bitmap = decoder.DecodeFromBytes(bytes, bytes.Length);
-        bitmap.Save(stream, System.Drawing.Imaging.ImageFormat.Png);
-        stream.Seek(0, SeekOrigin.Begin);
+        using var bitmap = new SimpleDecoder().DecodeFromBytes(bytes, bytes.Length);
+        var bounds = new Rectangle(0, 0, bitmap.Width, bitmap.Height);
+        var data = bitmap.LockBits(bounds, Gdi.ImageLockMode.ReadOnly, Gdi.PixelFormat.Format32bppArgb);
 
-        return BitmapFrame.Create(stream, options, BitmapCacheOption.OnLoad);
+        try
+        {
+            return BitmapSource.Create(
+                bitmap.Width,
+                bitmap.Height,
+                bitmap.HorizontalResolution,
+                bitmap.VerticalResolution,
+                PixelFormats.Bgra32,
+                null,
+                data.Scan0,
+                checked(data.Stride * bitmap.Height),
+                data.Stride);
+        }
+        finally
+        {
+            bitmap.UnlockBits(data);
+        }
     }
 
     private static Transform GetTransform(RotateFlipType defaultRotation)

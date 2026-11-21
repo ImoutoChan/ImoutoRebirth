@@ -1,4 +1,4 @@
-﻿using ImoutoRebirth.Common;
+using ImoutoRebirth.Common;
 using ImoutoRebirth.Common.Domain;
 using NodaTime;
 
@@ -83,12 +83,17 @@ public class ParsingStatus
             _ => throw new ArgumentOutOfRangeException(nameof(result), result, null)
         };
     }
-    
-    
+
     private DomainResult SetSearchFound(string? fileIdFromSource, Instant now)
     {
         ArgumentValidator.NotNull(fileIdFromSource, nameof(fileIdFromSource));
         
+        if (Status == Status.SearchSaved)
+        {
+            FileIdFromSource = fileIdFromSource;
+            return DomainResult.Empty;
+        }
+
         var validated = ValidateStatus(Status.SearchFound);
         if (!validated)
             return new DomainResult(new DisallowedStatusTransfer(this, Status.SearchFound));

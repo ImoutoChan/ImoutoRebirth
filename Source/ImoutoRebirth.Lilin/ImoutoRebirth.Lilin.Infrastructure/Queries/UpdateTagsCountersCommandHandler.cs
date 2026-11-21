@@ -12,24 +12,22 @@ internal class UpdateTagsCountersCommandHandler : ICommandHandler<UpdateTagsCoun
 
     public UpdateTagsCountersCommandHandler(LilinDbContext lilinDbContext) => _lilinDbContext = lilinDbContext;
 
-    public async Task Handle(UpdateTagsCountersCommand request, CancellationToken cancellationToken)
+    public async Task Handle(UpdateTagsCountersCommand request, CancellationToken ct)
     {
         const string script = 
             $"""
              UPDATE "{nameof(LilinDbContext.Tags)}" tags
              SET "{nameof(TagEntity.Count)}" = usages.count
-             FROM
-             (
-                SELECT id, count(*) AS count
-                FROM (
-                    SELECT "{nameof(FileTagEntity.TagId)}" AS id, "{nameof(FileTagEntity.FileId)}" AS fileId
-                    FROM "{nameof(LilinDbContext.FileTags)}"
-                    GROUP BY id, fileId) as inn
-                GROUP BY id
+             FROM (
+                 SELECT t."{nameof(TagEntity.Id)}" AS id, count(DISTINCT f."{nameof(FileTagEntity.FileId)}") AS count
+                 FROM "{nameof(LilinDbContext.Tags)}" t
+                 LEFT JOIN "{nameof(LilinDbContext.FileTags)}" f ON f."{nameof(FileTagEntity.TagId)}" = t."{nameof(TagEntity.Id)}"
+                 GROUP BY t."{nameof(TagEntity.Id)}"
              ) usages
              WHERE tags."{nameof(TagEntity.Id)}" = usages.id
+               AND tags."{nameof(TagEntity.Count)}" <> usages.count
              """;
 
-        await _lilinDbContext.Database.ExecuteSqlRawAsync(script, cancellationToken: cancellationToken);
+        await _lilinDbContext.Database.ExecuteSqlRawAsync(script, cancellationToken: ct);
     }
 }

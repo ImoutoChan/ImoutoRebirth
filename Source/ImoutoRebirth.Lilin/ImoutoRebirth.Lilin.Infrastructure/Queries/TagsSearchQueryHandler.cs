@@ -45,7 +45,7 @@ internal class TagsSearchQueryHandler : IQueryHandler<TagsSearchQuery, IReadOnly
                 var startsWith = await tagsWithTypes
                     .Where(x => !x.Name.ToLower().Equals(searchPattern))
                     .Where(x => x.Name.ToLower().StartsWith(searchPattern))
-                    .Take(limit)
+                    .Take(limit - finalResult.Count)
                     .ToListAsync(cancellationToken: ct);
 
                 finalResult.AddRange(startsWith);

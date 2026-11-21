@@ -6,27 +6,18 @@ using ImoutoRebirth.Room.Database;
 using ImoutoRebirth.Room.Database.Entities;
 using ImoutoRebirth.Room.Domain;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Caching.Memory;
 
 namespace ImoutoRebirth.Room.DataAccess.Repositories;
 
 internal class CollectionFileRepository : ICollectionFileRepository
 {
     private readonly RoomDbContext _roomDbContext;
-    private readonly ICollectionFileCacheService _collectionFileCacheService;
-    private readonly IMd5PresenceCache _md5PresenceCache;
-    private readonly IMemoryCache _memoryCache;
+    private readonly Md5PresenceCacheInvalidator _md5PresenceCacheInvalidator;
 
-    public CollectionFileRepository(
-        RoomDbContext roomDbContext,
-        ICollectionFileCacheService collectionFileCacheService,
-        IMd5PresenceCache md5PresenceCache,
-        IMemoryCache memoryCache)
+    public CollectionFileRepository(RoomDbContext roomDbContext, Md5PresenceCacheInvalidator md5PresenceCacheInvalidator)
     {
         _roomDbContext = roomDbContext;
-        _collectionFileCacheService = collectionFileCacheService;
-        _md5PresenceCache = md5PresenceCache;
-        _memoryCache = memoryCache;
+        _md5PresenceCacheInvalidator = md5PresenceCacheInvalidator;
     }
 
     public async Task<CollectionFile?> GetById(Guid id)
@@ -42,12 +33,10 @@ internal class CollectionFileRepository : ICollectionFileRepository
     {
         var entity = collectionFile.ToEntity();
 
-        _collectionFileCacheService.AddToFilter(collectionFile.CollectionId, entity.Path);
-
         await _roomDbContext.CollectionFiles.AddAsync(entity);
         await _roomDbContext.SaveChangesAsync();
-        
-        _md5PresenceCache.Remove(entity.Md5);
+
+        _md5PresenceCacheInvalidator.FileChanged(_roomDbContext, entity.Md5);
     }
 
     public async Task Update(CollectionFile updates)
@@ -67,38 +56,12 @@ internal class CollectionFileRepository : ICollectionFileRepository
         IReadOnlyCollection<string> inputPaths,
         CancellationToken ct = default)
     {
-        var pathExistsStatus = new Dictionary<string, bool?>(inputPaths.Count);
+        var existing = await _roomDbContext.CollectionFiles
+            .Where(x => x.CollectionId == collectionId && inputPaths.Contains(x.Path))
+            .Select(x => x.Path)
+            .ToListAsync(ct);
 
-        foreach (var inputPath in inputPaths)
-        {
-            var cacheKey = collectionId + inputPath;
-            pathExistsStatus[inputPath] = _memoryCache.TryGetValue(cacheKey, out bool value) ? value : null;
-        }
-
-        var checkInDatabasePaths = pathExistsStatus
-            .Where(x => x.Value == null)
-            .Select(x => x.Key)
-            .ToList();
-
-        if (checkInDatabasePaths.Any())
-        {
-            var found = await _roomDbContext.CollectionFiles
-                .IgnoreQueryFilters()
-                .Where(x => x.CollectionId == collectionId)
-                .Select(x => x.Path)
-                .Where(x => checkInDatabasePaths.Contains(x))
-                .ToListAsync(cancellationToken: ct);
-
-            foreach (var checkInDatabasePath in checkInDatabasePaths)
-            {
-                pathExistsStatus[checkInDatabasePath] = found.Contains(checkInDatabasePath);
-                
-                var cacheKey = collectionId + checkInDatabasePath;
-                _memoryCache.Set(cacheKey, found.Contains(checkInDatabasePath));
-            }
-        }
-
-        return pathExistsStatus.Where(x => x.Value == false).Select(x => x.Key).ToList();
+        return inputPaths.Except(existing).ToArray();
     }
 
     public async Task Remove(Guid id)
@@ -111,24 +74,20 @@ internal class CollectionFileRepository : ICollectionFileRepository
         file.IsRemoved = true;
 
         await _roomDbContext.SaveChangesAsync();
-        
-        _memoryCache.Remove(file.CollectionId + file.Path);
-        _memoryCache.Remove(file.CollectionId + file.Md5);
-        _md5PresenceCache.Remove(file.Md5);
+
+        _md5PresenceCacheInvalidator.FileChanged(_roomDbContext, file.Md5);
     }
 
-    public async Task<string?> GetWithMd5(Guid collectionId, string md5, CancellationToken ct)
-    {
-        var key = collectionId + md5;
-        if (_memoryCache.TryGetValue(key, out string? path))
-            return path;
+    public Task<bool> HasOtherReference(Guid fileId, string path, CancellationToken ct)
+        => _roomDbContext.CollectionFiles.AnyAsync(x => x.Id != fileId && x.Path.ToUpper() == path.ToUpper(), ct);
 
-        var file = await _roomDbContext.CollectionFiles.AsNoTracking().FirstOrDefaultAsync(
-            x => x.Md5 == md5 && x.CollectionId == collectionId, cancellationToken: ct);
-
-        if (file != null)
-            _memoryCache.Set(key, file.OriginalPath);
-
-        return file?.OriginalPath;
-    }
+    public Task<string?> GetWithMd5(Guid collectionId, string md5, string path, CancellationToken ct)
+        => _roomDbContext.CollectionFiles.IgnoreQueryFilters()
+            .Where(x => x.CollectionId == collectionId && x.Md5 == md5)
+            .Where(x => !x.IsRemoved ||
+                (x.Path.ToUpper() == path.ToUpper() && _roomDbContext.CollectionFiles.Any(other =>
+                    !other.IsRemoved && other.CollectionId != collectionId && other.Path.ToUpper() == x.Path.ToUpper())))
+            .OrderBy(x => x.IsRemoved)
+            .Select(x => x.Path)
+            .FirstOrDefaultAsync(ct);
 }

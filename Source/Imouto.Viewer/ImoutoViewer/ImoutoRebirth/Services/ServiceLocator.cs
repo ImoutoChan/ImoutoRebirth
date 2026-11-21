@@ -1,4 +1,6 @@
-﻿using ImoutoRebirth.Common.AutoMapper;
+﻿using System.IO;
+using System.Text.Json;
+using ImoutoRebirth.Common.AutoMapper;
 using ImoutoRebirth.Lilin.WebApi.Client;
 using ImoutoRebirth.Room.WebApi.Client;
 using ImoutoViewer.ImoutoRebirth.Services.Collections;
@@ -26,14 +28,21 @@ public static class ServiceLocator
         sc.AddTransient<ITagService, TagService>();
         //sc.AddTransient<IFileLoadingService, FileLoadingService>();
 
-        sc.AddLilinWebApiClients("http://localhost:11302/");
-        sc.AddRoomWebApiClients("http://localhost:11301/");
+        var settingsPath = Path.Combine(AppContext.BaseDirectory, "appsettings.Production.json");
+        var endpoints = File.Exists(settingsPath)
+            ? JsonSerializer.Deserialize<ViewerEndpoints>(File.ReadAllText(settingsPath))
+            : null;
+
+        sc.AddLilinWebApiClients(endpoints?.LilinUrl ?? "http://localhost:11302/");
+        sc.AddRoomWebApiClients(endpoints?.RoomUrl ?? "http://localhost:11301/");
 
         AutoMapperIssue.Fix();
         sc.AddAutoMapper(x => x.AddProfile<AutoMapperProfile>());
 
         ServiceProvider = sc.BuildServiceProvider();
     }
+
+    private record ViewerEndpoints(string? RoomUrl, string? LilinUrl);
 
     public static T? GetService<T>() => ServiceProvider.GetService<T>();
 

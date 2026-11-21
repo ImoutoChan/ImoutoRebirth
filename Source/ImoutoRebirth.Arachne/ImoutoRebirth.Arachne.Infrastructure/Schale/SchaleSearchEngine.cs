@@ -136,7 +136,7 @@ public partial class SchaleSearchEngine : ISearchEngine
         if (nameLanguages.SafeAny())
         {
             var matchingMetadata = metadata
-                .Where(x => x.Languages.Any(y => nameLanguages.Any(z => y.Name.Contains(z))))
+                .Where(x => x.Languages.Any(y => nameLanguages.Any(z => y.Name.Contains(z, StringComparison.OrdinalIgnoreCase))))
                 .ToList();
 
             if (matchingMetadata.Any())

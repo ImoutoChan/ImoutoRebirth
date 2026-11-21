@@ -134,7 +134,8 @@
                                        FontSize="28" />
                         </Border>
 
-                        <fileInfo:FavoriteControl 
+                        <fileInfo:FavoriteControl
+                            IsEnabled="{Binding DataContext.CurrentFileTagsVM.IsRateSet, RelativeSource={RelativeSource AncestorType=Window}}"
                             Grid.Column="0" 
                             Grid.Row="0"
                             VerticalAlignment="Bottom"
@@ -266,6 +267,7 @@
 
         <fileInfo:RatingControl 
             x:Name="RatingControl"
+            IsEnabled="{Binding DataContext.CurrentFileTagsVM.IsRateSet, RelativeSource={RelativeSource AncestorType=Window}}"
             Grid.Row="4"
             Margin="0,10,0,0"
             Value="{Binding 

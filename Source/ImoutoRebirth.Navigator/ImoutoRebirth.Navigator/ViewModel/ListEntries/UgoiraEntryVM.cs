@@ -3,7 +3,6 @@ using System.IO.Compression;
 using System.Windows;
 using System.Windows.Media.Imaging;
 using CommunityToolkit.Mvvm.ComponentModel;
-using ImoutoRebirth.Lilin.WebApi.Client;
 
 namespace ImoutoRebirth.Navigator.ViewModel.ListEntries;
 
@@ -20,19 +19,15 @@ internal partial class UgoiraEntryVM : BaseEntryVM, INavigatorListEntry, IPixelS
 
     public UgoiraEntryVM(
         string path,
-        FilesClient filesClient,
         Size viewPortSize,
         Guid? dbId) 
-        : base(dbId, filesClient)
+        : base(dbId)
     {
-        DbId = dbId;
         ViewPortSize = viewPortSize;
         Path = path;
     }
 
     public ListEntryType Type => ListEntryType.Ugoira;
-
-    public Guid? DbId { get; }
 
     public string Path { get; }
 
@@ -45,8 +40,6 @@ internal partial class UgoiraEntryVM : BaseEntryVM, INavigatorListEntry, IPixelS
     public async void Load()
     {
         IsLoading = true;
-            
-        var ratingTask = LoadRating();
 
         await using var archive = await ZipFile.OpenReadAsync(Path);
         var preview = archive.Entries.FirstOrDefault();
@@ -63,8 +56,6 @@ internal partial class UgoiraEntryVM : BaseEntryVM, INavigatorListEntry, IPixelS
         OnPropertyChanged(nameof(PixelSize));
 
         IsLoading = false;
-
-        await ratingTask;
     }
 
     public void UpdatePreview(Size previewSize)

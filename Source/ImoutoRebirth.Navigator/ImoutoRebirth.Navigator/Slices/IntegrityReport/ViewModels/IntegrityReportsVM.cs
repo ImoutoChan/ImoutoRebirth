@@ -29,6 +29,7 @@ internal partial class IntegrityReportsVM : ObservableObject
     public partial IntegrityReportItemVM? SelectedReport { get; set; }
 
     [ObservableProperty]
+    [NotifyCanExecuteChangedFor(nameof(CreateReportCommand))]
     public partial bool IsLoading { get; set; }
 
     [ObservableProperty]
@@ -109,8 +110,11 @@ internal partial class IntegrityReportsVM : ObservableObject
 
             foreach (var collection in collections)
             {
-                AvailableCollections.Add(new SelectableCollectionVM(collection.Id, collection.Name, true));
+                var selectable = new SelectableCollectionVM(collection.Id, collection.Name);
+                selectable.PropertyChanged += (_, _) => CreateReportCommand.NotifyCanExecuteChanged();
+                AvailableCollections.Add(selectable);
             }
+            CreateReportCommand.NotifyCanExecuteChanged();
         }
         catch (Exception ex)
         {
@@ -125,23 +129,9 @@ internal partial class IntegrityReportsVM : ObservableObject
             return;
 
         IsLoading = true;
-        _currentSkip = 0;
-        _hasMoreItems = true;
-        HasMoreItems = true;
-
         try
         {
-            var reports = await _reportService.GetReportsAsync(PageSize, 0);
-
-            Reports.Clear();
-            foreach (var report in reports)
-            {
-                Reports.Add(new IntegrityReportItemVM(report));
-            }
-
-            _currentSkip = reports.Count;
-            _hasMoreItems = reports.Count >= PageSize;
-            HasMoreItems = _hasMoreItems;
+            await ReloadFirstPageAsync();
         }
         catch (Exception ex)
         {
@@ -152,6 +142,18 @@ internal partial class IntegrityReportsVM : ObservableObject
         {
             IsLoading = false;
         }
+    }
+
+    private async Task ReloadFirstPageAsync()
+    {
+        var reports = await _reportService.GetReportsAsync(PageSize, 0);
+        Reports.Clear();
+        foreach (var report in reports)
+            Reports.Add(new IntegrityReportItemVM(report));
+
+        _currentSkip = reports.Count;
+        _hasMoreItems = reports.Count >= PageSize;
+        HasMoreItems = _hasMoreItems;
     }
 
     [RelayCommand]
@@ -223,9 +225,14 @@ internal partial class IntegrityReportsVM : ObservableObject
         IsCreatingReport = false;
     }
 
-    [RelayCommand]
+    private bool CanCreateReport() => !IsLoading && AvailableCollections.Any(c => c.IsSelected);
+
+    [RelayCommand(CanExecute = nameof(CanCreateReport))]
     private async Task CreateReportAsync()
     {
+        if (!CanCreateReport())
+            return;
+
         IsLoading = true;
 
         try
@@ -246,7 +253,7 @@ internal partial class IntegrityReportsVM : ObservableObject
 
             IsCreatingReport = false;
 
-            await LoadReportsAsync();
+            await ReloadFirstPageAsync();
 
             SelectedReport = Reports.FirstOrDefault(r => r.ReportId == reportId);
         }

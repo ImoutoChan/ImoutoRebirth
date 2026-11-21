@@ -106,17 +106,8 @@ internal partial class CollectionVM : ObservableObject
 
     public async Task Rename(string newName)
     {
-        try
-        {
-            await _collectionService.RenameCollection(Id, newName);
-
-            Name = newName;
-        }
-        catch (Exception ex)
-        {
-            App.MainWindowVM?.SetStatusError("Can't rename collection", ex.Message);
-            Log.Error(ex, "Can't rename collection");
-        }
+        await _collectionService.RenameCollection(Id, newName);
+        Name = newName;
     }
 
     private async void DestinationFolderVM_RemoveRequest(object? sender, EventArgs e)

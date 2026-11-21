@@ -37,7 +37,7 @@ internal class BindedTagVM : VMBase
         }
     }
 
-    public Guid Id => _modelTag.Tag.Id;
+    public FileTag Model => _modelTag;
 
     public string Type => _modelTag.Tag.Type.Title;
 

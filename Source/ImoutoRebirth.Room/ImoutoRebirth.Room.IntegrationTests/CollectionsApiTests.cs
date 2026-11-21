@@ -1,11 +1,14 @@
-﻿using AwesomeAssertions;
+﻿using System.Data;
+using AwesomeAssertions;
 using ImoutoRebirth.Common.MassTransit;
 using ImoutoRebirth.Common.Tests;
 using ImoutoRebirth.Lamia.MessageContracts;
 using ImoutoRebirth.Room.Application.Cqrs;
 using ImoutoRebirth.Room.Application.Cqrs.CollectionFileSlice;
+using ImoutoRebirth.Room.Application.Cqrs.CollectionSlice;
 using ImoutoRebirth.Room.Application.Cqrs.FoldersSlice;
 using ImoutoRebirth.Room.Database;
+using ImoutoRebirth.Room.Database.Entities;
 using ImoutoRebirth.Room.Domain;
 using ImoutoRebirth.Room.IntegrationTests.Fixtures;
 using MassTransit.Testing;
@@ -174,6 +177,61 @@ public class CollectionsApiTests : IDisposable
         // assert
         files.Should().HaveCount(2);
         files.Should().ContainAll(["5f30f9953332c230d11e3f26db5ae9a0", "09e56a8fd9d1e8beb62c50e6945632bf"]);
+    }
+
+    [Fact]
+    public async Task FilterCollectionFilesRefreshesHashesAfterCollectionDeletionCommits()
+    {
+        var removedWithCollection = Guid.NewGuid().ToString("N");
+        var sharedHash = Guid.NewGuid().ToString("N");
+        var first = new CollectionEntity
+        {
+            Id = Guid.NewGuid(),
+            Name = "MD5 cache first collection",
+            Files =
+            [
+                new() { Id = Guid.NewGuid(), Path = "first.jpg", Md5 = removedWithCollection },
+                new() { Id = Guid.NewGuid(), Path = "shared.jpg", Md5 = sharedHash }
+            ]
+        };
+        var second = new CollectionEntity
+        {
+            Id = Guid.NewGuid(),
+            Name = "MD5 cache second collection",
+            Files = [new() { Id = Guid.NewGuid(), Path = "shared.jpg", Md5 = sharedHash }]
+        };
+
+        _context.Collections.AddRange(first, second);
+        await _context.SaveChangesAsync();
+
+        var query = new FilterCollectionFileHashesQuery([removedWithCollection, sharedHash]);
+        Assert.Equal(new[] { removedWithCollection, sharedHash }, await GetPresentHashes());
+
+        using (var transaction = await _context.CreateTransactionAsync(IsolationLevel.ReadCommitted))
+        {
+            await _mediator.Send(new DeleteCollectionCommand(first.Id));
+
+            Assert.Equal(new[] { removedWithCollection, sharedHash }, await GetPresentHashes());
+
+            await transaction.CommitAsync();
+        }
+
+        Assert.Equal(new[] { sharedHash }, await GetPresentHashes());
+
+        using var delete = await _httpClient.DeleteAsync($"/collections/{second.Id}");
+        delete.EnsureSuccessStatusCode();
+
+        Assert.Empty(await GetPresentHashes());
+
+        async Task<string[]> GetPresentHashes()
+        {
+            using var response = await _httpClient.PostAsJsonAsync("/collection-files/filter-hashes", query);
+            response.EnsureSuccessStatusCode();
+
+            var hashes = await response.Content.ReadFromJsonAsync<string[]>();
+            Assert.NotNull(hashes);
+            return hashes;
+        }
     }
 
     [Fact]

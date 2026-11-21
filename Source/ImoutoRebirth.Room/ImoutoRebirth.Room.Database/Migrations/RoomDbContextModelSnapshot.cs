@@ -19,7 +19,7 @@ namespace ImoutoRebirth.Room.Database.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "10.0.0")
+                .HasAnnotation("ProductVersion", "10.0.12")
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
             NpgsqlModelBuilderExtensions.HasPostgresEnum(modelBuilder, "integrity_status", new[] { "hash_mismatch", "missing", "ok" });
@@ -85,6 +85,12 @@ namespace ImoutoRebirth.Room.Database.Migrations
                     b.HasIndex("Md5");
 
                     b.HasIndex("Path");
+
+                    b.HasIndex("AddedOn", "Id")
+                        .HasFilter("NOT \"IsRemoved\"");
+
+                    b.HasIndex("CollectionId", "AddedOn", "Id")
+                        .HasFilter("NOT \"IsRemoved\"");
 
                     b.HasIndex("CollectionId", "Md5", "IsRemoved")
                         .IsUnique()

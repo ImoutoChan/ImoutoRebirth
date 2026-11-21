@@ -22,6 +22,10 @@ internal interface INavigatorListEntry : IDragable
 
     BitmapSource? Image { get; }
 
+    bool IsRatingLoaded { get; }
+
+    void SetRating(bool isFavorite, int rating);
+
     bool IsFavorite { get; }
 
     int Rating { get; }

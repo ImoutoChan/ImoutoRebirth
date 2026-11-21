@@ -17,8 +17,11 @@ public interface ICollectionFileRepository
 
     Task Remove(Guid id);
 
+    Task<bool> HasOtherReference(Guid fileId, string path, CancellationToken ct);
+
     Task<string?> GetWithMd5(
         Guid collectionId,
         string md5,
+        string path,
         CancellationToken ct = default);
 }

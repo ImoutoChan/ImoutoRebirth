@@ -12,9 +12,7 @@ internal interface IFileTagService
 
     Task UnbindTags(params UnbindTagRequest[] tagsToUnbind);
 
-    Task<IReadOnlyCollection<FileTag>> GetFileTags(Guid fileId);
-    
-    Task<IReadOnlyCollection<FileNote>> GetFileNotes(Guid fileId);
+    Task<(IReadOnlyCollection<FileTag> Tags, IReadOnlyCollection<FileNote> Notes)> GetFileMetadata(Guid fileId, CancellationToken ct);
 }
 
 internal record UnbindTagRequest(Guid FileId, Guid TagId, string? Value, FileTagSource Source);

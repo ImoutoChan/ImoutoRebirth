@@ -1,4 +1,4 @@
-﻿using System.Runtime.CompilerServices;
+using System.Runtime.CompilerServices;
 using ImoutoRebirth.Common.Cqrs.Abstract;
 using ImoutoRebirth.Lilin.WebApi.Client;
 using ImoutoRebirth.Room.WebApi.Client;
@@ -53,7 +53,7 @@ internal class FilesStatusesQueryHandler : IStreamQueryHandler<FilesStatusesQuer
     {
         var loaded = await _collectionFilesClient.FilterCollectionFileHashesAsync(new(hashes), ct);
 
-        var loadedHashset = loaded.ToHashSet();
+        var loadedHashset = loaded.ToHashSet(StringComparer.OrdinalIgnoreCase);
 
         return hashes
             .ToDictionary(
@@ -68,7 +68,7 @@ internal class FilesStatusesQueryHandler : IStreamQueryHandler<FilesStatusesQuer
         var response = await _filesLilinClient.GetRelativesInfoBatchAsync(hashes, ct);
 
         return response.ToDictionary(
-            x => x.Hash!,
+            x => x.Hash!.ToLowerInvariant(),
             x => x.RelativeType == null
                 ? FileStatus.NotFound
                 : FileStatus.RelativePresent);

@@ -1,4 +1,5 @@
 ﻿using ImoutoRebirth.Room.Application.Services;
+using ImoutoRebirth.Room.DataAccess.Cache;
 using ImoutoRebirth.Room.DataAccess.Exceptions;
 using ImoutoRebirth.Room.DataAccess.Mappers;
 using ImoutoRebirth.Room.Database;
@@ -12,7 +13,13 @@ internal class CollectionRepository : ICollectionRepository
 {
     private readonly RoomDbContext _roomDbContext;
 
-    public CollectionRepository(RoomDbContext roomDbContext) => _roomDbContext = roomDbContext;
+    private readonly Md5PresenceCacheInvalidator _md5PresenceCacheInvalidator;
+
+    public CollectionRepository(RoomDbContext roomDbContext, Md5PresenceCacheInvalidator md5PresenceCacheInvalidator)
+    {
+        _roomDbContext = roomDbContext;
+        _md5PresenceCacheInvalidator = md5PresenceCacheInvalidator;
+    }
 
     public async Task<IReadOnlyCollection<Guid>> GetAllIds() 
         => await _roomDbContext.Collections.Select(x => x.Id).ToListAsync();
@@ -138,5 +145,7 @@ internal class CollectionRepository : ICollectionRepository
 
         _roomDbContext.Remove(collection);
         await _roomDbContext.SaveChangesAsync();
+
+        _md5PresenceCacheInvalidator.CollectionDeleted(_roomDbContext);
     }
 }

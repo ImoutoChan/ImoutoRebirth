@@ -211,7 +211,7 @@ internal partial class TagsEditVM : ObservableObject, IDropable, IRecipient<Sele
                 select new UnbindTagRequest(
                     imageId,
                     tag.Tag.Id,
-                    default,
+                    tag.Value,
                     FileTagSource.Manual);
 
             await _fileTagService.UnbindTags(fileTagsToUnbind.ToArray());

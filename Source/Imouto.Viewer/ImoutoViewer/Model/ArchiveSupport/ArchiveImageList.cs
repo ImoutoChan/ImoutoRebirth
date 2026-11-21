@@ -8,23 +8,77 @@ namespace ImoutoViewer.Model.ArchiveSupport;
 
 internal class ArchiveImageList : ILocalImageList
 {
-    private readonly Action<ProgressReport> _loadingProgressReportAction;
+    private readonly ZipArchive? _zip;
+    private readonly Dictionary<LocalImage, ZipArchiveEntry> _pendingPages = new();
     private readonly TemporaryDirectoryManager _tempDirManager;
-    private readonly List<LocalImage> _images;
+    private readonly IReadOnlyList<LocalImage> _images;
     private int _currentIndex;
+    private int _requestedIndex;
+    private CancellationTokenSource? _extraction;
+    private Task? _readTask;
+    private bool _disposed;
 
-    public ArchiveImageList(string archiveFilePath, Action<ProgressReport> loadingProgressReportAction)
+    private ArchiveImageList(string archiveFilePath, IProgress<ProgressReport> progress)
     {
         var archive = new FileInfo(archiveFilePath);
-
-        _loadingProgressReportAction = loadingProgressReportAction;
 
         if (!IsSupportedArchive(archive))
             throw new ArgumentException("Unsupported archive type", nameof(archiveFilePath));
 
         _tempDirManager = new TemporaryDirectoryManager();
-        _images = LoadImagesFromArchive(archive);
-        _currentIndex = _images.Any() ? 0 : -1;
+
+        try
+        {
+            if (IsZip(archive))
+            {
+                _zip = ZipFile.OpenRead(archive.FullName);
+                _images = IndexZipPages(_zip);
+            }
+            else
+            {
+                using var otherArchive = ArchiveFactory.OpenArchive(archive.FullName);
+                otherArchive.WriteToDirectory(
+                    _tempDirManager.TempDirectoryPath,
+                    progress: progress);
+
+                _images = Directory.EnumerateFiles(_tempDirManager.TempDirectoryPath, "*", SearchOption.AllDirectories)
+                    .Where(path => path.IsImage())
+                    .OrderBy(path => path.GetAlphanumericName(), StringComparer.OrdinalIgnoreCase)
+                    .Select(path => new LocalImage(path))
+                    .ToList();
+            }
+
+            _requestedIndex = _currentIndex = _images.Count == 0 ? -1 : 0;
+        }
+        catch
+        {
+            _zip?.Dispose();
+            _tempDirManager.Dispose();
+            throw;
+        }
+    }
+
+    public static async Task<ArchiveImageList> OpenAsync(string path, IProgress<ProgressReport> progress, CancellationToken ct)
+    {
+        var list = new ArchiveImageList(path, progress);
+
+        try
+        {
+            if (list.CurrentImage is { } first)
+            {
+                list._pendingPages.Remove(first, out var entry);
+                await PreparePage(first, entry, ct).ConfigureAwait(false);
+            }
+
+            ct.ThrowIfCancellationRequested();
+
+            return list;
+        }
+        catch
+        {
+            list.Dispose();
+            throw;
+        }
     }
 
     public static bool IsSupportedArchive(string archiveFile) => IsSupportedArchive(new FileInfo(archiveFile));
@@ -34,12 +88,7 @@ internal class ArchiveImageList : ILocalImageList
         if (archiveFile.Extension is "" or null)
             return false;
 
-        return archiveFile.Extension switch
-        {
-            ".zip" => true,
-            ".cbz" => true,
-            _ => false
-        } || IsArchive(archiveFile);
+        return IsZip(archiveFile) || CanDetectArchiveFormat(archiveFile);
     }
 
     public LocalImage? CurrentImage => _currentIndex >= 0 && _currentIndex < _images.Count
@@ -62,20 +111,55 @@ internal class ArchiveImageList : ILocalImageList
 
     public event EventHandler? CurrentImageChanged;
 
-    public void Next()
-    {
-        if (_images.Count > 0)
-        {
-            _currentIndex = (_currentIndex + 1) % _images.Count;
-            CurrentImageChanged?.Invoke(this, EventArgs.Empty);
-        }
-    }
+    public void Next() => Move(1);
 
-    public void Previous()
+    public void Previous() => Move(-1);
+
+    private async void Move(int offset)
     {
-        if (_images.Count > 0)
+        if (_disposed || _images.Count == 0)
+            return;
+
+        _requestedIndex = (_requestedIndex + offset + _images.Count) % _images.Count;
+        if (_extraction != null)
         {
-            _currentIndex = (_currentIndex - 1 + _images.Count) % _images.Count;
+            _extraction.Cancel();
+            return;
+        }
+
+        while (_requestedIndex != _currentIndex)
+        {
+            var index = _requestedIndex;
+            var page = _images[index];
+            _pendingPages.TryGetValue(page, out var entry);
+            using var request = new CancellationTokenSource();
+            _extraction = request;
+
+            try
+            {
+                _readTask = Task.Run(() => PreparePage(page, entry, request.Token), request.Token);
+                await _readTask;
+                _pendingPages.Remove(page);
+            }
+            catch (OperationCanceledException) when (request.IsCancellationRequested)
+            {
+            }
+            finally
+            {
+                _extraction = null;
+                _readTask = null;
+            }
+
+            if (_disposed || request.IsCancellationRequested)
+            {
+                page.FreeMemory();
+                if (_disposed)
+                    return;
+                continue;
+            }
+
+            CurrentImage?.FreeMemory();
+            _currentIndex = index;
             CurrentImageChanged?.Invoke(this, EventArgs.Empty);
         }
     }
@@ -86,52 +170,66 @@ internal class ArchiveImageList : ILocalImageList
 
     public void ResortFiles()
     {
-        // Files in archive are already sorted by the only supported way
     }
 
-    private List<LocalImage> LoadImagesFromArchive(FileInfo archiveFile)
+    private IReadOnlyList<LocalImage> IndexZipPages(ZipArchive zip)
+    {
+        var entries = zip.Entries
+            .Where(entry => entry.FullName.IsImage())
+            .OrderBy(entry => entry.FullName.Replace('/', '\\').GetAlphanumericName(), StringComparer.OrdinalIgnoreCase);
+
+        var pages = new List<LocalImage>();
+        foreach (var entry in entries)
+        {
+            var fileName = Path.GetFileName(entry.FullName);
+            if (fileName.IndexOfAny(Path.GetInvalidFileNameChars()) >= 0)
+                continue;
+
+            var pageDirectory = Path.Combine(_tempDirManager.TempDirectoryPath, pages.Count.ToString());
+            var page = new LocalImage(Path.Combine(pageDirectory, fileName));
+
+            _pendingPages.Add(page, entry);
+            pages.Add(page);
+        }
+
+        return pages;
+    }
+
+    private static async Task PreparePage(LocalImage page, ZipArchiveEntry? entry, CancellationToken ct)
+    {
+        if (entry != null)
+            await ExtractPage(page, entry, ct).ConfigureAwait(false);
+
+        ct.ThrowIfCancellationRequested();
+        page.Preload();
+    }
+
+    private static async Task ExtractPage(LocalImage page, ZipArchiveEntry entry, CancellationToken ct)
     {
         try
         {
-            var imagePaths = ExtractImagePaths(archiveFile);
-            return imagePaths
-                .Select(path => new LocalImage(path))
-                .OrderBy(x => x.Path.GetAlphanumericName(), StringComparer.OrdinalIgnoreCase)
-                .ToList();
+            Directory.CreateDirectory(Path.GetDirectoryName(page.Path)!);
+            using var input = entry.Open();
+            using var output = new FileStream(page.Path, FileMode.Create, FileAccess.Write, FileShare.None, 81920, true);
+            await input.CopyToAsync(output, ct).ConfigureAwait(false);
         }
-        catch (Exception e)
+        catch (OperationCanceledException)
         {
-            Console.WriteLine(e);
+            File.Delete(page.Path);
             throw;
         }
+        catch (Exception error) when (error is IOException or InvalidDataException or UnauthorizedAccessException)
+        {
+            page.SetError(error);
+        }
     }
 
-    private List<string> ExtractImagePaths(FileInfo archiveFile)
+    private static bool IsZip(FileInfo file)
+        => file.Extension.Equals(".zip", StringComparison.OrdinalIgnoreCase)
+           || file.Extension.Equals(".cbz", StringComparison.OrdinalIgnoreCase);
+
+    private static bool CanDetectArchiveFormat(FileInfo archiveFile)
     {
-        var extension = archiveFile.Extension.ToLower();
-        var imagePaths = new List<string>();
-
-        if (extension is ".zip" or ".cbz")
-        {
-            ZipFile.ExtractToDirectory(archiveFile.FullName, _tempDirManager.TempDirectoryPath);
-        }
-        else // if (extension is ".rar" or ".7z" or ...)
-        {
-            using var archive = ArchiveFactory.OpenArchive(archiveFile.FullName);
-            archive.WriteToDirectory(_tempDirManager.TempDirectoryPath, progress: new Progress<ProgressReport>(_loadingProgressReportAction));
-        }
-
-        var extractedFiles = Directory.GetFiles(_tempDirManager.TempDirectoryPath, "*.*", SearchOption.AllDirectories);
-        imagePaths.AddRange(extractedFiles.Where(file => file.IsImage()));
-
-        return imagePaths;
-    }
-
-    private static bool IsArchive(FileInfo archiveFile)
-    {
-        // Swallowing the exceptions here until
-        // https://github.com/adamhathcock/sharpcompress/issues/1064
-        // is fixed
         try
         {
             return ArchiveFactory.IsArchive(archiveFile.FullName, out _);
@@ -142,5 +240,27 @@ internal class ArchiveImageList : ILocalImageList
         }
     }
 
-    public void Dispose() => _tempDirManager.Dispose();
+    public void Dispose()
+    {
+        if (_disposed)
+            return;
+
+        _disposed = true;
+        CurrentImage?.FreeMemory();
+        _extraction?.Cancel();
+        if (_readTask is { IsCompleted: false } reading)
+        {
+            _ = reading.ContinueWith(_ => CloseArchive(), TaskScheduler.Default);
+        }
+        else
+        {
+            CloseArchive();
+        }
+    }
+
+    private void CloseArchive()
+    {
+        _zip?.Dispose();
+        _tempDirManager.Dispose();
+    }
 }

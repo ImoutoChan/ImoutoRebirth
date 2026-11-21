@@ -8,19 +8,22 @@ internal class PostSaver
 
     public PostSaver(HttpClient httpClient) => _httpClient = httpClient;
 
-    public async Task SavePosts(IReadOnlyCollection<Post> posts, string saveDirectoryPath)
+    public async Task SavePost(Post post, string saveDirectoryPath, CancellationToken ct)
     {
-        foreach (var post in posts)
+        var path = Path.Combine(saveDirectoryPath, HttpUtility.UrlDecode(GetName(post)));
+        using var response = await _httpClient.GetAsync(post.FileUrl, ct);
+        response.EnsureSuccessStatusCode();
+
+        var file = new FileStream(path, FileMode.CreateNew);
+        try
         {
-            var name = GetName(post);
-            var response = await _httpClient.GetAsync(post.FileUrl);
-            response.EnsureSuccessStatusCode();
-
-            await using var fs = new FileStream(
-                Path.Combine(saveDirectoryPath, HttpUtility.UrlDecode(name)),
-                FileMode.CreateNew);
-
-            await response.Content.CopyToAsync(fs);
+            await using (file)
+                await response.Content.CopyToAsync(file, ct);
+        }
+        catch
+        {
+            File.Delete(path);
+            throw;
         }
     }
 

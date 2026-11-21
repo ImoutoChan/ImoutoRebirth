@@ -116,7 +116,7 @@ public partial class LocationsStepViewModel : ObservableValidator, IStep
         {
             Harpy = x.Harpy with
             {
-                SavePath = FavSaveLocation!.Replace(@"\", @"\\")
+                SavePath = FavSaveLocation!
             }
         });
     }
@@ -125,7 +125,7 @@ public partial class LocationsStepViewModel : ObservableValidator, IStep
     {
         await _configurationStorage.ConfigurationLoaded;
 
-        FavSaveLocation = _configurationStorage.CurrentConfiguration.Harpy.SavePath.Replace(@"\\", @"\");
+        FavSaveLocation = _configurationStorage.CurrentConfiguration.Harpy.SavePath;
         InstallLocation = _configurationStorage.InstallLocation;
         InstallLocationEditable = _configurationStorage.InstallLocationEditable;
     }

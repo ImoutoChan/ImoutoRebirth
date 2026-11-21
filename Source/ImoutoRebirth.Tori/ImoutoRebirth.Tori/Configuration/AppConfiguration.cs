@@ -113,7 +113,7 @@ public record AppConfiguration(
                 KekkaiPort: configurationDictionary["KekkaiPort"],
                 LilinPort: configurationDictionary["LilinPort"]),
             Harpy: new(
-                SavePath: configurationDictionary["HarpySavePath"].Replace(@"\", @"\\"),
+                SavePath: configurationDictionary["HarpySavePath"],
                 FavoritesSaveJobRepeatEveryMinutes: configurationDictionary["HarpyFavoritesSaveJobRepeatEveryMinutes"]),
             Meido: new(
                 MetadataActualizerRepeatEveryMinutes: configurationDictionary["MeidoMetadataActualizerRepeatEveryMinutes"],
@@ -156,7 +156,7 @@ public record AppConfiguration(
             ["KekkaiPort"] = Ports.KekkaiPort,
             ["LilinPort"] = Ports.LilinPort,
 
-            ["HarpySavePath"] = Harpy.SavePath.Replace(@"\\", @"\"),
+            ["HarpySavePath"] = Harpy.SavePath,
             ["HarpyFavoritesSaveJobRepeatEveryMinutes"] = Harpy.FavoritesSaveJobRepeatEveryMinutes,
 
             ["MeidoMetadataActualizerRepeatEveryMinutes"] = Meido.MetadataActualizerRepeatEveryMinutes,

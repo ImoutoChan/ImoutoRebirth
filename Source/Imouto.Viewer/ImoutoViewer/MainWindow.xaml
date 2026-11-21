@@ -4,7 +4,7 @@
                           xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
                           xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
                           xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-                          xmlns:gif="http://wpfanimatedgif.codeplex.com"
+                          xmlns:gif="https://github.com/XamlAnimatedGif/XamlAnimatedGif"
                           xmlns:metroControl="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
                           xmlns:b="http://schemas.microsoft.com/xaml/behaviors"
                           xmlns:mah="http://metro.mahapps.com/winfx/xaml/shared"
@@ -26,7 +26,7 @@
                           WindowState="Maximized"
                           BorderBrush="{DynamicResource MahApps.Brushes.Accent}"
                           BorderThickness="2"
-                          gif:ImageBehavior.AnimateInDesignMode="True"
+                          gif:AnimationBehavior.AnimateInDesignMode="True"
                           KeyUp="MainWindow_OnKeyUp"
                           TitleCharacterCasing="Normal"
                           MinHeight="180"
@@ -397,12 +397,12 @@
                                          Focusable="False"
                                          Grid.Row="0">
                 <Grid Name="GridParent">
-                    <Image VerticalAlignment="Center"
+                    <Image x:Name="AnimatedImage"
+                           VerticalAlignment="Center"
                            HorizontalAlignment="Center"
                            Height="{Binding ViewportHeight}"
                            Width="{Binding ViewportWidth}"
-                           gif:ImageBehavior.AnimatedSource="{Binding AnimutedImage}"
-                           Visibility="{Binding IsAnimuted, Converter={StaticResource VisibilityConverter}}">
+                           gif:AnimationBehavior.SourceUri="{Binding AnimatedImageUri}">
                         <b:Interaction.Behaviors>
                             <behavior:FrameworkElementDragBehavior />
                         </b:Interaction.Behaviors>
@@ -413,8 +413,17 @@
                            HorizontalAlignment="Center"
                            Height="{Binding ViewportHeight}"
                            Width="{Binding ViewportWidth}"
-                           Source="{Binding Image}"
-                           Visibility="{Binding IsAnimuted, Converter={StaticResource VisibilityInvertConverter}}">
+                           Source="{Binding Image}">
+                        <Image.Style>
+                            <Style TargetType="Image">
+                                <Setter Property="Visibility" Value="Collapsed" />
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding Source, ElementName=AnimatedImage}" Value="{x:Null}">
+                                        <Setter Property="Visibility" Value="Visible" />
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </Image.Style>
                         <b:Interaction.Behaviors>
                             <behavior:FrameworkElementDragBehavior />
                         </b:Interaction.Behaviors>

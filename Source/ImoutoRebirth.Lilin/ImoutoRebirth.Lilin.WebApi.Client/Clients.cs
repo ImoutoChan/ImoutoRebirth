@@ -223,6 +223,84 @@ namespace ImoutoRebirth.Lilin.WebApi.Client
             }
         }
 
+        public virtual System.Threading.Tasks.Task<System.Collections.Generic.IReadOnlyCollection<FileRating>> GetFileRatingsAsync(FileRatingsQuery body)
+        {
+            return GetFileRatingsAsync(body, System.Threading.CancellationToken.None);
+        }
+
+        public virtual async System.Threading.Tasks.Task<System.Collections.Generic.IReadOnlyCollection<FileRating>> GetFileRatingsAsync(FileRatingsQuery body, System.Threading.CancellationToken ct)
+        {
+            if (body == null)
+                throw new System.ArgumentNullException("body");
+
+            var client_ = _httpClient;
+            var disposeClient_ = false;
+            try
+            {
+                using (var request_ = new System.Net.Http.HttpRequestMessage())
+                {
+                    var json_ = System.Text.Json.JsonSerializer.SerializeToUtf8Bytes(body, JsonSerializerSettings);
+                    var content_ = new System.Net.Http.ByteArrayContent(json_);
+                    content_.Headers.ContentType = System.Net.Http.Headers.MediaTypeHeaderValue.Parse("application/json");
+                    request_.Content = content_;
+                    request_.Method = new System.Net.Http.HttpMethod("POST");
+                    request_.Headers.Accept.Add(System.Net.Http.Headers.MediaTypeWithQualityHeaderValue.Parse("application/json"));
+
+                    var urlBuilder_ = new System.Text.StringBuilder();
+                    urlBuilder_.Append("files/ratings");
+
+                    PrepareRequest(client_, request_, urlBuilder_);
+
+                    var url_ = urlBuilder_.ToString();
+                    request_.RequestUri = new System.Uri(url_, System.UriKind.RelativeOrAbsolute);
+
+                    PrepareRequest(client_, request_, url_);
+
+                    var response_ = await client_.SendAsync(request_, System.Net.Http.HttpCompletionOption.ResponseHeadersRead, ct).ConfigureAwait(false);
+                    var disposeResponse_ = true;
+                    try
+                    {
+                        var headers_ = new System.Collections.Generic.Dictionary<string, System.Collections.Generic.IEnumerable<string>>();
+                        foreach (var item_ in response_.Headers)
+                            headers_[item_.Key] = item_.Value;
+                        if (response_.Content != null && response_.Content.Headers != null)
+                        {
+                            foreach (var item_ in response_.Content.Headers)
+                                headers_[item_.Key] = item_.Value;
+                        }
+
+                        ProcessResponse(client_, response_);
+
+                        var status_ = (int)response_.StatusCode;
+                        if (status_ == 200)
+                        {
+                            var objectResponse_ = await ReadObjectResponseAsync<System.Collections.Generic.IReadOnlyCollection<FileRating>>(response_, headers_, ct).ConfigureAwait(false);
+                            if (objectResponse_.Object == null)
+                            {
+                                throw new WebApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
+                            }
+                            return objectResponse_.Object;
+                        }
+                        else
+                        {
+                            var responseData_ = response_.Content == null ? null : await ReadAsStringAsync(response_.Content, ct).ConfigureAwait(false);
+                            throw new WebApiException("The HTTP status code of the response was not expected (" + status_ + ").", status_, responseData_, headers_, null);
+                        }
+                    }
+                    finally
+                    {
+                        if (disposeResponse_)
+                            response_.Dispose();
+                    }
+                }
+            }
+            finally
+            {
+                if (disposeClient_)
+                    client_.Dispose();
+            }
+        }
+
         /// <returns>OK</returns>
         /// <exception cref="WebApiException">A server side error occurred.</exception>
         public virtual System.Threading.Tasks.Task<System.Collections.Generic.IReadOnlyCollection<RelativeShortInfo>> GetRelativesInfoBatchAsync(System.Collections.Generic.IReadOnlyCollection<string> body)
@@ -2080,6 +2158,42 @@ namespace ImoutoRebirth.Lilin.WebApi.Client
 
         [System.Text.Json.Serialization.JsonPropertyName("sourceId")]
         public string? SourceId { get; }
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public partial class FileRating
+    {
+        [System.Text.Json.Serialization.JsonConstructor]
+        public FileRating(System.Guid @fileId, bool @isFavorite, int @rating)
+        {
+            this.FileId = @fileId;
+            this.IsFavorite = @isFavorite;
+            this.Rating = @rating;
+        }
+
+        [System.Text.Json.Serialization.JsonPropertyName("fileId")]
+        public System.Guid FileId { get; }
+
+        [System.Text.Json.Serialization.JsonPropertyName("isFavorite")]
+        public bool IsFavorite { get; }
+
+        [System.Text.Json.Serialization.JsonPropertyName("rating")]
+        public int Rating { get; }
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public partial class FileRatingsQuery
+    {
+        [System.Text.Json.Serialization.JsonConstructor]
+        public FileRatingsQuery(System.Collections.Generic.IReadOnlyCollection<System.Guid> @fileIds)
+        {
+            this.FileIds = @fileIds;
+        }
+
+        [System.Text.Json.Serialization.JsonPropertyName("fileIds")]
+        public System.Collections.Generic.IReadOnlyCollection<System.Guid> FileIds { get; }
 
     }
 

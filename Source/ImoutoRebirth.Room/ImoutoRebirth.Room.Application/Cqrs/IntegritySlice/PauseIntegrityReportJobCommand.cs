@@ -25,9 +25,8 @@ internal class PauseIntegrityReportJobCommandHandler : ICommandHandler<PauseInte
         var reportId = command.ReportId;
         var report = await _integrityReportRepository.Get(reportId);
 
-        _runningJobs.Interrupt(RoomJobType.IntegrityReportBuilder);
+        _runningJobs.Interrupt(RoomJobType.IntegrityReportBuilder, reportId);
         report.SetStatus(ReportStatus.Paused);
         await _integrityReportRepository.Update(report);
-        _runningJobs.Interrupt(RoomJobType.IntegrityReportBuilder);
     }
 }

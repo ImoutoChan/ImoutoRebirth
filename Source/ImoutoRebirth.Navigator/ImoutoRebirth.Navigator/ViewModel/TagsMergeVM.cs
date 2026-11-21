@@ -43,6 +43,10 @@ internal partial class TagsMergeVM : ObservableObject
     public partial bool IsSuccess { get; set; }
 
     [ObservableProperty]
+    [NotifyCanExecuteChangedFor(nameof(SaveAliasesCommand))]
+    private partial bool AliasesLoaded { get; set; }
+
+    [ObservableProperty]
     public partial bool IsAliasesInProgress { get; set; }
 
     [ObservableProperty]
@@ -82,8 +86,8 @@ internal partial class TagsMergeVM : ObservableObject
         CleanedTag = null;
     }
 
-
-    private bool CanMergeTags(object? obj) => TagToClean != null && TagToEnrich != null;
+    private bool CanMergeTags(object? obj)
+        => TagToClean != null && TagToEnrich != null && TagToClean.Tag.Id != TagToEnrich.Tag.Id;
 
     [RelayCommand(CanExecute = nameof(CanMergeTags))]
     private async Task MergeTags(object? obj)
@@ -150,6 +154,7 @@ internal partial class TagsMergeVM : ObservableObject
 
         if (AliasesAnchor == null)
         {
+            AliasesLoaded = false;
             AliasesAnchor = tag;
             AliasTags.Clear();
 
@@ -158,12 +163,16 @@ internal partial class TagsMergeVM : ObservableObject
                 var aliases = await _tagService.GetTagAliases(tag.Tag.Id);
 
                 if (AliasesAnchor == tag)
+                {
                     foreach (var alias in aliases)
                         AliasTags.Add(new SearchTagVM(new SearchTag(alias, null)));
+                    AliasesLoaded = true;
+                }
             }
             catch (Exception ex)
             {
                 Log.Error(ex, "Tag aliases load error");
+                App.MainWindowVM?.SetStatusError("Unable to load tag aliases", ex.Message);
             }
 
             return;
@@ -181,18 +190,19 @@ internal partial class TagsMergeVM : ObservableObject
     [RelayCommand]
     private void ResetAliases()
     {
+        AliasesLoaded = false;
         AliasesAnchor = null;
         AliasTags.Clear();
     }
 
-    private bool CanSaveAliases() => AliasesAnchor != null;
+    private bool CanSaveAliases() => AliasesAnchor != null && AliasesLoaded;
 
     [RelayCommand(CanExecute = nameof(CanSaveAliases))]
     private async Task SaveAliases()
     {
         var anchor = AliasesAnchor;
 
-        if (anchor == null)
+        if (anchor == null || !AliasesLoaded)
             return;
 
         try

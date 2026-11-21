@@ -19,7 +19,7 @@ internal class ArchiveMetadataProvider : IMetadataForFileProvider
         var archiveFileCount = archive.Entries.Count(e => !e.IsDirectory);
         var firstImage = archive.Entries.FirstOrDefault(x => x.Key?.IsImage() == true);
 
-        var maybeUgoira = Path.GetExtension(filePath) == ".zip"
+        var maybeUgoira = extension == "zip"
                           && (archive.Entries.Any(x => x.Key == "animation.json")
                               || archive.Entries.All(x
                                   => Path.GetFileNameWithoutExtension(x.Key)?.Length == 6

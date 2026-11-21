@@ -1,4 +1,5 @@
 ﻿using System.Diagnostics;
+using System.Text.Json;
 using ImoutoRebirth.Common;
 using Microsoft.Extensions.Logging;
 
@@ -49,6 +50,8 @@ public class WindowsServiceUpdater : IWindowsServiceUpdater
 
     public async Task UpdateService(DirectoryInfo installLocation, DirectoryInfo updaterLocation)
     {
+        ValidatePackage(updaterLocation);
+
         await _windowsServicesManager.LogServices();
         await _windowsServicesManager.StopServices();
         StopApplications();
@@ -96,8 +99,7 @@ public class WindowsServiceUpdater : IWindowsServiceUpdater
 
             if (WindowsServiceNames.Contains(serviceName))
             {
-                var exeName = oldServiceDirectory.GetFiles("*", SearchOption.AllDirectories)
-                    .First(x => x.Extension == ".exe" && x.Name.Contains(serviceName)).FullName;
+                var exeName = Path.Combine(oldServiceDirectory.FullName, ServiceAssembly(serviceName) + ".exe");
 
                 _logger.LogInformation(
                     "{ServiceName} | Preparing to create service with exe {ServiceExe}", 
@@ -119,6 +121,42 @@ public class WindowsServiceUpdater : IWindowsServiceUpdater
         
         await _windowsServicesManager.CreateServices(windowsServicesToCreate);
         await _windowsServicesManager.StartServices();
+    }
+
+    private static string ServiceAssembly(string name) => name == "ImoutoRebirth.Kekkai" ? name : name + ".Host";
+
+    internal static void ValidatePackage(DirectoryInfo package)
+    {
+        foreach (var service in WindowsServiceNames)
+        {
+            RequireApplication(service, ServiceAssembly(service));
+            RequireFile(Path.Combine(service, "appsettings.Production.json"));
+        }
+
+        RequireApplication("ImoutoRebirth.Navigator", "ImoutoRebirth.Navigator");
+        RequireFile(Path.Combine("Imouto.Viewer", "ImoutoViewer.exe"));
+
+        var inventory = Path.Combine(package.FullName, "package-files.json");
+        if (File.Exists(inventory))
+        {
+            var files = JsonSerializer.Deserialize<Dictionary<string, long>>(File.ReadAllText(inventory))
+                ?? throw new InvalidDataException("Invalid package inventory.");
+            foreach (var (relativePath, size) in files)
+                RequireFile(relativePath, size);
+        }
+
+        void RequireApplication(string directory, string assembly)
+        {
+            foreach (var suffix in new[] { ".exe", ".dll", ".deps.json", ".runtimeconfig.json" })
+                RequireFile(Path.Combine(directory, assembly + suffix));
+        }
+
+        void RequireFile(string relativePath, long? expectedSize = null)
+        {
+            var file = new FileInfo(Path.Combine(package.FullName, relativePath));
+            if (!file.Exists || (expectedSize.HasValue ? file.Length != expectedSize : file.Length == 0))
+                throw new InvalidDataException($"Missing or incomplete package file: {relativePath}");
+        }
     }
 
     private static void StopApplications()

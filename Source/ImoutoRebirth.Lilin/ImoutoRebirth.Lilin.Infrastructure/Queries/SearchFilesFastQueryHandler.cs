@@ -1,4 +1,4 @@
-﻿using ImoutoRebirth.Common.Cqrs.Abstract;
+using ImoutoRebirth.Common.Cqrs.Abstract;
 using ImoutoRebirth.Lilin.Application.FileInfoSlice.Queries;
 using ImoutoRebirth.Lilin.DataAccess;
 using Microsoft.EntityFrameworkCore;
@@ -17,13 +17,13 @@ internal class SearchFilesFastQueryHandler
     {
         var tagSearchEntries = await _lilinDbContext.ExpandAliases(request.TagSearchEntries, ct);
         var queryable = _lilinDbContext.GetSearchFilesIdsQueryable(tagSearchEntries);
-        return await queryable.ToListAsync(cancellationToken: ct);
+        return await queryable.Distinct().ToListAsync(cancellationToken: ct);
     }
 
     public async Task<int> Handle(SearchFilesFastCountQuery request, CancellationToken ct)
     {
         var tagSearchEntries = await _lilinDbContext.ExpandAliases(request.TagSearchEntries, ct);
         var queryable = _lilinDbContext.GetSearchFilesIdsQueryable(tagSearchEntries);
-        return await queryable.CountAsync(cancellationToken: ct);
+        return await queryable.Distinct().CountAsync(cancellationToken: ct);
     }
 }

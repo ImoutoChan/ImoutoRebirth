@@ -115,7 +115,13 @@ public class RoomDbContext : DbContext, IUnitOfWork
             .HasFilter($"NOT \"{nameof(CollectionFileEntity.IsRemoved)}\"")
             .IsUnique();
 
-        // Maybe add IsRemoved + Fields indexes
+        modelBuilder.Entity<CollectionFileEntity>()
+            .HasIndex(x => new { x.AddedOn, x.Id })
+            .HasFilter($"NOT \"{nameof(CollectionFileEntity.IsRemoved)}\"");
+
+        modelBuilder.Entity<CollectionFileEntity>()
+            .HasIndex(x => new { x.CollectionId, x.AddedOn, x.Id })
+            .HasFilter($"NOT \"{nameof(CollectionFileEntity.IsRemoved)}\"");
 
         modelBuilder.Entity<CollectionFileEntity>()
             .HasQueryFilter(x => !x.IsRemoved);

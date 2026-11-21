@@ -134,7 +134,8 @@ internal class LocalImageList : IEnumerable, ILocalImageList
     public LocalImageList(
         IEnumerable<string> imagePaths,
         int selectedElementId = -1,
-        string? selectedFilePath = null)
+        string? selectedFilePath = null,
+        bool fromNavigator = false)
     {
         _imageList = new List<LocalImage>();
         _directoriesList = new List<DirectoryInfo>();
@@ -162,13 +163,13 @@ internal class LocalImageList : IEnumerable, ILocalImageList
             from image in paths
             where ImageExtensions.IsImage(image)
             select image;
-        var imagesList = images as IList<string> ?? images.ToList();
+        var imagesList = images.ToList();
 
-        int imagesCount = imagesList.Count();
+        int imagesCount = imagesList.Count;
 
-        if (imagesCount > 1)
+        if (imagesCount > 1 || (imagesCount == 1 && fromNavigator))
         {
-            LoadImages(imagesList);
+            LoadImages(imagesList, fromNavigator);
             CurrentImage = SelectByIndexOrFirst(_imageList, selectedElementId, selectedFilePath);
             _directoriesList.Add(new FileInfo(CurrentImage.Path).Directory!);
             _currentDirectory = _directoriesList.First();
@@ -320,22 +321,23 @@ internal class LocalImageList : IEnumerable, ILocalImageList
         CurrentImage = _imageList.Last();
     }
 
+    internal static IEnumerable<T> SortFiles<T>(IEnumerable<T> files, Func<T, string> path)
+        => files.OrderByWithDirection(x => GetFilesOrderProperty(new FileInfo(path(x))), IsFilesSortMethodDescending);
+
     public void ResortFiles()
     {
-        var ordered = _imageList
-            .OrderByWithDirection(x => GetFilesOrderProperty(new FileInfo(x.Path)), IsFilesSortMethodDescending);
-        _imageList = new List<LocalImage>(ordered);
+        _imageList = SortFiles(_imageList, image => image.Path).ToList();
     }
 
     #endregion Public methods
 
     #region Methods
 
-    private void LoadImages(IEnumerable<string> imagePaths)
+    private void LoadImages(IReadOnlyCollection<string> imagePaths, bool fromNavigator)
     {
 
         var images = imagePaths.Where(x => x.IsImage()).Select(x => new FileInfo(x));
-        if (!ApplicationProperties.BoundToNavigatorSearch)
+        if (!fromNavigator)
         {
             images = images.OrderByWithDirection(GetFilesOrderProperty, IsFilesSortMethodDescending);
         }

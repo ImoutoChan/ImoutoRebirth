@@ -25,4 +25,7 @@
     <ItemGroup>
         <ProjectReference Include="..\ImoutoRebirth.Navigator\ImoutoRebirth.Navigator.csproj" />
     </ItemGroup>
+    <ItemGroup>
+        <None Include="..\..\ImoutoRebirth.Lamia\ImoutoRebirth.Lamia.IntegrationTests\Resources\animated_png.png" Link="Resources\animated_png.png" CopyToOutputDirectory="PreserveNewest" />
+    </ItemGroup>
 </Project>

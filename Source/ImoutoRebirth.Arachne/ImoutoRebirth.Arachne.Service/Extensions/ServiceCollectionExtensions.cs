@@ -1,4 +1,4 @@
-﻿using ImoutoRebirth.Arachne.Service.SearchEngineHistory;
+using ImoutoRebirth.Arachne.Service.SearchEngineHistory;
 using ImoutoRebirth.Common.MassTransit;
 using ImoutoRebirth.Lilin.MessageContracts;
 using ImoutoRebirth.Meido.MessageContracts;
@@ -13,6 +13,7 @@ public static class ServiceCollectionExtensions
         services.AddTransient<ISearchMetadataCommandHandler, SearchMetadataCommandHandler>();
         services.AddTransient<IMeidoReporter, MeidoReporter>();
 
+        services.AddSingleton<SearchEngineAvailability>();
         services.AddSingleton<TagsSearchEngineHistoryAccessor>();
         services.AddSingleton<NotesSearchEngineHistoryAccessor>();
 
