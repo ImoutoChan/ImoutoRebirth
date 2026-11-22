@@ -42,7 +42,12 @@ internal partial class MainWindowVM : ObservableObject
     private readonly GalleryRatingLoader _ratingLoader = new(ServiceLocator.GetService<FilesClient>());
     private readonly IImoutoViewerService _imoutoViewerService;
     private readonly DispatcherTimer _appendNewContentTimer = new() { Interval = TimeSpan.FromSeconds(5) };
+    private readonly DispatcherTimer _gifScrollIdleTimer = new(DispatcherPriority.Background)
+    {
+        Interval = TimeSpan.FromMilliseconds(200)
+    };
 
+    private IReadOnlyCollection<ImageEntryVM> _visibleGifPreviews = [];
     private int _previewSize = 256;
 
     [ObservableProperty]
@@ -77,6 +82,8 @@ internal partial class MainWindowVM : ObservableObject
 
     public MainWindowVM()
     {
+        _gifScrollIdleTimer.Tick += OnGifScrollIdle;
+
         _fileLoadingService = ServiceLocator.GetService<IFileLoadingService>();
         _fileService = ServiceLocator.GetService<IFileService>();
         _fileTagService = ServiceLocator.GetService<IFileTagService>();
@@ -457,6 +464,48 @@ internal partial class MainWindowVM : ObservableObject
         LoadPreviews();
     }
 
+    public void OnGalleryScrolled()
+    {
+        if (!_gifScrollIdleTimer.IsEnabled)
+        {
+            foreach (var item in _visibleGifPreviews)
+                item.IsGifPlaybackSuspended = true;
+        }
+
+        _gifScrollIdleTimer.Stop();
+        _gifScrollIdleTimer.Start();
+    }
+
+    private void OnGifScrollIdle(object? sender, EventArgs e)
+    {
+        _gifScrollIdleTimer.Stop();
+        UpdateVisibleGifPreviews(_view.VisibleItems);
+    }
+
+    private void UpdateVisibleGifPreviews(IReadOnlyCollection<INavigatorListEntry> visibleItems)
+    {
+        var visibleGifs = visibleItems.OfType<ImageEntryVM>()
+            .Where(item => item.Type == ListEntryType.Gif)
+            .ToHashSet();
+
+        foreach (var item in _visibleGifPreviews)
+        {
+            if (!visibleGifs.Contains(item))
+            {
+                item.SetGifPreviewVisible(false);
+                item.IsGifPlaybackSuspended = false;
+            }
+        }
+
+        foreach (var item in visibleGifs)
+        {
+            item.IsGifPlaybackSuspended = false;
+            item.SetGifPreviewVisible(true);
+        }
+
+        _visibleGifPreviews = visibleGifs;
+    }
+
     [RelayCommand]
     private void LoadPreviews()
     {
@@ -470,6 +519,10 @@ internal partial class MainWindowVM : ObservableObject
                     currentArchive.Load();
 
                 var visible = _view.VisibleItems;
+
+                if (!_gifScrollIdleTimer.IsEnabled)
+                    UpdateVisibleGifPreviews(visible);
+
                 _ratingLoader.LoadAsync(visible).LogAndSuppressExceptions();
                 foreach (var listEntry in visible)
                 {

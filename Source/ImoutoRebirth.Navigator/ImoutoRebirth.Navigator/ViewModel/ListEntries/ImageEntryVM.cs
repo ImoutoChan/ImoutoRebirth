@@ -6,6 +6,9 @@ namespace ImoutoRebirth.Navigator.ViewModel.ListEntries;
 
 internal class ImageEntryVM : BaseEntryVM, INavigatorListEntry, IPixelSizable
 {
+    private bool _gifPreviewVisible;
+    private bool _isGifPlaybackSuspended;
+
     public ImageEntryVM(string imagePath, Size initPreviewSize, Guid? dbId)
         : base(dbId)
     {
@@ -32,7 +35,15 @@ internal class ImageEntryVM : BaseEntryVM, INavigatorListEntry, IPixelSizable
 
     public BitmapSource? Image => ImageEntry.Image;
 
-    public Uri? GifSourceUri => Type == ListEntryType.Gif && Image is BitmapImage bitmap ? bitmap.UriSource : null;
+    public Uri? GifSourceUri => _gifPreviewVisible && Type == ListEntryType.Gif && Image is BitmapImage bitmap
+        ? bitmap.UriSource
+        : null;
+
+    public bool IsGifPlaybackSuspended
+    {
+        get => _isGifPlaybackSuspended;
+        set => SetProperty(ref _isGifPlaybackSuspended, value);
+    }
 
     public Size ViewPortSize => ImageEntry.ViewPort;
     
@@ -43,6 +54,15 @@ internal class ImageEntryVM : BaseEntryVM, INavigatorListEntry, IPixelSizable
     private ImageEntry ImageEntry { get; }
 
     public string Path => ImageEntry.FullName;
+
+    public void SetGifPreviewVisible(bool isVisible)
+    {
+        if (_gifPreviewVisible == isVisible)
+            return;
+
+        _gifPreviewVisible = isVisible;
+        OnPropertyChanged(nameof(GifSourceUri));
+    }
 
     public void UpdatePreview(Size previewSize)
     {

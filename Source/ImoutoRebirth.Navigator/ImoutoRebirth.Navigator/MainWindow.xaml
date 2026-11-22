@@ -7,7 +7,6 @@
                           xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
                           xmlns:metroControl="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
                           xmlns:dialog="clr-namespace:MahApps.Metro.Controls.Dialogs;assembly=MahApps.Metro"
-                          xmlns:gif="https://github.com/XamlAnimatedGif/XamlAnimatedGif"
                           xmlns:wpfHelpers="clr-namespace:ImoutoRebirth.Navigator.Utils.Wpf"
                           xmlns:b="http://schemas.microsoft.com/xaml/behaviors"
                           xmlns:viewModel="clr-namespace:ImoutoRebirth.Navigator.ViewModel"
@@ -479,20 +478,27 @@
                                                             Converter={StaticResource ConditionVisibilityConverter},
                                                             ConverterParameter=true}" />
 
-                                <Image x:Name="AnimatedGifPreview"
-                                       gif:AnimationBehavior.SourceUri="{Binding GifSourceUri}" />
+                                <Image x:Name="AnimatedGifPreview">
+                                    <b:Interaction.Behaviors>
+                                        <behaviors:GifPreviewBehavior Source="{Binding GifSourceUri}"
+                                                                      ViewportAnchor="{Binding ElementName=GifPreviewPoster}"
+                                                                      IsPlaybackSuspended="{Binding IsGifPlaybackSuspended}" />
+                                    </b:Interaction.Behaviors>
+                                </Image>
 
-                                <Image Source="{Binding Image}">
+                                <Image x:Name="GifPreviewPoster"
+                                       Source="{Binding Image}"
+                                       IsHitTestVisible="False">
                                     <Image.Style>
                                         <Style TargetType="Image">
-                                            <Setter Property="Visibility" Value="Collapsed" />
+                                            <Setter Property="Opacity" Value="0" />
                                             <Style.Triggers>
                                                 <MultiDataTrigger>
                                                     <MultiDataTrigger.Conditions>
                                                         <Condition Binding="{Binding Source, ElementName=AnimatedGifPreview}" Value="{x:Null}" />
                                                         <Condition Binding="{Binding IsLoading}" Value="False" />
                                                     </MultiDataTrigger.Conditions>
-                                                    <Setter Property="Visibility" Value="Visible" />
+                                                    <Setter Property="Opacity" Value="1" />
                                                 </MultiDataTrigger>
                                             </Style.Triggers>
                                         </Style>

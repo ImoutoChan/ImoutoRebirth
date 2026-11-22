@@ -32,10 +32,16 @@ internal partial class MainWindow
 
         Loaded += (_, _) =>
         {
-            ScrollViewerElement.ScrollChanged += (_, _) =>
+            ScrollViewerElement.ScrollChanged += (_, e) =>
             {
-                var viewModel = DataContext as MainWindowVM;
-                viewModel?.LoadPreviewsCommand.Execute(null);
+                if (DataContext is not MainWindowVM viewModel)
+                    return;
+
+                if (e.VerticalChange != 0 || e.HorizontalChange != 0
+                    || e.ViewportHeightChange != 0 || e.ViewportWidthChange != 0)
+                    viewModel.OnGalleryScrolled();
+
+                viewModel.LoadPreviewsCommand.Execute(null);
             };
 
             MediaListBox.SelectionChanged += OnSelectedItemsChanged;
