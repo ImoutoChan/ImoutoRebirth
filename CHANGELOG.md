@@ -9,6 +9,7 @@
 * Generate the VLC plugin cache when publishing releases to avoid loading every video plugin during cold startup
 * Speed up startup by binding the completed file list, running the initial search once, and loading only file IDs and paths from Room into the existing cache
 * Prepare VLC library images in parallel while loading startup data to avoid a long delay when opening the first video
+* Fix freezes when switching videos quickly, keep the playback controls at the bottom while loading, and restore dragging the seek slider
 
 ### Viewer
 * Click a tag source name in the tags panel to copy its tags as text. The menu offers "Copy tags as text" (grouped by tag type, one type per line) and "Copy general tags as text" (general tags only, shown only when the source has any)

@@ -1,5 +1,8 @@
 ﻿using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Input;
+using System.Windows.Media;
+using ImoutoRebirth.Common.WPF;
 using Microsoft.Xaml.Behaviors;
 using Serilog;
 
@@ -17,7 +20,8 @@ internal class FrameworkElementDragBehavior : Behavior<FrameworkElement>
         AssociatedObject.MouseLeave += AssociatedObject_MouseLeave;
     }
 
-    private void AssociatedObject_MouseLeftButtonDown(object sender, MouseButtonEventArgs e) => IsMouseClicked = true;
+    private void AssociatedObject_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        => IsMouseClicked = e.OriginalSource is not Visual source || source.GetParentOfType<Slider>() is null;
 
     private void AssociatedObject_MouseLeftButtonUp(object sender, MouseButtonEventArgs e) => IsMouseClicked = false;
 

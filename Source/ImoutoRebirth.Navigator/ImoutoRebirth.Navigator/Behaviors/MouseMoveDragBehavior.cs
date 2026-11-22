@@ -1,5 +1,8 @@
 ﻿using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Input;
+using System.Windows.Media;
+using ImoutoRebirth.Common.WPF;
 using Microsoft.Xaml.Behaviors;
 using Serilog;
 
@@ -28,7 +31,7 @@ internal class MouseMoveDragBehavior : Behavior<FrameworkElement>
 
     private void OnPreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
     {
-        _isMouseClicked = true;
+        _isMouseClicked = e.OriginalSource is not Visual source || source.GetParentOfType<Slider>() is null;
         _mouseDownPosition = e.GetPosition(AssociatedObject);
     }
 

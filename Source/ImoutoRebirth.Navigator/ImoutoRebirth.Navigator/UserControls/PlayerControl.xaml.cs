@@ -1,121 +1,57 @@
 ﻿using System.Collections.Concurrent;
-using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Reflection;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Controls.Primitives;
 using System.Windows.Input;
 using ImoutoRebirth.Common.WPF;
 using Serilog;
+using Vlc.DotNet.Core;
 using Vlc.DotNet.Wpf;
 using Application = System.Windows.Application;
 
 namespace ImoutoRebirth.Navigator.UserControls;
 
-/// <summary>
-///     Interaction logic for PlayerControl.xaml
-/// </summary>
 public partial class PlayerControl
 {
     private static readonly ConcurrentDictionary<string, long> LastMediaPositionValues = new();
 
-    public static void ResetLastMediaPositions() => LastMediaPositionValues.Clear();
-
-    private VlcControl _control;
-    private bool _isDisposed;
-
-    private bool IsPlaying
-    {
-        get;
-        set
-        {
-            field = value;
-
-            switch (field)
-            {
-                case false:
-                    _control.SourceProvider.MediaPlayer?.Pause();
-                    PlayButton.Template = Application.Current.FindResource("VideoPlayOverlayIcon") as ControlTemplate;
-                    break;
-                case true:
-                    _control.SourceProvider.MediaPlayer?.Play();
-                    PlayButton.Template = Application.Current.FindResource("VideoPauseOverlayIcon") as ControlTemplate;
-                    break;
-            }
-        }
-    }
+    private VlcControl? _control;
+    private Task _playerOperations = Task.CompletedTask;
+    private Action? _detachPlaybackEvents;
+    private int _mediaVersion;
+    private bool _isPlaying;
 
     public PlayerControl()
     {
         InitializeComponent();
-        InitializePlayer();
+
+        Loaded += (_, _) => ChangeSource(Source);
+        Unloaded += (_, _) => ReleasePlayer();
+
+        Slider.AddHandler(Thumb.DragStartedEvent, new DragStartedEventHandler(OnSeekStarted));
+        Slider.AddHandler(Thumb.DragCompletedEvent, new DragCompletedEventHandler(OnSeekCompleted));
+        Slider.PreviewMouseLeftButtonDown += OnSliderPreviewMouseLeftButtonDown;
+        Slider.ValueChanged += OnSliderValueChanged;
     }
 
-    [MemberNotNull(nameof(_control))]
-    private void InitializePlayer()
-    {
-        _control = new VlcControl();
-        Container.Content = _control;
+    public static void ResetLastMediaPositions() => LastMediaPositionValues.Clear();
 
-        if (!TryGetVlcLibDirectory(out var vlcLibDirectory)) 
-            return;
+    private static VlcMediaPlayer? GetOrCreatePlayer(VlcControl control)
+    {
+        var provider = control.SourceProvider;
+
+        if (provider.MediaPlayer is { } player)
+            return player;
+
+        if (!TryGetVlcLibDirectory(out var vlcLibDirectory))
+            return null;
 
         Log.Information("Using VLC library at {Path}", vlcLibDirectory?.FullName);
-        _control.SourceProvider.CreatePlayer(vlcLibDirectory);
-        _control.SourceProvider.MediaPlayer.PositionChanged 
-            += (_, args) 
-                =>
-            {
-                try
-                {
-                    Dispatcher.BeginInvoke((Action)(() => { Slider.Value = 100 * args.NewPosition; }));
-                }
-                catch (Exception e)
-                {
-                    Log.Warning(e, "Ignoring player error on position change");
-                }
-            };
 
-        _control.SourceProvider.MediaPlayer.TimeChanged
-            += (_, args)
-                =>
-            {
-                try
-                {
-                    // time and length are in ms
-                    var time = args.NewTime;
-                    var length = _control.SourceProvider.MediaPlayer.Length;
-
-                    var timeString = $"{GetPrettyTime(time, length)} / {GetPrettyTime(length)}";
-
-                    Dispatcher.BeginInvoke((Action)(() =>
-                    {
-                        var source = Source;
-                        if (source == null) 
-                            return;
-
-                        var percent = length > 0 ? (double)time * 100 / length : 0;
-                        if (percent > 90)
-                        {
-                            LastMediaPositionValues.TryRemove(source, out var _);
-                        }
-                        else
-                        {
-                            LastMediaPositionValues[source] = time;
-                        }
-
-
-                        TimeTextBlock.Text = timeString;
-                    }));
-                }
-                catch (Exception e)
-                {
-                    Log.Warning(e, "Ignoring player error on time change");
-                }
-            };
-
-        Slider.Loaded += SliderOnLoaded;
-        Slider.Unloaded += SliderOnUnloaded;
+        provider.CreatePlayer(vlcLibDirectory);
+        return provider.MediaPlayer;
     }
 
     private static bool TryGetVlcLibDirectory(out DirectoryInfo? vlcLibDirectory)
@@ -164,40 +100,211 @@ public partial class PlayerControl
 
     private static void OnSourceChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
     {
-        var newPropertyValue = (string?) e.NewValue;
-        var control = (PlayerControl) d;
-        var player = control._control.SourceProvider.MediaPlayer;
+        var control = (PlayerControl)d;
 
-        control.Dispatcher.BeginInvoke((Action)(() =>
+        if (control.IsLoaded)
+            control.ChangeSource((string?)e.NewValue);
+    }
+
+    private void ChangeSource(string? source)
+    {
+        var version = Interlocked.Increment(ref _mediaVersion);
+        ShowPlaying(false);
+        ResetPositionSlider();
+        TimeTextBlock.Text = string.Empty;
+
+        if (source is null)
         {
-            if (newPropertyValue == null)
-            {
-                if (!control.InfinityLifespanMode)
-                {
-                    Task.Run(() =>
-                    {
-                        control._isDisposed = true;
-                        control._control.Dispose();
-                    });
-                }
-                else
-                {
-                    if (player?.IsPlaying() == true)
-                        control.IsPlaying = false;
+            ClearMedia();
+            return;
+        }
 
+        if (_control is null)
+        {
+            _control = new VlcControl();
+            Container.Content = _control;
+        }
+
+        var control = _control;
+        var volume = Volume;
+        ShowPlaying(true);
+
+        QueuePlayerOperation(() =>
+        {
+            if (version != Volatile.Read(ref _mediaVersion))
+                return;
+
+            if (GetOrCreatePlayer(control) is not { } player || version != Volatile.Read(ref _mediaVersion))
+                return;
+
+            DetachPlaybackEvents();
+            player.Stop();
+
+            var options = LastMediaPositionValues.TryGetValue(source, out var position)
+                ? new[] { "input-repeat=65535", $"start-time={position / 1000}" }
+                : new[] { "input-repeat=65535" };
+
+            player.SetMedia(new FileInfo(source), options);
+            AttachPlaybackEvents(player, source, version);
+            player.Audio.Volume = volume;
+            player.Play();
+        });
+    }
+
+    private void ClearMedia()
+    {
+        if (!InfinityLifespanMode)
+        {
+            ReleasePlayer();
+            return;
+        }
+
+        if (_control is { } control)
+        {
+            QueuePlayerOperation(() =>
+            {
+                DetachPlaybackEvents();
+
+                if (control.SourceProvider.MediaPlayer is { } player)
+                {
+                    player.Stop();
+                    player.ResetMedia();
                 }
+            });
+        }
+    }
+
+    private void ReleasePlayer()
+    {
+        if (_control is not { } control)
+            return;
+
+        Interlocked.Increment(ref _mediaVersion);
+        _control = null;
+        Container.Content = null;
+
+        QueuePlayerOperation(() =>
+        {
+            DetachPlaybackEvents();
+            control.SourceProvider.MediaPlayer?.Stop();
+            control.Dispose();
+        });
+    }
+
+    private void AttachPlaybackEvents(
+        VlcMediaPlayer player,
+        string source,
+        int version)
+    {
+        long length = 0;
+
+        void OnLengthChanged(object? sender, VlcMediaPlayerLengthChangedEventArgs args)
+            => Interlocked.Exchange(ref length, args.NewLength);
+
+        void OnPositionChanged(object? sender, VlcMediaPlayerPositionChangedEventArgs args)
+            => Dispatcher.InvokeAsync(() =>
+            {
+                if (version == _mediaVersion)
+                    SetSliderFromPlayer(100 * args.NewPosition);
+            });
+
+        void OnTimeChanged(object? sender, VlcMediaPlayerTimeChangedEventArgs args)
+        {
+            var time = args.NewTime;
+            var duration = Interlocked.Read(ref length);
+
+            if (duration > 0 && time > duration * 0.9)
+            {
+                LastMediaPositionValues.TryRemove(source, out _);
             }
             else
             {
-                var mediaOptions = new[] { "input-repeat=65535" };
-                
-                if (LastMediaPositionValues.TryGetValue(newPropertyValue, out var position))
-                    mediaOptions = mediaOptions.Append("start-time=" + position / 1000).ToArray();
-                
-                player.SetMedia(new FileInfo(newPropertyValue), mediaOptions);
-                control.IsPlaying = true;
+                LastMediaPositionValues[source] = time;
             }
-        }));
+
+            Dispatcher.InvokeAsync(() =>
+            {
+                if (version == _mediaVersion)
+                    TimeTextBlock.Text = $"{GetPrettyTime(time, duration)} / {GetPrettyTime(duration)}";
+            });
+        }
+
+        player.LengthChanged += OnLengthChanged;
+        player.PositionChanged += OnPositionChanged;
+        player.TimeChanged += OnTimeChanged;
+
+        _detachPlaybackEvents = () =>
+        {
+            player.LengthChanged -= OnLengthChanged;
+            player.PositionChanged -= OnPositionChanged;
+            player.TimeChanged -= OnTimeChanged;
+        };
+    }
+
+    private void DetachPlaybackEvents()
+    {
+        _detachPlaybackEvents?.Invoke();
+        _detachPlaybackEvents = null;
+    }
+
+    private void QueuePlayerOperation(Action operation)
+    {
+        _playerOperations = _playerOperations.ContinueWith(
+            _ =>
+            {
+                try
+                {
+                    operation();
+                }
+                catch (Exception e)
+                {
+                    Log.Warning(e, "Navigator video operation failed");
+                }
+            },
+            CancellationToken.None,
+            TaskContinuationOptions.None,
+            TaskScheduler.Default);
+    }
+
+    private void QueueCurrentMediaOperation(Action<VlcMediaPlayer> operation)
+    {
+        if (Source is null || _control is not { } control)
+            return;
+
+        var version = _mediaVersion;
+
+        QueuePlayerOperation(() =>
+        {
+            if (version == Volatile.Read(ref _mediaVersion) && control.SourceProvider.MediaPlayer is { } player)
+                operation(player);
+        });
+    }
+
+    private void ShowPlaying(bool isPlaying)
+    {
+        _isPlaying = isPlaying;
+        var icon = isPlaying ? "VideoPauseOverlayIcon" : "VideoPlayOverlayIcon";
+        PlayButton.Template = Application.Current.FindResource(icon) as ControlTemplate;
+    }
+
+    private void SetPlaying(bool isPlaying)
+    {
+        if (Source is null || _control is null)
+            return;
+
+        ShowPlaying(isPlaying);
+
+        QueueCurrentMediaOperation(player =>
+        {
+            if (isPlaying)
+            {
+                player.Play();
+            }
+            else
+            {
+                player.SetPause(true);
+            }
+        });
     }
 
     public bool ShouldPause
@@ -218,10 +325,8 @@ public partial class PlayerControl
         var shouldPause = (bool) e.NewValue;
         var control = (PlayerControl) d;
             
-        if (shouldPause && control.IsPlaying)
-        {
-            control.IsPlaying = false;
-        }
+        if (shouldPause && control._isPlaying)
+            control.SetPlaying(false);
     }
 
     public int Volume
@@ -255,15 +360,12 @@ public partial class PlayerControl
         var volume = (int) e.NewValue;
         var control = (PlayerControl) d;
 
-        var provider = control._control.SourceProvider;
-
-        if (provider != null)
-            provider.MediaPlayer.Audio.Volume = volume;
+        control.QueueCurrentMediaOperation(player => player.Audio.Volume = volume);
     }
 
     private void PlayButton_OnClick(object sender, RoutedEventArgs e)
     {
-        IsPlaying = !IsPlaying;
+        SetPlaying(!_isPlaying);
     }
 
     private void Root_OnMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
@@ -277,7 +379,7 @@ public partial class PlayerControl
                 return;
         }
 
-        IsPlaying = !IsPlaying;
+        SetPlaying(!_isPlaying);
     }
 
     private static string GetPrettyTime(long time, long? length = null)

@@ -1,155 +1,106 @@
 ﻿using System.Windows;
-using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using System.Windows.Input;
-using Serilog;
 
 namespace ImoutoRebirth.Navigator.UserControls;
 
 public partial class PlayerControl
 {
-    private bool _wasPlayingBeforeSliderTouched = false;
-    private Track? _track;
-    private bool _dragHandlersAttached;
-    private DragStartedEventHandler? _dragStartedHandler;
-    private DragCompletedEventHandler? _dragCompletedHandler;
+    private Thumb? _seekThumb;
+    private bool _resumeAfterSeek;
+    private bool _updatingSliderFromPlayer;
 
-    private void SliderOnUnloaded(object sender, RoutedEventArgs e)
+    private void OnSliderPreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
     {
-        Slider.ValueChanged -= OnSliderOnValueChanged;
-
-        if (_dragHandlersAttached)
-        {
-            if (_dragStartedHandler != null)
-                Slider.RemoveHandler(Thumb.DragStartedEvent, _dragStartedHandler);
-
-            if (_dragCompletedHandler != null)
-                Slider.RemoveHandler(Thumb.DragCompletedEvent, _dragCompletedHandler);
-
-            _dragHandlersAttached = false;
-        }
-
-        if (_track != null)
-        {
-            _track.PreviewMouseLeftButtonDown -= TrackOnPreviewMouseLeftButtonDown;
-            _track = null;
-        }
-    }
-
-    private void SliderOnLoaded(object sender, RoutedEventArgs e)
-    {
-        Slider.ValueChanged += OnSliderOnValueChanged;
-
-        if (!_dragHandlersAttached)
-        {
-            _dragStartedHandler ??= HandleDragStartedEvent;
-            _dragCompletedHandler ??= HandleDragCompletedEvent;
-
-            Slider.AddHandler(Thumb.DragStartedEvent, _dragStartedHandler);
-            Slider.AddHandler(Thumb.DragCompletedEvent, _dragCompletedHandler);
-            _dragHandlersAttached = true;
-        }
-
-        var track = (Track)Slider.Template.FindName("PART_Track", Slider);
-        if (track != null)
-        {
-            _track = track;
-            _track.PreviewMouseLeftButtonDown += TrackOnPreviewMouseLeftButtonDown;
-        }
-    }
-
-    private void TrackOnPreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
-    {
-        var track = (Track)sender;
-        var slider = (Slider)track.TemplatedParent;
-
-        if (track.Thumb is { IsMouseOver: true }) 
+        if (Slider.Template?.FindName("PART_Track", Slider) is not Track { Thumb: { } thumb } track || thumb.IsMouseOver)
             return;
 
-        var currentPosition = e.GetPosition(track);
-        double ratio;
-
-        if (track.Orientation == Orientation.Horizontal)
-        {
-            ratio = currentPosition.X / track.ActualWidth;
-        }
-        else
-        {
-            ratio = 1.0 - (currentPosition.Y / track.ActualHeight);
-        }
-
-        ratio = Math.Clamp(ratio, 0.0, 1.0);
-        slider.Value = slider.Minimum + ratio * (slider.Maximum - slider.Minimum);
-
-        slider.UpdateLayout();
-
-        if (track.Thumb == null) 
+        var position = track.ValueFromPoint(e.GetPosition(track));
+        if (!double.IsFinite(position))
             return;
 
-        var args = new MouseButtonEventArgs(e.MouseDevice, e.Timestamp, e.ChangedButton)
+        Slider.Value = Math.Clamp(position, Slider.Minimum, Slider.Maximum);
+        Slider.UpdateLayout();
+
+        var thumbMouseDown = new MouseButtonEventArgs(e.MouseDevice, e.Timestamp, e.ChangedButton)
         {
-            RoutedEvent = UIElement.MouseLeftButtonDownEvent,
-            Source = track.Thumb
+            RoutedEvent = MouseLeftButtonDownEvent,
+            Source = thumb
         };
 
-        track.Thumb.RaiseEvent(args);
+        thumb.RaiseEvent(thumbMouseDown);
         e.Handled = true;
     }
 
-    private void HandleDragCompletedEvent(object s, DragCompletedEventArgs e)
+    private void OnSeekStarted(object sender, DragStartedEventArgs e)
     {
-        if (_wasPlayingBeforeSliderTouched)
-            IsPlaying = true;
+        _seekThumb = (Thumb)e.OriginalSource;
+        _resumeAfterSeek = _isPlaying;
+
+        if (_resumeAfterSeek)
+            SetPlaying(false);
     }
 
-    private void HandleDragStartedEvent(object s, DragStartedEventArgs e)
+    private void OnSeekCompleted(object sender, DragCompletedEventArgs e)
     {
-        if (IsPlaying)
-        {
-            _wasPlayingBeforeSliderTouched = true;
-            IsPlaying = false;
-        }
-        else
-        {
-            _wasPlayingBeforeSliderTouched = false;
-        }
+        if (_seekThumb is null)
+            return;
+
+        _seekThumb = null;
+
+        if (!e.Canceled)
+            SeekTo(Slider.Value, commitPosition: true);
+
+        if (_resumeAfterSeek)
+            SetPlaying(true);
     }
 
-    private void OnSliderOnValueChanged(object _, RoutedPropertyChangedEventArgs<double> args)
+    private void ResetPositionSlider()
     {
+        var thumb = _seekThumb;
+        _seekThumb = null;
+        thumb?.CancelDrag();
+
+        SetSliderFromPlayer(0);
+    }
+
+    private void SetSliderFromPlayer(double value)
+    {
+        if (_seekThumb is not null)
+            return;
+
+        _updatingSliderFromPlayer = true;
+
         try
         {
-            if (_control.SourceProvider.MediaPlayer == null || _isDisposed)
-                return;
-
-            var newValue = (float)args.NewValue / 100;
-
-            if (_isDisposed)
-                return;
-
-            var oldValue = _control.SourceProvider.MediaPlayer.Position;
-
-            var absoluteDiff = Math.Abs(oldValue - newValue);
-
-            if (_isDisposed)
-                return;
-
-            var length = _control.SourceProvider.MediaPlayer.Length;
-
-            var msDiff = absoluteDiff * length;
-
-            if (msDiff < 1000) return;
-
-            var set = (float)args.NewValue / 100;
-
-            if (_isDisposed)
-                return;
-
-            Task.Run(() => _control.SourceProvider.MediaPlayer.Position = set);
+            Slider.Value = value;
         }
-        catch (Exception e)
+        finally
         {
-            Log.Warning(e, "Ignoring player error on slider change");
+            _updatingSliderFromPlayer = false;
         }
+    }
+
+    private void OnSliderValueChanged(object sender, RoutedPropertyChangedEventArgs<double> args)
+    {
+        if (!_updatingSliderFromPlayer)
+            SeekTo(args.NewValue, commitPosition: _seekThumb is null);
+    }
+
+    private void SeekTo(double sliderValue, bool commitPosition)
+    {
+        var position = (float)sliderValue / 100;
+
+        QueueCurrentMediaOperation(player =>
+        {
+            var duration = player.Length;
+            if (duration <= 0)
+                return;
+
+            var differenceInMilliseconds = Math.Abs(player.Position - position) * duration;
+
+            if (commitPosition || differenceInMilliseconds >= 1000)
+                player.Position = position;
+        });
     }
 }
